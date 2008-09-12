@@ -1,0 +1,7 @@
+name="lambdoc"
+version="0.1"
+description="The Lambdoc library for document parsing/printing"
+requires="threads,unix,extlib,ocsigen.xhtml,ocsigen,pcre,sexplib"
+archive(byte)="lambdoc.cma"
+archive(native)="lambdoc.cmxa"
+

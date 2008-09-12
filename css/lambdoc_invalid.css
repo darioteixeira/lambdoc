@@ -1,0 +1,45 @@
+/********************************************************************************/
+/* Lambdoc CSS. 								*/
+/********************************************************************************/
+
+/********************************************************************************/
+/* High-level document CSS.							*/
+/********************************************************************************/
+
+.doc
+	{
+	margin: auto;
+	width: 50em;
+	}
+
+.doc_error_lines
+	{
+	padding: 0.5em;
+	border: 1px dotted #666;
+	background: #ffc;
+	list-style-type: none;
+	}
+
+.doc_error_lines > li
+	{
+	font-family: monospace;
+	}
+
+.doc_error_lines > li > span:first-child
+	{
+	display: block;
+	clear: both;
+	float: left;
+	}
+
+.doc_error_lines > li > span + span
+	{
+	display: block;
+	min-height: 1em;
+	margin-left: 3em;
+	}
+
+.doc_error_actual
+	{
+	color: red;
+	}

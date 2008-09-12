@@ -1,0 +1,11 @@
+\section[sec:intro]{Introduction}
+
+This is a normal text with \bold{bold text} and \emph{emphasized text}.
+
+\begin{tabular}{ll}
+\head
+One	| Two	$
+\body
+a	| b	$
+\end{tabular}
+

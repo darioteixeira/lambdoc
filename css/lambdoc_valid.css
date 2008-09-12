@@ -1,0 +1,361 @@
+/********************************************************************************/
+/* Lambdoc CSS. 								*/
+/********************************************************************************/
+
+/********************************************************************************/
+/* High-level document CSS.							*/
+/********************************************************************************/
+
+.doc
+	{
+	margin: auto;
+	width: 50em;
+	}
+
+
+/********************************************************************************/
+/* Paragraphs and inline text.							*/
+/********************************************************************************/
+
+.doc p
+	{
+	margin-top: 1em;
+	text-align: justify;
+	line-height: 1.4em;
+	}
+
+.doc_par + .doc_par
+	{
+	text-indent: 1em;
+	}
+
+.doc_mono	{font-family: monospace;}
+.doc_caps	{font-variant: small-caps;}
+.doc_thru	{text-decoration: line-through;}
+.doc_box	{color: red;}
+
+
+/********************************************************************************/
+/* Hyperlinks.									*/
+/********************************************************************************/
+
+.doc a
+	{
+	text-decoration: none;
+	}
+
+.doc_see
+	{
+	margin-left: 0.3em;
+	font-size: smaller;
+	vertical-align: 10%;
+	color: red;
+	}
+
+.doc_cite
+	{
+	margin-left: 0.3em;
+	color: green;
+	}
+	
+
+
+/********************************************************************************/
+/* Document lists.								*/
+/********************************************************************************/
+
+.doc_itemize
+	{
+	margin: 1em 0 1em 1em;
+	padding: 0 0 0 1.5em;
+	list-style: disc outside;
+	line-height: 1.3em;
+	}
+
+.doc_enumerate
+	{
+	margin: 1em 0 1em 1em;
+	padding: 0 0 0 1.5em;
+	list-style: decimal outside;
+	line-height: 1.3em;
+	}
+
+.doc_itemize > li > .doc_par:first-child,
+.doc_enumerate > li > .doc_par:first-child
+	{
+	margin: 0;
+	}
+
+.doc_style_none		{list-style-type: none;}
+.doc_style_disc		{list-style-type: disc;}
+.doc_style_circle	{list-style-type: circle;}
+.doc_style_square	{list-style-type: square;}
+.doc_style_decimal	{list-style-type: decimal;}
+.doc_style_lower_roman	{list-style-type: lower-roman;}
+.doc_style_upper_roman	{list-style-type: upper-roman;}
+.doc_style_lower_alpha	{list-style-type: lower-alpha;}
+.doc_style_upper_alpha	{list-style-type: upper-alpha;}
+
+
+/********************************************************************************/
+/* Verbatim environments.							*/
+/********************************************************************************/
+
+.doc_fig_ascii,
+.doc_pre,
+.doc_eq > pre
+	{
+	text-align: left;
+	padding: 1em;
+	border: 1px dashed #999;
+	overflow: hidden;
+	white-space: pre;
+	font-family: monospace;
+	background-color: #fffcf9;
+	}
+
+.doc_fig_ascii		{margin: 0;}
+.doc_pre		{margin: 1em 1em 2em 1em;}
+.doc_eq > pre		{margin: 0;}
+
+
+/********************************************************************************/
+/* Rules.									*/
+/********************************************************************************/
+
+.doc hr
+	{
+	margin: 2em 0;
+	}
+
+
+/********************************************************************************/
+/* Sections.									*/
+/********************************************************************************/
+
+h1.doc_sec,
+h2.doc_sec,
+h3.doc_sec
+	{
+	clear: both;
+	margin: 1.5em 0 1em;
+	padding: 0;
+	text-transform: capitalize;
+	}
+
+.doc_sec > span + span
+	{
+	margin-left: 0.75em;
+	}
+
+h1.doc_sec	{font-size: 1.16em;}
+h2.doc_sec	{font-size: 1.10em;}
+h3.doc_sec	{font-size: 1.05em;}
+
+
+/********************************************************************************/
+/* CSS common to all floaters.							*/
+/********************************************************************************/
+
+.doc_floater.doc_align_center	{margin: 2.5em 1em;} 
+.doc_floater.doc_align_right	{margin: 0 0 0 3em; padding: 0.75em 0; float: right;}
+.doc_floater.doc_align_left	{margin: 0 3em 0 0; padding: 0.75em 0; float: left;}
+
+.doc_floater
+	{
+	clear: both;
+	text-align: center;
+	}
+
+.doc_caption
+	{
+	margin: 1em 0 0 0;
+	}
+
+.doc_caption h1
+	{
+	float: left;
+	width: 4.5em;
+	margin: 0 0.5em 0 0;
+	text-align: right;
+	font-weight: bold;
+	font-size: 1em;
+	}
+
+.doc_caption p
+	{
+	margin: 0 0 0 5em;	/* Left = H1 (width + margin-right) */
+	text-align: justify;
+	}
+
+
+/********************************************************************************/
+/* CSS for document quotes.							*/
+/********************************************************************************/
+
+.doc_quote
+	{
+	clear: both;
+	padding: 0 1em 0 4em;
+	border-top: 1px solid #999;
+	border-bottom: 1px solid #999;
+	font-style: italic;
+	text-align: justify;
+	quotes: "\201c" "\201d";
+	}
+
+.doc_quote:before
+	{
+	display: block;
+	font-family: "Georgia", serif;
+	font-size: 6em;
+	color: #999;
+	content: open-quote;
+	margin-left: -0.6em;
+	line-height: 1.2em;
+	height: 0;
+	}
+
+.doc_quote.doc_align_right	{margin: 1em 0 1em 2em; float: right; width: 35%;}
+.doc_quote.doc_align_left	{margin: 1em 2em 1em 0; float: left; width: 35%;}
+
+
+/********************************************************************************/
+/* CSS for particular document figures.						*/
+/********************************************************************************/
+
+.doc_fig_subpage
+	{
+	padding: 1em;
+	border: 1px dashed #999;
+	background-color: #fcfff9;
+	text-align: left;
+	}
+
+/********************************************************************************/
+/* CSS for algorithms.								*/
+/********************************************************************************/
+
+.doc_alg pre
+	{
+	text-align: left;
+	padding: 1em;
+	border: 1px dashed #999;
+	overflow: hidden;
+	white-space: pre;
+	font-family: monospace;
+	background: url('algorithm.png');
+	}
+
+
+/********************************************************************************/
+/* CSS for story tables.		 					*/
+/********************************************************************************/
+
+.doc_tabular
+	{
+	margin: 0 auto;
+	border-top: 2px solid #999;
+	border-bottom: 2px solid #999;
+	}
+
+.doc_tabular > thead,
+.doc_tabular > tfoot
+	{
+	vertical-align: bottom;
+	font-weight: bold;
+	background-color: #fafafa;
+	}
+
+.doc_tabular > tbody > tr:first-child > th,
+.doc_tabular > tbody > tr:first-child > td,
+.doc_tabular > tfoot > tr:first-child > th,
+.doc_tabular > tfoot > tr:first-child > td
+	{
+	border-top: 2px solid #999;
+	}
+
+.doc_tabular > tbody:first-child > tr:first-child > th,
+.doc_tabular > tbody:first-child > tr:first-child > td
+	{
+	border: none;
+	}
+
+.doc_tabular th,
+.doc_tabular td
+	{
+	padding: 0.5em 1em;
+	}
+
+.doc_tabular .doc_col_left		{text-align: left;}
+.doc_tabular .doc_col_right		{text-align: right;}
+.doc_tabular .doc_col_center		{text-align: center;}
+.doc_tabular .doc_col_justify		{text-align: justify;}
+
+.doc_tabular > tbody .doc_row_odd	{background-color: #fafafa;}
+.doc_tabular > tbody .doc_row_even	{background-color: #f0f0f0;}
+
+
+/********************************************************************************/
+/* CSS for table of contents.							*/
+/********************************************************************************/
+
+.doc_toc
+	{
+	list-style-type: none;
+	padding-left: 1em;
+	}
+
+.doc_toc > li > a > span + span
+	{
+	margin-left: 0.5em;
+	}
+
+
+/********************************************************************************/
+/* CSS for story bibliography.		 					*/
+/********************************************************************************/
+
+.story_bibliography
+	{
+	margin-left: 2em;
+	list-style-type: decimal;
+	}
+
+.biblio_entry
+	{
+	margin-bottom: 0.5em;
+	}
+
+.biblio_author
+	{
+	}
+
+.biblio_author:after
+	{
+	content: ':';
+	}
+
+.biblio_title
+	{
+	margin-left: 0.2em;
+	font-style: italic;
+	text-transform: capitalize;
+	}
+
+.biblio_title:before
+	{
+	content: '\201c';
+	}
+
+.biblio_title:after
+	{
+	content: '\201d';
+	}
+
+.biblio_resource
+	{
+	display: block;
+	margin-top: 0.2em;
+	}
+
