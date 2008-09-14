@@ -372,6 +372,50 @@ J		| Column is justified and strong. $
 A specifier tells \caps{Lambtex} how each column should be formatted.}
 \end{table}
 
+
+\section{Mathematical formulas}
+
+\caps{Lambtex} also supports the inclusion of equations and mathematical
+formulas in a document.  Mathematics are to be entered using either
+\caps{MathML}\cite{bib:mathml} or the \caps{TeX}\cite{bib:tex} format.
+The former was chosen because an increasing number of tools have the ability
+to export \caps{MathML}.  As for the latter, it is the \emph{de facto}
+standard for manually typing mathematical expressions.
+
+Mathematical expressions may be entered in an inline context (embedded inside
+a paragraph, for example), or in a block context.  In the former case,
+the expression should be delimited between the characters '\mono{[$}' and
+'\mono{$]}' if it is written in \caps{TeX} format, and between characters
+'\mono{<$}' and '\mono{$>}' if written in \caps{MathML}.  The latter
+case &mdash; expressions in a block context &mdash; is specified via the
+\mono{math} environment.  This environment has one mandatory parameter,
+indicating the markup format of the expression.  Valid values for this
+parameter are \mono{mathml} and \mono{tex}, for expressions in \caps{MathML}
+and \caps{TeX} format, respectively.
+
+Therefore, suppose you wished to enter a math block containing the quadratic
+formula specified in the \caps{TeX} format.  The code would be the following:
+
+\begin{verbatim}
+\begin{math}{tex}
+x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
+\end{math}
+\end{verbatim}
+
+Producing this result:
+
+\begin{verbatim}
+\begin{math}{tex}
+x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
+\end{math}
+\end{verbatim}
+
+
+\caps{Lambtex} supports also named mathematical expressions that may be
+numbered and referenced from anywhere in a document; check \sref{sec:equations}
+for details.
+
+
 \section{Sectioning commands}
 
 \caps{Lambtex} supports three different levels of sectioning: sections,
@@ -538,6 +582,15 @@ data type and a function to count the number of leaves in such trees.}
 \end{algorithm}
 
 
+The code that produced \sref{alg:tree} is shown below.  Note that an algorithm
+floater is essentially a wrapper around a verbatim environment where the
+code is to be placed.  As for the caption, it is given by the contents of the
+simple command \mono{\\caption}.  At last, note that an algorithm environment
+requires a mandatory additional parameter indicating the language the code
+is written in (\caps{Ocaml} in this case).  You may leave this parameter
+empty if you do not wish syntax highlighting to be applied to the code.
+
+
 \begin{verbatim}
 \begin[alg:tree]{algorithm}{ocaml}
 \begin{verbatim}
@@ -555,13 +608,32 @@ data type and a function to count the number of leaves in such trees.}
 \end{verbatim}
 
 
-\subsection{Equations}
+\subsection[sec:equations]{Equations}
+
+An equation is a floater wrapper around a math environment.  It allows
+mathematical expressions to the numbered and referrenced from anywhere in
+a document.  To use it, simply wrap a \mono{equation} environment around
+a \mono{math} environment.  If you wish the equation to be numbered and
+referenceable, add also \mono{\\caption} command.  The following example
+defines the equation [$ x=y+2 $] from a \caps{MathML} source.  The result
+is shown in \sref{eq:example}.
+
+
+\begin{verbatim}
+\begin{equation}
+\begin{math}{mathml}
+<mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn>
+\end{math}
+\caption{This is an example equation.}
+\end{equation}
+\end{verbatim}
+
 
 \begin{equation}
-\begin{math}
-\This \is \an \equation & 
+\begin{math}{mathml}
+<mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn>
 \end{math}
-\caption{This is an equation.}
+\caption{This is an example equation.}
 \end{equation}
 
 
@@ -812,17 +884,29 @@ the ordering and hyperlinking of floaters and sectional commands.
 
 \notes
 
-\note[note:bbcode]{BBcode sucks.}
+\note[note:bbcode]{Explain BBcode's shortcomings here.}
 
-\note[note:numbers]{Numbers yada yada yada.}
+\note[note:numbers]{Explain numbers here.}
 
 \note[note:meta]{Meta note.}
 
-\note[note:amp]{Moe often than note, you can get away with entering ampersands without requiring}
+\note[note:amp]{Moe often than note, you can get away with entering ampersands without requiring escaping.}
 
 \bibliography
 
 \begin[bib:latex]{bib}
+\title{The \caps{Latex} companion}
+\author{Leslie Lamport}
+\resource{Resource}
+\end{bib}
+
+\begin[bib:tex]{bib}
+\title{The \caps{Latex} companion}
+\author{Leslie Lamport}
+\resource{Resource}
+\end{bib}
+
+\begin[bib:mathml]{bib}
 \title{The \caps{Latex} companion}
 \author{Leslie Lamport}
 \resource{Resource}
