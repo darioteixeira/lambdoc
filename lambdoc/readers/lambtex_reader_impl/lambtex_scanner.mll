@@ -26,6 +26,10 @@ type scanner_token_t =
 	| Tok_simple_comm of Lexing.lexbuf
 	| Tok_begin of Lexing.lexbuf
 	| Tok_end of Lexing.lexbuf
+	| Tok_begin_mathtex of Lexing.lexbuf
+	| Tok_end_mathtex of Lexing.lexbuf
+	| Tok_begin_mathml of Lexing.lexbuf
+	| Tok_end_mathml of Lexing.lexbuf
 	| Tok_eof of Lexing.lexbuf
 	| Tok_column_sep of Lexing.lexbuf
 	| Tok_row_end of Lexing.lexbuf
@@ -76,6 +80,10 @@ let eol = space* '\n'
 let break = eol eol+
 let begin_marker = '{'
 let end_marker = '}'
+let begin_mathtex = "[$"
+let end_mathtex = "$]"
+let begin_mathml = "<$"
+let end_mathml = "$>"
 let column_sep = space* '|' space*
 let row_end = space* '$'
 
@@ -103,6 +111,7 @@ rule general_scanner = parse
 	| simple_command	{Tok_simple_comm lexbuf}
 	| begin_marker		{Tok_begin lexbuf}
 	| end_marker		{Tok_end lexbuf}
+	| begin_mathtex		{Tok_begin_mathtex lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| break			{incr_linenum lexbuf; Tok_break}
 	| space | eol		{incr_linenum lexbuf; Tok_space}
@@ -118,6 +127,7 @@ and tabular_scanner = parse
 	| env_command		{Tok_env_comm lexbuf}
 	| simple_command	{Tok_simple_comm lexbuf}
 	| begin_marker		{Tok_begin lexbuf}
+	| begin_mathtex		{Tok_begin_mathtex lexbuf}
 	| end_marker		{Tok_end lexbuf}
 	| column_sep		{Tok_column_sep lexbuf}
 	| row_end		{Tok_row_end lexbuf}
@@ -146,6 +156,18 @@ and verbatim_scanner = parse
 *)
 and math_scanner = parse
 	| "\\end{math}"		{Tok_env_comm lexbuf}
+	| eof			{Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+
+
+and mathtex_scanner = parse
+	| end_mathtex		{Tok_end_mathtex lexbuf}
+	| eof			{Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+
+
+and mathml_scanner = parse
+	| end_mathml		{Tok_end_mathml lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
 

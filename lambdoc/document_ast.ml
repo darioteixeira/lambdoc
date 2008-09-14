@@ -51,6 +51,8 @@ type super_seq_t = super_node_t list
 
  and nonlink_node_t =
 	| Textual of textual_node_t
+	| Mathtex of operator_t * plain_t
+	| Mathml of operator_t * plain_t
 	| Bold of command_t * super_seq_t
 	| Emph of command_t * super_seq_t
 	| Mono of command_t * super_seq_t
@@ -113,6 +115,7 @@ type super_frag_t = super_block_t list
 
  and nestable_block_t =
 	| Paragraph of operator_t * super_seq_t
+	| Math of command_t * plain_t
 	| Tabular of command_t * tabular_t
 	| Preformat of command_t * textual_seq_t
 	| Itemize of command_t * item_t list

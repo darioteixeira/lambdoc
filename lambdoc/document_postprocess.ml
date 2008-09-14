@@ -566,6 +566,10 @@ let process_document document_ast =
 	and convert_nonlink_node = function
 		| Textual node ->
 			((convert_textual_node node) :> (Node.nonlink_node_t, _) Node.t)
+		| Mathtex (op, txt) ->
+			Node.mathtex txt
+		| Mathml (op, txt) ->
+			Node.mathml txt
 		| Bold (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
 			Node.bold (convert_super_seq seq)
@@ -819,6 +823,9 @@ let process_document document_ast =
 
 		| Paragraph (op, seq) ->
 			Some (Block.paragraph (convert_super_seq seq))
+
+		| Math (params, txt) ->
+			Some (Block.mathml txt)
 
 		| Tabular (params, tab) ->
 			Some (Block.tabular (convert_tabular params tab))

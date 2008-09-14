@@ -36,8 +36,9 @@ open Document_ast
 
 
 /********************************************************************************/
-/* Environment commands.							*/
-/* All of these are composed of a begin/end pair.				*/
+/* Environment commands and operators.						*/
+/* All environment commands are composed of a begin/end pair.			*/
+/* Envrionment operators are [$ $] and <$ $>.					*/
 /********************************************************************************/
 
 %token <Document_ast.command_t> BEGIN_ITEMIZE
@@ -75,6 +76,12 @@ open Document_ast
 
 %token <Document_ast.command_t> BEGIN_TABULAR
 %token <Document_ast.command_t> END_TABULAR
+
+%token <Document_ast.operator_t> BEGIN_MATHTEX
+%token <Document_ast.operator_t> END_MATHTEX
+
+%token <Document_ast.operator_t> BEGIN_MATHML
+%token <Document_ast.operator_t> END_MATHML
 
 
 /********************************************************************************/
@@ -164,6 +171,7 @@ heading:
 
 nestable_block:
 	| NEW_PARAGRAPH super_node+				{Paragraph ($1, $2)}
+	| BEGIN_MATH PLAIN END_MATH				{Math ($1, $2)}
 	| BEGIN_TABULAR tabular_block END_TABULAR		{Tabular ($1, $2)}
 	| BEGIN_VERBATIM textual_node+ END_VERBATIM		{Preformat ($1, $2)}
 	| BEGIN_ITEMIZE items END_ITEMIZE			{Itemize ($1, $2)}
@@ -255,6 +263,8 @@ textual_node:
 
 nonlink_node:
 	| textual_node						{Textual $1}
+	| BEGIN_MATHTEX PLAIN END_MATHTEX			{Mathtex ($1, $2)}
+	| BEGIN_MATHML PLAIN END_MATHML				{Mathml ($1, $2)}
 	| BOLD BEGIN super_node+ END				{Bold ($1, $3)}
 	| EMPH BEGIN super_node+ END				{Emph ($1, $3)}
 	| MONO BEGIN super_node+ END				{Mono ($1, $3)}

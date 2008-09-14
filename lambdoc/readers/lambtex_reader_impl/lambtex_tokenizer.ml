@@ -31,7 +31,7 @@ exception Unknown_simple_command of string
 	There are four different environments: general, tabular, verbatim
 	and math.
 *)
-type scanner_environment_t = General | Tabular | Verbatim | Math
+type scanner_environment_t = General | Tabular | Verbatim | Math | Mathtex | Mathml
 
 
 (**	Scanning contexts control the way that whitespace is handled.
@@ -256,20 +256,26 @@ object (self)
 			| General	-> Lambtex_scanner.general_scanner
 			| Tabular	-> Lambtex_scanner.tabular_scanner
 			| Verbatim	-> Lambtex_scanner.verbatim_scanner
-			| Math		-> Lambtex_scanner.math_scanner in
+			| Math		-> Lambtex_scanner.math_scanner
+			| Mathtex	-> Lambtex_scanner.mathtex_scanner
+			| Mathml	-> Lambtex_scanner.mathml_scanner in
 
 		let (category, maybe_new_env, maybe_new_context) = match scanner lexbuf with
-			| Tok_env_comm lexbuf	-> issue_env_command lexbuf
-			| Tok_simple_comm lexbuf-> issue_simple_command lexbuf
-			| Tok_begin lexbuf	-> (Cat_begin (BEGIN (build_op lexbuf)),	Keep,	Push Inline)
-			| Tok_end lexbuf	-> (Cat_end (END (build_op lexbuf)),		Keep,	Pop)
-			| Tok_eof lexbuf	-> (Cat_token (EOF (build_op lexbuf)),		Keep,	Keep)
-			| Tok_column_sep lexbuf	-> (Cat_token (COLUMN_SEP (build_op lexbuf)),	Keep,	Set Inline)
-			| Tok_row_end lexbuf	-> (Cat_token (ROW_END (build_op lexbuf)),	Keep,	Set Block)
-			| Tok_plain x		-> (Cat_token (PLAIN x),			Keep,	Set Inline)
-			| Tok_entity x		-> (Cat_token (ENTITY x),			Keep,	Set Inline)
-			| Tok_space		-> (Cat_space,					Keep,	Keep)
-			| Tok_break		-> (Cat_ignore,					Keep,	Set Block) in
+			| Tok_env_comm buf	-> issue_env_command buf
+			| Tok_simple_comm buf	-> issue_simple_command buf
+			| Tok_begin buf		-> (Cat_begin (BEGIN (build_op buf)),		Keep, Push Inline)
+			| Tok_end buf		-> (Cat_end (END (build_op buf)),		Keep, Pop)
+			| Tok_begin_mathtex buf	-> (Cat_token (BEGIN_MATHTEX (build_op buf)),	Push Mathtex, Push Inline)
+			| Tok_end_mathtex buf	-> (Cat_token (END_MATHTEX (build_op buf)),	Pop, Pop)
+			| Tok_begin_mathml buf	-> (Cat_token (BEGIN_MATHML (build_op buf)),	Push Mathml, Push Inline)
+			| Tok_end_mathml buf	-> (Cat_token (END_MATHML (build_op buf)),	Pop, Pop)
+			| Tok_eof buf		-> (Cat_token (EOF (build_op buf)),		Keep, Keep)
+			| Tok_column_sep buf	-> (Cat_token (COLUMN_SEP (build_op buf)),	Keep, Set Inline)
+			| Tok_row_end buf	-> (Cat_token (ROW_END (build_op buf)),		Keep, Set Block)
+			| Tok_plain x		-> (Cat_token (PLAIN x),			Keep, Set Inline)
+			| Tok_entity x		-> (Cat_token (ENTITY x),			Keep, Set Inline)
+			| Tok_space		-> (Cat_space,					Keep, Keep)
+			| Tok_break		-> (Cat_ignore,					Keep, Set Block) in
 
 		let new_env = match maybe_new_env with
 			| Set env		-> env

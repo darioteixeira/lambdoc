@@ -182,6 +182,8 @@ sig
 	*)
 	type nestable_block_t =
 		[ `Paragraph of Node.super_seq_t
+		| `Mathtex of plain_t
+		| `Mathml of plain_t
 		| `Tabular of Tabular.t
 		| `Preformat of Node.textual_seq_t
 		| `Itemize of Bullet.t * nestable_frag_t plus_t
@@ -221,6 +223,10 @@ sig
 
 	val paragraph: ([< Node.super_node_t ], 'b) Node.t list ->
 		([> nestable_block_t ], 'b) t
+	val mathtex: plain_t ->
+		([> nestable_block_t ], [> `Composition]) t
+	val mathml: plain_t ->
+		([> nestable_block_t ], [> `Composition]) t
 	val tabular: Tabular.t ->
 		([> nestable_block_t ], [> `Composition]) t
 	val preformat: Node.textual_seq_t ->
@@ -279,6 +285,8 @@ struct
 
 	type nestable_block_t =
 		[ `Paragraph of Node.super_seq_t
+		| `Mathtex of plain_t
+		| `Mathml of plain_t
 		| `Tabular of Tabular.t
 		| `Preformat of Node.textual_seq_t
 		| `Itemize of Bullet.t * nestable_frag_t plus_t
@@ -325,6 +333,12 @@ struct
 
 	let paragraph seq =
 		`Paragraph (seq :> Node.super_seq_t)
+
+	let mathtex txt =
+		`Mathtex txt
+
+	let mathml txt =
+		`Mathml txt
 
 	let tabular tabular_data =
 		`Tabular tabular_data

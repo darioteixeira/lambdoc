@@ -60,6 +60,11 @@ let to_string = function
 	| BEGIN_TABULAR params		-> sprintf "BEGIN_TABULAR: %s" (sprintf_params params)
 	| END_TABULAR params		-> sprintf "END_TABULAR: %s" (sprintf_params params)
 
+	| BEGIN_MATHTEX _		-> sprintf "BEGIN_MATHTEX"
+	| END_MATHTEX _			-> sprintf "END_MATHTEX"
+	| BEGIN_MATHML _		-> sprintf "BEGIN_MATHML"
+	| END_MATHML _			-> sprintf "END_MATHML"
+
 	| SECTION params		-> sprintf "SECTION: %s" (sprintf_params params)
 	| SUBSECTION params		-> sprintf "SUBSECTION: %s" (sprintf_params params)
 	| SUBSUBSECTION params		-> sprintf "SUBSUBSECTION: %s" (sprintf_params params)

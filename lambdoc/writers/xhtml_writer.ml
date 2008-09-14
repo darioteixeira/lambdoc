@@ -128,6 +128,10 @@ let convert_valid_document classname doc =
 
 		| #Node.textual_node_t as node ->
 			(convert_textual_node node :> nonlink_node_xhtml_t)
+		| `Mathtex txt ->
+			XHTML.M.span [pcdata txt]
+		| `Mathml txt ->
+			XHTML.M.span [pcdata txt]
 		| `Bold seq ->
 			XHTML.M.b (convert_super_seq seq)
 		| `Emph seq ->
@@ -331,6 +335,12 @@ let convert_valid_document classname doc =
 
 		| `Paragraph seq ->
 			XHTML.M.p ~a:[a_class ["doc_par"]] (convert_super_seq seq)
+
+		| `Mathtex txt ->
+			XHTML.M.p [pcdata txt]
+
+		| `Mathml txt ->
+			XHTML.M.p [pcdata txt]
 
 		| `Tabular tab ->
 			convert_tabular tab

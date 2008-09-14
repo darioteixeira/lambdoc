@@ -29,6 +29,10 @@ let filter_to_composition document_ast =
 	let rec filter_nonlink_node = function
 		| Textual node ->
 			Some (Textual node)
+		| Mathtex (op, txt) ->
+			Some (Mathtex (op, txt))
+		| Mathml (op, txt) ->
+			Some (Mathml (op, txt))
 		| Bold (params, seq) ->
 			Some (Bold (params, filter_super_seq seq))
 		| Emph (params, seq) ->
@@ -152,6 +156,8 @@ let filter_to_composition document_ast =
 	and filter_nestable_block = function
 		| Paragraph (op, seq) ->
 			Some (Paragraph (op, filter_super_seq seq))
+		| Math (params, txt) ->
+			Some (Math (params, txt))
 		| Tabular (params, tab) ->
 			Some (Tabular (params, filter_tabular tab))
 		| Preformat (params, txt) ->
