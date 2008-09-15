@@ -11,6 +11,7 @@
 TYPE_CONV_PATH "Document"
 
 open Document_basic
+open Document_math
 
 
 (********************************************************************************)
@@ -33,8 +34,7 @@ sig
 
 	type nonlink_node_t =
 		[ textual_node_t
-		| `Mathtex of plain_t
-		| `Mathml of plain_t
+		| `Math of Math.t
 		| `Bold of super_seq_t
 		| `Emph of super_seq_t
 		| `Mono of super_seq_t
@@ -60,8 +60,7 @@ sig
 
 	val plain: plain_t -> ([> textual_node_t ], [> `Composition ]) t
 	val entity: entity_t -> ([> textual_node_t ], [> `Composition ]) t
-	val mathtex: plain_t -> ([> nonlink_node_t ], [> `Composition ]) t
-	val mathml: plain_t -> ([> nonlink_node_t ], [> `Composition ]) t
+	val math: Math.t -> ([> nonlink_node_t ], [> `Composition ]) t
 	val bold: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
 	val emph: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
 	val mono: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
@@ -90,8 +89,7 @@ struct
 
 	type nonlink_node_t =
 		[ textual_node_t
-		| `Mathtex of plain_t
-		| `Mathml of plain_t
+		| `Math of Math.t
 		| `Bold of super_seq_t
 		| `Emph of super_seq_t
 		| `Mono of super_seq_t
@@ -117,8 +115,7 @@ struct
 
 	let plain txt = `Plain txt
 	let entity txt = `Entity txt
-	let mathtex txt = `Mathtex txt
-	let mathml txt = `Mathml txt
+	let math m = `Math m
 	let bold seq = `Bold (seq :> (super_node_t, _) t list)
 	let emph seq = `Emph (seq :> (super_node_t, _) t list)
 	let mono seq = `Mono (seq :> (super_node_t, _) t list)

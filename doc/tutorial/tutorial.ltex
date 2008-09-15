@@ -404,11 +404,9 @@ x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
 
 Producing this result:
 
-\begin{verbatim}
 \begin{math}{tex}
 x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
 \end{math}
-\end{verbatim}
 
 
 \caps{Lambtex} supports also named mathematical expressions that may be
@@ -629,7 +627,7 @@ is shown in \sref{eq:example}.
 \end{verbatim}
 
 
-\begin{equation}
+\begin[eq:example]{equation}
 \begin{math}{mathml}
 <mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn>
 \end{math}

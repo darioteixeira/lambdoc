@@ -35,8 +35,7 @@ let convert_to_composition contents =
 
 	and convert_nonlink_node = function
 		| #Node.textual_node_t as node	-> (convert_textual_node node :> ([> Node.nonlink_node_t], _) Node.t)
-		| `Mathtex txt			-> Node.mathtex txt
-		| `Mathml txt			-> Node.mathml txt
+		| `Math m			-> Node.math m
 		| `Bold seq			-> Node.bold (convert_super_seq seq)
 		| `Emph seq			-> Node.emph (convert_super_seq seq)
 		| `Mono seq			-> Node.mono (convert_super_seq seq)
@@ -98,10 +97,8 @@ let convert_to_composition contents =
 	and convert_nestable_block = function
 		| `Paragraph seq ->
 			Block.paragraph (convert_super_seq seq)
-		| `Mathtex txt ->
-			Block.mathtex txt
-		| `Mathml txt ->
-			Block.mathml txt
+		| `Math m ->
+			Block.math m
 		| `Tabular tab ->
 			Block.tabular (convert_tabular tab)
 		| `Preformat text ->

@@ -1,13 +1,14 @@
 true: pkg_threads, pkg_unix, pkg_extlib, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, use_menhir
+<document_ambivalent.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_basic.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_block.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_error.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_ghost.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_invalid.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_list.*>: pkg_sexplib.syntax, syntax_camlp4o
+<document_math.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_node.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_ref.*>: pkg_sexplib.syntax, syntax_camlp4o
-<document_ambivalent.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_settings.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_tabular.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_valid.*>: pkg_sexplib.syntax, syntax_camlp4o

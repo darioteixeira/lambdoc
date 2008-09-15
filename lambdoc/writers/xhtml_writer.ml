@@ -17,6 +17,7 @@ open XHTML.M
 open Document_ref
 open Document_node
 open Document_tabular
+open Document_math
 open Document_block
 open Document_ghost
 open Document_error
@@ -128,10 +129,9 @@ let convert_valid_document classname doc =
 
 		| #Node.textual_node_t as node ->
 			(convert_textual_node node :> nonlink_node_xhtml_t)
-		| `Mathtex txt ->
-			XHTML.M.span [pcdata txt]
-		| `Mathml txt ->
-			XHTML.M.span [pcdata txt]
+		| `Math math ->
+			let elem : [> `Span] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_native math)
+			in XHTML.M.span ~a:[a_class ["doc_math"]] [elem]
 		| `Bold seq ->
 			XHTML.M.b (convert_super_seq seq)
 		| `Emph seq ->
@@ -336,11 +336,9 @@ let convert_valid_document classname doc =
 		| `Paragraph seq ->
 			XHTML.M.p ~a:[a_class ["doc_par"]] (convert_super_seq seq)
 
-		| `Mathtex txt ->
-			XHTML.M.p [pcdata txt]
-
-		| `Mathml txt ->
-			XHTML.M.p [pcdata txt]
+		| `Math math ->
+			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_native math)
+			in XHTML.M.div ~a:[a_class ["doc_math"]] [elem]
 
 		| `Tabular tab ->
 			convert_tabular tab
@@ -525,6 +523,9 @@ let convert_error (error_context, error_msg) =
 		| Error.Unknown_figure_type (tag, fig) ->
 			sprintf "Unknown figure type '%s' for command '%s'.  Valid figure types are 'bitmap', 'vector', 'ascii', and 'subpage'." fig tag
 
+		| Error.Unknown_math_type (tag, math) ->
+			sprintf "Unknown math type '%s' for command '%s'.  Valid math types are 'tex' and 'mathml'." math tag
+
 		| Error.Unknown_setting setting ->
 			sprintf "Unknown setting '%s'." setting
 
@@ -548,6 +549,12 @@ let convert_error (error_context, error_msg) =
 
 		| Error.Invalid_column_specifier (tag, spec) ->
 			sprintf "Unknown column specifier '%c' in command '%s'.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec tag
+
+		| Error.Invalid_mathtex txt ->
+			sprintf "Invalid mathtex expression '%s'." txt
+
+		| Error.Invalid_mathml txt ->
+			sprintf "Invalid mathml expression '%s'." txt
 
 		| Error.Wrong_column_number (main_linenum, found, expected) ->
 			sprintf "Wrong number of columns for a row belonging to the tabular environment started in line %d: found %d but expected %d columns." main_linenum found expected

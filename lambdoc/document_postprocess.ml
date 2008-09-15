@@ -18,6 +18,7 @@ open Document_ghost
 open Document_tabular
 open Document_settings
 open Document_error
+open Document_math
 open Document_ambivalent
 
 
@@ -62,6 +63,9 @@ struct
 
 	let preset_sectional_class =
 		(Optional, Forbidden, Forbidden, Forbidden)
+
+	let math_class =
+		(Forbidden, Forbidden, Forbidden, Mandatory)
 
 	let tabular_class =
 		(Forbidden, Forbidden, Forbidden, Mandatory)
@@ -371,10 +375,36 @@ let process_document document_ast =
 			| _ ->
 				DynArray.add errors (params.comm_linenum, Error.Unknown_setting key) in
 
+	(*	Converts a block with maths.
+	*)
+	let rec convert_math_block params txt =
+		match params.comm_secondary with
+			| Some "tex" ->
+				(try
+					let math = Math.from_mathtex txt
+					in Some (Block.math math)
+				with Math.Invalid_mathtex ->
+					let msg = Error.Invalid_mathtex txt in
+					DynArray.add errors (params.comm_linenum, msg);
+					None)
+			| Some "mathml" ->
+				(try
+					let math  = Math.from_mathml txt
+					in Some (Block.math math)
+				with Math.Invalid_mathml ->
+					let msg = Error.Invalid_mathml txt in
+					DynArray.add errors (params.comm_linenum, msg);
+					None)
+			| Some other ->
+				let msg = Error.Unknown_math_type (params.comm_tag, other) in
+				DynArray.add errors (params.comm_linenum, msg);
+				None
+			| None ->
+				None
 
 	(*	Converts a tabular environment.
 	*)
-	let rec convert_tabular params tab =
+	and convert_tabular params tab =
 		Permission.check errors params Permission.tabular_class;
 
 		let tcols = match params.comm_secondary with
@@ -559,46 +589,56 @@ let process_document document_ast =
 
 	and convert_textual_node = function
 		| Plain txt ->
-			Node.plain txt
+			Some (Node.plain txt)
 		| Entity txt ->
-			Node.entity txt
+			Some (Node.entity txt)
 
 	and convert_nonlink_node = function
 		| Textual node ->
-			((convert_textual_node node) :> (Node.nonlink_node_t, _) Node.t)
+			((convert_textual_node node) :> (Node.nonlink_node_t, _) Node.t option)
 		| Mathtex (op, txt) ->
-			Node.mathtex txt
+			(try
+				Some (Node.math (Math.from_mathtex txt))
+			with
+				Math.Invalid_mathtex ->
+					DynArray.add errors (op.op_linenum, Error.Invalid_mathtex txt);
+					None)
 		| Mathml (op, txt) ->
-			Node.mathml txt
+			(try
+				Some (Node.math (Math.from_mathml txt))
+			with
+				Math.Invalid_mathml ->
+					DynArray.add errors (op.op_linenum, Error.Invalid_mathml txt);
+					None)
 		| Bold (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.bold (convert_super_seq seq)
+			Some (Node.bold (convert_super_seq seq))
 		| Emph (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.emph (convert_super_seq seq)
+			Some (Node.emph (convert_super_seq seq))
 		| Mono (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.mono (convert_super_seq seq)
+			Some (Node.mono (convert_super_seq seq))
 		| Caps (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.caps (convert_super_seq seq)
+			Some (Node.caps (convert_super_seq seq))
 		| Thru (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.thru (convert_super_seq seq)
+			Some (Node.thru (convert_super_seq seq))
 		| Sup (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.sup (convert_super_seq seq)
+			Some (Node.sup (convert_super_seq seq))
 		| Sub (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.sub (convert_super_seq seq)
+			Some (Node.sub (convert_super_seq seq))
 		| Box (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.box (convert_super_seq seq)
+			Some (Node.box (convert_super_seq seq))
 
 	and convert_link_node = function
 		| Link (params, lnk, seq) ->
 			Permission.check errors params Permission.forbidden_class;
-			Node.link lnk (convert_nonlink_seq seq)
+			Some (Node.link lnk (convert_nonlink_seq seq))
 		| See (params, label) ->
 			Permission.check errors params Permission.forbidden_class;
 			let target_checker = function
@@ -607,7 +647,7 @@ let process_document document_ast =
 				| _ ->
 					`Wrong_target Error.Target_note
 			in add_reference target_checker params label;
-			Node.see label
+			Some (Node.see label)
 		| Cite (params, label) ->
 			Permission.check errors params Permission.forbidden_class;
 			let target_checker = function
@@ -616,7 +656,7 @@ let process_document document_ast =
 				| _ ->
 					`Wrong_target Error.Target_bib
 			in add_reference target_checker params label;
-			Node.cite label
+			Some (Node.cite label)
 		| Ref (params, label) ->
 			Permission.check errors params Permission.forbidden_class;
 			let target_checker = function
@@ -630,7 +670,7 @@ let process_document document_ast =
 				| _ ->
 					`Wrong_target Error.Target_label
 			in add_reference target_checker params label;
-			Node.ref label
+			Some (Node.ref label)
 		| Sref (params, label) ->
 			Permission.check errors params Permission.forbidden_class;
 			let target_checker = function
@@ -644,7 +684,7 @@ let process_document document_ast =
 				| _ ->
 					`Wrong_target Error.Target_label
 			in add_reference target_checker params label;
-			Node.sref label
+			Some (Node.sref label)
 		| Mref (params, label, seq) ->
 			Permission.check errors params Permission.forbidden_class;
 			let target_checker = function
@@ -653,22 +693,22 @@ let process_document document_ast =
 				| _ ->
 					`Wrong_target Error.Target_label
 			in add_reference target_checker params label;
-			Node.mref label (convert_nonlink_seq seq)
+			Some (Node.mref label (convert_nonlink_seq seq))
 
 	and convert_super_node = function
 		| Nonlink_node node ->
-			(convert_nonlink_node node :> (Node.super_node_t, _) Node.t)
+			(convert_nonlink_node node :> (Node.super_node_t, _) Node.t option)
 		| Link_node node ->
 			convert_link_node node
 
 	and convert_textual_seq seq =
-		List.map convert_textual_node seq
+		ExtList.List.filter_map convert_textual_node seq
 
 	and convert_super_seq seq =
-		List.map convert_super_node seq
+		ExtList.List.filter_map convert_super_node seq
 
 	and convert_nonlink_seq seq =
-		List.map convert_nonlink_node seq
+		ExtList.List.filter_map convert_nonlink_node seq
 
 	and convert_heading subpaged = function
 
@@ -825,7 +865,8 @@ let process_document document_ast =
 			Some (Block.paragraph (convert_super_seq seq))
 
 		| Math (params, txt) ->
-			Some (Block.mathml txt)
+			Permission.check errors params Permission.math_class;
+			convert_math_block params txt
 
 		| Tabular (params, tab) ->
 			Some (Block.tabular (convert_tabular params tab))

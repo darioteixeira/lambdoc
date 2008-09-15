@@ -59,6 +59,7 @@ struct
 		| Unknown_numbering_type of tag_t * string
 		| Unknown_alignment_type of tag_t * string
 		| Unknown_figure_type of tag_t * string
+		| Unknown_math_type of tag_t * string
 		| Unknown_setting of plain_t
 		| Unknown_env_command of tag_t
 		| Unknown_simple_command of tag_t
@@ -67,6 +68,8 @@ struct
 		| Missing_block of tag_t * string
 		| Invalid_block of tag_t * string
 		| Invalid_column_specifier of tag_t * char
+		| Invalid_mathtex of mathtex_t
+		| Invalid_mathml of mathml_t
 		| Wrong_column_number of int * int * int
 		| Empty_target of tag_t * ref_t
 		| Wrong_target of tag_t * target_t * target_t * ref_t
