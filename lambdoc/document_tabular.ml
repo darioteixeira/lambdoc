@@ -52,7 +52,6 @@ sig
 	val alignment_to_string: alignment_t -> string
 	val make_row: ([< Node.super_node_t ], 'b) Node.t list plus_t -> row_t
 	val make: column_t array -> ?thead:group_t -> ?tfoot:group_t -> group_t plus_t -> t
-	val dummy: unit -> t
 end =
 struct
 	exception Invalid_column_specifier of char
@@ -109,13 +108,5 @@ struct
 		tfoot = tfoot;
 		tbodies = tbodies;
 		}
-
-	let dummy () =
-		let tcols = [| |] in
-		let seq = [Node.plain "dummy"] in
-		let row = make_row (seq, []) in
-		let grp = (row, []) in
-		let tbodies = (grp, [])
-		in make tcols tbodies
 end
 

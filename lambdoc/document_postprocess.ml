@@ -262,24 +262,25 @@ let process_document document_ast =
 		are only computed if the block is valid, ie, no previous block
 		of the same type exists.  This is achieved via lazy types.
 	*)
-	and add_block params block positive =
-		match !block with
-		| None 		-> block := Some (Lazy.force positive)
-		| Some thing	-> DynArray.add errors (params.comm_linenum, Error.Duplicate_block params.comm_tag)
+	and add_block block params positive = match block with
+		| Some thing ->
+			DynArray.add errors (params.comm_linenum, Error.Duplicate_block params.comm_tag);
+			Some thing
+		| None ->
+			Some (Lazy.force positive)
 
 
 	(*	Determines whether a mandatory block exists or not.  If the block
 		does not exist, an error is reported and the [default] value is
 		assigned to the block.
 	*)
-	and check_block_existence params block default tag =
-		match !block with
+	and check_block_existence block params tag = match block with
+		| Some thing ->
+			Some thing
 		| None ->
 			let msg = Error.Missing_block (params.comm_tag, tag) in
 			DynArray.add errors (params.comm_linenum, msg);
-			default
-		| Some thing ->
-			thing
+			None
 
 
 	(*	Reports the existence of an invalid block.  This is used in figure
@@ -375,32 +376,34 @@ let process_document document_ast =
 			| _ ->
 				DynArray.add errors (params.comm_linenum, Error.Unknown_setting key) in
 
+
 	(*	Converts a block with maths.
 	*)
 	let rec convert_math_block params txt =
 		match params.comm_secondary with
 			| Some "tex" ->
 				(try
-					let math = Math.from_mathtex txt
-					in Some (Block.math math)
-				with Math.Invalid_mathtex ->
-					let msg = Error.Invalid_mathtex txt in
-					DynArray.add errors (params.comm_linenum, msg);
-					None)
+					Some (Math.from_mathtex txt)
+				with
+					Math.Invalid_mathtex ->
+						let msg = Error.Invalid_mathtex txt in
+						DynArray.add errors (params.comm_linenum, msg);
+						None)
 			| Some "mathml" ->
 				(try
-					let math  = Math.from_mathml txt
-					in Some (Block.math math)
-				with Math.Invalid_mathml ->
-					let msg = Error.Invalid_mathml txt in
-					DynArray.add errors (params.comm_linenum, msg);
-					None)
+					Some (Math.from_mathml txt)
+				with
+					Math.Invalid_mathml ->
+						let msg = Error.Invalid_mathml txt in
+						DynArray.add errors (params.comm_linenum, msg);
+						None)
 			| Some other ->
 				let msg = Error.Unknown_math_type (params.comm_tag, other) in
 				DynArray.add errors (params.comm_linenum, msg);
 				None
 			| None ->
 				None
+
 
 	(*	Converts a tabular environment.
 	*)
@@ -422,10 +425,10 @@ let process_document document_ast =
 				| hd::tl	-> Tabular.make_row (fplus convert_super_seq hd tl) in
 
 		let convert_group (maybe_params, rows) =
-			(match maybe_params with
+			let () = match maybe_params with
 				| Some params	-> Permission.check errors params Permission.forbidden_class
-				| None		-> ());
-			match rows with
+				| None		-> ()
+			in match rows with
 				| []		-> failwith "Parser has given us an empty tabular group"
 				| hd::tl	-> fplus convert_row hd tl in
 
@@ -449,12 +452,13 @@ let process_document document_ast =
 		and verbatim = ref None in
 		let process_block = function
 			| `Caption (params, seq) ->
-				add_block params caption (lazy (convert_super_seq seq))
+				caption := add_block !caption params (lazy (convert_super_seq seq))
 			| `Verbatim (params, seq) ->
-				add_block params verbatim (lazy (convert_textual_seq seq))
+				verbatim := add_block !verbatim params (lazy (convert_textual_seq seq))
 		in List.iter process_block blocks;
-		let res_verbatim = check_block_existence params verbatim [] "verbatim"
-		in (!caption, res_verbatim)
+		match check_block_existence !verbatim params "verbatim" with
+			| Some res	-> Some (!caption, res)
+			| None		-> None
 
 
 	(*	Converts the blocks inside an equation environment.
@@ -464,79 +468,86 @@ let process_document document_ast =
 		and math = ref None in
 		let process_block = function
 			| `Caption (params, seq) ->
-				add_block params caption (lazy (convert_super_seq seq))
-			| `Math (params, text) ->
-				add_block params math (lazy text)
+				caption := add_block !caption params (lazy (convert_super_seq seq))
+			| `Math (params, txt) ->
+				math := add_block !math params (lazy (convert_math_block params txt))
 		in List.iter process_block blocks;
-		let res_math = check_block_existence params math "" "math"
-		in (!caption, res_math)
+		match check_block_existence !math params "math" with
+			| Some (Some res)	-> Some (!caption, res)
+			| _			-> None
 
 
 	(*	Converts the blocks inside a figure environment.
 	*)
 	and convert_figure subpaged alignment label order params blocks =
-
 		let convert_figure_load_blocks main_tag blocks =
 			let caption = ref None
 			and load = ref None in
 			let process_block = function
 				| `Caption (params, seq) ->
-					add_block params caption (lazy (convert_super_seq seq))
+					caption := add_block !caption params (lazy (convert_super_seq seq))
 				| `Load (params, txt) ->
-					add_block params load (lazy txt)
+					load := add_block !load params (lazy txt)
 				| `Verbatim (params, seq) ->
 					report_invalid_block params main_tag
 				| `Subpage (params, frag) ->
 					report_invalid_block params main_tag
 			in List.iter process_block blocks;
-			let res_load = check_block_existence params load "" "load"
-			in (!caption, res_load)
+			match check_block_existence !load params "load" with
+				| Some res	-> Some (!caption, res)
+				| None		-> None
 
 		and convert_figure_ascii_blocks main_tag blocks =
 			let caption = ref None
 			and verbatim = ref None in
 			let process_block = function
 				| `Caption (params, seq) ->
-					add_block params caption (lazy (convert_super_seq seq))
+					caption := add_block !caption params (lazy (convert_super_seq seq))
 				| `Load (params, text) ->
 					report_invalid_block params main_tag
 				| `Verbatim (params, seq) ->
-					add_block params verbatim (lazy (convert_textual_seq seq))
+					verbatim := add_block !verbatim params (lazy (convert_textual_seq seq))
 				| `Subpage (params, frag) ->
 					report_invalid_block params main_tag
 			in List.iter process_block blocks;
-			let res_verbatim = check_block_existence params verbatim [] "verbatim"
-			in (!caption, res_verbatim)
+			match check_block_existence !verbatim params "verbatim" with
+				| Some res	-> Some (!caption, res)
+				| None		-> None
 
 		and convert_figure_subpage_blocks main_tag blocks =
 			let caption = ref None
 			and subpage = ref None in
 			let process_block = function
 				| `Caption (params, seq) ->
-					add_block params caption (lazy (convert_super_seq seq))
+					caption := add_block !caption params (lazy (convert_super_seq seq))
 				| `Load (params, text) ->
 					report_invalid_block params main_tag
 				| `Verbatim (params, seq) ->
 					report_invalid_block params main_tag
 				| `Subpage (params, frag) ->
-					add_block params subpage (lazy (convert_super_frag true frag))
+					subpage := add_block !subpage params (lazy (convert_super_frag true frag))
 			in List.iter process_block blocks;
-			let res_subpage = check_block_existence params subpage [] "subpage"
-			in (!caption, res_subpage)
+			match check_block_existence !subpage params "subpage" with
+				| Some res	-> Some (!caption, res)
+				| None		-> None
 
 		in match params.comm_secondary with
 			| Some "bitmap" ->
-				let (caption, load) = convert_figure_load_blocks "bitmap" blocks in
-				Some (Block.figure_bitmap alignment label order caption load)
+				(match convert_figure_load_blocks "bitmap" blocks with
+				| Some (caption, load)	-> Some (Block.figure_bitmap alignment label order caption load)
+				| None			-> None)
 			| Some "vector" ->
-				let (caption, load) = convert_figure_load_blocks "vector" blocks in
-				Some (Block.figure_vector alignment label order caption load)
+				(match convert_figure_load_blocks "vector" blocks with
+				| Some (caption, load)	-> Some (Block.figure_vector alignment label order caption load)
+				| None			-> None)
 			| Some "ascii" ->
-				let (caption, verbatim) = convert_figure_ascii_blocks "ascii" blocks in
-				Some (Block.figure_ascii alignment label order caption verbatim)
+				(match convert_figure_ascii_blocks "ascii" blocks with
+				| Some (caption, verb)	-> Some (Block.figure_ascii alignment label order caption verb)
+				| None			-> None)
 			| Some "subpage" ->
-				let (caption, subpage) = convert_figure_subpage_blocks "subpage" blocks in
-				Some (Block.figure_subpage alignment label order caption subpage)
+				(match convert_figure_subpage_blocks "subpage" blocks with
+				| Some (caption, page)	-> Some (Block.figure_subpage alignment label order caption page)
+				| None			-> None)
 			| Some other ->
 				let msg = Error.Unknown_figure_type (params.comm_tag, other) in
 				DynArray.add errors (params.comm_linenum, msg);
@@ -548,19 +559,17 @@ let process_document document_ast =
 	(*	Converts the blocks inside a table environment.
 	*)
 	and convert_table_blocks main_params blocks =
-
 		let caption = ref None
 		and tabular = ref None in
-
 		let process_block = function
 			| `Caption (params, seq) ->
-				add_block main_params caption (lazy (convert_super_seq seq))
+				caption := add_block !caption main_params (lazy (convert_super_seq seq))
 			| `Tabular (params, tab) ->
-				add_block main_params tabular (lazy (convert_tabular params tab))
+				tabular := add_block !tabular main_params (lazy (convert_tabular params tab))
 		in List.iter process_block blocks;
-		let default = Tabular.dummy () in
-		let res_tabular = check_block_existence main_params tabular default "tabular"
-		in (!caption, res_tabular)
+		match check_block_existence !tabular main_params "tabular" with
+			| Some res	-> Some (!caption, res)
+			| None		-> None
 
 
 	(*	Converts the blocks inside a bib environment.
@@ -571,16 +580,18 @@ let process_document document_ast =
 		and resource = ref None in
 		let process_block = function
 			| `Title (params, seq) ->
-				add_block params title (lazy (convert_super_seq seq))
+				title := add_block !title params (lazy (convert_super_seq seq))
 			| `Author (params, seq) ->
-				add_block params author (lazy (convert_super_seq seq))
+				author := add_block !author params (lazy (convert_super_seq seq))
 			| `Resource (params, seq) ->
-				add_block params resource (lazy (convert_super_seq seq))
+				resource := add_block !resource params (lazy (convert_super_seq seq))
 		in List.iter process_block blocks;
-		let res_title = check_block_existence params title [] "title"
-		and res_author = check_block_existence params author [] "author"
-		and res_resource = check_block_existence params resource [] "resource"
-		in (res_title, res_author, res_resource)
+		let res_title = check_block_existence !title params "title"
+		and res_author = check_block_existence !author params "author"
+		and res_resource = check_block_existence !resource params "resource"
+		in match (res_title, res_author, res_resource) with
+			| (Some title, Some author, Some resource)	-> Some (title, author, resource)
+			| _						-> None
 
 
 	(*	The following functions take care of converting the actual nodes,
@@ -592,6 +603,7 @@ let process_document document_ast =
 			Some (Node.plain txt)
 		| Entity txt ->
 			Some (Node.entity txt)
+
 
 	and convert_nonlink_node = function
 		| Textual node ->
@@ -634,6 +646,7 @@ let process_document document_ast =
 		| Box (params, seq) ->
 			Permission.check errors params Permission.forbidden_class;
 			Some (Node.box (convert_super_seq seq))
+
 
 	and convert_link_node = function
 		| Link (params, lnk, seq) ->
@@ -695,20 +708,25 @@ let process_document document_ast =
 			in add_reference target_checker params label;
 			Some (Node.mref label (convert_nonlink_seq seq))
 
+
 	and convert_super_node = function
 		| Nonlink_node node ->
 			(convert_nonlink_node node :> (Node.super_node_t, _) Node.t option)
 		| Link_node node ->
-			convert_link_node node
+			(convert_link_node node :> (Node.super_node_t, _) Node.t option)
+
 
 	and convert_textual_seq seq =
 		ExtList.List.filter_map convert_textual_node seq
 
+
 	and convert_super_seq seq =
 		ExtList.List.filter_map convert_super_node seq
 
+
 	and convert_nonlink_seq seq =
 		ExtList.List.filter_map convert_nonlink_node seq
+
 
 	and convert_heading subpaged = function
 
@@ -866,7 +884,9 @@ let process_document document_ast =
 
 		| Math (params, txt) ->
 			Permission.check errors params Permission.math_class;
-			convert_math_block params txt
+			(match convert_math_block params txt with
+				| Some math 	-> Some (Block.math math)
+				| None		-> None)
 
 		| Tabular (params, tab) ->
 			Some (Block.tabular (convert_tabular params tab))
@@ -897,18 +917,20 @@ let process_document document_ast =
 			in Permission.check errors params (Permission.algorithm_class subpaged captioned);
 			let alignment = get_alignment params params.comm_extra in
 			let order = make_floater_order captioned params algorithm_counter in
-			let label = make_label params (Order.algorithm_order order) in
-			let (caption, text) = convert_algorithm_blocks params blocks
-			in Some (Block.algorithm alignment label order caption text None)
+			let label = make_label params (Order.algorithm_order order)
+			in (match convert_algorithm_blocks params blocks with
+				| Some (caption, txt)	-> Some (Block.algorithm alignment label order caption txt None)
+				| None			-> None)
 
 		| Equation (params, blocks) ->
 			let captioned = check_captioned blocks
 			in Permission.check errors params (Permission.equation_class subpaged captioned);
 			let alignment = get_alignment params params.comm_extra in
 			let order = make_floater_order captioned params equation_counter in
-			let label = make_label params (Order.equation_order order) in
-			let (caption, text) = convert_equation_blocks params blocks
-			in Some (Block.equation alignment label order caption text)
+			let label = make_label params (Order.equation_order order)
+			in (match convert_equation_blocks params blocks with
+				| Some (caption, math)	-> Some (Block.equation alignment label order caption math)
+				| None			-> None)
 
 		| Figure (params, blocks) ->
 			let captioned = check_captioned blocks
@@ -923,25 +945,29 @@ let process_document document_ast =
 			in Permission.check errors params (Permission.table_class subpaged captioned);
 			let alignment = get_alignment params params.comm_extra in
 			let order = make_floater_order captioned params table_counter in
-			let label = make_label params (Order.table_order order) in
-			let (caption, table_data) = convert_table_blocks params blocks
-			in Some (Block.table alignment label order caption table_data)
+			let label = make_label params (Order.table_order order)
+			in (match convert_table_blocks params blocks with
+				| Some (caption, tab)	-> Some (Block.table alignment label order caption tab)
+				| None			-> None)
 
 		| Bib (params, blocks) ->
 			Permission.check errors params Permission.ghost_class;
 			let order = make_ghost_order params bib_counter in
-			let label = make_label params (Order.bib_order order) in
-			let (title, author, resource) = convert_bib_blocks params blocks in
-			let bib =
-				{
-				Bib.label = label;
-				Bib.order = order;
-				Bib.title = title;
-				Bib.author = author;
-				Bib.resource = resource;
-				}
-			in DynArray.add bibs bib;
-			None
+			let label = make_label params (Order.bib_order order)
+			in (match convert_bib_blocks params blocks with
+				| Some (title, author, resource) ->
+					let bib =
+						{
+						Bib.label = label;
+						Bib.order = order;
+						Bib.title = title;
+						Bib.author = author;
+						Bib.resource = resource;
+						}
+					in DynArray.add bibs bib;
+					None
+				| None ->
+					None)
 
 		| Note (params, seq) ->
 			Permission.check errors params Permission.ghost_class;
@@ -956,10 +982,12 @@ let process_document document_ast =
 			in DynArray.add notes note;
 			None
 
+
 	and convert_item subpaged = function
 		| Item (params, frag) ->
 			Permission.check errors params Permission.forbidden_class;
 			convert_nestable_frag subpaged frag
+
 
 	and convert_items subpaged constructor = function
 		| [] ->
@@ -969,17 +997,21 @@ let process_document document_ast =
 			and tail_items = List.map (convert_item subpaged) tl
 			in Some (constructor (head_item, tail_items))
 
+
 	and convert_super_block subpaged = function
 		| Top_block blk ->
-			convert_top_block subpaged blk
+			(convert_top_block subpaged blk :> (Block.super_block_t, _) Block.t option)
 		| Nestable_block blk ->
 			(convert_nestable_block subpaged blk :> (Block.super_block_t, _) Block.t option)
+
 
 	and convert_nestable_frag subpaged frag =
 		ExtList.List.filter_map (convert_nestable_block subpaged) frag
 
+
 	and convert_super_frag subpaged frag =
 		ExtList.List.filter_map (convert_super_block subpaged) frag
+
 
 	and filter_references () =
 		let filter_reference (target_checker, params, label) =
@@ -1005,14 +1037,14 @@ let process_document document_ast =
 		in
 		DynArray.iter filter_reference references in
 
+
 	let contents = convert_super_frag false document_ast in
 	filter_references ();
 	let res_bibs = DynArray.to_list bibs
 	and res_notes = DynArray.to_list notes
 	and res_toc = DynArray.to_list toc
 	and res_errors = DynArray.to_list errors
-	in
-	(contents, res_bibs, res_notes, res_toc, labels, !settings, res_errors)
+	in (contents, res_bibs, res_notes, res_toc, labels, !settings, res_errors)
 
 
 (********************************************************************************)

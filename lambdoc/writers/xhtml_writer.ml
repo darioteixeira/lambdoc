@@ -367,8 +367,9 @@ let convert_valid_document classname doc =
 			and floater_name = Settings.get_algorithm_name doc.Valid.settings
 			in convert_floater align label order maybe_caption "doc_alg" floater_name floater_content
 
-		| `Equation (align, label, order, maybe_caption, text) ->
-			let floater_content = XHTML.M.pre [pcdata text]
+		| `Equation (align, label, order, maybe_caption, math) ->
+			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_native math) in
+			let floater_content = XHTML.M.div ~a:[a_class ["doc_math"]] [elem]
 			and floater_name = Settings.get_equation_name doc.Valid.settings
 			in convert_floater align label order maybe_caption "doc_eq" floater_name floater_content
 

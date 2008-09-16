@@ -190,7 +190,7 @@ sig
 		| `Enumerate of Numbering.t * nestable_frag_t plus_t
 		| `Quote of Alignment.t * nestable_frag_t
 		| `Algorithm of Alignment.t * Label.t * Order.floater_order_t * caption_t * Node.textual_seq_t * syntax_t
-		| `Equation of Alignment.t * Label.t * Order.floater_order_t * caption_t * plain_t
+		| `Equation of Alignment.t * Label.t * Order.floater_order_t * caption_t * Math.t
 		| `Figure of Alignment.t * Label.t * Order.floater_order_t * caption_t * figure_t
 		| `Table of Alignment.t * Label.t * Order.floater_order_t * caption_t * Tabular.t
 		] with sexp
@@ -237,7 +237,7 @@ sig
 		([> nestable_block_t ], 'b) t
 	val algorithm: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> Node.textual_seq_t -> syntax_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val equation: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> plain_t ->
+	val equation: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> Math.t ->
 		([> nestable_block_t ], [> `Manuscript]) t
 	val figure_bitmap: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> filename_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
@@ -290,7 +290,7 @@ struct
 		| `Enumerate of Numbering.t * nestable_frag_t plus_t
 		| `Quote of Alignment.t * nestable_frag_t
 		| `Algorithm of Alignment.t * Label.t * Order.floater_order_t * caption_t * Node.textual_seq_t * syntax_t
-		| `Equation of Alignment.t * Label.t * Order.floater_order_t * caption_t * plain_t
+		| `Equation of Alignment.t * Label.t * Order.floater_order_t * caption_t * Math.t
 		| `Figure of Alignment.t * Label.t * Order.floater_order_t * caption_t * figure_t
 		| `Table of Alignment.t * Label.t * Order.floater_order_t * caption_t * Tabular.t
 		] with sexp
@@ -331,8 +331,8 @@ struct
 	let paragraph seq =
 		`Paragraph (seq :> Node.super_seq_t)
 
-	let math m =
-		`Math m
+	let math math =
+		`Math math
 
 	let tabular tabular_data =
 		`Tabular tabular_data
@@ -352,8 +352,8 @@ struct
 	let algorithm alignment label order caption text syntax =
 		`Algorithm (alignment, label, order, caption, text, syntax)
 
-	let equation alignment label order caption text =
-		`Equation (alignment, label, order, caption, text)
+	let equation alignment label order caption math =
+		`Equation (alignment, label, order, caption, math)
 
 	let figure_bitmap alignment label order caption filename =
 		`Figure (alignment, label, order, caption, `Bitmap filename)

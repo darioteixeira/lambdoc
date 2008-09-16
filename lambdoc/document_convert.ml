@@ -35,7 +35,7 @@ let convert_to_composition contents =
 
 	and convert_nonlink_node = function
 		| #Node.textual_node_t as node	-> (convert_textual_node node :> ([> Node.nonlink_node_t], _) Node.t)
-		| `Math m			-> Node.math m
+		| `Math math			-> Node.math math
 		| `Bold seq			-> Node.bold (convert_super_seq seq)
 		| `Emph seq			-> Node.emph (convert_super_seq seq)
 		| `Mono seq			-> Node.mono (convert_super_seq seq)
@@ -57,7 +57,7 @@ let convert_to_composition contents =
 		| #Node.nonlink_node_t as node ->
 			(convert_nonlink_node node :> (Node.super_node_t, _) Node.t)
 		| #Node.link_node_t as node ->
-			convert_link_node node
+			(convert_link_node node :> (Node.super_node_t, _) Node.t)
 
 	and convert_super_seq seq =
 		List.map convert_super_node seq

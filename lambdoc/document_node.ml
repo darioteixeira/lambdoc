@@ -115,7 +115,7 @@ struct
 
 	let plain txt = `Plain txt
 	let entity txt = `Entity txt
-	let math m = `Math m
+	let math math = `Math math
 	let bold seq = `Bold (seq :> (super_node_t, _) t list)
 	let emph seq = `Emph (seq :> (super_node_t, _) t list)
 	let mono seq = `Mono (seq :> (super_node_t, _) t list)

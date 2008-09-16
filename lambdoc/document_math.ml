@@ -45,11 +45,11 @@ struct
 		with sexp
 
 	let from_mathtex txt =
-		let conversion = "<mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn>"
+		let conversion = "<math><mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn></math>"
 		in Mathtex (txt, conversion)
 
 	let from_mathml txt =
-		let conversion = "<mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>3</mn>"
+		let conversion = "<math><mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>3</mn></math>"
 		in Mathml (txt, conversion)
 
 	let get_native = function
