@@ -384,9 +384,9 @@ standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside
 a paragraph, for example), or in a block context.  In the former case,
-the expression should be delimited between the characters '\mono{[$}' and
+the expression should be delimited between the characters '\mono{\[$}' and
 '\mono{$]}' if it is written in \caps{TeX} format, and between characters
-'\mono{<$}' and '\mono{$>}' if written in \caps{MathML}.  The latter
+'\mono{\<$}' and '\mono{$>}' if written in \caps{MathML}.  The latter
 case &mdash; expressions in a block context &mdash; is specified via the
 \mono{math} environment.  This environment has one mandatory parameter,
 indicating the markup format of the expression.  Valid values for this
@@ -398,14 +398,14 @@ formula specified in the \caps{TeX} format.  The code would be the following:
 
 \begin{verbatim}
 \begin{math}{tex}
-x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 \end{math}
 \end{verbatim}
 
 Producing this result:
 
 \begin{math}{tex}
-x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 \end{math}
 
 
@@ -613,8 +613,8 @@ mathematical expressions to the numbered and referrenced from anywhere in
 a document.  To use it, simply wrap a \mono{equation} environment around
 a \mono{math} environment.  If you wish the equation to be numbered and
 referenceable, add also \mono{\\caption} command.  The following example
-defines the equation [$ x=y+2 $] from a \caps{MathML} source.  The result
-is shown in \sref{eq:example}.
+defines a equation from a \caps{MathML} source.  The result is shown in
+\sref{eq:example}.
 
 
 \begin{verbatim}

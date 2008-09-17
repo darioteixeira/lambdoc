@@ -14,6 +14,22 @@ open Document_basic
 
 
 (********************************************************************************)
+(*	{2 Helper functions}							*)
+(********************************************************************************)
+
+let rec get_markup xml = match Xml.tag xml with
+	| "markup" ->
+		Xml.Element ("math", [], Xml.children xml)
+	| _ ->
+		let children = Xml.children xml
+		in match children with
+			| []    -> failwith "oops1"
+			| [one] -> get_markup one
+			| _     -> failwith "oops2"
+
+
+
+(********************************************************************************)
 (*	{2 Math module}								*)
 (********************************************************************************)
 
@@ -45,12 +61,18 @@ struct
 		with sexp
 
 	let from_mathtex txt =
-		let conversion = "<math><mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn></math>"
+		let (in_ch, out_ch) = Unix.open_process "/usr/local/bin/blahtex --mathml" in
+		output_string out_ch txt;
+		flush out_ch;
+		close_out out_ch;
+		let xml = Xml.parse_in in_ch in
+		let markup = get_markup xml in
+		let conversion = Xml.to_string markup in
+		let _ = Unix.close_process (in_ch, out_ch)
 		in Mathtex (txt, conversion)
 
 	let from_mathml txt =
-		let conversion = "<math><mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>3</mn></math>"
-		in Mathml (txt, conversion)
+		Mathml (txt, "<math>" ^ txt ^ "</math>")
 
 	let get_native = function
 		| Mathtex (_, native)	-> native
