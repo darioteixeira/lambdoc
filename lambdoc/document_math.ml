@@ -17,6 +17,9 @@ open Document_basic
 (*	{2 Helper functions}							*)
 (********************************************************************************)
 
+(**	Descends down the XML tree output by Blahtex, looking for a tag called
+	"markup" which signals the beginning of the actual MathML data.
+*)
 let rec get_markup xml = match Xml.tag xml with
 	| "markup" ->
 		Xml.Element ("math", [], Xml.children xml)
@@ -38,26 +41,27 @@ sig
 	exception Invalid_mathtex
 	exception Invalid_mathml
 
-	type native_t = string with sexp
+	type internal_t = mathml_t with sexp
 
 	type t =
-		| Mathtex of mathtex_t * native_t
-		| Mathml of mathml_t * native_t
+		| Mathtex of mathtex_t * internal_t
+		| Mathml of mathml_t * internal_t
 		with sexp
 
 	val from_mathtex: mathtex_t -> t
 	val from_mathml: mathml_t -> t
-	val get_native: t -> native_t
+	val to_mathtex: t -> mathtex_t
+	val to_mathml: t -> mathml_t
 end =
 struct
 	exception Invalid_mathtex
 	exception Invalid_mathml
 
-	type native_t = string with sexp
+	type internal_t = mathml_t with sexp
 
 	type t =
-		| Mathtex of mathtex_t * native_t
-		| Mathml of mathml_t * native_t
+		| Mathtex of mathtex_t * internal_t
+		| Mathml of mathml_t * internal_t
 		with sexp
 
 	let from_mathtex txt =
@@ -74,8 +78,12 @@ struct
 	let from_mathml txt =
 		Mathml (txt, "<math>" ^ txt ^ "</math>")
 
-	let get_native = function
-		| Mathtex (_, native)	-> native
-		| Mathml (_, native)	-> native
+	let to_mathtex = function
+		| Mathtex (mathtex, _)	-> mathtex
+		| Mathml _		-> failwith "MathML -> TeX conversion not implemented yet"
+
+	let to_mathml = function
+		| Mathtex (_, internal)	-> internal
+		| Mathml (_, internal)	-> internal
 end
 

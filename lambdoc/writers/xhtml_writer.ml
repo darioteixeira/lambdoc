@@ -105,8 +105,8 @@ let wrap_order order =
 let make_sref name ref order =
 	make_internal_link (`User_label ref) [pcdata name; space (); pcdata (make_order order)]
 
-let make_sectional level label order content =
-	XHTML.M.h1 ~a:[a_id (make_label label); a_class ["doc_sec"]] ((wrap_order order) @ [span content])
+let make_sectional (level: ?a: 'a XHTML.M.attrib list -> 'b) label order content =
+	level ~a:[a_id (make_label label); a_class ["doc_sec"]] ((wrap_order order) @ [span content])
 
 let make_toc_entry label order content =
 	XHTML.M.li [make_internal_link label ((wrap_order order) @ [span content])]
@@ -130,7 +130,7 @@ let convert_valid_document classname doc =
 		| #Node.textual_node_t as node ->
 			(convert_textual_node node :> nonlink_node_xhtml_t)
 		| `Math math ->
-			let elem : [> `Span] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_native math)
+			let elem : [> `Span] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
 			in XHTML.M.span ~a:[a_class ["doc_math"]] [elem]
 		| `Bold seq ->
 			XHTML.M.b (convert_super_seq seq)
@@ -337,7 +337,7 @@ let convert_valid_document classname doc =
 			XHTML.M.p ~a:[a_class ["doc_par"]] (convert_super_seq seq)
 
 		| `Math math ->
-			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_native math)
+			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
 			in XHTML.M.div ~a:[a_class ["doc_math"]] [elem]
 
 		| `Tabular tab ->
@@ -368,7 +368,7 @@ let convert_valid_document classname doc =
 			in convert_floater align label order maybe_caption "doc_alg" floater_name floater_content
 
 		| `Equation (align, label, order, maybe_caption, math) ->
-			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_native math) in
+			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math) in
 			let floater_content = XHTML.M.div ~a:[a_class ["doc_math"]] [elem]
 			and floater_name = Settings.get_equation_name doc.Valid.settings
 			in convert_floater align label order maybe_caption "doc_eq" floater_name floater_content
