@@ -6,21 +6,19 @@
 
 This document introduces the \caps{Lambtex} markup language.  \caps{Lambtex}
 is largely inspired by \caps{LaTeX}\cite{bib:latex}, and uses the same
-approach to the description of documents.  In basic terms, a document is
-just text annotated with special commands to mark elements with a precise
-semantical meaning, such as sections, figures, tables, etc.  \caps{Lambtex}
-was especially designed to be used in web applications, and as such it
-supports fully hyperlinked documents.  Moreover, its syntax is simple,
-consistent, and designed with brevity in mind (the latter cannot be said
-about \caps{HTML} or \caps{BBcode}\see{note:bbcode}, for example).
+approach to the description of documents.  In basic terms, the source for a
+document is composed only of text, but annotated with special commands to
+mark elements with a precise semantical meaning.  As an example, you can
+mark a passage in a paragraph to denote that it should be rendered in an
+emphasised manner; similarly, there are commands that mark document blocks
+as being section headers, figures, tables, mathematical expressions, etc.
+\caps{Lambtex} was especially designed to be used in web applications, and
+as such it supports fully hyperlinked documents.  Moreover, its syntax is
+simple, consistent, and designed with brevity in mind (the latter cannot be
+said about \caps{HTML} or \caps{BBcode}\see{note:bbcode}, for example).
 
-A \caps{Lambtex} document is essentially a sequence of blocks.  A block may
-be a paragraph of text, a section header, a figure, a table, etc.  The source
-for a \caps{Lambtex} document is composed only of text.  Intermixed within
-this text you can place commands that define special blocks such as a figure
-or a table, or that tell the \caps{Lambtex} composer to format some passages
-in a different way.
-
+A \caps{Lambtex} document is essentially a sequence of blocks.  A block
+may be a paragraph of text, a section header, a figure, a table, etc.
 The simplest of all blocks is a paragraph.  Paragraphs are blocks of text
 separated by blank lines.  Within a paragraph you can use special commands
 that &mdash; among other features &mdash; allow you to format a passage in
@@ -31,7 +29,7 @@ two simple paragraphs, and \sref{fig:par} shows the resulting output from the
 composer.  Note that the line breaks within the text are irrelevant for the
 composer; all that it cares about is that blank lines separate paragraphs.
 Also note that the second paragraph uses two simple commands, which take
-the form \mono{\\command\{text\}}.
+the form '\mono{\\command\{text\}}'.
 
 
 \begin{verbatim}
@@ -62,11 +60,12 @@ caring only about blank lines to separate paragraphs.}
 
 \section{Formatting text}
 
-In the previous section you have already seen two text formatting commands:
-\mono{\\bold} and \mono{\\emph}.  However, and as shown by \sref{tab:inline},
-\caps{Lambtex} offers a much broader set.  Note that any of these commands
-may be used in a context where normal text is also allowed.  That means you
-may use them in section titles, figure captions, or inside tables.
+In the previous section you have already seen two text formatting
+commands: '\mono{\\bold}' and '\mono{\\emph}'.  However, and as shown by
+\sref{tab:inline}, \caps{Lambtex} offers a much broader set.  Note that any
+of these commands may be used in a context where normal text is also allowed.
+That means you may use them in section titles, figure captions, or inside
+tables.
 
 \begin[tab:inline]{table}
 \begin{tabular}{rl}
@@ -86,11 +85,12 @@ Command				| Example $
 one parameter enclosed in brackets.}
 \end{table}
 
+
 \section{Special characters}
 
 \caps{Lambtex} allows the direct use of \caps{HTML} entities such as
-\mono{\&mdash;} or \mono{\&#9835;} (which produce a "&mdash;" and a
-"&#9835;", respectively).  These are useful, for example, for inserting
+'\mono{\&mdash;}' or '\mono{\&#9835;}' (which produce a '&mdash;' and a
+'&#9835;', respectively).  These are useful, for example, for inserting
 special typographic elements or to input any of the \caps{Unicode} code points
 (you can find \link{http://www.w3schools.com/tags/ref_entities.asp}{here}
 a list of \caps{HTML} elements commonly accepted by browsers; also, consult
@@ -98,31 +98,39 @@ a list of \caps{HTML} elements commonly accepted by browsers; also, consult
 comprehensive listings of \caps{Unicode} code points).
 
 The reader will have noted that \caps{Lambtex} must interpret the character
-"\&" (ampersand) differently, and as such you need a workaround if you need
+'\&' (ampersand) differently, and as such you need a workaround if you need
 to input an actual ampersand.  In fact, there are other characters besides the
 ampersand that are interpreted differently by \caps{Lambtex}, and as such also
-require a special escaping sequence.  These characters are "\\" (backslash),
-"\{" (opening brackets), and "\}" (closing brackets).  The character used
+require a special escaping sequence.  These characters are '\\' (backslash),
+'\{' (opening brackets), and '\}' (closing brackets).  The character used
 for escaping is the backslash, which means that displaying an ampersand,
-for example, is achieved with \mono{\\\&} (alternatively you may also input
-the \mono{\&amp;} \caps{HTML} entity).
+for example, is achieved with '\mono{\\\&}' (alternatively you may also
+input the '\mono{\&amp;}' \caps{HTML} entity).
+
+There are also two character sequences that are interpreted in a special manner
+by \caps{Lambtex}.  These sequences are '\mono{\[$}' and '\mono{\<$}', and
+they are used to mark the beginning of inline \caps{TeX} and \caps{MathML}
+mathematical expressions, respectively (see \sref{sec:math} for details).
+Therefore, you must also use the escape character if you wish to input any
+of these sequences literally.
+
 
 \section{Lists}
 
 All the commands we have seen so far are simple commands.  They take a
-single argument enclosed in brackets, in the form \mono{\\command\{...\}}.
+single argument enclosed in brackets, in the form '\mono{\\command\{...\}}'.
 \caps{Lambtex} has another class of commands, however.  These are called
 \emph{environment commands}, because they are composed of two separate parts
 &mdash; a start marker and an end marker &mdash; that delineate an environment.
-Thus suppose you have an environment command named \mono{command}.  The start
-marker takes the form \mono{\\begin\{command\}}, while the end marker is
-\mono{\\end\{command\}}.
+Thus suppose you have an environment command named '\mono{command}'.  The start
+marker takes the form '\mono{\\begin\{command\}}', while the end marker is
+'\mono{\\end\{command\}}'.
 
 Lists in \caps{Lambtex} come in two varieties, ordered and unordered,
-and are declared using the environment commands \mono{enumerate} and
-\mono{itemize}, respectively.  As shown by the following \caps{Lambtex}
+and are declared using the environment commands '\mono{enumerate}' and
+'\mono{itemize}', respectively.  As shown by the following \caps{Lambtex}
 source (and whose output is in \sref{fig:list}), each list item must be
-preceded by the parameterless command \mono{\\item}.  Also, lists may be
+preceded by the parameterless command '\mono{\\item}'.  Also, lists may be
 nested, and each item may itself be composed of several paragraphs.
 
 
@@ -161,15 +169,14 @@ Here is a list of small furry mammals:
 Note that lists may be nested at will.}
 \end{figure}
 
-It is possible to customise the bullet used in unordered lists or the numbering
-system in ordered lists.  To do so you need to pass an extra parameter to
-either the \mono{itemize} or \mono{enumerate} commands.  Extra parameters
-are enclosed between \emph{lesser than} and \emph{greater than} signs ('<'
-and '>'), and are to be placed before a command's opening brackets (check
+It is possible to customise the bullet used in unordered lists or the
+numbering system in ordered lists.  To do so you need to pass an extra
+parameter to either the '\mono{itemize}' or '\mono{enumerate}' commands.
+Extra parameters are enclosed between 'lesser than' and 'greater than' signs
+('<' and '>'), and are to be placed before a command's opening brackets (check
 \sref{sec:parameters} for a more thorough description of command parameters).
-Tables&nbsp;\ref{tab:itemize}&nbsp;and&nbsp;\ref{tab:enumerate} list the
-available options for respectively \mono{itemize} and \mono{enumerate}
-environments.
+\box{Tables \ref{tab:itemize} and \ref{tab:enumerate}} list the available
+options for respectively '\mono{itemize}' and '\mono{enumerate}' environments.
 
 
 \begin[tab:itemize]{table}
@@ -214,7 +221,7 @@ Homer Simpson
 \end{quote}
 
 Quotation blocks are another useful \caps{Lambtex} feature, and are declared
-using the \mono{quote} environment command.  Therefore, to produce a quote like
+using the '\mono{quote}' environment command.  Therefore, to produce a quote like
 the one that opens this section, you can simply provide the following code:
 
 \begin{verbatim}
@@ -231,12 +238,9 @@ For reasons of style, it is often desirable that quotation blocks appear
 not centered and occupying the entire width of the page as in the example
 above, but instead as just small boxes embedded within the flow of the text.
 With this in mind, the \mono{quote} command accepts an optional parameter
-stating whether it should be placed on the centre of the page (the default),
-on the left, or on the right.  This optional parameter is either \mono{center},
-\mono{left}, and \mono{right}, respectively.  Note that optional parameters
-are enclosed between '\mono{<}' and '\mono{>}', and must appear between the
-\mono{\\begin} that marks the start of the environment and the \mono{\{quote\}}
-that tells \caps{Lambtex} the type of environment.
+stating whether it should be placed on the centre of the page (the default), on
+the left, or on the right.  This optional parameter is either '\mono{center}',
+'\mono{left}', or '\mono{right}', respectively.
 
 
 \begin<right>{quote}
@@ -249,7 +253,7 @@ Our advice is to use them only if embeddeding a quotation is essential to carry
 your message.  You may, for example, be commenting on a particular sentence
 or paragraph in an interview available online; in this case, a quotation
 block will provide the focus that would have been lost by simply linking
-to the entire interview.  Finally, take into consideration that 'floating'
+to the entire interview.  Finally, take into consideration that "floating"
 quotation blocks (those appearing on the left or right) are more appropriate
 if your document is quoting a passage of itself.  And for maximum effect,
 use this feature sparingly.
@@ -258,39 +262,43 @@ use this feature sparingly.
 
 You have already come across several verbatim environments while reading
 this manual &mdash; they have been used to show \caps{Lambtex} source documents.
-Like their \caps{LaTeX} counterparts or the \caps{HTML} \mono{<pre>} tag, they
+Like their \caps{LaTeX} counterparts or the \caps{HTML} '\mono{<pre>}' tag, they
 allow the insertion of boxes where all the text is shown \emph{as is}, ie,
 without (almost) any attempt at the interpretation of its contents.  They are
 to be displayed using a monospaced font, and as such are ideal for showing
 source code or even \caps{ASCII}-art (though as \sref{sec:figure:ascii} will
 describe, a special kind of figure tailored for this case also exists).  The
-command name for this environment is \mono{verbatim}, and being an environment
-command the text must be enclosed between \mono{\\begin\{verbatim\}} and
-\mono{\\end\{verbatim\}} markers.
+command name for this environment is '\mono{verbatim}', and being an environment
+command the text must be enclosed between '\mono{\\begin\{verbatim\}}' and
+'\mono{\\end\{verbatim\}}' markers.
 
 We say there is \emph{almost} no interpretation of the contents of the verbatim
 environment because there are two exceptions.  The first is that the string
-\mono{\\end\{verbatim\}} is used as the end marker for the environment, and
-therefore the \caps{Lambtex} scanner will exit the environment if it encounters
-this string.  The second is that \caps{HTML} entities are also allowed inside
-a verbatim environment.  Therefore, if you wish to input an ampersand inside a
-verbatim environment, use the \caps{HTML} entity \mono{\&amp;}\see{note:amp}
-(preceding the ampersand with a backslash will not work inside verbatim
-environments, because the backslash has no special meaning in them;  this
-choice was made because the backslash is a fairly common character in
-programming and \caps{TeX} equations).  Note that if for whatever reason you
-need the end marker string \mono{\\end\{verbatim\}} to be displayed as part
-of a verbatim environment, we recommend that you input its initial backslash
-as an \caps{HTML} entity.  Since the backslash's \caps{ASCII} code is 51
-(decimal), the whole string can be entered as \mono{\&#51;end\{verbatim\}}.
+'\mono{\\end\{verbatim\}}' is used as the end marker for the environment,
+and therefore the \caps{Lambtex} scanner will exit the environment if it
+encounters this string.  The second is that \caps{HTML} entities are also
+allowed inside a verbatim environment.  Therefore, if you wish to input
+an ampersand inside a verbatim environment, use the \caps{HTML} entity
+'\mono{\&amp;}'\see{note:amp}.  Note that preceding the ampersand with a
+backslash will not work inside verbatim environments, because the backslash
+has no special meaning in them;  this choice was made because the backslash
+is a fairly common character in markup languages that are often displayed
+inside verbatim environments.
+
+Finally, if for whatever reason you need the end marker string
+'\mono{\\end\{verbatim\}}' to be displayed as part of a verbatim environment,
+we recommend that you input its initial backslash as an \caps{HTML} entity.
+Since the backslash's \caps{ASCII} code is 51 (decimal), the whole string
+can be entered as '\mono{\&#51;end\{verbatim\}}'.
 
 
 \section{Tabular environments}
 
-Presenting data in a tabular format is indispensable for many classes of manuscripts.
-With this in mind, \caps{Lambtex} offers a special \mono{tabular} environment.  It
-allows you to format tables in a simple and concise way, while retaining most of
-the capabilities offered by \caps{XHTML} tables.
+Presenting data in a tabular format is indispensable for many classes
+of manuscripts.  With this in mind, \caps{Lambtex} offers a special
+'\mono{tabular}' environment.  It allows you to format tables in a simple and
+concise way, while retaining most of the capabilities offered by \caps{XHTML}
+tables.
 
 Suppose then that our tabular data had three different attributes &mdash;
 a person's name, a phone number, and an address &mdash; and that we had this
@@ -310,15 +318,15 @@ Jane		| 456789		| Sydney	$
 \end{tabular}
 
 
-The \mono{tabular} environment has one mandatory parameter: a string
+The '\mono{tabular}' environment has one mandatory parameter: a string
 indicating the number of columns and the formatting that should be applied
 to each column.  The example above features three left-aligned columns;
 the corresponding string is '\mono{lll}'.  If, for example, you had four
 columns aligned respectively to the left, right, center, and left again,
-the parameter string would be '\mono{lrcl}' (check \sref{tab:tabular} for
-a list of all available column specifiers).
+the parameter string would be '\mono{lrcl}'. \sref{tab:tabular} lists all
+available column specifiers.
 
-Inside the \mono{tabular} environment, rows are terminated with the '\mono{$}'
+Inside a tabular environment, rows are terminated with the '\mono{$}'
 character; within each row, columns are separated by the '\mono{|}'
 character.  This means that inside a \mono{tabular} environment &mdash;
 but here only! &mdash; you'll need to escape these characters if you want
@@ -328,17 +336,17 @@ There are three different classes of rows available: header, body,
 and footer rows.  Besides formatting each one differently, smart enough
 browsers will know that table headers are to be repeated if, for example,
 the tabular environment spans more than one printed page.  The parameterless
-simple commands \mono{\\head}, \mono{\\body}, and \mono{\\foot} are used
-inside a \mono{tabular} environment to mark the beginning of each class.
-Note that header and footer rows are optional (in which case the \mono{\\body}
+simple commands '\mono{\\head}', '\mono{\\body}', and '\mono{\\foot}' are used
+inside a tabular environment to mark the beginning of each class.  Note that
+header and footer rows are optional (in which case the '\mono{\\body}'
 marker is also optional, since rows are assumed by default to be body rows).
 Moreover, you can declare more than one group of body rows, and \caps{Lambtex}
 will separate each group by a horizontal bar.
 
 The following code replicates the tabular environment listed above.  Note the
-use of the \mono{\\head} and \mono{\\body} commands to delineate row classes,
-and how the '$' and '|' characters are used to separate columns and rows,
-respectively.
+use of the '\mono{\\head}' and '\mono{\\body}' commands to delineate row
+classes, and how the '$' and '|' characters are used to separate columns
+and rows, respectively.
 
 
 \begin{verbatim}
@@ -373,7 +381,7 @@ A specifier tells \caps{Lambtex} how each column should be formatted.}
 \end{table}
 
 
-\section{Mathematical formulas}
+\section[sec:math]{Mathematical formulas}
 
 \caps{Lambtex} also supports the inclusion of equations and mathematical
 formulas in a document.  Mathematics are to be entered using either
@@ -384,17 +392,22 @@ standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside
 a paragraph, for example), or in a block context.  In the former case,
-the expression should be delimited between the characters '\mono{\[$}' and
-'\mono{$]}' if it is written in \caps{TeX} format, and between characters
-'\mono{\<$}' and '\mono{$>}' if written in \caps{MathML}.  The latter
-case &mdash; expressions in a block context &mdash; is specified via the
-\mono{math} environment.  This environment has one mandatory parameter,
-indicating the markup format of the expression.  Valid values for this
-parameter are \mono{mathml} and \mono{tex}, for expressions in \caps{MathML}
-and \caps{TeX} format, respectively.
+the expression should be delimited between the characters '\mono{\[$}'
+and '\mono{$]}' if it is written in \caps{TeX} format, and between
+characters '\mono{\<$}' and '\mono{$>}' if written in \caps{MathML}.
+Though \caps{Lambtex} does not enforce it, common sense dictates that inline
+mathematics should restrict themselves to expressions that fit comfortably
+in a single line.  An example is the quadratic equation [$ ax^2 + bx + c = 0$].
+
+Mathematical expressions in a block context are specified via the '\mono{math}'
+environment.  This environment has one mandatory parameter, indicating
+the markup format of the expression.  Valid values for this parameter are
+'\mono{mathml}' and '\mono{tex}', for expressions in \caps{MathML} and
+\caps{TeX} format, respectively.
 
 Therefore, suppose you wished to enter a math block containing the quadratic
-formula specified in the \caps{TeX} format.  The code would be the following:
+formula that solves the equation listed above.  Specified in the \caps{TeX}
+format, the code would be the following:
 
 \begin{verbatim}
 \begin{math}{tex}
@@ -410,7 +423,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
 
 \caps{Lambtex} supports also named mathematical expressions that may be
-numbered and referenced from anywhere in a document; check \sref{sec:equations}
+numbered and referenced from anywhere in a document. See \sref{sec:equations}
 for details.
 
 
@@ -898,13 +911,13 @@ the ordering and hyperlinking of floaters and sectional commands.
 \resource{Resource}
 \end{bib}
 
-\begin[bib:tex]{bib}
+\begin[bib:mathml]{bib}
 \title{The \caps{Latex} companion}
 \author{Leslie Lamport}
 \resource{Resource}
 \end{bib}
 
-\begin[bib:mathml]{bib}
+\begin[bib:tex]{bib}
 \title{The \caps{Latex} companion}
 \author{Leslie Lamport}
 \resource{Resource}
