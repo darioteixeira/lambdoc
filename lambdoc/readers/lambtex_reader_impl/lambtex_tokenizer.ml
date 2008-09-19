@@ -28,16 +28,24 @@ exception Unknown_simple_command of string
 (********************************************************************************)
 
 (**	Scanning environments determine which scanner will be invoked.
-	There are four different environments: general, tabular, verbatim
-	and math.
 *)
-type scanner_environment_t = General | Tabular | Verbatim | Math | Mathtex | Mathml
+type scanner_environment_t =
+	| General
+	| Tabular
+	| Code
+	| Verbatim
+	| Mathtex_inl
+	| Mathml_inl
+	| Mathtex_blk
+	| Mathml_blk
 
 
 (**	Scanning contexts control the way that whitespace is handled.
-	There are three contexts: block, inline, and raw.
 *)
-type scanner_context_t = Block | Inline | Raw
+type scanner_context_t =
+	| Block
+	| Inline
+	| Raw
 
 
 (**	Actions that control current scanning environment or context.
@@ -75,16 +83,18 @@ let get_env_tag params is_begin =
 	let (token_begin, token_end, new_env, context_begin, context_end) = match params.comm_tag with
 	| "itemize"	-> (BEGIN_ITEMIZE params, END_ITEMIZE params,		General,	Set Block,	Set Block) 
 	| "enumerate"	-> (BEGIN_ENUMERATE params, END_ENUMERATE params,	General,	Set Block,	Set Block) 
-	| "quote"	-> (BEGIN_QUOTE params,	END_QUOTE params,		General,	Set Block,	Set Block) 
-	| "algorithm"	-> (BEGIN_ALGORITHM params, END_ALGORITHM params,	General,	Set Block,	Set Block) 
-	| "equation"	-> (BEGIN_EQUATION params, END_EQUATION params,		General,	Set Block,	Set Block) 
-	| "figure"	-> (BEGIN_FIGURE params, END_FIGURE params,		General,	Set Block,	Set Block) 
-	| "table"	-> (BEGIN_TABLE params, END_TABLE params,		General,	Set Block,	Set Block) 
-	| "bib"		-> (BEGIN_BIB params, END_BIB params,			General,	Set Block,	Set Block) 
+	| "quote"	-> (BEGIN_QUOTE params,	END_QUOTE params,		General,	Set Block,	Set Block)
+	| "tex"		-> (BEGIN_MATHTEX_BLK params, END_MATHTEX_BLK params,	Mathtex_blk,	Set Raw,	Set Block)
+	| "mathml"	-> (BEGIN_MATHML_BLK params, END_MATHML_BLK params,	Mathml_blk,	Set Raw,	Set Block)
+	| "code"	-> (BEGIN_CODE params, END_CODE params,			Code,		Set Raw,	Set Block)
 	| "verbatim"	-> (BEGIN_VERBATIM params, END_VERBATIM params,		Verbatim,	Set Raw,	Set Block) 
-	| "math"	-> (BEGIN_MATH params, END_MATH params,			Math,		Push Raw,	Pop) 
-	| "subpage"	-> (BEGIN_SUBPAGE params, END_SUBPAGE params,		General,	Set Block,	Set Block) 
 	| "tabular"	-> (BEGIN_TABULAR params, END_TABULAR params,		Tabular,	Set Block,	Set Block) 
+	| "subpage"	-> (BEGIN_SUBPAGE params, END_SUBPAGE params,		General,	Set Block,	Set Block) 
+	| "equation"	-> (BEGIN_EQUATION params, END_EQUATION params,		General,	Set Block,	Set Block) 
+	| "algorithm"	-> (BEGIN_ALGORITHM params, END_ALGORITHM params,	General,	Set Block,	Set Block) 
+	| "table"	-> (BEGIN_TABLE params, END_TABLE params,		General,	Set Block,	Set Block) 
+	| "figure"	-> (BEGIN_FIGURE params, END_FIGURE params,		General,	Set Block,	Set Block) 
+	| "bib"		-> (BEGIN_BIB params, END_BIB params,			General,	Set Block,	Set Block) 
 	| other		-> raise (Unknown_env_command other)
 
 	in if is_begin
@@ -100,13 +110,6 @@ let get_env_tag params is_begin =
 let get_simple_tag params =
 	let (token, context) =
 		match params.comm_tag with
-		| "section"		-> (SECTION params,		Set Block)
-		| "subsection"		-> (SUBSECTION params,		Set Block)
-		| "subsubsection"	-> (SUBSUBSECTION params,	Set Block)
-		| "toc"			-> (TOC params,			Set Block)
-		| "bibliography"	-> (BIBLIOGRAPHY params,	Set Block)
-		| "notes"		-> (NOTES params,		Set Block)
-
 		| "bold"		-> (BOLD params,		Set Inline)
 		| "emph"		-> (EMPH params,		Set Inline)
 		| "mono"		-> (MONO params,		Set Inline)
@@ -123,19 +126,26 @@ let get_simple_tag params =
 		| "sref"		-> (SREF params,		Set Inline)
 		| "mref"		-> (MREF params,		Set Inline)
 
+		| "section"		-> (SECTION params,		Set Block)
+		| "subsection"		-> (SUBSECTION params,		Set Block)
+		| "subsubsection"	-> (SUBSUBSECTION params,	Set Block)
+		| "toc"			-> (TOC params,			Set Block)
+		| "bibliography"	-> (BIBLIOGRAPHY params,	Set Block)
+		| "notes"		-> (NOTES params,		Set Block)
+
 		| "appendix"		-> (APPENDIX params,		Set Block)
 		| "rule"		-> (RULE params,		Set Block)
 		| "set"			-> (SETTING params,		Set Block)
+		| "item"		-> (NEW_ITEM params,		Set Block)
+		| "image"		-> (IMAGE params,		Set Block)
 		| "caption"		-> (CAPTION params,		Set Block)
-		| "load"		-> (LOAD params,		Set Block)
 		| "head"		-> (HEAD params,		Set Block)
-		| "body"		-> (BODY params,		Set Block)
 		| "foot"		-> (FOOT params,		Set Block)
-		| "author"		-> (AUTHOR params,		Set Block)
+		| "body"		-> (BODY params,		Set Block)
 		| "title"		-> (TITLE params,		Set Block)
+		| "author"		-> (AUTHOR params,		Set Block)
 		| "resource"		-> (RESOURCE params,		Set Block)
 		| "note"		-> (NOTE params,		Set Block)
-		| "item"		-> (NEW_ITEM params,		Set Block)
 
 		| other			-> raise (Unknown_simple_command other)
 
@@ -168,9 +178,9 @@ let get_param rex name subs =
 		_ -> None
 
 
-(**	Builds a param_t.
+(**	Builds a command_t.
 *)
-let build_params lexbuf tag rex subs =
+let build_command lexbuf tag rex subs =
 	{
 	comm_tag = tag;
 	comm_label = get_param rex "label" subs;
@@ -183,7 +193,10 @@ let build_params lexbuf tag rex subs =
 
 (**	Builds a operator_t.
 *)
-let build_op lexbuf = {op_linenum = lexbuf.lex_curr_p.pos_lnum;}
+let build_op lexbuf =
+	{
+	op_linenum = lexbuf.lex_curr_p.pos_lnum;
+	}
 
 
 (**	Issues an environment command.
@@ -194,7 +207,7 @@ let issue_env_command =
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "env" subs
 		and primary = Pcre.get_named_substring rex "primary" subs in
-		let params = build_params lexbuf primary rex subs in
+		let params = build_command lexbuf primary rex subs in
 		get_env_tag params (command = "begin")
 
 
@@ -205,7 +218,7 @@ let issue_simple_command =
 	fun lexbuf ->
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "command" subs in
-		let params = build_params lexbuf command rex subs in
+		let params = build_command lexbuf command rex subs in
 		get_simple_tag params
 
 
@@ -216,20 +229,25 @@ let issue_simple_command =
 class tokenizer =
 object (self)
 
-	val mutable env_current = General
+	(**	Mutable values.
+	*)
+
+	val mutable current_env = General
 	val mutable env_history = Stack.create ()
-	val mutable context_current = Block
+	val mutable current_context = Block
 	val mutable context_history = Stack.create ()
 	val mutable productions = Queue.create ()
 
 
-	(**	Stuff.
+	(**	Adds a new element to the queue of productions.
 	*)
 	method store elem =
 		Queue.add elem productions
 
 
-	(**	Stuff.
+	(**	Coalesces the queue of productions.  This means that consecutive
+		"PLAIN" productions (which consist of individual characters) are
+		strung together into a single string.
 	*)
 	method coalesce lexbuf =
 		let rec taker accum =
@@ -248,48 +266,48 @@ object (self)
 
 
 
-	(**	Stuff.
+	(**	Invokes the scanner to produces a new token.
 	*)
 	method produce lexbuf =
 
-		let scanner = match env_current with
+		let scanner = match current_env with
 			| General	-> Lambtex_scanner.general_scanner
 			| Tabular	-> Lambtex_scanner.tabular_scanner
+			| Code		-> Lambtex_scanner.code_scanner
 			| Verbatim	-> Lambtex_scanner.verbatim_scanner
-			| Math		-> Lambtex_scanner.math_scanner
-			| Mathtex	-> Lambtex_scanner.mathtex_scanner
-			| Mathml	-> Lambtex_scanner.mathml_scanner in
+			| Mathtex_inl	-> Lambtex_scanner.mathtex_inl_scanner
+			| Mathml_inl	-> Lambtex_scanner.mathml_inl_scanner
+			| Mathtex_blk	-> Lambtex_scanner.mathtex_blk_scanner
+			| Mathml_blk	-> Lambtex_scanner.mathml_blk_scanner in
 
-		let (category, maybe_new_env, maybe_new_context) = match scanner lexbuf with
-			| Tok_env_comm buf	-> issue_env_command buf
-			| Tok_simple_comm buf	-> issue_simple_command buf
-			| Tok_begin buf		-> (Cat_begin (BEGIN (build_op buf)),		Keep, Push Inline)
-			| Tok_end buf		-> (Cat_end (END (build_op buf)),		Keep, Pop)
-			| Tok_begin_mathtex buf	-> (Cat_token (BEGIN_MATHTEX (build_op buf)),	Push Mathtex, Push Inline)
-			| Tok_end_mathtex buf	-> (Cat_token (END_MATHTEX (build_op buf)),	Pop, Pop)
-			| Tok_begin_mathml buf	-> (Cat_token (BEGIN_MATHML (build_op buf)),	Push Mathml, Push Inline)
-			| Tok_end_mathml buf	-> (Cat_token (END_MATHML (build_op buf)),	Pop, Pop)
-			| Tok_eof buf		-> (Cat_token (EOF (build_op buf)),		Keep, Keep)
-			| Tok_column_sep buf	-> (Cat_token (COLUMN_SEP (build_op buf)),	Keep, Set Inline)
-			| Tok_row_end buf	-> (Cat_token (ROW_END (build_op buf)),		Keep, Set Block)
-			| Tok_plain x		-> (Cat_token (PLAIN x),			Keep, Set Inline)
-			| Tok_entity x		-> (Cat_token (ENTITY x),			Keep, Set Inline)
-			| Tok_space		-> (Cat_space,					Keep, Keep)
-			| Tok_break		-> (Cat_ignore,					Keep, Set Block) in
+		let (category, potential_new_env, potential_new_context) = match scanner lexbuf with
+			| Tok_env_command buf		-> issue_env_command buf
+			| Tok_simple_command buf	-> issue_simple_command buf
+			| Tok_begin buf			-> (Cat_begin (BEGIN (build_op buf)),			Keep, Push Inline)
+			| Tok_end buf			-> (Cat_end (END (build_op buf)),			Keep, Pop)
+			| Tok_begin_mathtex_inl buf	-> (Cat_token (BEGIN_MATHTEX_INL (build_op buf)),	Push Mathtex_inl, Push Raw)
+			| Tok_end_mathtex_inl buf	-> (Cat_token (END_MATHTEX_INL (build_op buf)),		Pop, Pop)
+			| Tok_begin_mathml_inl buf	-> (Cat_token (BEGIN_MATHML_INL (build_op buf)),	Push Mathml_inl, Push Raw)
+			| Tok_end_mathml_inl buf	-> (Cat_token (END_MATHML_INL (build_op buf)),		Pop, Pop)
+			| Tok_eof buf			-> (Cat_token (EOF (build_op buf)),			Keep, Keep)
+			| Tok_column_sep buf		-> (Cat_token (COLUMN_SEP (build_op buf)),		Keep, Set Inline)
+			| Tok_row_end buf		-> (Cat_token (ROW_END (build_op buf)),			Keep, Set Block)
+			| Tok_plain x			-> (Cat_token (PLAIN x),				Keep, Set Inline)
+			| Tok_entity x			-> (Cat_token (ENTITY x),				Keep, Set Inline)
+			| Tok_space			-> (Cat_space,						Keep, Keep)
+			| Tok_break			-> (Cat_ignore,						Keep, Set Block) in
 
-		let new_env = match maybe_new_env with
-			| Set env		-> env
-			| Push env		-> Stack.push env_current env_history; env
-			| Pop			-> Stack.pop env_history
-			| Keep			-> env_current in
+		let change_state current history = function
+			| Set state	-> state
+			| Push state	-> Stack.push current history; state
+			| Pop		-> Stack.pop history
+			| Keep		-> current in
 
-		let new_context = match maybe_new_context with
-			| Set con		-> con
-			| Push con		-> Stack.push context_current context_history; con
-			| Pop			-> Stack.pop context_history
-			| Keep			-> context_current in
+		let new_env = change_state current_env env_history potential_new_env in
 
-		let () = match (category, context_current, new_context) with
+		let new_context = change_state current_context context_history potential_new_context in
+
+		let () = match (category, current_context, new_context) with
 			| (Cat_begin _, Block, Inline)	-> ()
 			| (_, Block, Inline)		-> self#store (NEW_PARAGRAPH (build_op lexbuf))
 			| _				-> () in
@@ -301,7 +319,7 @@ object (self)
 			| Cat_space		-> if new_context = Inline then self#store (PLAIN " ")
 			| Cat_ignore		-> () in
 
-		env_current <- new_env;
-		context_current <- new_context
+		current_env <- new_env;
+		current_context <- new_context
 end
 

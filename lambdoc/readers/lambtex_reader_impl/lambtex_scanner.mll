@@ -22,14 +22,14 @@ open Lambtex_parser
 (**	The various kinds of tokens output by any of the scanners.
 *)
 type scanner_token_t =
-	| Tok_env_comm of Lexing.lexbuf
-	| Tok_simple_comm of Lexing.lexbuf
+	| Tok_env_command of Lexing.lexbuf
+	| Tok_simple_command of Lexing.lexbuf
 	| Tok_begin of Lexing.lexbuf
 	| Tok_end of Lexing.lexbuf
-	| Tok_begin_mathtex of Lexing.lexbuf
-	| Tok_end_mathtex of Lexing.lexbuf
-	| Tok_begin_mathml of Lexing.lexbuf
-	| Tok_end_mathml of Lexing.lexbuf
+	| Tok_begin_mathtex_inl of Lexing.lexbuf
+	| Tok_end_mathtex_inl of Lexing.lexbuf
+	| Tok_begin_mathml_inl of Lexing.lexbuf
+	| Tok_end_mathml_inl of Lexing.lexbuf
 	| Tok_eof of Lexing.lexbuf
 	| Tok_column_sep of Lexing.lexbuf
 	| Tok_row_end of Lexing.lexbuf
@@ -80,10 +80,10 @@ let eol = space* '\n'
 let break = eol eol+
 let begin_marker = '{'
 let end_marker = '}'
-let begin_mathtex = "[$"
-let end_mathtex = "$]"
-let begin_mathml = "<$"
-let end_mathml = "$>"
+let begin_mathtex_inl = "[$"
+let end_mathtex_inl = "$]"
+let begin_mathml_inl = "<$"
+let end_mathml_inl = "$>"
 let column_sep = space* '|' space*
 let row_end = space* '$'
 
@@ -92,12 +92,14 @@ let row_end = space* '$'
 (**	{2 Actual scanners}							*)
 (********************************************************************************)
 
-(**	There are five possible scanning contexts in a Lambtex document, each
-	demanding special rules from the scanner (though the rules for two of
-	these contexts are identical).  We therefore use four different scanner
-	functions.  Note that in all scanners, some actions could have been
-	simplified if we had used Ocamllex's "as" operator.  We chose not to
-	do so because ulex has no equivalent to this operator, and we prefer
+(**	There are eight possible scanning contexts in a Lambtex document, each
+	demanding special rules from the scanner.  While some of the contexts
+	are so similar they could in theory be handled by the same scanner given
+	one differentiating parameter, in practice because the lexer generators
+	we are using cannot create parameterised lexers, we use eight different
+	scanner functions.  Note that in all scanners, some actions could have
+	been simplified if we had used Ocamllex's "as" operator.  We chose not
+	to do so because Ulex has no equivalent to this operator, and we prefer
 	code that is easily adapted to different lexer generators.
 *)
 
@@ -107,11 +109,12 @@ let row_end = space* '$'
 	is that spacing and line breaks are handled differently.
 *)
 rule general_scanner = parse
-	| env_command		{Tok_env_comm lexbuf}
-	| simple_command	{Tok_simple_comm lexbuf}
+	| env_command		{Tok_env_command lexbuf}
+	| simple_command	{Tok_simple_command lexbuf}
 	| begin_marker		{Tok_begin lexbuf}
 	| end_marker		{Tok_end lexbuf}
-	| begin_mathtex		{Tok_begin_mathtex lexbuf}
+	| begin_mathtex_inl	{Tok_begin_mathtex_inl lexbuf}
+	| begin_mathml_inl	{Tok_begin_mathml_inl lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| break			{incr_linenum lexbuf; Tok_break}
 	| space | eol		{incr_linenum lexbuf; Tok_space}
@@ -124,11 +127,12 @@ rule general_scanner = parse
 	but adding checks for the characters that separate columns and terminate rows.
 *)
 and tabular_scanner = parse
-	| env_command		{Tok_env_comm lexbuf}
-	| simple_command	{Tok_simple_comm lexbuf}
+	| env_command		{Tok_env_command lexbuf}
+	| simple_command	{Tok_simple_command lexbuf}
 	| begin_marker		{Tok_begin lexbuf}
-	| begin_mathtex		{Tok_begin_mathtex lexbuf}
 	| end_marker		{Tok_end lexbuf}
+	| begin_mathtex_inl	{Tok_begin_mathtex_inl lexbuf}
+	| begin_mathml_inl	{Tok_begin_mathml_inl lexbuf}
 	| column_sep		{Tok_column_sep lexbuf}
 	| row_end		{Tok_row_end lexbuf}
 	| eof			{Tok_eof lexbuf}
@@ -139,35 +143,64 @@ and tabular_scanner = parse
 	| _			{Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-(**	Special scanner for verbatim environments.  Pretty much every character
+(**	Special scanner for code environments.  Pretty much every character
 	is returned as text; the exceptions are the EOF character, the special
-	"\end{verbatim}" termination tag, and HTML entities.
+	"\end{code}" termination tag, and HTML entities.
 *)
-and verbatim_scanner = parse
-	| "\\end{verbatim}"	{Tok_env_comm lexbuf}
+and code_scanner = parse
+	| "\\end{code}"		{Tok_env_command lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| entity		{Tok_entity (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf))}
 	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-(**	Special scanner for math environments.  No attempt whatsoever is made to
-	interpret the characters in the stream.  This scanner only pays attention
-	to the EOF character and the environment terminator "\end{math}".
+(**	Special scanner for verbatim environments.  Pretty much every character
+	is returned as text; the exceptions are the EOF character, the special
+	"\end{verbatim}" termination tag, and HTML entities.
 *)
-and math_scanner = parse
-	| "\\end{math}"		{Tok_env_comm lexbuf}
+and verbatim_scanner = parse
+	| "\\end{verbatim}"	{Tok_env_command lexbuf}
+	| eof			{Tok_eof lexbuf}
+	| entity		{Tok_entity (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf))}
+	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+
+
+(**	Special scanner for mathtex environments in an inline context.  No attempt whatsoever
+	is made to interpret the characters in the stream.  This scanner only pays attention
+	to the EOF character and the terminator "$]".
+*)
+and mathtex_inl_scanner = parse
+	| end_mathtex_inl	{Tok_end_mathtex_inl lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-and mathtex_scanner = parse
-	| end_mathtex		{Tok_end_mathtex lexbuf}
+(**	Special scanner for mathml environments in an inline context.  No attempt whatsoever
+	is made to interpret the characters in the stream.  This scanner only pays attention
+	to the EOF character and the terminator "$>".
+*)
+and mathml_inl_scanner = parse
+	| end_mathml_inl	{Tok_end_mathml_inl lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-and mathml_scanner = parse
-	| end_mathml		{Tok_end_mathml lexbuf}
+(**	Special scanner for mathtex environments in a block context.  No attempt whatsoever
+	is made to interpret the characters in the stream.  This scanner only pays attention
+	to the EOF character and the environment terminator "\end{tex}".
+*)
+and mathtex_blk_scanner = parse
+	| "\\end{tex}"		{Tok_env_command lexbuf}
+	| eof			{Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+
+
+(**	Special scanner for mathml environments in a block context.  No attempt whatsoever
+	is made to interpret the characters in the stream.  This scanner only pays attention
+	to the EOF character and the environment terminator "\end{mathml}".
+*)
+and mathml_blk_scanner = parse
+	| "\\end{mathml}"	{Tok_env_command lexbuf}
 	| eof			{Tok_eof lexbuf}
 	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
