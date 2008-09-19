@@ -27,9 +27,9 @@ type entity_t = string with sexp
 *)
 type link_t = string with sexp
 
-(**	The type of filenames.
+(**	The type of aliases to filenames.
 *)
-type filename_t = string with sexp
+type alias_t = string with sexp
 
 (**	The type of label references.
 *)
