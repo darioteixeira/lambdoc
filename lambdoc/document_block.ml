@@ -129,10 +129,10 @@ end
 *)
 module rec Block:
 sig
-	(**	The type of captions used in floaters.  Note that a caption
-		is essentially optional inline text.
+	(**	The tuple of all common fields to floaters.  These
+		are the floater's label, its order, and a caption.
 	*)
-	type caption_t = Node.super_seq_t option with sexp
+	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
 
 	(**	The possible forms for headings.  We accept three different levels
 		of sections.  Note that special sections such as the TOC or the
@@ -158,18 +158,35 @@ sig
 	*)
 	type nestable_frag_t = Block.nestable_block_t list with sexp
 
-	(**	There are four different kinds of figures:
-		{ul
-			{li [Bitmap]: for raster images such as PNG or JPG.}
-			[li [Vector]: for vectorial images such as SVG or PDF.}
-			{li [Ascii]: for ASCII-art images composed of text.}
-			{li [Subpage]: the image is an embedded document.}}
+	(**	The type of equations.  Equations are just a floater wrapper
+		around a math environment.
+	*)
+	type equation_t =
+		[ `Math of Alignment.t * Math.t
+		] with sexp
+
+	(**	The type of algorithms.  Algorithms are just a floater wrapper
+		around a code environment.
+	*)
+	type algorithm_t =
+		[ `Code of Alignment.t * syntax_t * Node.textual_seq_t
+		] with sexp
+
+	(**	The type of tables.  Tables are just a floater wrapper
+		around a tabular environment.
+	*)
+	type table_t =
+		[ `Tabular of Alignment.t * Tabular.t
+		] with sexp
+
+	(**	The type of figures.  Figures are just a floater wrapper
+		around one of the three figure types: images, verbatim
+		environments (for ASCII-art), and subpages.
 	*)
 	type figure_t =
-		[ `Bitmap of filename_t
-		| `Vector of filename_t
-		| `Ascii of Node.textual_seq_t
-		| `Subpage of super_frag_t
+		[ `Image of Alignment.t * alias_t
+		| `Verbatim of Alignment.t * Node.textual_seq_t
+		| `Subpage of Alignment.t * super_frag_t
 		] with sexp
 
 	(**	Top blocks may not be nested.
@@ -183,16 +200,19 @@ sig
 	*)
 	type nestable_block_t =
 		[ `Paragraph of Node.super_seq_t
-		| `Math of Math.t
-		| `Tabular of Tabular.t
-		| `Preformat of Node.textual_seq_t
 		| `Itemize of Bullet.t * nestable_frag_t plus_t
 		| `Enumerate of Numbering.t * nestable_frag_t plus_t
 		| `Quote of Alignment.t * nestable_frag_t
-		| `Algorithm of Alignment.t * Label.t * Order.floater_order_t * caption_t * Node.textual_seq_t * syntax_t
-		| `Equation of Alignment.t * Label.t * Order.floater_order_t * caption_t * Math.t
-		| `Figure of Alignment.t * Label.t * Order.floater_order_t * caption_t * figure_t
-		| `Table of Alignment.t * Label.t * Order.floater_order_t * caption_t * Tabular.t
+		| `Math of Alignment.t * Math.t
+		| `Code of Alignment.t * syntax_t * Node.textual_seq_t
+		| `Verbatim of Alignment.t * Node.textual_seq_t
+		| `Tabular of Alignment.t * Tabular.t
+		| `Image of Alignment.t * alias_t
+		| `Subpage of Alignment.t * super_frag_t
+		| `Equation of floater_t * equation_t
+		| `Algorithm of floater_t * algorithm_t
+		| `Table of floater_t * table_t
+		| `Figure of floater_t * figure_t
 		] with sexp
 
 	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
@@ -223,35 +243,36 @@ sig
 
 	val paragraph: ([< Node.super_node_t ], 'b) Node.t list ->
 		([> nestable_block_t ], 'b) t
-	val math: Math.t ->
-		([> nestable_block_t ], [> `Composition]) t
-	val tabular: Tabular.t ->
-		([> nestable_block_t ], [> `Composition]) t
-	val preformat: Node.textual_seq_t ->
-		([> nestable_block_t ], [> `Composition]) t
 	val itemize: Bullet.t -> (nestable_block_t, 'b) t list plus_t ->
 		([> nestable_block_t ], 'b) t
 	val enumerate: Numbering.t -> (nestable_block_t, 'b) t list plus_t ->
 		([> nestable_block_t ], 'b) t
 	val quote: Alignment.t -> (nestable_block_t, 'b) t list ->
 		([> nestable_block_t ], 'b) t
-	val algorithm: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> Node.textual_seq_t -> syntax_t ->
+	val math: Alignment.t -> Math.t ->
+		([> nestable_block_t ], [> `Composition]) t
+	val code: Alignment.t -> syntax_t -> Node.textual_seq_t ->
+		([> nestable_block_t ], [> `Composition]) t
+	val verbatim: Alignment.t -> Node.textual_seq_t ->
+		([> nestable_block_t ], [> `Composition]) t
+	val tabular: Alignment.t -> Tabular.t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val equation: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> Math.t ->
+	val image: Alignment.t -> alias_t ->
+		([> nestable_block_t ], [> `Composition]) t
+	val subpage: Alignment.t -> ([< super_block_t ], 'b) t list ->
+		([> nestable_block_t ], 'b) t
+
+	val equation: floater_t -> equation_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val figure_bitmap: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> filename_t ->
+	val algorithm: floater_t -> algorithm_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val figure_vector: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> filename_t ->
+	val table: floater_t -> table_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val figure_ascii: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> Node.textual_seq_t ->
-		([> nestable_block_t ], [> `Manuscript]) t
-	val figure_subpage: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> ([< super_block_t ], 'b) t list ->
-		([> nestable_block_t ], [> `Manuscript]) t
-	val table: Alignment.t -> Label.t -> Order.floater_order_t -> caption_t -> Tabular.t -> 
+	val figure: floater_t -> figure_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
-	type caption_t = Node.super_seq_t option with sexp
+	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
 
 	type heading_t =
 		[ `Section of Label.t * Order.user_sectional_order_t * Node.super_seq_t
@@ -269,11 +290,22 @@ struct
 
 	type nestable_frag_t = Block.nestable_block_t list with sexp
 
+	type equation_t =
+		[ `Math of Alignment.t * Math.t
+		] with sexp
+
+	type algorithm_t =
+		[ `Code of Alignment.t * syntax_t * Node.textual_seq_t
+		] with sexp
+
+	type table_t =
+		[ `Tabular of Alignment.t * Tabular.t
+		] with sexp
+
 	type figure_t =
-		[ `Bitmap of filename_t
-		| `Vector of filename_t
-		| `Ascii of Node.textual_seq_t
-		| `Subpage of super_frag_t
+		[ `Image of Alignment.t * alias_t
+		| `Verbatim of Alignment.t * Node.textual_seq_t
+		| `Subpage of Alignment.t * super_frag_t
 		] with sexp
 
 	type top_block_t =
@@ -283,91 +315,51 @@ struct
 
 	type nestable_block_t =
 		[ `Paragraph of Node.super_seq_t
-		| `Math of Math.t
-		| `Tabular of Tabular.t
-		| `Preformat of Node.textual_seq_t
 		| `Itemize of Bullet.t * nestable_frag_t plus_t
 		| `Enumerate of Numbering.t * nestable_frag_t plus_t
 		| `Quote of Alignment.t * nestable_frag_t
-		| `Algorithm of Alignment.t * Label.t * Order.floater_order_t * caption_t * Node.textual_seq_t * syntax_t
-		| `Equation of Alignment.t * Label.t * Order.floater_order_t * caption_t * Math.t
-		| `Figure of Alignment.t * Label.t * Order.floater_order_t * caption_t * figure_t
-		| `Table of Alignment.t * Label.t * Order.floater_order_t * caption_t * Tabular.t
+		| `Math of Alignment.t * Math.t
+		| `Code of Alignment.t * syntax_t * Node.textual_seq_t
+		| `Verbatim of Alignment.t * Node.textual_seq_t
+		| `Tabular of Alignment.t * Tabular.t
+		| `Image of Alignment.t * alias_t
+		| `Subpage of Alignment.t * super_frag_t
+		| `Equation of floater_t * equation_t
+		| `Algorithm of floater_t * algorithm_t
+		| `Table of floater_t * table_t
+		| `Figure of floater_t * figure_t
 		] with sexp
 
 	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] with sexp
 
-	let section label order seq =
-		`Heading (`Section (label, order, (seq :> Node.super_seq_t)))
-
-	let subsection label order seq =
-		`Heading (`Subsection (label, order, (seq :> Node.super_seq_t)))
-
-	let subsubsection label order seq =
-		`Heading (`Subsubsection (label, order, (seq :> Node.super_seq_t)))
-
-	let appendix label order seq =
-		`Heading (`Appendix (label, order, (seq :> Node.super_seq_t)))
-
-	let subappendix label order seq =
-		`Heading (`Subappendix (label, order, (seq :> Node.super_seq_t)))
-
-	let subsubappendix label order seq =
-		`Heading (`Subsubappendix (label, order, (seq :> Node.super_seq_t)))
-
-	let bibliography label order =
-		`Heading (`Bibliography (label, order))
-
-	let notes label order =
-		`Heading (`Notes (label, order))
-
-	let toc label order =
-		`Heading (`Toc (label, order))
+	let section label order seq = `Heading (`Section (label, order, (seq :> Node.super_seq_t)))
+	let subsection label order seq = `Heading (`Subsection (label, order, (seq :> Node.super_seq_t)))
+	let subsubsection label order seq = `Heading (`Subsubsection (label, order, (seq :> Node.super_seq_t)))
+	let appendix label order seq = `Heading (`Appendix (label, order, (seq :> Node.super_seq_t)))
+	let subappendix label order seq = `Heading (`Subappendix (label, order, (seq :> Node.super_seq_t)))
+	let subsubappendix label order seq = `Heading (`Subsubappendix (label, order, (seq :> Node.super_seq_t)))
+	let bibliography label order = `Heading (`Bibliography (label, order))
+	let notes label order = `Heading (`Notes (label, order))
+	let toc label order = `Heading (`Toc (label, order))
 
 	let rule () = `Rule
 
-	let paragraph seq =
-		`Paragraph (seq :> Node.super_seq_t)
+	let paragraph seq = `Paragraph (seq :> Node.super_seq_t)
+	let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_frags))
+	let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
+	let quote alignment frag = `Quote (alignment, frag)
+	let math alignment math = `Math (alignment, math)
+	let code alignment syntax txt = `Code (alignment, syntax, txt)
+	let verbatim alignment txt = `Verbatim (alignment, txt)
+	let tabular alignment tab = `Tabular (alignment, tab)
+	let image alignment alias = `Image (alignment, alias)
+	let subpage alignment frag = `Subpage (alignment, (frag :> super_block_t list))
 
-	let math math =
-		`Math math
-
-	let tabular tabular_data =
-		`Tabular tabular_data
-
-	let preformat text =
-		`Preformat text
-
-	let itemize bullet (head_frag, tail_frags) =
-		`Itemize (bullet, (head_frag, tail_frags))
-
-	let enumerate numbering (head_frag, tail_frags) =
-		`Enumerate (numbering, (head_frag, tail_frags))
-
-	let quote alignment fragment =
-		`Quote (alignment, fragment)
-
-	let algorithm alignment label order caption text syntax =
-		`Algorithm (alignment, label, order, caption, text, syntax)
-
-	let equation alignment label order caption math =
-		`Equation (alignment, label, order, caption, math)
-
-	let figure_bitmap alignment label order caption filename =
-		`Figure (alignment, label, order, caption, `Bitmap filename)
-
-	let figure_vector alignment label order caption filename =
-		`Figure (alignment, label, order, caption, `Vector filename)
-
-	let figure_ascii alignment label order caption text =
-		`Figure (alignment, label, order, caption, `Ascii text)
-
-	let figure_subpage alignment label order caption frag =
-		`Figure (alignment, label, order, caption, `Subpage (frag :> super_frag_t))
-
-	let table alignment label order caption tabular_data =
-		`Table (alignment, label, order, caption, tabular_data)
+	let equation (label, order, caption) math = `Equation ((label, order, caption), math)
+	let algorithm (label, order, caption) code = `Algorithm ((label, order, caption), code)
+	let table (label, order, caption) tabular = `Table ((label, order, caption), tabular)
+	let figure (label, order, caption) figure = `Figure ((label, order, caption), figure)
 end
 

@@ -125,12 +125,12 @@ and nestable_block_t =
 	| `AST_itemize of command_t * item_t list
 	| `AST_enumerate of command_t * item_t list
 	| `AST_quote of command_t * nestable_frag_t
-	| `AST_Mathtex_blk of command_t * plain_t
-	| `AST_Mathml_blk of command_t * plain_t
+	| `AST_mathtex_blk of command_t * plain_t
+	| `AST_mathml_blk of command_t * plain_t
 	| `AST_code of command_t * textual_seq_t
-	| `AST_tabular of command_t * tabular_t
-	| `AST_image of command_t
 	| `AST_verbatim of command_t * textual_seq_t
+	| `AST_tabular of command_t * tabular_t
+	| `AST_image of command_t * plain_t
 	| `AST_subpage of command_t * super_frag_t
 	| `AST_equation of command_t * caption_t * equation_t
 	| `AST_algorithm of command_t * caption_t * algorithm_t
@@ -144,35 +144,39 @@ and item_t =
 	[ `AST_item of command_t * nestable_frag_t
 	]
 
-and equation_block_t =
-	[ `AST_Mathtex_blk of command_t * plain_t
-	| `AST_Mathml_blk of command_t * plain_t
+and caption_t =
+	[ `AST_caption of command_t * super_seq_t
+	]
+
+and equation_t =
+	[ `AST_mathtex_blk of command_t * plain_t
+	| `AST_mathml_blk of command_t * plain_t
 	]
 
 and algorithm_t =
 	[ `AST_code of command_t * textual_seq_t
 	]
 
-and table_block_t =
+and table_t =
 	[ `AST_tabular of command_t * tabular_t
 	]
 
-and figure_block_t =
-	[ `AST_image of command_t
+and figure_t =
+	[ `AST_image of command_t * plain_t
 	| `AST_verbatim of command_t * textual_seq_t
 	| `AST_subpage of command_t * super_frag_t
 	]
 
 and bib_title_t =
-	[ `Title of command_t * super_seq_t
+	[ `AST_title of command_t * super_seq_t
 	]
 
 and bib_author_t =
-	[ `Author of command_t * super_seq_t
+	[ `AST_author of command_t * super_seq_t
 	]
 
 and bib_resource_t =
-	[ `Resource of command_t * super_seq_t
+	[ `AST_resource of command_t * super_seq_t
 	]
 
 

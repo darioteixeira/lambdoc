@@ -97,26 +97,32 @@ let convert_to_composition contents =
 	and convert_nestable_block = function
 		| `Paragraph seq ->
 			Block.paragraph (convert_super_seq seq)
-		| `Math m ->
-			Block.math m
-		| `Tabular tab ->
-			Block.tabular (convert_tabular tab)
-		| `Preformat text ->
-			Block.preformat text
 		| `Itemize (bul, (hd, tl)) ->
 			Block.itemize bul ((convert_nestable_frag hd), (List.map convert_nestable_frag tl))
 		| `Enumerate (num, (hd, tl)) ->
 			Block.enumerate num ((convert_nestable_frag hd), (List.map convert_nestable_frag tl))
 		| `Quote (alignment, frag) ->
 			Block.quote alignment (convert_nestable_frag frag)
-		| `Algorithm _ ->
-			raise (Invalid_composition_subset "algorithm")
+		| `Math (alignment, math) ->
+			Block.math alignment math
+		| `Code (alignment, syntax, code) ->
+			Block.code alignment syntax code
+		| `Verbatim (alignment, txt) ->
+			Block.verbatim alignment txt
+		| `Tabular (alignment, tab) ->
+			Block.tabular alignment (convert_tabular tab)
+		| `Image (alignment, alias) ->
+			Block.image alignment alias
+		| `Subpage (alignment, frag) ->
+			Block.subpage alignment (convert_super_frag frag)
 		| `Equation _ ->
 			raise (Invalid_composition_subset "equation")
-		| `Figure _ ->
-			raise (Invalid_composition_subset "figure")
+		| `Algorithm _ ->
+			raise (Invalid_composition_subset "algorithm")
 		| `Table _ ->
 			raise (Invalid_composition_subset "table")
+		| `Figure _ ->
+			raise (Invalid_composition_subset "figure")
 
 	and convert_super_block = function
 		| #Block.top_block_t as blk ->

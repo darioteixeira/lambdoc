@@ -27,61 +27,61 @@ let filter_to_composition document_ast =
 	let errors = DynArray.create () in
 
 	let rec filter_nonlink_node = function
-		| Textual node ->
-			Some (Textual node)
-		| Mathtex (op, txt) ->
-			Some (Mathtex (op, txt))
-		| Mathml (op, txt) ->
-			Some (Mathml (op, txt))
-		| Bold (params, seq) ->
-			Some (Bold (params, filter_super_seq seq))
-		| Emph (params, seq) ->
-			Some (Emph (params, filter_super_seq seq))
-		| Mono (params, seq) ->
-			Some (Mono (params, filter_super_seq seq))
-		| Caps (params, seq) ->
-			Some (Caps (params, filter_super_seq seq))
-		| Thru (params, seq) ->
-			Some (Thru (params, filter_super_seq seq))
-		| Sup (params, seq) ->
-			Some (Sup (params, filter_super_seq seq))
-		| Sub (params, seq) ->
-			Some (Sub (params, filter_super_seq seq))
-		| Box (params, seq) ->
-			Some (Box (params, filter_super_seq seq))
+		| `AST_textual node ->
+			Some (`AST_textual node)
+		| `AST_mathtex_inl (op, txt) ->
+			Some (`AST_mathtex_inl (op, txt))
+		| `AST_mathml_inl (op, txt) ->
+			Some (`AST_mathml_inl (op, txt))
+		| `AST_bold (params, seq) ->
+			Some (`AST_bold (params, filter_super_seq seq))
+		| `AST_emph (params, seq) ->
+			Some (`AST_emph (params, filter_super_seq seq))
+		| `AST_mono (params, seq) ->
+			Some (`AST_mono (params, filter_super_seq seq))
+		| `AST_caps (params, seq) ->
+			Some (`AST_caps (params, filter_super_seq seq))
+		| `AST_thru (params, seq) ->
+			Some (`AST_thru (params, filter_super_seq seq))
+		| `AST_sup (params, seq) ->
+			Some (`AST_sup (params, filter_super_seq seq))
+		| `AST_sub (params, seq) ->
+			Some (`AST_sub (params, filter_super_seq seq))
+		| `AST_box (params, seq) ->
+			Some (`AST_box (params, filter_super_seq seq))
 
 	and filter_link_node = function
-		| Link (params, lnk, seq) ->
-			Some (Link (params, lnk, filter_nonlink_seq seq))
-		| See (params, _) ->
+		| `AST_link (params, lnk, seq) ->
+			Some (`AST_link (params, lnk, filter_nonlink_seq seq))
+		| `AST_see (params, _) ->
 			let msg = Error.Invalid_composition_subset "see" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Cite (params, _) ->
+		| `AST_cite (params, _) ->
 			let msg = Error.Invalid_composition_subset "cite" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Ref (params, _) ->
+		| `AST_ref (params, _) ->
 			let msg = Error.Invalid_composition_subset "ref" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Sref (params, _) ->
+		| `AST_sref (params, _) ->
 			let msg = Error.Invalid_composition_subset "sref" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Mref (params, _, _) ->
+		| `AST_mref (params, _, _) ->
 			let msg = Error.Invalid_composition_subset "mref" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
 
 	and filter_super_node = function
-		| Nonlink_node node ->
+		| `AST_nonlink_node node ->
 			(match filter_nonlink_node node with
-				| Some node	-> Some (Nonlink_node node)
+				| Some node	-> Some (`AST_nonlink_node node)
 				| None		-> None)
-		| Link_node node ->
+		| `AST_link_node node ->
 			(match filter_link_node node with
-				| Some node	-> Some (Link_node node)
+				| Some node	-> Some (`AST_link_node node)
 				| None		-> None)
 
 	and filter_super_seq seq =
@@ -110,104 +110,112 @@ let filter_to_composition document_ast =
 			}
 
 	and filter_heading = function
-		| Section (params, _) ->
+		| `AST_section (params, _) ->
 			let msg = Error.Invalid_composition_subset "section" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Subsection (params, _) ->
+		| `AST_subsection (params, _) ->
 			let msg = Error.Invalid_composition_subset "subsection" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Subsubsection (params, _) ->
+		| `AST_subsubsection (params, _) ->
 			let msg = Error.Invalid_composition_subset "subsubsection" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Bibliography params ->
+		| `AST_bibliography params ->
 			let msg = Error.Invalid_composition_subset "bibliography" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Notes params ->
+		| `AST_notes params ->
 			let msg = Error.Invalid_composition_subset "notes" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Toc params ->
+		| `AST_toc params ->
 			let msg = Error.Invalid_composition_subset "toc" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
 
 	and filter_top_block = function
-		| Heading heading ->
+		| `AST_heading heading ->
 			(match filter_heading heading with
-				| Some heading	-> Some (Heading heading)
+				| Some heading	-> Some (`AST_heading heading)
 				| None		-> None)
-		| Appendix params ->
+		| `AST_appendix params ->
 			let msg = Error.Invalid_composition_subset "appendix" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Rule params ->
+		| `AST_rule params ->
 			let msg = Error.Invalid_composition_subset "rule" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Setting (params, key, value) ->
+		| `AST_setting (params, key, value) ->
 			let msg = Error.Invalid_composition_subset "set" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
 
 	and filter_nestable_block = function
-		| Paragraph (op, seq) ->
-			Some (Paragraph (op, filter_super_seq seq))
-		| Math (params, txt) ->
-			Some (Math (params, txt))
-		| Tabular (params, tab) ->
-			Some (Tabular (params, filter_tabular tab))
-		| Preformat (params, txt) ->
-			Some (Preformat (params, txt))
-		| Itemize (params, items) ->
-			Some (Itemize (params, filter_items items))
-		| Enumerate (params, items) ->
-			Some (Enumerate (params, filter_items items))
-		| Quote (params, frag) ->
-			Some (Quote (params, filter_nestable_frag frag))
-		| Algorithm (params, _) ->
-			let msg = Error.Invalid_composition_subset "algorithm" in
-			DynArray.add errors (params.comm_linenum, msg);
-			None
-		| Equation (params, _) ->
+		| `AST_paragraph (op, seq) ->
+			Some (`AST_paragraph (op, filter_super_seq seq))
+		| `AST_itemize (params, items) ->
+			Some (`AST_itemize (params, filter_items items))
+		| `AST_enumerate (params, items) ->
+			Some (`AST_enumerate (params, filter_items items))
+		| `AST_quote (params, frag) ->
+			Some (`AST_quote (params, filter_nestable_frag frag))
+		| `AST_mathtex_blk (params, txt) ->
+			Some (`AST_mathtex_blk (params, txt))
+		| `AST_mathml_blk (params, txt) ->
+			Some (`AST_mathml_blk (params, txt))
+		| `AST_code (params, txt) ->
+			Some (`AST_code (params, txt))
+		| `AST_verbatim (params, txt) ->
+			Some (`AST_verbatim (params, txt))
+		| `AST_tabular (params, tab) ->
+			Some (`AST_tabular (params, filter_tabular tab))
+		| `AST_image (params, alias) ->
+			Some (`AST_image (params, alias))
+		| `AST_subpage (params, subpage) ->
+			Some (`AST_subpage (params, filter_super_frag subpage))
+		| `AST_equation (params, _) ->
 			let msg = Error.Invalid_composition_subset "equation" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Figure (params, _) ->
-			let msg = Error.Invalid_composition_subset "figure" in
+		| `AST_algorithm (params, _) ->
+			let msg = Error.Invalid_composition_subset "algorithm" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Table (params, _) ->
+		| `AST_table (params, _) ->
 			let msg = Error.Invalid_composition_subset "table" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Bib (params, _) ->
+		| `AST_figure (params, _) ->
+			let msg = Error.Invalid_composition_subset "figure" in
+			DynArray.add errors (params.comm_linenum, msg);
+			None
+		| `AST_bib (params, _) ->
 			let msg = Error.Invalid_composition_subset "bib" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
-		| Note (params, _) ->
+		| `AST_note (params, _) ->
 			let msg = Error.Invalid_composition_subset "note" in
 			DynArray.add errors (params.comm_linenum, msg);
 			None
 
 	and filter_item = function
-		| Item (op, frag) ->
-			Item (op, filter_nestable_frag frag)
+		| `AST_item (op, frag) ->
+			`AST_Item (op, filter_nestable_frag frag)
 
 	and filter_items items =
 		List.map filter_item items
 
 	and filter_super_block = function
-		| Top_block block ->
+		| `AST_top_block block ->
 			(match filter_top_block block with
-				| Some block	-> Some (Top_block block)
+				| Some block	-> Some (`AST_top_block block)
 				| None		-> None)
-		| Nestable_block block ->
+		| `AST_nestable_block block ->
 			(match filter_nestable_block block with
-				| Some block	-> Some (Nestable_block block)
+				| Some block	-> Some (`AST_nestable_block block)
 				| None		-> None)
 
 	and filter_nestable_frag frag =
