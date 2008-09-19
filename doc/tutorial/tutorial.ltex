@@ -430,22 +430,22 @@ for details.
 \section{Sectioning commands}
 
 \caps{Lambtex} supports three different levels of sectioning: sections,
-sub-sections, and sub-sub-sections.  The simple commands used for declaring
-each one are \mono{section}, \mono{subsection}, and \mono{subsubsection},
-respectively.  These are automatically ordered by \caps{Lambtex}, though
-facilities exist for manually assigning numbering or ommiting it altogether
-(check \sref{sec:order} for details).
+sub-sections, and sub-sub-sections.  The simple commands used for
+declaring each one are '\mono{\\section}', '\mono{\\subsection}', and
+'\mono{\\subsubsection}', respectively.  These are automatically ordered by
+\caps{Lambtex}, though facilities exist for manually assigning numbering or
+ommiting it altogether (check \sref{sec:order} for details).
 
 Another common requirement associated with sectioning is the ability to
 refer to a given section in a document.  With that in mind, \caps{Lambtex}
-allows you to label a given section declaration, and provides also a set
-of commands that create hyperlinks.  The label parameter is optional and is
-enclosed in square brackets.
+allows you to label a given section declaration, and provides also a set of
+commands that create hyperlinks to a given label.  The label parameter is
+optional and is enclosed in square brackets.
 
 The following \caps{Lambtex} code produces the document shown in
 \sref{fig:section}.  Note the use of label declarations, three different
-levels of sectioning, and a hyperlink using the \mono{\\ref} command (the
-various hyperlink commands are described in the following section).
+levels of sectioning, and a hyperlink using the '\mono{\\ref}' command
+(the various hyperlink commands are described in the following section).
 
 
 \begin{verbatim}
@@ -475,11 +475,11 @@ For more details, please check Section \ref{sec:introduction}.
 \section{Hyperlinks}
 
 \caps{Lambtex} supports hyperlinks both to external resources and into
-targets in the same document.  The former is provided by the simple
-command \mono{link}, whereas the latter relies on a set of different
-simple commands, each one tailored for a different use and/or kind of
-target.  \sref{tab:hyperlinks} lists all available hyperlinks commands,
-and the following source illustrates their use (the result is shown in
+targets in the same document.  The former is provided by the simple command
+'\mono{\\link}', whereas the latter relies on a set of different simple
+commands, each one tailored for a different use and/or kind of target.
+\sref{tab:hyperlinks} lists all available hyperlinks commands, and
+the following source illustrates their use (the result is shown in
 \sref{fig:hyperlinks}).
 
 
@@ -527,25 +527,26 @@ Command						| Description $
 \caption{The various hyperlinking commands available in \caps{Lambtex}.}
 \end{table}
 
-Note that the use of the smart references offered by command \mono{\\sref}
-is recommended over the manual references provided by command \mono{\\ref}.
+Note that the use of the smart references offered by command '\mono{\\sref}'
+is recommended over the manual references provided by command '\mono{\\ref}'.
 The reason is three-fold.  First, because smart references ensure the
-consistent use of one naming scheme over an entire document and across
-several documents.  Second, because smart references automatically make
-sure that a non-breaking space is inserted between the element name and
-its ordering number, thus preventing their separation by a line break (to
-achieve the same with manual references, the user must explicitly place
-both elements inside an \mono{\\box} command, or use the \mono{\&nbsp;}
-\caps{HTML} entity).  Third and last, because smart references will make a
-hyperlink of both the name and the ordering, which is friendlier for mouse
-clicking and arguably esthetically more pleasant.
+consistent use of one naming scheme over an entire document and across several
+documents.  Second, because smart references automatically make sure that
+a non-breaking space is inserted between the element name and its ordering
+number, thus preventing their separation by a line break (to achieve the same
+with manual references, the user must explicitly place both elements inside
+an '\mono{\\box}' command, or use the '\mono{\&nbsp;}' \caps{HTML} entity).
+Third and last, because smart references will make a hyperlink of both the
+name and the ordering, which is friendlier for mouse clicking and arguably
+esthetically more pleasant.
 
-On a related note, we recommend that \mono{\\see} and \mono{\\cite} commands
-not be separated from the preceding element by spaces.  The default \caps{CSS}
-shipped with \caps{Lambtex}'s \caps{XHTML} rendered already adds a small
-margin, and by not having spaces you avoid the split across line breaks
-or the need to resort to the \mono{\\box} command or the \mono{\&nbsp;}
+On a related note, we recommend that '\mono{\\see}' and '\mono{\\cite}'
+commands not be separated from the preceding element by spaces.  The default
+\caps{CSS} shipped with \caps{Lambtex}'s \caps{XHTML} rendered already adds a
+small margin, and by not having spaces you avoid the split across line breaks
+or the need to resort to the '\mono{\\box}' command or the '\mono{\&nbsp;}'
 \caps{HTML} entity.
+
 
 \section{Floaters}
 
@@ -557,25 +558,26 @@ label and cannot be referred from elsewhere in the document.  However,
 and may be referred from anywhere.  These blocks are called \emph{floaters}.
 
 There are four different classes of floaters available: algorithms, equations,
-figures, and tables.  Moreover, the \emph{figure} class has four sub-classes,
-corresponding to different kinds of figure.  All these classes and sub-classes
-of floaters have some features in common: they may all be captioned, each
-class has an automatically incremented counter, and the alignment parameters
-available for quotation blocks are also valid for floaters.  The sub-sections
-that follow describe the particularities of each class of floater.
+figures, and tables.  Moreover, figures come in four sub-classes, corresponding
+to different kinds of figure.  All these classes and sub-classes of floaters
+have some features in common: they may all be captioned, each class has an
+automatically incremented counter, and the alignment parameters available
+for quotation blocks are also valid for floaters.  The sub-sections that
+follow describe the particularities of each class of floater.
+
 
 \subsection{Algorithms}
 
-The \mono{algorithm} environment may be used to display a box showing an
+The '\mono{algorithm}' environment may be used to display a box showing an
 algorithm or a code listing.  Consider \sref{alg:tree}, an example showing
-the \caps{Ocaml} code to define a simple binary tree and a function to
-count the number of leaves in such a tree.  While it is of course possible
-to also input code listings using the already discussed \mono{verbatim}
-environment, using \mono{algorithm} has a number of advantages.  First,
-algorithms are automatically numbered and allow you to refer to them from
-anywhere in a document.  Second, you can add a caption to an algorithm.
-Third, they offer the possibility of highlighting the code listing according
-to the syntax of the language.
+the \caps{Ocaml} code to define a simple binary tree and a function to count
+the number of leaves in such a tree.  While it is of course possible to
+also input code listings using the already discussed verbatim environment,
+using '\mono{algorithm}' has a number of advantages.  First, algorithms
+are automatically numbered and allow you to refer to them from anywhere
+in a document.  Second, you can add a caption to an algorithm.  Third,
+they offer the possibility of highlighting the code listing according to
+the syntax of the language.
 
 
 \begin[alg:tree]{algorithm}{ocaml}
@@ -596,7 +598,7 @@ data type and a function to count the number of leaves in such trees.}
 The code that produced \sref{alg:tree} is shown below.  Note that an algorithm
 floater is essentially a wrapper around a verbatim environment where the
 code is to be placed.  As for the caption, it is given by the contents of the
-simple command \mono{\\caption}.  At last, note that an algorithm environment
+simple command '\mono{\\caption}'.  At last, note that an algorithm environment
 requires a mandatory additional parameter indicating the language the code
 is written in (\caps{Ocaml} in this case).  You may leave this parameter
 empty if you do not wish syntax highlighting to be applied to the code.
@@ -623,9 +625,9 @@ data type and a function to count the number of leaves in such trees.}
 
 An equation is a floater wrapper around a math environment.  It allows
 mathematical expressions to the numbered and referrenced from anywhere in
-a document.  To use it, simply wrap a \mono{equation} environment around
-a \mono{math} environment.  If you wish the equation to be numbered and
-referenceable, add also \mono{\\caption} command.  The following example
+a document.  To use it, simply wrap a '\mono{equation}' environment around
+a '\mono{math}' environment.  If you wish the equation to be numbered and
+referenceable, add also '\mono{\\caption}' command.  The following example
 defines a equation from a \caps{MathML} source.  The result is shown in
 \sref{eq:example}.
 
@@ -633,7 +635,7 @@ defines a equation from a \caps{MathML} source.  The result is shown in
 \begin{verbatim}
 \begin{equation}
 \begin{math}{mathml}
-<mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn>
+<mrow><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>2</mn>
 \end{math}
 \caption{This is an example equation.}
 \end{equation}
@@ -642,7 +644,7 @@ defines a equation from a \caps{MathML} source.  The result is shown in
 
 \begin[eq:example]{equation}
 \begin{math}{mathml}
-<mi>x</mi><mo>=</mo><mi>y</mi><mo>+</mo><mn>2</mn>
+<mrow><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>2</mn>
 \end{math}
 \caption{This is an example equation.}
 \end{equation}
@@ -651,15 +653,19 @@ defines a equation from a \caps{MathML} source.  The result is shown in
 \subsection{Figures}
 
 \caps{Lambtex} supports four different kinds of figures: raster images
-(bitmap formats such as \caps{PNG} or \caps{JPG}), vectorial images (such as
-the \caps{SVG} format), \caps{ASCII}-art images, and sub-pages whose content
-is a \caps{Lambtex} document in itself.  The four following sections address
-each kind of figure separately.  Note that all kinds of figures share the same
-figure counter, which is incremented automatically every time you declare a
-new figure with a caption.  Moreover, all figure kinds are \emph{floaters}, and
-as such obey the labelling and ordering rules described in \sref{sec:order}.
+(bitmap formats such as \caps{PNG} or \caps{JPG}), vectorial images (such
+as those encoded by the \caps{SVG} format), \caps{ASCII}-art images, and
+sub-pages whose content is a \caps{Lambtex} document in itself.  The four
+following sections address each kind of figure separately.  Note that
+all kinds of figures share the same figure counter, which is incremented
+automatically every time you declare a new figure with a caption.  Moreover,
+all figure kinds are floaters, and as such obey the labelling and ordering
+rules described in \sref{sec:order}.
+
 
 \subsubsection{Bitmap images}
+
+
 
 \begin{verbatim}
 \begin{figure}{bitmap}
@@ -691,9 +697,16 @@ be referenced anywhere in the document.
 
 \begin[fig:ascii]{figure}{ascii}
 \begin{verbatim}
-(\___/)
-(='.'=)
-(")_(")
+           S
+          /|\
+         / | \
+        /  |  \
+       S  '+'  S
+      /|\      |
+     / | \     |
+    S '+' S   'a'
+    |     |
+   '1'   '1'
 \end{verbatim}
 \caption{This is a rabbit.}
 \end{figure}
