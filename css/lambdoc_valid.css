@@ -32,7 +32,6 @@
 .doc_mono	{font-family: monospace;}
 .doc_caps	{font-variant: small-caps;}
 .doc_thru	{text-decoration: line-through;}
-.doc_box	{color: red;}
 
 
 /********************************************************************************/
@@ -49,16 +48,15 @@
 	margin-left: 0.3em;
 	font-size: smaller;
 	vertical-align: 10%;
-	color: red;
+	color: #0000cc;
 	}
 
 .doc_cite
 	{
 	margin-left: 0.3em;
-	color: green;
+	color: #0000cc;
 	}
 	
-
 
 /********************************************************************************/
 /* Document lists.								*/
@@ -117,6 +115,16 @@
 .doc_fig_ascii		{margin: 0;}
 .doc_pre		{margin: 1em 1em 2em 1em;}
 .doc_eq > pre		{margin: 0;}
+
+
+/********************************************************************************/
+/* Mathematics.									*/
+/********************************************************************************/
+
+div > .doc_math
+	{
+	margin-left: 1em;
+	}
 
 
 /********************************************************************************/
