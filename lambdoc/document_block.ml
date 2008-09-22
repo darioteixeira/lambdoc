@@ -158,36 +158,42 @@ sig
 	*)
 	type nestable_frag_t = Block.nestable_block_t list with sexp
 
+
+
+	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
+
+	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
+
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
+
+	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
+
+	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
+
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
+
+
+
 	(**	The type of equations.  Equations are just a floater wrapper
-		around a math environment.
+		around a math block.
 	*)
-	type equation_t =
-		[ `Math of Alignment.t * Math.t
-		] with sexp
+	type equation_block_t = [ math_block_t ] with sexp
 
 	(**	The type of algorithms.  Algorithms are just a floater wrapper
-		around a code environment.
+		around a code block.
 	*)
-	type algorithm_t =
-		[ `Code of Alignment.t * syntax_t * Node.textual_seq_t
-		] with sexp
+	type algorithm_block_t = [ code_block_t ] with sexp
 
 	(**	The type of tables.  Tables are just a floater wrapper
-		around a tabular environment.
+		around a tabular block.
 	*)
-	type table_t =
-		[ `Tabular of Alignment.t * Tabular.t
-		] with sexp
+	type table_block_t = [ tabular_block_t ] with sexp
 
 	(**	The type of figures.  Figures are just a floater wrapper
 		around one of the three figure types: images, verbatim
 		environments (for ASCII-art), and subpages.
 	*)
-	type figure_t =
-		[ `Image of Alignment.t * alias_t
-		| `Verbatim of Alignment.t * Node.textual_seq_t
-		| `Subpage of Alignment.t * super_frag_t
-		] with sexp
+	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
 
 	(**	Top blocks may not be nested.
 	*)
@@ -203,16 +209,16 @@ sig
 		| `Itemize of Bullet.t * nestable_frag_t plus_t
 		| `Enumerate of Numbering.t * nestable_frag_t plus_t
 		| `Quote of Alignment.t * nestable_frag_t
-		| `Math of Alignment.t * Math.t
-		| `Code of Alignment.t * syntax_t * Node.textual_seq_t
-		| `Verbatim of Alignment.t * Node.textual_seq_t
-		| `Tabular of Alignment.t * Tabular.t
-		| `Image of Alignment.t * alias_t
-		| `Subpage of Alignment.t * super_frag_t
-		| `Equation of floater_t * equation_t
-		| `Algorithm of floater_t * algorithm_t
-		| `Table of floater_t * table_t
-		| `Figure of floater_t * figure_t
+		| math_block_t
+		| code_block_t
+		| verbatim_block_t
+		| tabular_block_t
+		| image_block_t
+		| subpage_block_t
+		| `Equation of floater_t * equation_block_t
+		| `Algorithm of floater_t * algorithm_block_t
+		| `Table of floater_t * table_block_t
+		| `Figure of floater_t * figure_block_t
 		] with sexp
 
 	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
@@ -250,25 +256,25 @@ sig
 	val quote: Alignment.t -> (nestable_block_t, 'b) t list ->
 		([> nestable_block_t ], 'b) t
 	val math: Alignment.t -> Math.t ->
-		([> nestable_block_t ], [> `Composition]) t
+		([> math_block_t ], [> `Composition]) t
 	val code: Alignment.t -> syntax_t -> Node.textual_seq_t ->
-		([> nestable_block_t ], [> `Composition]) t
+		([> code_block_t ], [> `Composition]) t
 	val verbatim: Alignment.t -> Node.textual_seq_t ->
-		([> nestable_block_t ], [> `Composition]) t
+		([> verbatim_block_t ], [> `Composition]) t
 	val tabular: Alignment.t -> Tabular.t ->
-		([> nestable_block_t ], [> `Manuscript]) t
+		([> tabular_block_t ], [> `Manuscript]) t
 	val image: Alignment.t -> alias_t ->
-		([> nestable_block_t ], [> `Composition]) t
+		([> image_block_t ], [> `Composition]) t
 	val subpage: Alignment.t -> ([< super_block_t ], 'b) t list ->
-		([> nestable_block_t ], 'b) t
+		([> subpage_block_t ], 'b) t
 
-	val equation: floater_t -> equation_t ->
+	val equation: floater_t -> equation_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val algorithm: floater_t -> algorithm_t ->
+	val algorithm: floater_t -> algorithm_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val table: floater_t -> table_t ->
+	val table: floater_t -> table_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val figure: floater_t -> figure_t ->
+	val figure: floater_t -> figure_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
@@ -290,23 +296,25 @@ struct
 
 	type nestable_frag_t = Block.nestable_block_t list with sexp
 
-	type equation_t =
-		[ `Math of Alignment.t * Math.t
-		] with sexp
+	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
 
-	type algorithm_t =
-		[ `Code of Alignment.t * syntax_t * Node.textual_seq_t
-		] with sexp
+	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
 
-	type table_t =
-		[ `Tabular of Alignment.t * Tabular.t
-		] with sexp
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 
-	type figure_t =
-		[ `Image of Alignment.t * alias_t
-		| `Verbatim of Alignment.t * Node.textual_seq_t
-		| `Subpage of Alignment.t * super_frag_t
-		] with sexp
+	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
+
+	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
+
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
+
+	type equation_block_t = [ math_block_t ] with sexp
+
+	type algorithm_block_t = [ code_block_t ] with sexp
+
+	type table_block_t = [ tabular_block_t ] with sexp
+
+	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
 
 	type top_block_t =
 		[ `Heading of heading_t
@@ -318,16 +326,16 @@ struct
 		| `Itemize of Bullet.t * nestable_frag_t plus_t
 		| `Enumerate of Numbering.t * nestable_frag_t plus_t
 		| `Quote of Alignment.t * nestable_frag_t
-		| `Math of Alignment.t * Math.t
-		| `Code of Alignment.t * syntax_t * Node.textual_seq_t
-		| `Verbatim of Alignment.t * Node.textual_seq_t
-		| `Tabular of Alignment.t * Tabular.t
-		| `Image of Alignment.t * alias_t
-		| `Subpage of Alignment.t * super_frag_t
-		| `Equation of floater_t * equation_t
-		| `Algorithm of floater_t * algorithm_t
-		| `Table of floater_t * table_t
-		| `Figure of floater_t * figure_t
+		| math_block_t
+		| code_block_t
+		| verbatim_block_t
+		| tabular_block_t
+		| image_block_t
+		| subpage_block_t
+		| `Equation of floater_t * equation_block_t
+		| `Algorithm of floater_t * algorithm_block_t
+		| `Table of floater_t * table_block_t
+		| `Figure of floater_t * figure_block_t
 		] with sexp
 
 	type super_block_t = [ top_block_t | nestable_block_t ] with sexp

@@ -111,8 +111,8 @@ let to_string = function
 	| HEAD comm			-> sprintf "HEAD: %s" (sprintf_command comm)
 	| FOOT comm			-> sprintf "FOOT: %s" (sprintf_command comm)
 	| BODY comm			-> sprintf "BODY: %s" (sprintf_command comm)
-	| TITLE comm			-> sprintf "TITLE: %s" (sprintf_command comm)
-	| AUTHOR comm			-> sprintf "AUTHOR: %s" (sprintf_command comm)
-	| RESOURCE comm			-> sprintf "RESOURCE: %s" (sprintf_command comm)
+	| BIB_TITLE comm		-> sprintf "BIB_TITLE: %s" (sprintf_command comm)
+	| BIB_AUTHOR comm		-> sprintf "BIB_AUTHOR: %s" (sprintf_command comm)
+	| BIB_RESOURCE comm		-> sprintf "BIB_RESOURCE: %s" (sprintf_command comm)
 	| NOTE comm			-> sprintf "NOTE: %s" (sprintf_command comm)
 

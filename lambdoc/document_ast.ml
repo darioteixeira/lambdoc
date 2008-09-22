@@ -35,23 +35,18 @@ type operator_t =
 (**	{2 Data types for inline context}					*)
 (********************************************************************************)
 
-type textual_node_t =
-	[ `AST_plain of plain_t
-	| `AST_entity of entity_t
-	]
-
-type textual_seq_t = textual_node_t list
-
 type super_seq_t = super_node_t list
 
- and nonlink_seq_t = nonlink_node_t list
+and nonlink_seq_t = nonlink_node_t list
 
- and super_node_t =
+and textual_seq_t = textual_node_t list
+
+and super_node_t =
 	[ `AST_nonlink_node of nonlink_node_t
 	| `AST_link_node of link_node_t
 	]
 
- and nonlink_node_t =
+and nonlink_node_t =
 	[ `AST_textual of textual_node_t
 	| `AST_mathtex_inl of operator_t * plain_t
 	| `AST_mathml_inl of operator_t * plain_t
@@ -65,13 +60,18 @@ type super_seq_t = super_node_t list
 	| `AST_box of command_t * super_seq_t
 	]
 
- and link_node_t =
+and link_node_t =
 	[ `AST_link of command_t * link_t * nonlink_seq_t
 	| `AST_see of command_t * ref_t	
 	| `AST_cite of command_t * ref_t
 	| `AST_ref of command_t * ref_t
 	| `AST_sref of command_t * ref_t
 	| `AST_mref of command_t * ref_t * nonlink_seq_t
+	]
+
+and textual_node_t =
+	[ `AST_plain of plain_t
+	| `AST_entity of entity_t
 	]
 
 
@@ -168,15 +168,15 @@ and figure_t =
 	]
 
 and bib_title_t =
-	[ `AST_title of command_t * super_seq_t
+	[ `AST_bib_title of command_t * super_seq_t
 	]
 
 and bib_author_t =
-	[ `AST_author of command_t * super_seq_t
+	[ `AST_bib_author of command_t * super_seq_t
 	]
 
 and bib_resource_t =
-	[ `AST_resource of command_t * super_seq_t
+	[ `AST_bib_resource of command_t * super_seq_t
 	]
 
 

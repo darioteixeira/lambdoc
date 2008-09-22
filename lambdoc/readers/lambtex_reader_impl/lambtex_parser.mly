@@ -131,9 +131,9 @@ open Document_ast
 %token <Document_ast.command_t> HEAD
 %token <Document_ast.command_t> FOOT
 %token <Document_ast.command_t> BODY
-%token <Document_ast.command_t> TITLE
-%token <Document_ast.command_t> AUTHOR
-%token <Document_ast.command_t> RESOURCE
+%token <Document_ast.command_t> BIB_TITLE
+%token <Document_ast.command_t> BIB_AUTHOR
+%token <Document_ast.command_t> BIB_RESOURCE
 %token <Document_ast.command_t> NOTE
 
 
@@ -261,15 +261,15 @@ figure:
 
 
 bib_title:
-	| TITLE BEGIN super_node+ END				{`AST_title ($1, $3)}
+	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 
 
 bib_author:
-	| AUTHOR BEGIN super_node+ END				{`AST_author ($1, $3)}
+	| BIB_AUTHOR BEGIN super_node+ END			{`AST_bib_author ($1, $3)}
 
 
 bib_resource:
-	| RESOURCE BEGIN super_node+ END			{`AST_resource ($1, $3)}
+	| BIB_RESOURCE BEGIN super_node+ END			{`AST_bib_resource ($1, $3)}
 
 
 /********************************************************************************/

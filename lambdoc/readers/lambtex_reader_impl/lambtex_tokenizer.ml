@@ -142,9 +142,9 @@ let get_simple_tag params =
 		| "head"		-> (HEAD params,		Set Block)
 		| "foot"		-> (FOOT params,		Set Block)
 		| "body"		-> (BODY params,		Set Block)
-		| "title"		-> (TITLE params,		Set Block)
-		| "author"		-> (AUTHOR params,		Set Block)
-		| "resource"		-> (RESOURCE params,		Set Block)
+		| "title"		-> (BIB_TITLE params,		Set Block)
+		| "author"		-> (BIB_AUTHOR params,		Set Block)
+		| "resource"		-> (BIB_RESOURCE params,	Set Block)
 		| "note"		-> (NOTE params,		Set Block)
 
 		| other			-> raise (Unknown_simple_command other)
