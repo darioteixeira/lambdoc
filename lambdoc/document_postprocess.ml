@@ -160,7 +160,10 @@ end
 
 (**	Processes an AST as provided by the parser, producing the corresponding
 	document.  In addition, a list of labels, bibliography entries, notes,
-	and possible errors is also returned.
+	and possible errors is also returned.  Note that many of the internal
+	functions have explicit type annotations.  While these are not required
+	by the language, they make error messages far more comprehensible in
+	a context where polymorphic variants are heavily used.
 *)
 let process_document document_ast =
 
@@ -186,6 +189,10 @@ let process_document document_ast =
 	and note_counter = ref 0
 	and appendixed = ref false in
 
+
+	(************************************************************************)
+	(* Helper sub-functions.						*)
+	(************************************************************************)
 
 	(*	This subfunction returns the type of bullet associated with
 		an itemize environment.  If no extra parameter is given, the
@@ -346,7 +353,7 @@ let process_document document_ast =
 
 
 	(************************************************************************)
-	(* Postprocessing functions mathematics.				*)
+	(* Postprocessing functions for mathematics.				*)
 	(************************************************************************)
 
 	let convert_mathtex constructor linenum txt =
@@ -513,8 +520,7 @@ let process_document document_ast =
 	(* Postprocessing functions for tabular environment.			*)
 	(************************************************************************)
 
-	let convert_tabular comm tab = () in
-		(*
+	let convert_tabular comm tab =
 		let tcols = match comm.comm_secondary with
 			| None		-> [| |]
 			| Some thing	-> Array.map (get_column comm) (Array.of_list (String.explode thing)) in
@@ -548,7 +554,6 @@ let process_document document_ast =
 		in match tab.tbodies with
 			| []		-> failwith "Parser has given us an empty tabular body"
 			| hd::tl	-> Tabular.make tcols ?thead ?tfoot (fplus convert_group hd tl) in
-		*)
 
 
 	(************************************************************************)
@@ -594,7 +599,7 @@ let process_document document_ast =
 			in check_comm comm `Feature_setting elem
 
 
-	and convert_heading : bool -> Document_ast.heading_t -> (Block.top_block_t, _) Block.t option = function subpaged -> function
+	and convert_heading : bool -> Document_ast.heading_block_t -> (Block.top_block_t, _) Block.t option = function subpaged -> function
 
 		| `AST_section (comm, seq) ->
 			let elem () =
@@ -728,7 +733,7 @@ let process_document document_ast =
 			in check_comm comm `Feature_notes elem
 
 
-	and convert_nestable_block subpaged = function
+	and convert_nestable_block : bool -> Document_ast.nestable_block_t -> (Block.nestable_block_t, _) Block.t option = function subpaged -> function
 
 		| `AST_paragraph (op, seq) ->
 			let elem () = Some (Block.paragraph (convert_super_seq seq))
@@ -780,8 +785,7 @@ let process_document document_ast =
 		| `AST_tabular (comm, tab) ->
 			let elem () =
 				let alignment = get_alignment comm comm.comm_extra
-				(*in Some (Block.tabular alignment (convert_tabular tab))*)
-				in None
+				in Some (Block.tabular alignment (convert_tabular comm tab))
 			in check_comm comm `Feature_tabular elem
 
 		| `AST_image (comm, alias) ->
@@ -870,7 +874,7 @@ let process_document document_ast =
 			in check_comm comm `Feature_note elem
 
 
-	and convert_item subpaged = function
+	and convert_item subpaged : Document_ast.item_block_t -> (Block.nestable_block_t, _) Block.t list = function
 
 		| `AST_item (comm, frag) ->
 			convert_nestable_frag subpaged frag
@@ -881,7 +885,7 @@ let process_document document_ast =
 		| hd::tl	-> fplus (convert_item subpaged) hd tl
 
 
-	and convert_equation : Document_ast.equation_t -> Block.equation_block_t option = function
+	and convert_equation : Document_ast.equation_block_t -> Block.equation_block_t option = function
 
 		| `AST_mathtex_blk (comm, txt) ->
 			let elem () =
@@ -896,7 +900,7 @@ let process_document document_ast =
 			in check_comm comm `Feature_mathml_blk elem
 
 
-	and convert_algorithm : Document_ast.algorithm_t -> Block.algorithm_block_t option = function
+	and convert_algorithm : Document_ast.algorithm_block_t -> Block.algorithm_block_t option = function
 
 		| `AST_code (comm, seq) ->
 			let elem () =
@@ -906,17 +910,16 @@ let process_document document_ast =
 			in check_comm comm `Feature_code elem
 
 
-	and convert_table : Document_ast.table_t -> Block.table_block_t option = function
+	and convert_table : Document_ast.table_block_t -> Block.table_block_t option = function
 
 		| `AST_tabular (comm, tab) ->
 			let elem () =
 				let alignment = get_alignment comm comm.comm_extra
-				(*in Some (Block.tabular alignment (convert_tabular tab))*)
-				in None
+				in Some (Block.tabular alignment (convert_tabular comm tab))
 			in check_comm comm `Feature_tabular elem
 
 
-	and convert_figure : Document_ast.figure_t -> Block.figure_block_t option = function
+	and convert_figure : Document_ast.figure_block_t -> Block.figure_block_t option = function
 
 		| `AST_verbatim (comm, seq) ->
 			let elem () =
@@ -937,28 +940,28 @@ let process_document document_ast =
 			in check_comm comm `Feature_subpage elem
 
 
-	and convert_caption : Document_ast.caption_t -> (Node.super_node_t, _) Node.t list option = function
+	and convert_caption : Document_ast.caption_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_caption (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
 			in check_comm comm `Feature_caption elem
 
 
-	and convert_bib_title : Document_ast.bib_title_t -> (Node.super_node_t, _) Node.t list option = function
+	and convert_bib_title : Document_ast.bib_title_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_bib_title (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
 			in check_comm comm `Feature_bib_title elem
 
 
-	and convert_bib_author : Document_ast.bib_author_t -> (Node.super_node_t, _) Node.t list option = function
+	and convert_bib_author : Document_ast.bib_author_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_bib_author (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
 			in check_comm comm `Feature_bib_author elem
 
 
-	and convert_bib_resource : Document_ast.bib_resource_t -> (Node.super_node_t, _) Node.t list option = function
+	and convert_bib_resource : Document_ast.bib_resource_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_bib_resource (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)

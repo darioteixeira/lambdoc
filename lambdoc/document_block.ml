@@ -138,7 +138,7 @@ sig
 		of sections.  Note that special sections such as the TOC or the
 		Bibliography are automatically mapped to the highest section level.
 	*)
-	type heading_t =
+	type heading_block_t =
 		[ `Section of Label.t * Order.user_sectional_order_t * Node.super_seq_t
 		| `Subsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
 		| `Subsubsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
@@ -158,21 +158,29 @@ sig
 	*)
 	type nestable_frag_t = Block.nestable_block_t list with sexp
 
-
-
+	(**	Math block.
+	*)
 	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
 
+	(**	Code block.
+	*)
 	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
 
+	(**	Tabular block.
+	*)
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 
+	(**	Image block.
+	*)
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
 
+	(**	Verbatim block.
+	*)
 	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
 
+	(**	Subpage block.
+	*)
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
-
-
 
 	(**	The type of equations.  Equations are just a floater wrapper
 		around a math block.
@@ -198,7 +206,7 @@ sig
 	(**	Top blocks may not be nested.
 	*)
 	type top_block_t =
-		[ `Heading of heading_t
+		[ `Heading of heading_block_t
 		| `Rule
 		] with sexp
 
@@ -280,7 +288,7 @@ end =
 struct
 	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
 
-	type heading_t =
+	type heading_block_t =
 		[ `Section of Label.t * Order.user_sectional_order_t * Node.super_seq_t
 		| `Subsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
 		| `Subsubsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
@@ -317,7 +325,7 @@ struct
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
 
 	type top_block_t =
-		[ `Heading of heading_t
+		[ `Heading of heading_block_t
 		| `Rule
 		] with sexp
 

@@ -3,7 +3,7 @@
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
-	This software is distributed nestable the terms of the GNU GPL version 2.
+	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
@@ -105,13 +105,13 @@ and super_block_t =
 	]
 
 and top_block_t =
-	[ `AST_heading of heading_t
+	[ `AST_heading of heading_block_t
 	| `AST_appendix of command_t
 	| `AST_rule of command_t
 	| `AST_setting of command_t * string * string
 	]
 
-and heading_t =
+and heading_block_t =
 	[ `AST_section of command_t * super_seq_t
 	| `AST_subsection of command_t * super_seq_t
 	| `AST_subsubsection of command_t * super_seq_t
@@ -122,8 +122,8 @@ and heading_t =
 
 and nestable_block_t =
 	[ `AST_paragraph of operator_t * super_seq_t
-	| `AST_itemize of command_t * item_t list
-	| `AST_enumerate of command_t * item_t list
+	| `AST_itemize of command_t * item_block_t list
+	| `AST_enumerate of command_t * item_block_t list
 	| `AST_quote of command_t * nestable_frag_t
 	| `AST_mathtex_blk of command_t * plain_t
 	| `AST_mathml_blk of command_t * plain_t
@@ -132,50 +132,50 @@ and nestable_block_t =
 	| `AST_tabular of command_t * tabular_t
 	| `AST_image of command_t * plain_t
 	| `AST_subpage of command_t * super_frag_t
-	| `AST_equation of command_t * caption_t * equation_t
-	| `AST_algorithm of command_t * caption_t * algorithm_t
-	| `AST_table of command_t * caption_t * table_t
-	| `AST_figure of command_t * caption_t * figure_t
-	| `AST_bib of command_t * bib_title_t * bib_author_t * bib_resource_t
+	| `AST_equation of command_t * caption_block_t * equation_block_t
+	| `AST_algorithm of command_t * caption_block_t * algorithm_block_t
+	| `AST_table of command_t * caption_block_t * table_block_t
+	| `AST_figure of command_t * caption_block_t * figure_block_t
+	| `AST_bib of command_t * bib_title_block_t * bib_author_block_t * bib_resource_block_t
 	| `AST_note of command_t * super_seq_t
 	]
 
-and item_t =
+and item_block_t =
 	[ `AST_item of command_t * nestable_frag_t
 	]
 
-and caption_t =
+and caption_block_t =
 	[ `AST_caption of command_t * super_seq_t
 	]
 
-and equation_t =
+and equation_block_t =
 	[ `AST_mathtex_blk of command_t * plain_t
 	| `AST_mathml_blk of command_t * plain_t
 	]
 
-and algorithm_t =
+and algorithm_block_t =
 	[ `AST_code of command_t * textual_seq_t
 	]
 
-and table_t =
+and table_block_t =
 	[ `AST_tabular of command_t * tabular_t
 	]
 
-and figure_t =
+and figure_block_t =
 	[ `AST_image of command_t * plain_t
 	| `AST_verbatim of command_t * textual_seq_t
 	| `AST_subpage of command_t * super_frag_t
 	]
 
-and bib_title_t =
+and bib_title_block_t =
 	[ `AST_bib_title of command_t * super_seq_t
 	]
 
-and bib_author_t =
+and bib_author_block_t =
 	[ `AST_bib_author of command_t * super_seq_t
 	]
 
-and bib_resource_t =
+and bib_resource_block_t =
 	[ `AST_bib_resource of command_t * super_seq_t
 	]
 

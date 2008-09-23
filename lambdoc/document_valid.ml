@@ -27,7 +27,7 @@ sig
 		content: Block.super_frag_t;
 		bibs: Bib.t list;
 		notes: Note.t list;
-		toc: Block.heading_t list;
+		toc: Block.heading_block_t list;
 		labels: Label_dict.t;
 		settings: Settings.t;
 		} with sexp
@@ -42,7 +42,7 @@ sig
 		([< Block.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
 		Bib.t list ->
 		Note.t list ->
-		Block.heading_t list ->
+		Block.heading_block_t list ->
 		Label_dict.t ->
 		Settings.t ->
 		manuscript_t
@@ -60,7 +60,7 @@ struct
 		content: Block.super_frag_t;
 		bibs: Bib.t list;
 		notes: Note.t list;
-		toc: Block.heading_t list;
+		toc: Block.heading_block_t list;
 		labels: Label_dict.t;
 		settings: Settings.t;
 		} with sexp

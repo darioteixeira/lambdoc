@@ -40,7 +40,7 @@ sig
 		([< Block.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
 		Bib.t list ->
 		Note.t list ->
-		Block.heading_t list ->
+		Block.heading_block_t list ->
 		Label_dict.t ->
 		Settings.t ->
 		manuscript_t

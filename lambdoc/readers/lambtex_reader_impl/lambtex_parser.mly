@@ -146,17 +146,17 @@ open Document_ast
 %type <Document_ast.t>				document
 %type <Document_ast.super_block_t>		super_block
 %type <Document_ast.top_block_t>		top_block
-%type <Document_ast.heading_t>			heading
+%type <Document_ast.heading_block_t>		heading
 %type <Document_ast.nestable_block_t>		nestable_block
-%type <Document_ast.item_t list>		items
+%type <Document_ast.item_block_t list>		items
 
-%type <Document_ast.equation_t>			equation
-%type <Document_ast.algorithm_t>		algorithm
-%type <Document_ast.table_t>			table
-%type <Document_ast.figure_t>			figure
-%type <Document_ast.bib_title_t>		bib_title
-%type <Document_ast.bib_author_t>		bib_author
-%type <Document_ast.bib_resource_t>		bib_resource
+%type <Document_ast.equation_block_t>		equation
+%type <Document_ast.algorithm_block_t>		algorithm
+%type <Document_ast.table_block_t>		table
+%type <Document_ast.figure_block_t>		figure
+%type <Document_ast.bib_title_block_t>		bib_title
+%type <Document_ast.bib_author_block_t>		bib_author
+%type <Document_ast.bib_resource_block_t>	bib_resource
 
 %type <Document_ast.tabular_t>			tabular
 %type <Document_ast.tabular_group_t>		head
