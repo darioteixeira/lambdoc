@@ -8,6 +8,7 @@
 *)
 (********************************************************************************)
 
+open Document_ast
 open Document_error
 open Document_ambivalent
 
@@ -17,6 +18,6 @@ open Document_ambivalent
 (********************************************************************************)
 
 val collate_errors: string -> (int * Error.error_msg_t) list -> Error.t list
-val process_manuscript: string -> Document_ast.t -> Ambivalent.manuscript_t
-val process_composition: string -> Document_ast.t -> Ambivalent.composition_t
+val process_manuscript: string -> Ast.t -> Ambivalent.manuscript_t
+val process_composition: string -> Ast.t -> Ambivalent.composition_t
 

@@ -14,6 +14,7 @@ open Printf
 open ExtList
 open ExtString
 open XHTML.M
+open Document_basic
 open Document_ref
 open Document_node
 open Document_tabular
@@ -35,6 +36,8 @@ exception Command_ref_with_non_block
 exception Command_sref_with_non_block
 exception Empty_error_context
 exception Empty_error_list
+
+type sectional_levels_t = Sectional_top | Sectional_middle | Sectional_bottom
 
 type textual_node_xhtml_t = [`PCDATA ] XHTML.M.elt
 type nonlink_node_xhtml_t = [`B | `I | `PCDATA | `Span | `Sub | `Sup ] XHTML.M.elt
@@ -105,55 +108,78 @@ let wrap_order order =
 let make_sref name ref order =
 	make_internal_link (`User_label ref) [pcdata name; space (); pcdata (make_order order)]
 
-let make_sectional (level: ?a: 'a XHTML.M.attrib list -> 'b) label order content =
-	level ~a:[a_id (make_label label); a_class ["doc_sec"]] ((wrap_order order) @ [span content])
+let make_sectional level label order content =
+	let cons = match level with
+		| Sectional_top		-> XHTML.M.h2
+		| Sectional_middle	-> XHTML.M.h3
+		| Sectional_bottom	-> XHTML.M.h4
+	in cons ?a:(Some [a_id (make_label label); a_class ["doc_sec"]]) ((wrap_order order) @ [span content])
 
 let make_toc_entry label order content =
 	XHTML.M.li [make_internal_link label ((wrap_order order) @ [span content])]
+
+let make_align align =
+	"doc_align_" ^ (Alignment.to_string align)
 
 
 (********************************************************************************)
 (**	{3 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let convert_valid_document classname doc =
+let write_valid_document classname doc =
 
-	let rec convert_textual_node : Node.textual_node_t -> textual_node_xhtml_t = function
+
+	(************************************************************************)
+	(* Converters for inline context.					*)
+	(************************************************************************)
+
+	let rec write_super_seq seq =
+		List.map write_super_node seq
+
+
+	and write_nonlink_seq seq =
+		List.map write_nonlink_node seq
+
+
+	and write_textual_seq seq =
+		List.map write_textual_node seq
+
+
+	and write_textual_node : Node.textual_node_t -> textual_node_xhtml_t = function
 		| `Plain txt ->
 			XHTML.M.pcdata txt 
 		| `Entity txt ->
 			XHTML.M.entity txt
 
 
-	and convert_nonlink_node: Node.nonlink_node_t -> nonlink_node_xhtml_t = function
-
+	and write_nonlink_node: Node.nonlink_node_t -> nonlink_node_xhtml_t = function
 		| #Node.textual_node_t as node ->
-			(convert_textual_node node :> nonlink_node_xhtml_t)
+			(write_textual_node node :> nonlink_node_xhtml_t)
 		| `Math math ->
 			let elem : [> `Span] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
 			in XHTML.M.span ~a:[a_class ["doc_math"]] [elem]
 		| `Bold seq ->
-			XHTML.M.b (convert_super_seq seq)
+			XHTML.M.b (write_super_seq seq)
 		| `Emph seq ->
-			XHTML.M.i (convert_super_seq seq)
+			XHTML.M.i (write_super_seq seq)
 		| `Mono seq ->
-			XHTML.M.span ~a:[a_class ["doc_mono"]] (convert_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_mono"]] (write_super_seq seq)
 		| `Caps seq ->
-			XHTML.M.span ~a:[a_class ["doc_caps"]] (convert_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_super_seq seq)
 		| `Thru seq ->
-			XHTML.M.span ~a:[a_class ["doc_thru"]] (convert_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_thru"]] (write_super_seq seq)
 		| `Sup seq ->
-			XHTML.M.sup (convert_super_seq seq)
+			XHTML.M.sup (write_super_seq seq)
 		| `Sub seq ->
-			XHTML.M.sub (convert_super_seq seq)
+			XHTML.M.sub (write_super_seq seq)
 		| `Box seq ->
-			XHTML.M.span ~a:[a_class ["doc_box"]] (convert_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_box"]] (write_super_seq seq)
 
 
-	and convert_link_node : Node.link_node_t -> link_node_xhtml_t = function
+	and write_link_node : Node.link_node_t -> link_node_xhtml_t = function
 
 		| `Link (lnk, seq) ->
-			make_external_link lnk (convert_nonlink_seq seq)
+			make_external_link lnk (write_nonlink_seq seq)
 
 		| `See ref ->
 			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
@@ -218,218 +244,316 @@ let convert_valid_document classname doc =
 				| _ ->
 					raise Command_sref_with_non_block)
 
-		| `Mref (ref, seq)
-			-> make_internal_link (`User_label ref) (convert_nonlink_seq seq)
+		| `Mref (ref, seq) ->
+			make_internal_link (`User_label ref) (write_nonlink_seq seq)
 
 
-	and convert_super_node = function
+	and write_super_node = function
 		| #Node.nonlink_node_t as node ->
-			(convert_nonlink_node node :> super_node_xhtml_t)
+			(write_nonlink_node node :> super_node_xhtml_t)
 		| #Node.link_node_t as node->
-			(convert_link_node node :> super_node_xhtml_t)
+			(write_link_node node :> super_node_xhtml_t) in
 
 
-	and convert_textual_seq seq =
-		List.map convert_textual_node seq
+	(************************************************************************)
+	(* Converters for tabular environment.					*)
+	(************************************************************************)
 
-
-	and convert_super_seq seq =
-		List.map convert_super_node seq
-
-
-	and convert_nonlink_seq seq =
-		List.map convert_nonlink_node seq
-
-
-	and convert_tabular tab =
+	let write_tabular align tab =
 
 		let ord = ref (-1) in
 
-		let convert_cell ord seq =
+		let write_cell ord seq =
 			let (alignment, weight) = Array.get tab.Tabular.tcols (ord+1) in
 			let col_class = "doc_col_" ^ Tabular.alignment_to_string alignment
 			in match weight with
-				| Tabular.Normal -> XHTML.M.td ~a:[a_class [col_class]] (convert_super_seq seq)
-				| Tabular.Strong -> XHTML.M.th ~a:[a_class [col_class]] (convert_super_seq seq) in
+				| Tabular.Normal -> XHTML.M.td ~a:[a_class [col_class]] (write_super_seq seq)
+				| Tabular.Strong -> XHTML.M.th ~a:[a_class [col_class]] (write_super_seq seq) in
 
-		let convert_row (hd, tl) =
+		let write_row (hd, tl) =
 			incr ord;
 			let row_class = "doc_row_" ^ (if !ord mod 2 = 0 then "even" else "odd")
-			in XHTML.M.tr ~a:[a_class [row_class]] (convert_cell (-1) hd) (List.mapi convert_cell tl) in
+			in XHTML.M.tr ~a:[a_class [row_class]] (write_cell (-1) hd) (List.mapi write_cell tl) in
 
-		let convert_group (hd, tl) =
-			let hd = convert_row hd in
-			let tl = List.map convert_row tl
+		let write_group (hd, tl) =
+			let hd = write_row hd in
+			let tl = List.map write_row tl
 			in (hd, tl) in
 
 		let thead = match tab.Tabular.thead with
 			| None		-> None
-			| Some grp	-> let (hd, tl) = convert_group grp in Some (XHTML.M.thead hd tl)
+			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.thead hd tl)
 
 		and tfoot = match tab.Tabular.tfoot with
 			| None		-> None
-			| Some grp	-> let (hd, tl) = convert_group grp in Some (XHTML.M.tfoot hd tl)
+			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot hd tl)
 
 		and (tbody_hd, tbody_tl) =
-			let convert_tbody grp =
-				let (hd, tl) = convert_group grp
+			let write_tbody grp =
+				let (hd, tl) = write_group grp
 				in XHTML.M.tbody hd tl in
 			let (hd, tl) = tab.Tabular.tbodies
-			in (convert_tbody hd, List.map convert_tbody tl)
+			in (write_tbody hd, List.map write_tbody tl)
 
-		in XHTML.M.tablex ~a:[a_class ["doc_tabular"]] ?thead ?tfoot tbody_hd tbody_tl
+		in XHTML.M.tablex ~a:[a_class ["doc_tabular"]] ?thead ?tfoot tbody_hd tbody_tl in
 
 
-	and convert_heading = function
+	(************************************************************************)
+	(* Converters for document blocks.					*)
+	(************************************************************************)
+
+	let rec write_super_frag frag =
+		List.map write_super_block frag
+
+
+	and write_nestable_frag frag =
+		List.map write_nestable_block frag
+
+
+	and write_paragraph_frag frag =
+		List.map write_paragraph_block frag
+
+
+	and write_item_frag = function
+		| (hd, tl) -> fplus (fun el -> XHTML.M.li (write_nestable_frag el)) hd tl
+
+
+	and write_paragraph_block = function
+		| `Paragraph seq ->
+			XHTML.M.p ~a:[a_class ["doc_par"]] (write_super_seq seq)
+
+
+	and write_itemize_block = function
+		| `Itemize (bul, (hd_frag, tl_frags)) ->
+			let (hd, tl) = write_item_frag (hd_frag, tl_frags)
+			and style = "doc_style_" ^ (Bullet.to_string bul)
+			in XHTML.M.ul ~a:[a_class ["doc_itemize"; style]] hd tl
+
+
+	and write_enumerate_block = function
+		| `Enumerate (num, (hd_frag, tl_frags)) ->
+			let (hd, tl) = write_item_frag (hd_frag, tl_frags)
+			and style = "doc_style_" ^ (Numbering.to_string num)
+			in XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl
+
+
+	and write_quote_block = function
+		| `Quote (align, frag) ->
+			XHTML.M.blockquote ~a:[a_class ["doc_quote"; make_align align]] (write_nestable_frag frag)
+
+
+	and write_math_block = function
+		| `Math (align, math) ->
+			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
+			in XHTML.M.div ~a:[a_class ["doc_math"; make_align align]] [elem]
+
+
+	and write_code_block = function
+		| `Code (align, syntax, seq) ->
+			XHTML.M.pre ~a:[a_class ["doc_code"; make_align align]] (write_textual_seq seq)
+
+
+	and write_verbatim_block = function
+		| `Verbatim (align, seq) ->
+			XHTML.M.pre ~a:[a_class ["doc_verbatim"; make_align align]] (write_textual_seq seq)
+
+
+	and write_tabular_block = function
+		| `Tabular (align, tab) ->
+			write_tabular align tab
+
+
+	and write_image_block = function
+		| `Image (align, alias) ->
+			let image = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
+			in XHTML.M.div ~a:[a_class ["doc_image"; make_align align]] [image]
+
+
+	and write_subpage_block = function
+		| `Subpage (align, frag) ->
+			XHTML.M.div ~a:[a_class ["doc_subpage"; make_align align]] (write_super_frag frag)
+
+
+	and write_equation_block = function
+		| #Block.math_block_t as blk ->
+			write_math_block blk
+
+
+	and write_algorithm_block = function
+		| #Block.code_block_t as blk ->
+			write_code_block blk
+
+
+	and write_table_block = function
+		| #Block.tabular_block_t as blk ->
+			write_tabular_block blk
+
+
+	and write_figure_block = function
+		| #Block.image_block_t as blk ->
+			write_image_block blk
+		| #Block.verbatim_block_t as blk ->
+			write_verbatim_block blk
+		| #Block.subpage_block_t as blk ->
+			write_subpage_block blk
+
+
+	and write_caption order floater_name caption =
+		let caption_head = XHTML.M.h1 [pcdata (floater_name ^ "  " ^ (make_order order) ^ ":")]
+		and caption_body = XHTML.M.p (write_super_seq caption)
+		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
+
+
+	and write_floater (label, order, caption) floater_classname floater_name floater_content =
+		let caption_content = write_caption order floater_name caption in
+		(*let style = "doc_align_" ^ (Alignment.to_string align) in*)
+		let style = "" in
+		let classnames = ["doc_floater"; floater_classname; style]
+		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [floater_content; caption_content]
+
+
+	and write_nestable_block = function
+
+		| #Block.paragraph_block_t as blk ->
+			write_paragraph_block blk
+
+		| #Block.itemize_block_t as blk ->
+			write_itemize_block blk
+
+		| #Block.enumerate_block_t as blk ->
+			write_enumerate_block blk
+
+		| #Block.quote_block_t as blk ->
+			write_quote_block blk
+
+		| #Block.math_block_t as blk ->
+			write_math_block blk
+
+		| #Block.code_block_t as blk ->
+			write_code_block blk
+
+		| #Block.verbatim_block_t as blk ->
+			write_verbatim_block blk
+
+		| #Block.tabular_block_t as blk ->
+			write_tabular_block blk
+
+		| #Block.image_block_t as blk ->
+			write_image_block blk
+
+		| #Block.subpage_block_t as blk ->
+			write_subpage_block blk
+
+		| `Equation (floater, equation) ->
+			let floater_name = Settings.get_equation_name doc.Valid.settings
+			and floater_content = write_equation_block equation
+			in write_floater floater "doc_eq" floater_name floater_content
+
+		| `Algorithm (floater, algorithm) ->
+			let floater_name = Settings.get_algorithm_name doc.Valid.settings
+			and floater_content = write_algorithm_block algorithm
+			in write_floater floater "doc_alg" floater_name floater_content
+
+		| `Table (floater, table) ->
+			let floater_name = Settings.get_table_name doc.Valid.settings
+			and floater_content = write_table_block table
+			in write_floater floater "doc_tab" floater_name floater_content
+
+		| `Figure (floater, figure) ->
+			let floater_name = Settings.get_figure_name doc.Valid.settings
+			and floater_content = write_figure_block figure
+			in write_floater floater "doc_fig" floater_name floater_content
+	
+
+	and write_heading_block = function
 
 		| `Section (label, order, seq) ->
-			make_sectional XHTML.M.h1 label order (convert_super_seq seq)
+			make_sectional Sectional_top label order (write_super_seq seq)
 
 		| `Subsection (label, order, seq) ->
-			make_sectional XHTML.M.h2 label order (convert_super_seq seq)
+			make_sectional Sectional_middle label order (write_super_seq seq)
 
 		| `Subsubsection (label, order, seq) ->
-			make_sectional XHTML.M.h3 label order (convert_super_seq seq)
+			make_sectional Sectional_bottom label order (write_super_seq seq)
 
 		| `Appendix (label, order, seq) ->
-			make_sectional XHTML.M.h1 label order (convert_super_seq seq)
+			make_sectional Sectional_top label order (write_super_seq seq)
 
 		| `Subappendix (label, order, seq) ->
-			make_sectional XHTML.M.h2 label order (convert_super_seq seq)
+			make_sectional Sectional_middle label order (write_super_seq seq)
 
 		| `Subsubappendix (label, order, seq) ->
-			make_sectional XHTML.M.h3 label order (convert_super_seq seq)
+			make_sectional Sectional_bottom label order (write_super_seq seq)
 
 		| `Bibliography (label, order) ->
 			let name = Settings.get_bibliography_name doc.Valid.settings in
-			let title = [make_sectional XHTML.M.h1 label order [XHTML.M.pcdata name]]
-			and bibs = match doc.Valid.bibs with
+			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
+			let bibs = match doc.Valid.bibs with
 				| []	 -> []
-				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_bibs"]] (convert_bib hd) (List.map convert_bib tl)]
+				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ul ~a:[a_class ["doc_bibs"]] hd tl]
 			in XHTML.M.div (title @ bibs)
 
 		| `Notes (label, order) ->
 			let name = Settings.get_notes_name doc.Valid.settings in
-			let title = [make_sectional XHTML.M.h1 label order [XHTML.M.pcdata name]]
-			and notes = match doc.Valid.notes with
+			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
+			let notes = match doc.Valid.notes with
 				| []	 -> []
-				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_notes"]] (convert_note hd) (List.map convert_note tl)]
+				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ul ~a:[a_class ["doc_notes"]] hd tl]
 			in XHTML.M.div (title @ notes)
 
 		| `Toc (label, order) ->
 			let name = Settings.get_toc_name doc.Valid.settings in
-			let title = [make_sectional XHTML.M.h1 label order [XHTML.M.pcdata name]]
-			and toc = match doc.Valid.toc with
+			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
+			let toc = match doc.Valid.toc with
 				| []	 -> []
-				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] (convert_toc_entry hd) (List.map convert_toc_entry tl)]
+				| hd::tl -> let (hd, tl) = fplus write_toc_entry hd tl in [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
 			in XHTML.M.div (title @ toc)
 
 
-	and convert_top_block = function
+	and write_top_block = function
 		| `Heading heading ->
-			convert_heading heading
-		| `Rule -> XHTML.M.hr ()
+			write_heading_block heading
+		| `Title seq ->
+			XHTML.M.h1 ~a:[a_class ["doc_title"]] (write_super_seq seq)
+		| `Abstract frag ->
+			XHTML.M.div ~a:[a_class ["doc_abstract"]] (write_paragraph_frag frag)
+		| `Rule ->
+			XHTML.M.hr ()
 
 
-	and convert_nestable_block = function
-
-		| `Paragraph seq ->
-			XHTML.M.p ~a:[a_class ["doc_par"]] (convert_super_seq seq)
-
-		| `Math math ->
-			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
-			in XHTML.M.div ~a:[a_class ["doc_math"]] [elem]
-
-		| `Tabular tab ->
-			convert_tabular tab
-
-		| `Preformat seq ->
-			XHTML.M.pre ~a:[a_class ["doc_pre"]] (convert_textual_seq seq)
-
-		| `Itemize (bul, (head_frag, tail_frags)) ->
-			let hd = XHTML.M.li (convert_nestable_frag head_frag)
-			and tl = List.map (fun frag -> XHTML.M.li (convert_nestable_frag frag)) tail_frags
-			and style = "doc_style_" ^ (Bullet.to_string bul)
-			in XHTML.M.ul ~a:[a_class ["doc_itemize"; style]] hd tl
-
-		| `Enumerate (num, (head_frag, tail_frags)) ->
-			let hd = XHTML.M.li (convert_nestable_frag head_frag)
-			and tl = List.map (fun frag -> XHTML.M.li (convert_nestable_frag frag)) tail_frags
-			and style = "doc_style_" ^ (Numbering.to_string num)
-			in XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl
-
-		| `Quote (align, frag) ->
-			let style = "doc_align_" ^ (Alignment.to_string align)
-			in XHTML.M.blockquote ~a:[a_class ["doc_quote"; style]] (convert_nestable_frag frag)
-
-		| `Algorithm (align, label, order, maybe_caption, text, syntax) ->
-			let floater_content = XHTML.M.pre (convert_textual_seq text)
-			and floater_name = Settings.get_algorithm_name doc.Valid.settings
-			in convert_floater align label order maybe_caption "doc_alg" floater_name floater_content
-
-		| `Equation (align, label, order, maybe_caption, math) ->
-			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math) in
-			let floater_content = XHTML.M.div ~a:[a_class ["doc_math"]] [elem]
-			and floater_name = Settings.get_equation_name doc.Valid.settings
-			in convert_floater align label order maybe_caption "doc_eq" floater_name floater_content
-
-		| `Figure (align, label, order, maybe_caption, fig) ->
-			let floater_name = Settings.get_figure_name doc.Valid.settings
-			and floater_content = match fig with
-				| `Bitmap name ->
-					XHTML.M.div [XHTML.M.img ~a:[a_class ["doc_fig_bitmap"]] ~src:(uri_of_string name) ~alt:name ()]
-				| `Vector name ->
-					XHTML.M.div [XHTML.M.img ~a:[a_class ["doc_fig_vector"]] ~src:(uri_of_string name) ~alt:name ()]
-				| `Ascii text ->
-					XHTML.M.pre ~a:[a_class ["doc_fig_ascii"]] (convert_textual_seq text)
-				| `Subpage frag ->
-					XHTML.M.div ~a:[a_class ["doc_fig_subpage"]] (convert_super_frag frag)
-			in convert_floater align label order maybe_caption "doc_fig" floater_name floater_content
-	
-		| `Table (align, label, order, maybe_caption, tab) ->
-			let floater_content = convert_tabular tab
-			and floater_name = Settings.get_table_name doc.Valid.settings
-			in convert_floater align label order maybe_caption "doc_tab" floater_name floater_content
+	and write_super_block = function
+		| #Block.top_block_t as blk ->
+			write_top_block blk
+		| #Block.nestable_block_t as blk ->
+			write_nestable_block blk
 
 
-	and convert_super_block = function
-		| #Block.top_block_t as blk		-> convert_top_block blk
-		| #Block.nestable_block_t as blk	-> convert_nestable_block blk
+	(************************************************************************)
+	(* Writers for ghost elements: notes, bib entries, and toc entries.	*)
+	(************************************************************************)
+
+	and write_note note =
+		XHTML.M.li ~a:[a_class ["doc_note"]] (write_super_seq note.Note.content)
 
 
-	and convert_nestable_frag frag =
-		List.map convert_nestable_block frag
+	and write_bib bib =
+		XHTML.M.li
+			[
+			XHTML.M.p ~a:[a_class ["doc_bib_title"]] (write_super_seq bib.Bib.title);
+			XHTML.M.p ~a:[a_class ["doc_bib_author"]] (write_super_seq bib.Bib.author);
+			XHTML.M.p ~a:[a_class ["doc_bib_resource"]] (write_super_seq bib.Bib.resource)
+			]
 
 
-	and convert_super_frag frag =
-		List.map convert_super_block frag
-
-
-	and convert_floater align label order maybe_caption floater_classname floater_name floater_content =
-		let (captioned_name, caption_content) = convert_caption order floater_name maybe_caption in
-		let style = "doc_align_" ^ (Alignment.to_string align) in
-		let classnames = ["doc_floater"; floater_classname; captioned_name; style]
-		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] ([floater_content] @ caption_content)
-
-
-	and convert_caption order floater_name = function
-		| None ->
-			("doc_uncaptioned", [])
-		| Some caption	->
-			let caption_head = XHTML.M.h1 [pcdata (floater_name ^ "  " ^ (make_order order) ^ ":")]
-			and caption_body = XHTML.M.p (convert_super_seq caption)
-			in ("doc_captioned", [XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]])
-
-
-	and convert_toc_entry = function
+	and write_toc_entry = function
 		| `Section (label, order, seq)
 		| `Subsection (label, order, seq)
 		| `Subsubsection (label, order, seq) ->
-			make_toc_entry label order (convert_super_seq seq)
+			make_toc_entry label order (write_super_seq seq)
 		| `Appendix (label, order, seq)
 		| `Subappendix (label, order, seq)
 		| `Subsubappendix (label, order, seq) ->
-			make_toc_entry label order (convert_super_seq seq)
+			make_toc_entry label order (write_super_seq seq)
 		| `Bibliography (label, order) ->
 			let name = Settings.get_bibliography_name doc.Valid.settings
 			in make_toc_entry label order [pcdata name]
@@ -440,25 +564,15 @@ let convert_valid_document classname doc =
 			let name = Settings.get_toc_name doc.Valid.settings
 			in make_toc_entry label order [pcdata name]
 
-	and convert_bib bib =
-		XHTML.M.li
-			[
-			XHTML.M.p ~a:[a_class ["doc_bib_title"]] (convert_super_seq bib.Bib.title);
-			XHTML.M.p ~a:[a_class ["doc_bib_author"]] (convert_super_seq bib.Bib.author);
-			XHTML.M.p ~a:[a_class ["doc_bib_resource"]] (convert_super_seq bib.Bib.resource)
-			]
 
-	and convert_note note =
-		XHTML.M.li ~a:[a_class ["doc_note"]] (convert_super_seq note.Note.content)
-
-	in div ~a:[a_class ["doc"; "doc_valid"; classname]] (convert_super_frag doc.Valid.content)
+	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_super_frag doc.Valid.content)
 
 
 (********************************************************************************)
 (**	{3 Conversion of invalid documents}					*)
 (********************************************************************************)
 
-let convert_error (error_context, error_msg) =
+let write_error (error_context, error_msg) =
 
 	let line_number = error_context.Error.error_line_number
 	and line_before = error_context.Error.error_line_before
@@ -591,19 +705,19 @@ let convert_error (error_context, error_msg) =
 		]
 
 
-let convert_invalid_document classname = function
+let write_invalid_document classname = function
 	| []		-> raise Empty_error_list
 	| hd::tl	-> div ~a:[a_class ["doc"; "doc_invalid"; classname]]
-				[ul ~a:[a_class ["doc_errors"]] (convert_error hd) (List.map convert_error tl)]
+				[ul ~a:[a_class ["doc_errors"]] (write_error hd) (List.map write_error tl)]
 
 
 (********************************************************************************)
 (**	{3 Top-level conversion}						*)
 (********************************************************************************)
 
-let convert_ambivalent_document classname = function
-	| `Valid valid		-> convert_valid_document classname valid
-	| `Invalid invalid	-> convert_invalid_document classname invalid
+let write_ambivalent_document classname = function
+	| `Valid valid		-> write_valid_document classname valid
+	| `Invalid invalid	-> write_invalid_document classname invalid
 
 
 (********************************************************************************)
@@ -619,11 +733,11 @@ let composition_classname = "doc_composition"
 (**	{2 Public functions}							*)
 (********************************************************************************)
 
-let ambivalent_manuscript_to_xhtml = convert_ambivalent_document manuscript_classname
-let valid_manuscript_to_xhtml = convert_valid_document manuscript_classname
-let invalid_manuscript_to_xhtml = convert_invalid_document manuscript_classname
+let ambivalent_manuscript_to_xhtml = write_ambivalent_document manuscript_classname
+let valid_manuscript_to_xhtml = write_valid_document manuscript_classname
+let invalid_manuscript_to_xhtml = write_invalid_document manuscript_classname
 
-let ambivalent_composition_to_xhtml = convert_ambivalent_document composition_classname
-let valid_composition_to_xhtml = convert_valid_document composition_classname
-let invalid_composition_to_xhtml = convert_invalid_document composition_classname
+let ambivalent_composition_to_xhtml = write_ambivalent_document composition_classname
+let valid_composition_to_xhtml = write_valid_document composition_classname
+let invalid_composition_to_xhtml = write_invalid_document composition_classname
 

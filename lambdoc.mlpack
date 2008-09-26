@@ -12,7 +12,6 @@ Document_valid
 Document_invalid
 Document_ambivalent
 Document_convert
-Document_filter
 Document_postprocess
 Document_reader
 Lambtex_reader_impl

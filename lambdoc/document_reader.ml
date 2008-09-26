@@ -9,6 +9,7 @@
 (********************************************************************************)
 
 open Document_basic
+open Document_ast
 open Document_error
 open Document_ambivalent
 
@@ -25,7 +26,7 @@ sig
 	exception Unknown_env_command of int * tag_t
 	exception Unknown_simple_command of int * tag_t
 
-	val ast_from_string: string -> Document_ast.t
+	val ast_from_string: string -> Ast.t
 end
 
 

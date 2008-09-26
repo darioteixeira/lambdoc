@@ -10,7 +10,7 @@
 
 open Lexing
 open ExtString
-open Document_ast
+open Document_ast.Ast
 open Lambtex_parser
 open Lambtex_scanner
 
@@ -81,6 +81,7 @@ type scanner_category_t =
 *)
 let get_env_tag params is_begin =
 	let (token_begin, token_end, new_env, context_begin, context_end) = match params.comm_tag with
+	| "abstract"	-> (BEGIN_ABSTRACT params, END_ABSTRACT params,		General,	Set Block,	Set Block) 
 	| "itemize"	-> (BEGIN_ITEMIZE params, END_ITEMIZE params,		General,	Set Block,	Set Block) 
 	| "enumerate"	-> (BEGIN_ENUMERATE params, END_ENUMERATE params,	General,	Set Block,	Set Block) 
 	| "quote"	-> (BEGIN_QUOTE params,	END_QUOTE params,		General,	Set Block,	Set Block)
@@ -133,8 +134,9 @@ let get_simple_tag params =
 		| "bibliography"	-> (BIBLIOGRAPHY params,	Set Block)
 		| "notes"		-> (NOTES params,		Set Block)
 
-		| "appendix"		-> (APPENDIX params,		Set Block)
+		| "title"		-> (TITLE params, 		Set Block)
 		| "rule"		-> (RULE params,		Set Block)
+		| "appendix"		-> (APPENDIX params,		Set Block)
 		| "set"			-> (SETTING params,		Set Block)
 		| "item"		-> (NEW_ITEM params,		Set Block)
 		| "image"		-> (IMAGE params,		Set Block)
@@ -142,9 +144,9 @@ let get_simple_tag params =
 		| "head"		-> (HEAD params,		Set Block)
 		| "foot"		-> (FOOT params,		Set Block)
 		| "body"		-> (BODY params,		Set Block)
-		| "title"		-> (BIB_TITLE params,		Set Block)
-		| "author"		-> (BIB_AUTHOR params,		Set Block)
-		| "resource"		-> (BIB_RESOURCE params,	Set Block)
+		| "btitle"		-> (BIB_TITLE params,		Set Block)
+		| "bauthor"		-> (BIB_AUTHOR params,		Set Block)
+		| "bresource"		-> (BIB_RESOURCE params,	Set Block)
 		| "note"		-> (NOTE params,		Set Block)
 
 		| other			-> raise (Unknown_simple_command other)

@@ -29,6 +29,10 @@ exception Invalid_composition_subset of tag_t
 *)
 let convert_to_composition contents =
 
+	(************************************************************************)
+	(* Conversion functions for inline context.				*)
+	(************************************************************************)
+
 	let rec convert_textual_node = function
 		| `Plain txt			-> Node.plain txt
 		| `Entity txt			-> Node.entity txt
@@ -59,13 +63,18 @@ let convert_to_composition contents =
 		| #Node.link_node_t as node ->
 			(convert_link_node node :> (Node.super_node_t, _) Node.t)
 
-	and convert_super_seq seq =
-		List.map convert_super_node seq
-
 	and convert_nonlink_seq seq =
 		List.map convert_nonlink_node seq
 
-	and convert_tabular tab =
+	and convert_super_seq seq =
+		List.map convert_super_node seq in
+
+
+	(************************************************************************)
+	(* Conversion functions for tabular environment.			*)
+	(************************************************************************)
+
+	let convert_tabular tab =
 		let convert_row (hd, tl) = Tabular.make_row (fplus convert_super_seq hd tl) in
 		let convert_group (hd, tl) = fplus convert_row hd tl in
 		let thead = match tab.Tabular.thead with
@@ -77,44 +86,70 @@ let convert_to_composition contents =
 		and tbodies =
 			let (hd, tl) = tab.Tabular.tbodies
 			in fplus convert_group hd tl
-		in Tabular.make tab.Tabular.tcols ?thead ?tfoot tbodies
+		in Tabular.make tab.Tabular.tcols ?thead ?tfoot tbodies in
 
-	and convert_heading = function
-		| `Section _			-> raise (Invalid_composition_subset "section")
-		| `Subsection _			-> raise (Invalid_composition_subset "subsection")
-		| `Subsubsection _		-> raise (Invalid_composition_subset "subsubsection")
-		| `Appendix _			-> raise (Invalid_composition_subset "appendix")
-		| `Subappendix _		-> raise (Invalid_composition_subset "subappendix")
-		| `Subsubappendix _		-> raise (Invalid_composition_subset "subsubappendix")
-		| `Bibliography _		-> raise (Invalid_composition_subset "bibliography")
-		| `Notes _			-> raise (Invalid_composition_subset "notes")
-		| `Toc _			-> raise (Invalid_composition_subset "toc")
 
-	and convert_top_block = function
-		| `Heading heading		-> convert_heading heading
-		| `Rule				-> raise (Invalid_composition_subset "rule")
+	(************************************************************************)
+	(* Conversion functions for document blocks.				*)
+	(************************************************************************)
+
+	let rec convert_super_frag frag =
+		List.map convert_super_block frag
+
+	and convert_nestable_frag frag =
+		List.map convert_nestable_block frag
+
+	and convert_paragraph_block = function
+		| `Paragraph seq -> Block.paragraph (convert_super_seq seq)
+
+	and convert_itemize_block = function
+		| `Itemize (bul, (hd, tl)) -> Block.itemize bul (fplus convert_nestable_frag hd tl)
+
+	and convert_enumerate_block = function
+		| `Enumerate (num, (hd, tl)) -> Block.enumerate num (fplus convert_nestable_frag hd tl)
+
+	and convert_quote_block = function
+		| `Quote (alignment, frag) -> Block.quote alignment (convert_nestable_frag frag)
+
+	and convert_math_block = function
+		| `Math (alignment, math) -> Block.math alignment math
+
+	and convert_code_block = function
+		| `Code (alignment, syntax, code) -> Block.code alignment syntax code
+
+	and convert_verbatim_block = function
+		| `Verbatim (alignment, txt) -> Block.verbatim alignment txt
+
+	and convert_tabular_block = function
+		| `Tabular (alignment, tab) -> Block.tabular alignment (convert_tabular tab)
+
+	and convert_image_block = function
+		| `Image (alignment, alias) -> Block.image alignment alias
+
+	and convert_subpage_block = function
+		| `Subpage (alignment, frag) -> Block.subpage alignment (convert_super_frag frag)
 
 	and convert_nestable_block = function
-		| `Paragraph seq ->
-			Block.paragraph (convert_super_seq seq)
-		| `Itemize (bul, (hd, tl)) ->
-			Block.itemize bul ((convert_nestable_frag hd), (List.map convert_nestable_frag tl))
-		| `Enumerate (num, (hd, tl)) ->
-			Block.enumerate num ((convert_nestable_frag hd), (List.map convert_nestable_frag tl))
-		| `Quote (alignment, frag) ->
-			Block.quote alignment (convert_nestable_frag frag)
-		| `Math (alignment, math) ->
-			Block.math alignment math
-		| `Code (alignment, syntax, code) ->
-			Block.code alignment syntax code
-		| `Verbatim (alignment, txt) ->
-			Block.verbatim alignment txt
-		| `Tabular (alignment, tab) ->
-			Block.tabular alignment (convert_tabular tab)
-		| `Image (alignment, alias) ->
-			Block.image alignment alias
-		| `Subpage (alignment, frag) ->
-			Block.subpage alignment (convert_super_frag frag)
+		| #Block.paragraph_block_t as blk ->
+			(convert_paragraph_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.itemize_block_t as blk ->
+			(convert_itemize_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.enumerate_block_t as blk ->
+			(convert_enumerate_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.quote_block_t as blk ->
+			(convert_quote_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.math_block_t as blk ->
+			(convert_math_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.code_block_t as blk ->
+			(convert_code_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.verbatim_block_t as blk ->
+			(convert_verbatim_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.tabular_block_t as blk ->
+			(convert_tabular_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.image_block_t as blk ->
+			(convert_image_block blk :> (Block.nestable_block_t, _) Block.t)
+		| #Block.subpage_block_t as blk ->
+			(convert_subpage_block blk :> (Block.nestable_block_t, _) Block.t)
 		| `Equation _ ->
 			raise (Invalid_composition_subset "equation")
 		| `Algorithm _ ->
@@ -124,17 +159,41 @@ let convert_to_composition contents =
 		| `Figure _ ->
 			raise (Invalid_composition_subset "figure")
 
+	and convert_heading = function
+		| `Section _ ->
+			raise (Invalid_composition_subset "section")
+		| `Subsection _ ->
+			raise (Invalid_composition_subset "subsection")
+		| `Subsubsection _ ->
+			raise (Invalid_composition_subset "subsubsection")
+		| `Appendix _ ->
+			raise (Invalid_composition_subset "appendix")
+		| `Subappendix _ ->
+			raise (Invalid_composition_subset "subappendix")
+		| `Subsubappendix _ ->
+			raise (Invalid_composition_subset "subsubappendix")
+		| `Bibliography _ ->
+			raise (Invalid_composition_subset "bibliography")
+		| `Notes _ ->
+			raise (Invalid_composition_subset "notes")
+		| `Toc _ ->
+			raise (Invalid_composition_subset "toc")
+
+	and convert_top_block = function
+		| `Title _ ->
+			raise (Invalid_composition_subset "title")
+		| `Abstract _ ->
+			raise (Invalid_composition_subset "abstract")
+		| `Rule ->
+			raise (Invalid_composition_subset "rule")
+		| `Heading heading ->
+			convert_heading heading
+
 	and convert_super_block = function
 		| #Block.top_block_t as blk ->
-			convert_top_block blk
+			(convert_top_block blk :> (Block.super_block_t, _) Block.t)
 		| #Block.nestable_block_t as blk ->
 			(convert_nestable_block blk :> (Block.super_block_t, _) Block.t)
-
-	and convert_nestable_frag frag =
-		List.map convert_nestable_block frag
-
-	and convert_super_frag frag =
-		List.map convert_super_block frag
 
 	in convert_super_frag contents
 

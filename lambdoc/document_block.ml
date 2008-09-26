@@ -134,6 +134,56 @@ sig
 	*)
 	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
 
+	(**	A super fragment is a list of super blocks.
+	*)
+	type super_frag_t = Block.super_block_t list with sexp
+
+	(**	A nestable fragment is a list of nestable blocks.
+	*)
+	type nestable_frag_t = Block.nestable_block_t list with sexp
+
+	(**	The various types of individual nestable blocks.
+	*)
+
+	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] with sexp
+	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] with sexp
+	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
+	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
+	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
+
+	(**	The various types of floater blocks.  Floaters are just wrappers
+		around nestable blocks.
+	*)
+
+	type equation_block_t = [ math_block_t ] with sexp
+	type algorithm_block_t = [ code_block_t ] with sexp
+	type table_block_t = [ tabular_block_t ] with sexp
+	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
+
+	(**	Nestable blocks may be nested.
+	*)
+	type nestable_block_t =
+		[ paragraph_block_t
+		| itemize_block_t
+		| enumerate_block_t
+		| quote_block_t
+		| math_block_t
+		| code_block_t
+		| verbatim_block_t
+		| tabular_block_t
+		| image_block_t
+		| subpage_block_t
+		| `Equation of floater_t * equation_block_t
+		| `Algorithm of floater_t * algorithm_block_t
+		| `Table of floater_t * table_block_t
+		| `Figure of floater_t * figure_block_t
+		] with sexp
+
 	(**	The possible forms for headings.  We accept three different levels
 		of sections.  Note that special sections such as the TOC or the
 		Bibliography are automatically mapped to the highest section level.
@@ -150,85 +200,17 @@ sig
 		| `Toc of Label.t * Order.preset_sectional_order_t
 		] with sexp
 
-	(**	A list of super blocks.
-	*)
-	type super_frag_t = Block.super_block_t list with sexp
-
-	(**	A list of nestable blocks.
-	*)
-	type nestable_frag_t = Block.nestable_block_t list with sexp
-
-	(**	Math block.
-	*)
-	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-
-	(**	Code block.
-	*)
-	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
-
-	(**	Tabular block.
-	*)
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
-
-	(**	Image block.
-	*)
-	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
-
-	(**	Verbatim block.
-	*)
-	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
-
-	(**	Subpage block.
-	*)
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
-
-	(**	The type of equations.  Equations are just a floater wrapper
-		around a math block.
-	*)
-	type equation_block_t = [ math_block_t ] with sexp
-
-	(**	The type of algorithms.  Algorithms are just a floater wrapper
-		around a code block.
-	*)
-	type algorithm_block_t = [ code_block_t ] with sexp
-
-	(**	The type of tables.  Tables are just a floater wrapper
-		around a tabular block.
-	*)
-	type table_block_t = [ tabular_block_t ] with sexp
-
-	(**	The type of figures.  Figures are just a floater wrapper
-		around one of the three figure types: images, verbatim
-		environments (for ASCII-art), and subpages.
-	*)
-	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
-
 	(**	Top blocks may not be nested.
 	*)
 	type top_block_t =
 		[ `Heading of heading_block_t
+		| `Title of Node.super_seq_t
+		| `Abstract of paragraph_block_t list
 		| `Rule
 		] with sexp
 
-	(**	Nestable blocks may be nested.
+	(**	A super block is either a top block or a nestable block.
 	*)
-	type nestable_block_t =
-		[ `Paragraph of Node.super_seq_t
-		| `Itemize of Bullet.t * nestable_frag_t plus_t
-		| `Enumerate of Numbering.t * nestable_frag_t plus_t
-		| `Quote of Alignment.t * nestable_frag_t
-		| math_block_t
-		| code_block_t
-		| verbatim_block_t
-		| tabular_block_t
-		| image_block_t
-		| subpage_block_t
-		| `Equation of floater_t * equation_block_t
-		| `Algorithm of floater_t * algorithm_block_t
-		| `Table of floater_t * table_block_t
-		| `Figure of floater_t * figure_block_t
-		] with sexp
-
 	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] with sexp
@@ -252,17 +234,21 @@ sig
 	val toc: Label.t -> Order.preset_sectional_order_t ->
 		([> top_block_t ], [> `Manuscript ]) t
 
+	val title: ([< Node.super_node_t ], 'b) Node.t list ->
+		([> top_block_t ], [> `Manuscript ]) t
+	val abstract: (paragraph_block_t, 'b) t list ->
+		([> top_block_t ], [> `Manuscript ]) t
 	val rule: unit ->
 		([> top_block_t ], [> `Manuscript ]) t
 
 	val paragraph: ([< Node.super_node_t ], 'b) Node.t list ->
-		([> nestable_block_t ], 'b) t
+		([> paragraph_block_t ], 'b) t
 	val itemize: Bullet.t -> (nestable_block_t, 'b) t list plus_t ->
-		([> nestable_block_t ], 'b) t
+		([> itemize_block_t ], 'b) t
 	val enumerate: Numbering.t -> (nestable_block_t, 'b) t list plus_t ->
-		([> nestable_block_t ], 'b) t
+		([> enumerate_block_t ], 'b) t
 	val quote: Alignment.t -> (nestable_block_t, 'b) t list ->
-		([> nestable_block_t ], 'b) t
+		([> quote_block_t ], 'b) t
 	val math: Alignment.t -> Math.t ->
 		([> math_block_t ], [> `Composition]) t
 	val code: Alignment.t -> syntax_t -> Node.textual_seq_t ->
@@ -288,6 +274,43 @@ end =
 struct
 	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
 
+	type super_frag_t = Block.super_block_t list with sexp
+
+	type nestable_frag_t = Block.nestable_block_t list with sexp
+
+	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] with sexp
+	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] with sexp
+	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
+	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
+	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
+
+	type equation_block_t = [ math_block_t ] with sexp
+	type algorithm_block_t = [ code_block_t ] with sexp
+	type table_block_t = [ tabular_block_t ] with sexp
+	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
+
+	type nestable_block_t =
+		[ paragraph_block_t
+		| itemize_block_t
+		| enumerate_block_t
+		| quote_block_t
+		| math_block_t
+		| code_block_t
+		| verbatim_block_t
+		| tabular_block_t
+		| image_block_t
+		| subpage_block_t
+		| `Equation of floater_t * equation_block_t
+		| `Algorithm of floater_t * algorithm_block_t
+		| `Table of floater_t * table_block_t
+		| `Figure of floater_t * figure_block_t
+		] with sexp
+
 	type heading_block_t =
 		[ `Section of Label.t * Order.user_sectional_order_t * Node.super_seq_t
 		| `Subsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
@@ -300,50 +323,11 @@ struct
 		| `Toc of Label.t * Order.preset_sectional_order_t
 		] with sexp
 
-	type super_frag_t = Block.super_block_t list with sexp
-
-	type nestable_frag_t = Block.nestable_block_t list with sexp
-
-	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-
-	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
-
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
-
-	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
-
-	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
-
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
-
-	type equation_block_t = [ math_block_t ] with sexp
-
-	type algorithm_block_t = [ code_block_t ] with sexp
-
-	type table_block_t = [ tabular_block_t ] with sexp
-
-	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
-
 	type top_block_t =
 		[ `Heading of heading_block_t
+		| `Title of Node.super_seq_t
+		| `Abstract of paragraph_block_t list
 		| `Rule
-		] with sexp
-
-	type nestable_block_t =
-		[ `Paragraph of Node.super_seq_t
-		| `Itemize of Bullet.t * nestable_frag_t plus_t
-		| `Enumerate of Numbering.t * nestable_frag_t plus_t
-		| `Quote of Alignment.t * nestable_frag_t
-		| math_block_t
-		| code_block_t
-		| verbatim_block_t
-		| tabular_block_t
-		| image_block_t
-		| subpage_block_t
-		| `Equation of floater_t * equation_block_t
-		| `Algorithm of floater_t * algorithm_block_t
-		| `Table of floater_t * table_block_t
-		| `Figure of floater_t * figure_block_t
 		] with sexp
 
 	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
@@ -360,6 +344,8 @@ struct
 	let notes label order = `Heading (`Notes (label, order))
 	let toc label order = `Heading (`Toc (label, order))
 
+	let title seq = `Title (seq :> Node.super_seq_t)
+	let abstract frag = `Abstract frag
 	let rule () = `Rule
 
 	let paragraph seq = `Paragraph (seq :> Node.super_seq_t)

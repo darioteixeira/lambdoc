@@ -23,14 +23,14 @@ open Document_math
 *)
 module rec Node:
 sig
+	type super_seq_t = Node.super_node_t list with sexp
+	type nonlink_seq_t = Node.nonlink_node_t list with sexp
+	type textual_seq_t = Node.textual_node_t list with sexp
+
 	type textual_node_t =
 		[ `Plain of plain_t
 		| `Entity of entity_t
 		] with sexp
-
-	type textual_seq_t = textual_node_t list with sexp
-	type super_seq_t = Node.super_node_t list with sexp
-	type nonlink_seq_t = Node.nonlink_node_t list with sexp
 
 	type nonlink_node_t =
 		[ textual_node_t
@@ -78,14 +78,14 @@ sig
 	val mref: ref_t -> ([< nonlink_node_t], 'b) t list -> ([> link_node_t ], [> `Manuscript ]) t
 end =
 struct
+	type super_seq_t = Node.super_node_t list with sexp
+	type nonlink_seq_t = Node.nonlink_node_t list with sexp
+	type textual_seq_t = Node.textual_node_t list with sexp
+
 	type textual_node_t =
 		[ `Plain of plain_t
 		| `Entity of entity_t
 		] with sexp
-
-	type textual_seq_t = textual_node_t list with sexp
-	type super_seq_t = Node.super_node_t list with sexp
-	type nonlink_seq_t = Node.nonlink_node_t list with sexp
 
 	type nonlink_node_t =
 		[ textual_node_t

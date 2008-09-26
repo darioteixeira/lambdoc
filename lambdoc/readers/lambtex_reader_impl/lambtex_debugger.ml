@@ -9,7 +9,7 @@
 (********************************************************************************)
 
 open Printf
-open Document_ast
+open Document_ast.Ast
 open Lambtex_parser
 
 
@@ -47,18 +47,18 @@ let to_string = function
 	| BEGIN_MATHML_INL op		-> sprintf "BEGIN_MATHML_INL: %s" (sprintf_operator op)
 	| END_MATHML_INL op		-> sprintf "END_MATHML_INL: %s" (sprintf_operator op)
 
+	| BEGIN_ABSTRACT comm		-> sprintf "BEGIN_ABSTRACT: %s" (sprintf_command comm)
+	| END_ABSTRACT comm		-> sprintf "END_ABSTRACT: %s" (sprintf_command comm)
 	| BEGIN_ITEMIZE comm		-> sprintf "BEGIN_ITEMIZE: %s" (sprintf_command comm)
 	| END_ITEMIZE comm		-> sprintf "END_ITEMIZE: %s" (sprintf_command comm)
 	| BEGIN_ENUMERATE comm		-> sprintf "BEGIN_ENUMERATE: %s" (sprintf_command comm)
 	| END_ENUMERATE	comm		-> sprintf "END_ENUMERATE: %s" (sprintf_command comm)
 	| BEGIN_QUOTE comm		-> sprintf "BEGIN_QUOTE: %s" (sprintf_command comm)
 	| END_QUOTE comm		-> sprintf "END_QUOTE: %s" (sprintf_command comm)
-
 	| BEGIN_MATHTEX_BLK comm	-> sprintf "BEGIN_MATHTEX_BLK: %s" (sprintf_command comm)
 	| END_MATHTEX_BLK comm		-> sprintf "END_MATHTEX_BLK: %s" (sprintf_command comm)
 	| BEGIN_MATHML_BLK comm		-> sprintf "BEGIN_MATHML_BLK: %s" (sprintf_command comm)
 	| END_MATHML_BLK comm		-> sprintf "END_MATHML_BLK: %s" (sprintf_command comm)
-
 	| BEGIN_CODE comm		-> sprintf "BEGIN_CODE: %s" (sprintf_command comm)
 	| END_CODE comm			-> sprintf "END_CODE: %s" (sprintf_command comm)
 	| BEGIN_VERBATIM comm		-> sprintf "BEGIN_VERBATIM: %s" (sprintf_command comm)
@@ -102,8 +102,9 @@ let to_string = function
 	| BIBLIOGRAPHY comm		-> sprintf "BIBLIOGRAPHY: %s" (sprintf_command comm)
 	| NOTES comm			-> sprintf "NOTES: %s" (sprintf_command comm)
 
-	| APPENDIX comm			-> sprintf "APPENDIX: %s" (sprintf_command comm)
+	| TITLE comm			-> sprintf "TITLE: %s" (sprintf_command comm)
 	| RULE comm			-> sprintf "RULE: %s" (sprintf_command comm)
+	| APPENDIX comm			-> sprintf "APPENDIX: %s" (sprintf_command comm)
 	| SETTING comm			-> sprintf "SETTING: %s" (sprintf_command comm)
 	| NEW_ITEM comm			-> sprintf "NEW_ITEM: %s" (sprintf_command comm)
 	| IMAGE comm			-> sprintf "IMAGE: %s" (sprintf_command comm)
