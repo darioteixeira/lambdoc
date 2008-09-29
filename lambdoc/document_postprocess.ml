@@ -216,22 +216,28 @@ let process_document feature_map document_ast =
 	(* Checkers for naked, operator, and command nodes.			*)
 	(************************************************************************)
 
-	let check_naked feature elem = elem ()
-
-	and check_op op feature elem = elem ()
-
-	and check_comm comm feature maybe_subpaged elem =
-		let manuscript_feature = (feature :> Features.manuscript_feature_t) in
-		if Features.check_feature manuscript_feature feature_map
-		then	let (what, description) = Features.describe_feature manuscript_feature in
-			let msg = Error.Invalid_feature (what, description)
-			in DynArray.add errors (comm.Ast.comm_linenum, msg);
-			None
+	let checker feature success msg_maker linenum =
+		let super_feature = (feature :> Features.manuscript_feature_t) in
+		if Features.check_feature super_feature feature_map
+		then 
+			success ()
 		else
-			(*Permissions.check_command_feature errors comm maybe_subpaged feature;
-			elem () in
-			*)
-			None in
+			(let (what, desc) = Features.describe_feature super_feature in
+			let msg = msg_maker (what, desc)
+			in DynArray.add errors (linenum, msg);
+			None) in
+
+
+	let check_comm comm feature maybe_subpaged elem =
+		let success () = Permissions.check_command_feature errors comm maybe_subpaged feature; elem ()
+		and msg_maker (what, desc) = Error.Invalid_command_feature (what, desc)
+		and linenum = comm.Ast.comm_linenum
+		in checker feature success msg_maker linenum
+
+	and check_op op feature elem =
+		let msg_maker (what, desc) = Error.Invalid_command_feature (what, desc)
+		and linenum = op.Ast.op_linenum
+		in checker feature elem msg_maker linenum in
 
 
 	(************************************************************************)
@@ -276,12 +282,14 @@ let process_document feature_map document_ast =
 	and convert_textual_node : Ast.textual_node_t -> (Node.textual_node_t, _) Node.t option = function
 
 		| `AST_plain txt ->
+			let op = {Ast.op_linenum = 1;} in
 			let elem () = Some (Node.plain txt)
-			in check_naked `Feature_plain elem
+			in check_op op `Feature_plain elem
 
 		| `AST_entity txt ->
+			let op = {Ast.op_linenum = 1;} in
 			let elem () = Some (Node.entity txt)
-			in check_naked `Feature_entity elem
+			in check_op op `Feature_entity elem
 
 
 	and convert_nonlink_node : Ast.nonlink_node_t -> (Node.nonlink_node_t, _) Node.t option = function

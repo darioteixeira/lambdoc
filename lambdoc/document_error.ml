@@ -74,7 +74,8 @@ struct
 		| Empty_target of tag_t * ref_t
 		| Wrong_target of tag_t * target_t * target_t * ref_t
 		| Absent_target of tag_t * ref_t
-		| Invalid_feature of string * string
+		| Invalid_command_feature of string * string
+		| Invalid_operator_feature of string * string
 		| Syntax_error
 		with sexp
 
