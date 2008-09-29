@@ -948,6 +948,11 @@ let process_document feature_map document_ast =
 
 
 (********************************************************************************)
+(**	{2 Public functions}							*)
+(********************************************************************************)
+
+
+(********************************************************************************)
 (**	{3 Error postprocessing functions}					*)
 (********************************************************************************)
 
@@ -983,11 +988,11 @@ let sort_errors errors =
 
 
 (********************************************************************************)
-(**	{2 Public functions}							*)
+(**	{3 Processing functions}						*)
 (********************************************************************************)
 
-let process_manuscript source document_ast =
-	let feature_map = Features.load_manuscript_features () in
+let process_manuscript ?deny_list ?accept_list ?default source document_ast =
+	let feature_map = Features.load_manuscript_features ?deny_list ?accept_list ?default () in
 	let (contents, bibs, notes, toc, labels, settings, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
@@ -997,8 +1002,8 @@ let process_manuscript source document_ast =
 		in Ambivalent.make_invalid_manuscript sorted_errors
 
 
-let process_composition source document_ast =
-	let feature_map = Features.load_composition_features () in
+let process_composition ?deny_list ?accept_list ?default source document_ast =
+	let feature_map = Features.load_composition_features ?deny_list ?accept_list ?default () in
 	let (contents, _, _, _, _, _, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then

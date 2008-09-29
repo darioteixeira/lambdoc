@@ -9,6 +9,7 @@
 (********************************************************************************)
 
 open Document_ast
+open Document_features
 open Document_error
 open Document_ambivalent
 
@@ -17,7 +18,24 @@ open Document_ambivalent
 (*	{2 Public functions}							*)
 (********************************************************************************)
 
-val collate_errors: string -> (int * Error.error_msg_t) list -> Error.t list
-val process_manuscript: string -> Ast.t -> Ambivalent.manuscript_t
-val process_composition: string -> Ast.t -> Ambivalent.composition_t
+val collate_errors:
+	string ->
+	(int * Error.error_msg_t) list ->
+	Error.t list
+
+val process_manuscript:
+	?deny_list: Features.manuscript_feature_t list ->
+	?accept_list: Features.manuscript_feature_t list ->
+	?default: bool ->
+	string ->
+	Ast.t ->
+	Ambivalent.manuscript_t
+
+val process_composition:
+	?deny_list: Features.composition_feature_t list ->
+	?accept_list: Features.composition_feature_t list ->
+	?default: bool ->
+	string ->
+	Ast.t ->
+	Ambivalent.composition_t
 
