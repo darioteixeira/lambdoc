@@ -10,6 +10,7 @@
 
 
 (********************************************************************************)
+(*	{2 Features module}							*)
 (********************************************************************************)
 
 module Features:
@@ -34,6 +35,18 @@ sig
 		| `Feature_rule | `Feature_appendix | `Feature_setting
 		]
 
+	type command_feature_t =
+		[ `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru | `Feature_sup
+		| `Feature_sub | `Feature_box | `Feature_link | `Feature_itemize | `Feature_enumerate | `Feature_quote
+		| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_code | `Feature_verbatim | `Feature_tabular
+		| `Feature_image | `Feature_subpage | `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref
+		| `Feature_mref | `Feature_caption | `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
+		| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
+		| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
+		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract | `Feature_rule
+		| `Feature_appendix | `Feature_setting
+		]
+
 	val load_composition_features:
 		?deny_list: composition_feature_t list ->
 		?accept_list: composition_feature_t list ->
@@ -47,6 +60,8 @@ sig
 		unit -> t
 
 	val check_feature: manuscript_feature_t -> t -> bool
+
+	val describe_feature: manuscript_feature_t -> string * string
 end =
 struct
 	type composition_feature_t =
@@ -65,6 +80,18 @@ struct
 		| `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
 		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract
 		| `Feature_rule | `Feature_appendix | `Feature_setting
+		]
+
+	type command_feature_t =
+		[ `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru | `Feature_sup
+		| `Feature_sub | `Feature_box | `Feature_link | `Feature_itemize | `Feature_enumerate | `Feature_quote
+		| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_code | `Feature_verbatim | `Feature_tabular
+		| `Feature_image | `Feature_subpage | `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref
+		| `Feature_mref | `Feature_caption | `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
+		| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
+		| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
+		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract | `Feature_rule
+		| `Feature_appendix | `Feature_setting
 		]
 
 	module Feature_map =
@@ -116,5 +143,57 @@ struct
 
 	let check_feature feature map =
 		Feature_map.find feature map
+
+	let describe_feature = function
+		| `Feature_plain		-> ("plain", "plain text")
+		| `Feature_entity		-> ("entity", "HTML entities")
+		| `Feature_mathtex_inl		-> ("mathtex_inl", "inline TeX math")
+		| `Feature_mathml_inl		-> ("mathml_inl", "inline MathML math")
+		| `Feature_bold			-> ("bold", "bold text")
+		| `Feature_emph			-> ("emph", "emphasised text")
+		| `Feature_mono			-> ("mono", "monospaced")
+		| `Feature_caps			-> ("caps", "small caps")
+		| `Feature_thru			-> ("thru", "strike-through")
+		| `Feature_sup			-> ("sup", "superscript")
+		| `Feature_sub			-> ("sub", "subscript")
+		| `Feature_box			-> ("box", "boxed text")
+		| `Feature_link			-> ("link", "external link")
+		| `Feature_paragraph		-> ("paragraph", "paragraph blocks")
+		| `Feature_itemize		-> ("itemize", "itemize blocks")
+		| `Feature_enumerate		-> ("enumerate", "enumerate blocks")
+		| `Feature_quote		-> ("quote", "quote block")
+		| `Feature_mathtex_blk		-> ("mathtex_blk", "TeX math block")
+		| `Feature_mathml_blk		-> ("mathml_blk", "MathML block")
+		| `Feature_code			-> ("code", "code block")
+		| `Feature_verbatim		-> ("verbatim", "verbatim block")
+		| `Feature_tabular		-> ("tabular", "tabular")
+		| `Feature_image		-> ("image", "image block")
+		| `Feature_subpage		-> ("subpage", "subpage block")
+		| `Feature_see			-> ("see", "")
+		| `Feature_cite			-> ("cite", "bibliography citation")
+		| `Feature_ref			-> ("ref", "internal reference")
+		| `Feature_sref			-> ("sref", "smart reference")
+		| `Feature_mref			-> ("mref", "manual reference")
+		| `Feature_caption		-> ("caption", "floater caption")
+		| `Feature_bib_title		-> ("bib_title", "biliography title")
+		| `Feature_bib_author		-> ("bib_author", "bibliography author")
+		| `Feature_bib_resource		-> ("bib_resource", "bibliography resource")
+		| `Feature_equation		-> ("equation", "equation floater")
+		| `Feature_algorithm		-> ("algorithm", "algorithm floater")
+		| `Feature_table		-> ("table", "table floater")
+		| `Feature_figure		-> ("figure", "figure floater")
+		| `Feature_bib			-> ("bib", "bibliography entry")
+		| `Feature_note			-> ("note", "note")
+		| `Feature_section		-> ("section", "section")
+		| `Feature_subsection		-> ("subsection", "sub-section")
+		| `Feature_subsubsection	-> ("subsubsection", "sub-sub-section")
+		| `Feature_toc			-> ("toc", "table of contents")
+		| `Feature_bibliography		-> ("bibliography", "bibliography")
+		| `Feature_notes		-> ("notes", "notes")
+		| `Feature_title		-> ("title", "document title")
+		| `Feature_abstract		-> ("abstract", "document abstract")
+		| `Feature_rule			-> ("rule", "document rule")
+		| `Feature_appendix		-> ("appendix", "appendix")
+		| `Feature_setting		-> ("setting", "document setting")
 end
 

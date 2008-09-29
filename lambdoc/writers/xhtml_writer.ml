@@ -691,8 +691,8 @@ let write_error (error_context, error_msg) =
 		| Error.Absent_target (tag, label) ->
 			sprintf "Command '%s' references an undefined label '%s'." tag label
 
-		| Error.Invalid_composition_subset tag ->
-			sprintf "Command '%s' is not valid for compositions." tag
+		| Error.Invalid_feature (feature, description) ->
+			sprintf "Feature '%s' is not valid." feature
 
 		| Error.Syntax_error ->
 			"Syntax error"

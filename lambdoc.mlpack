@@ -7,6 +7,8 @@ Document_tabular
 Document_block
 Document_ghost
 Document_settings
+Document_features
+Document_permissions
 Document_error
 Document_valid
 Document_invalid

@@ -8,18 +8,28 @@
 *)
 (********************************************************************************)
 
+open Document_ast
+open Document_features
+open Document_error
+
+
 (********************************************************************************)
-(**	{2 Permission module}							*)
+(**	{2 Permissions module}							*)
 (********************************************************************************)
 
-(**	The [Permission] module declares the various permission classes for
-	command parameters and provides functions to verify their compliance.
-*)
-module Permission =
+module Permissions:
+sig
+	val check_command_feature:
+		(int * Error.error_msg_t) DynArray.t ->
+		Ast.command_t ->
+		bool option ->
+		Features.command_feature_t ->
+		unit
+end =
 struct
 	(**	The type encoding the various kinds of available permissions.
 	*)
-	type t =
+	type permission_t =
 		| Optional		(** The parameter is optional but may not be empty. *)
 		| Optional0		(** The parameter is optional and may be empty. *)
 		| Mandatory		(** The parameter is mandatory and may not be empty. *)
@@ -45,33 +55,21 @@ struct
 	let preset_sectional_class =
 		(Optional, Forbidden, Forbidden, Forbidden)
 
-	let math_class =
-		(Forbidden, Forbidden, Forbidden, Mandatory)
-
-	let tabular_class =
-		(Forbidden, Forbidden, Forbidden, Mandatory)
-
 	let listing_class =
 		(Forbidden, Forbidden, Optional, Forbidden)
 
 	let quote_class =
 		(Forbidden, Forbidden, Optional, Forbidden)
 
-	let floater_class perm_secondary subpaged captioned =
-		let perm_order = match (subpaged, captioned) with
-			| (true, true)		-> Mandatory
-			| (true, false)		-> Mandatory0
-			| (false, true)		-> Forbidden
-			| (false, false)	-> Forbidden0
-		in (Optional, perm_order, Optional, perm_secondary)
+	let alignable_class =
+		(Forbidden, Forbidden, Optional, Forbidden)
 
-	let algorithm_class = floater_class Mandatory0
+	let tabular_class =
+		(Forbidden, Forbidden, Optional, Mandatory)
 
-	let equation_class = floater_class Forbidden
-
-	let figure_class = floater_class Mandatory
-
-	let table_class = floater_class Forbidden
+	let floater_class subpaged =
+		let perm_order = if subpaged then Mandatory else Forbidden
+		in (Optional, perm_order, Optional, Forbidden)
 
 	let ghost_class = (Optional, Forbidden, Forbidden, Forbidden)
 
@@ -103,7 +101,7 @@ struct
 		each one individually for correctness.  Any errors found are
 		added to the [errors] [DynArray].
 	*)
-	let check errors comm (perm_label, perm_order, perm_extra, perm_secondary) =
+	let check_permission_set errors comm (perm_label, perm_order, perm_extra, perm_secondary) =
 
 		(match reason_why_invalid perm_label comm.Ast.comm_label with
 			| None ->
@@ -132,5 +130,60 @@ struct
 			| Some reason ->
 				let msg = Error.Bad_secondary_parameter (comm.Ast.comm_tag, reason) in
 				DynArray.add errors (comm.Ast.comm_linenum, msg))
+
+
+	(**	Checks a command feature.
+	*)
+	let check_command_feature errors comm maybe_subpaged feature =
+		let get_subpaged = function
+			| Some subpaged	-> subpaged
+			| None		-> failwith "Feature requires 'subpaged' be set but it it is not!" in
+		let permission_set = match feature with
+			| `Feature_bold			-> forbidden_class
+			| `Feature_emph			-> forbidden_class
+			| `Feature_mono			-> forbidden_class
+			| `Feature_caps			-> forbidden_class
+			| `Feature_thru			-> forbidden_class
+			| `Feature_sup			-> forbidden_class
+			| `Feature_sub			-> forbidden_class
+			| `Feature_box			-> forbidden_class
+			| `Feature_link			-> forbidden_class
+			| `Feature_see			-> forbidden_class
+			| `Feature_cite			-> forbidden_class
+			| `Feature_ref			-> forbidden_class
+			| `Feature_sref			-> forbidden_class
+			| `Feature_mref			-> forbidden_class
+			| `Feature_itemize		-> listing_class
+			| `Feature_enumerate		-> listing_class
+			| `Feature_quote		-> alignable_class
+			| `Feature_mathtex_blk		-> alignable_class
+			| `Feature_mathml_blk		-> alignable_class
+			| `Feature_code			-> alignable_class
+			| `Feature_verbatim		-> alignable_class
+			| `Feature_tabular		-> tabular_class
+			| `Feature_image		-> alignable_class
+			| `Feature_subpage		-> alignable_class
+			| `Feature_caption		-> forbidden_class
+			| `Feature_bib_title		-> forbidden_class
+			| `Feature_bib_author		-> forbidden_class
+			| `Feature_bib_resource		-> forbidden_class
+			| `Feature_equation		-> floater_class (get_subpaged maybe_subpaged)
+			| `Feature_algorithm		-> floater_class (get_subpaged maybe_subpaged)
+			| `Feature_table		-> floater_class (get_subpaged maybe_subpaged)
+			| `Feature_figure		-> floater_class (get_subpaged maybe_subpaged)
+			| `Feature_bib			-> ghost_class
+			| `Feature_note			-> ghost_class
+			| `Feature_section		-> user_sectional_class (get_subpaged maybe_subpaged)
+			| `Feature_subsection		-> user_sectional_class (get_subpaged maybe_subpaged)
+			| `Feature_subsubsection	-> user_sectional_class (get_subpaged maybe_subpaged)
+			| `Feature_toc			-> preset_sectional_class
+			| `Feature_bibliography		-> preset_sectional_class
+			| `Feature_notes		-> preset_sectional_class
+			| `Feature_title		-> forbidden_class
+			| `Feature_abstract		-> forbidden_class
+			| `Feature_rule			-> forbidden_class
+			| `Feature_appendix		-> forbidden_class
+			| `Feature_setting		-> forbidden_class
+		in check_permission_set errors comm permission_set
 end
 

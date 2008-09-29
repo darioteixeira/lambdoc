@@ -14,10 +14,13 @@ open Document_ast
 open Document_ref
 open Document_node
 open Document_block
+open Document_features
 open Document_ghost
 open Document_tabular
 open Document_settings
 open Document_error
+open Document_features
+open Document_permissions
 open Document_math
 open Document_ambivalent
 
@@ -33,7 +36,7 @@ open Document_ambivalent
 	by the language, they make error messages far more comprehensible in
 	a context where polymorphic variants are heavily used.
 *)
-let process_document document_ast =
+let process_document feature_map document_ast =
 
 	let errors = DynArray.create ()
 	and bibs = DynArray.create ()
@@ -217,7 +220,18 @@ let process_document document_ast =
 
 	and check_op op feature elem = elem ()
 
-	and check_comm comm feature elem = elem () in
+	and check_comm comm feature maybe_subpaged elem =
+		let manuscript_feature = (feature :> Features.manuscript_feature_t) in
+		if Features.check_feature manuscript_feature feature_map
+		then	let (what, description) = Features.describe_feature manuscript_feature in
+			let msg = Error.Invalid_feature (what, description)
+			in DynArray.add errors (comm.Ast.comm_linenum, msg);
+			None
+		else
+			(*Permissions.check_command_feature errors comm maybe_subpaged feature;
+			elem () in
+			*)
+			None in
 
 
 	(************************************************************************)
@@ -285,42 +299,42 @@ let process_document document_ast =
 
 		| `AST_bold (comm, seq) ->
 			let elem () = Some (Node.bold (convert_super_seq seq))
-			in check_comm comm `Feature_bold elem
+			in check_comm comm `Feature_bold None elem
 
 		| `AST_emph (comm, seq) ->
 			let elem () = Some (Node.emph (convert_super_seq seq))
-			in check_comm comm `Feature_emph elem
+			in check_comm comm `Feature_emph None elem
 
 		| `AST_mono (comm, seq) ->
 			let elem () = Some (Node.mono (convert_super_seq seq))
-			in check_comm comm `Feature_mono elem
+			in check_comm comm `Feature_mono None elem
 
 		| `AST_caps (comm, seq) ->
 			let elem () = Some (Node.caps (convert_super_seq seq))
-			in check_comm comm `Feature_caps elem
+			in check_comm comm `Feature_caps None elem
 
 		| `AST_thru (comm, seq) ->
 			let elem () = Some (Node.thru (convert_super_seq seq))
-			in check_comm comm `Feature_thru elem
+			in check_comm comm `Feature_thru None elem
 
 		| `AST_sup (comm, seq) ->
 			let elem () = Some (Node.sup (convert_super_seq seq))
-			in check_comm comm `Feature_sup elem
+			in check_comm comm `Feature_sup None elem
 
 		| `AST_sub (comm, seq) ->
 			let elem () = Some (Node.sub (convert_super_seq seq))
-			in check_comm comm `Feature_sub elem
+			in check_comm comm `Feature_sub None elem
 
 		| `AST_box (comm, seq) ->
 			let elem () = Some (Node.box (convert_super_seq seq))
-			in check_comm comm `Feature_box elem
+			in check_comm comm `Feature_box None elem
 
 
 	and convert_link_node : Ast.link_node_t -> (Node.link_node_t, _) Node.t option = function
 
 		| `AST_link (comm, lnk, seq) ->
 			let elem () = Some (Node.link lnk (convert_nonlink_seq seq))
-			in check_comm comm `Feature_link elem
+			in check_comm comm `Feature_link None elem
 
 		| `AST_see (comm, label) ->
 			let elem () =
@@ -329,7 +343,7 @@ let process_document document_ast =
 					| _			-> `Wrong_target Error.Target_note
 				in add_reference target_checker comm label;
 				Some (Node.see label)
-			in check_comm comm `Feature_see elem
+			in check_comm comm `Feature_see None elem
 
 		| `AST_cite (comm, label) ->
 			let elem () =
@@ -338,7 +352,7 @@ let process_document document_ast =
 					| _			-> `Wrong_target Error.Target_bib
 				in add_reference target_checker comm label;
 				Some (Node.cite label)
-			in check_comm comm `Feature_cite elem
+			in check_comm comm `Feature_cite None elem
 
 		| `AST_ref (comm, label) ->
 			let elem () =
@@ -351,7 +365,7 @@ let process_document document_ast =
 					| _ -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.ref label)
-			in check_comm comm `Feature_ref elem
+			in check_comm comm `Feature_ref None elem
 
 		| `AST_sref (comm, label) ->
 			let elem () =
@@ -364,7 +378,7 @@ let process_document document_ast =
 					| _ -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.sref label)
-			in check_comm comm `Feature_sref elem
+			in check_comm comm `Feature_sref None elem
 
 		| `AST_mref (comm, label, seq) ->
 			let elem () =
@@ -373,7 +387,7 @@ let process_document document_ast =
 					| _			-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.mref label (convert_nonlink_seq seq))
-			in check_comm comm `Feature_mref elem
+			in check_comm comm `Feature_mref None elem
 
 
 	and convert_super_node : Ast.super_node_t -> (Node.super_node_t, _) Node.t option = function
@@ -406,7 +420,7 @@ let process_document document_ast =
 
 		let convert_group (maybe_comm, rows) =
 			let () = match maybe_comm with
-				| Some comm	-> Permission.check errors comm Permission.forbidden_class
+				| Some comm	-> ()
 				| None		-> ()
 			in match rows with
 				| []		-> failwith "Parser has given us an empty tabular group"
@@ -450,7 +464,7 @@ let process_document document_ast =
 
 		| `AST_caption (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_caption elem
+			in check_comm comm `Feature_caption None elem
 
 
 	and convert_item_block : bool -> Ast.item_block_t -> (Block.nestable_block_t, _) Block.t list = function subpaged -> function
@@ -469,7 +483,7 @@ let process_document document_ast =
 			let elem () =
 				let bullet = get_bullet comm comm.Ast.comm_extra
 				in Some (Block.itemize bullet (convert_item_frag subpaged items))
-			in check_comm comm `Feature_itemize elem
+			in check_comm comm `Feature_itemize None elem
 
 
 	and convert_enumerate_block : bool -> Ast.enumerate_block_t -> (Block.enumerate_block_t, _) Block.t option = function subpaged -> function
@@ -477,7 +491,7 @@ let process_document document_ast =
 			let elem () =
 				let numbering = get_numbering comm comm.Ast.comm_extra
 				in Some (Block.enumerate numbering (convert_item_frag subpaged items))
-			in check_comm comm `Feature_enumerate elem
+			in check_comm comm `Feature_enumerate None elem
 
 
 	and convert_quote_block : bool -> Ast.quote_block_t -> (Block.quote_block_t, _) Block.t option = function subpaged -> function
@@ -485,7 +499,7 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.quote alignment (convert_nestable_frag subpaged frag))
-			in check_comm comm `Feature_quote elem
+			in check_comm comm `Feature_quote None elem
 
 
 	and convert_mathtex_block : Ast.mathtex_block_t -> (Block.math_block_t, _) Block.t option = function
@@ -493,7 +507,7 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in convert_mathtex (Block.math alignment) comm.Ast.comm_linenum txt
-			in check_comm comm `Feature_mathtex_blk elem
+			in check_comm comm `Feature_mathtex_blk None elem
 
 
 	and convert_mathml_block : Ast.mathml_block_t -> (Block.math_block_t, _) Block.t option = function
@@ -501,7 +515,7 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in convert_mathml (Block.math alignment) comm.Ast.comm_linenum txt
-			in check_comm comm `Feature_mathml_blk elem
+			in check_comm comm `Feature_mathml_blk None elem
 
 
 	and convert_code_block : Ast.code_block_t -> (Block.code_block_t, _) Block.t option = function
@@ -510,7 +524,7 @@ let process_document document_ast =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				and syntax = comm.Ast.comm_secondary
 				in Some (Block.code alignment syntax (convert_textual_seq seq))
-			in check_comm comm `Feature_code elem
+			in check_comm comm `Feature_code None elem
 
 
 	and convert_verbatim_block : Ast.verbatim_block_t -> (Block.verbatim_block_t, _) Block.t option = function
@@ -518,7 +532,7 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.verbatim alignment (convert_textual_seq seq))
-			in check_comm comm `Feature_verbatim elem
+			in check_comm comm `Feature_verbatim None elem
 
 
 	and convert_tabular_block : Ast.tabular_block_t -> (Block.tabular_block_t, _) Block.t option = function
@@ -526,7 +540,7 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.tabular alignment (convert_tabular comm tab))
-			in check_comm comm `Feature_tabular elem
+			in check_comm comm `Feature_tabular None elem
 
 
 	and convert_image_block : Ast.image_block_t -> (Block.image_block_t, _) Block.t option = function
@@ -534,7 +548,7 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.image alignment alias)
-			in check_comm comm `Feature_image elem
+			in check_comm comm `Feature_image None elem
 
 
 	and convert_subpage_block : Ast.subpage_block_t -> (Block.subpage_block_t, _) Block.t option = function
@@ -542,28 +556,28 @@ let process_document document_ast =
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.subpage alignment (convert_super_frag true subpage))
-			in check_comm comm `Feature_subpage elem
+			in check_comm comm `Feature_subpage None elem
 
 
 	and convert_bib_title_block : Ast.bib_title_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_bib_title (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_bib_title elem
+			in check_comm comm `Feature_bib_title None elem
 
 
 	and convert_bib_author_block : Ast.bib_author_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_bib_author (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_bib_author elem
+			in check_comm comm `Feature_bib_author None elem
 
 
 	and convert_bib_resource_block : Ast.bib_resource_block_t -> (Node.super_node_t, _) Node.t list option = function
 
 		| `AST_bib_resource (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_bib_resource elem
+			in check_comm comm `Feature_bib_resource None elem
 
 
 	and convert_equation_block : Ast.equation_block_t -> Block.equation_block_t option = function
@@ -643,7 +657,7 @@ let process_document document_ast =
 				in match (maybe_floater, maybe_equation) with
 					| (Some floater, Some equation)		-> Some (Block.equation floater equation)
 					| _					-> None
-			in check_comm comm `Feature_equation elem
+			in check_comm comm `Feature_equation (Some subpaged) elem
 
 		| `AST_algorithm (comm, cap, alg) ->
 			let elem () =
@@ -652,7 +666,7 @@ let process_document document_ast =
 				in match (maybe_floater, maybe_algorithm) with
 					| (Some floater, Some algorithm)	-> Some (Block.algorithm floater algorithm)
 					| _					-> None
-			in check_comm comm `Feature_algorithm elem
+			in check_comm comm `Feature_algorithm (Some subpaged) elem
 
 		| `AST_table (comm, cap, tab) ->
 			let elem () =
@@ -661,7 +675,7 @@ let process_document document_ast =
 				in match (maybe_floater, maybe_table) with
 					| (Some floater, Some table)		-> Some (Block.table floater table)
 					| _					-> None
-			in check_comm comm `Feature_table elem
+			in check_comm comm `Feature_table (Some subpaged) elem
 
 		| `AST_figure (comm, cap, fig) ->
 			let elem () =
@@ -670,7 +684,7 @@ let process_document document_ast =
 				in match (maybe_floater, maybe_figure) with
 					| (Some floater, Some figure)		-> Some (Block.figure floater figure)
 					| _					-> None
-			in check_comm comm `Feature_figure elem
+			in check_comm comm `Feature_figure (Some subpaged) elem
 
 		| `AST_bib (comm, title, author, resource) ->
 			let elem () =
@@ -693,7 +707,7 @@ let process_document document_ast =
 						None
 					| _ ->
 						None
-			in check_comm comm `Feature_bib elem
+			in check_comm comm `Feature_bib None elem
 
 		| `AST_note (comm, seq) ->
 			let elem () =
@@ -707,7 +721,7 @@ let process_document document_ast =
 					}
 				in DynArray.add notes note;
 				None
-			in check_comm comm `Feature_note elem
+			in check_comm comm `Feature_note None elem
 
 
 	and convert_heading_block : bool -> Ast.heading_block_t -> (Block.top_block_t, _) Block.t option = function subpaged -> function
@@ -744,7 +758,7 @@ let process_document document_ast =
 						in Block.section label order (convert_super_seq seq)
 				in (if not subpaged then add_toc_entry block);
 				Some block
-			in check_comm comm `Feature_section elem
+			in check_comm comm `Feature_section (Some subpaged) elem
 
 		| `AST_subsection (comm, seq) ->
 			let elem () =
@@ -780,7 +794,7 @@ let process_document document_ast =
 						in Block.subsection label order (convert_super_seq seq)
 				in (if not subpaged then add_toc_entry block);
 				Some block
-			in check_comm comm `Feature_subsection elem
+			in check_comm comm `Feature_subsection (Some subpaged) elem
 
 		| `AST_subsubsection (comm, seq) ->
 			let elem () =
@@ -816,14 +830,14 @@ let process_document document_ast =
 						in Block.subsubsection label order (convert_super_seq seq)
 				in (if not subpaged then add_toc_entry block);
 				Some block
-			in check_comm comm `Feature_subsubsection elem
+			in check_comm comm `Feature_subsubsection (Some subpaged) elem
 
 		| `AST_toc comm ->
 			let elem () =
 				let order = `None_order in
 				let label = make_label comm (Order.preset_sectional_order order)
 				in Some (Block.toc label order)
-			in check_comm comm `Feature_toc elem
+			in check_comm comm `Feature_toc None elem
 
 		| `AST_bibliography comm ->
 			let elem () =
@@ -832,7 +846,7 @@ let process_document document_ast =
 				let block = Block.bibliography label order in
 				(if not subpaged then add_toc_entry block);
 				Some block
-			in check_comm comm `Feature_bibliography elem
+			in check_comm comm `Feature_bibliography None elem
 
 		| `AST_notes comm ->
 			let elem () =
@@ -841,7 +855,7 @@ let process_document document_ast =
 				let block = Block.notes label order in
 				(if not subpaged then add_toc_entry block);
 				Some block
-			in check_comm comm `Feature_notes elem
+			in check_comm comm `Feature_notes None elem
 
 
 	and convert_top_block : bool -> Ast.top_block_t -> (Block.top_block_t, _) Block.t option = function subpaged -> function
@@ -851,27 +865,27 @@ let process_document document_ast =
 
 		| `AST_title (comm, seq) ->
 			let elem () = Some (Block.title (convert_super_seq seq))
-			in check_comm comm `Feature_title elem
+			in check_comm comm `Feature_title None elem
 
 		| `AST_abstract (comm, frag) ->
 			let elem () = Some (Block.abstract (convert_paragraph_frag frag))
-			in check_comm comm `Feature_abstract elem
+			in check_comm comm `Feature_abstract None elem
 
 		| `AST_rule comm ->
 			let elem () = Some (Block.rule ())
-			in check_comm comm `Feature_rule elem
+			in check_comm comm `Feature_rule None elem
 
 		| `AST_appendix comm ->
 			let elem () =
 				appendixed := true;
 				None
-			in check_comm comm `Feature_appendix elem
+			in check_comm comm `Feature_appendix None elem
 
 		| `AST_setting (comm, key, value) ->
 			let elem () =
 				add_setting comm key value;
 				None
-			in check_comm comm `Feature_setting elem
+			in check_comm comm `Feature_setting None elem
 
 
 	and convert_super_block : bool -> Ast.super_block_t -> (Block.super_block_t, _) Block.t option = function subpaged -> function
@@ -965,7 +979,8 @@ let sort_errors errors =
 (********************************************************************************)
 
 let process_manuscript source document_ast =
-	let (contents, bibs, notes, toc, labels, settings, errors) = process_document document_ast in
+	let feature_map = Features.load_manuscript_features () in
+	let (contents, bibs, notes, toc, labels, settings, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_manuscript contents bibs notes toc labels settings
@@ -975,7 +990,8 @@ let process_manuscript source document_ast =
 
 
 let process_composition source document_ast =
-	let (contents, _, _, _, _, _, errors) = process_document document_ast in
+	let feature_map = Features.load_composition_features () in
+	let (contents, _, _, _, _, _, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
 		let composition = Document_convert.convert_to_composition contents
