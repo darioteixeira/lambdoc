@@ -1,5 +1,6 @@
 (********************************************************************************)
-(**	Postprocessing on documents.
+(**	Postprocessing on a document AST.  These functions convert a document AST
+	into a proper, final, ambivalent document.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -37,6 +38,11 @@ open Document_ambivalent
 	a context where polymorphic variants are heavily used.
 *)
 let process_document feature_map document_ast =
+
+
+	(************************************************************************)
+	(* Declaration of the mutable values used in the function.		*)
+	(************************************************************************)
 
 	let errors = DynArray.create ()
 	and bibs = DynArray.create ()
@@ -213,7 +219,7 @@ let process_document feature_map document_ast =
 
 
 	(************************************************************************)
-	(* Checkers for naked, operator, and command nodes.			*)
+	(* Checkers for operators and commands.					*)
 	(************************************************************************)
 
 	let checker feature success msg_maker linenum =
@@ -233,6 +239,7 @@ let process_document feature_map document_ast =
 		and msg_maker (what, desc) = Error.Invalid_command_feature (what, desc)
 		and linenum = comm.Ast.comm_linenum
 		in checker feature success msg_maker linenum
+
 
 	and check_op op feature elem =
 		let msg_maker (what, desc) = Error.Invalid_command_feature (what, desc)
@@ -265,7 +272,6 @@ let process_document feature_map document_ast =
 	(************************************************************************)
 	(* Postprocessing functions for inline context.				*)
 	(************************************************************************)
-
 
 	let rec convert_super_seq seq =
 		ExtList.List.filter_map convert_super_node seq
