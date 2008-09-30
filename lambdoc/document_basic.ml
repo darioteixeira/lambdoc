@@ -15,7 +15,11 @@ TYPE_CONV_PATH "Document"
 (**	{2 Basic data types used in the document}				*)
 (********************************************************************************)
 
-(**	The basic type of undecorated text.
+(**	The type of raw text.
+*)
+type raw_t = string with sexp
+
+(**	The type of undecorated text.
 *)
 type plain_t = string with sexp
 

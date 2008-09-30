@@ -47,14 +47,14 @@ sig
 	type textual_seq_t = Ast.textual_node_t list
 
 	type textual_node_t =
-		[ `AST_plain of plain_t
-		| `AST_entity of entity_t
+		[ `AST_plain of operator_t * plain_t
+		| `AST_entity of operator_t * entity_t
 		]
 
 	type nonlink_node_t =
 		[ textual_node_t
-		| `AST_mathtex_inl of operator_t * plain_t
-		| `AST_mathml_inl of operator_t * plain_t
+		| `AST_mathtex_inl of operator_t * raw_t
+		| `AST_mathml_inl of operator_t * raw_t
 		| `AST_bold of command_t * super_seq_t
 		| `AST_emph of command_t * super_seq_t
 		| `AST_mono of command_t * super_seq_t
@@ -66,12 +66,12 @@ sig
 		]
 
 	type link_node_t =
-		[ `AST_link of command_t * link_t * nonlink_seq_t
-		| `AST_see of command_t * ref_t	
-		| `AST_cite of command_t * ref_t
-		| `AST_ref of command_t * ref_t
-		| `AST_sref of command_t * ref_t
-		| `AST_mref of command_t * ref_t * nonlink_seq_t
+		[ `AST_link of command_t * raw_t * nonlink_seq_t
+		| `AST_see of command_t * raw_t	
+		| `AST_cite of command_t * raw_t
+		| `AST_ref of command_t * raw_t
+		| `AST_sref of command_t * raw_t
+		| `AST_mref of command_t * raw_t * nonlink_seq_t
 		]
 
 	type super_node_t =
@@ -110,34 +110,34 @@ sig
 	type itemize_block_t = [ `AST_itemize of command_t * item_frag_t ]
 	type enumerate_block_t = [ `AST_enumerate of command_t * item_frag_t ]
 	type quote_block_t = [ `AST_quote of command_t * nestable_frag_t ]
-	type mathtex_block_t = [ `AST_mathtex_blk of command_t * plain_t ]
-	type mathml_block_t = [ `AST_mathml_blk of command_t * plain_t ]
+	type mathtex_block_t = [ `AST_mathtex_blk of command_t * raw_t ]
+	type mathml_block_t = [ `AST_mathml_blk of command_t * raw_t ]
 	type code_block_t = [ `AST_code of command_t * textual_seq_t ]
 	type verbatim_block_t = [ `AST_verbatim of command_t * textual_seq_t ]
 	type tabular_block_t = [ `AST_tabular of command_t * tabular_t ]
-	type image_block_t = [ `AST_image of command_t * plain_t ]
+	type image_block_t = [ `AST_image of command_t * raw_t ]
 	type subpage_block_t = [ `AST_subpage of command_t * super_frag_t ]
 	type bib_title_block_t = [ `AST_bib_title of command_t * super_seq_t ] 
 	type bib_author_block_t = [ `AST_bib_author of command_t * super_seq_t ] 
 	type bib_resource_block_t = [ `AST_bib_resource of command_t * super_seq_t ] 
 
 	type equation_block_t =
-		[ `AST_mathtex_blk of command_t * plain_t
-		| `AST_mathml_blk of command_t * plain_t
+		[ mathtex_block_t
+		| mathml_block_t
 		]
 
 	type algorithm_block_t =
-		[ `AST_code of command_t * textual_seq_t
+		[ code_block_t
 		]
 
 	type table_block_t =
-		[ `AST_tabular of command_t * tabular_t
+		[ tabular_block_t
 		]
 
 	type figure_block_t =
-		[ `AST_image of command_t * plain_t
-		| `AST_verbatim of command_t * textual_seq_t
-		| `AST_subpage of command_t * super_frag_t
+		[ image_block_t
+		| verbatim_block_t
+		| subpage_block_t
 		]
 
 	type nestable_block_t =
