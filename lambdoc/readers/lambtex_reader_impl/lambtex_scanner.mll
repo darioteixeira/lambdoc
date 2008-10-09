@@ -23,8 +23,7 @@ open Lambtex_parser
 *)
 
 type tok_simple_comm_t =	[ `Tok_simple_comm of Lexing.lexbuf ]
-type tok_begin_comm_t =		[ `Tok_begin_comm of Lexing.lexbuf ]
-type tok_end_comm_t =		[ `Tok_end_comm of Lexing.lexbuf ]
+type tok_env_comm_t =		[ `Tok_env_comm of Lexing.lexbuf ]
 type tok_begin_t =		[ `Tok_begin of Lexing.lexbuf ]
 type tok_end_t =		[ `Tok_end of Lexing.lexbuf ]
 type tok_begin_mathtex_inl_t =	[ `Tok_begin_mathtex_inl of Lexing.lexbuf ]
@@ -40,7 +39,7 @@ type tok_plain_t =		[ `Tok_plain of Lexing.lexbuf * string ]
 type tok_entity_t =		[ `Tok_entity of Lexing.lexbuf * string ]
 
 type block_token_t =
-	[ tok_simple_comm_t | tok_begin_comm_t | tok_end_comm_t
+	[ tok_simple_comm_t | tok_env_comm_t
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
@@ -49,7 +48,7 @@ type block_token_t =
 	]
 
 type inline_token_t =
-	[ tok_simple_comm_t | tok_begin_comm_t | tok_end_comm_t
+	[ tok_simple_comm_t | tok_env_comm_t
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
@@ -58,7 +57,7 @@ type inline_token_t =
 	]
 
 type tabular_token_t =
-	[ tok_simple_comm_t | tok_begin_comm_t | tok_end_comm_t
+	[ tok_simple_comm_t | tok_env_comm_t
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
@@ -68,13 +67,13 @@ type tabular_token_t =
 	]
 
 type verbatim_token_t =
-	[ tok_end_comm_t
+	[ tok_env_comm_t
 	| tok_eof_t
 	| tok_plain_t | tok_entity_t
 	]
 
 type code_token_t =
-	[ tok_end_comm_t
+	[ tok_env_comm_t
 	| tok_eof_t
 	| tok_plain_t | tok_entity_t
 	]
@@ -98,13 +97,13 @@ type mathml_inl_token_t =
 	]
 
 type mathtex_blk_token_t =
-	[ tok_end_comm_t
+	[ tok_env_comm_t
 	| tok_eof_t
 	| tok_raw_t
 	]
 
 type mathml_blk_token_t =
-	[ tok_end_comm_t
+	[ tok_env_comm_t
 	| tok_eof_t
 	| tok_raw_t
 	]
@@ -140,19 +139,23 @@ let deci = ['0'-'9']
 let order_char = ['0'-'9' '.']
 let label_char = ['a'-'z' 'A'-'Z' '0'-'9' '-' ':' '_']
 let extra_char = ['a'-'z' 'A'-'Z' '0'-'9' ',' '!']
+
 let order = '(' order_char* ')'
 let label = '[' label_char+ ']'
 let extra = '<' extra_char+ '>'
 let optional = ( order | label | extra )*
 let primary = '{' alpha+ '}'
 let secondary = '{' alpha* '}'
-let env_command = '\\' ("begin" | "end") optional primary secondary?
-let simple_command = '\\' alpha+ optional
+
+let simple_comm = '\\' alpha+ optional
+let env_comm = '\\' ("begin" | "end") optional primary secondary?
+
 let entity = '&' (alpha+ | ('#' deci+))  ';'
 let space = [' ' '\t']
 let escape = '\\'
-let eol = space* '\n'
+let eol = space* '\n' space*
 let break = eol eol+
+
 let begin_marker = '{'
 let end_marker = '}'
 let begin_mathtex_inl = "[$"
@@ -183,8 +186,7 @@ let row_end = space* '$'
 *)
 rule block_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
-	| begin_comm		{`Tok_begin_comm lexbuf}
-	| end_comm		{`Tok_end_comm lexbuf}
+	| env_comm		{`Tok_env_comm lexbuf}
 	| begin_marker		{`Tok_begin lexbuf}
 	| end_marker		{`Tok_end lexbuf}
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
@@ -201,14 +203,13 @@ rule block_scanner = parse
 *)
 and inline_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
-	| begin_comm		{`Tok_begin_comm lexbuf}
-	| end_comm		{`Tok_end_comm lexbuf}
+	| env_comm		{`Tok_env_comm lexbuf}
 	| begin_marker		{`Tok_begin lexbuf}
 	| end_marker		{`Tok_end lexbuf}
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
 	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
 	| eof			{`Tok_eof lexbuf}
-	| space | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
+	| space+ | eol		{incr_linenum lexbuf; `Tok_plain (lexbuf, " ")}
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
@@ -221,8 +222,7 @@ and inline_scanner = parse
 *)
 and tabular_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
-	| begin_comm		{`Tok_begin_comm lexbuf}
-	| end_comm		{`Tok_end_comm lexbuf}
+	| env_comm		{`Tok_env_comm lexbuf}
 	| begin_marker		{`Tok_begin lexbuf}
 	| end_marker		{`Tok_end lexbuf}
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
@@ -230,7 +230,7 @@ and tabular_scanner = parse
 	| column_sep		{`Tok_column_sep lexbuf}
 	| row_end		{`Tok_row_end lexbuf}
 	| eof			{`Tok_eof lexbuf}
-	| space | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
+	| space | eol		{incr_linenum lexbuf; `Tok_plain (lexbuf, " ")}
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
@@ -242,7 +242,7 @@ and tabular_scanner = parse
 	"\end{verbatim}" termination tag, and HTML entities.
 *)
 and verbatim_scanner = parse
-	| "\\end{verbatim}"	{`Tok_env_command lexbuf}
+	| "\\end{verbatim}"	{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof lexbuf}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
@@ -253,7 +253,7 @@ and verbatim_scanner = parse
 	"\end{code}" termination tag, and HTML entities.
 *)
 and code_scanner = parse
-	| "\\end{code}"		{`Tok_env_command lexbuf}
+	| "\\end{code}"		{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof lexbuf}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
@@ -295,7 +295,7 @@ and mathml_inl_scanner = parse
 	to the EOF character and the environment terminator "\end{tex}".
 *)
 and mathtex_blk_scanner = parse
-	| "\\end{tex}"		{`Tok_env_command lexbuf}
+	| "\\end{tex}"		{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof lexbuf}
 	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
@@ -305,7 +305,7 @@ and mathtex_blk_scanner = parse
 	to the EOF character and the environment terminator "\end{mathml}".
 *)
 and mathml_blk_scanner = parse
-	| "\\end{mathml}"	{`Tok_env_command lexbuf}
+	| "\\end{mathml}"	{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof lexbuf}
 	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 

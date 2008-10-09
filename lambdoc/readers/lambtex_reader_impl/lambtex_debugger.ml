@@ -35,12 +35,12 @@ let to_string = function
 	| EOF op			-> sprintf "EOF: %s" (sprintf_operator op)
 	| BEGIN op			-> sprintf "BEGIN: %s" (sprintf_operator op)
 	| END op			-> sprintf "END: %s" (sprintf_operator op)
-	| NEW_PARAGRAPH op		-> sprintf "NEW_PARAGRAPH: %s" (sprintf_operator op)
+	| NEW_PAR op			-> sprintf "NEW_PAR: %s" (sprintf_operator op)
 	| COLUMN_SEP op			-> sprintf "COLUMN_SEP: %s" (sprintf_operator op)
 	| ROW_END op			-> sprintf "ROW_END: %s" (sprintf_operator op)
 
-	| PLAIN txt			-> sprintf "PLAIN \"%s\"" txt
-	| ENTITY txt			-> sprintf "ENTITY \"%s\"" txt
+	| PLAIN (op, txt)		-> sprintf "PLAIN \"%s\"" txt
+	| ENTITY (op, txt)		-> sprintf "ENTITY \"%s\"" txt
 
 	| BEGIN_MATHTEX_INL op		-> sprintf "BEGIN_MATHTEX_INL: %s" (sprintf_operator op)
 	| END_MATHTEX_INL op		-> sprintf "END_MATHTEX_INL: %s" (sprintf_operator op)
@@ -105,7 +105,6 @@ let to_string = function
 	| TITLE comm			-> sprintf "TITLE: %s" (sprintf_command comm)
 	| RULE comm			-> sprintf "RULE: %s" (sprintf_command comm)
 	| APPENDIX comm			-> sprintf "APPENDIX: %s" (sprintf_command comm)
-	| SETTING comm			-> sprintf "SETTING: %s" (sprintf_command comm)
 	| NEW_ITEM comm			-> sprintf "NEW_ITEM: %s" (sprintf_command comm)
 	| IMAGE comm			-> sprintf "IMAGE: %s" (sprintf_command comm)
 	| CAPTION comm			-> sprintf "CAPTION: %s" (sprintf_command comm)

@@ -15,7 +15,7 @@ let test_tokenizer () =
 		| Some (Lambtex_reader_impl.Lambtex_parser.EOF _ )	-> false
 		| _							-> true
 	do
-		let token = tokenizer#coalesce lexbuf in
+		let token = tokenizer#consume lexbuf in
 		Printf.printf "## %s\n" (Lambtex_reader_impl.Lambtex_debugger.to_string token);
 		res := Some token
 	done

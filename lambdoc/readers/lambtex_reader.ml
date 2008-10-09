@@ -26,7 +26,7 @@ struct
 		let lexbuf = Lexing.from_string str in
 		let tokenizer = new Lambtex_tokenizer.tokenizer in
 		try
-			Lambtex_parser.document tokenizer#coalesce lexbuf
+			Lambtex_parser.document tokenizer#consume lexbuf
 		with
 			| Lambtex_parser.Error ->
 				raise (Parsing_error lexbuf.lex_curr_p.pos_lnum)

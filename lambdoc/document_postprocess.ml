@@ -287,13 +287,11 @@ let process_document feature_map document_ast =
 
 	and convert_textual_node : Ast.textual_node_t -> (Node.textual_node_t, _) Node.t option = function
 
-		| `AST_plain txt ->
-			let op = {Ast.op_linenum = 1;} in
+		| `AST_plain (op, txt) ->
 			let elem () = Some (Node.plain txt)
 			in check_op op `Feature_plain elem
 
-		| `AST_entity txt ->
-			let op = {Ast.op_linenum = 1;} in
+		| `AST_entity (op, txt) ->
 			let elem () = Some (Node.entity txt)
 			in check_op op `Feature_entity elem
 

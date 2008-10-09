@@ -127,12 +127,10 @@ sig
 		]
 
 	type algorithm_block_t =
-		[ code_block_t
-		]
+		code_block_t
 
 	type table_block_t =
-		[ tabular_block_t
-		]
+		tabular_block_t
 
 	type figure_block_t =
 		[ image_block_t

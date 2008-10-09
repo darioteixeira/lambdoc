@@ -262,10 +262,10 @@ object (self)
 	(**	Performs the given {!action_t}, changing the state of the automaton.
 	*)
 	method private perform_action = function
-		| Context con		-> context <- x
-		| Push scanner		-> Stack.push scanner history
-		| Pop			-> try Stack.pop history with Stack.Empty -> ()
-		| Store scanners	-> List.iter (Queue.add storage) scanners
+		| Context con		-> context <- con
+		| Push env		-> history <- env :: history
+		| Pop			-> history <- (match history with [] -> [] | hd::tl -> tl)
+		| Store envs		-> List.iter (fun x -> Queue.add x storage) envs
 		| Fetch			-> try history <- (Queue.take storage) :: history with Queue.Empty -> ()
 
 
@@ -289,8 +289,7 @@ object (self)
 
 		let (maybe_token, actions) = match scanner lexbuf with
 			| `Tok_simple_comm buf		-> issue_simple_command buf
-			| `Tok_begin_comm buf		-> issue_env_command buf
-			| `Tok_end_comm buf		-> issue_env_command buf
+			| `Tok_env_comm buf		-> issue_env_command buf
 			| `Tok_begin buf		-> (Some (BEGIN (build_op buf)),		[Fetch])
 			| `Tok_end buf			-> (Some (END (build_op buf)),			[Pop])
 			| `Tok_begin_mathtex_inl buf	-> (Some (BEGIN_MATHTEX_INL (build_op buf)),	[Context Inl; Push Mathtex_inl])
@@ -306,10 +305,12 @@ object (self)
 			| `Tok_entity (buf, x)		-> (Some (ENTITY (build_op buf, x)),		[Context Inl]) in
 
 		let old_context = context in
-		List.iter self#perform_action actions;
-		match (old_context, context) with
-			| (Blk, Inl)	-> Queue.add productions (NEW_PARAGRAPH (build_op lexbuf))
-			| _		-> ()
+
+		let () =
+			List.iter self#perform_action actions;
+			match (old_context, context, history) with
+				| (Blk, Inl, [])	-> Queue.add (NEW_PAR (build_op lexbuf)) productions
+				| _			-> ()
 
 		in match maybe_token with
 			| Some token	-> token
