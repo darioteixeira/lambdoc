@@ -10,7 +10,7 @@
 
 
 (********************************************************************************)
-(**	{2 Auxiliary types and functions}					*)
+(**	{2 Auxiliary types}							*)
 (********************************************************************************)
 
 {
@@ -19,25 +19,100 @@ open ExtString
 open Lambtex_parser
 
 
-(**	The various kinds of tokens output by any of the scanners.
+(**	The set of all tokens output by the various scanners.
 *)
-type scanner_token_t =
-	| Tok_env_command of Lexing.lexbuf
-	| Tok_simple_command of Lexing.lexbuf
-	| Tok_begin of Lexing.lexbuf
-	| Tok_end of Lexing.lexbuf
-	| Tok_begin_mathtex_inl of Lexing.lexbuf
-	| Tok_end_mathtex_inl of Lexing.lexbuf
-	| Tok_begin_mathml_inl of Lexing.lexbuf
-	| Tok_end_mathml_inl of Lexing.lexbuf
-	| Tok_eof of Lexing.lexbuf
-	| Tok_column_sep of Lexing.lexbuf
-	| Tok_row_end of Lexing.lexbuf
-	| Tok_plain of string
-	| Tok_entity of string
-	| Tok_space
-	| Tok_break
 
+type tok_simple_comm_t =	[ `Tok_simple_comm of Lexing.lexbuf ]
+type tok_begin_comm_t =		[ `Tok_begin_comm of Lexing.lexbuf ]
+type tok_end_comm_t =		[ `Tok_end_comm of Lexing.lexbuf ]
+type tok_begin_t =		[ `Tok_begin of Lexing.lexbuf ]
+type tok_end_t =		[ `Tok_end of Lexing.lexbuf ]
+type tok_begin_mathtex_inl_t =	[ `Tok_begin_mathtex_inl of Lexing.lexbuf ]
+type tok_end_mathtex_inl_t =	[ `Tok_end_mathtex_inl of Lexing.lexbuf ]
+type tok_begin_mathml_inl_t =	[ `Tok_begin_mathml_inl of Lexing.lexbuf ]
+type tok_end_mathml_inl_t =	[ `Tok_end_mathml_inl of Lexing.lexbuf ]
+type tok_column_sep_t =		[ `Tok_column_sep of Lexing.lexbuf ]
+type tok_row_end_t =		[ `Tok_row_end of Lexing.lexbuf ]
+type tok_break_t =		[ `Tok_break ]
+type tok_eof_t =		[ `Tok_eof of Lexing.lexbuf ]
+type tok_raw_t =		[ `Tok_raw of Lexing.lexbuf * string ]
+type tok_plain_t =		[ `Tok_plain of Lexing.lexbuf * string ]
+type tok_entity_t =		[ `Tok_entity of Lexing.lexbuf * string ]
+
+type block_token_t =
+	[ tok_simple_comm_t | tok_begin_comm_t | tok_end_comm_t
+	| tok_begin_t | tok_end_t
+	| tok_begin_mathtex_inl_t
+	| tok_begin_mathml_inl_t
+	| tok_eof_t
+	| tok_plain_t | tok_entity_t
+	]
+
+type inline_token_t =
+	[ tok_simple_comm_t | tok_begin_comm_t | tok_end_comm_t
+	| tok_begin_t | tok_end_t
+	| tok_begin_mathtex_inl_t
+	| tok_begin_mathml_inl_t
+	| tok_break_t | tok_eof_t
+	| tok_plain_t | tok_entity_t
+	]
+
+type tabular_token_t =
+	[ tok_simple_comm_t | tok_begin_comm_t | tok_end_comm_t
+	| tok_begin_t | tok_end_t
+	| tok_begin_mathtex_inl_t
+	| tok_begin_mathml_inl_t
+	| tok_column_sep_t | tok_row_end_t
+	| tok_break_t | tok_eof_t
+	| tok_plain_t | tok_entity_t
+	]
+
+type verbatim_token_t =
+	[ tok_end_comm_t
+	| tok_eof_t
+	| tok_plain_t | tok_entity_t
+	]
+
+type code_token_t =
+	[ tok_end_comm_t
+	| tok_eof_t
+	| tok_plain_t | tok_entity_t
+	]
+
+type raw_token_t =
+	[ tok_end_t
+	| tok_eof_t
+	| tok_raw_t
+	]
+
+type mathtex_inl_token_t =
+	[ tok_end_mathtex_inl_t
+	| tok_eof_t
+	| tok_raw_t
+	]
+
+type mathml_inl_token_t =
+	[ tok_end_mathml_inl_t
+	| tok_eof_t
+	| tok_raw_t
+	]
+
+type mathtex_blk_token_t =
+	[ tok_end_comm_t
+	| tok_eof_t
+	| tok_raw_t
+	]
+
+type mathml_blk_token_t =
+	[ tok_end_comm_t
+	| tok_eof_t
+	| tok_raw_t
+	]
+
+
+(********************************************************************************)
+(**	{2 Auxiliary functions}							*)
+(********************************************************************************)
 
 (**	Increments the pos_lnum field, since ocamllex or ulex
 	generated lexers do not do this automatically.
@@ -57,7 +132,7 @@ let incr_linenum lexbuf =
 
 
 (********************************************************************************)
-(**	{2 List of regular expressions used in scanner}				*)
+(**	{2 List of regular expressions used in the scanners}			*)
 (********************************************************************************)
 
 let alpha = ['a'-'z' 'A'-'Z']
@@ -103,55 +178,63 @@ let row_end = space* '$'
 	code that is easily adapted to different lexer generators.
 *)
 
-(**	The default scanner for documents.  This scanner is used in Inline
-	and Block contexts.  Note that the backslash is used as an escape
-	character and HTML entities are also recognised.  Also noteworthy
-	is that spacing and line breaks are handled differently.
+(**	Scanner for block contexts.  Note that this scanner ignores spaces
+	and line breaks.
 *)
-rule general_scanner = parse
-	| env_command		{Tok_env_command lexbuf}
-	| simple_command	{Tok_simple_command lexbuf}
-	| begin_marker		{Tok_begin lexbuf}
-	| end_marker		{Tok_end lexbuf}
-	| begin_mathtex_inl	{Tok_begin_mathtex_inl lexbuf}
-	| begin_mathml_inl	{Tok_begin_mathml_inl lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| break			{incr_linenum lexbuf; Tok_break}
-	| space | eol		{incr_linenum lexbuf; Tok_space}
-	| escape _		{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 1 1)}
-	| entity		{Tok_entity (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf))}
-	| _			{Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+rule block_scanner = parse
+	| simple_comm		{`Tok_simple_comm lexbuf}
+	| begin_comm		{`Tok_begin_comm lexbuf}
+	| end_comm		{`Tok_end_comm lexbuf}
+	| begin_marker		{`Tok_begin lexbuf}
+	| end_marker		{`Tok_end lexbuf}
+	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
+	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| space | eol | break	{incr_linenum lexbuf; block_scanner lexbuf}
+	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
+	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
-(**	Scanner used for tabular environments.  It builds on the general scanner,
-	but adding checks for the characters that separate columns and terminate rows.
+(**	Scanner for inline contexts.  This scanner is almost identical
+	to the block scanner, but treats whitespace as significant.
+*)
+and inline_scanner = parse
+	| simple_comm		{`Tok_simple_comm lexbuf}
+	| begin_comm		{`Tok_begin_comm lexbuf}
+	| end_comm		{`Tok_end_comm lexbuf}
+	| begin_marker		{`Tok_begin lexbuf}
+	| end_marker		{`Tok_end lexbuf}
+	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
+	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| space | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
+	| break			{incr_linenum lexbuf; `Tok_break}
+	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
+	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+
+
+(**	Scanner used for tabular environments.  It is mostly identical
+	to the inline scanner, but scans for characters that separate
+	columns and terminate rows.
 *)
 and tabular_scanner = parse
-	| env_command		{Tok_env_command lexbuf}
-	| simple_command	{Tok_simple_command lexbuf}
-	| begin_marker		{Tok_begin lexbuf}
-	| end_marker		{Tok_end lexbuf}
-	| begin_mathtex_inl	{Tok_begin_mathtex_inl lexbuf}
-	| begin_mathml_inl	{Tok_begin_mathml_inl lexbuf}
-	| column_sep		{Tok_column_sep lexbuf}
-	| row_end		{Tok_row_end lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| break			{incr_linenum lexbuf; Tok_break}
-	| space | eol		{incr_linenum lexbuf; Tok_space}
-	| escape _		{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 1 1)}
-	| entity		{Tok_entity (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf))}
-	| _			{Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
-
-
-(**	Special scanner for code environments.  Pretty much every character
-	is returned as text; the exceptions are the EOF character, the special
-	"\end{code}" termination tag, and HTML entities.
-*)
-and code_scanner = parse
-	| "\\end{code}"		{Tok_env_command lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| entity		{Tok_entity (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf))}
-	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+	| simple_comm		{`Tok_simple_comm lexbuf}
+	| begin_comm		{`Tok_begin_comm lexbuf}
+	| end_comm		{`Tok_end_comm lexbuf}
+	| begin_marker		{`Tok_begin lexbuf}
+	| end_marker		{`Tok_end lexbuf}
+	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
+	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
+	| column_sep		{`Tok_column_sep lexbuf}
+	| row_end		{`Tok_row_end lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| space | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
+	| break			{incr_linenum lexbuf; `Tok_break}
+	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
+	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
 (**	Special scanner for verbatim environments.  Pretty much every character
@@ -159,10 +242,32 @@ and code_scanner = parse
 	"\end{verbatim}" termination tag, and HTML entities.
 *)
 and verbatim_scanner = parse
-	| "\\end{verbatim}"	{Tok_env_command lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| entity		{Tok_entity (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf))}
-	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+	| "\\end{verbatim}"	{`Tok_env_command lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+
+
+(**	Special scanner for code environments.  Pretty much every character
+	is returned as text; the exceptions are the EOF character, the special
+	"\end{code}" termination tag, and HTML entities.
+*)
+and code_scanner = parse
+	| "\\end{code}"		{`Tok_env_command lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+
+
+(**	Special scanner for raw environments.  Pretty much every character
+	is returned as raw text; the exceptions are the EOF character and
+	the special "}" termination tag.
+*)
+and raw_scanner = parse
+	| end_marker		{`Tok_end lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| escape _		{incr_linenum lexbuf; `Tok_raw (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
+	| _			{incr_linenum lexbuf; `Tok_raw (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
 (**	Special scanner for mathtex environments in an inline context.  No attempt whatsoever
@@ -170,9 +275,9 @@ and verbatim_scanner = parse
 	to the EOF character and the terminator "$]".
 *)
 and mathtex_inl_scanner = parse
-	| end_mathtex_inl	{Tok_end_mathtex_inl lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+	| end_mathtex_inl	{`Tok_end_mathtex_inl lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
 (**	Special scanner for mathml environments in an inline context.  No attempt whatsoever
@@ -180,9 +285,9 @@ and mathtex_inl_scanner = parse
 	to the EOF character and the terminator "$>".
 *)
 and mathml_inl_scanner = parse
-	| end_mathml_inl	{Tok_end_mathml_inl lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+	| end_mathml_inl	{`Tok_end_mathml_inl lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
 (**	Special scanner for mathtex environments in a block context.  No attempt whatsoever
@@ -190,9 +295,9 @@ and mathml_inl_scanner = parse
 	to the EOF character and the environment terminator "\end{tex}".
 *)
 and mathtex_blk_scanner = parse
-	| "\\end{tex}"		{Tok_env_command lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+	| "\\end{tex}"		{`Tok_env_command lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
 (**	Special scanner for mathml environments in a block context.  No attempt whatsoever
@@ -200,7 +305,7 @@ and mathtex_blk_scanner = parse
 	to the EOF character and the environment terminator "\end{mathml}".
 *)
 and mathml_blk_scanner = parse
-	| "\\end{mathml}"	{Tok_env_command lexbuf}
-	| eof			{Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; Tok_plain (String.sub (Lexing.lexeme lexbuf) 0 1)}
+	| "\\end{mathml}"	{`Tok_env_command lexbuf}
+	| eof			{`Tok_eof lexbuf}
+	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
