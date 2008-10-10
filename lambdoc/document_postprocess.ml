@@ -721,7 +721,7 @@ let process_document feature_map document_ast =
 						None
 			in check_comm comm `Feature_bib None elem
 
-		| `AST_note (comm, seq) ->
+		| `AST_note (comm, frag) ->
 			let elem () =
 				let order = make_ghost_order comm note_counter in
 				let label = make_label comm (Order.note_order order) in
@@ -729,7 +729,7 @@ let process_document feature_map document_ast =
 					{
 					Note.label = label;
 					Note.order = order;
-					Note.content = convert_super_seq seq;
+					Note.content = convert_nestable_frag subpaged frag;
 					}
 				in DynArray.add notes note;
 				None

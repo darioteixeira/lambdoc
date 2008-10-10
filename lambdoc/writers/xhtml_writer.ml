@@ -533,7 +533,7 @@ let write_valid_document classname doc =
 	(************************************************************************)
 
 	and write_note note =
-		XHTML.M.li ~a:[a_class ["doc_note"]] (write_super_seq note.Note.content)
+		XHTML.M.li ~a:[a_class ["doc_note"]] (write_nestable_frag note.Note.content)
 
 
 	and write_bib bib =

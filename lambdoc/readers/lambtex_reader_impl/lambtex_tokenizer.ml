@@ -103,6 +103,7 @@ let get_env_tag params is_begin =
 		| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],			[])
 		| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],			[])
 		| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],			[])
+		| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],			[])
 		| other		-> raise (Unknown_env_command other)
 	in if is_begin
 	then (Some (token_begin), (Context Blk) :: actions_begin)
@@ -148,10 +149,9 @@ let get_simple_tag params =
 		| "head"		-> (HEAD params,		Blk,		[])
 		| "foot"		-> (FOOT params,		Blk,		[])
 		| "body"		-> (BODY params,		Blk,		[])
-		| "btitle"		-> (BIB_TITLE params,		Blk,		[Store [Inline]])
-		| "bauthor"		-> (BIB_AUTHOR params,		Blk,		[Store [Inline]])
-		| "bresource"		-> (BIB_RESOURCE params,	Blk,		[Store [Inline]])
-		| "note"		-> (NOTE params,		Blk,		[Store [Inline]])
+		| "what"		-> (BIB_TITLE params,		Blk,		[Store [Inline]])
+		| "who"			-> (BIB_AUTHOR params,		Blk,		[Store [Inline]])
+		| "where"		-> (BIB_RESOURCE params,	Blk,		[Store [Inline]])
 		| other			-> raise (Unknown_simple_command other)
 	in (Some token, (Context context) :: actions)
 
@@ -290,8 +290,8 @@ object (self)
 		let (maybe_token, actions) = match scanner lexbuf with
 			| `Tok_simple_comm buf		-> issue_simple_command buf
 			| `Tok_env_comm buf		-> issue_env_command buf
-			| `Tok_begin buf		-> (Some (BEGIN (build_op buf)),		[Fetch])
-			| `Tok_end buf			-> (Some (END (build_op buf)),			[Pop])
+			| `Tok_begin			-> (Some BEGIN,					[Fetch])
+			| `Tok_end			-> (Some END,					[Pop])
 			| `Tok_begin_mathtex_inl buf	-> (Some (BEGIN_MATHTEX_INL (build_op buf)),	[Context Inl; Push Mathtex_inl])
 			| `Tok_end_mathtex_inl buf	-> (Some (END_MATHTEX_INL (build_op buf)),	[Pop])
 			| `Tok_begin_mathml_inl buf	-> (Some (BEGIN_MATHML_INL (build_op buf)),	[Context Inl; Push Mathml_inl])
@@ -299,10 +299,10 @@ object (self)
 			| `Tok_column_sep buf		-> (Some (COLUMN_SEP (build_op buf)),		[Context Blk])
 			| `Tok_row_end buf		-> (Some (ROW_END (build_op buf)),		[Context Blk])
 			| `Tok_break			-> (None,					[Context Blk])
-			| `Tok_eof buf			-> (Some (EOF (build_op buf)),			[])
-			| `Tok_raw (buf, x)		-> (Some (RAW (build_op buf, x)),		[])
-			| `Tok_plain (buf, x)		-> (Some (PLAIN (build_op buf, x)),		[Context Inl])
-			| `Tok_entity (buf, x)		-> (Some (ENTITY (build_op buf, x)),		[Context Inl]) in
+			| `Tok_eof			-> (Some EOF,					[])
+			| `Tok_raw txt			-> (Some (RAW txt),				[])
+			| `Tok_plain (buf, txt)		-> (Some (PLAIN (build_op buf, txt)),		[Context Inl])
+			| `Tok_entity (buf, txt)	-> (Some (ENTITY (build_op buf, txt)),		[Context Inl]) in
 
 		let old_context = context in
 

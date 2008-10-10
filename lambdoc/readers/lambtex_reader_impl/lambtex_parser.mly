@@ -12,11 +12,7 @@
 open Document_basic
 open Document_ast
 
-let rec implode = function
-	| []		-> ""
-	| hd::tl	-> hd ^ (implode tl)
-
-(**	This function aggregates a list of the form [[(op1, 'a'); (op2, 'b'); ...]]
+(**	This function aggregates a list of the form [[(op1, "a"); (op2, "b"); ...]]
 	into [(op1, "ab..."])].  This is done to convert potentially long lists of
 	individual text characters into a single string.  Note that the aggregation
 	discards all operators except for the first one.
@@ -27,7 +23,7 @@ let aggregate lst =
 		| (_, txt)::tl	-> aux (txt::accum) tl
 	in match lst with
 		| []		-> failwith "Cannot aggregate an empty list"
-		| (op, txt)::tl	-> (op, implode (List.rev (aux [txt] tl)))
+		| (op, txt)::tl	-> (op, String.concat "" (List.rev (aux [txt] tl)))
 %}
 
 
@@ -35,9 +31,9 @@ let aggregate lst =
 /* Operators.									*/
 /********************************************************************************/
 
-%token <Document_ast.Ast.operator_t> EOF
-%token <Document_ast.Ast.operator_t> BEGIN
-%token <Document_ast.Ast.operator_t> END
+%token EOF
+%token BEGIN
+%token END
 
 %token <Document_ast.Ast.operator_t> NEW_PAR
 %token <Document_ast.Ast.operator_t> COLUMN_SEP
@@ -48,7 +44,7 @@ let aggregate lst =
 /* Basic elements.								*/
 /********************************************************************************/
 
-%token <Document_ast.Ast.operator_t * Document_basic.raw_t> RAW
+%token <Document_basic.raw_t> RAW
 %token <Document_ast.Ast.operator_t * Document_basic.plain_t> PLAIN
 %token <Document_ast.Ast.operator_t * Document_basic.entity_t> ENTITY
 
@@ -115,6 +111,9 @@ let aggregate lst =
 %token <Document_ast.Ast.command_t> BEGIN_BIB
 %token <Document_ast.Ast.command_t> END_BIB
 
+%token <Document_ast.Ast.command_t> BEGIN_NOTE
+%token <Document_ast.Ast.command_t> END_NOTE
+
 
 /********************************************************************************/
 /* Simple commands.								*/
@@ -155,7 +154,6 @@ let aggregate lst =
 %token <Document_ast.Ast.command_t> BIB_TITLE
 %token <Document_ast.Ast.command_t> BIB_AUTHOR
 %token <Document_ast.Ast.command_t> BIB_RESOURCE
-%token <Document_ast.Ast.command_t> NOTE
 
 
 /********************************************************************************/
@@ -257,7 +255,7 @@ nestable_block:
 	| BEGIN_TABLE table_block caption_block END_TABLE			{`AST_table ($1, $3, $2)}
 	| BEGIN_FIGURE figure_block caption_block END_FIGURE			{`AST_figure ($1, $3, $2)}
 	| BEGIN_BIB bib_title_block bib_author_block bib_resource_block END_BIB	{`AST_bib ($1, $2, $3, $4)}
-	| NOTE BEGIN super_node+ END						{`AST_note ($1, $3)}
+	| BEGIN_NOTE nestable_block+ END_NOTE					{`AST_note ($1, $2)}
 
 items:
 	| NEW_ITEM nestable_block+						{[`AST_item ($1, $2)]}
@@ -273,12 +271,12 @@ paragraph_block:	| NEW_PAR super_node+					{`AST_paragraph ($1, $2)}
 itemize_block:		| BEGIN_ITEMIZE items END_ITEMIZE			{`AST_itemize ($1, $2)}
 enumerate_block:	| BEGIN_ENUMERATE items END_ENUMERATE			{`AST_enumerate ($1, $2)}
 quote_block:		| BEGIN_QUOTE nestable_block+ END_QUOTE			{`AST_quote ($1, $2)}
-mathtex_block:		| BEGIN_MATHTEX_BLK raw END_MATHTEX_BLK			{`AST_mathtex_blk ($1, $2)}
-mathml_block:		| BEGIN_MATHML_BLK raw END_MATHML_BLK			{`AST_mathml_blk ($1, $2)}
+mathtex_block:		| BEGIN_MATHTEX_BLK raw_seq END_MATHTEX_BLK		{`AST_mathtex_blk ($1, $2)}
+mathml_block:		| BEGIN_MATHML_BLK raw_seq END_MATHML_BLK		{`AST_mathml_blk ($1, $2)}
 code_block:		| BEGIN_CODE textual_node+ END_CODE			{`AST_code ($1, $2)}
 verbatim_block:		| BEGIN_VERBATIM textual_node+ END_VERBATIM		{`AST_verbatim ($1, $2)}
 tabular_block:		| BEGIN_TABULAR tabular END_TABULAR			{`AST_tabular ($1, $2)}
-image_block:		| IMAGE BEGIN raw END					{`AST_image ($1, $3)}
+image_block:		| IMAGE BEGIN raw_seq END				{`AST_image ($1, $3)}
 subpage_block:		| BEGIN_SUBPAGE super_block+ END_SUBPAGE		{`AST_subpage ($1, $2)}
 bib_title_block:	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 bib_author_block:	| BIB_AUTHOR BEGIN super_node+ END			{`AST_bib_author ($1, $3)}
@@ -345,8 +343,8 @@ textual_node:
 
 nonlink_node:
 	| textual_node						{($1 :> Ast.nonlink_node_t)}
-	| BEGIN_MATHTEX_INL raw END_MATHTEX_INL			{`AST_mathtex_inl ($1, $2)}
-	| BEGIN_MATHML_INL raw END_MATHML_INL			{`AST_mathml_inl ($1, $2)}
+	| BEGIN_MATHTEX_INL raw_seq END_MATHTEX_INL		{`AST_mathtex_inl ($1, $2)}
+	| BEGIN_MATHML_INL raw_seq END_MATHML_INL		{`AST_mathml_inl ($1, $2)}
 	| BOLD BEGIN super_node+ END				{`AST_bold ($1, $3)}
 	| EMPH BEGIN super_node+ END				{`AST_emph ($1, $3)}
 	| MONO BEGIN super_node+ END				{`AST_mono ($1, $3)}
@@ -357,12 +355,12 @@ nonlink_node:
 	| BOX BEGIN super_node+ END				{`AST_box ($1, $3)}
 
 link_node:
-	| LINK BEGIN raw END BEGIN nonlink_node+ END		{`AST_link ($1, $3, $6)}
-	| SEE BEGIN raw END					{`AST_see ($1, $3)}
-	| CITE BEGIN raw END					{`AST_cite ($1, $3)}
-	| REF BEGIN raw END					{`AST_ref ($1, $3)}
-	| SREF BEGIN raw END					{`AST_sref ($1, $3)}
-	| MREF BEGIN raw END BEGIN nonlink_node+ END		{`AST_mref ($1, $3, $6)}
+	| LINK BEGIN raw_seq END BEGIN nonlink_node+ END	{`AST_link ($1, $3, $6)}
+	| SEE BEGIN raw_seq END					{`AST_see ($1, $3)}
+	| CITE BEGIN raw_seq END				{`AST_cite ($1, $3)}
+	| REF BEGIN raw_seq END					{`AST_ref ($1, $3)}
+	| SREF BEGIN raw_seq END				{`AST_sref ($1, $3)}
+	| MREF BEGIN raw_seq END BEGIN nonlink_node+ END	{`AST_mref ($1, $3, $6)}
 
 super_node:
 	| nonlink_node						{($1 :> Ast.super_node_t)}
@@ -373,6 +371,6 @@ super_node:
 /* Raw text.									*/
 /********************************************************************************/
 
-raw:
-	| RAW+							{snd (aggregate $1)}
+raw_seq:
+	| RAW+							{String.concat "" $1}
 

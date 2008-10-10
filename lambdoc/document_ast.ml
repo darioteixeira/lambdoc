@@ -155,7 +155,7 @@ sig
 		| `AST_table of command_t * caption_block_t * table_block_t
 		| `AST_figure of command_t * caption_block_t * figure_block_t
 		| `AST_bib of command_t * bib_title_block_t * bib_author_block_t * bib_resource_block_t
-		| `AST_note of command_t * super_seq_t
+		| `AST_note of command_t * nestable_frag_t
 		]
 
 	type heading_block_t =

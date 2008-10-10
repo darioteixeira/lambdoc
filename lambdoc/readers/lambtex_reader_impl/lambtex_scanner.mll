@@ -24,8 +24,8 @@ open Lambtex_parser
 
 type tok_simple_comm_t =	[ `Tok_simple_comm of Lexing.lexbuf ]
 type tok_env_comm_t =		[ `Tok_env_comm of Lexing.lexbuf ]
-type tok_begin_t =		[ `Tok_begin of Lexing.lexbuf ]
-type tok_end_t =		[ `Tok_end of Lexing.lexbuf ]
+type tok_begin_t =		[ `Tok_begin ]
+type tok_end_t =		[ `Tok_end ]
 type tok_begin_mathtex_inl_t =	[ `Tok_begin_mathtex_inl of Lexing.lexbuf ]
 type tok_end_mathtex_inl_t =	[ `Tok_end_mathtex_inl of Lexing.lexbuf ]
 type tok_begin_mathml_inl_t =	[ `Tok_begin_mathml_inl of Lexing.lexbuf ]
@@ -33,8 +33,8 @@ type tok_end_mathml_inl_t =	[ `Tok_end_mathml_inl of Lexing.lexbuf ]
 type tok_column_sep_t =		[ `Tok_column_sep of Lexing.lexbuf ]
 type tok_row_end_t =		[ `Tok_row_end of Lexing.lexbuf ]
 type tok_break_t =		[ `Tok_break ]
-type tok_eof_t =		[ `Tok_eof of Lexing.lexbuf ]
-type tok_raw_t =		[ `Tok_raw of Lexing.lexbuf * string ]
+type tok_eof_t =		[ `Tok_eof ]
+type tok_raw_t =		[ `Tok_raw of string ]
 type tok_plain_t =		[ `Tok_plain of Lexing.lexbuf * string ]
 type tok_entity_t =		[ `Tok_entity of Lexing.lexbuf * string ]
 
@@ -187,11 +187,11 @@ let row_end = space* '$'
 rule block_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
 	| env_comm		{`Tok_env_comm lexbuf}
-	| begin_marker		{`Tok_begin lexbuf}
-	| end_marker		{`Tok_end lexbuf}
+	| begin_marker		{`Tok_begin}
+	| end_marker		{`Tok_end}
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
 	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
-	| eof			{`Tok_eof lexbuf}
+	| eof			{`Tok_eof}
 	| space | eol | break	{incr_linenum lexbuf; block_scanner lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
@@ -204,11 +204,11 @@ rule block_scanner = parse
 and inline_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
 	| env_comm		{`Tok_env_comm lexbuf}
-	| begin_marker		{`Tok_begin lexbuf}
-	| end_marker		{`Tok_end lexbuf}
+	| begin_marker		{`Tok_begin}
+	| end_marker		{`Tok_end}
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
 	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
-	| eof			{`Tok_eof lexbuf}
+	| eof			{`Tok_eof}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_plain (lexbuf, " ")}
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
@@ -223,13 +223,13 @@ and inline_scanner = parse
 and tabular_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
 	| env_comm		{`Tok_env_comm lexbuf}
-	| begin_marker		{`Tok_begin lexbuf}
-	| end_marker		{`Tok_end lexbuf}
+	| begin_marker		{`Tok_begin}
+	| end_marker		{`Tok_end}
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
 	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
 	| column_sep		{`Tok_column_sep lexbuf}
 	| row_end		{`Tok_row_end lexbuf}
-	| eof			{`Tok_eof lexbuf}
+	| eof			{`Tok_eof}
 	| space | eol		{incr_linenum lexbuf; `Tok_plain (lexbuf, " ")}
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
@@ -243,7 +243,7 @@ and tabular_scanner = parse
 *)
 and verbatim_scanner = parse
 	| "\\end{verbatim}"	{`Tok_env_comm lexbuf}
-	| eof			{`Tok_eof lexbuf}
+	| eof			{`Tok_eof}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
@@ -254,7 +254,7 @@ and verbatim_scanner = parse
 *)
 and code_scanner = parse
 	| "\\end{code}"		{`Tok_env_comm lexbuf}
-	| eof			{`Tok_eof lexbuf}
+	| eof			{`Tok_eof}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
@@ -264,10 +264,10 @@ and code_scanner = parse
 	the special "}" termination tag.
 *)
 and raw_scanner = parse
-	| end_marker		{`Tok_end lexbuf}
-	| eof			{`Tok_eof lexbuf}
-	| escape _		{incr_linenum lexbuf; `Tok_raw (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
-	| _			{incr_linenum lexbuf; `Tok_raw (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| end_marker		{`Tok_end}
+	| eof			{`Tok_eof}
+	| escape _		{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 1 1)}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
 (**	Special scanner for mathtex environments in an inline context.  No attempt whatsoever
@@ -276,8 +276,8 @@ and raw_scanner = parse
 *)
 and mathtex_inl_scanner = parse
 	| end_mathtex_inl	{`Tok_end_mathtex_inl lexbuf}
-	| eof			{`Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| eof			{`Tok_eof}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
 (**	Special scanner for mathml environments in an inline context.  No attempt whatsoever
@@ -286,8 +286,8 @@ and mathtex_inl_scanner = parse
 *)
 and mathml_inl_scanner = parse
 	| end_mathml_inl	{`Tok_end_mathml_inl lexbuf}
-	| eof			{`Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| eof			{`Tok_eof}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
 (**	Special scanner for mathtex environments in a block context.  No attempt whatsoever
@@ -296,8 +296,8 @@ and mathml_inl_scanner = parse
 *)
 and mathtex_blk_scanner = parse
 	| "\\end{tex}"		{`Tok_env_comm lexbuf}
-	| eof			{`Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| eof			{`Tok_eof}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
 (**	Special scanner for mathml environments in a block context.  No attempt whatsoever
@@ -306,6 +306,6 @@ and mathtex_blk_scanner = parse
 *)
 and mathml_blk_scanner = parse
 	| "\\end{mathml}"	{`Tok_env_comm lexbuf}
-	| eof			{`Tok_eof lexbuf}
-	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| eof			{`Tok_eof}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 

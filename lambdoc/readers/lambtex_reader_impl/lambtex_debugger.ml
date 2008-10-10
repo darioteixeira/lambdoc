@@ -32,9 +32,9 @@ let sprintf_operator comm =
 
 	
 let to_string = function
-	| EOF op			-> sprintf "EOF: %s" (sprintf_operator op)
-	| BEGIN op			-> sprintf "BEGIN: %s" (sprintf_operator op)
-	| END op			-> sprintf "END: %s" (sprintf_operator op)
+	| EOF				-> sprintf "EOF"
+	| BEGIN				-> sprintf "BEGIN"
+	| END				-> sprintf "END"
 	| NEW_PAR op			-> sprintf "NEW_PAR: %s" (sprintf_operator op)
 	| COLUMN_SEP op			-> sprintf "COLUMN_SEP: %s" (sprintf_operator op)
 	| ROW_END op			-> sprintf "ROW_END: %s" (sprintf_operator op)
@@ -78,6 +78,8 @@ let to_string = function
 	| END_FIGURE comm		-> sprintf "END_FIGURE: %s" (sprintf_command comm)
 	| BEGIN_BIB comm		-> sprintf "BEGIN_BIB: %s" (sprintf_command comm)
 	| END_BIB comm			-> sprintf "END_BIB: %s" (sprintf_command comm)
+	| BEGIN_NOTE comm		-> sprintf "BEGIN_NOTE: %s" (sprintf_command comm)
+	| END_NOTE comm			-> sprintf "END_NOTE: %s" (sprintf_command comm)
 
 	| BOLD comm			-> sprintf "BOLD: %s" (sprintf_command comm)
 	| EMPH comm			-> sprintf "EMPH: %s" (sprintf_command comm)
@@ -114,5 +116,4 @@ let to_string = function
 	| BIB_TITLE comm		-> sprintf "BIB_TITLE: %s" (sprintf_command comm)
 	| BIB_AUTHOR comm		-> sprintf "BIB_AUTHOR: %s" (sprintf_command comm)
 	| BIB_RESOURCE comm		-> sprintf "BIB_RESOURCE: %s" (sprintf_command comm)
-	| NOTE comm			-> sprintf "NOTE: %s" (sprintf_command comm)
 

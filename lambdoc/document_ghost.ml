@@ -15,6 +15,7 @@ TYPE_CONV_PATH "Document"
 
 open Document_ref
 open Document_node
+open Document_block
 
 
 (********************************************************************************)
@@ -50,7 +51,7 @@ struct
 		{
 		label: Label.t;
 		order: Order.ghost_order_t;
-		content: Node.super_seq_t;
+		content: Block.nestable_frag_t;
 		} with sexp
 end
 
