@@ -37,7 +37,7 @@ let test_print () =
 let test_bool () =
 	let source = Std.input_all (open_in "samples/test.lamb") in
 	let manuscript = Lambtex_reader.ambivalent_manuscript_from_string source in
-	let _ = Xhtml_writer.ambivalent_manuscript_to_xhtml manuscript in
+	let _ = Xhtml_writer.write_ambivalent_manuscript manuscript in
 	match manuscript with
 		| `Valid valid		-> print_endline "Valid!"
 		| `Invalid invalid	-> print_endline "Invalid!"

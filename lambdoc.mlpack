@@ -16,6 +16,7 @@ Document_ambivalent
 Document_convert
 Document_postprocess
 Document_reader
+Document_writer
 Lambtex_reader_impl
 Lambtex_reader
 Xhtml_writer

@@ -733,14 +733,21 @@ let composition_classname = "doc_composition"
 
 
 (********************************************************************************)
-(**	{2 Public functions}							*)
+(**	{2 Public types and functions}						*)
 (********************************************************************************)
 
-let ambivalent_manuscript_to_xhtml = write_ambivalent_document manuscript_classname
-let valid_manuscript_to_xhtml = write_valid_document manuscript_classname
-let invalid_manuscript_to_xhtml = write_invalid_document manuscript_classname
+(**	The following types and functions conform to the Document_writer.S
+	signature.
+*)
 
-let ambivalent_composition_to_xhtml = write_ambivalent_document composition_classname
-let valid_composition_to_xhtml = write_valid_document composition_classname
-let invalid_composition_to_xhtml = write_invalid_document composition_classname
+type t = [ `Div ] XHTML.M.elt
+
+let write_valid_manuscript = write_valid_document manuscript_classname
+let write_valid_composition = write_valid_document composition_classname
+
+let write_invalid_manuscript = write_invalid_document manuscript_classname
+let write_invalid_composition = write_invalid_document composition_classname
+
+let write_ambivalent_manuscript = write_ambivalent_document manuscript_classname
+let write_ambivalent_composition = write_ambivalent_document composition_classname
 

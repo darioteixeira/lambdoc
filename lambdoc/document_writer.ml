@@ -19,7 +19,7 @@ open Document_ambivalent
 
 (**	The module type that all wannabe document writers must export.
 *)
-module type WRITER =
+module type S =
 sig
 	type t
 
