@@ -1,3 +1,17 @@
+\title{\caps{Lambtex} tutorial}
+
+\begin{abstract}
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe.
+\end{abstract}
+
 \toc
 
 \rule
@@ -43,7 +57,7 @@ which the following section describes.
 \end{verbatim}
 
 
-\begin[fig:par]{figure}{subpage}
+\begin[fig:par]{figure}
 \begin{subpage}
 This is the first example paragraph.  Lines can be broken
 at any point, because a paragraph is only terminated by
@@ -150,7 +164,7 @@ Here is a list of small furry mammals:
 \end{verbatim}
 
 
-\begin[fig:list]{figure}{subpage}
+\begin[fig:list]{figure}
 \begin{subpage}
 Here is a list of small furry mammals:
 
@@ -417,9 +431,9 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
 Producing this result:
 
-\begin{math}{tex}
+\begin{tex}
 x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-\end{math}
+\end{tex}
 
 
 \caps{Lambtex} supports also named mathematical expressions that may be
@@ -458,7 +472,7 @@ For more details, please check Section \ref{sec:introduction}.
 \subsubsection{This is a sub-sub-section}
 \end{verbatim}
 
-\begin[fig:section]{figure}{subpage}
+\begin[fig:section]{figure}
 \begin{subpage}
 For more details, please check Section \ref{sec:introduction}.
 
@@ -496,7 +510,7 @@ that same section}).
 \end{verbatim}
 
 
-\begin[fig:hyperlinks]{figure}{subpage}
+\begin[fig:hyperlinks]{figure}
 \begin{subpage}
 You can easily insert a link into an external resource such as
 \link{http://www.wikipedia.com/}{Wikipedia}.  Internal links come into
@@ -580,8 +594,8 @@ they offer the possibility of highlighting the code listing according to
 the syntax of the language.
 
 
-\begin[alg:tree]{algorithm}{ocaml}
-\begin{verbatim}
+\begin[alg:tree]{algorithm}
+\begin{code}{ocaml}
 type 'a tree =
 	| Leaf of 'a
 	| Node of 'a tree * 'a tree
@@ -589,7 +603,7 @@ type 'a tree =
 let rec count_leaves = function
 	| Leaf _	-> 1
 	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
-\end{verbatim}
+\end{code}
 \caption{A simple \caps{Ocaml} programme that defines a binary tree
 data type and a function to count the number of leaves in such trees.}
 \end{algorithm}
@@ -643,9 +657,9 @@ defines a equation from a \caps{MathML} source.  The result is shown in
 
 
 \begin[eq:example]{equation}
-\begin{math}{mathml}
+\begin{mathml}
 <mrow><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>2</mn>
-\end{math}
+\end{mathml}
 \caption{This is an example equation.}
 \end{equation}
 
@@ -695,7 +709,7 @@ diagrams use only text.  With these applications in mind, \caps{Lambtex} offers 
 but with the possibility of adding a caption, a figure number, and a label so it can
 be referenced anywhere in the document.
 
-\begin[fig:ascii]{figure}{ascii}
+\begin[fig:ascii]{figure}
 \begin{verbatim}
            S
           /|\
@@ -744,7 +758,7 @@ This is a subpage.
 \end{verbatim}
 
 
-\begin[fig:subpage]{figure}{subpage}
+\begin[fig:subpage]{figure}
 \begin{subpage}
 \section(1){Subpage introduction}
 This is a subpage.
@@ -908,31 +922,39 @@ the ordering and hyperlinking of floaters and sectional commands.
 
 \notes
 
-\note[note:bbcode]{Explain BBcode's shortcomings here.}
+\begin[note:bbcode]{note}
+Explain BBcode's shortcomings here.
+\end{note}
 
-\note[note:numbers]{Explain numbers here.}
+\begin[note:numbers]{note}
+Explain numbers here.
+\end{note}
 
-\note[note:meta]{Meta note.}
+\begin[note:meta]{note}
+Meta note.
+\end{note}
 
-\note[note:amp]{Moe often than note, you can get away with entering ampersands without requiring escaping.}
+\begin[note:amp]{note}
+More often than not, you can get away with entering ampersands without requiring escaping.
+\end{note}
 
 \bibliography
 
 \begin[bib:latex]{bib}
-\title{The \caps{Latex} companion}
-\author{Leslie Lamport}
-\resource{Resource}
+\what{The \caps{Latex} companion}
+\who{Leslie Lamport}
+\where{Resource}
 \end{bib}
 
 \begin[bib:mathml]{bib}
-\title{The \caps{Latex} companion}
-\author{Leslie Lamport}
-\resource{Resource}
+\what{The \caps{Latex} companion}
+\who{Leslie Lamport}
+\where{Resource}
 \end{bib}
 
 \begin[bib:tex]{bib}
-\title{The \caps{Latex} companion}
-\author{Leslie Lamport}
-\resource{Resource}
+\what{The \caps{Latex} companion}
+\who{Leslie Lamport}
+\where{Resource}
 \end{bib}
 

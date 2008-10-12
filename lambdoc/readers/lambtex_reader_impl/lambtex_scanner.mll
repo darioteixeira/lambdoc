@@ -32,28 +32,20 @@ type tok_begin_mathml_inl_t =	[ `Tok_begin_mathml_inl of Lexing.lexbuf ]
 type tok_end_mathml_inl_t =	[ `Tok_end_mathml_inl of Lexing.lexbuf ]
 type tok_column_sep_t =		[ `Tok_column_sep of Lexing.lexbuf ]
 type tok_row_end_t =		[ `Tok_row_end of Lexing.lexbuf ]
-type tok_break_t =		[ `Tok_break ]
 type tok_eof_t =		[ `Tok_eof ]
+type tok_break_t =		[ `Tok_break ]
+type tok_space_t =		[ `Tok_space ]
 type tok_raw_t =		[ `Tok_raw of string ]
 type tok_plain_t =		[ `Tok_plain of Lexing.lexbuf * string ]
 type tok_entity_t =		[ `Tok_entity of Lexing.lexbuf * string ]
 
-type block_token_t =
+type general_token_t =
 	[ tok_simple_comm_t | tok_env_comm_t
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
-	| tok_eof_t
-	| tok_plain_t | tok_entity_t
-	]
-
-type inline_token_t =
-	[ tok_simple_comm_t | tok_env_comm_t
-	| tok_begin_t | tok_end_t
-	| tok_begin_mathtex_inl_t
-	| tok_begin_mathml_inl_t
-	| tok_break_t | tok_eof_t
-	| tok_plain_t | tok_entity_t
+	| tok_eof_t | tok_break_t
+	| tok_space_t | tok_plain_t | tok_entity_t
 	]
 
 type tabular_token_t =
@@ -62,8 +54,8 @@ type tabular_token_t =
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
 	| tok_column_sep_t | tok_row_end_t
-	| tok_break_t | tok_eof_t
-	| tok_plain_t | tok_entity_t
+	| tok_eof_t | tok_break_t
+	| tok_space_t | tok_plain_t | tok_entity_t
 	]
 
 type verbatim_token_t =
@@ -170,21 +162,20 @@ let row_end = space* '$'
 (**	{2 Actual scanners}							*)
 (********************************************************************************)
 
-(**	There are eight possible scanning contexts in a Lambtex document, each
-	demanding special rules from the scanner.  While some of the contexts
+(**	There are seven possible scanning environments in a Lambtex document,
+	each demanding special rules from the scanner.  While some of the contexts
 	are so similar they could in theory be handled by the same scanner given
 	one differentiating parameter, in practice because the lexer generators
-	we are using cannot create parameterised lexers, we use eight different
+	we are using cannot create parameterised lexers, we use seven different
 	scanner functions.  Note that in all scanners, some actions could have
 	been simplified if we had used Ocamllex's "as" operator.  We chose not
 	to do so because Ulex has no equivalent to this operator, and we prefer
 	code that is easily adapted to different lexer generators.
 *)
 
-(**	Scanner for block contexts.  Note that this scanner ignores spaces
-	and line breaks.
+(**	General document scanner.
 *)
-rule block_scanner = parse
+rule general_scanner = parse
 	| simple_comm		{`Tok_simple_comm lexbuf}
 	| env_comm		{`Tok_env_comm lexbuf}
 	| begin_marker		{`Tok_begin}
@@ -192,25 +183,8 @@ rule block_scanner = parse
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
 	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
 	| eof			{`Tok_eof}
-	| space | eol | break	{incr_linenum lexbuf; block_scanner lexbuf}
-	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
-	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
-
-
-(**	Scanner for inline contexts.  This scanner is almost identical
-	to the block scanner, but treats whitespace as significant.
-*)
-and inline_scanner = parse
-	| simple_comm		{`Tok_simple_comm lexbuf}
-	| env_comm		{`Tok_env_comm lexbuf}
-	| begin_marker		{`Tok_begin}
-	| end_marker		{`Tok_end}
-	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
-	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
-	| eof			{`Tok_eof}
-	| space+ | eol		{incr_linenum lexbuf; `Tok_plain (lexbuf, " ")}
 	| break			{incr_linenum lexbuf; `Tok_break}
+	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
@@ -230,8 +204,8 @@ and tabular_scanner = parse
 	| column_sep		{`Tok_column_sep lexbuf}
 	| row_end		{`Tok_row_end lexbuf}
 	| eof			{`Tok_eof}
-	| space | eol		{incr_linenum lexbuf; `Tok_plain (lexbuf, " ")}
 	| break			{incr_linenum lexbuf; `Tok_break}
+	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}

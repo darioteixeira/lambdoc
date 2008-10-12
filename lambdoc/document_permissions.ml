@@ -64,6 +64,9 @@ struct
 	let alignable_class =
 		(Forbidden, Forbidden, Optional, Forbidden)
 
+	let code_class =
+		(Forbidden, Forbidden, Optional, Mandatory)
+		
 	let tabular_class =
 		(Forbidden, Forbidden, Optional, Mandatory)
 
@@ -158,7 +161,7 @@ struct
 			| `Feature_quote		-> alignable_class
 			| `Feature_mathtex_blk		-> alignable_class
 			| `Feature_mathml_blk		-> alignable_class
-			| `Feature_code			-> alignable_class
+			| `Feature_code			-> code_class
 			| `Feature_verbatim		-> alignable_class
 			| `Feature_tabular		-> tabular_class
 			| `Feature_image		-> alignable_class

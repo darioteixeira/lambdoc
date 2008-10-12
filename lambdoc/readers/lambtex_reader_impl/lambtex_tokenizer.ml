@@ -1,11 +1,10 @@
 (********************************************************************************)
-(*	Tokenizer for the Lambtex reader.  The tokenizer sits between the parser
-	proper and the various scanners.  Because the implementation of the Lambtex
-	reader relies on different scanners to be invoked in accordance to the
-	language construct currently being parsed, the tokenizer sits between
-	the parser proper and the various scanners, keeping a partial view of
-	the current parsing context/environment so it can choose the appropriate
-	scanner to invoke.
+(*	Tokenizer for the Lambtex reader.  Because the implementation of the
+	Lambtex reader relies on different scanners to be invoked in accordance
+	to the language construct currently being parsed, the tokenizer sits
+	between the parser proper and the various scanners, keeping a partial
+	view of the current parsing context/environment so it can choose the
+	appropriate scanner to invoke.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -60,17 +59,20 @@ type context_t =
 
 (**	Actions for the automaton that changes the tokenizer state.  The
 	actions are as follows:
-	{ul	{li [Context]: Changes the current {!context_t}.};
-		{li [Push]: Pushes a new {!environment_t} into the stack;
-		{li [Pop]: Pops the top {!environment_t} from the stack;
-		{li [Store]: Stores a list of future {!environment_t};
-		{li [Fetch]: Fetches an {!environment_t} from storage and
-		pushes into the stack.}}
+	{ul	{li [Set_con]: Changes the current context;}
+		{li [Push_con]: Pushes the current context into the context history;}
+		{li [Pop_con]: Pops a context from the context history, using it to set the current context;}
+		{li [Push_env]: Pushes a new environment into the environment history;}
+		{li [Pop_env]: Pops the last environment from the environment history;}
+		{li [Store]: Stores a list of future environment;}
+		{li [Fetch]: Fetches the first environment from storage and pushes into the environment history.}}
 *)
 type action_t =
-	| Context of context_t
-	| Push of environment_t
-	| Pop
+	| Set_con of context_t
+	| Push_con
+	| Pop_con
+	| Push_env of environment_t
+	| Pop_env
 	| Store of environment_t list
 	| Fetch
 
@@ -92,11 +94,11 @@ let get_env_tag params is_begin =
 		| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
 		| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
 		| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],			[])
-		| "tex"		-> (BEGIN_MATHTEX_BLK params,	END_MATHTEX_BLK params,		[Push Mathtex_blk],	[Pop])
-		| "mathml"	-> (BEGIN_MATHML_BLK params,	END_MATHML_BLK params,		[Push Mathml_blk],	[Pop])
-		| "code"	-> (BEGIN_CODE params,		END_CODE params,		[Push Code],		[Pop])
-		| "verbatim"	-> (BEGIN_VERBATIM params,	END_VERBATIM params,		[Push Verbatim],	[Pop])
-		| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push Tabular],		[Pop])
+		| "tex"		-> (BEGIN_MATHTEX_BLK params,	END_MATHTEX_BLK params,		[Push_env Mathtex_blk],	[Pop_env])
+		| "mathml"	-> (BEGIN_MATHML_BLK params,	END_MATHML_BLK params,		[Push_env Mathml_blk],	[Pop_env])
+		| "code"	-> (BEGIN_CODE params,		END_CODE params,		[Push_env Code],	[Pop_env])
+		| "verbatim"	-> (BEGIN_VERBATIM params,	END_VERBATIM params,		[Push_env Verbatim],	[Pop_env])
+		| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push_env Tabular],	[Pop_env])
 		| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],			[])
 		| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],			[])
 		| "algorithm"	-> (BEGIN_ALGORITHM params,	END_ALGORITHM params,		[],			[])
@@ -106,8 +108,8 @@ let get_env_tag params is_begin =
 		| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],			[])
 		| other		-> raise (Unknown_env_command other)
 	in if is_begin
-	then (Some (token_begin), (Context Blk) :: actions_begin)
-	else (Some (token_end), (Context Blk) :: actions_end)
+	then (Some (token_begin), (Set_con Blk) :: actions_begin)
+	else (Some (token_end), (Set_con Blk) :: actions_end)
 
 
 (**	This function returns the tag information corresponding to the string form
@@ -153,7 +155,7 @@ let get_simple_tag params =
 		| "who"			-> (BIB_AUTHOR params,		Blk,		[Store [Inline]])
 		| "where"		-> (BIB_RESOURCE params,	Blk,		[Store [Inline]])
 		| other			-> raise (Unknown_simple_command other)
-	in (Some token, (Context context) :: actions)
+	in (Some token, (Set_con context) :: actions)
 
 
 (********************************************************************************)
@@ -236,16 +238,26 @@ let issue_simple_command =
 class tokenizer =
 object (self)
 
-	(**	The state of the tokenizer: it consists of the current context
-		(a value of type {!context_t]}, the environment history (a list
-		of {!environment_t}), the storage for future environments (a
-		{!environment_t Queue.t}), and the production queue.
+	(**	The state of the tokenizer: it consists of the current context,
+		the context history, the environment history, the storage for
+		future environments, and the production queue.
 	*)
 
 	val mutable context = Blk
-	val mutable history = []
-	val storage = Queue.create ()
+	val context_history = Stack.create ()
+	val env_history = Stack.create ()
+	val env_storage = Queue.create ()
 	val productions = Queue.create ()
+
+
+	(**	Returns the element at the top of the environment history.
+	*)
+
+	method get_env () =
+		try
+			Some (Stack.top env_history)
+		with
+			Stack.Empty -> None
 
 
 	(**	Consumer method.  Given a [lexbuf], consumes a token from the
@@ -262,11 +274,13 @@ object (self)
 	(**	Performs the given {!action_t}, changing the state of the automaton.
 	*)
 	method private perform_action = function
-		| Context con		-> context <- con
-		| Push env		-> history <- env :: history
-		| Pop			-> history <- (match history with [] -> [] | hd::tl -> tl)
-		| Store envs		-> List.iter (fun x -> Queue.add x storage) envs
-		| Fetch			-> try history <- (Queue.take storage) :: history with Queue.Empty -> ()
+		| Set_con con		-> context <- con
+		| Push_con		-> Stack.push context context_history
+		| Pop_con		-> context <- (try Stack.pop context_history with Stack.Empty -> context)
+		| Push_env env		-> Stack.push env env_history
+		| Pop_env		-> (try ignore (Stack.pop env_history) with Stack.Empty -> ())
+		| Store envs		-> List.iter (fun x -> Queue.add x env_storage) envs
+		| Fetch			-> try Stack.push (Queue.take env_storage) env_history with Queue.Empty -> ()
 
 
 	(**	Private method that actually does all the work of invoking the
@@ -274,46 +288,48 @@ object (self)
 	*)
 	method private produce lexbuf =
 
-		let scanner = match (context, history) with
-			| (_, Inline :: _)		-> Lambtex_scanner.inline_scanner
-			| (_, Tabular :: _)		-> Lambtex_scanner.tabular_scanner
-			| (_, Verbatim :: _)		-> Lambtex_scanner.verbatim_scanner
-			| (_, Code :: _)		-> Lambtex_scanner.code_scanner
-			| (_, Raw :: _)			-> Lambtex_scanner.raw_scanner
-			| (_, Mathtex_inl :: _)		-> Lambtex_scanner.mathtex_inl_scanner
-			| (_, Mathml_inl :: _)		-> Lambtex_scanner.mathml_inl_scanner
-			| (_, Mathtex_blk :: _)		-> Lambtex_scanner.mathtex_blk_scanner
-			| (_, Mathml_blk :: _)		-> Lambtex_scanner.mathml_blk_scanner
-			| (Inl, _)			-> Lambtex_scanner.inline_scanner
-			| (Blk, _)			-> Lambtex_scanner.block_scanner in
+		let scanner = match self#get_env () with
+			| Some Inline		-> Lambtex_scanner.general_scanner
+			| Some Tabular		-> Lambtex_scanner.tabular_scanner
+			| Some Verbatim		-> Lambtex_scanner.verbatim_scanner
+			| Some Code		-> Lambtex_scanner.code_scanner
+			| Some Raw		-> Lambtex_scanner.raw_scanner
+			| Some Mathtex_inl	-> Lambtex_scanner.mathtex_inl_scanner
+			| Some Mathml_inl	-> Lambtex_scanner.mathml_inl_scanner
+			| Some Mathtex_blk	-> Lambtex_scanner.mathtex_blk_scanner
+			| Some Mathml_blk	-> Lambtex_scanner.mathml_blk_scanner
+			| None			-> Lambtex_scanner.general_scanner in
 
 		let (maybe_token, actions) = match scanner lexbuf with
-			| `Tok_simple_comm buf		-> issue_simple_command buf
-			| `Tok_env_comm buf		-> issue_env_command buf
-			| `Tok_begin			-> (Some BEGIN,					[Fetch])
-			| `Tok_end			-> (Some END,					[Pop])
-			| `Tok_begin_mathtex_inl buf	-> (Some (BEGIN_MATHTEX_INL (build_op buf)),	[Context Inl; Push Mathtex_inl])
-			| `Tok_end_mathtex_inl buf	-> (Some (END_MATHTEX_INL (build_op buf)),	[Pop])
-			| `Tok_begin_mathml_inl buf	-> (Some (BEGIN_MATHML_INL (build_op buf)),	[Context Inl; Push Mathml_inl])
-			| `Tok_end_mathml_inl buf	-> (Some (END_MATHML_INL (build_op buf)),	[Pop])
-			| `Tok_column_sep buf		-> (Some (COLUMN_SEP (build_op buf)),		[Context Blk])
-			| `Tok_row_end buf		-> (Some (ROW_END (build_op buf)),		[Context Blk])
-			| `Tok_break			-> (None,					[Context Blk])
-			| `Tok_eof			-> (Some EOF,					[])
-			| `Tok_raw txt			-> (Some (RAW txt),				[])
-			| `Tok_plain (buf, txt)		-> (Some (PLAIN (build_op buf, txt)),		[Context Inl])
-			| `Tok_entity (buf, txt)	-> (Some (ENTITY (build_op buf, txt)),		[Context Inl]) in
+			| `Tok_simple_comm buf			-> issue_simple_command buf
+			| `Tok_env_comm buf			-> issue_env_command buf
+			| `Tok_begin				-> (Some BEGIN,					[Fetch; Push_con])
+			| `Tok_end				-> (Some END,					[Pop_env; Pop_con])
+			| `Tok_begin_mathtex_inl buf		-> (Some (BEGIN_MATHTEX_INL (build_op buf)),	[Set_con Inl; Push_con; Push_env Mathtex_inl])
+			| `Tok_end_mathtex_inl buf		-> (Some (END_MATHTEX_INL (build_op buf)),	[Pop_env; Pop_con])
+			| `Tok_begin_mathml_inl buf		-> (Some (BEGIN_MATHML_INL (build_op buf)),	[Set_con Inl; Push_con; Push_env Mathml_inl])
+			| `Tok_end_mathml_inl buf		-> (Some (END_MATHML_INL (build_op buf)),	[Pop_env; Pop_con])
+			| `Tok_column_sep buf			-> (Some (COLUMN_SEP (build_op buf)),		[Set_con Blk])
+			| `Tok_row_end buf			-> (Some (ROW_END (build_op buf)),		[Set_con Blk])
+			| `Tok_eof				-> (Some EOF,					[])
+			| `Tok_break				-> (None,					[Set_con Blk])
+			| `Tok_space buf when context = Blk	-> (None,					[])
+			| `Tok_space buf when context = Inl	-> (Some (PLAIN (build_op buf, " ")),		[])
+			| `Tok_raw txt				-> (Some (RAW txt),				[])
+			| `Tok_plain (buf, txt)			-> (Some (PLAIN (build_op buf, txt)),		[Set_con Inl])
+			| `Tok_entity (buf, txt)		-> (Some (ENTITY (build_op buf, txt)),		[Set_con Inl])
+			| _					-> failwith "Unexpected scanner token" in
 
 		let old_context = context in
 
 		let () =
 			List.iter self#perform_action actions;
-			match (old_context, context, history) with
-				| (Blk, Inl, [])	-> Queue.add (NEW_PAR (build_op lexbuf)) productions
+			match (old_context, context, self#get_env ()) with
+				| (Blk, Inl, None)	-> Queue.add (NEW_PAR (build_op lexbuf)) productions
 				| _			-> ()
 
 		in match maybe_token with
-			| Some token	-> token
+			| Some token	-> Queue.add token productions
 			| None		-> self#produce lexbuf
 end
 

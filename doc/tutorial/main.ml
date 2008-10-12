@@ -9,7 +9,7 @@ let src = IO.read_all (IO.input_channel (open_in "tutorial.ltex"))
 let coucou_handler sp () () =
 	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in
 	let doc = Lambdoc.Lambtex_reader.ambivalent_manuscript_from_string src in
-	let xhtml = Lambdoc.Xhtml_writer.ambivalent_manuscript_to_xhtml doc in
+	let xhtml = Lambdoc.Xhtml_writer.write_ambivalent_manuscript doc in
 	Lwt.return
 		(html
 			(head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]

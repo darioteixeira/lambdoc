@@ -12,8 +12,8 @@ let test_tokenizer () =
         let tokenizer = new Lambtex_reader_impl.Lambtex_tokenizer.tokenizer in
 	let res = ref None in
 	while match !res with
-		| Some (Lambtex_reader_impl.Lambtex_parser.EOF _ )	-> false
-		| _							-> true
+		| Some Lambtex_reader_impl.Lambtex_parser.EOF	-> false
+		| _						-> true
 	do
 		let token = tokenizer#consume lexbuf in
 		Printf.printf "## %s\n" (Lambtex_reader_impl.Lambtex_debugger.to_string token);

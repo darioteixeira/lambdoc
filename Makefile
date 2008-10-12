@@ -1,4 +1,5 @@
 OCAMLBUILS_OPTS:=-X doc
+#OCAMLBUILS_OPTS:=-X doc -classic-display
 
 all: test
 
@@ -6,7 +7,7 @@ test: install
 	ocamlbuild $(OCAMLBUILS_OPTS) test.byte
 
 lib:
-	ocamlbuild $(OCAMLBUILS_OPTS) lambdoc.cma -classic-display
+	ocamlbuild $(OCAMLBUILS_OPTS) lambdoc.cma
 
 install: lib
 	ocamlfind remove lambdoc

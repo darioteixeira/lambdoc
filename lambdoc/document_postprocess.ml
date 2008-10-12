@@ -184,7 +184,7 @@ let process_document feature_map document_ast =
 	*)
 	and add_toc_entry = function
 		| `Heading blk	-> DynArray.add toc blk
-		| _		-> failwith "Oops: attempted to add non-heading entry into TOC" in
+		| _		-> failwith "Attempted to add non-heading entry into TOC" in
 
 
 	(************************************************************************)

@@ -1,11 +1,10 @@
-\section[sec:intro]{Introduction}
-
-This is a normal text with \bold{bold text} and \emph{emphasized text}.
-
 \begin{tabular}{ll}
 \head
-One	| Two	$
+Name	| Phone $
 \body
-a	| b	$
+John	| 123456 $
+Mary	| 234567 $
+Mark	| 345678 $
+Claire	| 456789 $
 \end{tabular}
 

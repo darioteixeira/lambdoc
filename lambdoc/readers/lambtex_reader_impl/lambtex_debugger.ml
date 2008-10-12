@@ -39,8 +39,9 @@ let to_string = function
 	| COLUMN_SEP op			-> sprintf "COLUMN_SEP: %s" (sprintf_operator op)
 	| ROW_END op			-> sprintf "ROW_END: %s" (sprintf_operator op)
 
-	| PLAIN (op, txt)		-> sprintf "PLAIN \"%s\"" txt
-	| ENTITY (op, txt)		-> sprintf "ENTITY \"%s\"" txt
+	| RAW txt			-> sprintf "RAW: %s" txt
+	| PLAIN (op, txt)		-> sprintf "PLAIN: \"%s\"" txt
+	| ENTITY (op, txt)		-> sprintf "ENTITY: \"%s\"" txt
 
 	| BEGIN_MATHTEX_INL op		-> sprintf "BEGIN_MATHTEX_INL: %s" (sprintf_operator op)
 	| END_MATHTEX_INL op		-> sprintf "END_MATHTEX_INL: %s" (sprintf_operator op)
