@@ -24,6 +24,7 @@ open Document_ghost
 open Document_error
 open Document_settings
 open Document_valid
+open Settings
 
 
 (********************************************************************************)
@@ -70,9 +71,11 @@ let alphaseq_of_int num =
 	let rems = from_base10 num in
 	List.fold_left (^) "" (List.rev_map alpha_of_int rems)
 
+
 let make_label = function
 	| `Auto_label ref -> "doc:a:" ^ ref
 	| `User_label ref -> "doc:u:" ^ ref
+
 
 let make_link ?classname lnk content =
 	let class_attr = match classname with
@@ -81,18 +84,23 @@ let make_link ?classname lnk content =
 	let attr = [a_href (uri_of_string lnk)] @ class_attr
 	in XHTML.M.a ~a:attr content
 
+
 let make_external_link = make_link
 
+
 let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
+
 
 let rec dot_order = function
 	| []		-> ""
 	| [x]		-> x
 	| hd::tl	-> hd ^ "." ^ (dot_order tl)
 
+
 let make_appendic = function
 	| []		-> []
 	| hd::tl	-> (alphaseq_of_int hd) :: (List.map string_of_int tl)
+
 
 let make_order = function
 	| `Auto_order (Order.Numeric l)		-> dot_order (List.map string_of_int l)
@@ -100,13 +108,16 @@ let make_order = function
 	| `User_order l				-> l
 	| `None_order				-> ""
 
+
 let wrap_order order =
 	match make_order order with
 		| ""	-> []
 		| other	-> [span [pcdata other]]
 
+
 let make_sref name ref order =
 	make_internal_link (`User_label ref) [pcdata name; space (); pcdata (make_order order)]
+
 
 let make_sectional level label order content =
 	let cons = match level with
@@ -115,8 +126,10 @@ let make_sectional level label order content =
 		| Sectional_bottom	-> XHTML.M.h4
 	in cons ?a:(Some [a_id (make_label label); a_class ["doc_sec"]]) ((wrap_order order) @ [span content])
 
+
 let make_toc_entry label order content =
 	XHTML.M.li [make_internal_link label ((wrap_order order) @ [span content])]
+
 
 let make_align align =
 	"doc_align_" ^ (Alignment.to_string align)
@@ -126,7 +139,7 @@ let make_align align =
 (**	{3 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document classname doc =
+let write_valid_document settings classname doc =
 
 
 	(************************************************************************)
@@ -221,26 +234,19 @@ let write_valid_document classname doc =
 			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
 			in (match order with
 				| Order.Block_order (Order.Body_sectional_order order) ->
-					let name = Settings.get_section_name doc.Valid.settings
-					in make_sref name ref order
+					make_sref settings.names.section_name ref order
 				| Order.Block_order (Order.Appendix_sectional_order order) ->
-					let name = Settings.get_appendix_name doc.Valid.settings
-					in make_sref name ref order
+					make_sref settings.names.appendix_name ref order
 				| Order.Block_order (Order.Preset_sectional_order order) ->
-					let name = Settings.get_section_name doc.Valid.settings
-					in make_sref name ref order
-				| Order.Block_order (Order.Floater_order (Order.Algorithm_floater, order)) ->
-					let name = Settings.get_algorithm_name doc.Valid.settings
-					in make_sref name ref order
+					make_sref settings.names.section_name ref order
 				| Order.Block_order (Order.Floater_order (Order.Equation_floater, order)) ->
-					let name = Settings.get_equation_name doc.Valid.settings
-					in make_sref name ref order
-				| Order.Block_order (Order.Floater_order (Order.Figure_floater, order)) ->
-					let name = Settings.get_figure_name doc.Valid.settings
-					in make_sref name ref order
+					make_sref settings.names.equation_name ref order
+				| Order.Block_order (Order.Floater_order (Order.Algorithm_floater, order)) ->
+					make_sref settings.names.algorithm_name ref order
 				| Order.Block_order (Order.Floater_order (Order.Table_floater, order)) ->
-					let name = Settings.get_table_name doc.Valid.settings
-					in make_sref name ref order
+					make_sref settings.names.table_name ref order
+				| Order.Block_order (Order.Floater_order (Order.Figure_floater, order)) ->
+					make_sref settings.names.figure_name ref order
 				| _ ->
 					raise Command_sref_with_non_block)
 
@@ -445,22 +451,22 @@ let write_valid_document classname doc =
 			write_subpage_block blk
 
 		| `Equation (floater, equation) ->
-			let floater_name = Settings.get_equation_name doc.Valid.settings
+			let floater_name = settings.names.equation_name
 			and floater_content = write_equation_block equation
 			in write_floater floater "doc_eq" floater_name floater_content
 
 		| `Algorithm (floater, algorithm) ->
-			let floater_name = Settings.get_algorithm_name doc.Valid.settings
+			let floater_name = settings.names.algorithm_name
 			and floater_content = write_algorithm_block algorithm
 			in write_floater floater "doc_alg" floater_name floater_content
 
 		| `Table (floater, table) ->
-			let floater_name = Settings.get_table_name doc.Valid.settings
+			let floater_name = settings.names.table_name
 			and floater_content = write_table_block table
 			in write_floater floater "doc_tab" floater_name floater_content
 
 		| `Figure (floater, figure) ->
-			let floater_name = Settings.get_figure_name doc.Valid.settings
+			let floater_name = settings.names.figure_name
 			and floater_content = write_figure_block figure
 			in write_floater floater "doc_fig" floater_name floater_content
 	
@@ -486,7 +492,7 @@ let write_valid_document classname doc =
 			make_sectional Sectional_bottom label order (write_super_seq seq)
 
 		| `Bibliography (label, order) ->
-			let name = Settings.get_bibliography_name doc.Valid.settings in
+			let name = settings.names.bibliography_name in
 			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
 			let bibs = match doc.Valid.bibs with
 				| []	 -> []
@@ -494,7 +500,7 @@ let write_valid_document classname doc =
 			in XHTML.M.div (title @ bibs)
 
 		| `Notes (label, order) ->
-			let name = Settings.get_notes_name doc.Valid.settings in
+			let name = settings.names.notes_name in
 			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
 			let notes = match doc.Valid.notes with
 				| []	 -> []
@@ -502,7 +508,7 @@ let write_valid_document classname doc =
 			in XHTML.M.div (title @ notes)
 
 		| `Toc (label, order) ->
-			let name = Settings.get_toc_name doc.Valid.settings in
+			let name = settings.names.toc_name in
 			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
 			let toc = match doc.Valid.toc with
 				| []	 -> []
@@ -555,14 +561,11 @@ let write_valid_document classname doc =
 		| `Subsubappendix (label, order, seq) ->
 			make_toc_entry label order (write_super_seq seq)
 		| `Bibliography (label, order) ->
-			let name = Settings.get_bibliography_name doc.Valid.settings
-			in make_toc_entry label order [pcdata name]
+			make_toc_entry label order [pcdata settings.names.bibliography_name]
 		| `Notes (label, order) ->
-			let name = Settings.get_notes_name doc.Valid.settings
-			in make_toc_entry label order [pcdata name]
+			make_toc_entry label order [pcdata settings.names.notes_name]
 		| `Toc (label, order) ->
-			let name = Settings.get_toc_name doc.Valid.settings
-			in make_toc_entry label order [pcdata name]
+			make_toc_entry label order [pcdata settings.names.toc_name]
 
 
 	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_super_frag doc.Valid.content)
@@ -718,8 +721,8 @@ let write_invalid_document classname = function
 (**	{3 Top-level conversion}						*)
 (********************************************************************************)
 
-let write_ambivalent_document classname = function
-	| `Valid valid		-> write_valid_document classname valid
+let write_ambivalent_document settings classname = function
+	| `Valid valid		-> write_valid_document settings classname valid
 	| `Invalid invalid	-> write_invalid_document classname invalid
 
 
@@ -742,12 +745,21 @@ let composition_classname = "doc_composition"
 
 type t = [ `Div ] XHTML.M.elt
 
-let write_valid_manuscript = write_valid_document manuscript_classname
-let write_valid_composition = write_valid_document composition_classname
+let write_valid_manuscript ?(settings = Settings.default) doc =
+	write_valid_document settings manuscript_classname doc
 
-let write_invalid_manuscript = write_invalid_document manuscript_classname
-let write_invalid_composition = write_invalid_document composition_classname
+let write_valid_composition ?(settings = Settings.default) doc =
+	write_valid_document settings composition_classname doc
 
-let write_ambivalent_manuscript = write_ambivalent_document manuscript_classname
-let write_ambivalent_composition = write_ambivalent_document composition_classname
+let write_invalid_manuscript doc =
+	write_invalid_document manuscript_classname doc
+
+let write_invalid_composition doc =
+	write_invalid_document composition_classname doc
+
+let write_ambivalent_manuscript ?(settings = Settings.default) doc =
+	write_ambivalent_document settings manuscript_classname doc
+
+let write_ambivalent_composition ?(settings = Settings.default) doc =
+	write_ambivalent_document settings composition_classname doc
 

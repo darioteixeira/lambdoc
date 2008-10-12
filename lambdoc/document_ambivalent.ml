@@ -42,7 +42,6 @@ sig
 		Note.t list ->
 		Block.heading_block_t list ->
 		Label_dict.t ->
-		Settings.t ->
 		manuscript_t
 
 	val make_valid_composition:
@@ -67,8 +66,8 @@ struct
 
 	type composition_t = [`Composition] t with sexp
 
-	let make_valid_manuscript content bibs notes toc labels settings =
-		`Valid (Valid.make_manuscript content bibs notes toc labels settings)
+	let make_valid_manuscript content bibs notes toc labels =
+		`Valid (Valid.make_manuscript content bibs notes toc labels)
 
 	let make_valid_composition content =
 		`Valid (Valid.make_composition content)

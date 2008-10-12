@@ -50,7 +50,6 @@ let process_document feature_map document_ast =
 	and references = DynArray.create ()
 	and toc = DynArray.create ()
         and labels = Hashtbl.create 50
-	and settings = ref (Settings.make_default ())
         and auto_label_counter = ref 0
 	and section_counter = ref 0
 	and subsection_counter = ref 0
@@ -185,37 +184,7 @@ let process_document feature_map document_ast =
 	*)
 	and add_toc_entry = function
 		| `Heading blk	-> DynArray.add toc blk
-		| _		-> failwith "Oops: attempted to add non-heading entry into TOC"
-
-
-	(*	Adds a new setting.
-	*)
-	and add_setting comm key value =
-		match key with
-			| "section_name" ->
-				settings := Settings.set_section_name !settings value
-			| "appendix_name" ->
-				settings := Settings.set_appendix_name !settings value
-			| "algorithm_name" ->
-				settings := Settings.set_algorithm_name !settings value
-			| "equation_name" ->
-				settings := Settings.set_equation_name !settings value
-			| "figure_name" ->
-				settings := Settings.set_figure_name !settings value
-			| "table_name" ->
-				settings := Settings.set_table_name !settings value
-			| "bibliography_name" ->
-				settings := Settings.set_bibliography_name !settings value
-			| "notes_name" ->
-				settings := Settings.set_notes_name !settings value
-			| "toc_name" ->
-				settings := Settings.set_toc_name !settings value
-			| "default_bullet" ->
-				settings := Settings.set_default_bullet !settings (get_bullet comm (Some value))
-			| "default_numbering" ->
-				settings := Settings.set_default_numbering !settings (get_numbering comm (Some value))
-			| _ ->
-				DynArray.add errors (comm.Ast.comm_linenum, Error.Unknown_setting key) in
+		| _		-> failwith "Oops: attempted to add non-heading entry into TOC" in
 
 
 	(************************************************************************)
@@ -893,12 +862,6 @@ let process_document feature_map document_ast =
 				None
 			in check_comm comm `Feature_appendix None elem
 
-		| `AST_setting (comm, key, value) ->
-			let elem () =
-				add_setting comm key value;
-				None
-			in check_comm comm `Feature_setting None elem
-
 
 	and convert_super_block : bool -> Ast.super_block_t -> (Block.super_block_t, _) Block.t option = function subpaged -> function
 
@@ -948,7 +911,7 @@ let process_document feature_map document_ast =
 	and res_notes = DynArray.to_list notes
 	and res_toc = DynArray.to_list toc
 	and res_errors = DynArray.to_list errors
-	in (contents, res_bibs, res_notes, res_toc, labels, !settings, res_errors)
+	in (contents, res_bibs, res_notes, res_toc, labels, res_errors)
 
 
 (********************************************************************************)
@@ -997,10 +960,10 @@ let sort_errors errors =
 
 let process_manuscript ?deny_list ?accept_list ?default source document_ast =
 	let feature_map = Features.load_manuscript_features ?deny_list ?accept_list ?default () in
-	let (contents, bibs, notes, toc, labels, settings, errors) = process_document feature_map document_ast in
+	let (contents, bibs, notes, toc, labels, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
-		Ambivalent.make_valid_manuscript contents bibs notes toc labels settings
+		Ambivalent.make_valid_manuscript contents bibs notes toc labels
 	else
 		let sorted_errors = sort_errors (collate_errors source errors)
 		in Ambivalent.make_invalid_manuscript sorted_errors
@@ -1008,7 +971,7 @@ let process_manuscript ?deny_list ?accept_list ?default source document_ast =
 
 let process_composition ?deny_list ?accept_list ?default source document_ast =
 	let feature_map = Features.load_composition_features ?deny_list ?accept_list ?default () in
-	let (contents, _, _, _, _, _, errors) = process_document feature_map document_ast in
+	let (contents, _, _, _, _, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
 		let composition = Document_convert.convert_to_composition contents

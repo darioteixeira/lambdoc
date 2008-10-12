@@ -173,7 +173,6 @@ sig
 		| `AST_abstract of command_t * paragraph_block_t list
 		| `AST_rule of command_t
 		| `AST_appendix of command_t
-		| `AST_setting of command_t * string * string
 		]
 
 	type super_block_t =

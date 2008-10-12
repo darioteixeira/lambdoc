@@ -29,7 +29,6 @@ sig
 		notes: Note.t list;
 		toc: Block.heading_block_t list;
 		labels: Label_dict.t;
-		settings: Settings.t;
 		} with sexp
 
 	type 'a t = valid_t with sexp
@@ -44,7 +43,6 @@ sig
 		Note.t list ->
 		Block.heading_block_t list ->
 		Label_dict.t ->
-		Settings.t ->
 		manuscript_t
 
 	val make_composition: ([< Block.super_block_t], [< `Composition]) Block.t list -> composition_t
@@ -62,7 +60,6 @@ struct
 		notes: Note.t list;
 		toc: Block.heading_block_t list;
 		labels: Label_dict.t;
-		settings: Settings.t;
 		} with sexp
 
 	type 'a t = valid_t with sexp
@@ -71,14 +68,13 @@ struct
 
 	type composition_t = [`Composition] t with sexp
 
-	let make_manuscript content bibs notes toc labels settings =
+	let make_manuscript content bibs notes toc labels =
 		{
 		content = (content : ('a, 'b) Block.t list :> (Block.super_block_t, 'b) Block.t list);
 		bibs = bibs;
 		notes = notes;
 		toc = toc;
 		labels = labels;
-		settings = settings;
 		}
 
 	let make_composition content =
@@ -88,7 +84,6 @@ struct
 		notes = [];
 		toc = [];
 		labels = Hashtbl.create 0;
-		settings = Settings.make_default ();
 		}
 
 	let serialize_manuscript doc =

@@ -8,6 +8,7 @@
 *)
 (********************************************************************************)
 
+open Document_settings
 open Document_valid
 open Document_invalid
 open Document_ambivalent
@@ -23,13 +24,13 @@ module type S =
 sig
 	type t
 
-	val write_valid_manuscript: Valid.manuscript_t -> t
-	val write_valid_composition: Valid.composition_t -> t
+	val write_valid_manuscript: ?settings:Settings.t -> Valid.manuscript_t -> t
+	val write_valid_composition: ?settings:Settings.t -> Valid.composition_t -> t
 
 	val write_invalid_manuscript: Invalid.manuscript_t -> t
 	val write_invalid_composition: Invalid.composition_t -> t
 
-	val write_ambivalent_manuscript: Ambivalent.manuscript_t -> t
-	val write_ambivalent_composition: Ambivalent.composition_t -> t
+	val write_ambivalent_manuscript: ?settings:Settings.t -> Ambivalent.manuscript_t -> t
+	val write_ambivalent_composition: ?settings:Settings.t -> Ambivalent.composition_t -> t
 end
 
