@@ -17,6 +17,8 @@ module Features:
 sig
 	type t
 
+	type default_t = [ `Accept | `Deny ]
+
 	type composition_feature_t =
 		[ `Feature_plain | `Feature_entity | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_bold
 		| `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru | `Feature_sup | `Feature_sub
@@ -32,7 +34,7 @@ sig
 		| `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib | `Feature_note
 		| `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
 		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract
-		| `Feature_rule | `Feature_appendix | `Feature_setting
+		| `Feature_rule | `Feature_appendix
 		]
 
 	type command_feature_t =
@@ -44,19 +46,19 @@ sig
 		| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
 		| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
 		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract | `Feature_rule
-		| `Feature_appendix | `Feature_setting
+		| `Feature_appendix
 		]
 
 	val load_composition_features:
 		?deny_list: composition_feature_t list ->
 		?accept_list: composition_feature_t list ->
-		?default: bool ->
+		?default: default_t ->
 		unit -> t
 
 	val load_manuscript_features:
 		?deny_list: manuscript_feature_t list ->
 		?accept_list: manuscript_feature_t list ->
-		?default: bool ->
+		?default: default_t ->
 		unit -> t
 
 	val check_feature: manuscript_feature_t -> t -> bool
@@ -64,6 +66,8 @@ sig
 	val describe_feature: manuscript_feature_t -> string * string
 end =
 struct
+	type default_t = [ `Accept | `Deny ]
+
 	type composition_feature_t =
 		[ `Feature_plain | `Feature_entity | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_bold
 		| `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru | `Feature_sup | `Feature_sub
@@ -79,7 +83,7 @@ struct
 		| `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib | `Feature_note
 		| `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
 		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract
-		| `Feature_rule | `Feature_appendix | `Feature_setting
+		| `Feature_rule | `Feature_appendix
 		]
 
 	type command_feature_t =
@@ -91,7 +95,7 @@ struct
 		| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
 		| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
 		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract | `Feature_rule
-		| `Feature_appendix | `Feature_setting
+		| `Feature_appendix
 		]
 
 	module Feature_map =
@@ -116,29 +120,30 @@ struct
 		`Feature_algorithm; `Feature_table; `Feature_figure; `Feature_bib; `Feature_note;
 		`Feature_section; `Feature_subsection; `Feature_subsubsection; `Feature_toc;
 		`Feature_bibliography; `Feature_notes; `Feature_title; `Feature_abstract;
-		`Feature_rule; `Feature_appendix; `Feature_setting
+		`Feature_rule; `Feature_appendix
 		]
 
 	let load_features feature_set deny_list accept_list default =
+		let default_bool = default = `Accept in
 		let is_accepted feature =
 			if List.mem feature deny_list
 			then false
 			else	 if List.mem feature accept_list
 				then true
 				else	if List.mem feature feature_set
-					then default
+					then default_bool
 					else false in
 		let load_feature map feature =
 			Feature_map.add feature (is_accepted feature) map
 		in List.fold_left load_feature Feature_map.empty manuscript_features
 
-	let load_composition_features ?(deny_list = []) ?(accept_list = []) ?(default = true) () =
+	let load_composition_features ?(deny_list = []) ?(accept_list = []) ?(default = `Accept) () =
 		let composition_features = (composition_features :> manuscript_feature_t list)
 		and deny_list = (deny_list :> manuscript_feature_t list)
 		and accept_list = (accept_list :> manuscript_feature_t list)
 		in load_features composition_features deny_list accept_list default
 
-	let load_manuscript_features ?(deny_list = []) ?(accept_list = []) ?(default = true) () =
+	let load_manuscript_features ?(deny_list = []) ?(accept_list = []) ?(default = `Accept) () =
 		load_features manuscript_features deny_list accept_list default
 
 	let check_feature feature map =
@@ -151,16 +156,16 @@ struct
 		| `Feature_mathml_inl		-> ("mathml_inl", "inline MathML math")
 		| `Feature_bold			-> ("bold", "bold text")
 		| `Feature_emph			-> ("emph", "emphasised text")
-		| `Feature_mono			-> ("mono", "monospaced")
-		| `Feature_caps			-> ("caps", "small caps")
-		| `Feature_thru			-> ("thru", "strike-through")
-		| `Feature_sup			-> ("sup", "superscript")
-		| `Feature_sub			-> ("sub", "subscript")
+		| `Feature_mono			-> ("mono", "monospaced text")
+		| `Feature_caps			-> ("caps", "small caps text")
+		| `Feature_thru			-> ("thru", "strike-through text")
+		| `Feature_sup			-> ("sup", "superscript text")
+		| `Feature_sub			-> ("sub", "subscript text")
 		| `Feature_box			-> ("box", "boxed text")
 		| `Feature_link			-> ("link", "external link")
-		| `Feature_paragraph		-> ("paragraph", "paragraph blocks")
-		| `Feature_itemize		-> ("itemize", "itemize blocks")
-		| `Feature_enumerate		-> ("enumerate", "enumerate blocks")
+		| `Feature_paragraph		-> ("paragraph", "paragraph block")
+		| `Feature_itemize		-> ("itemize", "itemize block")
+		| `Feature_enumerate		-> ("enumerate", "enumerate block")
 		| `Feature_quote		-> ("quote", "quote block")
 		| `Feature_mathtex_blk		-> ("mathtex_blk", "TeX math block")
 		| `Feature_mathml_blk		-> ("mathml_blk", "MathML block")
@@ -169,15 +174,15 @@ struct
 		| `Feature_tabular		-> ("tabular", "tabular")
 		| `Feature_image		-> ("image", "image block")
 		| `Feature_subpage		-> ("subpage", "subpage block")
-		| `Feature_see			-> ("see", "")
+		| `Feature_see			-> ("see", "reference to note")
 		| `Feature_cite			-> ("cite", "bibliography citation")
 		| `Feature_ref			-> ("ref", "internal reference")
 		| `Feature_sref			-> ("sref", "smart reference")
 		| `Feature_mref			-> ("mref", "manual reference")
 		| `Feature_caption		-> ("caption", "floater caption")
-		| `Feature_bib_title		-> ("bib_title", "biliography title")
-		| `Feature_bib_author		-> ("bib_author", "bibliography author")
-		| `Feature_bib_resource		-> ("bib_resource", "bibliography resource")
+		| `Feature_bib_title		-> ("what", "title of biliography entry")
+		| `Feature_bib_author		-> ("who", "author of bibliography entry")
+		| `Feature_bib_resource		-> ("where", "resource of bibliography entry")
 		| `Feature_equation		-> ("equation", "equation floater")
 		| `Feature_algorithm		-> ("algorithm", "algorithm floater")
 		| `Feature_table		-> ("table", "table floater")
@@ -194,6 +199,5 @@ struct
 		| `Feature_abstract		-> ("abstract", "document abstract")
 		| `Feature_rule			-> ("rule", "document rule")
 		| `Feature_appendix		-> ("appendix", "appendix")
-		| `Feature_setting		-> ("setting", "document setting")
 end
 

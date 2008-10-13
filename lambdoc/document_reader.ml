@@ -38,14 +38,14 @@ sig
 	val ambivalent_manuscript_from_string:
 		?deny_list: Features.manuscript_feature_t list ->
 		?accept_list: Features.manuscript_feature_t list ->
-		?default: bool ->
+		?default: Features.default_t ->
 		string ->
 		Ambivalent.manuscript_t
 
 	val ambivalent_composition_from_string:
 		?deny_list: Features.composition_feature_t list ->
 		?accept_list: Features.composition_feature_t list ->
-		?default: bool ->
+		?default: Features.default_t ->
 		string ->
 		Ambivalent.composition_t
 end

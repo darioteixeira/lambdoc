@@ -8,7 +8,10 @@ let src = IO.read_all (IO.input_channel (open_in "tutorial.ltex"))
 
 let coucou_handler sp () () =
 	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in
-	let doc = Lambdoc.Lambtex_reader.ambivalent_manuscript_from_string src in
+	let accept_list = [ ] in
+	let deny_list = [ ] in
+	let default = `Accept in
+	let doc = Lambdoc.Lambtex_reader.ambivalent_manuscript_from_string ~accept_list ~deny_list ~default src in
 	let xhtml = Lambdoc.Xhtml_writer.write_ambivalent_manuscript doc in
 	Lwt.return
 		(html

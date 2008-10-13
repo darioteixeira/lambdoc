@@ -211,7 +211,7 @@ let process_document feature_map document_ast =
 
 
 	and check_op op feature elem =
-		let msg_maker (what, desc) = Error.Invalid_command_feature (what, desc)
+		let msg_maker (what, desc) = Error.Invalid_operator_feature (what, desc)
 		and linenum = op.Ast.op_linenum
 		in checker feature elem msg_maker linenum in
 

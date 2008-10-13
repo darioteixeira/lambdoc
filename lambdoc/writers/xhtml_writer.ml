@@ -638,15 +638,6 @@ let write_error (error_context, error_msg) =
 		| Error.Unknown_alignment_type (tag, num) ->
 			sprintf "Unknown alignment type '%s' for command '%s'.  Valid alignments are 'center', 'left', and 'right'." num tag
 
-		| Error.Unknown_figure_type (tag, fig) ->
-			sprintf "Unknown figure type '%s' for command '%s'.  Valid figure types are 'bitmap', 'vector', 'ascii', and 'subpage'." fig tag
-
-		| Error.Unknown_math_type (tag, math) ->
-			sprintf "Unknown math type '%s' for command '%s'.  Valid math types are 'tex' and 'mathml'." math tag
-
-		| Error.Unknown_setting setting ->
-			sprintf "Unknown setting '%s'." setting
-
 		| Error.Unknown_env_command tag ->
 			sprintf "Unknown command '\\begin{%s}.'" tag
 
@@ -655,15 +646,6 @@ let write_error (error_context, error_msg) =
 
 		| Error.Duplicate_label (tag, label) ->
 			sprintf "Command '%s' attempts to redefine label '%s'." tag label
-
-		| Error.Duplicate_block (tag) ->
-			sprintf "Command '%s' duplicates an already defined block." tag
-
-		| Error.Missing_block (tag, blk) ->
-			sprintf "Command '%s' is missing a required definition of block '%s'." tag blk
-
-		| Error.Invalid_block (tag, blk) ->
-			sprintf "Block '%s' is invalid for command '%s'." blk tag
 
 		| Error.Invalid_column_specifier (tag, spec) ->
 			sprintf "Unknown column specifier '%c' in command '%s'.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec tag
@@ -694,11 +676,11 @@ let write_error (error_context, error_msg) =
 		| Error.Absent_target (tag, label) ->
 			sprintf "Command '%s' references an undefined label '%s'." tag label
 
-		| Error.Invalid_command_feature (feature, description) ->
-			sprintf "Command feature '%s' is not valid." feature
+		| Error.Invalid_command_feature (comm, description) ->
+			sprintf "The feature '%s' requested by command '%s' has been flagged as invalid for this document." description comm
 
-		| Error.Invalid_operator_feature (feature, description) ->
-			sprintf "Operator feature '%s' is not valid." feature
+		| Error.Invalid_operator_feature (op, description) ->
+			sprintf "The feature '%s' requested by operator '%s' has been flagged as invalid for this document." description op
 
 		| Error.Syntax_error ->
 			"Syntax error"

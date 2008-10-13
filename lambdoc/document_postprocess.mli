@@ -26,7 +26,7 @@ val collate_errors:
 val process_manuscript:
 	?deny_list: Features.manuscript_feature_t list ->
 	?accept_list: Features.manuscript_feature_t list ->
-	?default: bool ->
+	?default: Features.default_t ->
 	string ->
 	Ast.t ->
 	Ambivalent.manuscript_t
@@ -34,7 +34,7 @@ val process_manuscript:
 val process_composition:
 	?deny_list: Features.composition_feature_t list ->
 	?accept_list: Features.composition_feature_t list ->
-	?default: bool ->
+	?default: Features.default_t ->
 	string ->
 	Ast.t ->
 	Ambivalent.composition_t
