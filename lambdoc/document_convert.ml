@@ -182,6 +182,8 @@ let convert_to_composition contents =
 	and convert_top_block = function
 		| `Title _ ->
 			raise (Invalid_composition_subset "title")
+		| `Subtitle _ ->
+			raise (Invalid_composition_subset "subtitle")
 		| `Abstract _ ->
 			raise (Invalid_composition_subset "abstract")
 		| `Rule ->

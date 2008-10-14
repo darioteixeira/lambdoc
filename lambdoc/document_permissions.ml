@@ -183,6 +183,7 @@ struct
 			| `Feature_bibliography		-> preset_sectional_class
 			| `Feature_notes		-> preset_sectional_class
 			| `Feature_title		-> forbidden_class
+			| `Feature_subtitle		-> forbidden_class
 			| `Feature_abstract		-> forbidden_class
 			| `Feature_rule			-> forbidden_class
 			| `Feature_appendix		-> forbidden_class

@@ -33,7 +33,7 @@ sig
 		| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource | `Feature_equation
 		| `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib | `Feature_note
 		| `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
-		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract
+		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_subtitle | `Feature_abstract
 		| `Feature_rule | `Feature_appendix
 		]
 
@@ -45,8 +45,8 @@ sig
 		| `Feature_mref | `Feature_caption | `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
 		| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
 		| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
-		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract | `Feature_rule
-		| `Feature_appendix
+		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_subtitle | `Feature_abstract
+		| `Feature_rule | `Feature_appendix
 		]
 
 	val load_composition_features:
@@ -82,7 +82,7 @@ struct
 		| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource | `Feature_equation
 		| `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib | `Feature_note
 		| `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
-		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract
+		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_subtitle | `Feature_abstract
 		| `Feature_rule | `Feature_appendix
 		]
 
@@ -94,8 +94,8 @@ struct
 		| `Feature_mref | `Feature_caption | `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
 		| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
 		| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
-		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_abstract | `Feature_rule
-		| `Feature_appendix
+		| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_subtitle | `Feature_abstract
+		| `Feature_rule | `Feature_appendix
 		]
 
 	module Feature_map =
@@ -119,7 +119,7 @@ struct
 		`Feature_bib_title; `Feature_bib_author; `Feature_bib_resource; `Feature_equation;
 		`Feature_algorithm; `Feature_table; `Feature_figure; `Feature_bib; `Feature_note;
 		`Feature_section; `Feature_subsection; `Feature_subsubsection; `Feature_toc;
-		`Feature_bibliography; `Feature_notes; `Feature_title; `Feature_abstract;
+		`Feature_bibliography; `Feature_notes; `Feature_title; `Feature_subtitle; `Feature_abstract;
 		`Feature_rule; `Feature_appendix
 		]
 
@@ -196,6 +196,7 @@ struct
 		| `Feature_bibliography		-> ("bibliography", "bibliography")
 		| `Feature_notes		-> ("notes", "notes")
 		| `Feature_title		-> ("title", "document title")
+		| `Feature_subtitle		-> ("subtitle", "document sub-title")
 		| `Feature_abstract		-> ("abstract", "document abstract")
 		| `Feature_rule			-> ("rule", "document rule")
 		| `Feature_appendix		-> ("appendix", "appendix")

@@ -521,6 +521,8 @@ let write_valid_document settings classname doc =
 			write_heading_block heading
 		| `Title seq ->
 			XHTML.M.h1 ~a:[a_class ["doc_title"]] (write_super_seq seq)
+		| `Subtitle seq ->
+			XHTML.M.h2 ~a:[a_class ["doc_subtitle"]] (write_super_seq seq)
 		| `Abstract frag ->
 			XHTML.M.div ~a:[a_class ["doc_abstract"]] (write_paragraph_frag frag)
 		| `Rule ->

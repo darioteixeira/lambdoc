@@ -170,6 +170,7 @@ sig
 	type top_block_t =
 		[ `AST_heading of heading_block_t
 		| `AST_title of command_t * super_seq_t
+		| `AST_subtitle of command_t * super_seq_t
 		| `AST_abstract of command_t * paragraph_block_t list
 		| `AST_rule of command_t
 		| `AST_appendix of command_t

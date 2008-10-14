@@ -11,19 +11,6 @@
 %{
 open Document_basic
 open Document_ast
-
-(**	This function aggregates a list of the form [[(op1, "a"); (op2, "b"); ...]]
-	into [(op1, "ab..."])].  This is done to convert potentially long lists of
-	individual text characters into a single string.  Note that the aggregation
-	discards all operators except for the first one.
-*)
-let aggregate lst =
-	let rec aux accum = function
-		| []		-> accum
-		| (_, txt)::tl	-> aux (txt::accum) tl
-	in match lst with
-		| []		-> failwith "Cannot aggregate an empty list"
-		| (op, txt)::tl	-> (op, String.concat "" (List.rev (aux [txt] tl)))
 %}
 
 
@@ -143,6 +130,7 @@ let aggregate lst =
 %token <Document_ast.Ast.command_t> NOTES
 
 %token <Document_ast.Ast.command_t> TITLE
+%token <Document_ast.Ast.command_t> SUBTITLE
 %token <Document_ast.Ast.command_t> RULE
 %token <Document_ast.Ast.command_t> APPENDIX
 %token <Document_ast.Ast.command_t> NEW_ITEM
@@ -226,6 +214,7 @@ super_block:
 top_block:
 	| heading_block								{`AST_heading $1}
 	| TITLE BEGIN super_node+ END						{`AST_title ($1, $3)}
+	| SUBTITLE BEGIN super_node+ END					{`AST_subtitle ($1, $3)}
 	| BEGIN_ABSTRACT paragraph_block+ END_ABSTRACT				{`AST_abstract ($1, $2)}
 	| RULE									{`AST_rule $1}
 	| APPENDIX								{`AST_appendix $1}
@@ -271,12 +260,12 @@ paragraph_block:	| NEW_PAR super_node+					{`AST_paragraph ($1, $2)}
 itemize_block:		| BEGIN_ITEMIZE items END_ITEMIZE			{`AST_itemize ($1, $2)}
 enumerate_block:	| BEGIN_ENUMERATE items END_ENUMERATE			{`AST_enumerate ($1, $2)}
 quote_block:		| BEGIN_QUOTE nestable_block+ END_QUOTE			{`AST_quote ($1, $2)}
-mathtex_block:		| BEGIN_MATHTEX_BLK raw_seq END_MATHTEX_BLK		{`AST_mathtex_blk ($1, $2)}
-mathml_block:		| BEGIN_MATHML_BLK raw_seq END_MATHML_BLK		{`AST_mathml_blk ($1, $2)}
+mathtex_block:		| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{`AST_mathtex_blk ($1, $2)}
+mathml_block:		| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{`AST_mathml_blk ($1, $2)}
 code_block:		| BEGIN_CODE textual_node+ END_CODE			{`AST_code ($1, $2)}
 verbatim_block:		| BEGIN_VERBATIM textual_node+ END_VERBATIM		{`AST_verbatim ($1, $2)}
 tabular_block:		| BEGIN_TABULAR tabular END_TABULAR			{`AST_tabular ($1, $2)}
-image_block:		| IMAGE BEGIN raw_seq END				{`AST_image ($1, $3)}
+image_block:		| IMAGE BEGIN RAW END					{`AST_image ($1, $3)}
 subpage_block:		| BEGIN_SUBPAGE super_block+ END_SUBPAGE		{`AST_subpage ($1, $2)}
 bib_title_block:	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 bib_author_block:	| BIB_AUTHOR BEGIN super_node+ END			{`AST_bib_author ($1, $3)}
@@ -338,13 +327,13 @@ columns:
 /********************************************************************************/
 
 textual_node:
-	| PLAIN+						{`AST_plain (aggregate $1)}
+	| PLAIN							{`AST_plain $1}
 	| ENTITY						{`AST_entity $1}
 
 nonlink_node:
 	| textual_node						{($1 :> Ast.nonlink_node_t)}
-	| BEGIN_MATHTEX_INL raw_seq END_MATHTEX_INL		{`AST_mathtex_inl ($1, $2)}
-	| BEGIN_MATHML_INL raw_seq END_MATHML_INL		{`AST_mathml_inl ($1, $2)}
+	| BEGIN_MATHTEX_INL RAW END_MATHTEX_INL			{`AST_mathtex_inl ($1, $2)}
+	| BEGIN_MATHML_INL RAW END_MATHML_INL			{`AST_mathml_inl ($1, $2)}
 	| BOLD BEGIN super_node+ END				{`AST_bold ($1, $3)}
 	| EMPH BEGIN super_node+ END				{`AST_emph ($1, $3)}
 	| MONO BEGIN super_node+ END				{`AST_mono ($1, $3)}
@@ -355,22 +344,14 @@ nonlink_node:
 	| BOX BEGIN super_node+ END				{`AST_box ($1, $3)}
 
 link_node:
-	| LINK BEGIN raw_seq END BEGIN nonlink_node+ END	{`AST_link ($1, $3, $6)}
-	| SEE BEGIN raw_seq END					{`AST_see ($1, $3)}
-	| CITE BEGIN raw_seq END				{`AST_cite ($1, $3)}
-	| REF BEGIN raw_seq END					{`AST_ref ($1, $3)}
-	| SREF BEGIN raw_seq END				{`AST_sref ($1, $3)}
-	| MREF BEGIN raw_seq END BEGIN nonlink_node+ END	{`AST_mref ($1, $3, $6)}
+	| LINK BEGIN RAW END BEGIN nonlink_node+ END		{`AST_link ($1, $3, $6)}
+	| SEE BEGIN RAW END					{`AST_see ($1, $3)}
+	| CITE BEGIN RAW END					{`AST_cite ($1, $3)}
+	| REF BEGIN RAW END					{`AST_ref ($1, $3)}
+	| SREF BEGIN RAW END					{`AST_sref ($1, $3)}
+	| MREF BEGIN RAW END BEGIN nonlink_node+ END		{`AST_mref ($1, $3, $6)}
 
 super_node:
 	| nonlink_node						{($1 :> Ast.super_node_t)}
 	| link_node						{($1 :> Ast.super_node_t)}
-
-
-/********************************************************************************/
-/* Raw text.									*/
-/********************************************************************************/
-
-raw_seq:
-	| RAW+							{String.concat "" $1}
 

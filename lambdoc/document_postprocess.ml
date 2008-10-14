@@ -848,6 +848,10 @@ let process_document feature_map document_ast =
 			let elem () = Some (Block.title (convert_super_seq seq))
 			in check_comm comm `Feature_title None elem
 
+		| `AST_subtitle (comm, seq) ->
+			let elem () = Some (Block.subtitle (convert_super_seq seq))
+			in check_comm comm `Feature_subtitle None elem
+
 		| `AST_abstract (comm, frag) ->
 			let elem () = Some (Block.abstract (convert_paragraph_frag frag))
 			in check_comm comm `Feature_abstract None elem

@@ -143,6 +143,7 @@ let get_simple_tag params =
 		| "notes"		-> (NOTES params,		Blk,	[])
 
 		| "title"		-> (TITLE params, 		Blk,	[Store [Inline]])
+		| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
 		| "rule"		-> (RULE params,		Blk,	[])
 		| "appendix"		-> (APPENDIX params,		Blk,	[])
 		| "item"		-> (NEW_ITEM params,		Blk,	[])

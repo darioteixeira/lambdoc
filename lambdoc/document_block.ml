@@ -205,6 +205,7 @@ sig
 	type top_block_t =
 		[ `Heading of heading_block_t
 		| `Title of Node.super_seq_t
+		| `Subtitle of Node.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
 		] with sexp
@@ -235,6 +236,8 @@ sig
 		([> top_block_t ], [> `Manuscript ]) t
 
 	val title: ([< Node.super_node_t ], 'b) Node.t list ->
+		([> top_block_t ], [> `Manuscript ]) t
+	val subtitle: ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val abstract: (paragraph_block_t, 'b) t list ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -326,6 +329,7 @@ struct
 	type top_block_t =
 		[ `Heading of heading_block_t
 		| `Title of Node.super_seq_t
+		| `Subtitle of Node.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
 		] with sexp
@@ -345,6 +349,7 @@ struct
 	let toc label order = `Heading (`Toc (label, order))
 
 	let title seq = `Title (seq :> Node.super_seq_t)
+	let subtitle seq = `Subtitle (seq :> Node.super_seq_t)
 	let abstract frag = `Abstract frag
 	let rule () = `Rule
 
