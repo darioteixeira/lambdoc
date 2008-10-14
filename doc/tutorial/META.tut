@@ -1,9 +1,0 @@
-directory = "."
-
-package "tut"
-	(
-	requires = "extlib,lambdoc"
-	archive(plugin,byte) = "tut.cma"
-	archive(plugin,native) = "tut.cmxs"
-	)
-
