@@ -1,0 +1,960 @@
+\title{\caps{Lambtex} tutorial}
+
+\begin{abstract}
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe
+Sadf asd f asdfasdfjas sdnfçqwjxcqw xcwqerkx wqerxqwe rqxwerqxwe xqwerxqwe.
+\end{abstract}
+
+\toc
+
+\rule
+
+\section[sec:intro]{Introduction}
+
+This document introduces the \caps{Lambtex} markup language.  \caps{Lambtex}
+is largely inspired by \caps{LaTeX}\cite{bib:latex}, and uses the same
+approach to the description of documents.  In basic terms, the source for a
+document is composed only of text, but annotated with special commands to
+mark elements with a precise semantical meaning.  As an example, you can
+mark a passage in a paragraph to denote that it should be rendered in an
+emphasised manner; similarly, there are commands that mark document blocks
+as being section headers, figures, tables, mathematical expressions, etc.
+\caps{Lambtex} was especially designed to be used in web applications, and
+as such it supports fully hyperlinked documents.  Moreover, its syntax is
+simple, consistent, and designed with brevity in mind (the latter cannot be
+said about \caps{HTML} or \caps{BBcode}\see{note:bbcode}, for example).
+
+A \caps{Lambtex} document is essentially a sequence of blocks.  A block
+may be a paragraph of text, a section header, a figure, a table, etc.
+The simplest of all blocks is a paragraph.  Paragraphs are blocks of text
+separated by blank lines.  Within a paragraph you can use special commands
+that &mdash; among other features &mdash; allow you to format a passage in
+bold or emphasised text, use super or subscripts, and to produce hyperlinks.
+
+The \caps{Lambtex} source fragment that follows shows an example containing
+two simple paragraphs, and \sref{fig:par} shows the resulting output from the
+composer.  Note that the line breaks within the text are irrelevant for the
+composer; all that it cares about is that blank lines separate paragraphs.
+Also note that the second paragraph uses two simple commands, which take
+the form '\mono{\\command\{text\}}'.
+
+
+\begin{verbatim}
+This is the first example paragraph.  Lines can be broken
+at any point, because a paragraph is only terminated by
+a blank line.
+
+Within a paragraph you can format text in \bold{bold} or
+\emph{emphasised} face.  There are other possibilities,
+which the following section describes.
+\end{verbatim}
+
+
+\begin[fig:par]{figure}
+\begin{subpage}
+This is the first example paragraph.  Lines can be broken
+at any point, because a paragraph is only terminated by
+a blank line.
+
+Within a paragraph you can format text in \bold{bold} or
+\emph{emphasised} face.  There are other possibilities,
+which the following section describes.
+\end{subpage}
+\caption{The output produced from a simple \caps{Lambtex} document
+containing two paragraphs.  Note that the composer ignores line breaks,
+caring only about blank lines to separate paragraphs.}
+\end{figure}
+
+\section{Formatting text}
+
+In the previous section you have already seen two text formatting
+commands: '\mono{\\bold}' and '\mono{\\emph}'.  However, and as shown by
+\sref{tab:inline}, \caps{Lambtex} offers a much broader set.  Note that any
+of these commands may be used in a context where normal text is also allowed.
+That means you may use them in section titles, figure captions, or inside
+tables.
+
+\begin[tab:inline]{table}
+\begin{tabular}{rl}
+\head
+Command				| Example $
+\body
+\mono{\\bold\{...\}}		| You can make some passages be \bold{bold}. $
+\mono{\\emph\{...\}}		| Here's another way to \emph{emphasise} text. $
+\mono{\\mono\{...\}}		| You can also imitate a \mono{typewriter}. $
+\mono{\\caps\{...\}}		| \caps{Lambtex} supports text in small-caps. $
+\mono{\\thru\{...\}}		| Sometimes it's \thru{handy} necessary to mark corrections. $
+\mono{\\sup\{...\}}		| The 1\sup{st} of January has a superscript. $
+\mono{\\sub\{...\}}		| Whereas H\sub{2}O requires a subscript. $
+\mono{\\box\{...\}}		| All text inside a box should not be split across a line break. $
+\end{tabular}
+\caption{List of all text formatting commands.  All these commands take
+one parameter enclosed in brackets.}
+\end{table}
+
+
+\section{Special characters}
+
+\caps{Lambtex} allows the direct use of \caps{HTML} entities such as
+'\mono{\&mdash;}' or '\mono{\&#9835;}' (which produce a '&mdash;' and a
+'&#9835;', respectively).  These are useful, for example, for inserting
+special typographic elements or to input any of the \caps{Unicode} code points
+(you can find \link{http://www.w3schools.com/tags/ref_entities.asp}{here}
+a list of \caps{HTML} elements commonly accepted by browsers; also, consult
+\link{http://www.unicode.org/}{the \caps{Unicode} Consortium's pages} for
+comprehensive listings of \caps{Unicode} code points).
+
+The reader will have noted that \caps{Lambtex} must interpret the character
+'\&' (ampersand) differently, and as such you need a workaround if you need
+to input an actual ampersand.  In fact, there are other characters besides the
+ampersand that are interpreted differently by \caps{Lambtex}, and as such also
+require a special escaping sequence.  These characters are '\\' (backslash),
+'\{' (opening brackets), and '\}' (closing brackets).  The character used
+for escaping is the backslash, which means that displaying an ampersand,
+for example, is achieved with '\mono{\\\&}' (alternatively you may also
+input the '\mono{\&amp;}' \caps{HTML} entity).
+
+There are also two character sequences that are interpreted in a special manner
+by \caps{Lambtex}.  These sequences are '\mono{\[$}' and '\mono{\<$}', and
+they are used to mark the beginning of inline \caps{TeX} and \caps{MathML}
+mathematical expressions, respectively (see \sref{sec:math} for details).
+Therefore, you must also use the escape character if you wish to input any
+of these sequences literally.
+
+
+\section{Lists}
+
+All the commands we have seen so far are simple commands.  They take a
+single argument enclosed in brackets, in the form '\mono{\\command\{...\}}'.
+\caps{Lambtex} has another class of commands, however.  These are called
+\emph{environment commands}, because they are composed of two separate parts
+&mdash; a start marker and an end marker &mdash; that delineate an environment.
+Thus suppose you have an environment command named '\mono{command}'.  The start
+marker takes the form '\mono{\\begin\{command\}}', while the end marker is
+'\mono{\\end\{command\}}'.
+
+Lists in \caps{Lambtex} come in two varieties, ordered and unordered,
+and are declared using the environment commands '\mono{enumerate}' and
+'\mono{itemize}', respectively.  As shown by the following \caps{Lambtex}
+source (and whose output is in \sref{fig:list}), each list item must be
+preceded by the parameterless command '\mono{\\item}'.  Also, lists may be
+nested, and each item may itself be composed of several paragraphs.
+
+
+\begin{verbatim}
+Here is a list of small furry mammals:
+
+\begin{itemize}
+\item	Cat
+\item	Fox
+\item	Various rodents ordered by cuteness:
+	\begin{enumerate}
+	\item	Squirrel
+	\item	Hamster
+	\item	Mouse
+	\end{enumerate}
+\end{itemize}
+\end{verbatim}
+
+
+\begin[fig:list]{figure}
+\begin{subpage}
+Here is a list of small furry mammals:
+
+\begin{itemize}
+\item	Cat
+\item	Fox
+\item	And various rodents ordered by cuteness:
+	\begin{enumerate}
+	\item	Squirrel
+	\item	Hamster
+	\item	Mouse
+	\end{enumerate}
+\end{itemize}
+\end{subpage}
+\caption{An example of unordered and ordered lists in Lambtex.
+Note that lists may be nested at will.}
+\end{figure}
+
+It is possible to customise the bullet used in unordered lists or the
+numbering system in ordered lists.  To do so you need to pass an extra
+parameter to either the '\mono{itemize}' or '\mono{enumerate}' commands.
+Extra parameters are enclosed between 'lesser than' and 'greater than' signs
+('<' and '>'), and are to be placed before a command's opening brackets (check
+\sref{sec:parameters} for a more thorough description of command parameters).
+\box{Tables \ref{tab:itemize} and \ref{tab:enumerate}} list the available
+options for respectively '\mono{itemize}' and '\mono{enumerate}' environments.
+
+
+\begin[tab:itemize]{table}
+\begin{tabular}{rl}
+\head
+Extra parameter		| Type of bullet $
+\body
+\mono{disc}		| A filled circle, equivalent to CSS's \mono{disc}. $
+\mono{circle}		| An empty circle, equivalent to CSS's \mono{circle}. $
+\mono{square}		| A square, equivalent to CSS's \mono{square}. $
+\mono{none}		| Ommit the bullet altogether. $
+\end{tabular}
+\caption{Available extra parameters for the \mono{itemize} command.
+These allow you to change the bullet marking each list item.}
+\end{table}
+
+
+\begin[tab:enumerate]{table}
+\begin{tabular}{rl}
+\head
+Extra parameter		| Type of numbering $
+\body
+\mono{0}		| Decimal numbers, equivalent to CSS's \mono{decimal}. $
+\mono{i}		| Lower-case roman numerals, equivalent to CSS's \mono{lower-roman}. $
+\mono{I}		| Upper-case roman numerals, equivalent to CSS's \mono{upper-roman}. $
+\mono{a}		| Lower-case alphabetic letters, equivalent to CSS's \mono{lower-alpha}. $
+\mono{A}		| Upper-case alphabetic letters, equivalent to CSS's \mono{upper-alpha}. $
+\mono{none}		| Ommit the numbering altogether. $
+\end{tabular}
+\caption{Available extra parameters for the \mono{enumerate} command.
+These allow you to change the numbering scheme ordering each list item.}
+\end{table}
+
+
+\section{Quotations}
+
+\begin{quote}
+Weaseling out of things is important to learn.
+It's what separates us from the animals... Except the weasel. 
+
+Homer Simpson
+\end{quote}
+
+Quotation blocks are another useful \caps{Lambtex} feature, and are declared
+using the '\mono{quote}' environment command.  Therefore, to produce a quote like
+the one that opens this section, you can simply provide the following code:
+
+\begin{verbatim}
+\begin{quote}
+Weaseling out of things is important to learn.
+It's what separates us from the animals... Except the weasel. 
+
+Homer Simpson
+\end{quote}
+\end{verbatim}
+
+
+For reasons of style, it is often desirable that quotation blocks appear
+not centered and occupying the entire width of the page as in the example
+above, but instead as just small boxes embedded within the flow of the text.
+With this in mind, the \mono{quote} command accepts an optional parameter
+stating whether it should be placed on the centre of the page (the default), on
+the left, or on the right.  This optional parameter is either '\mono{center}',
+'\mono{left}', or '\mono{right}', respectively.
+
+
+\begin<right>{quote}
+For maximum effect, use floating quotation blocks sparingly.
+\end{quote}
+
+
+Though undoubtedly indispensable, quotation blocks are prone to being abused.
+Our advice is to use them only if embeddeding a quotation is essential to carry
+your message.  You may, for example, be commenting on a particular sentence
+or paragraph in an interview available online; in this case, a quotation
+block will provide the focus that would have been lost by simply linking
+to the entire interview.  Finally, take into consideration that "floating"
+quotation blocks (those appearing on the left or right) are more appropriate
+if your document is quoting a passage of itself.  And for maximum effect,
+use this feature sparingly.
+
+\section[sec:verbatim]{Verbatim environments}
+
+You have already come across several verbatim environments while reading
+this manual &mdash; they have been used to show \caps{Lambtex} source documents.
+Like their \caps{LaTeX} counterparts or the \caps{HTML} '\mono{<pre>}' tag, they
+allow the insertion of boxes where all the text is shown \emph{as is}, ie,
+without (almost) any attempt at the interpretation of its contents.  They are
+to be displayed using a monospaced font, and as such are ideal for showing
+source code or even \caps{ASCII}-art (though as \sref{sec:figure:ascii} will
+describe, a special kind of figure tailored for this case also exists).  The
+command name for this environment is '\mono{verbatim}', and being an environment
+command the text must be enclosed between '\mono{\\begin\{verbatim\}}' and
+'\mono{\\end\{verbatim\}}' markers.
+
+We say there is \emph{almost} no interpretation of the contents of the verbatim
+environment because there are two exceptions.  The first is that the string
+'\mono{\\end\{verbatim\}}' is used as the end marker for the environment,
+and therefore the \caps{Lambtex} scanner will exit the environment if it
+encounters this string.  The second is that \caps{HTML} entities are also
+allowed inside a verbatim environment.  Therefore, if you wish to input
+an ampersand inside a verbatim environment, use the \caps{HTML} entity
+'\mono{\&amp;}'\see{note:amp}.  Note that preceding the ampersand with a
+backslash will not work inside verbatim environments, because the backslash
+has no special meaning in them;  this choice was made because the backslash
+is a fairly common character in markup languages that are often displayed
+inside verbatim environments.
+
+Finally, if for whatever reason you need the end marker string
+'\mono{\\end\{verbatim\}}' to be displayed as part of a verbatim environment,
+we recommend that you input its initial backslash as an \caps{HTML} entity.
+Since the backslash's \caps{ASCII} code is 51 (decimal), the whole string
+can be entered as '\mono{\&#51;end\{verbatim\}}'.
+
+
+\section{Tabular environments}
+
+Presenting data in a tabular format is indispensable for many classes
+of manuscripts.  With this in mind, \caps{Lambtex} offers a special
+'\mono{tabular}' environment.  It allows you to format tables in a simple and
+concise way, while retaining most of the capabilities offered by \caps{XHTML}
+tables.
+
+Suppose then that our tabular data had three different attributes &mdash;
+a person's name, a phone number, and an address &mdash; and that we had this
+information about four different people.  We wish to present the attributes
+as table columns, whereas each record will be shown in a different row.
+In brief, a table just like the one below:
+
+
+\begin{tabular}{lll}
+\head
+Name		| Phone			| Address	$
+\body
+John		| 123456		| London	$
+Mary		| 234567		| Paris		$
+Mark		| 345678		| Moscow	$
+Jane		| 456789		| Sydney	$
+\end{tabular}
+
+
+The '\mono{tabular}' environment has one mandatory parameter: a string
+indicating the number of columns and the formatting that should be applied
+to each column.  The example above features three left-aligned columns;
+the corresponding string is '\mono{lll}'.  If, for example, you had four
+columns aligned respectively to the left, right, center, and left again,
+the parameter string would be '\mono{lrcl}'. \sref{tab:tabular} lists all
+available column specifiers.
+
+Inside a tabular environment, rows are terminated with the '\mono{$}'
+character; within each row, columns are separated by the '\mono{|}'
+character.  This means that inside a \mono{tabular} environment &mdash;
+but here only! &mdash; you'll need to escape these characters if you want
+to display an actual dollar sign or a pipe character.
+
+There are three different classes of rows available: header, body,
+and footer rows.  Besides formatting each one differently, smart enough
+browsers will know that table headers are to be repeated if, for example,
+the tabular environment spans more than one printed page.  The parameterless
+simple commands '\mono{\\head}', '\mono{\\body}', and '\mono{\\foot}' are used
+inside a tabular environment to mark the beginning of each class.  Note that
+header and footer rows are optional (in which case the '\mono{\\body}'
+marker is also optional, since rows are assumed by default to be body rows).
+Moreover, you can declare more than one group of body rows, and \caps{Lambtex}
+will separate each group by a horizontal bar.
+
+The following code replicates the tabular environment listed above.  Note the
+use of the '\mono{\\head}' and '\mono{\\body}' commands to delineate row
+classes, and how the '$' and '|' characters are used to separate columns
+and rows, respectively.
+
+
+\begin{verbatim}
+\begin{tabular}{lll}
+\head
+Name		| Phone			| Address	$
+\body
+John		| 123456		| London	$
+Mary		| 234567		| Paris		$
+Mark		| 345678		| Moscow	$
+Jane		| 456789		| Sydney	$
+\end{tabular}
+\end{verbatim}
+
+
+\begin[tab:tabular]{table}
+\begin{tabular}{rl}
+\head
+Specifier	| Formatting $
+\body
+l		| Column is left-aligned. $
+L		| Column is left-aligned and strong. $
+r		| Column is right-aligned. $
+R		| Column is right-aligned and strong. $
+c		| Column is centre-aligned. $
+C		| Column is centre-aligned and strong. $
+j		| Column is justified. $
+J		| Column is justified and strong. $
+\end{tabular}
+\caption{List of available column specifiers for tabular environments.
+A specifier tells \caps{Lambtex} how each column should be formatted.}
+\end{table}
+
+
+\section[sec:math]{Mathematical formulas}
+
+\caps{Lambtex} also supports the inclusion of equations and mathematical
+formulas in a document.  Mathematics are to be entered using either
+\caps{MathML}\cite{bib:mathml} or the \caps{TeX}\cite{bib:tex} format.
+The former was chosen because an increasing number of tools have the ability
+to export \caps{MathML}.  As for the latter, it is the \emph{de facto}
+standard for manually typing mathematical expressions.
+
+Mathematical expressions may be entered in an inline context (embedded inside
+a paragraph, for example), or in a block context.  In the former case,
+the expression should be delimited between the characters '\mono{\[$}'
+and '\mono{$]}' if it is written in \caps{TeX} format, and between
+characters '\mono{\<$}' and '\mono{$>}' if written in \caps{MathML}.
+Though \caps{Lambtex} does not enforce it, common sense dictates that inline
+mathematics should restrict themselves to expressions that fit comfortably
+in a single line.  An example is the quadratic equation [$ ax^2 + bx + c = 0$].
+
+Mathematical expressions in a block context are specified via the '\mono{math}'
+environment.  This environment has one mandatory parameter, indicating
+the markup format of the expression.  Valid values for this parameter are
+'\mono{mathml}' and '\mono{tex}', for expressions in \caps{MathML} and
+\caps{TeX} format, respectively.
+
+Therefore, suppose you wished to enter a math block containing the quadratic
+formula that solves the equation listed above.  Specified in the \caps{TeX}
+format, the code would be the following:
+
+\begin{verbatim}
+\begin{math}{tex}
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+\end{math}
+\end{verbatim}
+
+Producing this result:
+
+\begin{tex}
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+\end{tex}
+
+
+\caps{Lambtex} supports also named mathematical expressions that may be
+numbered and referenced from anywhere in a document. See \sref{sec:equations}
+for details.
+
+
+\section{Sectioning commands}
+
+\caps{Lambtex} supports three different levels of sectioning: sections,
+sub-sections, and sub-sub-sections.  The simple commands used for
+declaring each one are '\mono{\\section}', '\mono{\\subsection}', and
+'\mono{\\subsubsection}', respectively.  These are automatically ordered by
+\caps{Lambtex}, though facilities exist for manually assigning numbering or
+ommiting it altogether (check \sref{sec:order} for details).
+
+Another common requirement associated with sectioning is the ability to
+refer to a given section in a document.  With that in mind, \caps{Lambtex}
+allows you to label a given section declaration, and provides also a set of
+commands that create hyperlinks to a given label.  The label parameter is
+optional and is enclosed in square brackets.
+
+The following \caps{Lambtex} code produces the document shown in
+\sref{fig:section}.  Note the use of label declarations, three different
+levels of sectioning, and a hyperlink using the '\mono{\\ref}' command
+(the various hyperlink commands are described in the following section).
+
+
+\begin{verbatim}
+For more details, please check Section \ref{sec:introduction}.
+
+\section[sec:introduction]{Introduction}
+
+\subsection{This is a sub-section}
+
+\subsubsection{This is a sub-sub-section}
+\end{verbatim}
+
+\begin[fig:section]{figure}
+\begin{subpage}
+For more details, please check Section \ref{sec:introduction}.
+
+\section(1)[sec:introduction]{Introduction}
+
+\subsection(1.1){This is a sub-section}
+
+\subsubsection(1.1.1){This is a sub-sub-section}
+\end{subpage}
+\caption{An example of the sectioning commands available in \caps{Lambtex}.}
+\end{figure}
+
+
+\section{Hyperlinks}
+
+\caps{Lambtex} supports hyperlinks both to external resources and into
+targets in the same document.  The former is provided by the simple command
+'\mono{\\link}', whereas the latter relies on a set of different simple
+commands, each one tailored for a different use and/or kind of target.
+\sref{tab:hyperlinks} lists all available hyperlinks commands, and
+the following source illustrates their use (the result is shown in
+\sref{fig:hyperlinks}).
+
+
+\begin{verbatim}
+You can easily insert a link into an external resource such as
+\link{http://www.wikipedia.com/}{Wikipedia}.  Internal links come into
+several guises: they can be references to notes\see{note:meta}; bibliographic
+references like those available in \caps{LaTeX}\cite{bib:latex}; pointers
+to labelled figures, tables, algorithms, equations, or sections such as
+\box{Section \ref{sec:intro}}; smart references to those same elements
+such as \sref{sec:intro}; and finally, references where the order is not
+automatically added (for example, you may refer yet again \mref{sec:intro}{to
+that same section}).
+\end{verbatim}
+
+
+\begin[fig:hyperlinks]{figure}
+\begin{subpage}
+You can easily insert a link into an external resource such as
+\link{http://www.wikipedia.com/}{Wikipedia}.  Internal links come into
+several guises: they can be references to notes\see{note:meta}; bibliographic
+references like those available in \caps{LaTeX}\cite{bib:latex}; pointers
+to labelled figures, tables, algorithms, equations, or sections such as
+\box{Section \ref{sec:intro}}; smart references to those same elements
+such as \sref{sec:intro}; and finally, references where the order is not
+automatically added (for example, you may refer yet again \mref{sec:intro}{to
+that same section}).
+\end{subpage}
+\caption{An example using all the hyperlinking commands available in \caps{Lambtex}.}
+\end{figure}
+
+
+\begin[tab:hyperlinks]{table}
+\begin{tabular}{rl}
+\head
+Command						| Description $
+\body
+\mono{\\link\{\emph{url}\}\{\emph{description}\}}	| Inserts a link to an external resource. $
+\mono{\\see\{\emph{label}\}}				| Inserts a reference to a document note (see \sref{sec:notes}). $
+\mono{\\cite\{\emph{label}\}}				| Cites a bibliographic reference (see \sref{sec:biblio}). $
+\mono{\\ref\{\emph{label}\}}				| Inserts a link to a section or figure.  The text under the hyperlink is the order of the reference. $
+\mono{\\sref\{\emph{label}\}}				| Inserts a \emph{smart} reference to a section or figure.  Besides the order, smart references also include the name of the kind of reference they are linking to. $
+\mono{\\mref\{\emph{label}\}\{\emph{description}\}}	| Inserts a reference to a section or figure, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. $
+\end{tabular}
+\caption{The various hyperlinking commands available in \caps{Lambtex}.}
+\end{table}
+
+Note that the use of the smart references offered by command '\mono{\\sref}'
+is recommended over the manual references provided by command '\mono{\\ref}'.
+The reason is three-fold.  First, because smart references ensure the
+consistent use of one naming scheme over an entire document and across several
+documents.  Second, because smart references automatically make sure that
+a non-breaking space is inserted between the element name and its ordering
+number, thus preventing their separation by a line break (to achieve the same
+with manual references, the user must explicitly place both elements inside
+an '\mono{\\box}' command, or use the '\mono{\&nbsp;}' \caps{HTML} entity).
+Third and last, because smart references will make a hyperlink of both the
+name and the ordering, which is friendlier for mouse clicking and arguably
+esthetically more pleasant.
+
+On a related note, we recommend that '\mono{\\see}' and '\mono{\\cite}'
+commands not be separated from the preceding element by spaces.  The default
+\caps{CSS} shipped with \caps{Lambtex}'s \caps{XHTML} rendered already adds a
+small margin, and by not having spaces you avoid the split across line breaks
+or the need to resort to the '\mono{\\box}' command or the '\mono{\&nbsp;}'
+\caps{HTML} entity.
+
+
+\section{Floaters}
+
+You are already familiar with document blocks that are not paragraphs of text.
+The blocks defined by verbatim and tabular environments, for instance.
+These are anonymous blocks, in the sense they do not have an associated
+label and cannot be referred from elsewhere in the document.  However,
+\caps{Lambtex} also offers blocks that may be given a caption, an ordering,
+and may be referred from anywhere.  These blocks are called \emph{floaters}.
+
+There are four different classes of floaters available: algorithms, equations,
+figures, and tables.  Moreover, figures come in four sub-classes, corresponding
+to different kinds of figure.  All these classes and sub-classes of floaters
+have some features in common: they may all be captioned, each class has an
+automatically incremented counter, and the alignment parameters available
+for quotation blocks are also valid for floaters.  The sub-sections that
+follow describe the particularities of each class of floater.
+
+
+\subsection{Algorithms}
+
+The '\mono{algorithm}' environment may be used to display a box showing an
+algorithm or a code listing.  Consider \sref{alg:tree}, an example showing
+the \caps{Ocaml} code to define a simple binary tree and a function to count
+the number of leaves in such a tree.  While it is of course possible to
+also input code listings using the already discussed verbatim environment,
+using '\mono{algorithm}' has a number of advantages.  First, algorithms
+are automatically numbered and allow you to refer to them from anywhere
+in a document.  Second, you can add a caption to an algorithm.  Third,
+they offer the possibility of highlighting the code listing according to
+the syntax of the language.
+
+
+\begin[alg:tree]{algorithm}
+\begin{code}{ocaml}
+type 'a tree =
+	| Leaf of 'a
+	| Node of 'a tree * 'a tree
+
+let rec count_leaves = function
+	| Leaf _	-> 1
+	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+\end{code}
+\caption{A simple \caps{Ocaml} programme that defines a binary tree
+data type and a function to count the number of leaves in such trees.}
+\end{algorithm}
+
+
+The code that produced \sref{alg:tree} is shown below.  Note that an algorithm
+floater is essentially a wrapper around a verbatim environment where the
+code is to be placed.  As for the caption, it is given by the contents of the
+simple command '\mono{\\caption}'.  At last, note that an algorithm environment
+requires a mandatory additional parameter indicating the language the code
+is written in (\caps{Ocaml} in this case).  You may leave this parameter
+empty if you do not wish syntax highlighting to be applied to the code.
+
+
+\begin{verbatim}
+\begin[alg:tree]{algorithm}{ocaml}
+\begin{verbatim}
+type 'a tree =
+	| Leaf of 'a
+	| Node of 'a tree * 'a tree
+
+let rec count_leaves = function
+	| Leaf _	-> 1
+	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+&#92;end{verbatim}
+\caption{A simple \caps{Ocaml} programme that defines a binary tree
+data type and a function to count the number of leaves in such trees.}
+\end{algorithm}
+\end{verbatim}
+
+
+\subsection[sec:equations]{Equations}
+
+An equation is a floater wrapper around a math environment.  It allows
+mathematical expressions to the numbered and referrenced from anywhere in
+a document.  To use it, simply wrap a '\mono{equation}' environment around
+a '\mono{math}' environment.  If you wish the equation to be numbered and
+referenceable, add also '\mono{\\caption}' command.  The following example
+defines a equation from a \caps{MathML} source.  The result is shown in
+\sref{eq:example}.
+
+
+\begin{verbatim}
+\begin{equation}
+\begin{math}{mathml}
+<mrow><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>2</mn>
+\end{math}
+\caption{This is an example equation.}
+\end{equation}
+\end{verbatim}
+
+
+\begin[eq:example]{equation}
+\begin{mathml}
+<mrow><mi>y</mi><mo>=</mo><mi>x</mi><mo>+</mo><mn>2</mn>
+\end{mathml}
+\caption{This is an example equation.}
+\end{equation}
+
+
+\subsection{Figures}
+
+\caps{Lambtex} supports four different kinds of figures: raster images
+(bitmap formats such as \caps{PNG} or \caps{JPG}), vectorial images (such
+as those encoded by the \caps{SVG} format), \caps{ASCII}-art images, and
+sub-pages whose content is a \caps{Lambtex} document in itself.  The four
+following sections address each kind of figure separately.  Note that
+all kinds of figures share the same figure counter, which is incremented
+automatically every time you declare a new figure with a caption.  Moreover,
+all figure kinds are floaters, and as such obey the labelling and ordering
+rules described in \sref{sec:order}.
+
+
+\subsubsection{Bitmap images}
+
+
+
+\begin{verbatim}
+\begin{figure}{bitmap}
+\load{sphere.png}
+\caption{This is a bitmap image of a sphere.}
+\end{figure}
+\end{verbatim}
+
+\subsubsection{Vectorial images}
+
+\begin{verbatim}
+\begin{figure}{vector}
+\load{sphere.svg}
+\caption{This is a vectorial image of a sphere.}
+\end{figure}
+\end{verbatim}
+
+\subsubsection[sec:figure:ascii]{Text and \caps{ASCII}-art figures}
+
+As \sref{sec:verbatim} described, \caps{Lambtex} supports verbatim environments where
+the text is rendered \emph{as is} and in a monospaced font.  One possible application of
+such an environment is to display drawings and diagrams rendered using only \caps{ASCII}
+characters.  The so-called \emph{\caps{ASCII}-art} relies on such a canvas;  moreover,
+there are plenty of technical documents &mdash; such as Internet RFCs &mdash; whose
+diagrams use only text.  With these applications in mind, \caps{Lambtex} offers a special
+\mono{ascii} type of figure.  It is basically a wrapper around a verbatim environment,
+but with the possibility of adding a caption, a figure number, and a label so it can
+be referenced anywhere in the document.
+
+\begin[fig:ascii]{figure}
+\begin{verbatim}
+           S
+          /|\
+         / | \
+        /  |  \
+       S  '+'  S
+      /|\      |
+     / | \     |
+    S '+' S   'a'
+    |     |
+   '1'   '1'
+\end{verbatim}
+\caption{This is a rabbit.}
+\end{figure}
+
+\subsubsection[sec:figure:subpage]{Sub-page figures}
+
+Another interesting \caps{Lambtex} feature is the ability to display
+documents inside a figure.  These nested documents, termed \emph{sub-pages},
+are offered by the \mono{subpage} figure type.  While in general their usage
+is very limited and it is unlikely you will ever need to use sub-pages, for
+some applications &mdash; namely writing manuals about \caps{Lambtex}! &mdash;
+they are indispensable.
+
+Note that sub-pages are not completely independent documents.  You may
+refer to elements inside a sub-page from the main document and vice-versa.
+Moreover, any notes or bibliography entries declared inside a sub-page
+are attached to the main document, not the sub-page.  Finally, take into
+consideration that \caps{Lambtex} will not automatically assign an ordering for
+sections and floating elements (algorithms, equations, figures, and tables)
+inside sub-pages.  This must be done explicitly by an order parameter (see
+\sref{sec:parameters} and \sref{sec:order} for details).
+
+As the code below demonstrates, the markup for the child page should be placed
+inside a \mono{subpage} environment belonging to a figure of the same kind.
+The result can be seen in \sref{fig:subpage}.
+
+
+\begin{verbatim}
+\begin{figure}{subpage}
+\begin{subpage}
+\section(1){Subpage introduction}
+This is a subpage.
+\end{subpage}
+\end{figure}
+\end{verbatim}
+
+
+\begin[fig:subpage]{figure}
+\begin{subpage}
+\section(1){Subpage introduction}
+This is a subpage.
+\end{subpage}
+\caption{Example of a sub-page, ie, a document embedded within the main document.}
+\end{figure}
+
+
+\subsection{Tables}
+
+\begin{verbatim}
+\begin{tabular}{rll}
+\head
+Name		| Phone		| Address	$
+\body
+one		| 123		| Here		$
+two		| 234		| There		$
+\body
+three		| 345		| Somewhere	$
+four		| 456		| Over there	$
+\foot
+\end{tabular}
+\end{verbatim}
+
+\section[sec:notes]{Notes}
+
+\section[sec:biblio]{Bibliographic references}
+
+\appendix
+
+\section[sec:parameters]{Command parameters}
+
+
+\begin{table}
+\begin{tabular}{rl}
+\head
+Permission		| Description $
+\body
+optional		| The parameter is optional, but may not be empty if it is present. $
+optional\sub{0}		| The parameter is optional and may be empty. $
+mandatory		| The parameter is mandatory, and it may not be empty. $
+mandatory\sub{0}	| The parameter is mandatory, but it may be empty. $
+forbidden		| The parameter is altogether forbidden. $
+forbidden\sub{0}	| The parameter is forbidden, unless it is empty. $
+\end{tabular}
+\caption{Description of the various permissions.}
+\end{table}
+
+
+\begin{table}
+\begin{tabular}{rlll}
+\head
+Command			| Label			| Order			| Extra $
+\body
+\mono{\\bold}		| forbidden		| forbidden		| forbidden $
+\mono{\\emph}		| forbidden		| forbidden		| forbidden $
+\mono{\\mono}		| forbidden		| forbidden		| forbidden $
+\mono{\\caps}		| forbidden		| forbidden		| forbidden $
+\mono{\\thru}		| forbidden		| forbidden		| forbidden $
+\mono{\\sup}		| forbidden		| forbidden		| forbidden $
+\mono{\\sub}		| forbidden		| forbidden		| forbidden $
+\mono{\\box}		| forbidden		| forbidden		| forbidden $
+\body
+\mono{\\link}		| forbidden		| forbidden		| forbidden $
+\mono{\\see}		| forbidden		| forbidden		| forbidden $
+\mono{\\cite}		| forbidden		| forbidden		| forbidden $
+\mono{\\ref}		| forbidden		| forbidden		| forbidden $
+\mono{\\sref}		| forbidden		| forbidden		| forbidden $
+\mono{\\mref}		| forbidden		| forbidden		| forbidden $
+\body
+\mono{\\section}	| optional		| (see \sref{sec:order})| forbidden $
+\mono{\\subsection}	| optional		| (see \sref{sec:order})| forbidden $
+\mono{\\subsubsection}	| optional		| (see \sref{sec:order})| forbidden $
+\mono{\\toc}		| optional		| forbidden		| forbidden $
+\mono{\\bibliography}	| optional		| forbidden		| forbidden $
+\mono{\\notes}		| optional		| forbidden		| forbidden $
+\body
+\mono{\\appendix}	| forbidden		| forbidden		| forbidden $
+\mono{\\rule}		| forbidden		| forbidden		| forbidden $
+\mono{\\set}		| forbidden		| forbidden		| forbidden $
+\mono{\\caption}	| forbidden		| forbidden		| forbidden $
+\mono{\\load}		| forbidden		| forbidden		| forbidden $
+\mono{\\head}		| forbidden		| forbidden		| forbidden $
+\mono{\\body}		| forbidden		| forbidden		| forbidden $
+\mono{\\author}		| forbidden		| forbidden		| forbidden $
+\mono{\\title}		| forbidden		| forbidden		| forbidden $
+\mono{\\resource}	| forbidden		| forbidden		| forbidden $
+\mono{\\note}		| optional		| forbidden		| forbidden $
+\mono{\\item}		| forbidden		| forbidden		| forbidden $
+\end{tabular}
+\caption{Permissions for simple commands.}
+\end{table}
+
+\begin{table}
+\begin{tabular}{rllll}
+\head
+Command			| Secondary		| Label			| Order			| Extra $
+\body
+\mono{itemize}		| forbidden		| forbidden		| forbidden		| optional $
+\mono{enumerate}	| forbidden		| forbidden		| forbidden		| optional $
+\mono{quote}		| forbidden		| forbidden		| forbidden		| optional $
+\mono{algorithm}	| mandatory\sub{0}	| optional		| (see \sref{sec:order})| optional $
+\mono{equation}		| forbidden		| optional		| (see \sref{sec:order})| optional $
+\mono{figure}		| mandatory		| optional		| (see \sref{sec:order})| optional $
+\mono{table}		| mandatory		| optional		| (see \sref{sec:order})| optional $
+\mono{bib}		| forbidden		| optional		| forbidden		| forbidden $
+\mono{verbatim}		| forbidden		| forbidden		| forbidden		| forbidden $
+\mono{math}		| forbidden		| forbidden		| forbidden		| forbidden $
+\mono{subpage}		| forbidden		| forbidden		| forbidden		| forbidden $
+\end{tabular}
+\caption{Permissions for environment parameters.}
+\end{table}
+
+
+\section[sec:order]{Notes on the ordering of floaters and sections}
+
+A floater is essentially an element that may have a caption associated with
+it.  There are four elements in \caps{Lambtex} that fit into this category:
+algorithms, equations, figures (all kinds of figures), and tables.  As for
+sectional commands, these are the ones that produce sections, sub-sections,
+and sub-sub-sections.  There are some special &mdash; though as you shall
+see based on common sense &mdash; rules that must be followed concerning
+the ordering and hyperlinking of floaters and sectional commands.
+
+\begin{enumerate}
+
+\item
+	\emph{Only numbered elements may be referred to using \mono{\\ref}
+	and \mono{\\sref} commands}
+
+	Unless the user explicitly demanded an empty ordering, sectional
+	commands have by default a numbering.  As for floaters, bear in mind
+	that numbering is only attributed to those with captions.  Therefore,
+	it makes sense that these hyperlinking commands that are supposed
+	to produce a number should only be used with captioned floaters or
+	numbered sections.  On the other hand, \mono{\\mref} is always allowed.
+
+\item
+	\emph{You must explicitly provide a manual ordering for subpaged
+	floaters or sections}
+
+	A subpaged element is one that is declared inside a subpage figure
+	(see \sref{sec:figure:subpage}).  Because they lie outside the main
+	flow of the document, these elements are not automatically numbered.
+	You must therefore explicitly provide them with an ordering parameter.
+	This is done by inserting the numbering between parantheses.  Note
+	that in the case of sectional commands or floaters without a caption,
+	an empty ordering is allowed.
+
+\item
+	\emph{You may not provide a manual ordering for non-subpaged floaters
+	or sections}
+
+	This rule is complementary to the previous one.  Because floaters
+	and sections in the main document are numbered automatically by
+	\caps{Lambtex}, you may not interfere with that automatism by providing
+	an explicit ordering.  Note, however, that an empty ordering is always
+	allowed for sectional commands or for floaters without a caption.
+
+\end{enumerate}
+
+\notes
+
+\begin[note:bbcode]{note}
+Explain BBcode's shortcomings here.
+\end{note}
+
+\begin[note:numbers]{note}
+Explain numbers here.
+\end{note}
+
+\begin[note:meta]{note}
+Meta note.
+\end{note}
+
+\begin[note:amp]{note}
+More often than not, you can get away with entering ampersands without requiring escaping.
+\end{note}
+
+\bibliography
+
+\begin[bib:latex]{bib}
+\what{The \caps{Latex} companion}
+\who{Leslie Lamport}
+\where{Resource}
+\end{bib}
+
+\begin[bib:mathml]{bib}
+\what{The \caps{Latex} companion}
+\who{Leslie Lamport}
+\where{Resource}
+\end{bib}
+
+\begin[bib:tex]{bib}
+\what{The \caps{Latex} companion}
+\who{Leslie Lamport}
+\where{Resource}
+\end{bib}
+
