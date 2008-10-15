@@ -1,5 +1,4 @@
-OCAMLBUILS_OPTS:=-X doc
-#OCAMLBUILS_OPTS:=-X doc -classic-display
+OCAMLBUILS_OPTS:=-Xs doc,css,samples
 
 all: test
 
@@ -8,6 +7,9 @@ test: install
 
 lib:
 	ocamlbuild $(OCAMLBUILS_OPTS) lambdoc.cma
+
+apidoc:
+	ocamlbuild $(OCAMLBUILS_OPTS) lambdoc.docdir/index.html
 
 install: lib
 	ocamlfind remove lambdoc

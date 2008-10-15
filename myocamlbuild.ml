@@ -1,5 +1,4 @@
 open Ocamlbuild_plugin
-open Command (* no longer needed for OCaml >= 3.10.2 *)
 
 (* these functions are not really officially exported *)
 let run_and_read = Ocamlbuild_pack.My_unix.run_and_read
@@ -17,6 +16,27 @@ let find_syntaxes () = ["camlp4o"; "camlp4r"]
 (* ocamlfind command *)
 let ocamlfind x = S[A"ocamlfind"; x]
 
+(* Menhir options *)
+let menhir_opts = S
+	[
+	A"--dump";
+	A"--explain";
+	A"--graph";
+	(*A"--trace";*)
+	(*A"--log-automaton"; A"0";*)
+	(*A"--log-code"; A"0";*)
+	(*A"--log-grammar"; A"0";*)
+	];;
+
+(* Ocamldoc options *)
+let ocamldoc_opts = S
+	[
+	A"-intro"; A"../doc/apidoc/intro.txt";
+	A"../doc/apidoc/tutorial1.txt";
+	A"../doc/apidoc/tutorial2.txt";
+	A"../doc/apidoc/tutorial3.txt";
+	];;
+
 let _ = dispatch begin function
    | Before_options ->
        (* by using Before_options one let command line options have an higher priority *)
@@ -30,14 +50,17 @@ let _ = dispatch begin function
 
    | After_rules ->
 
+	(* Flag Menhir options. *)
+	flag ["menhir"] menhir_opts;
+
+	(* Flag Ocamldoc options. *)
+	flag ["ocaml"; "doc"] ocamldoc_opts;
 
 	(* When linking Ocaml programmes (and programmes only!), we use -linkpkg.  *)
 	flag ["ocaml"; "link"; "program"] & A"-linkpkg";
 
-
-       (* For each ocamlfind package one inject the -package option when
-       	* compiling, computing dependencies, generating documentation and
-       	* linking. *)
+       (* For each ocamlfind package we inject the -package option when compiling,
+	  computing dependencies, generating documentation and linking. *)
        List.iter begin fun pkg ->
          flag ["ocaml"; "compile";  "pkg_"^pkg] & S[A"-package"; A pkg];
          flag ["ocaml"; "ocamldep"; "pkg_"^pkg] & S[A"-package"; A pkg];
