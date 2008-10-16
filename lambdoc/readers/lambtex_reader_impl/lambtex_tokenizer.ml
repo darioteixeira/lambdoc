@@ -244,33 +244,21 @@ object (self)
 		future environments, and the production queue.
 	*)
 
+	val mutable productions = []
 	val mutable context = Blk
 	val context_history = Stack.create ()
 	val env_history = Stack.create ()
 	val env_storage = Queue.create ()
-	val productions = Queue.create ()
 
 
 	(**	Returns the element at the top of the environment history.
 	*)
-
 	method get_env () =
 		try
 			Some (Stack.top env_history)
 		with
 			Stack.Empty -> None
 
-
-	(**	Consumer method.  Given a [lexbuf], consumes a token from the
-		lexer stream and returns it to the caller.
-	*)
-	method consume lexbuf =
-		try
-			Queue.take productions
-		with
-			Queue.Empty ->
-				self#produce lexbuf;
-				self#consume lexbuf
 
 	(**	Performs the given {!action_t}, changing the state of the automaton.
 	*)
@@ -282,6 +270,25 @@ object (self)
 		| Pop_env		-> (try ignore (Stack.pop env_history) with Stack.Empty -> ())
 		| Store envs		-> List.iter (fun x -> Queue.add x env_storage) envs
 		| Fetch			-> try Stack.push (Queue.take env_storage) env_history with Queue.Empty -> ()
+
+
+	(**	Consumer method.  Given a [lexbuf], consumes a token from the
+		lexer stream and returns it to the caller.
+	*)
+	method consume lexbuf = match productions with
+		| []
+		| [PLAIN (_, _)]
+		| [RAW _]		-> self#produce lexbuf; self#consume lexbuf
+		| hd :: tl		-> productions <- tl; hd
+
+
+	(**	Stores a new token into the production queue.
+	*)
+	method store token =
+		productions <- match (productions, token) with
+			| ([PLAIN (op1, txt1)], PLAIN (op2, txt2))	-> [PLAIN (op1, txt1 ^ txt2)]
+			| ([RAW txt1], RAW txt2)			-> [RAW (txt1 ^ txt2)]
+			| _						-> productions @ [token]
 
 
 	(**	Private method that actually does all the work of invoking the
@@ -326,11 +333,11 @@ object (self)
 		let () =
 			List.iter self#perform_action actions;
 			match (old_context, context, self#get_env ()) with
-				| (Blk, Inl, None)	-> Queue.add (NEW_PAR (build_op lexbuf)) productions
+				| (Blk, Inl, None)	-> self#store (NEW_PAR (build_op lexbuf))
 				| _			-> ()
 
 		in match maybe_token with
-			| Some token	-> Queue.add token productions
-			| None		-> self#produce lexbuf
+			| Some token	-> self#store token
+			| None		-> ()
 end
 
