@@ -7,7 +7,7 @@ open Lambdoc
 
 
 let test_tokenizer () =
-	let ch = open_in "samples/simple.lamb" in
+	let ch = open_in "samples/test.lamb" in
         let lexbuf = Lexing.from_channel ch in
         let tokenizer = new Lambtex_reader_impl.Lambtex_tokenizer.tokenizer in
 	let res = ref None in

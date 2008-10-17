@@ -1,1 +1,1 @@
-{1 Tutorial2}
+{1:tutorial2 Tutorial 2: Advanced use}
