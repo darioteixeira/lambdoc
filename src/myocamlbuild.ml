@@ -31,10 +31,7 @@ let menhir_opts = S
 (* Ocamldoc options *)
 let ocamldoc_opts = S
 	[
-	A"-intro"; A"../doc/apidoc/intro.txt";
-	A"../doc/apidoc/tutorial1.txt";
-	A"../doc/apidoc/tutorial2.txt";
-	A"../doc/apidoc/tutorial3.txt";
+(*	A"-intro"; A"intro.txt";	*)
 	];;
 
 let _ = dispatch begin function
