@@ -1,20 +1,41 @@
-OCAMLBUILS_OPTS:=-Xs doc,css,samples
+#
+# Configuration options.
+#
 
-all: test
+LIB_NAME=lambdoc
+PKG_NAME=lambdoc
 
-test: install
-	ocamlbuild $(OCAMLBUILS_OPTS) test.byte
+SRC_DIR=src
+BUILD_DIR=$(SRC_DIR)/_build
+
+TARGETS=$(foreach EXT, cmi cma cmxa a, $(LIB_NAME).$(EXT))
+FQTARGETS=$(foreach TARGET, $(TARGETS), $(BUILD_DIR)/$(TARGET))
+
+OCAMLBUILD_OPTS=
+
+
+#
+# Rules.
+#
+
+all: lib
 
 lib:
-	ocamlbuild $(OCAMLBUILS_OPTS) lambdoc.cma
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) $(TARGETS)
 
 apidoc:
-	ocamlbuild $(OCAMLBUILS_OPTS) lambdoc.docdir/index.html
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
 install: lib
-	ocamlfind remove lambdoc
-	ocamlfind install lambdoc META _build/lambdoc.cma _build/lambdoc.cmi
+	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
+
+uninstall:
+	ocamlfind remove $(PKG_NAME)
+
+reinstall: lib
+	ocamlfind remove $(PKG_NAME)
+	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
 
 clean:
-	ocamlbuild $(OCAMLBUILS_OPTS) -clean
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) -clean
 

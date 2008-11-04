@@ -1,5 +1,5 @@
 name="lambdoc"
-version="0.1"
+version="0.5"
 description="The Lambdoc library for document parsing/printing"
 requires="threads,unix,extlib,ocsigen.xhtml,ocsigen,pcre,sexplib,xml-light"
 archive(byte)="lambdoc.cma"
