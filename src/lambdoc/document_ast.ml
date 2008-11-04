@@ -19,7 +19,7 @@ module rec Ast:
 sig
 
 	(************************************************************************)
-	(**	{2 Parsing data associated with operators and command tags)	*)
+	(**	{2 Parsing data associated with operators and command tags}	*)
 	(************************************************************************)
 
 	type command_t =
