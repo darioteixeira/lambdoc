@@ -27,14 +27,14 @@ apidoc:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
 install: lib
-	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
+	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
 
 uninstall:
 	ocamlfind remove $(PKG_NAME)
 
 reinstall: lib
 	ocamlfind remove $(PKG_NAME)
-	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
+	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
 
 clean:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) -clean
