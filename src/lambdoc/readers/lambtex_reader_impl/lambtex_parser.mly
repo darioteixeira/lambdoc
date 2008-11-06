@@ -1,5 +1,5 @@
 /********************************************************************************/
-/*	Parser for the Lambtex reader.
+/*	Implementation file for Lambtex_parser.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 

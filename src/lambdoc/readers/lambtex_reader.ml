@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Main interface to the Lambtex reader.
+(*	Implementation file for Lambtex_reader.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Main interface to the Lambtex reader.
+*)
 
 open Lexing
 open Lambtex_reader_impl

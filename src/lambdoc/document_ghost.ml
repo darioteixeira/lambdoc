@@ -1,8 +1,5 @@
 (********************************************************************************)
-(**	Definition of document ghost blocks.  A ghost block is one whose final
-	position in the document is unrelated to where it was defined.  Ghost
-	blocks are collected into a list, and output when a TOC or Bibliography
-	declaration is made.
+(*	Implementation file for Document_ghost.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -10,6 +7,12 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Definition of document ghost blocks.  A ghost block is one whose final
+	position in the document is unrelated to where it was defined.  Ghost
+	blocks are collected into a list, and output when a TOC or Bibliography
+	declaration is made.
+*)
 
 TYPE_CONV_PATH "Document"
 

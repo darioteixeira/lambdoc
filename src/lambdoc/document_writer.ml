@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Document writer.
+(*	Implementation file for Document_writer.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Document writer.
+*)
 
 open Document_settings
 open Document_valid

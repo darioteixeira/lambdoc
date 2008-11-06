@@ -1,10 +1,5 @@
 (********************************************************************************)
-(*	Tokenizer for the Lambtex reader.  Because the implementation of the
-	Lambtex reader relies on different scanners to be invoked in accordance
-	to the language construct currently being parsed, the tokenizer sits
-	between the parser proper and the various scanners, keeping a partial
-	view of the current parsing context/environment so it can choose the
-	appropriate scanner to invoke.
+(*	Implementation file for Lambtex_tokenizer.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -12,6 +7,14 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Tokenizer for the Lambtex reader.  Because the implementation of the
+	Lambtex reader relies on different scanners to be invoked in accordance
+	to the language construct currently being parsed, the tokenizer sits
+	between the parser proper and the various scanners, keeping a partial
+	view of the current parsing context/environment so it can choose the
+	appropriate scanner to invoke.
+*)
 
 open Lexing
 open ExtString

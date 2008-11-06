@@ -14,27 +14,6 @@
 
 
 /********************************************************************************/
-/* Paragraphs and inline text.							*/
-/********************************************************************************/
-
-.doc p
-	{
-	margin-top: 1em;
-	text-align: justify;
-	line-height: 1.4em;
-	}
-
-.doc_par + .doc_par
-	{
-	text-indent: 1em;
-	}
-
-.doc_mono	{font-family: monospace;}
-.doc_caps	{font-variant: small-caps;}
-.doc_thru	{text-decoration: line-through;}
-
-
-/********************************************************************************/
 /* Hyperlinks.									*/
 /********************************************************************************/
 
@@ -56,10 +35,86 @@
 	margin-left: 0.3em;
 	color: #0000cc;
 	}
-	
+
 
 /********************************************************************************/
-/* Document lists.								*/
+/* Document titles and headings.						*/
+/********************************************************************************/
+
+.doc_title	{text-align: center;}
+h1.doc_title	{font-size: 190%; margin-bottom: 1.5em;}
+h2.doc_title	{font-size: 150%; margin: 0.5em auto;}
+
+h1.doc_sec,
+h2.doc_sec,
+h3.doc_sec
+	{
+	clear: both;
+	margin: 1.5em 0 1em;
+	padding: 0;
+	text-transform: capitalize;
+	}
+
+.doc_sec > span + span
+	{
+	margin-left: 0.75em;
+	}
+
+h1.doc_sec	{font-size: 150%;}
+h2.doc_sec	{font-size: 130%;}
+h3.doc_sec	{font-size: 110%;}
+
+
+/********************************************************************************/
+/* Abstract.									*/
+/********************************************************************************/
+
+.doc_abs > h1
+	{
+	font-size: 110%;
+	text-align: center;
+	margin: 2em auto 0.5em;
+	}
+
+.doc_abs p
+	{
+	margin: 0;
+	}
+
+
+/********************************************************************************/
+/* Rules.									*/
+/********************************************************************************/
+
+.doc hr
+	{
+	margin: 2em 0;
+	}
+
+
+/********************************************************************************/
+/* Paragraphs and inline text.							*/
+/********************************************************************************/
+
+.doc p
+	{
+	margin-top: 1em;
+	text-align: justify;
+	line-height: 1.4em;
+	}
+
+.doc_par + .doc_par
+	{
+	text-indent: 1em;
+	}
+
+.doc_mono	{font-family: monospace;}
+.doc_caps	{font-variant: small-caps;}
+.doc_thru	{text-decoration: line-through;}
+
+
+/********************************************************************************/
+/* List environments (itemize and enumerate).					*/
 /********************************************************************************/
 
 .doc_itemize
@@ -96,6 +151,52 @@
 
 
 /********************************************************************************/
+/* Quote environments.								*/
+/********************************************************************************/
+
+.doc_quote
+	{
+	clear: both;
+	padding: 0 1em 0 4em;
+	border-top: 1px solid #999;
+	border-bottom: 1px solid #999;
+	font-style: italic;
+	text-align: justify;
+	quotes: "\201c" "\201d";
+	}
+
+.doc_quote:before
+	{
+	display: block;
+	font-family: "Georgia", serif;
+	font-size: 6em;
+	color: #999;
+	content: open-quote;
+	margin-left: -0.6em;
+	line-height: 1.2em;
+	height: 0;
+	}
+
+.doc_quote.doc_align_right	{margin: 1em 0 1em 2em; float: right; width: 35%;}
+.doc_quote.doc_align_left	{margin: 1em 2em 1em 0; float: left; width: 35%;}
+
+
+/********************************************************************************/
+/* Mathematics environments.							*/
+/********************************************************************************/
+
+div > .doc_math
+	{
+	margin-left: 1em;
+	}
+
+
+/********************************************************************************/
+/* Code environments.								*/
+/********************************************************************************/
+
+
+/********************************************************************************/
 /* Verbatim environments.							*/
 /********************************************************************************/
 
@@ -118,47 +219,61 @@
 
 
 /********************************************************************************/
-/* Mathematics.									*/
+/* Tabular environments.		 					*/
 /********************************************************************************/
 
-div > .doc_math
+.doc_tab
 	{
-	margin-left: 1em;
+	margin: 0 auto;
+	border-top: 2px solid #999;
+	border-bottom: 2px solid #999;
 	}
 
-
-/********************************************************************************/
-/* Rules.									*/
-/********************************************************************************/
-
-.doc hr
+.doc_tab > thead,
+.doc_tab > tfoot
 	{
-	margin: 2em 0;
+	vertical-align: bottom;
+	font-weight: bold;
+	background-color: #fafafa;
 	}
 
-
-/********************************************************************************/
-/* Sections.									*/
-/********************************************************************************/
-
-h1.doc_sec,
-h2.doc_sec,
-h3.doc_sec
+.doc_tab > tbody > tr:first-child > th,
+.doc_tab > tbody > tr:first-child > td,
+.doc_tab > tfoot > tr:first-child > th,
+.doc_tab > tfoot > tr:first-child > td
 	{
-	clear: both;
-	margin: 1.5em 0 1em;
-	padding: 0;
-	text-transform: capitalize;
+	border-top: 2px solid #999;
 	}
 
-.doc_sec > span + span
+.doc_tab > tbody:first-child > tr:first-child > th,
+.doc_tab > tbody:first-child > tr:first-child > td
 	{
-	margin-left: 0.75em;
+	border: none;
 	}
 
-h1.doc_sec	{font-size: 1.16em;}
-h2.doc_sec	{font-size: 1.10em;}
-h3.doc_sec	{font-size: 1.05em;}
+.doc_tab th,
+.doc_tab td
+	{
+	padding: 0.5em 1em;
+	}
+
+.doc_tab .doc_col_left		{text-align: left;}
+.doc_tab .doc_col_right		{text-align: right;}
+.doc_tab .doc_col_center	{text-align: center;}
+.doc_tab .doc_col_justify	{text-align: justify;}
+
+.doc_tab > tbody .doc_row_odd	{background-color: #fafafa;}
+.doc_tab > tbody .doc_row_even	{background-color: #f0f0f0;}
+
+
+/********************************************************************************/
+/* Image environments.			 					*/
+/********************************************************************************/
+
+
+/********************************************************************************/
+/* Subpage environments.		 					*/
+/********************************************************************************/
 
 
 /********************************************************************************/
@@ -198,37 +313,6 @@ h3.doc_sec	{font-size: 1.05em;}
 
 
 /********************************************************************************/
-/* CSS for document quotes.							*/
-/********************************************************************************/
-
-.doc_quote
-	{
-	clear: both;
-	padding: 0 1em 0 4em;
-	border-top: 1px solid #999;
-	border-bottom: 1px solid #999;
-	font-style: italic;
-	text-align: justify;
-	quotes: "\201c" "\201d";
-	}
-
-.doc_quote:before
-	{
-	display: block;
-	font-family: "Georgia", serif;
-	font-size: 6em;
-	color: #999;
-	content: open-quote;
-	margin-left: -0.6em;
-	line-height: 1.2em;
-	height: 0;
-	}
-
-.doc_quote.doc_align_right	{margin: 1em 0 1em 2em; float: right; width: 35%;}
-.doc_quote.doc_align_left	{margin: 1em 2em 1em 0; float: left; width: 35%;}
-
-
-/********************************************************************************/
 /* CSS for particular document figures.						*/
 /********************************************************************************/
 
@@ -239,6 +323,7 @@ h3.doc_sec	{font-size: 1.05em;}
 	background-color: #fcfff9;
 	text-align: left;
 	}
+
 
 /********************************************************************************/
 /* CSS for algorithms.								*/
@@ -254,54 +339,6 @@ h3.doc_sec	{font-size: 1.05em;}
 	font-family: monospace;
 	background: url('algorithm.png');
 	}
-
-
-/********************************************************************************/
-/* CSS for story tables.		 					*/
-/********************************************************************************/
-
-.doc_tabular
-	{
-	margin: 0 auto;
-	border-top: 2px solid #999;
-	border-bottom: 2px solid #999;
-	}
-
-.doc_tabular > thead,
-.doc_tabular > tfoot
-	{
-	vertical-align: bottom;
-	font-weight: bold;
-	background-color: #fafafa;
-	}
-
-.doc_tabular > tbody > tr:first-child > th,
-.doc_tabular > tbody > tr:first-child > td,
-.doc_tabular > tfoot > tr:first-child > th,
-.doc_tabular > tfoot > tr:first-child > td
-	{
-	border-top: 2px solid #999;
-	}
-
-.doc_tabular > tbody:first-child > tr:first-child > th,
-.doc_tabular > tbody:first-child > tr:first-child > td
-	{
-	border: none;
-	}
-
-.doc_tabular th,
-.doc_tabular td
-	{
-	padding: 0.5em 1em;
-	}
-
-.doc_tabular .doc_col_left		{text-align: left;}
-.doc_tabular .doc_col_right		{text-align: right;}
-.doc_tabular .doc_col_center		{text-align: center;}
-.doc_tabular .doc_col_justify		{text-align: justify;}
-
-.doc_tabular > tbody .doc_row_odd	{background-color: #fafafa;}
-.doc_tabular > tbody .doc_row_even	{background-color: #f0f0f0;}
 
 
 /********************************************************************************/

@@ -1,7 +1,5 @@
 (********************************************************************************)
-(**	Converts documents into XHTML.  The XHTML representation used is
-	the one offered by Ocsigen's XHTML.M module.  This allows the direct
-	use of the output of this module from within Ocsigen programmes.
+(*	Interface file for Xhtml_writer.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 

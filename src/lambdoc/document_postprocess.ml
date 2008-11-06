@@ -1,6 +1,5 @@
 (********************************************************************************)
-(**	Postprocessing on a document AST.  These functions convert a document AST
-	into a proper, final, ambivalent document.
+(*	Implementation file for Document_postprocess.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,6 +7,10 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Postprocessing on a document AST.  These functions convert
+	a document AST into a proper, final, ambivalent document.
+*)
 
 open ExtString
 open Document_basic
@@ -104,8 +107,8 @@ let process_document feature_map document_ast =
 					Numbering.Default
 
 
-	(**	This subfunction returns the type of alignment associated with
-		a floater or quote environment.  If no extra parameter is given,
+	(**	This subfunction returns the type of alignment associated
+		with a floater environment.  If no extra parameter is given,
 		the alignment type is assumed to be [Center].
 	*)
 	and get_alignment comm = function
@@ -152,12 +155,12 @@ let process_document feature_map document_ast =
 			`Auto_label (string_of_int !auto_label_counter)
 
 
-	(*	This subfunction creates a new floater order.  It basically checks whether
-		the ordering for the floater was explicitly provided by the user or if we
+	(*	This subfunction creates a new wrapper order.  It basically checks whether
+		the ordering for the wrapper was explicitly provided by the user or if we
 		must assign one automatically.  In the latter case, the figure will be issued
 		an empty ordering if it has no caption.
 	*)
-	and make_floater_order comm counter =
+	and make_wrapper_order comm counter =
 		match comm.Ast.comm_order with
 			| None ->
 				incr counter;
@@ -587,8 +590,8 @@ let process_document feature_map document_ast =
 			(convert_subpage_block blk :> (Block.figure_block_t, _) Block.t option)
 
 
-	and convert_floater comm counter order_func cap =
-		let order = make_floater_order comm counter in
+	and convert_wrapper comm counter order_func cap =
+		let order = make_wrapper_order comm counter in
 		let label = make_label comm (order_func order) in
 		let maybe_caption = convert_caption_block cap
 		in match (label, order, maybe_caption) with
@@ -633,37 +636,37 @@ let process_document feature_map document_ast =
 
 		| `AST_equation (comm, cap, eq) ->
 			let elem () =
-				let maybe_floater = convert_floater comm equation_counter Order.equation_order cap
+				let maybe_wrapper = convert_wrapper comm equation_counter Order.equation_order cap
 				and maybe_equation = convert_equation_block eq
-				in match (maybe_floater, maybe_equation) with
-					| (Some floater, Some equation)		-> Some (Block.equation floater equation)
+				in match (maybe_wrapper, maybe_equation) with
+					| (Some wrapper, Some equation)		-> Some (Block.equation wrapper equation)
 					| _					-> None
 			in check_comm comm `Feature_equation (Some subpaged) elem
 
 		| `AST_algorithm (comm, cap, alg) ->
 			let elem () =
-				let maybe_floater = convert_floater comm algorithm_counter Order.algorithm_order cap
+				let maybe_wrapper = convert_wrapper comm algorithm_counter Order.algorithm_order cap
 				and maybe_algorithm = convert_algorithm_block alg
-				in match (maybe_floater, maybe_algorithm) with
-					| (Some floater, Some algorithm)	-> Some (Block.algorithm floater algorithm)
+				in match (maybe_wrapper, maybe_algorithm) with
+					| (Some wrapper, Some algorithm)	-> Some (Block.algorithm wrapper algorithm)
 					| _					-> None
 			in check_comm comm `Feature_algorithm (Some subpaged) elem
 
 		| `AST_table (comm, cap, tab) ->
 			let elem () =
-				let maybe_floater = convert_floater comm table_counter Order.table_order cap
+				let maybe_wrapper = convert_wrapper comm table_counter Order.table_order cap
 				and maybe_table = convert_table_block tab
-				in match (maybe_floater, maybe_table) with
-					| (Some floater, Some table)		-> Some (Block.table floater table)
+				in match (maybe_wrapper, maybe_table) with
+					| (Some wrapper, Some table)		-> Some (Block.table wrapper table)
 					| _					-> None
 			in check_comm comm `Feature_table (Some subpaged) elem
 
 		| `AST_figure (comm, cap, fig) ->
 			let elem () =
-				let maybe_floater = convert_floater comm figure_counter Order.figure_order cap
+				let maybe_wrapper = convert_wrapper comm figure_counter Order.figure_order cap
 				and maybe_figure = convert_figure_block fig
-				in match (maybe_floater, maybe_figure) with
-					| (Some floater, Some figure)		-> Some (Block.figure floater figure)
+				in match (maybe_wrapper, maybe_figure) with
+					| (Some wrapper, Some figure)		-> Some (Block.figure wrapper figure)
 					| _					-> None
 			in check_comm comm `Feature_figure (Some subpaged) elem
 

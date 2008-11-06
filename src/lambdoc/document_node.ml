@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Definition of document nodes.
+(*	Implementation file for Document_node.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Definition of document nodes.
+*)
 
 TYPE_CONV_PATH "Document"
 

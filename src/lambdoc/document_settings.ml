@@ -1,5 +1,5 @@
-	(********************************************************************************)
-(**	Definition document settings.
+(********************************************************************************)
+(*	Implementation file for Document_settings.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Definition of document settings.
+*)
 
 open Document_basic
 open Document_block

@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Definition of document features.
+(*	Implementation file for Document_features.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,6 +8,8 @@
 *)
 (********************************************************************************)
 
+(**	Definition of document features.
+*)
 
 (********************************************************************************)
 (*	{2 Features module}							*)
@@ -179,14 +181,14 @@ struct
 		| `Feature_ref			-> ("ref", "internal reference")
 		| `Feature_sref			-> ("sref", "smart reference")
 		| `Feature_mref			-> ("mref", "manual reference")
-		| `Feature_caption		-> ("caption", "floater caption")
+		| `Feature_caption		-> ("caption", "wrapper caption")
 		| `Feature_bib_title		-> ("what", "title of biliography entry")
 		| `Feature_bib_author		-> ("who", "author of bibliography entry")
 		| `Feature_bib_resource		-> ("where", "resource of bibliography entry")
-		| `Feature_equation		-> ("equation", "equation floater")
-		| `Feature_algorithm		-> ("algorithm", "algorithm floater")
-		| `Feature_table		-> ("table", "table floater")
-		| `Feature_figure		-> ("figure", "figure floater")
+		| `Feature_equation		-> ("equation", "equation wrapper")
+		| `Feature_algorithm		-> ("algorithm", "algorithm wrapper")
+		| `Feature_table		-> ("table", "table wrapper")
+		| `Feature_figure		-> ("figure", "figure wrapper")
 		| `Feature_bib			-> ("bib", "bibliography entry")
 		| `Feature_note			-> ("note", "note")
 		| `Feature_section		-> ("section", "section")

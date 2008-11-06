@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Postprocessing on documents.
+(*	Interface file for Document_postprocess.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 

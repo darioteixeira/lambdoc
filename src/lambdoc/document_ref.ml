@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Definitios pertaining to internal document references and numbering.
+(*	Implementation file for Document_ref.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Definitios pertaining to internal document references and numbering.
+*)
 
 TYPE_CONV_PATH "Document"
 
@@ -83,13 +86,13 @@ sig
 		[ none_order_t
 		] with sexp
 
-	(**	Variants allowed for floater blocks.  Note that [`None] variants are
+	(**	Variants allowed for wrapper blocks.  Note that [`None] variants are
 		not allowed.  There are furthermore two additional restrictions to
 		take into account: [`Auto_order] variants are only allowed outside
 		of subpages, and figures inside of subpages may only use [`User_order]
 		variants (these two are not enforced by the type-system).
 	*)
-	type floater_order_t =
+	type wrapper_order_t =
 		[ auto_order_t
 		| user_order_t
 		| none_order_t
@@ -102,13 +105,13 @@ sig
 		[ auto_order_t
 		] with sexp
 
-	(**	The various types of floater orders.
+	(**	The various types of wrappers.
 	*)
-	type floater_t =
-		| Algorithm_floater
-		| Equation_floater
-		| Figure_floater
-		| Table_floater
+	type wrapper_t =
+		| Algorithm_wrapper
+		| Equation_wrapper
+		| Figure_wrapper
+		| Table_wrapper
 		with sexp
 
 	(**	The various variations of orderings for visible blocks.
@@ -118,7 +121,7 @@ sig
 		| Body_sectional_order of user_sectional_order_t
 		| Appendix_sectional_order of user_sectional_order_t
 		| Preset_sectional_order of preset_sectional_order_t
-		| Floater_order of floater_t * floater_order_t
+		| Wrapper_order of wrapper_t * wrapper_order_t
 		with sexp
 
 	(**	At the highest level, an ordered block can either be visible
@@ -139,10 +142,10 @@ sig
 	val body_sectional_order: user_sectional_order_t -> t
 	val appendix_sectional_order: user_sectional_order_t -> t
 	val preset_sectional_order: preset_sectional_order_t -> t
-	val algorithm_order: floater_order_t -> t
-	val equation_order: floater_order_t -> t
-	val figure_order: floater_order_t -> t
-	val table_order: floater_order_t -> t
+	val algorithm_order: wrapper_order_t -> t
+	val equation_order: wrapper_order_t -> t
+	val figure_order: wrapper_order_t -> t
+	val table_order: wrapper_order_t -> t
 	val bib_order: ghost_order_t -> t
 	val note_order: ghost_order_t -> t
 end =
@@ -166,7 +169,7 @@ struct
 		[ none_order_t
 		] with sexp
 
-	type floater_order_t =
+	type wrapper_order_t =
 		[ auto_order_t
 		| user_order_t
 		| none_order_t
@@ -176,18 +179,18 @@ struct
 		[ auto_order_t
 		] with sexp
 
-	type floater_t =
-		| Algorithm_floater
-		| Equation_floater
-		| Figure_floater
-		| Table_floater
+	type wrapper_t =
+		| Algorithm_wrapper
+		| Equation_wrapper
+		| Figure_wrapper
+		| Table_wrapper
 		with sexp
 
 	type block_order_t =
 		| Body_sectional_order of user_sectional_order_t
 		| Appendix_sectional_order of user_sectional_order_t
 		| Preset_sectional_order of preset_sectional_order_t
-		| Floater_order of floater_t * floater_order_t
+		| Wrapper_order of wrapper_t * wrapper_order_t
 		with sexp
 
 	type t =
@@ -199,10 +202,10 @@ struct
 	let body_sectional_order o = Block_order (Body_sectional_order o)
 	let appendix_sectional_order o = Block_order (Appendix_sectional_order o)
 	let preset_sectional_order o = Block_order (Preset_sectional_order o)
-	let algorithm_order o = Block_order (Floater_order (Algorithm_floater, o))
-	let equation_order o = Block_order (Floater_order (Equation_floater, o))
-	let figure_order o = Block_order (Floater_order (Figure_floater,  o))
-	let table_order o = Block_order (Floater_order (Table_floater, o))
+	let algorithm_order o = Block_order (Wrapper_order (Algorithm_wrapper, o))
+	let equation_order o = Block_order (Wrapper_order (Equation_wrapper, o))
+	let figure_order o = Block_order (Wrapper_order (Figure_wrapper,  o))
+	let table_order o = Block_order (Wrapper_order (Table_wrapper, o))
 	let bib_order o = Bib_order o
 	let note_order o = Note_order o
 end

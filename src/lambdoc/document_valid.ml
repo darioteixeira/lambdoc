@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Definition of valid documents.
+(*	Implementation file for Document_valid.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Definition of valid documents.
+*)
 
 TYPE_CONV_PATH "Document"
 

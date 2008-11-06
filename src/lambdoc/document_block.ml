@@ -1,6 +1,5 @@
 (********************************************************************************)
-(**	Definition of document blocks.  Blocks are the higher-level structures
-	found in a document.  They include paragraphs, figures, tables, etc.
+(*	Implementation file for Document_block.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,6 +7,10 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Definition of document blocks.  Blocks are the higher-level structures
+	found in a document.  They include paragraphs, figures, tables, etc.
+*)
 
 TYPE_CONV_PATH "Document"
 
@@ -129,11 +132,6 @@ end
 *)
 module rec Block:
 sig
-	(**	The tuple of all common fields to floaters.  These
-		are the floater's label, its order, and a caption.
-	*)
-	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
-
 	(**	A super fragment is a list of super blocks.
 	*)
 	type super_frag_t = Block.super_block_t list with sexp
@@ -150,20 +148,25 @@ sig
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
 	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
 	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * Highlight.t ] with sexp 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
 
-	(**	The various types of floater blocks.  Floaters are just wrappers
-		around nestable blocks.
+	(**	The various types of wrapper blocks.  Wrappers are just
+		numbered containers around some kinds of nestable blocks.
 	*)
 
 	type equation_block_t = [ math_block_t ] with sexp
 	type algorithm_block_t = [ code_block_t ] with sexp
 	type table_block_t = [ tabular_block_t ] with sexp
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
+
+	(**	The tuple of all common fields to wrappers.  The fields
+		are the wrapper's label, its order, and a caption.
+	*)
+	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t with sexp
 
 	(**	Nestable blocks may be nested.
 	*)
@@ -178,10 +181,10 @@ sig
 		| tabular_block_t
 		| image_block_t
 		| subpage_block_t
-		| `Equation of floater_t * equation_block_t
-		| `Algorithm of floater_t * algorithm_block_t
-		| `Table of floater_t * table_block_t
-		| `Figure of floater_t * figure_block_t
+		| `Equation of wrapper_t * equation_block_t
+		| `Algorithm of wrapper_t * algorithm_block_t
+		| `Table of wrapper_t * table_block_t
+		| `Figure of wrapper_t * figure_block_t
 		] with sexp
 
 	(**	The possible forms for headings.  We accept three different levels
@@ -265,18 +268,16 @@ sig
 	val subpage: Alignment.t -> ([< super_block_t ], 'b) t list ->
 		([> subpage_block_t ], 'b) t
 
-	val equation: floater_t -> equation_block_t ->
+	val equation: wrapper_t -> equation_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val algorithm: floater_t -> algorithm_block_t ->
+	val algorithm: wrapper_t -> algorithm_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val table: floater_t -> table_block_t ->
+	val table: wrapper_t -> table_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val figure: floater_t -> figure_block_t ->
+	val figure: wrapper_t -> figure_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
-	type floater_t = Label.t * Order.floater_order_t * Node.super_seq_t with sexp
-
 	type super_frag_t = Block.super_block_t list with sexp
 
 	type nestable_frag_t = Block.nestable_block_t list with sexp
@@ -297,6 +298,8 @@ struct
 	type table_block_t = [ tabular_block_t ] with sexp
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
 
+	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t with sexp
+
 	type nestable_block_t =
 		[ paragraph_block_t
 		| itemize_block_t
@@ -308,10 +311,10 @@ struct
 		| tabular_block_t
 		| image_block_t
 		| subpage_block_t
-		| `Equation of floater_t * equation_block_t
-		| `Algorithm of floater_t * algorithm_block_t
-		| `Table of floater_t * table_block_t
-		| `Figure of floater_t * figure_block_t
+		| `Equation of wrapper_t * equation_block_t
+		| `Algorithm of wrapper_t * algorithm_block_t
+		| `Table of wrapper_t * table_block_t
+		| `Figure of wrapper_t * figure_block_t
 		] with sexp
 
 	type heading_block_t =

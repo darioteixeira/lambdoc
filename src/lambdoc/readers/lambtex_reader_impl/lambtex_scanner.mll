@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Scanner for the Lambtex reader.
+(*	Implementation file for Lambtex_scanner.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,6 +8,8 @@
 *)
 (********************************************************************************)
 
+(**	Scanner for the Lambtex reader.
+*)
 
 (********************************************************************************)
 (**	{2 Auxiliary types}							*)

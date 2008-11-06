@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Debugger for the Lambtex reader.
+(*	Implementation file for Lambtex_debugger.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Debugger for the Lambtex reader.
+*)
 
 open Printf
 open Document_ast.Ast

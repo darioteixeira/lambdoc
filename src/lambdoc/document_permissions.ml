@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Document permissions.
+(*	Implementation file for Document_permissions.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Document permissions.
+*)
 
 open Document_ast
 open Document_features
@@ -70,7 +73,7 @@ struct
 	let tabular_class =
 		(Forbidden, Forbidden, Optional, Mandatory)
 
-	let floater_class subpaged =
+	let wrapper_class subpaged =
 		let perm_order = if subpaged then Mandatory else Forbidden
 		in (Optional, perm_order, Optional, Forbidden)
 
@@ -170,10 +173,10 @@ struct
 			| `Feature_bib_title		-> forbidden_class
 			| `Feature_bib_author		-> forbidden_class
 			| `Feature_bib_resource		-> forbidden_class
-			| `Feature_equation		-> floater_class (get_subpaged maybe_subpaged)
-			| `Feature_algorithm		-> floater_class (get_subpaged maybe_subpaged)
-			| `Feature_table		-> floater_class (get_subpaged maybe_subpaged)
-			| `Feature_figure		-> floater_class (get_subpaged maybe_subpaged)
+			| `Feature_equation		-> wrapper_class (get_subpaged maybe_subpaged)
+			| `Feature_algorithm		-> wrapper_class (get_subpaged maybe_subpaged)
+			| `Feature_table		-> wrapper_class (get_subpaged maybe_subpaged)
+			| `Feature_figure		-> wrapper_class (get_subpaged maybe_subpaged)
 			| `Feature_bib			-> ghost_class
 			| `Feature_note			-> ghost_class
 			| `Feature_section		-> user_sectional_class (get_subpaged maybe_subpaged)

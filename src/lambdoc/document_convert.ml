@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Conversion functions on documents.
+(*	Implementation file for Document_convert.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Conversion functions on documents.
+*)
 
 open Document_basic
 open Document_node

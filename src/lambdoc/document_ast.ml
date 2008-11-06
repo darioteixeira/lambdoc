@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Definition of the document AST that all parsers are supposed to generate.
+(*	Implementation file for Document_ast.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(*	Definition of the document AST that all parsers are supposed to generate.
+*)
 
 open Document_basic
 

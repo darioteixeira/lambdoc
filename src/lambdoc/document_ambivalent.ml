@@ -1,7 +1,5 @@
 (********************************************************************************)
-(**	Definition of ambivalent documents.  An ambivalent document is one
-	that can either be valid or invalid.  Document readers will always
-	return a document of this type.
+(*	Implementation file for Document_ambivalent.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -9,6 +7,10 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	An ambivalent document is one that can either be valid or invalid.
+	Document readers will always return a document of this type.
+*)
 
 TYPE_CONV_PATH "Document"
 

@@ -1,5 +1,5 @@
 (********************************************************************************)
-(**	Document reader.
+(*	Implementation file for Document_reader.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,9 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Document reader.
+*)
 
 open Document_basic
 open Document_ast

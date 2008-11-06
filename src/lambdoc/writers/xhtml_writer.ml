@@ -1,7 +1,5 @@
 (********************************************************************************)
-(**	Converts documents into XHTML.  The XHTML representation used is
-	the one offered by Ocsigen's XHTML.M module.  This allows the direct
-	use of the output of this module from within Ocsigen programmes.
+(*	Implementation file for Xhtml_writer.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -9,6 +7,11 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+(**	Converts documents into XHTML.  The XHTML representation used is
+	the one offered by Ocsigen's XHTML.M module.  This allows the direct
+	use of the output of this module from within Ocsigen programmes.
+*)
 
 open Printf
 open ExtList
@@ -301,7 +304,7 @@ let write_valid_document settings classname doc =
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
-		in XHTML.M.tablex ~a:[a_class ["doc_tabular"]] ?thead ?tfoot tbody_hd tbody_tl in
+		in XHTML.M.tablex ~a:[a_class ["doc_tab"]] ?thead ?tfoot tbody_hd tbody_tl in
 
 
 	(************************************************************************)
@@ -463,7 +466,7 @@ let write_valid_document settings classname doc =
 		| `Table (floater, table) ->
 			let floater_name = settings.names.table_name
 			and floater_content = write_table_block table
-			in write_floater floater "doc_tab" floater_name floater_content
+			in write_floater floater "doc_table" floater_name floater_content
 
 		| `Figure (floater, figure) ->
 			let floater_name = settings.names.figure_name
@@ -522,9 +525,9 @@ let write_valid_document settings classname doc =
 		| `Title seq ->
 			XHTML.M.h1 ~a:[a_class ["doc_title"]] (write_super_seq seq)
 		| `Subtitle seq ->
-			XHTML.M.h2 ~a:[a_class ["doc_subtitle"]] (write_super_seq seq)
+			XHTML.M.h2 ~a:[a_class ["doc_title"]] (write_super_seq seq)
 		| `Abstract frag ->
-			XHTML.M.div ~a:[a_class ["doc_abstract"]] (write_paragraph_frag frag)
+			XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_paragraph_frag frag))
 		| `Rule ->
 			XHTML.M.hr ()
 
