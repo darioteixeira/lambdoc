@@ -257,7 +257,7 @@ sig
 		([> quote_block_t ], 'b) t
 	val math: Alignment.t -> Math.t ->
 		([> math_block_t ], [> `Composition]) t
-	val code: Alignment.t -> syntax_t -> Node.textual_seq_t ->
+	val code: Alignment.t -> Highlight.t ->
 		([> code_block_t ], [> `Composition]) t
 	val verbatim: Alignment.t -> Node.textual_seq_t ->
 		([> verbatim_block_t ], [> `Composition]) t
@@ -287,7 +287,7 @@ struct
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
 	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
 	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-	type code_block_t = [ `Code of Alignment.t * syntax_t * Node.textual_seq_t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * Highlight.t ] with sexp 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
@@ -361,7 +361,7 @@ struct
 	let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
 	let quote alignment frag = `Quote (alignment, frag)
 	let math alignment math = `Math (alignment, math)
-	let code alignment syntax txt = `Code (alignment, syntax, txt)
+	let code alignment highlight = `Code (alignment, highlight)
 	let verbatim alignment txt = `Verbatim (alignment, txt)
 	let tabular alignment tab = `Tabular (alignment, tab)
 	let image alignment alias = `Image (alignment, alias)

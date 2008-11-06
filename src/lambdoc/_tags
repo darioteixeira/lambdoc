@@ -1,4 +1,4 @@
-true: pkg_threads, pkg_unix, pkg_extlib, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, pkg_xml-light, use_menhir
+true: pkg_threads, pkg_unix, pkg_extlib, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, pkg_xml-light, pkg_camlhighlight, use_menhir
 <document_ambivalent.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_basic.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_block.*>: pkg_sexplib.syntax, syntax_camlp4o

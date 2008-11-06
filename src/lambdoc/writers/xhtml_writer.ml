@@ -228,7 +228,7 @@ let write_valid_document settings classname doc =
 					make_internal_link (`User_label ref) [pcdata (make_order order)]
 				| Order.Block_order (Order.Preset_sectional_order order) ->
 					make_internal_link (`User_label ref) [pcdata (make_order order)]
-				| Order.Block_order (Order.Floater_order (_, order)) ->
+				| Order.Block_order (Order.Wrapper_order (_, order)) ->
 					make_internal_link (`User_label ref) [pcdata (make_order order)]
 				| _ ->
 					raise Command_ref_with_non_block)
@@ -242,13 +242,13 @@ let write_valid_document settings classname doc =
 					make_sref settings.names.appendix_name ref order
 				| Order.Block_order (Order.Preset_sectional_order order) ->
 					make_sref settings.names.section_name ref order
-				| Order.Block_order (Order.Floater_order (Order.Equation_floater, order)) ->
+				| Order.Block_order (Order.Wrapper_order (Order.Equation_wrapper, order)) ->
 					make_sref settings.names.equation_name ref order
-				| Order.Block_order (Order.Floater_order (Order.Algorithm_floater, order)) ->
+				| Order.Block_order (Order.Wrapper_order (Order.Algorithm_wrapper, order)) ->
 					make_sref settings.names.algorithm_name ref order
-				| Order.Block_order (Order.Floater_order (Order.Table_floater, order)) ->
+				| Order.Block_order (Order.Wrapper_order (Order.Table_wrapper, order)) ->
 					make_sref settings.names.table_name ref order
-				| Order.Block_order (Order.Floater_order (Order.Figure_floater, order)) ->
+				| Order.Block_order (Order.Wrapper_order (Order.Figure_wrapper, order)) ->
 					make_sref settings.names.figure_name ref order
 				| _ ->
 					raise Command_sref_with_non_block)
@@ -358,8 +358,8 @@ let write_valid_document settings classname doc =
 
 
 	and write_code_block = function
-		| `Code (align, syntax, seq) ->
-			XHTML.M.pre ~a:[a_class ["doc_code"; make_align align]] (write_textual_seq seq)
+		| `Code (align, highlight) ->
+			Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:[make_align align] ~numbered:true ~zebra:true highlight
 
 
 	and write_verbatim_block = function
@@ -407,18 +407,18 @@ let write_valid_document settings classname doc =
 			write_subpage_block blk
 
 
-	and write_caption order floater_name caption =
-		let caption_head = XHTML.M.h1 [pcdata (floater_name ^ "  " ^ (make_order order) ^ ":")]
+	and write_caption order wrapper_name caption =
+		let caption_head = XHTML.M.h1 [pcdata (wrapper_name ^ "  " ^ (make_order order) ^ ":")]
 		and caption_body = XHTML.M.p (write_super_seq caption)
 		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
 
 
-	and write_floater (label, order, caption) floater_classname floater_name floater_content =
-		let caption_content = write_caption order floater_name caption in
+	and write_wrapper (label, order, caption) wrapper_classname wrapper_name wrapper_content =
+		let caption_content = write_caption order wrapper_name caption in
 		(*let style = "doc_align_" ^ (Alignment.to_string align) in*)
 		let style = "" in
-		let classnames = ["doc_floater"; floater_classname; style]
-		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [floater_content; caption_content]
+		let classnames = ["doc_wrapper"; wrapper_classname; style]
+		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 
 
 	and write_nestable_block = function
@@ -453,25 +453,25 @@ let write_valid_document settings classname doc =
 		| #Block.subpage_block_t as blk ->
 			write_subpage_block blk
 
-		| `Equation (floater, equation) ->
-			let floater_name = settings.names.equation_name
-			and floater_content = write_equation_block equation
-			in write_floater floater "doc_eq" floater_name floater_content
+		| `Equation (wrapper, equation) ->
+			let wrapper_name = settings.names.equation_name
+			and wrapper_content = write_equation_block equation
+			in write_wrapper wrapper "doc_eq" wrapper_name wrapper_content
 
-		| `Algorithm (floater, algorithm) ->
-			let floater_name = settings.names.algorithm_name
-			and floater_content = write_algorithm_block algorithm
-			in write_floater floater "doc_alg" floater_name floater_content
+		| `Algorithm (wrapper, algorithm) ->
+			let wrapper_name = settings.names.algorithm_name
+			and wrapper_content = write_algorithm_block algorithm
+			in write_wrapper wrapper "doc_alg" wrapper_name wrapper_content
 
-		| `Table (floater, table) ->
-			let floater_name = settings.names.table_name
-			and floater_content = write_table_block table
-			in write_floater floater "doc_table" floater_name floater_content
+		| `Table (wrapper, table) ->
+			let wrapper_name = settings.names.table_name
+			and wrapper_content = write_table_block table
+			in write_wrapper wrapper "doc_table" wrapper_name wrapper_content
 
-		| `Figure (floater, figure) ->
-			let floater_name = settings.names.figure_name
-			and floater_content = write_figure_block figure
-			in write_floater floater "doc_fig" floater_name floater_content
+		| `Figure (wrapper, figure) ->
+			let wrapper_name = settings.names.figure_name
+			and wrapper_content = write_figure_block figure
+			in write_wrapper wrapper "doc_fig" wrapper_name wrapper_content
 	
 
 	and write_heading_block = function

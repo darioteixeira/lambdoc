@@ -118,7 +118,7 @@ let convert_to_composition contents =
 		| `Math (alignment, math) -> Block.math alignment math
 
 	and convert_code_block = function
-		| `Code (alignment, syntax, code) -> Block.code alignment syntax code
+		| `Code (alignment, highlight) -> Block.code alignment highlight
 
 	and convert_verbatim_block = function
 		| `Verbatim (alignment, txt) -> Block.verbatim alignment txt

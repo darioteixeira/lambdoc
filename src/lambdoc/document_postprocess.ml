@@ -344,7 +344,7 @@ let process_document feature_map document_ast =
 					| Order.Block_order (Order.Body_sectional_order `None_order)
 					| Order.Block_order (Order.Appendix_sectional_order `None_order)
 					| Order.Block_order (Order.Preset_sectional_order `None_order)
-					| Order.Block_order (Order.Floater_order (_, `None_order))	-> `Empty_target
+					| Order.Block_order (Order.Wrapper_order (_, `None_order))	-> `Empty_target
 					| Order.Block_order _						-> `Valid_target
 					| _ -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
@@ -357,7 +357,7 @@ let process_document feature_map document_ast =
 					| Order.Block_order (Order.Body_sectional_order `None_order)
 					| Order.Block_order (Order.Appendix_sectional_order `None_order)
 					| Order.Block_order (Order.Preset_sectional_order `None_order)
-					| Order.Block_order (Order.Floater_order (_, `None_order))	-> `Empty_target
+					| Order.Block_order (Order.Wrapper_order (_, `None_order))	-> `Empty_target
 					| Order.Block_order _						-> `Valid_target
 					| _ -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
@@ -505,9 +505,11 @@ let process_document feature_map document_ast =
 	and convert_code_block : Ast.code_block_t -> (Block.code_block_t, _) Block.t option = function
 		| `AST_code (comm, seq) ->
 			let elem () =
-				let alignment = get_alignment comm comm.Ast.comm_extra
-				and syntax = comm.Ast.comm_secondary
-				in Some (Block.code alignment syntax (convert_textual_seq seq))
+				let syntax = comm.Ast.comm_secondary
+				and source = "open Dummy" in
+				let highlight = Highlight.from_string "ml" source
+				and alignment = get_alignment comm comm.Ast.comm_extra
+				in Some (Block.code alignment highlight)
 			in check_comm comm `Feature_code None elem
 
 
