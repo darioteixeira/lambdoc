@@ -505,9 +505,14 @@ let process_document feature_map document_ast =
 	and convert_code_block : Ast.code_block_t -> (Block.code_block_t, _) Block.t option = function
 		| `AST_code (comm, seq) ->
 			let elem () =
-				let syntax = comm.Ast.comm_secondary
-				and source = "open Dummy" in
-				let highlight = Highlight.from_string "ml" source
+				let textual_node_to_string = function
+					| `AST_plain (_, txt)	-> txt
+					| `AST_entity (_, txt)	-> txt in
+				let textual_seq_to_string seq =
+					String.concat "" (List.map textual_node_to_string seq) in
+				let maybe_syntax = comm.Ast.comm_secondary
+				and source = textual_seq_to_string seq in
+				let highlight = Highlight.from_string maybe_syntax source
 				and alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.code alignment highlight)
 			in check_comm comm `Feature_code None elem

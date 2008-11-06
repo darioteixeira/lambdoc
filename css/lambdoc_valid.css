@@ -195,6 +195,54 @@ div > .doc_math
 /* Code environments.								*/
 /********************************************************************************/
 
+.doc_hl_main
+	{
+	border: 1px dashed #666;
+	color: #000000;
+	background-color: #f9f9f9;
+	font-size: 10pt;
+	font-family: monospace;
+	}
+
+.doc_hl_nums
+	{
+	float: left;
+	margin: 0 1em 0 0;
+	border-right: 1px solid #999;
+	font-weight: bold;
+	color: #000;
+	}
+
+.doc_hl_code
+	{
+	margin: 0;
+	padding:0;
+	}
+
+.doc_hl_line,
+.doc_hl_line_even,
+.doc_hl_line_odd
+	{
+	display: block;
+	padding: 0.1em 0.5em;
+	}
+
+.doc_hl_line_even	{background: #f9f9f9;}
+.doc_hl_line_odd	{background: #f3f6fc;}
+
+.doc_hl_num		{color: #606; font-weight: bold;}
+.doc_hl_esc		{color: #f06; font-weight: bold;}
+.doc_hl_str		{color: #c33;}
+.doc_hl_dstr		{color: #0ff;}
+.doc_hl_slc		{color: #669; font-style: italic;}
+.doc_hl_com		{color: #669; font-style: italic;}
+.doc_hl_dir		{color: #600;}
+.doc_hl_sym		{color: #060;}
+.doc_hl_kwa		{color: #960; font-weight: bold;}
+.doc_hl_kwb		{color: #006;}
+.doc_hl_kwc		{color: #03c;}
+.doc_hl_kwd		{color: #090; font-weight: bold;}
+
 
 /********************************************************************************/
 /* Verbatim environments.							*/
