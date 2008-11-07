@@ -186,7 +186,6 @@ open Document_ast
 %type <Document_ast.Ast.super_seq_t list>	columns
 
 %type <Document_ast.Ast.super_node_t>		super_node
-%type <Document_ast.Ast.textual_node_t>		textual_node
 %type <Document_ast.Ast.nonlink_node_t>		nonlink_node
 %type <Document_ast.Ast.link_node_t>		link_node
 
@@ -262,8 +261,8 @@ enumerate_block:	| BEGIN_ENUMERATE items END_ENUMERATE			{`AST_enumerate ($1, $2
 quote_block:		| BEGIN_QUOTE nestable_block+ END_QUOTE			{`AST_quote ($1, $2)}
 mathtex_block:		| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{`AST_mathtex_blk ($1, $2)}
 mathml_block:		| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{`AST_mathml_blk ($1, $2)}
-code_block:		| BEGIN_CODE textual_node+ END_CODE			{`AST_code ($1, $2)}
-verbatim_block:		| BEGIN_VERBATIM textual_node+ END_VERBATIM		{`AST_verbatim ($1, $2)}
+code_block:		| BEGIN_CODE RAW END_CODE				{`AST_code ($1, $2)}
+verbatim_block:		| BEGIN_VERBATIM RAW END_VERBATIM			{`AST_verbatim ($1, $2)}
 tabular_block:		| BEGIN_TABULAR tabular END_TABULAR			{`AST_tabular ($1, $2)}
 image_block:		| IMAGE BEGIN RAW END					{`AST_image ($1, $3)}
 subpage_block:		| BEGIN_SUBPAGE super_block+ END_SUBPAGE		{`AST_subpage ($1, $2)}
@@ -326,12 +325,9 @@ columns:
 /* Nodes.									*/
 /********************************************************************************/
 
-textual_node:
+nonlink_node:
 	| PLAIN							{`AST_plain $1}
 	| ENTITY						{`AST_entity $1}
-
-nonlink_node:
-	| textual_node						{($1 :> Ast.nonlink_node_t)}
 	| BEGIN_MATHTEX_INL RAW END_MATHTEX_INL			{`AST_mathtex_inl ($1, $2)}
 	| BEGIN_MATHML_INL RAW END_MATHML_INL			{`AST_mathml_inl ($1, $2)}
 	| BOLD BEGIN super_node+ END				{`AST_bold ($1, $3)}

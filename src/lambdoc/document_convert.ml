@@ -36,12 +36,9 @@ let convert_to_composition contents =
 	(* Conversion functions for inline context.				*)
 	(************************************************************************)
 
-	let rec convert_textual_node = function
+	let rec convert_nonlink_node = function
 		| `Plain txt			-> Node.plain txt
 		| `Entity txt			-> Node.entity txt
-
-	and convert_nonlink_node = function
-		| #Node.textual_node_t as node	-> (convert_textual_node node :> ([> Node.nonlink_node_t], _) Node.t)
 		| `Math math			-> Node.math math
 		| `Bold seq			-> Node.bold (convert_super_seq seq)
 		| `Emph seq			-> Node.emph (convert_super_seq seq)

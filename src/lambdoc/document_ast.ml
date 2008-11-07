@@ -8,14 +8,14 @@
 *)
 (********************************************************************************)
 
-(*	Definition of the document AST that all parsers are supposed to generate.
+(**	Definition of the document AST that all parsers are supposed to generate.
 *)
 
 open Document_basic
 
 
 (********************************************************************************)
-(*	{2 Ast Module}								*)
+(**	{2 Ast Module}								*)
 (********************************************************************************)
 
 module rec Ast:
@@ -47,15 +47,10 @@ sig
 
 	type super_seq_t = Ast.super_node_t list
 	type nonlink_seq_t = Ast.nonlink_node_t list
-	type textual_seq_t = Ast.textual_node_t list
-
-	type textual_node_t =
-		[ `AST_plain of operator_t * plain_t
-		| `AST_entity of operator_t * entity_t
-		]
 
 	type nonlink_node_t =
-		[ textual_node_t
+		[ `AST_plain of operator_t * plain_t
+		| `AST_entity of operator_t * entity_t
 		| `AST_mathtex_inl of operator_t * raw_t
 		| `AST_mathml_inl of operator_t * raw_t
 		| `AST_bold of command_t * super_seq_t
@@ -115,8 +110,8 @@ sig
 	type quote_block_t = [ `AST_quote of command_t * nestable_frag_t ]
 	type mathtex_block_t = [ `AST_mathtex_blk of command_t * raw_t ]
 	type mathml_block_t = [ `AST_mathml_blk of command_t * raw_t ]
-	type code_block_t = [ `AST_code of command_t * textual_seq_t ]
-	type verbatim_block_t = [ `AST_verbatim of command_t * textual_seq_t ]
+	type code_block_t = [ `AST_code of command_t * raw_t ]
+	type verbatim_block_t = [ `AST_verbatim of command_t * raw_t ]
 	type tabular_block_t = [ `AST_tabular of command_t * tabular_t ]
 	type image_block_t = [ `AST_image of command_t * raw_t ]
 	type subpage_block_t = [ `AST_subpage of command_t * super_frag_t ]

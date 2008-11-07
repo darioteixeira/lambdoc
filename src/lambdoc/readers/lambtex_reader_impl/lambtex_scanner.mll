@@ -63,13 +63,13 @@ type tabular_token_t =
 type verbatim_token_t =
 	[ tok_env_comm_t
 	| tok_eof_t
-	| tok_plain_t | tok_entity_t
+	| tok_raw_t
 	]
 
 type code_token_t =
 	[ tok_env_comm_t
 	| tok_eof_t
-	| tok_plain_t | tok_entity_t
+	| tok_raw_t
 	]
 
 type raw_token_t =
@@ -220,8 +220,8 @@ and tabular_scanner = parse
 and verbatim_scanner = parse
 	| "\\end{verbatim}"	{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof}
-	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| escape _		{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 1 1)}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
 (**	Special scanner for code environments.  Pretty much every character
@@ -231,13 +231,13 @@ and verbatim_scanner = parse
 and code_scanner = parse
 	| "\\end{code}"		{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof}
-	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| _			{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
+	| escape _		{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 1 1)}
+	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-(**	Special scanner for raw environments.  Pretty much every character
-	is returned as raw text; the exceptions are the EOF character and
-	the special "}" termination tag.
+(**	Special scanner for raw environments.  Pretty much every character is
+	returned as raw text; the exceptions are the EOF character, escaped
+	characters, and the special "}" termination tag.
 *)
 and raw_scanner = parse
 	| end_marker		{`Tok_end}
@@ -246,9 +246,9 @@ and raw_scanner = parse
 	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-(**	Special scanner for mathtex environments in an inline context.  No attempt whatsoever
-	is made to interpret the characters in the stream.  This scanner only pays attention
-	to the EOF character and the terminator "$]".
+(**	Special scanner for mathtex environments in an inline context.  No attempt
+	whatsoever is made to interpret the characters in the stream.  This scanner
+	only pays attention to the EOF character and the terminator "$]".
 *)
 and mathtex_inl_scanner = parse
 	| end_mathtex_inl	{`Tok_end_mathtex_inl lexbuf}
@@ -256,9 +256,9 @@ and mathtex_inl_scanner = parse
 	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-(**	Special scanner for mathml environments in an inline context.  No attempt whatsoever
-	is made to interpret the characters in the stream.  This scanner only pays attention
-	to the EOF character and the terminator "$>".
+(**	Special scanner for mathml environments in an inline context.  No attempt
+	whatsoever is made to interpret the characters in the stream.  This scanner
+	only pays attention to the EOF character and the terminator "$>".
 *)
 and mathml_inl_scanner = parse
 	| end_mathml_inl	{`Tok_end_mathml_inl lexbuf}
@@ -266,9 +266,9 @@ and mathml_inl_scanner = parse
 	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
 
-(**	Special scanner for mathtex environments in a block context.  No attempt whatsoever
-	is made to interpret the characters in the stream.  This scanner only pays attention
-	to the EOF character and the environment terminator "\end{tex}".
+(**	Special scanner for mathtex environments in a block context.  No attempt
+	whatsoever is made to interpret the characters in the stream.  This scanner
+	only pays attention to the EOF character and the environment terminator "\end{tex}".
 *)
 and mathtex_blk_scanner = parse
 	| "\\end{tex}"		{`Tok_env_comm lexbuf}

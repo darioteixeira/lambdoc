@@ -58,9 +58,10 @@ struct
 		| Bad_order_parameter of tag_t * invalid_parameter_reason_t
 		| Bad_extra_parameter of tag_t * invalid_parameter_reason_t
 		| Bad_secondary_parameter of tag_t * invalid_parameter_reason_t
-		| Unknown_bullet_type of tag_t * string
-		| Unknown_numbering_type of tag_t * string
-		| Unknown_alignment_type of tag_t * string
+		| Unknown_bullet of tag_t * string
+		| Unknown_numbering of tag_t * string
+		| Unknown_alignment of tag_t * string
+		| Unknown_language of tag_t * string
 		| Unknown_env_command of tag_t
 		| Unknown_simple_command of tag_t
 		| Duplicate_label of tag_t * ref_t

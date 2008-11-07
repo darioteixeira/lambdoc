@@ -84,8 +84,8 @@ let process_document feature_map document_ast =
 			try
 				Bullet.of_string thing
 			with
-				Bullet.Unknown_bullet_type x ->
-					let msg = Error.Unknown_bullet_type (comm.Ast.comm_tag, x) in
+				Bullet.Unknown_bullet x ->
+					let msg = Error.Unknown_bullet (comm.Ast.comm_tag, x) in
 					DynArray.add errors (comm.Ast.comm_linenum, msg);
 					Bullet.Default
 
@@ -101,8 +101,8 @@ let process_document feature_map document_ast =
 			try
 				Numbering.of_string thing
 			with
-				Numbering.Unknown_numbering_type x ->
-					let msg = Error.Unknown_numbering_type (comm.Ast.comm_tag, x) in
+				Numbering.Unknown_numbering x ->
+					let msg = Error.Unknown_numbering (comm.Ast.comm_tag, x) in
 					DynArray.add errors (comm.Ast.comm_linenum, msg);
 					Numbering.Default
 
@@ -118,13 +118,32 @@ let process_document feature_map document_ast =
 			try
 				Alignment.of_string thing
 			with
-				Alignment.Unknown_alignment_type x ->
-					let msg = Error.Unknown_alignment_type (comm.Ast.comm_tag, x) in
+				Alignment.Unknown_alignment x ->
+					let msg = Error.Unknown_alignment (comm.Ast.comm_tag, x) in
 					DynArray.add errors (comm.Ast.comm_linenum, msg);
 					Alignment.Center
 
 
-	(**	This function returns the column alignment and weight associated
+	(**	This subfunction returns the language used for syntax highlighting.
+		It invokes the utility function from the Highlight module, and adds
+		an error if the language is unknown.
+	*)
+	and get_language comm = function
+		| None ->
+			None
+		| Some "" ->
+			None
+		| Some other ->
+			try
+				Some (Highlight.lang_of_string other)
+			with
+				Highlight.Unknown_language x ->
+					let msg = Error.Unknown_language (comm.Ast.comm_tag, x) in
+					DynArray.add errors (comm.Ast.comm_linenum, msg);
+					None
+
+
+	(**	This subfunction returns the column alignment and weight associated
 		with a column specifier.
 	*)
 	and get_column comm spec =
@@ -253,11 +272,7 @@ let process_document feature_map document_ast =
 		ExtList.List.filter_map convert_nonlink_node seq
 
 
-	and convert_textual_seq seq =
-		ExtList.List.filter_map convert_textual_node seq
-
-
-	and convert_textual_node : Ast.textual_node_t -> (Node.textual_node_t, _) Node.t option = function
+	and convert_nonlink_node : Ast.nonlink_node_t -> (Node.nonlink_node_t, _) Node.t option = function
 
 		| `AST_plain (op, txt) ->
 			let elem () = Some (Node.plain txt)
@@ -266,12 +281,6 @@ let process_document feature_map document_ast =
 		| `AST_entity (op, txt) ->
 			let elem () = Some (Node.entity txt)
 			in check_op op `Feature_entity elem
-
-
-	and convert_nonlink_node : Ast.nonlink_node_t -> (Node.nonlink_node_t, _) Node.t option = function
-
-		| #Ast.textual_node_t as node ->
-			((convert_textual_node node) :> (Node.nonlink_node_t, _) Node.t option)
 
 		| `AST_mathtex_inl (op, txt) ->
 			let elem () = convert_mathtex Node.math op.Ast.op_linenum txt
@@ -503,26 +512,20 @@ let process_document feature_map document_ast =
 
 
 	and convert_code_block : Ast.code_block_t -> (Block.code_block_t, _) Block.t option = function
-		| `AST_code (comm, seq) ->
+		| `AST_code (comm, txt) ->
 			let elem () =
-				let textual_node_to_string = function
-					| `AST_plain (_, txt)	-> txt
-					| `AST_entity (_, txt)	-> txt in
-				let textual_seq_to_string seq =
-					String.concat "" (List.map textual_node_to_string seq) in
-				let maybe_syntax = comm.Ast.comm_secondary
-				and source = textual_seq_to_string seq in
-				let highlight = Highlight.from_string maybe_syntax source
+				let lang = get_language comm comm.Ast.comm_secondary in
+				let highlight = Highlight.from_string lang txt
 				and alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.code alignment highlight)
 			in check_comm comm `Feature_code None elem
 
 
 	and convert_verbatim_block : Ast.verbatim_block_t -> (Block.verbatim_block_t, _) Block.t option = function
-		| `AST_verbatim (comm, seq) ->
+		| `AST_verbatim (comm, txt) ->
 			let elem () =
 				let alignment = get_alignment comm comm.Ast.comm_extra
-				in Some (Block.verbatim alignment (convert_textual_seq seq))
+				in Some (Block.verbatim alignment txt)
 			in check_comm comm `Feature_verbatim None elem
 
 

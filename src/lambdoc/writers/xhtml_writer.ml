@@ -157,20 +157,11 @@ let write_valid_document settings classname doc =
 		List.map write_nonlink_node seq
 
 
-	and write_textual_seq seq =
-		List.map write_textual_node seq
-
-
-	and write_textual_node : Node.textual_node_t -> textual_node_xhtml_t = function
+	and write_nonlink_node: Node.nonlink_node_t -> nonlink_node_xhtml_t = function
 		| `Plain txt ->
 			XHTML.M.pcdata txt 
 		| `Entity txt ->
 			XHTML.M.entity txt
-
-
-	and write_nonlink_node: Node.nonlink_node_t -> nonlink_node_xhtml_t = function
-		| #Node.textual_node_t as node ->
-			(write_textual_node node :> nonlink_node_xhtml_t)
 		| `Math math ->
 			let elem : [> `Span] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
 			in XHTML.M.span ~a:[a_class ["doc_math"]] [elem]
@@ -363,8 +354,8 @@ let write_valid_document settings classname doc =
 
 
 	and write_verbatim_block = function
-		| `Verbatim (align, seq) ->
-			XHTML.M.pre ~a:[a_class ["doc_verbatim"; make_align align]] (write_textual_seq seq)
+		| `Verbatim (align, txt) ->
+			XHTML.M.pre ~a:[a_class ["doc_verbatim"; make_align align]] [XHTML.M.pcdata txt]
 
 
 	and write_tabular_block = function
@@ -634,14 +625,17 @@ let write_error (error_context, error_msg) =
 			let exp_reason = explain_reason "a" "secondary" reason
 			in sprintf "Invalid secondary parameter for command '%s': %s." tag exp_reason
 
-		| Error.Unknown_bullet_type (tag, bul) ->
-			sprintf "Unknown bullet type '%s' for command '%s'.  Valid bullet types are 'default', 'disc', 'circle', 'square', and 'none'." bul tag
+		| Error.Unknown_bullet (tag, bul) ->
+			sprintf "Unknown bullet '%s' for command '%s'.  Valid bullet types are 'default', 'disc', 'circle', 'square', and 'none'." bul tag
 
-		| Error.Unknown_numbering_type (tag, num) ->
-			sprintf "Unknown numbering type '%s' for command '%s'.  Valid numberings are 'default', 'decimal', 'roman', 'Roman', 'alpha', 'Alpha', and 'none'." num tag
+		| Error.Unknown_numbering (tag, num) ->
+			sprintf "Unknown numbering '%s' for command '%s'.  Valid numberings are 'default', 'decimal', 'roman', 'Roman', 'alpha', 'Alpha', and 'none'." num tag
 
-		| Error.Unknown_alignment_type (tag, num) ->
-			sprintf "Unknown alignment type '%s' for command '%s'.  Valid alignments are 'center', 'left', and 'right'." num tag
+		| Error.Unknown_alignment (tag, align) ->
+			sprintf "Unknown alignment '%s' for command '%s'.  Valid alignments are 'center', 'left', and 'right'." align tag
+
+		| Error.Unknown_language (tag, lang) ->
+			sprintf "Unknown language '%s' for command '%s'.  Valid languages are 'c', 'ocaml', and 'pascal'." lang tag
 
 		| Error.Unknown_env_command tag ->
 			sprintf "Unknown command '\\begin{%s}.'" tag

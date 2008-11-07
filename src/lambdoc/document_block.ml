@@ -30,7 +30,7 @@ open Document_math
 *)
 module Bullet =
 struct
-	exception Unknown_bullet_type of string
+	exception Unknown_bullet of string
 
 	type t =
 		| Default
@@ -45,7 +45,7 @@ struct
 		| "circle"	-> Circle
 		| "square"	-> Square
 		| "none"	-> None
-		| other		-> raise (Unknown_bullet_type other)
+		| other		-> raise (Unknown_bullet other)
 
 	let to_string = function
 		| Default
@@ -65,7 +65,7 @@ end
 *)
 module Numbering =
 struct
-	exception Unknown_numbering_type of string
+	exception Unknown_numbering of string
 
 	type t =
 		| Default
@@ -84,7 +84,7 @@ struct
 		| "a"		-> Lower_alpha
 		| "A"		-> Upper_alpha
 		| "none"	-> None
-		| other		-> raise (Unknown_numbering_type other)
+		| other		-> raise (Unknown_numbering other)
 
 	let to_string = function
 		| Default
@@ -103,7 +103,7 @@ end
 
 module Alignment =
 struct
-	exception Unknown_alignment_type of string
+	exception Unknown_alignment of string
 
 	type t =
 		| Center
@@ -114,7 +114,7 @@ struct
 		| "center"	-> Center
 		| "left"	-> Left
 		| "right"	-> Right
-		| other		-> raise (Unknown_alignment_type other)
+		| other		-> raise (Unknown_alignment other)
 
 	let to_string = function
 		| Center	-> "center"
@@ -151,7 +151,7 @@ sig
 	type code_block_t = [ `Code of Alignment.t * Highlight.t ] with sexp 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
 
 	(**	The various types of wrapper blocks.  Wrappers are just
@@ -259,7 +259,7 @@ sig
 		([> math_block_t ], [> `Composition]) t
 	val code: Alignment.t -> Highlight.t ->
 		([> code_block_t ], [> `Composition]) t
-	val verbatim: Alignment.t -> Node.textual_seq_t ->
+	val verbatim: Alignment.t -> raw_t ->
 		([> verbatim_block_t ], [> `Composition]) t
 	val tabular: Alignment.t -> Tabular.t ->
 		([> tabular_block_t ], [> `Manuscript]) t
@@ -290,7 +290,7 @@ struct
 	type code_block_t = [ `Code of Alignment.t * Highlight.t ] with sexp 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * Node.textual_seq_t ] with sexp 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
 
 	type equation_block_t = [ math_block_t ] with sexp

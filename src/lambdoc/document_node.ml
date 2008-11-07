@@ -28,15 +28,10 @@ module rec Node:
 sig
 	type super_seq_t = Node.super_node_t list with sexp
 	type nonlink_seq_t = Node.nonlink_node_t list with sexp
-	type textual_seq_t = Node.textual_node_t list with sexp
-
-	type textual_node_t =
-		[ `Plain of plain_t
-		| `Entity of entity_t
-		] with sexp
 
 	type nonlink_node_t =
-		[ textual_node_t
+		[ `Plain of plain_t
+		| `Entity of entity_t
 		| `Math of Math.t
 		| `Bold of super_seq_t
 		| `Emph of super_seq_t
@@ -61,8 +56,8 @@ sig
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] with sexp
 
-	val plain: plain_t -> ([> textual_node_t ], [> `Composition ]) t
-	val entity: entity_t -> ([> textual_node_t ], [> `Composition ]) t
+	val plain: plain_t -> ([> nonlink_node_t ], [> `Composition ]) t
+	val entity: entity_t -> ([> nonlink_node_t ], [> `Composition ]) t
 	val math: Math.t -> ([> nonlink_node_t ], [> `Composition ]) t
 	val bold: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
 	val emph: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
@@ -83,15 +78,10 @@ end =
 struct
 	type super_seq_t = Node.super_node_t list with sexp
 	type nonlink_seq_t = Node.nonlink_node_t list with sexp
-	type textual_seq_t = Node.textual_node_t list with sexp
-
-	type textual_node_t =
-		[ `Plain of plain_t
-		| `Entity of entity_t
-		] with sexp
 
 	type nonlink_node_t =
-		[ textual_node_t
+		[ `Plain of plain_t
+		| `Entity of entity_t
 		| `Math of Math.t
 		| `Bold of super_seq_t
 		| `Emph of super_seq_t
