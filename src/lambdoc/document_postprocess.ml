@@ -20,12 +20,13 @@ open Document_node
 open Document_block
 open Document_features
 open Document_ghost
-open Document_tabular
 open Document_settings
 open Document_error
 open Document_features
 open Document_permissions
 open Document_math
+open Document_code
+open Document_tabular
 open Document_ambivalent
 
 
@@ -125,7 +126,7 @@ let process_document feature_map document_ast =
 
 
 	(**	This subfunction returns the language used for syntax highlighting.
-		It invokes the utility function from the Highlight module, and adds
+		It invokes the utility function from the Code module, and adds
 		an error if the language is unknown.
 	*)
 	and get_language comm = function
@@ -135,9 +136,9 @@ let process_document feature_map document_ast =
 			None
 		| Some other ->
 			try
-				Some (Highlight.lang_of_string other)
+				Some (Code.lang_of_string other)
 			with
-				Highlight.Unknown_language x ->
+				Code.Unknown_language x ->
 					let msg = Error.Unknown_language (comm.Ast.comm_tag, x) in
 					DynArray.add errors (comm.Ast.comm_linenum, msg);
 					None
@@ -515,7 +516,7 @@ let process_document feature_map document_ast =
 		| `AST_code (comm, txt) ->
 			let elem () =
 				let lang = get_language comm comm.Ast.comm_secondary in
-				let highlight = Highlight.from_string lang txt
+				let highlight = Code.from_string lang txt
 				and alignment = get_alignment comm comm.Ast.comm_extra
 				in Some (Block.code alignment highlight)
 			in check_comm comm `Feature_code None elem

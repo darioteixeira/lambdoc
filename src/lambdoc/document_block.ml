@@ -17,8 +17,9 @@ TYPE_CONV_PATH "Document"
 open Document_basic
 open Document_node
 open Document_ref
-open Document_tabular
 open Document_math
+open Document_code
+open Document_tabular
 
 
 (********************************************************************************)
@@ -148,7 +149,7 @@ sig
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
 	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
 	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-	type code_block_t = [ `Code of Alignment.t * Highlight.t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * Code.t ] with sexp 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
@@ -257,7 +258,7 @@ sig
 		([> quote_block_t ], 'b) t
 	val math: Alignment.t -> Math.t ->
 		([> math_block_t ], [> `Composition]) t
-	val code: Alignment.t -> Highlight.t ->
+	val code: Alignment.t -> Code.t ->
 		([> code_block_t ], [> `Composition]) t
 	val verbatim: Alignment.t -> raw_t ->
 		([> verbatim_block_t ], [> `Composition]) t
@@ -287,7 +288,7 @@ struct
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
 	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
 	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-	type code_block_t = [ `Code of Alignment.t * Highlight.t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * Code.t ] with sexp 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
 	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
