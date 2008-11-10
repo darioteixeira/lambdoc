@@ -54,10 +54,6 @@ type tag_t = string with sexp
 *)
 type 'a plus_t = 'a * 'a list with sexp
 
-type mathtex_t = string with sexp
-
-type mathml_t = string with sexp
-
 
 (********************************************************************************)
 (**	{2 Basic auxiliary functions}						*)

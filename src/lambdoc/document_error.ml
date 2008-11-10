@@ -66,8 +66,8 @@ struct
 		| Unknown_simple_command of tag_t
 		| Duplicate_label of tag_t * ref_t
 		| Invalid_column_specifier of tag_t * char
-		| Invalid_mathtex of mathtex_t
-		| Invalid_mathml of mathml_t
+		| Invalid_mathtex of string
+		| Invalid_mathml of string
 		| Wrong_column_number of int * int * int
 		| Empty_target of tag_t * ref_t
 		| Wrong_target of tag_t * target_t * target_t * ref_t

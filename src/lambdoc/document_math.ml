@@ -17,25 +17,6 @@ open Document_basic
 
 
 (********************************************************************************)
-(*	{2 Helper functions}							*)
-(********************************************************************************)
-
-(**	Descends down the XML tree output by Blahtex, looking for a tag called
-	"markup" which signals the beginning of the actual MathML data.
-*)
-let rec get_markup xml = match Xml.tag xml with
-	| "markup" ->
-		Xml.Element ("math", [], Xml.children xml)
-	| _ ->
-		let children = Xml.children xml
-		in match children with
-			| []    -> failwith "oops1"
-			| [one] -> get_markup one
-			| _     -> failwith "oops2"
-
-
-
-(********************************************************************************)
 (*	{2 Math module}								*)
 (********************************************************************************)
 
@@ -44,49 +25,39 @@ sig
 	exception Invalid_mathtex
 	exception Invalid_mathml
 
-	type internal_t = mathml_t with sexp
+	type t with sexp
 
-	type t =
-		| Mathtex of mathtex_t * internal_t
-		| Mathml of mathml_t * internal_t
-		with sexp
-
-	val from_mathtex: mathtex_t -> t
-	val from_mathml: mathml_t -> t
-	val to_mathtex: t -> mathtex_t
-	val to_mathml: t -> mathml_t
+	val from_mathtex: string -> t
+	val from_mathml: string -> t
+	val to_inline_xhtml: t -> [> `Span ] XHTML.M.elt
+	val to_block_xhtml: t -> [> `Div ] XHTML.M.elt
 end =
 struct
 	exception Invalid_mathtex
 	exception Invalid_mathml
 
-	type internal_t = mathml_t with sexp
-
 	type t =
-		| Mathtex of mathtex_t * internal_t
-		| Mathml of mathml_t * internal_t
-		with sexp
+		{
+		mathtex: string option;
+		mathml: string;
+		} with sexp
 
 	let from_mathtex txt =
-		let (in_ch, out_ch) = Unix.open_process "/usr/local/bin/blahtex --mathml" in
-		output_string out_ch txt;
-		flush out_ch;
-		close_out out_ch;
-		let xml = Xml.parse_in in_ch in
-		let markup = get_markup xml in
-		let conversion = Xml.to_string markup in
-		let _ = Unix.close_process (in_ch, out_ch)
-		in Mathtex (txt, conversion)
+		{
+		mathtex = Some txt;
+		mathml = Blahcaml.safe_mathml_from_tex txt;
+		}
 
 	let from_mathml txt =
-		Mathml (txt, "<math>" ^ txt ^ "</math>")
+		{
+		mathtex = None;
+		mathml = Blahcaml.sanitize_mathml txt;
+		}
 
-	let to_mathtex = function
-		| Mathtex (mathtex, _)	-> mathtex
-		| Mathml _		-> failwith "MathML -> TeX conversion not implemented yet"
+	let to_inline_xhtml math =
+		XHTML.M.unsafe_data math.mathml
 
-	let to_mathml = function
-		| Mathtex (_, internal)	-> internal
-		| Mathml (_, internal)	-> internal
+	let to_block_xhtml math =
+		XHTML.M.unsafe_data math.mathml
 end
 

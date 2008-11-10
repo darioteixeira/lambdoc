@@ -163,8 +163,7 @@ let write_valid_document settings classname doc =
 		| `Entity txt ->
 			XHTML.M.entity txt
 		| `Math math ->
-			let elem : [> `Span] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
-			in XHTML.M.span ~a:[a_class ["doc_math"]] [elem]
+			XHTML.M.span ~a:[a_class ["doc_math"]] [Math.to_inline_xhtml math]
 		| `Bold seq ->
 			XHTML.M.b (write_super_seq seq)
 		| `Emph seq ->
@@ -344,8 +343,7 @@ let write_valid_document settings classname doc =
 
 	and write_math_block = function
 		| `Math (align, math) ->
-			let elem : [> `Div] XHTML.M.elt = XHTML.M.unsafe_data (Math.to_mathml math)
-			in XHTML.M.div ~a:[a_class ["doc_math"; make_align align]] [elem]
+			XHTML.M.div ~a:[a_class ["doc_math"; make_align align]] [Math.to_block_xhtml math]
 
 
 	and write_code_block = function
