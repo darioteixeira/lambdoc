@@ -43,16 +43,24 @@ struct
 		} with sexp
 
 	let from_mathtex txt =
-		{
-		mathtex = Some txt;
-		mathml = Blahcaml.safe_mathml_from_tex txt;
-		}
+		try
+			{
+			mathtex = Some txt;
+			mathml = Blahcaml.safe_mathml_from_tex txt;
+			}
+		with
+			| Blahcaml.Blahtex_error _	-> raise Invalid_mathtex
+			| Blahcaml.Unicode_error 	-> raise Invalid_mathtex
+			| _				-> raise Invalid_mathtex
 
 	let from_mathml txt =
-		{
-		mathtex = None;
-		mathml = Blahcaml.sanitize_mathml txt;
-		}
+		try
+			{
+			mathtex = None;
+			mathml = Blahcaml.sanitize_mathml txt;
+			}
+		with
+			| _				-> raise Invalid_mathml
 
 	let to_inline_xhtml math =
 		XHTML.M.unsafe_data math.mathml
