@@ -17,6 +17,7 @@ open Document_ref
 open Document_block
 open Document_ghost
 open Document_settings
+open Document_variety
 
 
 (********************************************************************************)
@@ -90,13 +91,13 @@ struct
 		}
 
 	let serialize_manuscript doc =
-		Sexplib.Sexp.to_string_mach (sexp_of_t () doc)
+		Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
 
 	let serialize_composition =
 		serialize_manuscript
 
 	let deserialize_manuscript str =
-		t_of_sexp () (Sexplib.Sexp.of_string str)
+		t_of_sexp Variety.t_of_sexp (Sexplib.Sexp.of_string str)
 
 	let deserialize_composition =
 		deserialize_manuscript

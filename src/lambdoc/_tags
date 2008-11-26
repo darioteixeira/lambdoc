@@ -11,6 +11,7 @@ true: pkg_threads, pkg_unix, pkg_extlib, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexpli
 <document_ref.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_tabular.*>: pkg_sexplib.syntax, syntax_camlp4o
 <document_valid.*>: pkg_sexplib.syntax, syntax_camlp4o
+<document_variety.*>: pkg_sexplib.syntax, syntax_camlp4o
 <readers>: include
 <writers>: include
 <*.cmx>: for-pack(Lambdoc)

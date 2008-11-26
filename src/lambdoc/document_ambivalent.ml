@@ -19,6 +19,7 @@ open Document_block
 open Document_ghost
 open Document_settings
 open Document_error
+open Document_variety
 open Document_valid
 open Document_invalid
 
@@ -57,6 +58,11 @@ sig
 	val make_invalid_composition:
 		Error.t list ->
 		composition_t
+	
+	val serialize_manuscript: manuscript_t -> string
+	val serialize_composition: composition_t -> string
+	val deserialize_manuscript: string -> manuscript_t
+	val deserialize_composition: string -> composition_t
 end =
 struct
 	type 'a t =
@@ -79,5 +85,17 @@ struct
 
 	let make_invalid_composition errors =
 		`Invalid (Invalid.make_composition errors)
+
+	let serialize_manuscript doc =
+		Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
+
+	let serialize_composition =
+		serialize_manuscript
+
+	let deserialize_manuscript str =
+		t_of_sexp Variety.t_of_sexp (Sexplib.Sexp.of_string str)
+
+	let deserialize_composition =
+		deserialize_manuscript
 end
 
