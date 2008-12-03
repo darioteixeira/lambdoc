@@ -8,11 +8,13 @@
 *)
 (********************************************************************************)
 
-(**	Definitios pertaining to internal document references and numbering.
+(**	Definitions pertaining to internal document references and numbering.
 *)
 
 TYPE_CONV_PATH "Document"
 
+open ExtList
+open ExtString
 open Document_basic
 
 
@@ -31,7 +33,7 @@ struct
 	type t =
 		[ `Auto_label of ref_t
 		| `User_label of ref_t
-		] with sexp
+		] (*with sexp*)
 end
 
 
@@ -43,86 +45,113 @@ end
 *)
 module Order:
 sig
-	(**	There are two different ordering schemes: [Numeric] and [Appendic].
-		The former is used for main body sections, figures, etc, and is
-		entirely nummeric; the latter is used for appendix sections, and
-		uses an alphabetic character for the first level.
+	(************************************************************************)
+	(**	{3 Exceptions}							*)
+	(************************************************************************)
+
+	exception Invalid_appendix_string of string
+
+
+	(************************************************************************)
+	(**	{3 Public types}						*)
+	(************************************************************************)
+
+	(**	We support a three-level hierarchy, equivalent to XHTMl H1, H2, and H3.
 	*)
-	type ordering_scheme_t =
-		| Numeric of int list
-		| Appendic of int list
-		with sexp
+	type hierarchy_t =
+		| Level1 of int
+		| Level2 of int * int
+		| Level3 of int * int * int
 
-
-	(**	A block has several variants available for its ordering.  Different
-		types of blocks allow a different subset of these ordering variants:
-		{ul
-			{li [`Auto_order]: an automatically attributed ordering;}
-			{li [`User_order]: a fixed ordering given by the user;}
-			{li [`None_order]: the ordering should skip the block.}}
+	(**	There are three different ordering schemes: [`Ordinal_scheme], [`Section_scheme],
+		and [`Appendix_scheme].  The first is used, for example, for numbering wrappers and
+		uses a single numeric counter.  The second is used exclusively for main body sections
+		and has several numeric counters encoding an hierarchy.  As the last, it is used only
+		in appendix sections and has a hierarchical structure whose first level uses an
+		alphabetic character (only when displayed; internally it's still an integer).
 	*)
 
-	type auto_order_t = [`Auto_order of ordering_scheme_t] with sexp
-	type user_order_t = [`User_order of string] with sexp
-	type none_order_t = [`None_order] with sexp
+	type ordinal_scheme_t = [ `Ordinal_scheme of int ] (*with sexp*)
+	type section_scheme_t = [ `Section_scheme of hierarchy_t ] (*with sexp*)
+	type appendix_scheme_t = [ `Appendix_scheme of hierarchy_t ] (*with sexp*)
+	type 'a scheme_t = 'a constraint 'a = [< ordinal_scheme_t | section_scheme_t | appendix_scheme_t ] (*with sexp*)
 
-	(**	Ordering variants allowed for user sectional blocks.  Though all
-		variants are allowed, there are two other restrictions to take
-		into account: [`User_order] variants are only allowed in non-top
-		level blocks, and non-top level blocks may only use [`User_order]
-		or [`None] variants (these two are not enforced by the type-system).
-	*)
-	type user_sectional_order_t =
-		[ auto_order_t
-		| user_order_t
-		| none_order_t
-		] with sexp
 
-	(**	Variants allowed for the preset sectional blocks (these are the TOC,
-		the bibliography, and the list of notes).  Note that only the [`None]
-		variant is allowed.
+	(**	A block's ordering can be assigned by any of three sources: [`Auto_given] means that
+		the ordering should be automatically given by the system; [`User_given] means that the
+		ordering is manually given by the user; finally, when the block should not have any
+		ordering at all, [`None_given] is used.  Note that different classes of blocks allow
+		a different subset of these ordering variants.  Moreover, the first two variants must
+		be parametrised over the actual ordering scheme used (as it makes no sense to talk of
+		an ordering scheme when [`None_given] is used).
 	*)
-	type preset_sectional_order_t =
-		[ none_order_t
-		] with sexp
 
-	(**	Variants allowed for wrapper blocks.  Note that [`None] variants are
-		not allowed.  There are furthermore two additional restrictions to
-		take into account: [`Auto_order] variants are only allowed outside
-		of subpages, and figures inside of subpages may only use [`User_order]
-		variants (these two are not enforced by the type-system).
-	*)
-	type wrapper_order_t =
-		[ auto_order_t
-		| user_order_t
-		| none_order_t
-		] with sexp
+	type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
+	type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
+	type none_given_t = [ `None_given ] (*with sexp*)
+	type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
 
-	(**	Ordering variants allowed for ghost blocks (bibliography entries
-		and notes).  Only automatic numbering is allowed.
+
+	(**	The ordering type for body sectional blocks.  It uses a [`Section_scheme],
+		and allows for all giver variants.  There are two other restrictions to take
+		into account: [`User_given] is only allowed in non-top level blocks, while
+		non-top level blocks may only use [`User_given] or [`None_given] variants.
+		These restrictions are not enforced by the type system; the type constructor
+		takes care of them instead.
 	*)
-	type ghost_order_t =
-		[ auto_order_t
-		] with sexp
+	type body_sectional_order_t = (section_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+
+
+	(**	The ordering type for appendix sectional blocks.  It is mostly identical
+		to the {!body_sectional_order_t}, the only difference being the use of an
+		[`Appendix_scheme] instead of a [`Section_scheme].
+	*)
+	type appendix_sectional_order_t = (appendix_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+
+
+	(**	The ordering type for preset sectional blocks (these are the TOC, the bibliography,
+		and the list of notes).  Technically it uses a [`Section_scheme], though that is
+		largely irrelevant because the only allowed given order is [`None_given].
+	*)
+	type preset_sectional_order_t = (section_scheme_t, none_given_t) given_t (*with sexp*)
+
+
+	(**	The ordering type for wrapper blocks.  Wrappers use a ordinal scheme, and do
+		not allow for the [`None_given] variant.  Furthermore, there are two additional
+		restrictions to take into account: [`Auto_given] is only allowed outside of
+		subpages, and wrappers inside of subpages may only use [`User_given].  These
+		restrictions are enforced by the type constructor, not the type system.
+	*)
+	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+
+
+	(**	The ordering type for ghost blocks (bibliography entries and notes).
+		The scheme is ordinal and only automatic numbering is allowed.
+	*)
+	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) given_t (*with sexp*)
+
 
 	(**	The various types of wrappers.
 	*)
 	type wrapper_t =
+		private
 		| Algorithm_wrapper
 		| Equation_wrapper
 		| Figure_wrapper
 		| Table_wrapper
-		with sexp
+		(*with sexp*)
+
 
 	(**	The various variations of orderings for visible blocks.
 	*)
-	type block_order_t =
+	type visible_order_t =
 		private
-		| Body_sectional_order of user_sectional_order_t
-		| Appendix_sectional_order of user_sectional_order_t
+		| Body_sectional_order of body_sectional_order_t
+		| Appendix_sectional_order of appendix_sectional_order_t
 		| Preset_sectional_order of preset_sectional_order_t
 		| Wrapper_order of wrapper_t * wrapper_order_t
-		with sexp
+		(*with sexp*)
+
 
 	(**	At the highest level, an ordered block can either be visible
 		(if it can be reference by [\ref], [\sref], or [\mref]), a
@@ -131,83 +160,284 @@ sig
 	*)
 	type t =
 		private
-		| Block_order of block_order_t
+		| Visible_order of visible_order_t
 		| Bib_order of ghost_order_t
 		| Note_order of ghost_order_t
-		with sexp
+		(*with sexp*)
 
-	(**	Constructor functions.
+
+	(************************************************************************)
+	(**	{3 Public functions}						*)
+	(************************************************************************)
+
+	(************************************************************************)
+	(**	{4 Utility functions}						*)
+	(************************************************************************)
+
+	(**	This function converts an ordinal number into a sequence of uppercase
+		letters used for numbering appendices.  Ordinal 1 is converted to "A",
+		26 to "Z", 27 to "AA", and so forth (note that this is not quite the
+                same as conversion to base 26).  This function is the inverse of
+		{!int_of_alphaseq}.
+	*)
+	val alphaseq_of_int: int -> string
+
+
+	(*	This function converts a sequence of uppercase letters into its ordinal
+		representation.  It is the inverse of {!alphaseq_of_int}.  Note that
+		the maximum sequence length is capped at 3, which is far more than any
+		reasonable document will require (18278 appendices should be enough
+		for everybody).
+	*)
+	val int_of_alphaseq: string -> int
+
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors}					*)
+	(************************************************************************)
+
+	(**	Counters are an automatic source of numbering.  Therefore,
+		all of these functions return an [`Auto_given] value.
 	*)
 
-	val body_sectional_order: user_sectional_order_t -> t
-	val appendix_sectional_order: user_sectional_order_t -> t
-	val preset_sectional_order: preset_sectional_order_t -> t
-	val algorithm_order: wrapper_order_t -> t
-	val equation_order: wrapper_order_t -> t
-	val figure_order: wrapper_order_t -> t
-	val table_order: wrapper_order_t -> t
+	val ordinal_of_counter: int -> ordinal_scheme_t auto_given_t
+	val section_of_counter: int -> section_scheme_t auto_given_t
+	val subsection_of_counter: int -> int -> section_scheme_t auto_given_t
+	val subsubsection_of_counter: int -> int -> int -> section_scheme_t auto_given_t
+	val appendix_of_counter: int -> appendix_scheme_t auto_given_t
+	val subappendix_of_counter: int -> int -> appendix_scheme_t auto_given_t
+	val subsubappendix_of_counter: int -> int -> int -> appendix_scheme_t auto_given_t
+
+
+	(**	Strings are provided by the users themselves.  Therefore,
+		all of these functions return an [`User_given] value.
+	*)
+
+	val ordinal_of_string: string -> ordinal_scheme_t user_given_t
+	val section_of_string: string -> section_scheme_t user_given_t
+	val subsection_of_string: string -> section_scheme_t user_given_t
+	val subsubsection_of_string: string -> section_scheme_t user_given_t
+	val appendix_of_string: string -> appendix_scheme_t user_given_t
+	val subappendix_of_string: string -> appendix_scheme_t user_given_t
+	val subsubappendix_of_string: string -> appendix_scheme_t user_given_t
+
+
+	(**	Constructor used when no ordering is to be assigned.
+		This function returns a [`None_given] value.
+	*)
+	val ordering_none: unit -> none_given_t
+
+	(************************************************************************)
+	(**	{4 Top-level constructor functions}				*)
+	(************************************************************************)
+
+	val body_sectional_order: body_sectional_order_t -> bool -> t
+	val appendix_sectional_order: appendix_sectional_order_t -> bool -> t
+	val preset_sectional_order: preset_sectional_order_t-> t
+	val algorithm_order: wrapper_order_t -> bool -> t
+	val equation_order: wrapper_order_t -> bool -> t
+	val figure_order: wrapper_order_t -> bool -> t
+	val table_order: wrapper_order_t -> bool -> t
 	val bib_order: ghost_order_t -> t
 	val note_order: ghost_order_t -> t
 end =
 struct
-	type ordering_scheme_t =
-		| Numeric of int list
-		| Appendic of int list
-		with sexp
+	(************************************************************************)
+	(**	{3 Exceptions}							*)
+	(************************************************************************)
 
-	type auto_order_t = [`Auto_order of ordering_scheme_t] with sexp
-	type user_order_t = [`User_order of string] with sexp
-	type none_order_t = [`None_order] with sexp
+	exception Invalid_appendix_string of string
 
-	type user_sectional_order_t =
-		[ auto_order_t
-		| user_order_t
-		| none_order_t
-		] with sexp
 
-	type preset_sectional_order_t =
-		[ none_order_t
-		] with sexp
+	(************************************************************************)
+	(**	{3 Public types}						*)
+	(************************************************************************)
 
-	type wrapper_order_t =
-		[ auto_order_t
-		| user_order_t
-		| none_order_t
-		] with sexp
+	type hierarchy_t =
+		| Level1 of int
+		| Level2 of int * int
+		| Level3 of int * int * int
 
-	type ghost_order_t =
-		[ auto_order_t
-		] with sexp
+	type ordinal_scheme_t = [ `Ordinal_scheme of int ] (*with sexp*)
+	type section_scheme_t = [ `Section_scheme of hierarchy_t ] (*with sexp*)
+	type appendix_scheme_t = [ `Appendix_scheme of hierarchy_t ] (*with sexp*)
+	type 'a scheme_t = 'a constraint 'a = [< ordinal_scheme_t | section_scheme_t | appendix_scheme_t ] (*with sexp*)
+
+	type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
+	type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
+	type none_given_t = [ `None_given ] (*with sexp*)
+	type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+
+	type body_sectional_order_t = (section_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+	type appendix_sectional_order_t = (appendix_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+	type preset_sectional_order_t = (section_scheme_t, none_given_t) given_t (*with sexp*)
+	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) given_t (*with sexp*)
 
 	type wrapper_t =
 		| Algorithm_wrapper
 		| Equation_wrapper
 		| Figure_wrapper
 		| Table_wrapper
-		with sexp
+		(*with sexp*)
 
-	type block_order_t =
-		| Body_sectional_order of user_sectional_order_t
-		| Appendix_sectional_order of user_sectional_order_t
+	type visible_order_t =
+		| Body_sectional_order of body_sectional_order_t
+		| Appendix_sectional_order of appendix_sectional_order_t
 		| Preset_sectional_order of preset_sectional_order_t
 		| Wrapper_order of wrapper_t * wrapper_order_t
-		with sexp
+		(*with sexp*)
 
 	type t =
-		| Block_order of block_order_t
+		| Visible_order of visible_order_t
 		| Bib_order of ghost_order_t
 		| Note_order of ghost_order_t
-		with sexp
+		(*with sexp*)
 
-	let body_sectional_order o = Block_order (Body_sectional_order o)
-	let appendix_sectional_order o = Block_order (Appendix_sectional_order o)
-	let preset_sectional_order o = Block_order (Preset_sectional_order o)
-	let algorithm_order o = Block_order (Wrapper_order (Algorithm_wrapper, o))
-	let equation_order o = Block_order (Wrapper_order (Equation_wrapper, o))
-	let figure_order o = Block_order (Wrapper_order (Figure_wrapper,  o))
-	let table_order o = Block_order (Wrapper_order (Table_wrapper, o))
-	let bib_order o = Bib_order o
-	let note_order o = Note_order o
+
+	(************************************************************************)
+	(**	{3 Public functions}						*)
+	(************************************************************************)
+
+	(************************************************************************)
+	(**	{4 Utility functions}						*)
+	(************************************************************************)
+
+	let int_of_alphaseq =
+		let rex = Pcre.regexp ("^[A-Z]{1,3}$")
+		in fun str -> match Pcre.pmatch ~rex str with
+			| true ->
+				let chars = List.rev (String.explode str) in
+				let pow26 e = List.fold_left ( * ) 1 (List.make e 26) in
+				let pos_value pos c = (pow26 pos) * ((int_of_char c) - 64) in
+				let values = List.mapi pos_value chars
+				in List.fold_left (+) 0 values
+			| false ->
+				raise (Invalid_appendix_string str)
+
+	let alphaseq_of_int num =
+		let base = 26 in
+		let rec from_base10 num =
+			let num = num - 1
+			in if num < base
+			then
+				[num]
+			else
+				let rem = num mod base
+				and num = num / base
+				in rem::(from_base10 num) in
+		let alpha_of_int num =
+			String.of_char (char_of_int (65 + num)) in
+		let rems = from_base10 num
+		in List.fold_left (^) "" (List.rev_map alpha_of_int rems)
+
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors}					*)
+	(************************************************************************)
+
+	let ordinal_of_counter c =
+		`Auto_given (`Ordinal_scheme c)
+
+	let section_of_counter c1 =
+		`Auto_given (`Section_scheme (Level1 c1))
+
+	let subsection_of_counter c1 c2 =
+		`Auto_given (`Section_scheme (Level2 (c1, c2)))
+
+	let subsubsection_of_counter c1 c2 c3 =
+		`Auto_given (`Section_scheme (Level3 (c1, c2, c3)))
+
+	let appendix_of_counter c1 =
+		`Auto_given (`Appendix_scheme (Level1 c1))
+
+	let subappendix_of_counter c1 c2 =
+		`Auto_given (`Appendix_scheme (Level2 (c1, c2)))
+
+	let subsubappendix_of_counter c1 c2 c3 =
+		`Auto_given (`Appendix_scheme (Level3 (c1, c2, c3)))
+
+	let counters_of_string funcs s =
+		let parts = String.nsplit s "."
+		in List.map2 (fun func part -> func part) funcs parts
+
+	let ordinal_of_string s =
+		`User_given (`Ordinal_scheme (int_of_string s))
+
+	let section_of_string s =
+		`User_given (`Section_scheme (Level1 (int_of_string s)))
+
+	let subsection_of_string s =
+		let parts = counters_of_string [int_of_string; int_of_string] s
+		in match parts with
+			| [a; b] 	-> `User_given (`Section_scheme (Level2 (a, b)))
+			| _		-> failwith "Unexpected list length"
+		
+	let subsubsection_of_string s =
+		let parts = counters_of_string [int_of_string; int_of_string; int_of_string] s
+		in match parts with
+			| [a; b; c] 	-> `User_given (`Section_scheme (Level3 (a, b, c)))
+			| _		-> failwith "Unexpected list length"
+
+	let appendix_of_string s =
+		`User_given (`Appendix_scheme (Level1 (int_of_alphaseq s)))
+
+	let subappendix_of_string s =
+		let parts = counters_of_string [int_of_alphaseq; int_of_string] s
+		in match parts with
+			| [a; b] 	-> `User_given (`Appendix_scheme (Level2 (a, b)))
+			| _		-> failwith "Unexpected list length"
+
+	let subsubappendix_of_string s =
+		let parts = counters_of_string [int_of_alphaseq; int_of_string; int_of_string] s
+		in match parts with
+			| [a; b; c] 	-> `User_given (`Appendix_scheme (Level3 (a, b, c)))
+			| _		-> failwith "Unexpected list length"
+
+	let ordering_none () = `None_given
+
+
+	(************************************************************************)
+	(**	{4 Top-level constructor functions}				*)
+	(************************************************************************)
+
+	let body_sectional_order o is_top = match (o, is_top) with
+		| (`User_given _, false)
+		| (`Auto_given _, true)
+		| (`None_given, _)	-> Visible_order (Body_sectional_order o)
+		| _			-> failwith "Does not satisfy body_sectional_order rules!"
+
+	let appendix_sectional_order o is_top = match (o, is_top) with
+		| (`User_given _, false)
+		| (`Auto_given _, true)
+		| (`None_given, _)	-> Visible_order (Appendix_sectional_order o)
+		| _			-> failwith "Does not satisfy appendix_sectional_order rules!"
+
+	let preset_sectional_order o =
+		Visible_order (Preset_sectional_order o)
+
+	let wrapper_order wrapper o is_top = match (o, is_top) with
+		| (`User_given _, false)
+		| (`Auto_given _, true)	-> Visible_order (Wrapper_order (wrapper, o))
+		| _			-> failwith "Does not satisfy wrapper_order rules!"
+
+	let algorithm_order =
+		wrapper_order Algorithm_wrapper
+
+	let equation_order =
+		wrapper_order Equation_wrapper
+
+	let figure_order = 
+		wrapper_order Figure_wrapper
+
+	let table_order = 
+		wrapper_order Table_wrapper
+
+	let bib_order o =
+		Bib_order o
+
+	let note_order o =
+		Note_order o
 end
 
 
@@ -223,6 +453,6 @@ end
 *)
 module Label_dict =
 struct
-	type t = (Label.t, Order.t) Hashtbl.t with sexp
+	type t = (Label.t, Order.t) Hashtbl.t (*with sexp*)
 end
 
