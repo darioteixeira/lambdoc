@@ -25,7 +25,7 @@ sig
 	exception Invalid_mathtex
 	exception Invalid_mathml
 
-	type t with sexp
+	type t (*with sexp*)
 
 	val from_mathtex: string -> t
 	val from_mathml: string -> t
@@ -40,7 +40,7 @@ struct
 		{
 		mathtex: string option;
 		mathml: string;
-		} with sexp
+		} (*with sexp*)
 
 	let from_mathtex txt =
 		try

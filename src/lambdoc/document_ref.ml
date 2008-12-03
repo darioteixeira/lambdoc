@@ -56,12 +56,24 @@ sig
 	(**	{3 Public types}						*)
 	(************************************************************************)
 
-	(**	We support a three-level hierarchy, equivalent to XHTMl H1, H2, and H3.
+	(**	We support a three-level hierarchy, equivalent to XHTML's H1, H2, and H3.
 	*)
 	type hierarchy_t =
+		private
 		| Level1 of int
 		| Level2 of int * int
 		| Level3 of int * int * int
+
+
+	(**	Ordinal counter.
+	*)
+	type ordinal_counter_t
+
+
+	(**	Hierarchy counter.
+	*)
+	type hierarchy_counter_t
+
 
 	(**	There are three different ordering schemes: [`Ordinal_scheme], [`Section_scheme],
 		and [`Appendix_scheme].  The first is used, for example, for numbering wrappers and
@@ -89,7 +101,7 @@ sig
 	type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
 	type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
 	type none_given_t = [ `None_given ] (*with sexp*)
-	type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+	type ('a, 'b) order_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
 
 
 	(**	The ordering type for body sectional blocks.  It uses a [`Section_scheme],
@@ -99,21 +111,21 @@ sig
 		These restrictions are not enforced by the type system; the type constructor
 		takes care of them instead.
 	*)
-	type body_sectional_order_t = (section_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+	type body_sectional_order_t = (section_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
 
 
 	(**	The ordering type for appendix sectional blocks.  It is mostly identical
 		to the {!body_sectional_order_t}, the only difference being the use of an
 		[`Appendix_scheme] instead of a [`Section_scheme].
 	*)
-	type appendix_sectional_order_t = (appendix_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+	type appendix_sectional_order_t = (appendix_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
 
 
 	(**	The ordering type for preset sectional blocks (these are the TOC, the bibliography,
 		and the list of notes).  Technically it uses a [`Section_scheme], though that is
 		largely irrelevant because the only allowed given order is [`None_given].
 	*)
-	type preset_sectional_order_t = (section_scheme_t, none_given_t) given_t (*with sexp*)
+	type preset_sectional_order_t = (section_scheme_t, none_given_t) order_t (*with sexp*)
 
 
 	(**	The ordering type for wrapper blocks.  Wrappers use a ordinal scheme, and do
@@ -122,13 +134,13 @@ sig
 		subpages, and wrappers inside of subpages may only use [`User_given].  These
 		restrictions are enforced by the type constructor, not the type system.
 	*)
-	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) order_t (*with sexp*)
 
 
 	(**	The ordering type for ghost blocks (bibliography entries and notes).
 		The scheme is ordinal and only automatic numbering is allowed.
 	*)
-	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) given_t (*with sexp*)
+	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) order_t (*with sexp*)
 
 
 	(**	The various types of wrappers.
@@ -171,61 +183,63 @@ sig
 	(************************************************************************)
 
 	(************************************************************************)
-	(**	{4 Utility functions}						*)
+	(**	{4 Printers}							*)
 	(************************************************************************)
 
-	(**	This function converts an ordinal number into a sequence of uppercase
-		letters used for numbering appendices.  Ordinal 1 is converted to "A",
-		26 to "Z", 27 to "AA", and so forth (note that this is not quite the
-                same as conversion to base 26).  This function is the inverse of
-		{!int_of_alphaseq}.
-	*)
-	val alphaseq_of_int: int -> string
-
-
-	(*	This function converts a sequence of uppercase letters into its ordinal
-		representation.  It is the inverse of {!alphaseq_of_int}.  Note that
-		the maximum sequence length is capped at 3, which is far more than any
-		reasonable document will require (18278 appendices should be enough
-		for everybody).
-	*)
-	val int_of_alphaseq: string -> int
+	val string_of_order: ('a, 'b) order_t -> string
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors}					*)
+	(**	{4 Creation of counters}					*)
+	(************************************************************************)
+
+	val make_ordinal_counter: unit -> ordinal_counter_t ref
+	val make_hierarchy_counter: unit -> hierarchy_counter_t ref
+
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors from counters}			*)
 	(************************************************************************)
 
 	(**	Counters are an automatic source of numbering.  Therefore,
 		all of these functions return an [`Auto_given] value.
 	*)
 
-	val ordinal_of_counter: int -> ordinal_scheme_t auto_given_t
-	val section_of_counter: int -> section_scheme_t auto_given_t
-	val subsection_of_counter: int -> int -> section_scheme_t auto_given_t
-	val subsubsection_of_counter: int -> int -> int -> section_scheme_t auto_given_t
-	val appendix_of_counter: int -> appendix_scheme_t auto_given_t
-	val subappendix_of_counter: int -> int -> appendix_scheme_t auto_given_t
-	val subsubappendix_of_counter: int -> int -> int -> appendix_scheme_t auto_given_t
+	val ordinal_of_counter:		ordinal_counter_t ref ->	[> ordinal_scheme_t auto_given_t ]
+	val section_of_counter:		hierarchy_counter_t ref ->	[> section_scheme_t auto_given_t ]
+	val subsection_of_counter:	hierarchy_counter_t ref ->	[> section_scheme_t auto_given_t ]
+	val subsubsection_of_counter:	hierarchy_counter_t ref ->	[> section_scheme_t auto_given_t ]
+	val appendix_of_counter:	hierarchy_counter_t ref ->	[> appendix_scheme_t auto_given_t ]
+	val subappendix_of_counter:	hierarchy_counter_t ref ->	[> appendix_scheme_t auto_given_t ]
+	val subsubappendix_of_counter:	hierarchy_counter_t ref ->	[> appendix_scheme_t auto_given_t ]
 
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors from strings}			*)
+	(************************************************************************)
 
 	(**	Strings are provided by the users themselves.  Therefore,
 		all of these functions return an [`User_given] value.
 	*)
 
-	val ordinal_of_string: string -> ordinal_scheme_t user_given_t
-	val section_of_string: string -> section_scheme_t user_given_t
-	val subsection_of_string: string -> section_scheme_t user_given_t
-	val subsubsection_of_string: string -> section_scheme_t user_given_t
-	val appendix_of_string: string -> appendix_scheme_t user_given_t
-	val subappendix_of_string: string -> appendix_scheme_t user_given_t
-	val subsubappendix_of_string: string -> appendix_scheme_t user_given_t
+	val ordinal_of_string:		string -> [> ordinal_scheme_t user_given_t ]
+	val section_of_string:		string -> [> section_scheme_t user_given_t ]
+	val subsection_of_string:	string -> [> section_scheme_t user_given_t ]
+	val subsubsection_of_string:	string -> [> section_scheme_t user_given_t ]
+	val appendix_of_string:		string -> [> appendix_scheme_t user_given_t ]
+	val subappendix_of_string:	string -> [> appendix_scheme_t user_given_t ]
+	val subsubappendix_of_string:	string -> [> appendix_scheme_t user_given_t ]
 
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors from nothing}			*)
+	(************************************************************************)
 
 	(**	Constructor used when no ordering is to be assigned.
 		This function returns a [`None_given] value.
 	*)
-	val ordering_none: unit -> none_given_t
+	val no_ordering: unit -> [> none_given_t ]
+
 
 	(************************************************************************)
 	(**	{4 Top-level constructor functions}				*)
@@ -257,6 +271,15 @@ struct
 		| Level1 of int
 		| Level2 of int * int
 		| Level3 of int * int * int
+	
+	type ordinal_counter_t = int
+
+	type hierarchy_counter_t =
+		{
+		level1: int;
+		level2: int;
+		level3: int;
+		}
 
 	type ordinal_scheme_t = [ `Ordinal_scheme of int ] (*with sexp*)
 	type section_scheme_t = [ `Section_scheme of hierarchy_t ] (*with sexp*)
@@ -266,13 +289,13 @@ struct
 	type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
 	type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
 	type none_given_t = [ `None_given ] (*with sexp*)
-	type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+	type ('a, 'b) order_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
 
-	type body_sectional_order_t = (section_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
-	type appendix_sectional_order_t = (appendix_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
-	type preset_sectional_order_t = (section_scheme_t, none_given_t) given_t (*with sexp*)
-	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
-	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) given_t (*with sexp*)
+	type body_sectional_order_t = (section_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
+	type appendix_sectional_order_t = (appendix_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
+	type preset_sectional_order_t = (section_scheme_t, none_given_t) order_t (*with sexp*)
+	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) order_t (*with sexp*)
+	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) order_t (*with sexp*)
 
 	type wrapper_t =
 		| Algorithm_wrapper
@@ -296,13 +319,15 @@ struct
 
 
 	(************************************************************************)
-	(**	{3 Public functions}						*)
+	(**	{3 Private functions}						*)
 	(************************************************************************)
 
-	(************************************************************************)
-	(**	{4 Utility functions}						*)
-	(************************************************************************)
-
+	(*	This function converts a sequence of uppercase letters into its ordinal
+		representation.  It is the inverse of {!alphaseq_of_int}.  Note that
+		the maximum sequence length is capped at 3, which is far more than any
+		reasonable document will require (18278 appendices should be enough
+		for everybody).
+	*)
 	let int_of_alphaseq =
 		let rex = Pcre.regexp ("^[A-Z]{1,3}$")
 		in fun str -> match Pcre.pmatch ~rex str with
@@ -315,6 +340,12 @@ struct
 			| false ->
 				raise (Invalid_appendix_string str)
 
+	(**	This function converts an ordinal number into a sequence of uppercase
+		letters used for numbering appendices.  Ordinal 1 is converted to "A",
+		26 to "Z", 27 to "AA", and so forth (note that this is not quite the
+                same as conversion to base 26).  This function is the inverse of
+		{!int_of_alphaseq}.
+	*)
 	let alphaseq_of_int num =
 		let base = 26 in
 		let rec from_base10 num =
@@ -332,30 +363,71 @@ struct
 		in List.fold_left (^) "" (List.rev_map alpha_of_int rems)
 
 
+	let string_of_scheme = function
+		| `Ordinal_scheme o				-> string_of_int o
+		| `Section_scheme (Level1 l1)			-> string_of_int l1
+		| `Section_scheme (Level2 (l1, l2))		-> (string_of_int l1) ^ "." ^ (string_of_int l2)
+		| `Section_scheme (Level3 (l1, l2, l3))		-> (string_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
+		| `Appendix_scheme (Level1 l1)			-> alphaseq_of_int l1
+		| `Appendix_scheme (Level2 (l1, l2))		-> (alphaseq_of_int l1) ^ "." ^ (string_of_int l2)
+		| `Appendix_scheme (Level3 (l1, l2, l3))	-> (alphaseq_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
+
+
 	(************************************************************************)
-	(**	{4 {!given_t} constructors}					*)
+	(**	{3 Public functions}						*)
+	(************************************************************************)
+
+	let string_of_order = function
+		| `Auto_given s	-> string_of_scheme s
+		| `User_given s	-> string_of_scheme s
+		| `None_given	-> ""
+
+
+	(************************************************************************)
+	(**	{4 Creation of counters}					*)
+	(************************************************************************)
+
+	let make_ordinal_counter () = ref 0
+
+	let make_hierarchy_counter () = ref {level1 = 0; level2 = 0; level3 = 0}
+
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors from counters}			*)
 	(************************************************************************)
 
 	let ordinal_of_counter c =
-		`Auto_given (`Ordinal_scheme c)
+		incr c;
+		`Auto_given (`Ordinal_scheme !c)
 
-	let section_of_counter c1 =
-		`Auto_given (`Section_scheme (Level1 c1))
+	let section_of_counter c =
+		c := {level1 = !c.level1+1; level2 = 0; level3 = 0;};
+		`Auto_given (`Section_scheme (Level1 !c.level1))
 
-	let subsection_of_counter c1 c2 =
-		`Auto_given (`Section_scheme (Level2 (c1, c2)))
+	let subsection_of_counter c =
+		c := {!c with level2 = !c.level2+1; level3 = 0;};
+		`Auto_given (`Section_scheme (Level2 (!c.level1, !c.level2)))
 
-	let subsubsection_of_counter c1 c2 c3 =
-		`Auto_given (`Section_scheme (Level3 (c1, c2, c3)))
+	let subsubsection_of_counter c =
+		c := {!c with level3 = !c.level3+1;};
+		`Auto_given (`Section_scheme (Level3 (!c.level1, !c.level2, !c.level3)))
 
-	let appendix_of_counter c1 =
-		`Auto_given (`Appendix_scheme (Level1 c1))
+	let appendix_of_counter c =
+		c := {level1 = !c.level1+1; level2 = 0; level3 = 0;};
+		`Auto_given (`Appendix_scheme (Level1 !c.level1))
 
-	let subappendix_of_counter c1 c2 =
-		`Auto_given (`Appendix_scheme (Level2 (c1, c2)))
+	let subappendix_of_counter c =
+		c := {!c with level2 = !c.level2+1; level3 = 0;};
+		`Auto_given (`Appendix_scheme (Level2 (!c.level1, !c.level2)))
 
-	let subsubappendix_of_counter c1 c2 c3 =
-		`Auto_given (`Appendix_scheme (Level3 (c1, c2, c3)))
+	let subsubappendix_of_counter c =
+		c := {!c with level3 = !c.level3+1;};
+		`Auto_given (`Appendix_scheme (Level3 (!c.level1, !c.level2, !c.level3)))
+
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors from strings}			*)
+	(************************************************************************)
 
 	let counters_of_string funcs s =
 		let parts = String.nsplit s "."
@@ -394,7 +466,12 @@ struct
 			| [a; b; c] 	-> `User_given (`Appendix_scheme (Level3 (a, b, c)))
 			| _		-> failwith "Unexpected list length"
 
-	let ordering_none () = `None_given
+
+	(************************************************************************)
+	(**	{4 {!given_t} constructors from nothing}			*)
+	(************************************************************************)
+
+	let no_ordering () = `None_given
 
 
 	(************************************************************************)

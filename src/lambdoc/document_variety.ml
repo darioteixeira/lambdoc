@@ -27,12 +27,12 @@ sig
 	type t =
 		[ `Manuscript
 		| `Composition
-		] with sexp
+		] (*with sexp*)
 end =
 struct
 	type t =
 		[ `Manuscript
 		| `Composition
-		] with sexp
+		] (*with sexp*)
 end
 

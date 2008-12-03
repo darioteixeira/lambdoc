@@ -180,16 +180,18 @@ let convert_to_composition contents =
 			raise (Invalid_composition_subset "toc")
 
 	and convert_top_block = function
+		| `Heading heading ->
+			convert_heading heading
 		| `Title _ ->
 			raise (Invalid_composition_subset "title")
 		| `Subtitle _ ->
 			raise (Invalid_composition_subset "subtitle")
 		| `Abstract _ ->
 			raise (Invalid_composition_subset "abstract")
+		| `Part _ ->
+			raise (Invalid_composition_subset "part")
 		| `Rule ->
 			raise (Invalid_composition_subset "rule")
-		| `Heading heading ->
-			convert_heading heading
 
 	and convert_super_block = function
 		| #Block.top_block_t as blk ->

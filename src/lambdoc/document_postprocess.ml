@@ -54,19 +54,15 @@ let process_document feature_map document_ast =
 	and references = DynArray.create ()
 	and toc = DynArray.create ()
         and labels = Hashtbl.create 50
+	and section_counter = Order.make_hierarchy_counter ()
+	and appendix_counter = Order.make_hierarchy_counter ()
+	and algorithm_counter = Order.make_ordinal_counter ()
+	and equation_counter = Order.make_ordinal_counter ()
+	and figure_counter = Order.make_ordinal_counter ()
+	and table_counter = Order.make_ordinal_counter ()
+	and bib_counter = Order.make_ordinal_counter ()
+	and note_counter = Order.make_ordinal_counter ()
         and auto_label_counter = ref 0
-	and section_counter = ref 0
-	and subsection_counter = ref 0
-	and subsubsection_counter = ref 0
-	and appendix_counter = ref 0
-	and subappendix_counter = ref 0
-	and subsubappendix_counter = ref 0
-	and algorithm_counter = ref 0
-	and equation_counter = ref 0
-	and figure_counter = ref 0
-	and table_counter = ref 0
-	and bib_counter = ref 0
-	and note_counter = ref 0
 	and appendixed = ref false in
 
 
@@ -173,28 +169,6 @@ let process_document feature_map document_ast =
 		| None ->
 			incr auto_label_counter;
 			`Auto_label (string_of_int !auto_label_counter)
-
-
-	(*	This subfunction creates a new wrapper order.  It basically checks whether
-		the ordering for the wrapper was explicitly provided by the user or if we
-		must assign one automatically.  In the latter case, the figure will be issued
-		an empty ordering if it has no caption.
-	*)
-	and make_wrapper_order comm counter =
-		match comm.Ast.comm_order with
-			| None ->
-				incr counter;
-				`Auto_order (Order.Numeric [!counter])
-			| Some thing ->
-				`User_order thing
-
-
-	(*	This subfunction creates a new ghost order.  Since ghost elements do not
-		accept user provided ordering, the order is always computed automatically.
-	*)
-	and make_ghost_order comm counter =
-		incr counter;
-		`Auto_order (Order.Numeric [!counter])
 
 
 	(*	Adds a new reference to the dictionary.
@@ -351,12 +325,11 @@ let process_document feature_map document_ast =
 		| `AST_ref (comm, label) ->
 			let elem () =
 				let target_checker = function
-					| Order.Block_order (Order.Body_sectional_order `None_order)
-					| Order.Block_order (Order.Appendix_sectional_order `None_order)
-					| Order.Block_order (Order.Preset_sectional_order `None_order)
-					| Order.Block_order (Order.Wrapper_order (_, `None_order))	-> `Empty_target
-					| Order.Block_order _						-> `Valid_target
-					| _ -> `Wrong_target Error.Target_label
+					| Order.Visible_order (Order.Body_sectional_order `None_given)
+					| Order.Visible_order (Order.Appendix_sectional_order `None_given)
+					| Order.Visible_order (Order.Preset_sectional_order `None_given) -> `Empty_target
+					| Order.Visible_order _						 -> `Valid_target
+					| _								 -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.ref label)
 			in check_comm comm `Feature_ref None elem
@@ -364,12 +337,11 @@ let process_document feature_map document_ast =
 		| `AST_sref (comm, label) ->
 			let elem () =
 				let target_checker = function
-					| Order.Block_order (Order.Body_sectional_order `None_order)
-					| Order.Block_order (Order.Appendix_sectional_order `None_order)
-					| Order.Block_order (Order.Preset_sectional_order `None_order)
-					| Order.Block_order (Order.Wrapper_order (_, `None_order))	-> `Empty_target
-					| Order.Block_order _						-> `Valid_target
-					| _ -> `Wrong_target Error.Target_label
+					| Order.Visible_order (Order.Body_sectional_order `None_given)
+					| Order.Visible_order (Order.Appendix_sectional_order `None_given)
+					| Order.Visible_order (Order.Preset_sectional_order `None_given) -> `Empty_target
+					| Order.Visible_order _						 -> `Valid_target
+					| _								 -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.sref label)
 			in check_comm comm `Feature_sref None elem
@@ -377,7 +349,7 @@ let process_document feature_map document_ast =
 		| `AST_mref (comm, label, seq) ->
 			let elem () =
 				let target_checker = function
-					| Order.Block_order _	-> `Valid_target
+					| Order.Visible_order _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.mref label (convert_nonlink_seq seq))
@@ -601,9 +573,11 @@ let process_document feature_map document_ast =
 			(convert_subpage_block blk :> (Block.figure_block_t, _) Block.t option)
 
 
-	and convert_wrapper comm counter order_func cap =
-		let order = make_wrapper_order comm counter in
-		let label = make_label comm (order_func order) in
+	and convert_wrapper subpaged comm counter order_func cap =
+		let order = match comm.Ast.comm_order with
+			| None		-> Order.ordinal_of_counter counter
+			| Some thing	-> Order.ordinal_of_string thing in
+		let label = make_label comm (order_func order subpaged) in
 		let maybe_caption = convert_caption_block cap
 		in match (label, order, maybe_caption) with
 			| (label, order, Some caption)	-> Some (label, order, caption)
@@ -647,7 +621,7 @@ let process_document feature_map document_ast =
 
 		| `AST_equation (comm, cap, eq) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm equation_counter Order.equation_order cap
+				let maybe_wrapper = convert_wrapper subpaged comm equation_counter Order.equation_order cap
 				and maybe_equation = convert_equation_block eq
 				in match (maybe_wrapper, maybe_equation) with
 					| (Some wrapper, Some equation)		-> Some (Block.equation wrapper equation)
@@ -656,7 +630,7 @@ let process_document feature_map document_ast =
 
 		| `AST_algorithm (comm, cap, alg) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm algorithm_counter Order.algorithm_order cap
+				let maybe_wrapper = convert_wrapper subpaged comm algorithm_counter Order.algorithm_order cap
 				and maybe_algorithm = convert_algorithm_block alg
 				in match (maybe_wrapper, maybe_algorithm) with
 					| (Some wrapper, Some algorithm)	-> Some (Block.algorithm wrapper algorithm)
@@ -665,7 +639,7 @@ let process_document feature_map document_ast =
 
 		| `AST_table (comm, cap, tab) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm table_counter Order.table_order cap
+				let maybe_wrapper = convert_wrapper subpaged comm table_counter Order.table_order cap
 				and maybe_table = convert_table_block tab
 				in match (maybe_wrapper, maybe_table) with
 					| (Some wrapper, Some table)		-> Some (Block.table wrapper table)
@@ -674,7 +648,7 @@ let process_document feature_map document_ast =
 
 		| `AST_figure (comm, cap, fig) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm figure_counter Order.figure_order cap
+				let maybe_wrapper = convert_wrapper subpaged comm figure_counter Order.figure_order cap
 				and maybe_figure = convert_figure_block fig
 				in match (maybe_wrapper, maybe_figure) with
 					| (Some wrapper, Some figure)		-> Some (Block.figure wrapper figure)
@@ -683,7 +657,7 @@ let process_document feature_map document_ast =
 
 		| `AST_bib (comm, title, author, resource) ->
 			let elem () =
-				let order = make_ghost_order comm bib_counter in
+				let order = Order.ordinal_of_counter bib_counter in
 				let label = make_label comm (Order.bib_order order)
 				and title = convert_bib_title_block title
 				and author = convert_bib_author_block author
@@ -706,7 +680,7 @@ let process_document feature_map document_ast =
 
 		| `AST_note (comm, frag) ->
 			let elem () =
-				let order = make_ghost_order comm note_counter in
+				let order = Order.ordinal_of_counter note_counter in
 				let label = make_label comm (Order.note_order order) in
 				let note =
 					{
@@ -727,29 +701,17 @@ let process_document feature_map document_ast =
 					if !appendixed
 					then
 						let order = match comm.Ast.comm_order with
-							| None ->
-								(appendix_counter := !appendix_counter + 1;
-								subappendix_counter := 0;
-								subsubappendix_counter := 0;
-								`Auto_order (Order.Appendic [!appendix_counter]))
-							| Some "" ->
-								`None_order
-							| Some other ->
-								`User_order other in
-						let label = make_label comm (Order.appendix_sectional_order order)
+							| None		-> Order.appendix_of_counter appendix_counter
+							| Some ""	-> Order.no_ordering ()
+							| Some other	-> Order.appendix_of_string other in
+						let label = make_label comm (Order.appendix_sectional_order order subpaged)
 						in Block.appendix label order (convert_super_seq seq)
 					else
 						let order = match comm.Ast.comm_order with
-							| None ->
-								(section_counter := !section_counter + 1;
-								subsection_counter := 0;
-								subsubsection_counter := 0;
-								`Auto_order (Order.Numeric [!section_counter]))
-							| Some "" ->
-								`None_order
-							| Some other ->
-								`User_order other in
-						let label = make_label comm (Order.body_sectional_order order)
+							| None		-> Order.section_of_counter section_counter
+							| Some ""	-> Order.no_ordering ()
+							| Some other	-> Order.section_of_string other in
+						let label = make_label comm (Order.body_sectional_order order subpaged)
 						in Block.section label order (convert_super_seq seq)
 				in (if not subpaged then add_toc_entry block);
 				Some block
@@ -761,31 +723,17 @@ let process_document feature_map document_ast =
 					if !appendixed
 					then
 						let order = match comm.Ast.comm_order with
-							| None ->
-								(subappendix_counter := !subappendix_counter + 1;
-								subsubappendix_counter := 0;
-								`Auto_order (Order.Appendic
-											[!appendix_counter;
-											!subappendix_counter]))
-							| Some "" ->
-								`None_order
-							| Some other ->
-								`User_order other in
-						let label = make_label comm (Order.appendix_sectional_order order)
+							| None		-> Order.subappendix_of_counter appendix_counter
+							| Some ""	-> Order.no_ordering ()
+							| Some other	-> Order.subappendix_of_string other in
+						let label = make_label comm (Order.appendix_sectional_order order subpaged)
 						in Block.subappendix label order (convert_super_seq seq)
 					else
 						let order = match comm.Ast.comm_order with
-							| None ->
-								(subsection_counter := !subsection_counter + 1;
-								subsubsection_counter := 0;
-								`Auto_order (Order.Numeric
-										[!section_counter;
-										!subsection_counter]))
-							| Some "" ->
-								`None_order
-							| Some other ->
-								`User_order other in
-						let label = make_label comm (Order.body_sectional_order order)
+							| None		-> Order.subsection_of_counter section_counter
+							| Some ""	-> Order.no_ordering ()
+							| Some other	-> Order.subsection_of_string other in
+						let label = make_label comm (Order.body_sectional_order order subpaged)
 						in Block.subsection label order (convert_super_seq seq)
 				in (if not subpaged then add_toc_entry block);
 				Some block
@@ -797,31 +745,17 @@ let process_document feature_map document_ast =
 					if !appendixed
 					then
 						let order = match comm.Ast.comm_order with
-							| None ->
-								(subsubappendix_counter := !subsubappendix_counter + 1;
-								`Auto_order (Order.Appendic
-											[!appendix_counter;
-											!subappendix_counter;
-											!subsubappendix_counter]))
-							| Some "" ->
-								`None_order
-							| Some other ->
-								`User_order other in
-						let label = make_label comm (Order.appendix_sectional_order order)
+							| None		-> Order.subsubappendix_of_counter appendix_counter
+							| Some ""	-> Order.no_ordering ()
+							| Some other	-> Order.subsubappendix_of_string other in
+						let label = make_label comm (Order.appendix_sectional_order order subpaged)
 						in Block.subsubappendix label order (convert_super_seq seq)
 					else
 						let order = match comm.Ast.comm_order with
-							| None ->
-								(subsubsection_counter := !subsubsection_counter + 1;
-								`Auto_order (Order.Numeric
-											[!section_counter;
-											!subsection_counter;
-											!subsubsection_counter]))
-							| Some "" ->
-								`None_order
-							| Some other ->
-								`User_order other in
-						let label = make_label comm (Order.body_sectional_order order)
+							| None		-> Order.subsubsection_of_counter section_counter
+							| Some ""	-> Order.no_ordering ()
+							| Some other	-> Order.subsubsection_of_string other in
+						let label = make_label comm (Order.body_sectional_order order subpaged)
 						in Block.subsubsection label order (convert_super_seq seq)
 				in (if not subpaged then add_toc_entry block);
 				Some block
@@ -829,14 +763,14 @@ let process_document feature_map document_ast =
 
 		| `AST_toc comm ->
 			let elem () =
-				let order = `None_order in
+				let order = `None_given in
 				let label = make_label comm (Order.preset_sectional_order order)
 				in Some (Block.toc label order)
 			in check_comm comm `Feature_toc None elem
 
 		| `AST_bibliography comm ->
 			let elem () =
-				let order = `None_order in
+				let order = `None_given in
 				let label = make_label comm (Order.preset_sectional_order order) in
 				let block = Block.bibliography label order in
 				(if not subpaged then add_toc_entry block);
@@ -845,7 +779,7 @@ let process_document feature_map document_ast =
 
 		| `AST_notes comm ->
 			let elem () =
-				let order = `None_order in
+				let order = `None_given in
 				let label = make_label comm (Order.preset_sectional_order order) in
 				let block = Block.notes label order in
 				(if not subpaged then add_toc_entry block);
@@ -869,6 +803,10 @@ let process_document feature_map document_ast =
 		| `AST_abstract (comm, frag) ->
 			let elem () = Some (Block.abstract (convert_paragraph_frag frag))
 			in check_comm comm `Feature_abstract None elem
+
+		| `AST_part (comm, seq) ->
+			let elem () = Some (Block.part (convert_super_seq seq))
+			in check_comm comm `Feature_part None elem
 
 		| `AST_rule comm ->
 			let elem () = Some (Block.rule ())
@@ -906,7 +844,7 @@ let process_document feature_map document_ast =
 					in DynArray.add errors (comm.Ast.comm_linenum, msg)
 				| `Wrong_target expected ->
 					let suggestion = match target with
-						| Order.Block_order _	-> Error.Target_label
+						| Order.Visible_order _	-> Error.Target_label
 						| Order.Bib_order _	-> Error.Target_bib
 						| Order.Note_order _	-> Error.Target_note in
 					let msg = Error.Wrong_target (comm.Ast.comm_tag, expected, suggestion, label)

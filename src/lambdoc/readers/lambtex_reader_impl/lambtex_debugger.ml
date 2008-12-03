@@ -110,6 +110,7 @@ let to_string = function
 
 	| TITLE comm			-> sprintf "TITLE: %s" (sprintf_command comm)
 	| SUBTITLE comm			-> sprintf "SUBTITLE: %s" (sprintf_command comm)
+	| PART comm			-> sprintf "PART: %s" (sprintf_command comm)
 	| RULE comm			-> sprintf "RULE: %s" (sprintf_command comm)
 	| APPENDIX comm			-> sprintf "APPENDIX: %s" (sprintf_command comm)
 	| NEW_ITEM comm			-> sprintf "NEW_ITEM: %s" (sprintf_command comm)

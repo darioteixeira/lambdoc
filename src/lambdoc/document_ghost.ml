@@ -37,7 +37,7 @@ struct
 		title: Node.super_seq_t;
 		author: Node.super_seq_t;
 		resource: Node.super_seq_t;
-		} with sexp
+		} (*with sexp*)
 end
 
 
@@ -55,6 +55,6 @@ struct
 		label: Label.t;
 		order: Order.ghost_order_t;
 		content: Block.nestable_frag_t;
-		} with sexp
+		} (*with sexp*)
 end
 

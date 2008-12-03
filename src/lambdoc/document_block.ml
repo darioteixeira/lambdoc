@@ -39,7 +39,7 @@ struct
 		| Circle
 		| Square
 		| None
-		with sexp
+		(*with sexp*)
 
 	let of_string = function
 		| "disc"	-> Disc
@@ -76,7 +76,7 @@ struct
 		| Lower_alpha
 		| Upper_alpha
 		| None
-		with sexp
+		(*with sexp*)
 
 	let of_string = function
 		| "0"		-> Decimal
@@ -109,7 +109,7 @@ struct
 	type t =
 		| Center
 		| Left
-		| Right with sexp
+		| Right (*with sexp*)
 
 	let of_string = function
 		| "center"	-> Center
@@ -135,39 +135,39 @@ module rec Block:
 sig
 	(**	A super fragment is a list of super blocks.
 	*)
-	type super_frag_t = Block.super_block_t list with sexp
+	type super_frag_t = Block.super_block_t list (*with sexp*)
 
 	(**	A nestable fragment is a list of nestable blocks.
 	*)
-	type nestable_frag_t = Block.nestable_block_t list with sexp
+	type nestable_frag_t = Block.nestable_block_t list (*with sexp*)
 
 	(**	The various types of individual nestable blocks.
 	*)
 
-	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] with sexp
-	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] with sexp
-	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
-	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
-	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-	type code_block_t = [ `Code of Alignment.t * Code.t ] with sexp 
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
-	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
+	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] (*with sexp*)
+	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
+	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
+	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Alignment.t * Code.t ] (*with sexp*) 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
+	type image_block_t = [ `Image of Alignment.t * alias_t ] (*with sexp*) 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*) 
 
 	(**	The various types of wrapper blocks.  Wrappers are just
 		numbered containers around some kinds of nestable blocks.
 	*)
 
-	type equation_block_t = [ math_block_t ] with sexp
-	type algorithm_block_t = [ code_block_t ] with sexp
-	type table_block_t = [ tabular_block_t ] with sexp
-	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
+	type equation_block_t = [ math_block_t ] (*with sexp*)
+	type algorithm_block_t = [ code_block_t ] (*with sexp*)
+	type table_block_t = [ tabular_block_t ] (*with sexp*)
+	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
 	(**	The tuple of all common fields to wrappers.  The fields
 		are the wrapper's label, its order, and a caption.
 	*)
-	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t with sexp
+	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t (*with sexp*)
 
 	(**	Nestable blocks may be nested.
 	*)
@@ -186,23 +186,23 @@ sig
 		| `Algorithm of wrapper_t * algorithm_block_t
 		| `Table of wrapper_t * table_block_t
 		| `Figure of wrapper_t * figure_block_t
-		] with sexp
+		] (*with sexp*)
 
 	(**	The possible forms for headings.  We accept three different levels
 		of sections.  Note that special sections such as the TOC or the
 		Bibliography are automatically mapped to the highest section level.
 	*)
 	type heading_block_t =
-		[ `Section of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subsubsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Appendix of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subappendix of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subsubappendix of Label.t * Order.user_sectional_order_t * Node.super_seq_t
+		[ `Section of Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Subsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Subsubsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Appendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
+		| `Subappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
+		| `Subsubappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
 		| `Bibliography of Label.t * Order.preset_sectional_order_t
 		| `Notes of Label.t * Order.preset_sectional_order_t
 		| `Toc of Label.t * Order.preset_sectional_order_t
-		] with sexp
+		] (*with sexp*)
 
 	(**	Top blocks may not be nested.
 	*)
@@ -211,26 +211,27 @@ sig
 		| `Title of Node.super_seq_t
 		| `Subtitle of Node.super_seq_t
 		| `Abstract of paragraph_block_t list
+		| `Part of Node.super_seq_t
 		| `Rule
-		] with sexp
+		] (*with sexp*)
 
 	(**	A super block is either a top block or a nestable block.
 	*)
-	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
+	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
 
-	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] with sexp
+	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	val section: Label.t -> Order.user_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val section: Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val subsection: Label.t -> Order.user_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val subsection: Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val subsubsection: Label.t -> Order.user_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val subsubsection: Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val appendix: Label.t -> Order.user_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val appendix: Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val subappendix: Label.t -> Order.user_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val subappendix: Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val subsubappendix: Label.t -> Order.user_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val subsubappendix: Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val bibliography: Label.t -> Order.preset_sectional_order_t ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -244,6 +245,8 @@ sig
 	val subtitle: ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val abstract: (paragraph_block_t, 'b) t list ->
+		([> top_block_t ], [> `Manuscript ]) t
+	val part: ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val rule: unit ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -279,27 +282,27 @@ sig
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
-	type super_frag_t = Block.super_block_t list with sexp
+	type super_frag_t = Block.super_block_t list (*with sexp*)
 
-	type nestable_frag_t = Block.nestable_block_t list with sexp
+	type nestable_frag_t = Block.nestable_block_t list (*with sexp*)
 
-	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] with sexp
-	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] with sexp
-	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
-	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
-	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
-	type code_block_t = [ `Code of Alignment.t * Code.t ] with sexp 
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
-	type image_block_t = [ `Image of Alignment.t * alias_t ] with sexp 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp 
+	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] (*with sexp*)
+	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
+	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
+	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Alignment.t * Code.t ] (*with sexp*) 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
+	type image_block_t = [ `Image of Alignment.t * alias_t ] (*with sexp*) 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*) 
 
-	type equation_block_t = [ math_block_t ] with sexp
-	type algorithm_block_t = [ code_block_t ] with sexp
-	type table_block_t = [ tabular_block_t ] with sexp
-	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] with sexp
+	type equation_block_t = [ math_block_t ] (*with sexp*)
+	type algorithm_block_t = [ code_block_t ] (*with sexp*)
+	type table_block_t = [ tabular_block_t ] (*with sexp*)
+	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
-	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t with sexp
+	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t (*with sexp*)
 
 	type nestable_block_t =
 		[ paragraph_block_t
@@ -316,31 +319,32 @@ struct
 		| `Algorithm of wrapper_t * algorithm_block_t
 		| `Table of wrapper_t * table_block_t
 		| `Figure of wrapper_t * figure_block_t
-		] with sexp
+		] (*with sexp*)
 
 	type heading_block_t =
-		[ `Section of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subsubsection of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Appendix of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subappendix of Label.t * Order.user_sectional_order_t * Node.super_seq_t
-		| `Subsubappendix of Label.t * Order.user_sectional_order_t * Node.super_seq_t
+		[ `Section of Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Subsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Subsubsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Appendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
+		| `Subappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
+		| `Subsubappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
 		| `Bibliography of Label.t * Order.preset_sectional_order_t
 		| `Notes of Label.t * Order.preset_sectional_order_t
 		| `Toc of Label.t * Order.preset_sectional_order_t
-		] with sexp
+		] (*with sexp*)
 
 	type top_block_t =
 		[ `Heading of heading_block_t
 		| `Title of Node.super_seq_t
 		| `Subtitle of Node.super_seq_t
 		| `Abstract of paragraph_block_t list
+		| `Part of Node.super_seq_t
 		| `Rule
-		] with sexp
+		] (*with sexp*)
 
-	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
+	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
 
-	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] with sexp
+	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
 	let section label order seq = `Heading (`Section (label, order, (seq :> Node.super_seq_t)))
 	let subsection label order seq = `Heading (`Subsection (label, order, (seq :> Node.super_seq_t)))
@@ -355,6 +359,7 @@ struct
 	let title seq = `Title (seq :> Node.super_seq_t)
 	let subtitle seq = `Subtitle (seq :> Node.super_seq_t)
 	let abstract frag = `Abstract frag
+	let part seq = `Part (seq :> Node.super_seq_t)
 	let rule () = `Rule
 
 	let paragraph seq = `Paragraph (seq :> Node.super_seq_t)

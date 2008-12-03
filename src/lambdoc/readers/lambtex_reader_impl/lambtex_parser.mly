@@ -131,6 +131,7 @@ open Document_ast
 
 %token <Document_ast.Ast.command_t> TITLE
 %token <Document_ast.Ast.command_t> SUBTITLE
+%token <Document_ast.Ast.command_t> PART
 %token <Document_ast.Ast.command_t> RULE
 %token <Document_ast.Ast.command_t> APPENDIX
 %token <Document_ast.Ast.command_t> NEW_ITEM
@@ -214,6 +215,7 @@ top_block:
 	| heading_block								{`AST_heading $1}
 	| TITLE BEGIN super_node+ END						{`AST_title ($1, $3)}
 	| SUBTITLE BEGIN super_node+ END					{`AST_subtitle ($1, $3)}
+	| PART BEGIN super_node+ END						{`AST_part ($1, $3)}
 	| BEGIN_ABSTRACT paragraph_block+ END_ABSTRACT				{`AST_abstract ($1, $2)}
 	| RULE									{`AST_rule $1}
 	| APPENDIX								{`AST_appendix $1}

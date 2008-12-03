@@ -33,11 +33,11 @@ sig
 	type 'a t =
 		[ `Valid of 'a Valid.t
 		| `Invalid of 'a Invalid.t
-		] with sexp
+		] (*with sexp*)
 
-	type manuscript_t = [`Manuscript] t with sexp
+	type manuscript_t = [`Manuscript] t (*with sexp*)
 
-	type composition_t = [`Composition] t with sexp
+	type composition_t = [`Composition] t (*with sexp*)
 
 	val make_valid_manuscript:
 		([< Block.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
@@ -58,21 +58,23 @@ sig
 	val make_invalid_composition:
 		Error.t list ->
 		composition_t
-	
+
+	(*	
 	val serialize_manuscript: manuscript_t -> string
 	val serialize_composition: composition_t -> string
 	val deserialize_manuscript: string -> manuscript_t
 	val deserialize_composition: string -> composition_t
+	*)
 end =
 struct
 	type 'a t =
 		[ `Valid of 'a Valid.t
 		| `Invalid of 'a Invalid.t
-		] with sexp
+		] (*with sexp*)
 
-	type manuscript_t = [`Manuscript] t with sexp
+	type manuscript_t = [`Manuscript] t (*with sexp*)
 
-	type composition_t = [`Composition] t with sexp
+	type composition_t = [`Composition] t (*with sexp*)
 
 	let make_valid_manuscript content bibs notes toc labels =
 		`Valid (Valid.make_manuscript content bibs notes toc labels)
@@ -86,6 +88,7 @@ struct
 	let make_invalid_composition errors =
 		`Invalid (Invalid.make_composition errors)
 
+	(*
 	let serialize_manuscript doc =
 		Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
 
@@ -97,5 +100,6 @@ struct
 
 	let deserialize_composition =
 		deserialize_manuscript
+	*)
 end
 

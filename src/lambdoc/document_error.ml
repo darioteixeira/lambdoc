@@ -32,7 +32,7 @@ struct
 		error_line_before: string list;		(** Lines immediately before the error line. *)
 		error_line_actual: string;		(** Contents of the line where the error is found. *)
 		error_line_after: string list;		(** Lines immediately after the error line. *)
-		} with sexp
+		} (*with sexp*)
 
 	(**	Reasons why a parameter can be invalid.
 	*)
@@ -41,7 +41,7 @@ struct
 		| Reason_is_empty_when_forbidden
 		| Reason_is_non_empty_when_forbidden of string
 		| Reason_is_absent_when_mandatory
-		with sexp
+		(*with sexp*)
 
 	(**	Expected targets.
 	*)
@@ -49,7 +49,7 @@ struct
 		| Target_bib
 		| Target_note
 		| Target_label
-		with sexp
+		(*with sexp*)
 
 	(**	The various types of error messages.
 	*)
@@ -75,11 +75,11 @@ struct
 		| Invalid_command_feature of string * string
 		| Invalid_operator_feature of string * string
 		| Syntax_error
-		with sexp
+		(*with sexp*)
 
 	(**	An error is a pair consisting of the context where the error
 		occurred and the error message itself.
 	*)
-	type t = error_context_t * error_msg_t with sexp
+	type t = error_context_t * error_msg_t (*with sexp*)
 end
 

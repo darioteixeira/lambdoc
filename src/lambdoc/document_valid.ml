@@ -33,13 +33,13 @@ sig
 		notes: Note.t list;
 		toc: Block.heading_block_t list;
 		labels: Label_dict.t;
-		} with sexp
+		} (*with sexp*)
 
-	type 'a t = valid_t with sexp
+	type 'a t = valid_t (*with sexp*)
 
-	type manuscript_t = [`Manuscript] t with sexp
+	type manuscript_t = [`Manuscript] t (*with sexp*)
 
-	type composition_t = [`Composition] t with sexp
+	type composition_t = [`Composition] t (*with sexp*)
 
 	val make_manuscript:
 		([< Block.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
@@ -51,10 +51,12 @@ sig
 
 	val make_composition: ([< Block.super_block_t], [< `Composition]) Block.t list -> composition_t
 
+	(*
 	val serialize_manuscript: manuscript_t -> string
 	val serialize_composition: composition_t -> string
 	val deserialize_manuscript: string -> manuscript_t
 	val deserialize_composition: string -> composition_t
+	*)
 end =
 struct
 	type valid_t =
@@ -64,13 +66,13 @@ struct
 		notes: Note.t list;
 		toc: Block.heading_block_t list;
 		labels: Label_dict.t;
-		} with sexp
+		} (*with sexp*)
 
-	type 'a t = valid_t with sexp
+	type 'a t = valid_t (*with sexp*)
 
-	type manuscript_t = [`Manuscript] t with sexp
+	type manuscript_t = [`Manuscript] t (*with sexp*)
 
-	type composition_t = [`Composition] t with sexp
+	type composition_t = [`Composition] t (*with sexp*)
 
 	let make_manuscript content bibs notes toc labels =
 		{
@@ -90,6 +92,7 @@ struct
 		labels = Hashtbl.create 0;
 		}
 
+	(*
 	let serialize_manuscript doc =
 		Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
 
@@ -101,6 +104,6 @@ struct
 
 	let deserialize_composition =
 		deserialize_manuscript
-
+	*)
 end
 

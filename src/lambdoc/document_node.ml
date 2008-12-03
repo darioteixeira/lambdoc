@@ -26,8 +26,8 @@ open Document_math
 *)
 module rec Node:
 sig
-	type super_seq_t = Node.super_node_t list with sexp
-	type nonlink_seq_t = Node.nonlink_node_t list with sexp
+	type super_seq_t = Node.super_node_t list (*with sexp*)
+	type nonlink_seq_t = Node.nonlink_node_t list (*with sexp*)
 
 	type nonlink_node_t =
 		[ `Plain of plain_t
@@ -41,7 +41,7 @@ sig
 		| `Sup of super_seq_t
 		| `Sub of super_seq_t
 		| `Box of super_seq_t
-		] with sexp
+		] (*with sexp*)
 
 	type link_node_t =
 		[ `Link of link_t * nonlink_seq_t
@@ -50,11 +50,11 @@ sig
 		| `Ref of ref_t
 		| `Sref of ref_t
 		| `Mref of ref_t * nonlink_seq_t
-		] with sexp
+		] (*with sexp*)
 
-	type super_node_t = [ nonlink_node_t | link_node_t ] with sexp
+	type super_node_t = [ nonlink_node_t | link_node_t ] (*with sexp*)
 
-	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] with sexp
+	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] (*with sexp*)
 
 	val plain: plain_t -> ([> nonlink_node_t ], [> `Composition ]) t
 	val entity: entity_t -> ([> nonlink_node_t ], [> `Composition ]) t
@@ -76,8 +76,8 @@ sig
 	val mref: ref_t -> ([< nonlink_node_t], 'b) t list -> ([> link_node_t ], [> `Manuscript ]) t
 end =
 struct
-	type super_seq_t = Node.super_node_t list with sexp
-	type nonlink_seq_t = Node.nonlink_node_t list with sexp
+	type super_seq_t = Node.super_node_t list (*with sexp*)
+	type nonlink_seq_t = Node.nonlink_node_t list (*with sexp*)
 
 	type nonlink_node_t =
 		[ `Plain of plain_t
@@ -91,7 +91,7 @@ struct
 		| `Sup of super_seq_t
 		| `Sub of super_seq_t
 		| `Box of super_seq_t
-		] with sexp
+		] (*with sexp*)
 
 	type link_node_t =
 		[ `Link of link_t * nonlink_seq_t
@@ -100,11 +100,11 @@ struct
 		| `Ref of ref_t
 		| `Sref of ref_t
 		| `Mref of ref_t * nonlink_seq_t
-		] with sexp
+		] (*with sexp*)
 
-	type super_node_t = [ nonlink_node_t | link_node_t ] with sexp
+	type super_node_t = [ nonlink_node_t | link_node_t ] (*with sexp*)
 
-	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] with sexp
+	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] (*with sexp*)
 
 	let plain txt = `Plain txt
 	let entity txt = `Entity txt

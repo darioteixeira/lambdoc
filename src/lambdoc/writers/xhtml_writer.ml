@@ -58,23 +58,6 @@ type super_node_xhtml_t = [`A | `B | `I | `PCDATA | `Span | `Sub | `Sup ] XHTML.
 (**	{3 Helper functions}							*)
 (********************************************************************************)
 
-let alphaseq_of_int num =
-	let base = 26 in
-	let rec from_base10 num =
-		let num = num -1
-		in if num < base
-		then
-			[num]
-		else
-			let rem = num mod base
-			and num = num / base
-			in rem::(from_base10 num) in
-	let alpha_of_int num =
-		String.of_char (char_of_int (65 + num)) in
-	let rems = from_base10 num in
-	List.fold_left (^) "" (List.rev_map alpha_of_int rems)
-
-
 let make_label = function
 	| `Auto_label ref -> "doc:a:" ^ ref
 	| `User_label ref -> "doc:u:" ^ ref
@@ -94,32 +77,14 @@ let make_external_link = make_link
 let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
 
 
-let rec dot_order = function
-	| []		-> ""
-	| [x]		-> x
-	| hd::tl	-> hd ^ "." ^ (dot_order tl)
-
-
-let make_appendic = function
-	| []		-> []
-	| hd::tl	-> (alphaseq_of_int hd) :: (List.map string_of_int tl)
-
-
-let make_order = function
-	| `Auto_order (Order.Numeric l)		-> dot_order (List.map string_of_int l)
-	| `Auto_order (Order.Appendic l)	-> dot_order (make_appendic l)
-	| `User_order l				-> l
-	| `None_order				-> ""
-
-
 let wrap_order order =
-	match make_order order with
+	match Order.string_of_order order with
 		| ""	-> []
 		| other	-> [span [pcdata other]]
 
 
 let make_sref name ref order =
-	make_internal_link (`User_label ref) [pcdata name; space (); pcdata (make_order order)]
+	make_internal_link (`User_label ref) [pcdata name; space (); pcdata (Order.string_of_order order)]
 
 
 let make_sectional level label order content =
@@ -194,7 +159,7 @@ let write_valid_document settings classname doc =
 					make_internal_link
 						~classname:"doc_see"
 						(`User_label ref)
-						[pcdata (sprintf "(%s)" (make_order o))]
+						[pcdata (sprintf "(%s)" (Order.string_of_order o))]
 				| _ ->
 					raise Command_see_with_non_note)
 
@@ -205,40 +170,40 @@ let write_valid_document settings classname doc =
 					make_internal_link
 						~classname:"doc_cite"
 						(`User_label ref)
-						[pcdata (sprintf "[%s]" (make_order o))]
+						[pcdata (sprintf "[%s]" (Order.string_of_order o))]
 				| _ ->
 					raise Command_cite_with_non_bib)
 
 		| `Ref ref ->
 			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
 			in (match order with
-				| Order.Block_order (Order.Body_sectional_order order) ->
-					make_internal_link (`User_label ref) [pcdata (make_order order)]
-				| Order.Block_order (Order.Appendix_sectional_order order) ->
-					make_internal_link (`User_label ref) [pcdata (make_order order)]
-				| Order.Block_order (Order.Preset_sectional_order order) ->
-					make_internal_link (`User_label ref) [pcdata (make_order order)]
-				| Order.Block_order (Order.Wrapper_order (_, order)) ->
-					make_internal_link (`User_label ref) [pcdata (make_order order)]
+				| Order.Visible_order (Order.Body_sectional_order order) ->
+					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
+				| Order.Visible_order (Order.Appendix_sectional_order order) ->
+					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
+				| Order.Visible_order (Order.Preset_sectional_order order) ->
+					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
+				| Order.Visible_order (Order.Wrapper_order (_, order)) ->
+					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
 				| _ ->
 					raise Command_ref_with_non_block)
 
 		| `Sref ref ->
 			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
 			in (match order with
-				| Order.Block_order (Order.Body_sectional_order order) ->
+				| Order.Visible_order (Order.Body_sectional_order order) ->
 					make_sref settings.names.section_name ref order
-				| Order.Block_order (Order.Appendix_sectional_order order) ->
+				| Order.Visible_order (Order.Appendix_sectional_order order) ->
 					make_sref settings.names.appendix_name ref order
-				| Order.Block_order (Order.Preset_sectional_order order) ->
+				| Order.Visible_order (Order.Preset_sectional_order order) ->
 					make_sref settings.names.section_name ref order
-				| Order.Block_order (Order.Wrapper_order (Order.Equation_wrapper, order)) ->
+				| Order.Visible_order (Order.Wrapper_order (Order.Equation_wrapper, order)) ->
 					make_sref settings.names.equation_name ref order
-				| Order.Block_order (Order.Wrapper_order (Order.Algorithm_wrapper, order)) ->
+				| Order.Visible_order (Order.Wrapper_order (Order.Algorithm_wrapper, order)) ->
 					make_sref settings.names.algorithm_name ref order
-				| Order.Block_order (Order.Wrapper_order (Order.Table_wrapper, order)) ->
+				| Order.Visible_order (Order.Wrapper_order (Order.Table_wrapper, order)) ->
 					make_sref settings.names.table_name ref order
-				| Order.Block_order (Order.Wrapper_order (Order.Figure_wrapper, order)) ->
+				| Order.Visible_order (Order.Wrapper_order (Order.Figure_wrapper, order)) ->
 					make_sref settings.names.figure_name ref order
 				| _ ->
 					raise Command_sref_with_non_block)
@@ -397,7 +362,7 @@ let write_valid_document settings classname doc =
 
 
 	and write_caption order wrapper_name caption =
-		let caption_head = XHTML.M.h1 [pcdata (wrapper_name ^ "  " ^ (make_order order) ^ ":")]
+		let caption_head = XHTML.M.h1 [pcdata (wrapper_name ^ "  " ^ (Order.string_of_order order) ^ ":")]
 		and caption_body = XHTML.M.p (write_super_seq caption)
 		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
 
@@ -517,6 +482,8 @@ let write_valid_document settings classname doc =
 			XHTML.M.h2 ~a:[a_class ["doc_title"]] (write_super_seq seq)
 		| `Abstract frag ->
 			XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_paragraph_frag frag))
+		| `Part seq ->
+			XHTML.M.h1 ~a:[a_class ["doc_part"]] (write_super_seq seq)
 		| `Rule ->
 			XHTML.M.hr ()
 

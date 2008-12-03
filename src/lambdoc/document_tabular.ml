@@ -30,18 +30,18 @@ sig
 		| Left
 		| Right
 		| Justify
-		with sexp
+		(*with sexp*)
 
 	type weight_t =
 		| Normal
 		| Strong
-		with sexp
+		(*with sexp*)
 
-	type column_t = alignment_t * weight_t with sexp
+	type column_t = alignment_t * weight_t (*with sexp*)
 
-	type row_t = Node.super_seq_t plus_t with sexp
+	type row_t = Node.super_seq_t plus_t (*with sexp*)
 
-	type group_t = row_t plus_t with sexp
+	type group_t = row_t plus_t (*with sexp*)
 
 	type t =
 		{
@@ -49,7 +49,7 @@ sig
 		thead: group_t option;
 		tfoot: group_t option;
 		tbodies: group_t plus_t;
-		} with sexp
+		} (*with sexp*)
 
 	val column_of_specifier: char -> column_t
 	val alignment_to_string: alignment_t -> string
@@ -64,18 +64,18 @@ struct
 		| Left
 		| Right
 		| Justify
-		with sexp
+		(*with sexp*)
 
 	type weight_t =
 		| Normal
 		| Strong
-		with sexp
+		(*with sexp*)
 
-	type column_t = alignment_t * weight_t with sexp
+	type column_t = alignment_t * weight_t (*with sexp*)
 
-	type row_t = Node.super_seq_t plus_t with sexp
+	type row_t = Node.super_seq_t plus_t (*with sexp*)
 
-	type group_t = row_t plus_t with sexp
+	type group_t = row_t plus_t (*with sexp*)
 
 	type t =
 		{
@@ -83,7 +83,7 @@ struct
 		thead: group_t option;
 		tfoot: group_t option;
 		tbodies: group_t plus_t;
-		} with sexp
+		} (*with sexp*)
 
 	let column_of_specifier = function
 		| 'c' -> (Center, Normal)

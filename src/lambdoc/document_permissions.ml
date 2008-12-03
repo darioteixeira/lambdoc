@@ -188,6 +188,7 @@ struct
 			| `Feature_title		-> forbidden_class
 			| `Feature_subtitle		-> forbidden_class
 			| `Feature_abstract		-> forbidden_class
+			| `Feature_part			-> user_sectional_class (get_subpaged maybe_subpaged)
 			| `Feature_rule			-> forbidden_class
 			| `Feature_appendix		-> forbidden_class
 			| `Feature_setting		-> forbidden_class
