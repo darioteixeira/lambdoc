@@ -18,6 +18,7 @@ open ExtList
 open ExtString
 open XHTML.M
 open Document_basic
+open Document_level
 open Document_ref
 open Document_node
 open Document_tabular
@@ -40,8 +41,6 @@ exception Command_ref_with_non_block
 exception Command_sref_with_non_block
 exception Empty_error_context
 exception Empty_error_list
-
-type sectional_levels_t = Sectional_top | Sectional_middle | Sectional_bottom
 
 type textual_node_xhtml_t = [`PCDATA ] XHTML.M.elt
 type nonlink_node_xhtml_t = [`B | `I | `PCDATA | `Span | `Sub | `Sup ] XHTML.M.elt
@@ -89,9 +88,9 @@ let make_sref name ref order =
 
 let make_sectional level label order content =
 	let cons = match level with
-		| Sectional_top		-> XHTML.M.h2
-		| Sectional_middle	-> XHTML.M.h3
-		| Sectional_bottom	-> XHTML.M.h4
+		| Level.Level1 -> XHTML.M.h2
+		| Level.Level2 -> XHTML.M.h3
+		| Level.Level3 -> XHTML.M.h4
 	in cons ?a:(Some [a_id (make_label label); a_class ["doc_sec"]]) ((wrap_order order) @ [span content])
 
 
@@ -430,27 +429,15 @@ let write_valid_document settings classname doc =
 
 	and write_heading_block = function
 
-		| `Section (label, order, seq) ->
-			make_sectional Sectional_top label order (write_super_seq seq)
+		| `Section (level, label, order, seq) ->
+			make_sectional level label order (write_super_seq seq)
 
-		| `Subsection (label, order, seq) ->
-			make_sectional Sectional_middle label order (write_super_seq seq)
-
-		| `Subsubsection (label, order, seq) ->
-			make_sectional Sectional_bottom label order (write_super_seq seq)
-
-		| `Appendix (label, order, seq) ->
-			make_sectional Sectional_top label order (write_super_seq seq)
-
-		| `Subappendix (label, order, seq) ->
-			make_sectional Sectional_middle label order (write_super_seq seq)
-
-		| `Subsubappendix (label, order, seq) ->
-			make_sectional Sectional_bottom label order (write_super_seq seq)
+		| `Appendix (level, label, order, seq) ->
+			make_sectional level label order (write_super_seq seq)
 
 		| `Bibliography (label, order) ->
 			let name = settings.names.bibliography_name in
-			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
+			let title = [make_sectional Level.Level1 label order [XHTML.M.pcdata name]] in
 			let bibs = match doc.Valid.bibs with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ul ~a:[a_class ["doc_bibs"]] hd tl]
@@ -458,7 +445,7 @@ let write_valid_document settings classname doc =
 
 		| `Notes (label, order) ->
 			let name = settings.names.notes_name in
-			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
+			let title = [make_sectional Level.Level1 label order [XHTML.M.pcdata name]] in
 			let notes = match doc.Valid.notes with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ul ~a:[a_class ["doc_notes"]] hd tl]
@@ -466,7 +453,7 @@ let write_valid_document settings classname doc =
 
 		| `Toc (label, order) ->
 			let name = settings.names.toc_name in
-			let title = [make_sectional Sectional_top label order [XHTML.M.pcdata name]] in
+			let title = [make_sectional Level.Level1 label order [XHTML.M.pcdata name]] in
 			let toc = match doc.Valid.toc with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_toc_entry hd tl in [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
@@ -513,13 +500,9 @@ let write_valid_document settings classname doc =
 
 
 	and write_toc_entry = function
-		| `Section (label, order, seq)
-		| `Subsection (label, order, seq)
-		| `Subsubsection (label, order, seq) ->
+		| `Section (_, label, order, seq) ->
 			make_toc_entry label order (write_super_seq seq)
-		| `Appendix (label, order, seq)
-		| `Subappendix (label, order, seq)
-		| `Subsubappendix (label, order, seq) ->
+		| `Appendix (_, label, order, seq) ->
 			make_toc_entry label order (write_super_seq seq)
 		| `Bibliography (label, order) ->
 			make_toc_entry label order [pcdata settings.names.bibliography_name]

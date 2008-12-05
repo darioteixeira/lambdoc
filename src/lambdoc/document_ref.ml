@@ -16,7 +16,7 @@ TYPE_CONV_PATH "Document"
 open ExtList
 open ExtString
 open Document_basic
-
+open Document_level
 
 (********************************************************************************)
 (**	{2 Label module}							*)
@@ -49,6 +49,7 @@ sig
 	(**	{3 Exceptions}							*)
 	(************************************************************************)
 
+	exception Invalid_level_numbers of Level.t * int
 	exception Invalid_appendix_string of string
 
 
@@ -56,23 +57,27 @@ sig
 	(**	{3 Public types}						*)
 	(************************************************************************)
 
-	(**	We support a three-level hierarchy, equivalent to XHTML's H1, H2, and H3.
+	(**	Ordinal.
+	*)
+	type ordinal_t = int
+
+
+	(**	Hierarchy.
 	*)
 	type hierarchy_t =
-		private
-		| Level1 of int
-		| Level2 of int * int
-		| Level3 of int * int * int
+		| Level1_order of int
+		| Level2_order of int * int
+		| Level3_order of int * int * int
 
 
 	(**	Ordinal counter.
 	*)
-	type ordinal_counter_t
+	type ordinal_counter_t = int
 
 
 	(**	Hierarchy counter.
 	*)
-	type hierarchy_counter_t
+	type hierarchy_counter_t = int * int * int
 
 
 	(**	There are three different ordering schemes: [`Ordinal_scheme], [`Section_scheme],
@@ -83,7 +88,7 @@ sig
 		alphabetic character (only when displayed; internally it's still an integer).
 	*)
 
-	type ordinal_scheme_t = [ `Ordinal_scheme of int ] (*with sexp*)
+	type ordinal_scheme_t = [ `Ordinal_scheme of ordinal_t ] (*with sexp*)
 	type section_scheme_t = [ `Section_scheme of hierarchy_t ] (*with sexp*)
 	type appendix_scheme_t = [ `Appendix_scheme of hierarchy_t ] (*with sexp*)
 	type 'a scheme_t = 'a constraint 'a = [< ordinal_scheme_t | section_scheme_t | appendix_scheme_t ] (*with sexp*)
@@ -205,13 +210,9 @@ sig
 		all of these functions return an [`Auto_given] value.
 	*)
 
-	val ordinal_of_counter:		ordinal_counter_t ref ->	[> ordinal_scheme_t auto_given_t ]
-	val section_of_counter:		hierarchy_counter_t ref ->	[> section_scheme_t auto_given_t ]
-	val subsection_of_counter:	hierarchy_counter_t ref ->	[> section_scheme_t auto_given_t ]
-	val subsubsection_of_counter:	hierarchy_counter_t ref ->	[> section_scheme_t auto_given_t ]
-	val appendix_of_counter:	hierarchy_counter_t ref ->	[> appendix_scheme_t auto_given_t ]
-	val subappendix_of_counter:	hierarchy_counter_t ref ->	[> appendix_scheme_t auto_given_t ]
-	val subsubappendix_of_counter:	hierarchy_counter_t ref ->	[> appendix_scheme_t auto_given_t ]
+	val ordinal_scheme_of_counter: ordinal_counter_t ref -> [> ordinal_scheme_t auto_given_t ]
+	val section_scheme_of_counter: Level.t -> hierarchy_counter_t ref -> [> section_scheme_t auto_given_t ]
+	val appendix_scheme_of_counter: Level.t -> hierarchy_counter_t ref -> [> appendix_scheme_t auto_given_t ]
 
 
 	(************************************************************************)
@@ -222,13 +223,9 @@ sig
 		all of these functions return an [`User_given] value.
 	*)
 
-	val ordinal_of_string:		string -> [> ordinal_scheme_t user_given_t ]
-	val section_of_string:		string -> [> section_scheme_t user_given_t ]
-	val subsection_of_string:	string -> [> section_scheme_t user_given_t ]
-	val subsubsection_of_string:	string -> [> section_scheme_t user_given_t ]
-	val appendix_of_string:		string -> [> appendix_scheme_t user_given_t ]
-	val subappendix_of_string:	string -> [> appendix_scheme_t user_given_t ]
-	val subsubappendix_of_string:	string -> [> appendix_scheme_t user_given_t ]
+	val ordinal_scheme_of_string: string -> [> ordinal_scheme_t user_given_t ]
+	val section_scheme_of_string: Level.t -> string -> [> section_scheme_t user_given_t ]
+	val appendix_scheme_of_string: Level.t -> string -> [> appendix_scheme_t user_given_t ]
 
 
 	(************************************************************************)
@@ -260,6 +257,7 @@ struct
 	(**	{3 Exceptions}							*)
 	(************************************************************************)
 
+	exception Invalid_level_numbers of Level.t * int
 	exception Invalid_appendix_string of string
 
 
@@ -267,21 +265,18 @@ struct
 	(**	{3 Public types}						*)
 	(************************************************************************)
 
-	type hierarchy_t =
-		| Level1 of int
-		| Level2 of int * int
-		| Level3 of int * int * int
-	
+	type ordinal_t = int
+
+	type hierarchy_t = 
+		| Level1_order of int
+		| Level2_order of int * int
+		| Level3_order of int * int * int
+
 	type ordinal_counter_t = int
 
-	type hierarchy_counter_t =
-		{
-		level1: int;
-		level2: int;
-		level3: int;
-		}
+	type hierarchy_counter_t = int * int * int
 
-	type ordinal_scheme_t = [ `Ordinal_scheme of int ] (*with sexp*)
+	type ordinal_scheme_t = [ `Ordinal_scheme of ordinal_t ] (*with sexp*)
 	type section_scheme_t = [ `Section_scheme of hierarchy_t ] (*with sexp*)
 	type appendix_scheme_t = [ `Appendix_scheme of hierarchy_t ] (*with sexp*)
 	type 'a scheme_t = 'a constraint 'a = [< ordinal_scheme_t | section_scheme_t | appendix_scheme_t ] (*with sexp*)
@@ -322,7 +317,16 @@ struct
 	(**	{3 Private functions}						*)
 	(************************************************************************)
 
-	(*	This function converts a sequence of uppercase letters into its ordinal
+	(**	Increments a hierarchical counter.
+	*)
+	let incr_hierarchy_counter level counter =
+		counter := match level with
+			| Level.Level1 -> let (level1, level2, level3) = !counter in (level1+1, 0, 0)
+			| Level.Level2 -> let (level1, level2, level3) = !counter in (level1, level2+1, 0)
+			| Level.Level3 -> let (level1, level2, level3) = !counter in (level1, level2, level3+1)
+
+
+	(**	This function converts a sequence of uppercase letters into its ordinal
 		representation.  It is the inverse of {!alphaseq_of_int}.  Note that
 		the maximum sequence length is capped at 3, which is far more than any
 		reasonable document will require (18278 appendices should be enough
@@ -339,6 +343,7 @@ struct
 				in List.fold_left (+) 0 values
 			| false ->
 				raise (Invalid_appendix_string str)
+
 
 	(**	This function converts an ordinal number into a sequence of uppercase
 		letters used for numbering appendices.  Ordinal 1 is converted to "A",
@@ -363,14 +368,16 @@ struct
 		in List.fold_left (^) "" (List.rev_map alpha_of_int rems)
 
 
+	(**	String of scheme.
+	*)
 	let string_of_scheme = function
 		| `Ordinal_scheme o				-> string_of_int o
-		| `Section_scheme (Level1 l1)			-> string_of_int l1
-		| `Section_scheme (Level2 (l1, l2))		-> (string_of_int l1) ^ "." ^ (string_of_int l2)
-		| `Section_scheme (Level3 (l1, l2, l3))		-> (string_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
-		| `Appendix_scheme (Level1 l1)			-> alphaseq_of_int l1
-		| `Appendix_scheme (Level2 (l1, l2))		-> (alphaseq_of_int l1) ^ "." ^ (string_of_int l2)
-		| `Appendix_scheme (Level3 (l1, l2, l3))	-> (alphaseq_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
+		| `Section_scheme (Level1_order l1)		-> string_of_int l1
+		| `Section_scheme (Level2_order (l1, l2))	-> (string_of_int l1) ^ "." ^ (string_of_int l2)
+		| `Section_scheme (Level3_order (l1, l2, l3))	-> (string_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
+		| `Appendix_scheme (Level1_order l1)		-> alphaseq_of_int l1
+		| `Appendix_scheme (Level2_order (l1, l2))	-> (alphaseq_of_int l1) ^ "." ^ (string_of_int l2)
+		| `Appendix_scheme (Level3_order (l1, l2, l3))	-> (alphaseq_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
 
 
 	(************************************************************************)
@@ -389,82 +396,52 @@ struct
 
 	let make_ordinal_counter () = ref 0
 
-	let make_hierarchy_counter () = ref {level1 = 0; level2 = 0; level3 = 0}
+	let make_hierarchy_counter () = ref (0, 0, 0)
 
 
 	(************************************************************************)
 	(**	{4 {!given_t} constructors from counters}			*)
 	(************************************************************************)
 
-	let ordinal_of_counter c =
-		incr c;
-		`Auto_given (`Ordinal_scheme !c)
+	let ordinal_scheme_of_counter counter =
+		let () = incr counter
+		in `Auto_given (`Ordinal_scheme !counter)
 
-	let section_of_counter c =
-		c := {level1 = !c.level1+1; level2 = 0; level3 = 0;};
-		`Auto_given (`Section_scheme (Level1 !c.level1))
+	let section_scheme_of_counter level counter =
+		let () = incr_hierarchy_counter level counter
+		in match level with
+			| Level.Level1 -> let (l1, _, _) = !counter in `Auto_given (`Section_scheme (Level1_order l1))
+			| Level.Level2 -> let (l1, l2, _) = !counter in `Auto_given (`Section_scheme (Level2_order (l1, l2)))
+			| Level.Level3 -> let (l1, l2, l3) = !counter in `Auto_given (`Section_scheme (Level3_order (l1, l2, l3)))
 
-	let subsection_of_counter c =
-		c := {!c with level2 = !c.level2+1; level3 = 0;};
-		`Auto_given (`Section_scheme (Level2 (!c.level1, !c.level2)))
-
-	let subsubsection_of_counter c =
-		c := {!c with level3 = !c.level3+1;};
-		`Auto_given (`Section_scheme (Level3 (!c.level1, !c.level2, !c.level3)))
-
-	let appendix_of_counter c =
-		c := {level1 = !c.level1+1; level2 = 0; level3 = 0;};
-		`Auto_given (`Appendix_scheme (Level1 !c.level1))
-
-	let subappendix_of_counter c =
-		c := {!c with level2 = !c.level2+1; level3 = 0;};
-		`Auto_given (`Appendix_scheme (Level2 (!c.level1, !c.level2)))
-
-	let subsubappendix_of_counter c =
-		c := {!c with level3 = !c.level3+1;};
-		`Auto_given (`Appendix_scheme (Level3 (!c.level1, !c.level2, !c.level3)))
+	let appendix_scheme_of_counter level counter =
+		let () = incr_hierarchy_counter level counter
+		in match level with
+			| Level.Level1 -> let (l1, _, _) = !counter in `Auto_given (`Appendix_scheme (Level1_order l1))
+			| Level.Level2 -> let (l1, l2, _) = !counter in `Auto_given (`Appendix_scheme (Level2_order (l1, l2)))
+			| Level.Level3 -> let (l1, l2, l3) = !counter in `Auto_given (`Appendix_scheme (Level3_order (l1, l2, l3)))
 
 
 	(************************************************************************)
 	(**	{4 {!given_t} constructors from strings}			*)
 	(************************************************************************)
 
-	let counters_of_string funcs s =
-		let parts = String.nsplit s "."
-		in List.map2 (fun func part -> func part) funcs parts
+	let ordinal_scheme_of_string str =
+		`User_given (`Ordinal_scheme (int_of_string str))
 
-	let ordinal_of_string s =
-		`User_given (`Ordinal_scheme (int_of_string s))
+	let section_scheme_of_string level str =
+		match (level, String.nsplit str ".") with
+			| (Level.Level1, [a])		-> `User_given (`Section_scheme (Level1_order (int_of_string a)))
+			| (Level.Level2, [a; b])	-> `User_given (`Section_scheme (Level2_order (int_of_string a, int_of_string b)))
+			| (Level.Level3, [a; b; c])	-> `User_given (`Section_scheme (Level3_order (int_of_string a, int_of_string b, int_of_string c)))
+			| (expected, found)		-> raise (Invalid_level_numbers (expected, List.length found))
 
-	let section_of_string s =
-		`User_given (`Section_scheme (Level1 (int_of_string s)))
-
-	let subsection_of_string s =
-		let parts = counters_of_string [int_of_string; int_of_string] s
-		in match parts with
-			| [a; b] 	-> `User_given (`Section_scheme (Level2 (a, b)))
-			| _		-> failwith "Unexpected list length"
-		
-	let subsubsection_of_string s =
-		let parts = counters_of_string [int_of_string; int_of_string; int_of_string] s
-		in match parts with
-			| [a; b; c] 	-> `User_given (`Section_scheme (Level3 (a, b, c)))
-			| _		-> failwith "Unexpected list length"
-
-	let appendix_of_string s =
-		`User_given (`Appendix_scheme (Level1 (int_of_alphaseq s)))
-
-	let subappendix_of_string s =
-		let parts = counters_of_string [int_of_alphaseq; int_of_string] s
-		in match parts with
-			| [a; b] 	-> `User_given (`Appendix_scheme (Level2 (a, b)))
-			| _		-> failwith "Unexpected list length"
-
-	let subsubappendix_of_string s =
-		let parts = counters_of_string [int_of_alphaseq; int_of_string; int_of_string] s
-		in match parts with
-			| [a; b; c] 	-> `User_given (`Appendix_scheme (Level3 (a, b, c)))
-			| _		-> failwith "Unexpected list length"
+	let appendix_scheme_of_string level str =
+		match (level, String.nsplit str ".") with
+			| (Level.Level1, [a])		-> `User_given (`Appendix_scheme (Level1_order (int_of_alphaseq a)))
+			| (Level.Level2, [a; b])	-> `User_given (`Appendix_scheme (Level2_order (int_of_alphaseq a, int_of_string b)))
+			| (Level.Level3, [a; b; c])	-> `User_given (`Appendix_scheme (Level3_order (int_of_alphaseq a, int_of_string b, int_of_string c)))
+			| (expected, found)		-> raise (Invalid_level_numbers (expected, List.length found))
 
 
 	(************************************************************************)

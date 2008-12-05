@@ -15,6 +15,7 @@
 TYPE_CONV_PATH "Document"
 
 open Document_basic
+open Document_level
 open Document_node
 open Document_ref
 open Document_math
@@ -137,9 +138,11 @@ sig
 	*)
 	type super_frag_t = Block.super_block_t list (*with sexp*)
 
+
 	(**	A nestable fragment is a list of nestable blocks.
 	*)
 	type nestable_frag_t = Block.nestable_block_t list (*with sexp*)
+
 
 	(**	The various types of individual nestable blocks.
 	*)
@@ -155,6 +158,7 @@ sig
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*) 
 
+
 	(**	The various types of wrapper blocks.  Wrappers are just
 		numbered containers around some kinds of nestable blocks.
 	*)
@@ -164,10 +168,12 @@ sig
 	type table_block_t = [ tabular_block_t ] (*with sexp*)
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
+
 	(**	The tuple of all common fields to wrappers.  The fields
 		are the wrapper's label, its order, and a caption.
 	*)
 	type wrapper_t = Label.t * Order.wrapper_order_t * Node.super_seq_t (*with sexp*)
+
 
 	(**	Nestable blocks may be nested.
 	*)
@@ -188,21 +194,19 @@ sig
 		| `Figure of wrapper_t * figure_block_t
 		] (*with sexp*)
 
-	(**	The possible forms for headings.  We accept three different levels
-		of sections.  Note that special sections such as the TOC or the
-		Bibliography are automatically mapped to the highest section level.
+
+	(**	The possible forms for headings.  Besides main body sections, we accept
+		also appendix sections.  Note that special sections such as the TOC or	
+		the Bibliography are automatically mapped to the highest hierarchy level.
 	*)
 	type heading_block_t =
-		[ `Section of Label.t * Order.body_sectional_order_t * Node.super_seq_t
-		| `Subsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
-		| `Subsubsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
-		| `Appendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
-		| `Subappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
-		| `Subsubappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
+		[ `Section of Level.t * Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Appendix of Level.t * Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
 		| `Bibliography of Label.t * Order.preset_sectional_order_t
 		| `Notes of Label.t * Order.preset_sectional_order_t
 		| `Toc of Label.t * Order.preset_sectional_order_t
 		] (*with sexp*)
+
 
 	(**	Top blocks may not be nested.
 	*)
@@ -215,23 +219,16 @@ sig
 		| `Rule
 		] (*with sexp*)
 
+
 	(**	A super block is either a top block or a nestable block.
 	*)
 	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	val section: Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val section: Level.t -> Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val subsection: Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
-		([> top_block_t ], [> `Manuscript ]) t
-	val subsubsection: Label.t -> Order.body_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
-		([> top_block_t ], [> `Manuscript ]) t
-	val appendix: Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
-		([> top_block_t ], [> `Manuscript ]) t
-	val subappendix: Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
-		([> top_block_t ], [> `Manuscript ]) t
-	val subsubappendix: Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
+	val appendix: Level.t -> Label.t -> Order.appendix_sectional_order_t -> ([< Node.super_node_t ], 'b) Node.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val bibliography: Label.t -> Order.preset_sectional_order_t ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -322,12 +319,8 @@ struct
 		] (*with sexp*)
 
 	type heading_block_t =
-		[ `Section of Label.t * Order.body_sectional_order_t * Node.super_seq_t
-		| `Subsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
-		| `Subsubsection of Label.t * Order.body_sectional_order_t * Node.super_seq_t
-		| `Appendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
-		| `Subappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
-		| `Subsubappendix of Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
+		[ `Section of Level.t * Label.t * Order.body_sectional_order_t * Node.super_seq_t
+		| `Appendix of Level.t * Label.t * Order.appendix_sectional_order_t * Node.super_seq_t
 		| `Bibliography of Label.t * Order.preset_sectional_order_t
 		| `Notes of Label.t * Order.preset_sectional_order_t
 		| `Toc of Label.t * Order.preset_sectional_order_t
@@ -346,12 +339,8 @@ struct
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	let section label order seq = `Heading (`Section (label, order, (seq :> Node.super_seq_t)))
-	let subsection label order seq = `Heading (`Subsection (label, order, (seq :> Node.super_seq_t)))
-	let subsubsection label order seq = `Heading (`Subsubsection (label, order, (seq :> Node.super_seq_t)))
-	let appendix label order seq = `Heading (`Appendix (label, order, (seq :> Node.super_seq_t)))
-	let subappendix label order seq = `Heading (`Subappendix (label, order, (seq :> Node.super_seq_t)))
-	let subsubappendix label order seq = `Heading (`Subsubappendix (label, order, (seq :> Node.super_seq_t)))
+	let section level label order seq = `Heading (`Section (level, label, order, (seq :> Node.super_seq_t)))
+	let appendix level label order seq = `Heading (`Appendix (level, label, order, (seq :> Node.super_seq_t)))
 	let bibliography label order = `Heading (`Bibliography (label, order))
 	let notes label order = `Heading (`Notes (label, order))
 	let toc label order = `Heading (`Toc (label, order))

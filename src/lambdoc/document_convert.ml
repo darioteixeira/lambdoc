@@ -162,16 +162,8 @@ let convert_to_composition contents =
 	and convert_heading = function
 		| `Section _ ->
 			raise (Invalid_composition_subset "section")
-		| `Subsection _ ->
-			raise (Invalid_composition_subset "subsection")
-		| `Subsubsection _ ->
-			raise (Invalid_composition_subset "subsubsection")
 		| `Appendix _ ->
 			raise (Invalid_composition_subset "appendix")
-		| `Subappendix _ ->
-			raise (Invalid_composition_subset "subappendix")
-		| `Subsubappendix _ ->
-			raise (Invalid_composition_subset "subsubappendix")
 		| `Bibliography _ ->
 			raise (Invalid_composition_subset "bibliography")
 		| `Notes _ ->

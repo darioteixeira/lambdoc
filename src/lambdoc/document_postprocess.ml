@@ -14,6 +14,7 @@
 
 open ExtString
 open Document_basic
+open Document_level
 open Document_ast
 open Document_ref
 open Document_node
@@ -406,6 +407,33 @@ let process_document feature_map document_ast =
 
 
 	(************************************************************************)
+	(* Postprocessing functions for sectional commands.			*)
+	(************************************************************************)
+
+	let convert_sectional level feature comm seq subpaged =
+		let elem () =
+			let block =
+				if !appendixed
+				then
+					let order = match comm.Ast.comm_order with
+						| None		-> Order.appendix_scheme_of_counter level appendix_counter
+						| Some ""	-> Order.no_ordering ()
+						| Some other	-> Order.appendix_scheme_of_string level other in
+					let label = make_label comm (Order.appendix_sectional_order order subpaged)
+					in Block.appendix level label order (convert_super_seq seq)
+				else
+					let order = match comm.Ast.comm_order with
+						| None		-> Order.section_scheme_of_counter level section_counter
+						| Some ""	-> Order.no_ordering ()
+						| Some other	-> Order.section_scheme_of_string level other in
+					let label = make_label comm (Order.body_sectional_order order subpaged)
+					in Block.section level label order (convert_super_seq seq)
+			in (if not subpaged then add_toc_entry block);
+			Some block
+		in check_comm comm feature (Some subpaged) elem in
+
+
+	(************************************************************************)
 	(* Postprocessing functions for document blocks.			*)
 	(************************************************************************)
 
@@ -575,8 +603,8 @@ let process_document feature_map document_ast =
 
 	and convert_wrapper subpaged comm counter order_func cap =
 		let order = match comm.Ast.comm_order with
-			| None		-> Order.ordinal_of_counter counter
-			| Some thing	-> Order.ordinal_of_string thing in
+			| None		-> Order.ordinal_scheme_of_counter counter
+			| Some thing	-> Order.ordinal_scheme_of_string thing in
 		let label = make_label comm (order_func order subpaged) in
 		let maybe_caption = convert_caption_block cap
 		in match (label, order, maybe_caption) with
@@ -657,7 +685,7 @@ let process_document feature_map document_ast =
 
 		| `AST_bib (comm, title, author, resource) ->
 			let elem () =
-				let order = Order.ordinal_of_counter bib_counter in
+				let order = Order.ordinal_scheme_of_counter bib_counter in
 				let label = make_label comm (Order.bib_order order)
 				and title = convert_bib_title_block title
 				and author = convert_bib_author_block author
@@ -680,7 +708,7 @@ let process_document feature_map document_ast =
 
 		| `AST_note (comm, frag) ->
 			let elem () =
-				let order = Order.ordinal_of_counter note_counter in
+				let order = Order.ordinal_scheme_of_counter note_counter in
 				let label = make_label comm (Order.note_order order) in
 				let note =
 					{
@@ -696,70 +724,13 @@ let process_document feature_map document_ast =
 	and convert_heading_block : bool -> Ast.heading_block_t -> (Block.top_block_t, _) Block.t option = function subpaged -> function
 
 		| `AST_section (comm, seq) ->
-			let elem () =
-				let block =
-					if !appendixed
-					then
-						let order = match comm.Ast.comm_order with
-							| None		-> Order.appendix_of_counter appendix_counter
-							| Some ""	-> Order.no_ordering ()
-							| Some other	-> Order.appendix_of_string other in
-						let label = make_label comm (Order.appendix_sectional_order order subpaged)
-						in Block.appendix label order (convert_super_seq seq)
-					else
-						let order = match comm.Ast.comm_order with
-							| None		-> Order.section_of_counter section_counter
-							| Some ""	-> Order.no_ordering ()
-							| Some other	-> Order.section_of_string other in
-						let label = make_label comm (Order.body_sectional_order order subpaged)
-						in Block.section label order (convert_super_seq seq)
-				in (if not subpaged then add_toc_entry block);
-				Some block
-			in check_comm comm `Feature_section (Some subpaged) elem
+			convert_sectional Level.Level1 `Feature_section comm seq subpaged
 
 		| `AST_subsection (comm, seq) ->
-			let elem () =
-				let block =
-					if !appendixed
-					then
-						let order = match comm.Ast.comm_order with
-							| None		-> Order.subappendix_of_counter appendix_counter
-							| Some ""	-> Order.no_ordering ()
-							| Some other	-> Order.subappendix_of_string other in
-						let label = make_label comm (Order.appendix_sectional_order order subpaged)
-						in Block.subappendix label order (convert_super_seq seq)
-					else
-						let order = match comm.Ast.comm_order with
-							| None		-> Order.subsection_of_counter section_counter
-							| Some ""	-> Order.no_ordering ()
-							| Some other	-> Order.subsection_of_string other in
-						let label = make_label comm (Order.body_sectional_order order subpaged)
-						in Block.subsection label order (convert_super_seq seq)
-				in (if not subpaged then add_toc_entry block);
-				Some block
-			in check_comm comm `Feature_subsection (Some subpaged) elem
+			convert_sectional Level.Level2 `Feature_subsection comm seq subpaged
 
 		| `AST_subsubsection (comm, seq) ->
-			let elem () =
-				let block =
-					if !appendixed
-					then
-						let order = match comm.Ast.comm_order with
-							| None		-> Order.subsubappendix_of_counter appendix_counter
-							| Some ""	-> Order.no_ordering ()
-							| Some other	-> Order.subsubappendix_of_string other in
-						let label = make_label comm (Order.appendix_sectional_order order subpaged)
-						in Block.subsubappendix label order (convert_super_seq seq)
-					else
-						let order = match comm.Ast.comm_order with
-							| None		-> Order.subsubsection_of_counter section_counter
-							| Some ""	-> Order.no_ordering ()
-							| Some other	-> Order.subsubsection_of_string other in
-						let label = make_label comm (Order.body_sectional_order order subpaged)
-						in Block.subsubsection label order (convert_super_seq seq)
-				in (if not subpaged then add_toc_entry block);
-				Some block
-			in check_comm comm `Feature_subsubsection (Some subpaged) elem
+			convert_sectional Level.Level3 `Feature_subsubsection comm seq subpaged
 
 		| `AST_toc comm ->
 			let elem () =
@@ -806,7 +777,7 @@ let process_document feature_map document_ast =
 
 		| `AST_part (comm, seq) ->
 			let elem () = Some (Block.part (convert_super_seq seq))
-			in check_comm comm `Feature_part None elem
+			in check_comm comm `Feature_part (Some subpaged) elem
 
 		| `AST_rule comm ->
 			let elem () = Some (Block.rule ())
