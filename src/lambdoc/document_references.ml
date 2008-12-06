@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_ref.
+(*	Implementation file for Document_references.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-(**	Definitions pertaining to internal document references and numbering.
+(**	Definitions pertaining to internal document references.
 *)
 
 TYPE_CONV_PATH "Document"
