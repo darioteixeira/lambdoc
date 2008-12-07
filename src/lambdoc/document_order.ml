@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_ref.
+(*	Implementation file for Document_order.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-(**	Definitions pertaining to internal document references and numbering.
+(**	Definitions pertaining to document numbering.
 *)
 
 TYPE_CONV_PATH "Document"
@@ -39,7 +39,7 @@ sig
 	(**	{3 Public types}						*)
 	(************************************************************************)
 
-	(**	Ordinal.
+	(**	Ordinal ordering.
 	*)
 	type ordinal_t = int
 
@@ -54,7 +54,7 @@ sig
 	type ordinal_converters_t = (string -> ordinal_t) * (ordinal_t -> string)
 
 
-	(**	Hierarchy.
+	(**	Hierarchical ordering.
 	*)
 	type hierarchical_t =
 		| Level1_order of int
@@ -69,6 +69,7 @@ sig
 
 	(**	Hierarchical converters.
 	*)
+
 	type hierarchical_converters_t =
 		{
 		level1: (string -> int) * (int -> string);
@@ -99,31 +100,30 @@ sig
 	type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
 	type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
 	type none_given_t = [ `None_given ] (*with sexp*)
-	type ('a, 'b) order_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+	type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
 
 
-	(**	The ordering type for body sectional blocks.  It uses a [`Hierarchical_scheme],
-		and allows for all giver variants.  There are two other restrictions to take
-		into account: [`User_given] is only allowed in non-top level blocks, while
-		non-top level blocks may only use [`User_given] or [`None_given] variants.
-		These restrictions are not enforced by the type system; the type constructor
-		takes care of them instead.
+	(**	The ordering type for sectional blocks in the main document body.  It uses a
+		[`Hierarchical_scheme], and allows for all giver variants.  There are two other
+		restrictions to take into account: [`User_given] is only allowed in non-toplevel
+		blocks, while non-top level blocks may only use [`User_given] or [`None_given]
+		variants.  These restrictions are not enforced by the type system; the type
+		constructor takes care of them instead.
 	*)
-	type body_sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
+	type sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) t (*with sexp*)
 
 
-	(**	The ordering type for appendix sectional blocks.  It is mostly identical
-		to the {!body_sectional_order_t}, the only difference being the use of an
-		[`Appendix_scheme] instead of a [`Hierarchical_scheme].
+	(**	The ordering type for sectional blocks in the document appendix.
+		It is identical to the {!sectional_order_t}.
 	*)
-	type appendix_sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
+	type appendix_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) t (*with sexp*)
 
 
 	(**	The ordering type for preset sectional blocks (these are the TOC, the bibliography,
 		and the list of notes).  Technically it uses a [`Hierarchical_scheme], though that is
 		largely irrelevant because the only allowed given order is [`None_given].
 	*)
-	type preset_sectional_order_t = (hierarchical_scheme_t, none_given_t) order_t (*with sexp*)
+	type preset_order_t = (hierarchical_scheme_t, none_given_t) t (*with sexp*)
 
 
 	(**	The ordering type for wrapper blocks.  Wrappers use a ordinal scheme, and do
@@ -132,52 +132,17 @@ sig
 		subpages, and wrappers inside of subpages may only use [`User_given].  These
 		restrictions are enforced by the type constructor, not the type system.
 	*)
-	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) order_t (*with sexp*)
+	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) t (*with sexp*)
 
 
 	(**	The ordering type for ghost blocks (bibliography entries and notes).
 		The scheme is ordinal and only automatic numbering is allowed.
 	*)
-	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) order_t (*with sexp*)
-
-
-	(**	The various types of wrappers.
-	*)
-	type wrapper_t =
-		private
-		| Algorithm_wrapper
-		| Equation_wrapper
-		| Figure_wrapper
-		| Table_wrapper
-		(*with sexp*)
-
-
-	(**	The various variations of orderings for visible blocks.
-	*)
-	type visible_order_t =
-		private
-		| Body_sectional_order of body_sectional_order_t
-		| Appendix_sectional_order of appendix_sectional_order_t
-		| Preset_sectional_order of preset_sectional_order_t
-		| Wrapper_order of wrapper_t * wrapper_order_t
-		(*with sexp*)
-
-
-	(**	At the highest level, an ordered block can either be visible
-		(if it can be reference by [\ref], [\sref], or [\mref]), a
-		bibliography block (referenced by [\cite]), or a note block
-		(referenced by [\see]).
-	*)
-	type t =
-		private
-		| Visible_order of visible_order_t
-		| Bib_order of ghost_order_t
-		| Note_order of ghost_order_t
-		(*with sexp*)
+	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) t (*with sexp*)
 
 
 	(************************************************************************)
-	(**	{3 Public functions}						*)
+	(**	{3 Public values and functions}					*)
 	(************************************************************************)
 
 	(************************************************************************)
@@ -194,7 +159,8 @@ sig
 	(**	{4 Printers}							*)
 	(************************************************************************)
 
-	val string_of_order: ('a, 'b) order_t -> string
+	val string_of_ordinal: ordinal_converters_t -> t -> string
+	val string_of_hierarchical: hierarchical_converters_t -> t -> string
 
 
 	(************************************************************************)
@@ -206,31 +172,31 @@ sig
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors from counters}			*)
+	(**	{4 {!t} constructors from counters}				*)
 	(************************************************************************)
 
 	(**	Counters are an automatic source of numbering.  Therefore,
 		all of these functions return an [`Auto_given] value.
 	*)
 
-	val ordinal_scheme_of_counter: ordinal_counter_t ref -> [> ordinal_scheme_t auto_given_t ]
-	val hierarchical_scheme_of_counter: Level.t -> hierarchical_counter_t ref -> [> hierarchical_scheme_t auto_given_t ]
+	val ordinal_of_counter: ordinal_counter_t ref -> [> ordinal_scheme_t auto_given_t ]
+	val hierarchical_of_counter: Level.t -> hierarchical_counter_t ref -> [> hierarchical_scheme_t auto_given_t ]
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors from strings}			*)
+	(**	{4 {!t} constructors from strings}				*)
 	(************************************************************************)
 
 	(**	Strings are provided by the users themselves.  Therefore,
 		all of these functions return an [`User_given] value.
 	*)
 
-	val ordinal_scheme_of_string: ordinal_converters_t -> string -> [> ordinal_scheme_t user_given_t ]
-	val hierarchical_scheme_of_string: hierarchical_converters_t -> Level.t -> string -> [> hierarchical_scheme_t user_given_t ]
+	val ordinal_of_string: ordinal_converters_t -> string -> [> ordinal_scheme_t user_given_t ]
+	val hierarchical_of_string: hierarchical_converters_t -> Level.t -> string -> [> hierarchical_scheme_t user_given_t ]
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors from nothing}			*)
+	(**	{4 {!t} constructors from nothing}				*)
 	(************************************************************************)
 
 	(**	Constructor used when no ordering is to be assigned.
@@ -243,9 +209,9 @@ sig
 	(**	{4 Top-level constructor functions}				*)
 	(************************************************************************)
 
-	val body_sectional_order: body_sectional_order_t -> bool -> t
-	val appendix_sectional_order: appendix_sectional_order_t -> bool -> t
-	val preset_sectional_order: preset_sectional_order_t-> t
+	val sectional_order: body_sectional_order_t -> bool -> t
+	val appendix_order: appendix_sectional_order_t -> bool -> t
+	val preset_order: preset_sectional_order_t-> t
 	val algorithm_order: wrapper_order_t -> bool -> t
 	val equation_order: wrapper_order_t -> bool -> t
 	val figure_order: wrapper_order_t -> bool -> t
@@ -293,33 +259,13 @@ struct
 	type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
 	type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
 	type none_given_t = [ `None_given ] (*with sexp*)
-	type ('a, 'b) order_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+	type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
 
-	type body_sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
-	type appendix_sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) order_t (*with sexp*)
-	type preset_sectional_order_t = (hierarchical_scheme_t, none_given_t) order_t (*with sexp*)
-	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) order_t (*with sexp*)
-	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) order_t (*with sexp*)
-
-	type wrapper_t =
-		| Algorithm_wrapper
-		| Equation_wrapper
-		| Figure_wrapper
-		| Table_wrapper
-		(*with sexp*)
-
-	type visible_order_t =
-		| Body_sectional_order of body_sectional_order_t
-		| Appendix_sectional_order of appendix_sectional_order_t
-		| Preset_sectional_order of preset_sectional_order_t
-		| Wrapper_order of wrapper_t * wrapper_order_t
-		(*with sexp*)
-
-	type t =
-		| Visible_order of visible_order_t
-		| Bib_order of ghost_order_t
-		| Note_order of ghost_order_t
-		(*with sexp*)
+	type sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) t (*with sexp*)
+	type appendix_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) t (*with sexp*)
+	type preset_order_t = (hierarchical_scheme_t, none_given_t) t (*with sexp*)
+	type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) t (*with sexp*)
+	type ghost_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) t (*with sexp*)
 
 
 	(************************************************************************)
@@ -403,14 +349,6 @@ struct
 						else digit 'I' 'V' 'X' i
 		in String.implode (to_roman i)
 
-	(**	String of scheme.
-	*)
-	let string_of_scheme = function
-		| `Ordinal_scheme o					-> string_of_int o
-		| `Hierarchical_scheme (Level1_order l1)		-> string_of_int l1
-		| `Hierarchical_scheme (Level2_order (l1, l2))		-> (string_of_int l1) ^ "." ^ (string_of_int l2)
-		| `Hierarchical_scheme (Level3_order (l1, l2, l3))	-> (string_of_int l1) ^ "." ^ (string_of_int l2) ^ "." ^ (string_of_int l3)
-
 
 	(************************************************************************)
 	(**	{3 Public functions}						*)
@@ -443,10 +381,23 @@ struct
 	(**	{4 Printers}							*)
 	(************************************************************************)
 
-	let string_of_order = function
-		| `Auto_given s	-> string_of_scheme s
-		| `User_given s	-> string_of_scheme s
+	let string_of_ordinal (_, of_ordinal) = function
+		| `Auto_given o	-> of_ordinal o
+		| `User_given o	-> of_ordinal o
 		| `None_given	-> ""
+
+	let string_of_hierarchical converters scheme =
+		let (_, f1) = converters.level1
+		and (_, f2) = converters.level2
+		and (_, f3) = converters.level3 in
+		let sprint_hierarchy = function
+			| Level1_order l1		-> f1 l1
+			| Level2_order (l1, l2)		-> (f1 l1) ^ "." ^ (f2 l2)
+			| Level3_order (l1, l2, l3)	-> (f1 l1) ^ "." ^ (f2 l2) ^ "." ^ (f3 l3)
+		in match scheme with
+			| `Auto_given o	-> sprint_hierarchy o
+			| `User_given o	-> sprint_hierarchy o
+			| `None_given	-> ""
 
 
 	(************************************************************************)
@@ -459,21 +410,21 @@ struct
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors from counters}			*)
+	(**	{4 {!t} constructors from counters}				*)
 	(************************************************************************)
 
-	let ordinal_scheme_of_counter counter =
+	let ordinal_of_counter counter =
 		let () = incr counter
 		in `Auto_given (`Ordinal_scheme !counter)
 
-	let section_scheme_of_counter level counter =
+	let section_of_counter level counter =
 		let () = incr_hierarchy_counter level counter
 		in match level with
 			| Level.Level1 -> let (l1, _, _) = !counter in `Auto_given (`Hierarchical_scheme (Level1_order l1))
 			| Level.Level2 -> let (l1, l2, _) = !counter in `Auto_given (`Hierarchical_scheme (Level2_order (l1, l2)))
 			| Level.Level3 -> let (l1, l2, l3) = !counter in `Auto_given (`Hierarchical_scheme (Level3_order (l1, l2, l3)))
 
-	let appendix_scheme_of_counter level counter =
+	let appendix_of_counter level counter =
 		let () = incr_hierarchy_counter level counter
 		in match level with
 			| Level.Level1 -> let (l1, _, _) = !counter in `Auto_given (`Appendix_scheme (Level1_order l1))
@@ -482,7 +433,7 @@ struct
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors from strings}			*)
+	(**	{4 {!t} constructors from strings}				*)
 	(************************************************************************)
 
 	let ordinal_scheme_of_string str =
@@ -504,7 +455,7 @@ struct
 
 
 	(************************************************************************)
-	(**	{4 {!given_t} constructors from nothing}			*)
+	(**	{4 {!t} constructors from nothing}				*)
 	(************************************************************************)
 
 	let no_ordering () = `None_given
@@ -514,58 +465,35 @@ struct
 	(**	{4 Top-level constructor functions}				*)
 	(************************************************************************)
 
-	let body_sectional_order o subpaged = match (o, subpaged) with
+	let sectional_order o subpaged = match (o, subpaged) with
 		| (`Auto_given _, false)
 		| (`User_given _, true)
-		| (`None_given, _)	-> Visible_order (Body_sectional_order o)
-		| _			-> failwith "Does not satisfy body_sectional_order rules!"
+		| (`None_given, _)	-> o
+		| _			-> failwith "Does not satisfy sectional_order rules!"
 
-	let appendix_sectional_order o subpaged = match (o, subpaged) with
+	let appendix_order o subpaged = match (o, subpaged) with
 		| (`Auto_given _, false)
 		| (`User_given _, true)
-		| (`None_given, _)	-> Visible_order (Appendix_sectional_order o)
-		| _			-> failwith "Does not satisfy appendix_sectional_order rules!"
+		| (`None_given, _)	-> o
+		| _			-> failwith "Does not satisfy appendix_order rules!"
 
-	let preset_sectional_order o =
-		Visible_order (Preset_sectional_order o)
+	let preset_order o = o
 
 	let wrapper_order wrapper o subpaged = match (o, subpaged) with
 		| (`Auto_given _, false)
-		| (`User_given _, true)	-> Visible_order (Wrapper_order (wrapper, o))
+		| (`User_given _, true)	-> o
 		| _			-> failwith "Does not satisfy wrapper_order rules!"
 
-	let algorithm_order =
-		wrapper_order Algorithm_wrapper
+	let algorithm_order = wrapper_order 
 
-	let equation_order =
-		wrapper_order Equation_wrapper
+	let equation_order = wrapper_order
 
-	let figure_order = 
-		wrapper_order Figure_wrapper
+	let figure_order = wrapper_order
 
-	let table_order = 
-		wrapper_order Table_wrapper
+	let table_order = wrapper_order
 
-	let bib_order o =
-		Bib_order o
+	let bib_order o = o
 
-	let note_order o =
-		Note_order o
-end
-
-
-(********************************************************************************)
-(**	{2 Label_dict module}							*)
-(********************************************************************************)
-
-(**	The label dictionary contains a mapping between the labels used in the
-	document and the ordering of the corresponding block.  Note that all
-	labels share the same namespace.  Users are therefore encouraged to
-	use the informal LaTeX convention of prefixing each label with [fig:],
-	[tab:], [sec:], etc.
-*)
-module Label_dict =
-struct
-	type t = (Label.t, Order.t) Hashtbl.t (*with sexp*)
+	let note_order o = o
 end
 
