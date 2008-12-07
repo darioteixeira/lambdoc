@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_block.
+(*	Implementation file for Block module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -14,134 +14,17 @@
 
 TYPE_CONV_PATH "Document"
 
-open Document_basic
-open Document_level
-open Document_node
-open Document_ref
-open Document_math
-open Document_code
-open Document_tabular
 
-
-(********************************************************************************)
-(*	{2 Bullet module}							*)
-(********************************************************************************)
-
-(**	The various sorts of bullets accepted for unordered lists.
-	Note that these map directly into their CSS counterparts.
-*)
-module Bullet =
-struct
-	exception Unknown_bullet of string
-
-	type t =
-		| Default
-		| Disc
-		| Circle
-		| Square
-		| None
-		(*with sexp*)
-
-	let of_string = function
-		| "disc"	-> Disc
-		| "circle"	-> Circle
-		| "square"	-> Square
-		| "none"	-> None
-		| other		-> raise (Unknown_bullet other)
-
-	let to_string = function
-		| Default
-		| Disc		-> "disc"
-		| Circle	-> "circle"
-		| Square	-> "square"
-		| None		-> "none"
-end
-
-
-(********************************************************************************)
-(**	{2 Numbering module}							*)
-(********************************************************************************)
-
-(**	The various sorts of numbering accepted for ordered lists.
-	Note that these map directly into their CSS counterparts.
-*)
-module Numbering =
-struct
-	exception Unknown_numbering of string
-
-	type t =
-		| Default
-		| Decimal
-		| Lower_roman
-		| Upper_roman
-		| Lower_alpha
-		| Upper_alpha
-		| None
-		(*with sexp*)
-
-	let of_string = function
-		| "0"		-> Decimal
-		| "i"		-> Lower_roman
-		| "I"		-> Upper_roman
-		| "a"		-> Lower_alpha
-		| "A"		-> Upper_alpha
-		| "none"	-> None
-		| other		-> raise (Unknown_numbering other)
-
-	let to_string = function
-		| Default
-		| Decimal	-> "decimal"
-		| Lower_roman	-> "lower_roman"
-		| Upper_roman	-> "upper_roman"
-		| Lower_alpha	-> "lower_alpha"
-		| Upper_alpha	-> "upper_alpha"
-		| None		-> "none"
-end
-
-
-(********************************************************************************)
-(**	{2 Alignment module}							*)
-(********************************************************************************)
-
-module Alignment =
-struct
-	exception Unknown_alignment of string
-
-	type t =
-		| Center
-		| Left
-		| Right (*with sexp*)
-
-	let of_string = function
-		| "center"	-> Center
-		| "left"	-> Left
-		| "right"	-> Right
-		| other		-> raise (Unknown_alignment other)
-
-	let to_string = function
-		| Center	-> "center"
-		| Left		-> "left"
-		| Right		-> "right"
-end
-
-
-(********************************************************************************)
-(**	{2 Block module}							*)
-(********************************************************************************)
-
-(**	A visible block is one which always appears in the document in the same
-	order as it was defined.
-*)
-module rec Block:
+module rec M:
 sig
 	(**	A super fragment is a list of super blocks.
 	*)
-	type super_frag_t = Block.super_block_t list (*with sexp*)
+	type super_frag_t = M.super_block_t list (*with sexp*)
 
 
 	(**	A nestable fragment is a list of nestable blocks.
 	*)
-	type nestable_frag_t = Block.nestable_block_t list (*with sexp*)
+	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
 
 
 	(**	The various types of individual nestable blocks.
@@ -279,9 +162,9 @@ sig
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
-	type super_frag_t = Block.super_block_t list (*with sexp*)
+	type super_frag_t = M.super_block_t list (*with sexp*)
 
-	type nestable_frag_t = Block.nestable_block_t list (*with sexp*)
+	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
 
 	type paragraph_block_t = [ `Paragraph of Node.super_seq_t ] (*with sexp*)
 	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)

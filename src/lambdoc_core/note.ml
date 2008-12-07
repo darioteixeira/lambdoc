@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Level module.
+(*	Implementation file for Note module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,7 +8,8 @@
 *)
 (********************************************************************************)
 
-(**	Document levels.
+(**	A note is a record consisting of a label, an ordering, and the note's
+	inline text.
 *)
 
 TYPE_CONV_PATH "Document"
@@ -18,13 +19,10 @@ TYPE_CONV_PATH "Document"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-(**	Definition of hierarchy levels.  We support a three-level hierarchy,
-	equivalent to XHTML's H1, H2, and H3.  For sections, these levels can
-	be interpreted as "section", "subsection", and "subsubsection".
-*)
 type t =
-	| Level1
-	| Level2
-	| Level3
-	(*with sexp*)
+	{
+	label: Label.t;
+	order: Order.ghost_order_t;
+	content: Block.nestable_frag_t;
+	} (*with sexp*)
 

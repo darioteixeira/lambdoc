@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_variety.
+(*	Implementation file for Variety module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -19,20 +19,11 @@ TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
-(**	{2 Variety module}							*)
+(**	{2 Type definitions}							*)
 (********************************************************************************)
 
-module Variety:
-sig
-	type t =
-		[ `Manuscript
-		| `Composition
-		] (*with sexp*)
-end =
-struct
-	type t =
-		[ `Manuscript
-		| `Composition
-		] (*with sexp*)
-end
+type t =
+	[ `Manuscript
+	| `Composition
+	] (*with sexp*)
 

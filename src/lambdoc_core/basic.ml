@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_basic.
+(*	Implementation file for Basic module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -15,7 +15,7 @@ TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
-(**	{2 Basic data types used in the document}				*)
+(**	{2 Type definitions}							*)
 (********************************************************************************)
 
 (**	The type of raw text.
@@ -56,7 +56,7 @@ type 'a plus_t = 'a * 'a list (*with sexp*)
 
 
 (********************************************************************************)
-(**	{2 Basic auxiliary functions}						*)
+(**	{2 Public values and functions}						*)
 (********************************************************************************)
 
 let fplus f elem elem_list = (f elem, List.map f elem_list)

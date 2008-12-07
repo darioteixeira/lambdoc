@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_node.
+(*	Implementation file for Node module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,26 +8,17 @@
 *)
 (********************************************************************************)
 
-(**	Definition of document nodes.
+(**	The node is the basic element of text.  It can either be plain text,
+	an HTML entity, or text modified by some sort of decoration.
 *)
 
 TYPE_CONV_PATH "Document"
 
-open Document_basic
-open Document_math
 
-
-(********************************************************************************)
-(**	{2 Node module}								*)
-(********************************************************************************)
-
-(**	The node is the basic element of text.  It can either be plain text,
-	an HTML entity, or text modified by some sort of decoration.
-*)
-module rec Node:
+module rec M:
 sig
-	type super_seq_t = Node.super_node_t list (*with sexp*)
-	type nonlink_seq_t = Node.nonlink_node_t list (*with sexp*)
+	type super_seq_t = M.super_node_t list (*with sexp*)
+	type nonlink_seq_t = M.nonlink_node_t list (*with sexp*)
 
 	type nonlink_node_t =
 		[ `Plain of plain_t
@@ -76,8 +67,8 @@ sig
 	val mref: ref_t -> ([< nonlink_node_t], 'b) t list -> ([> link_node_t ], [> `Manuscript ]) t
 end =
 struct
-	type super_seq_t = Node.super_node_t list (*with sexp*)
-	type nonlink_seq_t = Node.nonlink_node_t list (*with sexp*)
+	type super_seq_t = M.super_node_t list (*with sexp*)
+	type nonlink_seq_t = M.nonlink_node_t list (*with sexp*)
 
 	type nonlink_node_t =
 		[ `Plain of plain_t

@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_label.
+(*	Implementation file for Label module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -13,24 +13,17 @@
 
 TYPE_CONV_PATH "Document"
 
-open Document_basic
-
 
 (********************************************************************************)
-(**	{2 Label module}							*)
+(**	{2 Type definitions}							*)
 (********************************************************************************)
 
-(**	The [Label] module encapsulates label-related definitions.
+(**	Label identifiers can either be [`Auto_label] (when they're automatically
+	specified by the system) or [`User_label] (when they're manually attributed
+	by the user).
 *)
-module Label =
-struct
-	(**	Label identifiers can either be [`Auto_label] (when they're automatically
-		specified by the system) or [`User_label] (when they're manually attributed
-		by the user).
-	*)
-	type t =
-		[ `Auto_label of ref_t
-		| `User_label of ref_t
-		] (*with sexp*)
-end
+type t =
+	[ `Auto_label of ref_t
+	| `User_label of ref_t
+	] (*with sexp*)
 

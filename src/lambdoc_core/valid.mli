@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Ambivalent module.
+(*	Interface file for Valid module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,17 +8,26 @@
 *)
 (********************************************************************************)
 
+(**	Definition of valid documents.
+*)
+
 TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{2 Type definitionss}							*)
 (********************************************************************************)
 
-type 'a t =
-	[ `Valid of 'a Valid.t
-	| `Invalid of 'a Invalid.t
-	] (*with sexp*)
+type valid_t =
+	{
+	content: Block.M.super_frag_t;
+	bibs: Bib.t list;
+	notes: Note.t list;
+	toc: Block.M.heading_block_t list;
+	labels: Label_dict.t;
+	} (*with sexp*)
+
+type 'a t = valid_t (*with sexp*)
 
 type manuscript_t = [`Manuscript] t (*with sexp*)
 
@@ -29,29 +38,20 @@ type composition_t = [`Composition] t (*with sexp*)
 (**	{2 Public values and functions}						*)
 (********************************************************************************)
 
-let make_valid_manuscript content bibs notes toc labels =
-	`Valid (Valid.make_manuscript content bibs notes toc labels)
+val make_manuscript:
+	([< Block.M.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
+	Bib.t list ->
+	Note.t list ->
+	Block.M.heading_block_t list ->
+	Label_dict.t ->
+	manuscript_t
 
-let make_valid_composition content =
-	`Valid (Valid.make_composition content)
-
-let make_invalid_manuscript errors =
-	`Invalid (Invalid.make_manuscript errors)
-
-let make_invalid_composition errors =
-	`Invalid (Invalid.make_composition errors)
+val make_composition: ([< Block.M.super_block_t], [< `Composition]) Block.t list -> composition_t
 
 (*
-let serialize_manuscript doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
-
-let serialize_composition =
-	serialize_manuscript
-
-let deserialize_manuscript str =
-	t_of_sexp Variety.t_of_sexp (Sexplib.Sexp.of_string str)
-
-let deserialize_composition =
-	deserialize_manuscript
+val serialize_manuscript: manuscript_t -> string
+val serialize_composition: composition_t -> string
+val deserialize_manuscript: string -> manuscript_t
+val deserialize_composition: string -> composition_t
 *)
 

@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_references.
+(*	Implementation file for References module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
