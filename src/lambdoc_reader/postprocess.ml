@@ -13,26 +13,15 @@
 *)
 
 open ExtString
-open Document_basic
-open Document_level
-open Document_ast
-open Document_ref
-open Document_node
-open Document_block
-open Document_features
-open Document_ghost
-open Document_settings
-open Document_error
-open Document_features
-open Document_permissions
-open Document_math
-open Document_code
-open Document_tabular
-open Document_ambivalent
+open Basic
 
 
 (********************************************************************************)
-(**	{2 Private functions}							*)
+(**	{2 Functions and values}						*)
+(********************************************************************************)
+
+(********************************************************************************)
+(**	{3 Low-level processing functions}					*)
 (********************************************************************************)
 
 (**	Processes an AST as provided by the parser, producing the corresponding
@@ -842,11 +831,6 @@ let process_document feature_map document_ast =
 
 
 (********************************************************************************)
-(**	{2 Public functions}							*)
-(********************************************************************************)
-
-
-(********************************************************************************)
 (**	{3 Error postprocessing functions}					*)
 (********************************************************************************)
 
@@ -882,7 +866,7 @@ let sort_errors errors =
 
 
 (********************************************************************************)
-(**	{3 Processing functions}						*)
+(**	{3 Top-level processing functions}					*)
 (********************************************************************************)
 
 let process_manuscript ?deny_list ?accept_list ?default source document_ast =

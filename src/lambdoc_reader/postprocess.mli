@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Interface file for Document_postprocess.
+(*	Interface file for Postprocess module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,14 +8,13 @@
 *)
 (********************************************************************************)
 
-open Document_ast
-open Document_features
-open Document_error
-open Document_ambivalent
+(**	Postprocessing on a document AST.  These functions convert
+	a document AST into a proper, final, ambivalent document.
+*)
 
 
 (********************************************************************************)
-(*	{2 Public functions}							*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
 val collate_errors:

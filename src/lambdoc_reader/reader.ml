@@ -11,11 +11,7 @@
 (**	Document reader.
 *)
 
-open Document_basic
-open Document_ast
-open Document_features
-open Document_error
-open Document_ambivalent
+open Basic
 
 
 (********************************************************************************)

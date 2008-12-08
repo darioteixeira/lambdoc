@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_ast.
+(*	Implementation file for Ast module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -11,14 +11,10 @@
 (**	Definition of the document AST that all parsers are supposed to generate.
 *)
 
-open Document_basic
+open Basic
 
 
-(********************************************************************************)
-(**	{2 Ast Module}								*)
-(********************************************************************************)
-
-module rec Ast:
+module rec M:
 sig
 
 	(************************************************************************)
@@ -182,10 +178,10 @@ sig
 
 
 	(************************************************************************)
-	(* 	{2 The type [Ast.t] itself}					*)
+	(* 	{2 The type {!t} itself}					*)
 	(************************************************************************)
 
 	type t = super_frag_t
 
-end = Ast
+end = M
 
