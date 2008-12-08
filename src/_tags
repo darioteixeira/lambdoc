@@ -1,3 +1,3 @@
-true: use_menhir, debug
-<lambdoc>: include
-<apidoc-src>: include
+true: debug
+<lambdoc_core>: include
+#<apidoc-src>: include
