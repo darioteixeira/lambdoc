@@ -1,4 +1,3 @@
-true: pkg_threads, pkg_unix, pkg_extlib, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, pkg_blahcaml, pkg_camlhighlight
 <*.cmx>: for-pack(Lambdoc_core)
 <alignment.*>: pkg_sexplib.syntax, syntax_camlp4o
 <ambivalent.*>: pkg_sexplib.syntax, syntax_camlp4o

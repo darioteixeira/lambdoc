@@ -26,7 +26,7 @@ type composition_t = [`Composition] t (*with sexp*)
 
 
 (********************************************************************************)
-(**	{2 Public values and functions}						*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
 let make_valid_manuscript content bibs notes toc labels =

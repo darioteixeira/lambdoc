@@ -36,10 +36,11 @@ type t =
 
 
 (********************************************************************************)
-(**	{2 Public values and functions}						*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
 let of_string = function
+	| "default"	-> Default
 	| "disc"	-> Disc
 	| "circle"	-> Circle
 	| "square"	-> Square
@@ -47,7 +48,7 @@ let of_string = function
 	| other		-> raise (Unknown_bullet other)
 
 let to_string = function
-	| Default
+	| Default	-> "default"
 	| Disc		-> "disc"
 	| Circle	-> "circle"
 	| Square	-> "square"

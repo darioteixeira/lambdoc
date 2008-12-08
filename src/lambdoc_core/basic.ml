@@ -56,7 +56,7 @@ type 'a plus_t = 'a * 'a list (*with sexp*)
 
 
 (********************************************************************************)
-(**	{2 Public values and functions}						*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
 let fplus f elem elem_list = (f elem, List.map f elem_list)

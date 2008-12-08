@@ -28,7 +28,7 @@ type composition_t = [`Composition] t (*with sexp*)
 
 
 (********************************************************************************)
-(**	{2 Public values and functions}						*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
 val make_valid_manuscript:
