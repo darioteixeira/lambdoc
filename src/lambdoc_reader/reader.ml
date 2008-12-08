@@ -26,7 +26,7 @@ sig
 	exception Unknown_env_command of int * tag_t
 	exception Unknown_simple_command of int * tag_t
 
-	val ast_from_string: string -> Ast.t
+	val ast_from_string: string -> Ast.M.t
 end
 
 
@@ -60,22 +60,22 @@ struct
 			in valid_processor ?deny_list ?accept_list ?default str document_ast
 		with
 			| Reader.Parsing_error line ->
-				let errors = Document_postprocess.collate_errors str [(line, Error.Syntax_error)]
+				let errors = Postprocess.collate_errors str [(line, Error.Syntax_error)]
 				in invalid_maker errors
 			| Reader.Unknown_env_command (line, tag) ->
-				let errors = Document_postprocess.collate_errors str [(line, Error.Unknown_env_command tag)]
+				let errors = Postprocess.collate_errors str [(line, Error.Unknown_env_command tag)]
 				in invalid_maker errors
 			| Reader.Unknown_simple_command (line, tag) ->
-				let errors = Document_postprocess.collate_errors str [(line, Error.Unknown_simple_command tag)]
+				let errors = Postprocess.collate_errors str [(line, Error.Unknown_simple_command tag)]
 				in invalid_maker errors
 
 	let ambivalent_manuscript_from_string ?deny_list ?accept_list ?default str =
-		let valid_processor = Document_postprocess.process_manuscript
+		let valid_processor = Postprocess.process_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
 		in ambivalent_document_from_string ?deny_list ?accept_list ?default valid_processor invalid_maker str
 
 	let ambivalent_composition_from_string ?deny_list ?accept_list ?default str =
-		let valid_processor = Document_postprocess.process_composition
+		let valid_processor = Postprocess.process_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
 		in ambivalent_document_from_string ?deny_list ?accept_list ?default valid_processor invalid_maker str
 end
