@@ -21,7 +21,6 @@ TYPE_CONV_PATH "Document"
 (**	The various types of wrappers.
 *)
 type wrapper_t =
-	private
 	| Algorithm_wrapper
 	| Equation_wrapper
 	| Figure_wrapper
@@ -32,11 +31,10 @@ type wrapper_t =
 (**	The various variations of visible targets.
 *)
 type visible_target_t =
-	private
-	| Sectional_target of Order.sectional_target_t
-	| Appendix_target of Order.appendix_target_t
-	| Preset_target of Order.preset_target_t
-	| Wrapper_target of wrapper_t * Order.wrapper_target_t
+	| Sectional_target of Order.sectional_order_t
+	| Appendix_target of Order.appendix_order_t
+	| Preset_target of Order.preset_order_t
+	| Wrapper_target of wrapper_t * Order.wrapper_order_t
 	(*with sexp*)
 
 
@@ -45,10 +43,9 @@ type visible_target_t =
 	(referenced by [\cite]), or a note block (referenced by [\see]).
 *)
 type t =
-	private
 	| Visible_target of visible_target_t
-	| Bib_target of ghost_target_t
-	| Note_target of ghost_target_t
+	| Bib_target of Order.bib_order_t
+	| Note_target of Order.note_order_t
 	(*with sexp*)
 
 
@@ -62,13 +59,13 @@ let appendix_target o = Visible_target (Appendix_target o)
 
 let preset_sectional_target o = Visible_target (Preset_target o)
 
-let algorithm_target = Visible_target (Wrapper_target (Algorithm_wrapper, o))
+let algorithm_target o = Visible_target (Wrapper_target (Algorithm_wrapper, o))
 
-let equation_target = Visible_target (Wrapper_target (Equation_wrapper, o))
+let equation_target o = Visible_target (Wrapper_target (Equation_wrapper, o))
 
-let figure_target = Visible_target (Wrapper_target (Figure_wrapper, o))
+let figure_target o = Visible_target (Wrapper_target (Figure_wrapper, o))
 
-let table_target = Visible_target (Wrapper_target (Table_wrapper, o))
+let table_target o = Visible_target (Wrapper_target (Table_wrapper, o))
 
 let bib_target o = Bib_target o
 

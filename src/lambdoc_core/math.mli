@@ -11,8 +11,6 @@
 (**	Definition of the module that handles document math.
 *)
 
-TYPE_CONV_PATH "Document"
-
 
 (********************************************************************************)
 (**	{Exceptions}								*)

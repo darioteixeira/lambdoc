@@ -22,7 +22,7 @@ TYPE_CONV_PATH "Document"
 type t =
 	{
 	label: Label.t;
-	order: Order.ghost_order_t;
-	content: Block.nestable_frag_t;
+	order: Order.note_order_t;
+	content: Block.M.nestable_frag_t;
 	} (*with sexp*)
 

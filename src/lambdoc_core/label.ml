@@ -23,7 +23,7 @@ TYPE_CONV_PATH "Document"
 	by the user).
 *)
 type t =
-	[ `Auto_label of ref_t
-	| `User_label of ref_t
+	[ `Auto_label of Basic.ref_t
+	| `User_label of Basic.ref_t
 	] (*with sexp*)
 

@@ -14,6 +14,8 @@
 
 TYPE_CONV_PATH "Document"
 
+open Basic
+
 
 module rec M:
 sig

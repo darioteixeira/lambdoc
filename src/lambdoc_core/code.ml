@@ -11,5 +11,5 @@
 (**	Definition of the module that handles source code samples.
 *)
 
-module Code = Highlight
+include Highlight
 

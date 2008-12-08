@@ -11,8 +11,6 @@
 (**	Definition of valid documents.
 *)
 
-TYPE_CONV_PATH "Document"
-
 
 (********************************************************************************)
 (**	{2 Type definitionss}							*)
@@ -24,7 +22,7 @@ type valid_t =
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Block.M.heading_block_t list;
-	labels: Label_dict.t;
+	labels: References.t;
 	} (*with sexp*)
 
 type 'a t = valid_t (*with sexp*)
@@ -39,14 +37,14 @@ type composition_t = [`Composition] t (*with sexp*)
 (********************************************************************************)
 
 val make_manuscript:
-	([< Block.M.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
+	([< Block.M.super_block_t], [< `Composition | `Manuscript]) Block.M.t list ->
 	Bib.t list ->
 	Note.t list ->
 	Block.M.heading_block_t list ->
-	Label_dict.t ->
+	References.t ->
 	manuscript_t
 
-val make_composition: ([< Block.M.super_block_t], [< `Composition]) Block.t list -> composition_t
+val make_composition: ([< Block.M.super_block_t], [< `Composition]) Block.M.t list -> composition_t
 
 (*
 val serialize_manuscript: manuscript_t -> string

@@ -10,6 +10,8 @@
 
 TYPE_CONV_PATH "Document"
 
+open Basic
+
 
 (********************************************************************************)
 (**	{Exceptions}								*)
@@ -36,7 +38,7 @@ type weight_t =
 
 type column_t = alignment_t * weight_t (*with sexp*)
 
-type row_t = Node.super_seq_t plus_t (*with sexp*)
+type row_t = Node.M.super_seq_t plus_t (*with sexp*)
 
 type group_t = row_t plus_t (*with sexp*)
 
@@ -70,7 +72,7 @@ let alignment_to_string = function
 	| Right		-> "right"
 	| Justify	-> "justify"
 
-let make_row (hd, tl) = ((hd :> Node.super_seq_t), (tl :> Node.super_seq_t list))
+let make_row (hd, tl) = ((hd :> Node.M.super_seq_t), (tl :> Node.M.super_seq_t list))
 
 let make tcols ?thead ?tfoot tbodies =
 	{

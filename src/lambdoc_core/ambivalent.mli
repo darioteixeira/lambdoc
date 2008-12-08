@@ -12,8 +12,6 @@
 	Document readers will always return a document of this type.
 *)
 
-TYPE_CONV_PATH "Document"
-
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
@@ -34,15 +32,15 @@ type composition_t = [`Composition] t (*with sexp*)
 (********************************************************************************)
 
 val make_valid_manuscript:
-	([< Block.super_block_t], [< `Composition | `Manuscript]) Block.t list ->
+	([< Block.M.super_block_t], [< `Composition | `Manuscript]) Block.M.t list ->
 	Bib.t list ->
 	Note.t list ->
-	Block.heading_block_t list ->
-	Label_dict.t ->
+	Block.M.heading_block_t list ->
+	References.t ->
 	manuscript_t
 
 val make_valid_composition:
-	([< Block.super_block_t], [< `Composition]) Block.t list ->
+	([< Block.M.super_block_t], [< `Composition]) Block.M.t list ->
 	composition_t
 
 val make_invalid_manuscript:

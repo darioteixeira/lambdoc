@@ -17,11 +17,11 @@ TYPE_CONV_PATH "Document"
 
 type valid_t =
 	{
-	content: Block.super_frag_t;
+	content: Block.M.super_frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
-	toc: Block.heading_block_t list;
-	labels: Label_dict.t;
+	toc: Block.M.heading_block_t list;
+	labels: References.t;
 	} (*with sexp*)
 
 type 'a t = valid_t (*with sexp*)
@@ -37,7 +37,7 @@ type composition_t = [`Composition] t (*with sexp*)
 
 let make_manuscript content bibs notes toc labels =
 	{
-	content = (content : ('a, 'b) Block.t list :> (Block.super_block_t, 'b) Block.t list);
+	content = (content : ('a, 'b) Block.M.t list :> (Block.M.super_block_t, 'b) Block.M.t list);
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
@@ -46,7 +46,7 @@ let make_manuscript content bibs notes toc labels =
 
 let make_composition content =
 	{
-	content = (content : ('a, 'b) Block.t list :> (Block.super_block_t, 'b) Block.t list);
+	content = (content : ('a, 'b) Block.M.t list :> (Block.M.super_block_t, 'b) Block.M.t list);
 	bibs = [];
 	notes = [];
 	toc = [];

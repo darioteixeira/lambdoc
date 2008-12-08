@@ -11,8 +11,6 @@
 (**	Definition of invalid documents.
 *)
 
-TYPE_CONV_PATH "Document"
-
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
