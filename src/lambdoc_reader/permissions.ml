@@ -8,6 +8,10 @@
 *)
 (********************************************************************************)
 
+open Basic
+open Ast.M
+
+
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
@@ -95,33 +99,33 @@ let reason_why_invalid perm = function
 *)
 let check_permission_set errors comm (perm_label, perm_order, perm_extra, perm_secondary) =
 
-	(match reason_why_invalid perm_label comm.Ast.comm_label with
+	(match reason_why_invalid perm_label comm.comm_label with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_label_parameter (comm.Ast.comm_tag, reason) in
-			DynArray.add errors (comm.Ast.comm_linenum, msg));
+			let msg = Error.Bad_label_parameter (comm.comm_tag, reason) in
+			DynArray.add errors (comm.comm_linenum, msg));
 
-	(match reason_why_invalid perm_order comm.Ast.comm_order with
+	(match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_order_parameter (comm.Ast.comm_tag, reason) in
-			DynArray.add errors (comm.Ast.comm_linenum, msg));
+			let msg = Error.Bad_order_parameter (comm.comm_tag, reason) in
+			DynArray.add errors (comm.comm_linenum, msg));
 
-	(match reason_why_invalid perm_extra comm.Ast.comm_extra with
+	(match reason_why_invalid perm_extra comm.comm_extra with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_extra_parameter (comm.Ast.comm_tag, reason) in
-			DynArray.add errors (comm.Ast.comm_linenum, msg));
+			let msg = Error.Bad_extra_parameter (comm.comm_tag, reason) in
+			DynArray.add errors (comm.comm_linenum, msg));
 
-	(match reason_why_invalid perm_secondary comm.Ast.comm_secondary with
+	(match reason_why_invalid perm_secondary comm.comm_secondary with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_secondary_parameter (comm.Ast.comm_tag, reason) in
-			DynArray.add errors (comm.Ast.comm_linenum, msg))
+			let msg = Error.Bad_secondary_parameter (comm.comm_tag, reason) in
+			DynArray.add errors (comm.comm_linenum, msg))
 
 
 (**	Checks a command feature.

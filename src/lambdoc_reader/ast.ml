@@ -41,8 +41,8 @@ sig
 	(**	{2 Data types for inline context}				*)
 	(************************************************************************)
 
-	type super_seq_t = Ast.super_node_t list
-	type nonlink_seq_t = Ast.nonlink_node_t list
+	type super_seq_t = M.super_node_t list
+	type nonlink_seq_t = M.nonlink_node_t list
 
 	type nonlink_node_t =
 		[ `AST_plain of operator_t * plain_t
@@ -94,9 +94,9 @@ sig
 	(**	{2 Data types for document blocks}				*)
 	(************************************************************************)
 
-	type super_frag_t = Ast.super_block_t list
-	type nestable_frag_t = Ast.nestable_block_t list
-	type item_frag_t = Ast.item_block_t list
+	type super_frag_t = M.super_block_t list
+	type nestable_frag_t = M.nestable_block_t list
+	type item_frag_t = M.item_block_t list
 
 	type caption_block_t = [ `AST_caption of command_t * super_seq_t ]
 	type item_block_t = [ `AST_item of command_t * nestable_frag_t ] 
@@ -184,4 +184,3 @@ sig
 	type t = super_frag_t
 
 end = M
-

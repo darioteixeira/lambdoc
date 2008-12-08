@@ -83,7 +83,7 @@ type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t 
 (**	Definition of the publicly visible ordering types.
 *)
 
-type sectional_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+type section_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
 type appendix_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
 type preset_order_t = (hierarchical_t, none_given_t) given_t (*with sexp*)
 type part_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
@@ -235,7 +235,7 @@ let hierarchical_of_counter counter level subpaged =
 			invalid_arg "Cannot break subpaging rules!"
 
 
-let auto_sectional_order = hierarchical_of_counter
+let auto_section_order = hierarchical_of_counter
 let auto_appendix_order = hierarchical_of_counter
 let auto_part_order = ordinal_of_counter
 let auto_wrapper_order = ordinal_of_counter
@@ -270,7 +270,7 @@ let hierarchical_of_string convs str level subpaged =
 			invalid_arg "Cannot break subpaging rules!"
 
 
-let user_sectional_order = hierarchical_of_string section_converters
+let user_section_order = hierarchical_of_string section_converters
 let user_appendix_order = hierarchical_of_string appendix_converters
 let user_part_order = ordinal_of_string roman_converters
 let user_wrapper_order = ordinal_of_string arabic_converters
@@ -280,9 +280,9 @@ let user_wrapper_order = ordinal_of_string arabic_converters
 (**	{3 Constructors from nothing}						*)
 (********************************************************************************)
 
-let none_sectional_order () _ = `None_given
-let none_appendix_order () _ = `None_given
-let none_preset_order () _ = `None_given
+let none_section_order _ = `None_given
+let none_appendix_order _ = `None_given
+let none_preset_order _ = `None_given
 
 
 (********************************************************************************)
@@ -319,7 +319,7 @@ let string_of_hierarchical converters ord =
 		| `None_given	-> ""
 
 
-let string_of_sectional_order = string_of_hierarchical section_converters
+let string_of_section_order = string_of_hierarchical section_converters
 let string_of_appendix_order = string_of_hierarchical appendix_converters
 let string_of_preset_order = string_of_hierarchical section_converters
 let string_of_part_order = string_of_ordinal roman_converters
