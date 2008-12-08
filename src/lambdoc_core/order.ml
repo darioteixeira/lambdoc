@@ -65,40 +65,31 @@ type hierarchical_converters_t =
 	}
 
 
-(**	There are two different ordering schemes: [`Ordinal_scheme], and [`Hierarchical_scheme].
-	The first is used, for example, for numbering wrappers and uses a single numeric counter.
-	The second is used for sections and has several numeric counters encoding an hierarchy.
-*)
-
-type ordinal_scheme_t = [ `Ordinal_scheme of ordinal_t ] (*with sexp*)
-type hierarchical_scheme_t = [ `Hierarchical_scheme of hierarchical_t ] (*with sexp*)
-type 'a scheme_t = 'a constraint 'a = [< ordinal_scheme_t | hierarchical_scheme_t ] (*with sexp*)
-
-
 (**	A block's ordering can be assigned by any of three sources: [`Auto_given] means that
 	the ordering should be automatically given by the system; [`User_given] means that the
 	ordering is manually given by the user; finally, when the block should not have any
 	ordering at all, [`None_given] is used.  Note that different classes of blocks allow
-	a different subset of these ordering variants.  Moreover, the first two variants must
-	be parametrised over the actual ordering scheme used (as it makes no sense to talk of
-	an ordering scheme when [`None_given] is used).
+	a different subset of these ordering variants.  Moreover, only the first two variants
+	must be parametrised over the actual ordering scheme used (as it makes no sense to talk
+	of an ordering scheme when [`None_given] is used).
 *)
 
-type 'a auto_given_t = [ `Auto_given of 'a scheme_t ] (*with sexp*)
-type 'a user_given_t = [ `User_given of 'a scheme_t ] (*with sexp*)
+type 'a auto_given_t = [ `Auto_given of 'a ] (*with sexp*)
+type 'a user_given_t = [ `User_given of 'a ] (*with sexp*)
 type none_given_t = [ `None_given ] (*with sexp*)
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+
 
 (**	Definition of the publicly visible ordering types.
 *)
 
-type sectional_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) t (*with sexp*)
-type appendix_order_t = (hierarchical_scheme_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) t (*with sexp*)
-type preset_order_t = (hierarchical_scheme_t, none_given_t) t (*with sexp*)
-type part_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) t (*with sexp*)
-type wrapper_order_t = (ordinal_scheme_t as 'a, ['a auto_given_t | 'a user_given_t]) t (*with sexp*)
-type bib_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) t (*with sexp*)
-type note_order_t = (ordinal_scheme_t as 'a, 'a auto_given_t) t (*with sexp*)
+type sectional_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+type appendix_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+type preset_order_t = (hierarchical_t, none_given_t) given_t (*with sexp*)
+type part_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+type wrapper_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+type bib_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
+type note_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
 
 
 (********************************************************************************)
@@ -226,7 +217,7 @@ let ordinal_of_counter counter subpaged =
 	match subpaged with
 		| false ->
 			let () = incr counter
-			in `Auto_given (`Ordinal_scheme !counter)
+			in `Auto_given !counter
 		| true ->
 			invalid_arg "Cannot break subpaging rules!"
 
@@ -237,9 +228,9 @@ let hierarchical_of_counter counter level subpaged =
 			let () = incr_hierarchy_counter counter level in
 			let (l1, l2, l3) = !counter
 			in (match level with
-				| Level.Level1 -> `Auto_given (`Hierarchical_scheme (Level1_order l1))
-				| Level.Level2 -> `Auto_given (`Hierarchical_scheme (Level2_order (l1, l2)))
-				| Level.Level3 -> `Auto_given (`Hierarchical_scheme (Level3_order (l1, l2, l3))))
+				| Level.Level1 -> `Auto_given (Level1_order l1)
+				| Level.Level2 -> `Auto_given (Level2_order (l1, l2))
+				| Level.Level3 -> `Auto_given (Level3_order (l1, l2, l3)))
 		| true ->
 			invalid_arg "Cannot break subpaging rules!"
 
@@ -259,7 +250,7 @@ let auto_note_order = ordinal_of_counter
 let ordinal_of_string (conv, _) str subpaged =
 	match subpaged with
 		| true ->
-			`User_given (`Ordinal_scheme (conv str))
+			`User_given (conv str)
 		| false ->
 			invalid_arg "Cannot break subpaging rules!"
 
@@ -271,9 +262,9 @@ let hierarchical_of_string convs str level subpaged =
 	in match subpaged with
 		| true ->
 			(match (level, String.nsplit str ".") with
-				| (Level.Level1, [a])		-> `User_given (`Hierarchical_scheme (Level1_order (conv1 a)))
-				| (Level.Level2, [a; b])	-> `User_given (`Hierarchical_scheme (Level2_order (conv1 a, conv2 b)))
-				| (Level.Level3, [a; b; c])	-> `User_given (`Hierarchical_scheme (Level3_order (conv1 a, conv2 b, conv3 c)))
+				| (Level.Level1, [a])		-> `User_given (Level1_order (conv1 a))
+				| (Level.Level2, [a; b])	-> `User_given (Level2_order (conv1 a, conv2 b))
+				| (Level.Level3, [a; b; c])	-> `User_given (Level3_order (conv1 a, conv2 b, conv3 c))
 				| (expected, found)		-> raise (Invalid_number_of_levels (expected, List.length found)))
 		| false ->
 			invalid_arg "Cannot break subpaging rules!"
@@ -295,13 +286,23 @@ let none_preset_order () _ = `None_given
 
 
 (********************************************************************************)
+(**	{3 Checkers}								*)
+(********************************************************************************)
+
+let is_none = function
+	| `Auto_given _	-> false
+	| `User_given _	-> false
+	| `None_given	-> true
+
+
+(********************************************************************************)
 (**	{3 Printers}								*)
 (********************************************************************************)
 
 let string_of_ordinal (_, of_ordinal) = function
-	| `Auto_given (`Ordinal_scheme o)	-> of_ordinal o
-	| `User_given (`Ordinal_scheme o)	-> of_ordinal o
-	| `None_given				-> ""
+	| `Auto_given o	-> of_ordinal o
+	| `User_given o	-> of_ordinal o
+	| `None_given	-> ""
 
 
 let string_of_hierarchical converters ord =
@@ -313,9 +314,9 @@ let string_of_hierarchical converters ord =
 		| Level2_order (l1, l2)		-> (f1 l1) ^ "." ^ (f2 l2)
 		| Level3_order (l1, l2, l3)	-> (f1 l1) ^ "." ^ (f2 l2) ^ "." ^ (f3 l3)
 	in match ord with
-		| `Auto_given (`Hierarchical_scheme o)	-> sprint_hierarchy o
-		| `User_given (`Hierarchical_scheme o)	-> sprint_hierarchy o
-		| `None_given				-> ""
+		| `Auto_given o	-> sprint_hierarchy o
+		| `User_given o	-> sprint_hierarchy o
+		| `None_given	-> ""
 
 
 let string_of_sectional_order = string_of_hierarchical section_converters

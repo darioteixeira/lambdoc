@@ -24,20 +24,28 @@ exception Invalid_appendix_string of string
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
+type ordinal_t
 type ordinal_counter_t
+
+type hierarchical_t
 type hierarchical_counter_t
 
-type sectional_order_t
-type appendix_order_t
-type preset_order_t
-type part_order_t
-type wrapper_order_t
-type bib_order_t
-type note_order_t
+type 'a auto_given_t = [ `Auto_given of 'a ] (*with sexp*)
+type 'a user_given_t = [ `User_given of 'a ] (*with sexp*)
+type none_given_t = [ `None_given ] (*with sexp*)
+type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+
+type sectional_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+type appendix_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
+type preset_order_t = (hierarchical_t, none_given_t) given_t (*with sexp*)
+type part_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+type wrapper_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+type bib_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
+type note_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
 
 
 (********************************************************************************)
-(**	{3 Public values and functions}						*)
+(**	{3 Public functions and values}						*)
 (********************************************************************************)
 
 (********************************************************************************)
@@ -77,6 +85,13 @@ val user_wrapper_order: string -> bool -> wrapper_order_t
 val none_sectional_order: unit -> bool -> sectional_order_t
 val none_appendix_order: unit -> bool -> appendix_order_t
 val none_preset_order: unit -> bool -> preset_order_t
+
+
+(********************************************************************************)
+(**	{3 Checkers}								*)
+(********************************************************************************)
+
+val is_none: ('a, 'b) given_t -> bool
 
 
 (********************************************************************************)
