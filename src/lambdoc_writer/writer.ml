@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Document_writer.
+(*	Implementation file for Writer module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -11,15 +11,6 @@
 (**	Document writer.
 *)
 
-open Document_settings
-open Document_valid
-open Document_invalid
-open Document_ambivalent
-
-
-(********************************************************************************)
-(*	{2 Public modules}							*)
-(********************************************************************************)
 
 (**	The module type that all wannabe document writers must export.
 *)
