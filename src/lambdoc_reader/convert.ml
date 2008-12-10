@@ -25,7 +25,7 @@ exception Invalid_composition_subset of tag_t
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-(**	Converts a document into a composition.
+(**	Makes sure a generic document only uses features valid for compositions.
 *)
 let convert_to_composition contents =
 
@@ -33,7 +33,17 @@ let convert_to_composition contents =
 	(* Conversion functions for inline context.				*)
 	(************************************************************************)
 
-	let rec convert_nonlink_node = function
+	let rec convert_super_seq seq =
+		List.map convert_super_node seq
+
+	and convert_nonlink_seq seq =
+		List.map convert_nonlink_node seq
+
+        and convert_super_node = function
+		| #Node.M.nonlink_node_t as node -> (convert_nonlink_node node :> (Node.M.super_node_t, _) Node.M.t)
+		| #Node.M.link_node_t as node	 -> (convert_link_node node :> (Node.M.super_node_t, _) Node.M.t)
+
+	and convert_nonlink_node = function
 		| `Plain txt			-> Node.M.plain txt
 		| `Entity txt			-> Node.M.entity txt
 		| `Math math			-> Node.M.math math
@@ -52,19 +62,7 @@ let convert_to_composition contents =
 		| `Cite _			-> raise (Invalid_composition_subset "cite")
 		| `Ref _			-> raise (Invalid_composition_subset "ref")
 		| `Sref _			-> raise (Invalid_composition_subset "sref")
-		| `Mref _			-> raise (Invalid_composition_subset "mref")
-
-        and convert_super_node = function
-		| #Node.M.nonlink_node_t as node ->
-			(convert_nonlink_node node :> (Node.M.super_node_t, _) Node.M.t)
-		| #Node.M.link_node_t as node ->
-			(convert_link_node node :> (Node.M.super_node_t, _) Node.M.t)
-
-	and convert_nonlink_seq seq =
-		List.map convert_nonlink_node seq
-
-	and convert_super_seq seq =
-		List.map convert_super_node seq in
+		| `Mref _			-> raise (Invalid_composition_subset "mref") in
 
 
 	(************************************************************************)
@@ -96,97 +94,51 @@ let convert_to_composition contents =
 	and convert_nestable_frag frag =
 		List.map convert_nestable_block frag
 
-	and convert_paragraph_block = function
-		| `Paragraph seq -> Block.M.paragraph (convert_super_seq seq)
-
-	and convert_itemize_block = function
-		| `Itemize (bul, (hd, tl)) -> Block.M.itemize bul (fplus convert_nestable_frag hd tl)
-
-	and convert_enumerate_block = function
-		| `Enumerate (num, (hd, tl)) -> Block.M.enumerate num (fplus convert_nestable_frag hd tl)
-
-	and convert_quote_block = function
-		| `Quote (alignment, frag) -> Block.M.quote alignment (convert_nestable_frag frag)
-
-	and convert_math_block = function
-		| `Math (alignment, math) -> Block.M.math alignment math
-
-	and convert_code_block = function
-		| `Code (alignment, highlight) -> Block.M.code alignment highlight
-
-	and convert_verbatim_block = function
-		| `Verbatim (alignment, txt) -> Block.M.verbatim alignment txt
-
-	and convert_tabular_block = function
-		| `Tabular (alignment, tab) -> Block.M.tabular alignment (convert_tabular tab)
-
-	and convert_image_block = function
-		| `Image (alignment, alias) -> Block.M.image alignment alias
-
-	and convert_subpage_block = function
-		| `Subpage (alignment, frag) -> Block.M.subpage alignment (convert_super_frag frag)
-
-	and convert_nestable_block = function
-		| #Block.M.paragraph_block_t as blk ->
-			(convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.itemize_block_t as blk ->
-			(convert_itemize_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.enumerate_block_t as blk ->
-			(convert_enumerate_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.quote_block_t as blk ->
-			(convert_quote_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.math_block_t as blk ->
-			(convert_math_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.code_block_t as blk ->
-			(convert_code_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.verbatim_block_t as blk ->
-			(convert_verbatim_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.tabular_block_t as blk ->
-			(convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.image_block_t as blk ->
-			(convert_image_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.subpage_block_t as blk ->
-			(convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| `Equation _ ->
-			raise (Invalid_composition_subset "equation")
-		| `Algorithm _ ->
-			raise (Invalid_composition_subset "algorithm")
-		| `Table _ ->
-			raise (Invalid_composition_subset "table")
-		| `Figure _ ->
-			raise (Invalid_composition_subset "figure")
-
-	and convert_heading = function
-		| `Section _ ->
-			raise (Invalid_composition_subset "section")
-		| `Appendix _ ->
-			raise (Invalid_composition_subset "appendix")
-		| `Bibliography _ ->
-			raise (Invalid_composition_subset "bibliography")
-		| `Notes _ ->
-			raise (Invalid_composition_subset "notes")
-		| `Toc _ ->
-			raise (Invalid_composition_subset "toc")
+	and convert_super_block = function
+		| #Block.M.top_block_t as blk		-> (convert_top_block blk :> (Block.M.super_block_t, _) Block.M.t)
+		| #Block.M.nestable_block_t as blk	-> (convert_nestable_block blk :> (Block.M.super_block_t, _) Block.M.t)
 
 	and convert_top_block = function
-		| `Heading heading ->
-			convert_heading heading
-		| `Title _ ->
-			raise (Invalid_composition_subset "title")
-		| `Subtitle _ ->
-			raise (Invalid_composition_subset "subtitle")
-		| `Abstract _ ->
-			raise (Invalid_composition_subset "abstract")
-		| `Part _ ->
-			raise (Invalid_composition_subset "part")
-		| `Rule ->
-			raise (Invalid_composition_subset "rule")
+		| `Heading heading			-> convert_heading heading
+		| `Title _				-> raise (Invalid_composition_subset "title")
+		| `Subtitle _				-> raise (Invalid_composition_subset "subtitle")
+		| `Abstract _				-> raise (Invalid_composition_subset "abstract")
+		| `Part _				-> raise (Invalid_composition_subset "part")
+		| `Rule					-> raise (Invalid_composition_subset "rule")
 
-	and convert_super_block = function
-		| #Block.M.top_block_t as blk ->
-			(convert_top_block blk :> (Block.M.super_block_t, _) Block.M.t)
-		| #Block.M.nestable_block_t as blk ->
-			(convert_nestable_block blk :> (Block.M.super_block_t, _) Block.M.t)
+	and convert_heading = function
+		| `Section _				-> raise (Invalid_composition_subset "section")
+		| `Appendix _				-> raise (Invalid_composition_subset "appendix")
+		| `Bibliography _			-> raise (Invalid_composition_subset "bibliography")
+		| `Notes _				-> raise (Invalid_composition_subset "notes")
+		| `Toc _				-> raise (Invalid_composition_subset "toc")
+
+	and convert_nestable_block = function
+		| #Block.M.paragraph_block_t as blk	-> (convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.itemize_block_t as blk	-> (convert_itemize_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.enumerate_block_t as blk	-> (convert_enumerate_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.quote_block_t as blk		-> (convert_quote_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.math_block_t as blk		-> (convert_math_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.code_block_t as blk		-> (convert_code_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.verbatim_block_t as blk	-> (convert_verbatim_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.tabular_block_t as blk	-> (convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.image_block_t as blk		-> (convert_image_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.subpage_block_t as blk	-> (convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| `Equation _				-> raise (Invalid_composition_subset "equation")
+		| `Algorithm _				-> raise (Invalid_composition_subset "algorithm")
+		| `Table _				-> raise (Invalid_composition_subset "table")
+		| `Figure _				-> raise (Invalid_composition_subset "figure")
+
+	and convert_paragraph_block (`Paragraph seq)			= Block.M.paragraph (convert_super_seq seq)
+	and convert_itemize_block (`Itemize (bul, (hd, tl)))		= Block.M.itemize bul (fplus convert_nestable_frag hd tl)
+	and convert_enumerate_block (`Enumerate (num, (hd, tl)))	= Block.M.enumerate num (fplus convert_nestable_frag hd tl)
+	and convert_quote_block (`Quote (alignment, frag))		= Block.M.quote alignment (convert_nestable_frag frag)
+	and convert_math_block (`Math (alignment, math))		= Block.M.math alignment math
+	and convert_code_block (`Code (alignment, highlight))		= Block.M.code alignment highlight
+	and convert_verbatim_block (`Verbatim (alignment, txt))		= Block.M.verbatim alignment txt
+	and convert_tabular_block (`Tabular (alignment, tab))		= Block.M.tabular alignment (convert_tabular tab)
+	and convert_image_block (`Image (alignment, alias))		= Block.M.image alignment alias
+	and convert_subpage_block (`Subpage (alignment, frag))		= Block.M.subpage alignment (convert_super_frag frag)
 
 	in convert_super_frag contents
 

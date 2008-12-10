@@ -238,6 +238,15 @@ let process_document feature_map document_ast =
 		ExtList.List.filter_map convert_nonlink_node seq
 
 
+	and convert_super_node : Ast.M.super_node_t -> (Node.M.super_node_t, _) Node.M.t option = function
+
+		| #Ast.M.nonlink_node_t as node ->
+			(convert_nonlink_node node :> (Node.M.super_node_t, _) Node.M.t option)
+
+		| #Ast.M.link_node_t as node ->
+			(convert_link_node node :> (Node.M.super_node_t, _) Node.M.t option)
+
+
 	and convert_nonlink_node : Ast.M.nonlink_node_t -> (Node.M.nonlink_node_t, _) Node.M.t option = function
 
 		| `AST_plain (op, txt) ->
@@ -340,16 +349,7 @@ let process_document feature_map document_ast =
 					| _				-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.M.mref label (convert_nonlink_seq seq))
-			in check_comm comm `Feature_mref None elem
-
-
-	and convert_super_node : Ast.M.super_node_t -> (Node.M.super_node_t, _) Node.M.t option = function
-
-		| #Ast.M.nonlink_node_t as node ->
-			(convert_nonlink_node node :> (Node.M.super_node_t, _) Node.M.t option)
-
-		| #Ast.M.link_node_t as node ->
-			(convert_link_node node :> (Node.M.super_node_t, _) Node.M.t option) in
+			in check_comm comm `Feature_mref None elem in
 
 
 	(************************************************************************)
@@ -436,166 +436,84 @@ let process_document feature_map document_ast =
 
 
 	and convert_item_frag subpaged = function
-		| []		-> failwith "Parser has given us an empty list!"
+		| []		-> invalid_arg "Parser has given us an empty list!"
 		| hd::tl	-> fplus (convert_item_block subpaged) hd tl
 
 
-	and convert_caption_block : Ast.M.caption_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
+	and convert_super_block : bool -> Ast.M.super_block_t -> (Block.M.super_block_t, _) Block.M.t option = function subpaged -> function
 
-		| `AST_caption (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_caption None elem
+		| #Ast.M.top_block_t as node ->
+			(convert_top_block subpaged node :> (Block.M.super_block_t, _) Block.M.t option)
 
-
-	and convert_item_block : bool -> Ast.M.item_block_t -> (Block.M.nestable_block_t, _) Block.M.t list = function subpaged -> function
-		| `AST_item (comm, frag) ->
-			convert_nestable_frag subpaged frag
+		| #Ast.M.nestable_block_t as node ->
+			(convert_nestable_block subpaged node :> (Block.M.super_block_t, _) Block.M.t option)
 
 
-	and convert_paragraph_block : Ast.M.paragraph_block_t -> (Block.M.paragraph_block_t, _) Block.M.t option = function
-		| `AST_paragraph (op, seq) ->
-			let elem () = Some (Block.M.paragraph (convert_super_seq seq))
-			in check_op op `Feature_paragraph elem
+	and convert_top_block : bool -> Ast.M.top_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
+
+		| `AST_heading heading ->
+			(convert_heading_block subpaged heading :> (Block.M.top_block_t, _) Block.M.t option)
+
+		| `AST_title (comm, seq) ->
+			let elem () = Some (Block.M.title (convert_super_seq seq))
+			in check_comm comm `Feature_title None elem
+
+		| `AST_subtitle (comm, seq) ->
+			let elem () = Some (Block.M.subtitle (convert_super_seq seq))
+			in check_comm comm `Feature_subtitle None elem
+
+		| `AST_abstract (comm, frag) ->
+			let elem () = Some (Block.M.abstract (convert_paragraph_frag frag))
+			in check_comm comm `Feature_abstract None elem
+
+		| `AST_part (comm, seq) ->
+			let elem () = Some (Block.M.part (convert_super_seq seq))
+			in check_comm comm `Feature_part (Some subpaged) elem
+
+		| `AST_rule comm ->
+			let elem () = Some (Block.M.rule ())
+			in check_comm comm `Feature_rule None elem
+
+		| `AST_appendix comm ->
+			let elem () = appendixed := true; None
+			in check_comm comm `Feature_appendix None elem
 
 
-	and convert_itemize_block : bool -> Ast.M.itemize_block_t -> (Block.M.itemize_block_t, _) Block.M.t option = function subpaged -> function
-		| `AST_itemize (comm, items) ->
+	and convert_heading_block : bool -> Ast.M.heading_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
+
+		| `AST_section (comm, seq) ->
+			convert_sectional Level1 `Feature_section comm seq subpaged
+
+		| `AST_subsection (comm, seq) ->
+			convert_sectional Level2 `Feature_subsection comm seq subpaged
+
+		| `AST_subsubsection (comm, seq) ->
+			convert_sectional Level3 `Feature_subsubsection comm seq subpaged
+
+		| `AST_toc comm ->
 			let elem () =
-				let bullet = get_bullet comm comm.comm_extra
-				in Some (Block.M.itemize bullet (convert_item_frag subpaged items))
-			in check_comm comm `Feature_itemize None elem
+				let order = Order.none_preset_order subpaged in
+				let label = make_label comm (Target.preset_target order)
+				in Some (Block.M.toc label order)
+			in check_comm comm `Feature_toc None elem
 
-
-	and convert_enumerate_block : bool -> Ast.M.enumerate_block_t -> (Block.M.enumerate_block_t, _) Block.M.t option = function subpaged -> function
-		| `AST_enumerate (comm, items) ->
+		| `AST_bibliography comm ->
 			let elem () =
-				let numbering = get_numbering comm comm.comm_extra
-				in Some (Block.M.enumerate numbering (convert_item_frag subpaged items))
-			in check_comm comm `Feature_enumerate None elem
+				let order = Order.none_preset_order subpaged in
+				let label = make_label comm (Target.preset_target order) in
+				let block = Block.M.bibliography label order in
+				let () = add_toc_entry block
+				in Some block
+			in check_comm comm `Feature_bibliography None elem
 
-
-	and convert_quote_block : bool -> Ast.M.quote_block_t -> (Block.M.quote_block_t, _) Block.M.t option = function subpaged -> function
-		| `AST_quote (comm, frag) ->
+		| `AST_notes comm ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
-			in check_comm comm `Feature_quote None elem
-
-
-	and convert_mathtex_block : Ast.M.mathtex_block_t -> (Block.M.math_block_t, _) Block.M.t option = function
-		| `AST_mathtex_blk (comm, txt) ->
-			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in convert_mathtex (Block.M.math alignment) comm.comm_linenum txt
-			in check_comm comm `Feature_mathtex_blk None elem
-
-
-	and convert_mathml_block : Ast.M.mathml_block_t -> (Block.M.math_block_t, _) Block.M.t option = function
-		| `AST_mathml_blk (comm, txt) ->
-			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in convert_mathml (Block.M.math alignment) comm.comm_linenum txt
-			in check_comm comm `Feature_mathml_blk None elem
-
-
-	and convert_code_block : Ast.M.code_block_t -> (Block.M.code_block_t, _) Block.M.t option = function
-		| `AST_code (comm, txt) ->
-			let elem () =
-				let lang = get_language comm comm.comm_secondary in
-				let highlight = Code.from_string lang txt
-				and alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.code alignment highlight)
-			in check_comm comm `Feature_code None elem
-
-
-	and convert_verbatim_block : Ast.M.verbatim_block_t -> (Block.M.verbatim_block_t, _) Block.M.t option = function
-		| `AST_verbatim (comm, txt) ->
-			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.verbatim alignment txt)
-			in check_comm comm `Feature_verbatim None elem
-
-
-	and convert_tabular_block : Ast.M.tabular_block_t -> (Block.M.tabular_block_t, _) Block.M.t option = function
-		| `AST_tabular (comm, tab) ->
-			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.tabular alignment (convert_tabular comm tab))
-			in check_comm comm `Feature_tabular None elem
-
-
-	and convert_image_block : Ast.M.image_block_t -> (Block.M.image_block_t, _) Block.M.t option = function
-		| `AST_image (comm, alias) ->
-			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.image alignment alias)
-			in check_comm comm `Feature_image None elem
-
-
-	and convert_subpage_block : Ast.M.subpage_block_t -> (Block.M.subpage_block_t, _) Block.M.t option = function
-		| `AST_subpage (comm, subpage) ->
-			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
-			in check_comm comm `Feature_subpage None elem
-
-
-	and convert_bib_title_block : Ast.M.bib_title_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
-
-		| `AST_bib_title (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_bib_title None elem
-
-
-	and convert_bib_author_block : Ast.M.bib_author_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
-
-		| `AST_bib_author (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_bib_author None elem
-
-
-	and convert_bib_resource_block : Ast.M.bib_resource_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
-
-		| `AST_bib_resource (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm comm `Feature_bib_resource None elem
-
-
-	and convert_equation_block : Ast.M.equation_block_t -> Block.M.equation_block_t option = function
-		| #Ast.M.mathtex_block_t as blk ->
-			(convert_mathtex_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
-		| #Ast.M.mathml_block_t as blk ->
-			(convert_mathml_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
-
-
-	and convert_algorithm_block : Ast.M.algorithm_block_t -> Block.M.algorithm_block_t option = function
-		| #Ast.M.code_block_t as blk ->
-			(convert_code_block blk :> (Block.M.algorithm_block_t, _) Block.M.t option)
-
-
-	and convert_table_block : Ast.M.table_block_t -> Block.M.table_block_t option = function
-		| #Ast.M.tabular_block_t as blk ->
-			(convert_tabular_block blk :> (Block.M.table_block_t, _) Block.M.t option)
-
-
-	and convert_figure_block : Ast.M.figure_block_t -> Block.M.figure_block_t option = function
-		| #Ast.M.image_block_t as blk ->
-			(convert_image_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
-		| #Ast.M.verbatim_block_t as blk ->
-			(convert_verbatim_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
-		| #Ast.M.subpage_block_t as blk ->
-			(convert_subpage_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
-
-
-	and convert_wrapper comm counter target_maker caption_block subpaged =
-		let order = match comm.comm_order with
-			| None		-> Order.auto_wrapper_order counter subpaged
-			| Some thing	-> Order.user_wrapper_order thing subpaged in
-		let label = make_label comm (target_maker order) in
-		let maybe_caption = convert_caption_block caption_block
-		in match (label, order, maybe_caption) with
-			| (label, order, Some caption)	-> Some (label, order, caption)
-			| _				-> None
+				let order = Order.none_preset_order subpaged in
+				let label = make_label comm (Target.preset_target order) in
+				let block = Block.M.notes label order in
+				let () = add_toc_entry block
+				in Some block
+			in check_comm comm `Feature_notes None elem
 
 
 	and convert_nestable_block : bool -> Ast.M.nestable_block_t -> (Block.M.nestable_block_t, _) Block.M.t option = function subpaged -> function
@@ -707,82 +625,158 @@ let process_document feature_map document_ast =
 			in check_comm comm `Feature_note None elem
 
 
-	and convert_heading_block : bool -> Ast.M.heading_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
+	and convert_paragraph_block : Ast.M.paragraph_block_t -> (Block.M.paragraph_block_t, _) Block.M.t option = function
+		| `AST_paragraph (op, seq) ->
+			let elem () = Some (Block.M.paragraph (convert_super_seq seq))
+			in check_op op `Feature_paragraph elem
 
-		| `AST_section (comm, seq) ->
-			convert_sectional Level1 `Feature_section comm seq subpaged
 
-		| `AST_subsection (comm, seq) ->
-			convert_sectional Level2 `Feature_subsection comm seq subpaged
-
-		| `AST_subsubsection (comm, seq) ->
-			convert_sectional Level3 `Feature_subsubsection comm seq subpaged
-
-		| `AST_toc comm ->
+	and convert_itemize_block : bool -> Ast.M.itemize_block_t -> (Block.M.itemize_block_t, _) Block.M.t option = function subpaged -> function
+		| `AST_itemize (comm, items) ->
 			let elem () =
-				let order = Order.none_preset_order subpaged in
-				let label = make_label comm (Target.preset_target order)
-				in Some (Block.M.toc label order)
-			in check_comm comm `Feature_toc None elem
+				let bullet = get_bullet comm comm.comm_extra
+				in Some (Block.M.itemize bullet (convert_item_frag subpaged items))
+			in check_comm comm `Feature_itemize None elem
 
-		| `AST_bibliography comm ->
+
+	and convert_enumerate_block : bool -> Ast.M.enumerate_block_t -> (Block.M.enumerate_block_t, _) Block.M.t option = function subpaged -> function
+		| `AST_enumerate (comm, items) ->
 			let elem () =
-				let order = Order.none_preset_order subpaged in
-				let label = make_label comm (Target.preset_target order) in
-				let block = Block.M.bibliography label order in
-				(if not subpaged then add_toc_entry block);
-				Some block
-			in check_comm comm `Feature_bibliography None elem
+				let numbering = get_numbering comm comm.comm_extra
+				in Some (Block.M.enumerate numbering (convert_item_frag subpaged items))
+			in check_comm comm `Feature_enumerate None elem
 
-		| `AST_notes comm ->
+
+	and convert_quote_block : bool -> Ast.M.quote_block_t -> (Block.M.quote_block_t, _) Block.M.t option = function subpaged -> function
+		| `AST_quote (comm, frag) ->
 			let elem () =
-				let order = Order.none_preset_order subpaged in
-				let label = make_label comm (Target.preset_target order) in
-				let block = Block.M.notes label order in
-				(if not subpaged then add_toc_entry block);
-				Some block
-			in check_comm comm `Feature_notes None elem
+				let alignment = get_alignment comm comm.comm_extra
+				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
+			in check_comm comm `Feature_quote None elem
 
 
-	and convert_top_block : bool -> Ast.M.top_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
-
-		| `AST_heading heading ->
-			(convert_heading_block subpaged heading :> (Block.M.top_block_t, _) Block.M.t option)
-
-		| `AST_title (comm, seq) ->
-			let elem () = Some (Block.M.title (convert_super_seq seq))
-			in check_comm comm `Feature_title None elem
-
-		| `AST_subtitle (comm, seq) ->
-			let elem () = Some (Block.M.subtitle (convert_super_seq seq))
-			in check_comm comm `Feature_subtitle None elem
-
-		| `AST_abstract (comm, frag) ->
-			let elem () = Some (Block.M.abstract (convert_paragraph_frag frag))
-			in check_comm comm `Feature_abstract None elem
-
-		| `AST_part (comm, seq) ->
-			let elem () = Some (Block.M.part (convert_super_seq seq))
-			in check_comm comm `Feature_part (Some subpaged) elem
-
-		| `AST_rule comm ->
-			let elem () = Some (Block.M.rule ())
-			in check_comm comm `Feature_rule None elem
-
-		| `AST_appendix comm ->
+	and convert_mathtex_block : Ast.M.mathtex_block_t -> (Block.M.math_block_t, _) Block.M.t option = function
+		| `AST_mathtex_blk (comm, txt) ->
 			let elem () =
-				appendixed := true;
-				None
-			in check_comm comm `Feature_appendix None elem
+				let alignment = get_alignment comm comm.comm_extra
+				in convert_mathtex (Block.M.math alignment) comm.comm_linenum txt
+			in check_comm comm `Feature_mathtex_blk None elem
 
 
-	and convert_super_block : bool -> Ast.M.super_block_t -> (Block.M.super_block_t, _) Block.M.t option = function subpaged -> function
+	and convert_mathml_block : Ast.M.mathml_block_t -> (Block.M.math_block_t, _) Block.M.t option = function
+		| `AST_mathml_blk (comm, txt) ->
+			let elem () =
+				let alignment = get_alignment comm comm.comm_extra
+				in convert_mathml (Block.M.math alignment) comm.comm_linenum txt
+			in check_comm comm `Feature_mathml_blk None elem
 
-		| #Ast.M.top_block_t as node ->
-			(convert_top_block subpaged node :> (Block.M.super_block_t, _) Block.M.t option)
 
-		| #Ast.M.nestable_block_t as node ->
-			(convert_nestable_block subpaged node :> (Block.M.super_block_t, _) Block.M.t option) in
+	and convert_code_block : Ast.M.code_block_t -> (Block.M.code_block_t, _) Block.M.t option = function
+		| `AST_code (comm, txt) ->
+			let elem () =
+				let lang = get_language comm comm.comm_secondary in
+				let highlight = Code.from_string lang txt
+				and alignment = get_alignment comm comm.comm_extra
+				in Some (Block.M.code alignment highlight)
+			in check_comm comm `Feature_code None elem
+
+
+	and convert_verbatim_block : Ast.M.verbatim_block_t -> (Block.M.verbatim_block_t, _) Block.M.t option = function
+		| `AST_verbatim (comm, txt) ->
+			let elem () =
+				let alignment = get_alignment comm comm.comm_extra
+				in Some (Block.M.verbatim alignment txt)
+			in check_comm comm `Feature_verbatim None elem
+
+
+	and convert_tabular_block : Ast.M.tabular_block_t -> (Block.M.tabular_block_t, _) Block.M.t option = function
+		| `AST_tabular (comm, tab) ->
+			let elem () =
+				let alignment = get_alignment comm comm.comm_extra
+				in Some (Block.M.tabular alignment (convert_tabular comm tab))
+			in check_comm comm `Feature_tabular None elem
+
+
+	and convert_image_block : Ast.M.image_block_t -> (Block.M.image_block_t, _) Block.M.t option = function
+		| `AST_image (comm, alias) ->
+			let elem () =
+				let alignment = get_alignment comm comm.comm_extra
+				in Some (Block.M.image alignment alias)
+			in check_comm comm `Feature_image None elem
+
+
+	and convert_subpage_block : Ast.M.subpage_block_t -> (Block.M.subpage_block_t, _) Block.M.t option = function
+		| `AST_subpage (comm, subpage) ->
+			let elem () =
+				let alignment = get_alignment comm comm.comm_extra
+				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
+			in check_comm comm `Feature_subpage None elem
+
+
+	and convert_bib_title_block : Ast.M.bib_title_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
+		| `AST_bib_title (comm, seq) ->
+			let elem () = Some (convert_super_seq seq)
+			in check_comm comm `Feature_bib_title None elem
+
+
+	and convert_bib_author_block : Ast.M.bib_author_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
+		| `AST_bib_author (comm, seq) ->
+			let elem () = Some (convert_super_seq seq)
+			in check_comm comm `Feature_bib_author None elem
+
+
+	and convert_bib_resource_block : Ast.M.bib_resource_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
+		| `AST_bib_resource (comm, seq) ->
+			let elem () = Some (convert_super_seq seq)
+			in check_comm comm `Feature_bib_resource None elem
+
+
+	and convert_equation_block : Ast.M.equation_block_t -> Block.M.equation_block_t option = function
+		| #Ast.M.mathtex_block_t as blk ->
+			(convert_mathtex_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
+		| #Ast.M.mathml_block_t as blk ->
+			(convert_mathml_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
+
+
+	and convert_algorithm_block : Ast.M.algorithm_block_t -> Block.M.algorithm_block_t option = function
+		| #Ast.M.code_block_t as blk ->
+			(convert_code_block blk :> (Block.M.algorithm_block_t, _) Block.M.t option)
+
+
+	and convert_table_block : Ast.M.table_block_t -> Block.M.table_block_t option = function
+		| #Ast.M.tabular_block_t as blk ->
+			(convert_tabular_block blk :> (Block.M.table_block_t, _) Block.M.t option)
+
+
+	and convert_figure_block : Ast.M.figure_block_t -> Block.M.figure_block_t option = function
+		| #Ast.M.image_block_t as blk ->
+			(convert_image_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
+		| #Ast.M.verbatim_block_t as blk ->
+			(convert_verbatim_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
+		| #Ast.M.subpage_block_t as blk ->
+			(convert_subpage_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
+
+
+	and convert_caption_block : Ast.M.caption_block_t -> (Node.M.super_node_t, _) Node.M.t list option = function
+		| `AST_caption (comm, seq) ->
+			let elem () = Some (convert_super_seq seq)
+			in check_comm comm `Feature_caption None elem
+
+
+	and convert_item_block : bool -> Ast.M.item_block_t -> (Block.M.nestable_block_t, _) Block.M.t list = function subpaged -> function
+		| `AST_item (comm, frag) ->
+			convert_nestable_frag subpaged frag
+
+
+	and convert_wrapper comm counter target_maker caption_block subpaged =
+		let order = match comm.comm_order with
+			| None		-> Order.auto_wrapper_order counter subpaged
+			| Some thing	-> Order.user_wrapper_order thing subpaged in
+		let label = make_label comm (target_maker order) in
+		let maybe_caption = convert_caption_block caption_block
+		in match (label, order, maybe_caption) with
+			| (label, order, Some caption)	-> Some (label, order, caption)
+			| _				-> None in
 
 
 	(************************************************************************)
