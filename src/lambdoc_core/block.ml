@@ -85,8 +85,8 @@ sig
 		the Bibliography are automatically mapped to the highest hierarchy level.
 	*)
 	type heading_block_t =
-		[ `Section of Level.t * Label.t * Order.section_order_t * Node.M.super_seq_t
-		| `Appendix of Level.t * Label.t * Order.appendix_order_t * Node.M.super_seq_t
+		[ `Section of level_t * Label.t * Order.section_order_t * Node.M.super_seq_t
+		| `Appendix of level_t * Label.t * Order.appendix_order_t * Node.M.super_seq_t
 		| `Bibliography of Label.t * Order.preset_order_t
 		| `Notes of Label.t * Order.preset_order_t
 		| `Toc of Label.t * Order.preset_order_t
@@ -111,9 +111,9 @@ sig
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	val section: Level.t -> Label.t -> Order.section_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val section: level_t -> Label.t -> Order.section_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
-	val appendix: Level.t -> Label.t -> Order.appendix_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val appendix: level_t -> Label.t -> Order.appendix_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val bibliography: Label.t -> Order.preset_order_t ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -204,8 +204,8 @@ struct
 		] (*with sexp*)
 
 	type heading_block_t =
-		[ `Section of Level.t * Label.t * Order.section_order_t * Node.M.super_seq_t
-		| `Appendix of Level.t * Label.t * Order.appendix_order_t * Node.M.super_seq_t
+		[ `Section of level_t * Label.t * Order.section_order_t * Node.M.super_seq_t
+		| `Appendix of level_t * Label.t * Order.appendix_order_t * Node.M.super_seq_t
 		| `Bibliography of Label.t * Order.preset_order_t
 		| `Notes of Label.t * Order.preset_order_t
 		| `Toc of Label.t * Order.preset_order_t

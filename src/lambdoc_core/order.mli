@@ -11,12 +11,14 @@
 (**	Definitions pertaining to document ordering.
 *)
 
+open Basic
+
 
 (********************************************************************************)
 (**	{2 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_number_of_levels of Level.t * int
+exception Invalid_number_of_levels of level_t * int
 exception Invalid_appendix_string of string
 
 
@@ -60,8 +62,8 @@ val make_hierarchy_counter: unit -> hierarchical_counter_t ref
 (**	{3 Constructors from counters}						*)
 (********************************************************************************)
 
-val auto_section_order: hierarchical_counter_t ref -> Level.t -> bool -> section_order_t
-val auto_appendix_order: hierarchical_counter_t ref -> Level.t -> bool -> appendix_order_t
+val auto_section_order: hierarchical_counter_t ref -> level_t -> bool -> section_order_t
+val auto_appendix_order: hierarchical_counter_t ref -> level_t -> bool -> appendix_order_t
 val auto_part_order: ordinal_counter_t ref -> bool -> part_order_t
 val auto_wrapper_order: ordinal_counter_t ref -> bool -> wrapper_order_t
 val auto_bib_order: ordinal_counter_t ref -> bool -> bib_order_t
@@ -72,8 +74,8 @@ val auto_note_order: ordinal_counter_t ref -> bool -> note_order_t
 (**	{3 Constructors from strings}						*)
 (********************************************************************************)
 
-val user_section_order: string -> Level.t -> bool -> section_order_t
-val user_appendix_order: string -> Level.t -> bool -> appendix_order_t
+val user_section_order: string -> level_t -> bool -> section_order_t
+val user_appendix_order: string -> level_t -> bool -> appendix_order_t
 val user_part_order: string -> bool -> part_order_t
 val user_wrapper_order: string -> bool -> wrapper_order_t
 

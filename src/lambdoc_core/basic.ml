@@ -18,41 +18,34 @@ TYPE_CONV_PATH "Document"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-(**	The type of raw text.
-*)
-type raw_t = string (*with sexp*)
+type raw_t = string (*with sexp*)		(** The type of raw text. *)
 
-(**	The type of undecorated text.
-*)
-type plain_t = string (*with sexp*)
+type plain_t = string (*with sexp*)		(** The type of undecorated text. *)
 
-(**	The type of XHTML entities.
-*)
-type entity_t = string (*with sexp*)
+type entity_t = string (*with sexp*)		(** The type of XHTML entities. *)
 
-(**	The type of links.
-*)
-type link_t = string (*with sexp*)
+type link_t = string (*with sexp*)		(** The type of links. *)
 
-(**	The type of aliases to filenames.
-*)
-type alias_t = string (*with sexp*)
+type alias_t = string (*with sexp*)		(** The type of aliases to filenames. *)
 
-(**	The type of label references.
-*)
-type ref_t = string (*with sexp*)
+type ref_t = string (*with sexp*)		(** The type of label references. *)
 
-(**	The type for syntax declarations.
-*)
-type syntax_t = string option (*with sexp*)
+type syntax_t = string option (*with sexp*)	(** The type for syntax declarations. *)
 
-(**	The type used for tags.
-*)
-type tag_t = string (*with sexp*)
+type tag_t = string (*with sexp*)		(** The type used for tags. *)
 
-(**	The type of non-empty lists.
+type 'a plus_t = 'a * 'a list (*with sexp*)	(** The type of non-empty lists. *)
+
+
+(**     Definition of hierarchy levels.  We support a three-level hierarchy,
+        equivalent to XHTML's H1, H2, and H3.  For sections, these levels can
+        be interpreted as "section", "subsection", and "subsubsection".
 *)
-type 'a plus_t = 'a * 'a list (*with sexp*)
+type level_t =
+        | Level1
+        | Level2
+        | Level3
+        (*with sexp*)
 
 
 (********************************************************************************)

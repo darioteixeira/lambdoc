@@ -710,13 +710,13 @@ let process_document feature_map document_ast =
 	and convert_heading_block : bool -> Ast.M.heading_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
 
 		| `AST_section (comm, seq) ->
-			convert_sectional Level.Level1 `Feature_section comm seq subpaged
+			convert_sectional Level1 `Feature_section comm seq subpaged
 
 		| `AST_subsection (comm, seq) ->
-			convert_sectional Level.Level2 `Feature_subsection comm seq subpaged
+			convert_sectional Level2 `Feature_subsection comm seq subpaged
 
 		| `AST_subsubsection (comm, seq) ->
-			convert_sectional Level.Level3 `Feature_subsubsection comm seq subpaged
+			convert_sectional Level3 `Feature_subsubsection comm seq subpaged
 
 		| `AST_toc comm ->
 			let elem () =

@@ -9,7 +9,6 @@
 <error.*>: pkg_sexplib.syntax, syntax_camlp4o
 <invalid.*>: pkg_sexplib.syntax, syntax_camlp4o
 <label.*>: pkg_sexplib.syntax, syntax_camlp4o
-<level.*>: pkg_sexplib.syntax, syntax_camlp4o
 <math.*>: pkg_sexplib.syntax, syntax_camlp4o
 <math.*>: pkg_sexplib.syntax, syntax_camlp4oi
 <node.*>: pkg_sexplib.syntax, syntax_camlp4o

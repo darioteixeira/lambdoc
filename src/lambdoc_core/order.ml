@@ -12,13 +12,14 @@ TYPE_CONV_PATH "Document"
 
 open ExtLib
 open ExtString
+open Basic
 
 
 (********************************************************************************)
 (**	{Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_number_of_levels of Level.t * int
+exception Invalid_number_of_levels of level_t * int
 exception Invalid_appendix_string of string
 
 
@@ -208,9 +209,9 @@ let make_hierarchy_counter () = ref (0, 0, 0)
 let incr_hierarchy_counter counter level =
 	let (l1, l2, l3) = !counter
 	in counter := match level with
-		| Level.Level1 -> (l1+1, 0, 0)
-		| Level.Level2 -> (l1, l2+1, 0)
-		| Level.Level3 -> (l1, l2, l3+1)
+		| Level1 -> (l1+1, 0, 0)
+		| Level2 -> (l1, l2+1, 0)
+		| Level3 -> (l1, l2, l3+1)
 
 
 let ordinal_of_counter counter subpaged =
@@ -228,9 +229,9 @@ let hierarchical_of_counter counter level subpaged =
 			let () = incr_hierarchy_counter counter level in
 			let (l1, l2, l3) = !counter
 			in (match level with
-				| Level.Level1 -> `Auto_given (Level1_order l1)
-				| Level.Level2 -> `Auto_given (Level2_order (l1, l2))
-				| Level.Level3 -> `Auto_given (Level3_order (l1, l2, l3)))
+				| Level1 -> `Auto_given (Level1_order l1)
+				| Level2 -> `Auto_given (Level2_order (l1, l2))
+				| Level3 -> `Auto_given (Level3_order (l1, l2, l3)))
 		| true ->
 			invalid_arg "Cannot break subpaging rules!"
 
@@ -262,9 +263,9 @@ let hierarchical_of_string convs str level subpaged =
 	in match subpaged with
 		| true ->
 			(match (level, String.nsplit str ".") with
-				| (Level.Level1, [a])		-> `User_given (Level1_order (conv1 a))
-				| (Level.Level2, [a; b])	-> `User_given (Level2_order (conv1 a, conv2 b))
-				| (Level.Level3, [a; b; c])	-> `User_given (Level3_order (conv1 a, conv2 b, conv3 c))
+				| (Level1, [a])		-> `User_given (Level1_order (conv1 a))
+				| (Level2, [a; b])	-> `User_given (Level2_order (conv1 a, conv2 b))
+				| (Level3, [a; b; c])	-> `User_given (Level3_order (conv1 a, conv2 b, conv3 c))
 				| (expected, found)		-> raise (Invalid_number_of_levels (expected, List.length found)))
 		| false ->
 			invalid_arg "Cannot break subpaging rules!"
