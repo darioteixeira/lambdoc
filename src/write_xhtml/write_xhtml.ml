@@ -115,7 +115,7 @@ let write_valid_document settings classname doc =
 		List.map write_nonlink_node seq
 
 
-	and write_nonlink_node: Node.nonlink_node_t -> nonlink_node_xhtml_t = function
+	and write_nonlink_node: Node.M.nonlink_node_t -> nonlink_node_xhtml_t = function
 		| `Plain txt ->
 			XHTML.M.pcdata txt 
 		| `Entity txt ->
@@ -140,13 +140,13 @@ let write_valid_document settings classname doc =
 			XHTML.M.span ~a:[a_class ["doc_box"]] (write_super_seq seq)
 
 
-	and write_link_node : Node.link_node_t -> link_node_xhtml_t = function
+	and write_link_node : Node.M.link_node_t -> link_node_xhtml_t = function
 
 		| `Link (lnk, seq) ->
 			make_external_link lnk (write_nonlink_seq seq)
 
 		| `See ref ->
-			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
+			let target = Hashtbl.find doc.Valid.labels (`User_label ref)
 			in (match order with
 				| Order.Note_order o ->
 					make_internal_link
@@ -206,9 +206,9 @@ let write_valid_document settings classname doc =
 
 
 	and write_super_node = function
-		| #Node.nonlink_node_t as node ->
+		| #Node.M.nonlink_node_t as node ->
 			(write_nonlink_node node :> super_node_xhtml_t)
-		| #Node.link_node_t as node->
+		| #Node.M.link_node_t as node->
 			(write_link_node node :> super_node_xhtml_t) in
 
 
@@ -331,26 +331,26 @@ let write_valid_document settings classname doc =
 
 
 	and write_equation_block = function
-		| #Block.math_block_t as blk ->
+		| #Block.M.math_block_t as blk ->
 			write_math_block blk
 
 
 	and write_algorithm_block = function
-		| #Block.code_block_t as blk ->
+		| #Block.M.code_block_t as blk ->
 			write_code_block blk
 
 
 	and write_table_block = function
-		| #Block.tabular_block_t as blk ->
+		| #Block.M.tabular_block_t as blk ->
 			write_tabular_block blk
 
 
 	and write_figure_block = function
-		| #Block.image_block_t as blk ->
+		| #Block.M.image_block_t as blk ->
 			write_image_block blk
-		| #Block.verbatim_block_t as blk ->
+		| #Block.M.verbatim_block_t as blk ->
 			write_verbatim_block blk
-		| #Block.subpage_block_t as blk ->
+		| #Block.M.subpage_block_t as blk ->
 			write_subpage_block blk
 
 
@@ -370,34 +370,34 @@ let write_valid_document settings classname doc =
 
 	and write_nestable_block = function
 
-		| #Block.paragraph_block_t as blk ->
+		| #Block.M.paragraph_block_t as blk ->
 			write_paragraph_block blk
 
-		| #Block.itemize_block_t as blk ->
+		| #Block.M.itemize_block_t as blk ->
 			write_itemize_block blk
 
-		| #Block.enumerate_block_t as blk ->
+		| #Block.M.enumerate_block_t as blk ->
 			write_enumerate_block blk
 
-		| #Block.quote_block_t as blk ->
+		| #Block.M.quote_block_t as blk ->
 			write_quote_block blk
 
-		| #Block.math_block_t as blk ->
+		| #Block.M.math_block_t as blk ->
 			write_math_block blk
 
-		| #Block.code_block_t as blk ->
+		| #Block.M.code_block_t as blk ->
 			write_code_block blk
 
-		| #Block.verbatim_block_t as blk ->
+		| #Block.M.verbatim_block_t as blk ->
 			write_verbatim_block blk
 
-		| #Block.tabular_block_t as blk ->
+		| #Block.M.tabular_block_t as blk ->
 			write_tabular_block blk
 
-		| #Block.image_block_t as blk ->
+		| #Block.M.image_block_t as blk ->
 			write_image_block blk
 
-		| #Block.subpage_block_t as blk ->
+		| #Block.M.subpage_block_t as blk ->
 			write_subpage_block blk
 
 		| `Equation (wrapper, equation) ->
@@ -470,9 +470,9 @@ let write_valid_document settings classname doc =
 
 
 	and write_super_block = function
-		| #Block.top_block_t as blk ->
+		| #Block.M.top_block_t as blk ->
 			write_top_block blk
-		| #Block.nestable_block_t as blk ->
+		| #Block.M.nestable_block_t as blk ->
 			write_nestable_block blk
 
 

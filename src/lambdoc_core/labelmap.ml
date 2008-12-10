@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Label module.
+(*	Implementation file for Labelmap module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,9 +8,6 @@
 *)
 (********************************************************************************)
 
-(**	Definitions pertaining to document labels.
-*)
-
 TYPE_CONV_PATH "Document"
 
 
@@ -18,17 +15,20 @@ TYPE_CONV_PATH "Document"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-(**	Label identifiers can either be [`Auto_label] (when they're automatically
-	specified by the system) or [`User_label] (when they're manually attributed
-	by the user).
-*)
-type t =
-	[ `Auto_label of Basic.ref_t
-	| `User_label of Basic.ref_t
-	] (*with sexp*)
+type key_t = Label.t
+type value_t = Target.t
+type t = (key_t, value_t) Hashtbl.t
 
 
-(**	So it satisfies the [Map.OrderedType] signature.
-*)
-let compare = Pervasives.compare
+(********************************************************************************)
+(**	{2 Functions and values}						*)
+(********************************************************************************)
+
+let create () = Hashtbl.create 10
+
+let add = Hashtbl.add
+
+let mem = Hashtbl.mem
+
+let find = Hashtbl.find
 

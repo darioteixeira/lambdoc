@@ -16,8 +16,7 @@
 <numbering.*>: pkg_sexplib.syntax, syntax_camlp4o
 <order.*>: pkg_sexplib.syntax, syntax_camlp4o
 <order.*>: pkg_sexplib.syntax, syntax_camlp4oi
-<references.*>: pkg_sexplib.syntax, syntax_camlp4o
-<settings.*>: pkg_sexplib.syntax, syntax_camlp4o
+<labelmap.*>: pkg_sexplib.syntax, syntax_camlp4o
 <tabular.*>: pkg_sexplib.syntax, syntax_camlp4o
 <target.*>: pkg_sexplib.syntax, syntax_camlp4o
 <valid.*>: pkg_sexplib.syntax, syntax_camlp4o

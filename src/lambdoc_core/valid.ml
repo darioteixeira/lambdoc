@@ -21,7 +21,7 @@ type valid_t =
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Block.M.heading_block_t list;
-	labels: References.t;
+	labelmap: Labelmap.t;
 	} (*with sexp*)
 
 type 'a t = valid_t (*with sexp*)
@@ -35,13 +35,13 @@ type composition_t = [`Composition] t (*with sexp*)
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let make_manuscript content bibs notes toc labels =
+let make_manuscript content bibs notes toc labelmap =
 	{
 	content = (content : ('a, 'b) Block.M.t list :> (Block.M.super_block_t, 'b) Block.M.t list);
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
-	labels = labels;
+	labelmap = labelmap;
 	}
 
 let make_composition content =
@@ -50,7 +50,7 @@ let make_composition content =
 	bibs = [];
 	notes = [];
 	toc = [];
-	labels = Hashtbl.create 0;
+	labelmap = Labelmap.create ();
 	}
 
 (*

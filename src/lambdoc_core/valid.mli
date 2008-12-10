@@ -22,7 +22,7 @@ type valid_t =
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Block.M.heading_block_t list;
-	labels: References.t;
+	labelmap: Labelmap.t;
 	} (*with sexp*)
 
 type 'a t = valid_t (*with sexp*)
@@ -41,7 +41,7 @@ val make_manuscript:
 	Bib.t list ->
 	Note.t list ->
 	Block.M.heading_block_t list ->
-	References.t ->
+	Labelmap.t ->
 	manuscript_t
 
 val make_composition: ([< Block.M.super_block_t], [< `Composition]) Block.M.t list -> composition_t

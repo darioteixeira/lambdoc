@@ -44,7 +44,7 @@ let process_document feature_map document_ast =
 	and notes = DynArray.create ()
 	and references = DynArray.create ()
 	and toc = DynArray.create ()
-        and labels = Hashtbl.create 50
+        and labels = Labelmap.create ()
 	and section_counter = Order.make_hierarchy_counter ()
 	and appendix_counter = Order.make_hierarchy_counter ()
 	and algorithm_counter = Order.make_ordinal_counter ()
@@ -153,9 +153,9 @@ let process_document feature_map document_ast =
 		match comm.comm_label with
 		| Some thing ->
 			let new_label = `User_label thing in
-			(if Hashtbl.mem labels new_label
+			(if Labelmap.mem labels new_label
 			then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, thing)))
-			else Hashtbl.add labels new_label target);
+			else Labelmap.add labels new_label target);
 			new_label
 		| None ->
 			incr auto_label_counter;
@@ -792,7 +792,7 @@ let process_document feature_map document_ast =
 	let filter_references () =
 		let filter_reference (target_checker, comm, label) =
 			try
-				let target = Hashtbl.find labels (`User_label label) in
+				let target = Labelmap.find labels (`User_label label) in
 				match target_checker target with
 				| `Valid_target ->
 					()

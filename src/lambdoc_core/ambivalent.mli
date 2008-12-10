@@ -36,7 +36,7 @@ val make_valid_manuscript:
 	Bib.t list ->
 	Note.t list ->
 	Block.M.heading_block_t list ->
-	References.t ->
+	Labelmap.t ->
 	manuscript_t
 
 val make_valid_composition:
