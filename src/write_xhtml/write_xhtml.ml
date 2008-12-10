@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Xhtml_writer.
+(*	Implementation file for Write_xhtml module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -17,22 +17,11 @@ open Printf
 open ExtList
 open ExtString
 open XHTML.M
-open Document_basic
-open Document_level
-open Document_ref
-open Document_node
-open Document_tabular
-open Document_math
-open Document_block
-open Document_ghost
-open Document_error
-open Document_settings
-open Document_valid
-open Settings
+open Basic
 
 
 (********************************************************************************)
-(**	{2 Private types and exceptions}					*)
+(**	{2 Exceptions}								*)
 (********************************************************************************)
 
 exception Command_see_with_non_note
@@ -41,6 +30,11 @@ exception Command_ref_with_non_block
 exception Command_sref_with_non_block
 exception Empty_error_context
 exception Empty_error_list
+
+
+(********************************************************************************)
+(**	{2 Private type definitions}						*)
+(********************************************************************************)
 
 type textual_node_xhtml_t = [`PCDATA ] XHTML.M.elt
 type nonlink_node_xhtml_t = [`B | `I | `PCDATA | `Span | `Sub | `Sup ] XHTML.M.elt
