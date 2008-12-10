@@ -8,5 +8,5 @@
 *)
 (********************************************************************************)
 
-include Lambdoc_writer.Writer.S with type t = [ `Div ] XHTML.M.elt
+include Writer.S with type t = [ `Div ] XHTML.M.elt
 

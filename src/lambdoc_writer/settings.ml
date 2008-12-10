@@ -73,7 +73,7 @@ let make bullet numbering names =
 	{
 	default_bullet = bullet;
 	default_numbering = numbering;
-	names = english_names;
+	names = names;
 	}
 
 let default = make Bullet.Default Numbering.Default english_names

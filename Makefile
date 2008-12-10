@@ -8,7 +8,7 @@ PKG_NAME=lambdoc
 SRC_DIR=src
 BUILD_DIR=$(SRC_DIR)/_build
 
-TARGETS=$(foreach EXT, cmi cma cmxa a, $(LIB_NAME).$(EXT))
+TARGETS=$(foreach EXT, cma cmxa a, $(LIB_NAME).$(EXT))
 FQTARGETS=$(foreach TARGET, $(TARGETS), $(BUILD_DIR)/$(TARGET))
 
 OCAMLBUILD_OPTS=

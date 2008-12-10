@@ -17,7 +17,10 @@ open Printf
 open ExtList
 open ExtString
 open XHTML.M
+
 open Basic
+open Valid
+open Settings
 
 
 (********************************************************************************)
@@ -70,26 +73,13 @@ let make_external_link = make_link
 let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
 
 
-let wrap_order order =
-	match Order.string_of_order order with
-		| ""	-> []
-		| other	-> [span [pcdata other]]
+let wrap_order = function
+	| ""	-> []
+	| other	-> [span [pcdata other]]
 
 
-let make_sref name ref order =
-	make_internal_link (`User_label ref) [pcdata name; space (); pcdata (Order.string_of_order order)]
-
-
-let make_sectional level label order content =
-	let cons = match level with
-		| Level.Level1 -> XHTML.M.h2
-		| Level.Level2 -> XHTML.M.h3
-		| Level.Level3 -> XHTML.M.h4
-	in cons ?a:(Some [a_id (make_label label); a_class ["doc_sec"]]) ((wrap_order order) @ [span content])
-
-
-let make_toc_entry label order content =
-	XHTML.M.li [make_internal_link label ((wrap_order order) @ [span content])]
+let make_sref name ref order_str =
+	make_internal_link (`User_label ref) [pcdata name; space (); pcdata order_str]
 
 
 let make_align align =
@@ -113,6 +103,13 @@ let write_valid_document settings classname doc =
 
 	and write_nonlink_seq seq =
 		List.map write_nonlink_node seq
+
+
+	and write_super_node = function
+		| #Node.M.nonlink_node_t as node ->
+			(write_nonlink_node node :> super_node_xhtml_t)
+		| #Node.M.link_node_t as node->
+			(write_link_node node :> super_node_xhtml_t)
 
 
 	and write_nonlink_node: Node.M.nonlink_node_t -> nonlink_node_xhtml_t = function
@@ -146,70 +143,67 @@ let write_valid_document settings classname doc =
 			make_external_link lnk (write_nonlink_seq seq)
 
 		| `See ref ->
-			let target = Hashtbl.find doc.Valid.labels (`User_label ref)
-			in (match order with
-				| Order.Note_order o ->
-					make_internal_link
-						~classname:"doc_see"
-						(`User_label ref)
-						[pcdata (sprintf "(%s)" (Order.string_of_order o))]
+			let label = `User_label ref in
+			let target = Labelmap.find doc.labelmap label
+			in (match target with
+				| Target.Note_target o ->
+					let order = [pcdata (sprintf "(%s)" (Order.string_of_note_order o))]
+					in make_internal_link ~classname:"doc_see" label order
 				| _ ->
 					raise Command_see_with_non_note)
 
 		| `Cite ref ->
-			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
-			in (match order with
-				| Order.Bib_order o ->
-					make_internal_link
-						~classname:"doc_cite"
-						(`User_label ref)
-						[pcdata (sprintf "[%s]" (Order.string_of_order o))]
+			let label = `User_label ref in
+			let target = Labelmap.find doc.labelmap label
+			in (match target with
+				| Target.Bib_target o ->
+					let order = [pcdata (sprintf "[%s]" (Order.string_of_bib_order o))]
+					in make_internal_link ~classname:"doc_cite" label order
 				| _ ->
 					raise Command_cite_with_non_bib)
 
 		| `Ref ref ->
-			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
-			in (match order with
-				| Order.Visible_order (Order.Body_sectional_order order) ->
-					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
-				| Order.Visible_order (Order.Appendix_sectional_order order) ->
-					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
-				| Order.Visible_order (Order.Preset_sectional_order order) ->
-					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
-				| Order.Visible_order (Order.Wrapper_order (_, order)) ->
-					make_internal_link (`User_label ref) [pcdata (Order.string_of_order order)]
+			let label = `User_label ref in
+			let target = Labelmap.find doc.labelmap label
+			in (match target with
+				| Target.Visible_target (Target.Section_target o) ->
+					let order = [pcdata (Order.string_of_section_order o)]
+					in make_internal_link label order
+				| Target.Visible_target (Target.Appendix_target o) ->
+					let order = [pcdata (Order.string_of_appendix_order o)]
+					in make_internal_link label order
+				| Target.Visible_target (Target.Preset_target o) ->
+					let order = [pcdata (Order.string_of_preset_order o)]
+					in make_internal_link label order
+				| Target.Visible_target (Target.Wrapper_target (_, o)) ->
+					let order = [pcdata (Order.string_of_wrapper_order o)]
+					in make_internal_link label order
 				| _ ->
 					raise Command_ref_with_non_block)
 
 		| `Sref ref ->
-			let order = Hashtbl.find doc.Valid.labels (`User_label ref)
-			in (match order with
-				| Order.Visible_order (Order.Body_sectional_order order) ->
-					make_sref settings.names.section_name ref order
-				| Order.Visible_order (Order.Appendix_sectional_order order) ->
-					make_sref settings.names.appendix_name ref order
-				| Order.Visible_order (Order.Preset_sectional_order order) ->
-					make_sref settings.names.section_name ref order
-				| Order.Visible_order (Order.Wrapper_order (Order.Equation_wrapper, order)) ->
-					make_sref settings.names.equation_name ref order
-				| Order.Visible_order (Order.Wrapper_order (Order.Algorithm_wrapper, order)) ->
-					make_sref settings.names.algorithm_name ref order
-				| Order.Visible_order (Order.Wrapper_order (Order.Table_wrapper, order)) ->
-					make_sref settings.names.table_name ref order
-				| Order.Visible_order (Order.Wrapper_order (Order.Figure_wrapper, order)) ->
-					make_sref settings.names.figure_name ref order
+			let label = `User_label ref in
+			let target = Labelmap.find doc.labelmap label
+			in (match target with
+				| Target.Visible_target (Target.Section_target o) ->
+					make_sref settings.names.section_name ref (Order.string_of_section_order o)
+				| Target.Visible_target (Target.Appendix_target o) ->
+					make_sref settings.names.appendix_name ref (Order.string_of_appendix_order o)
+				| Target.Visible_target (Target.Preset_target o) ->
+					make_sref settings.names.section_name ref (Order.string_of_preset_order o)
+				| Target.Visible_target (Target.Wrapper_target (Target.Equation_wrapper, o)) ->
+					make_sref settings.names.equation_name ref (Order.string_of_wrapper_order o)
+				| Target.Visible_target (Target.Wrapper_target (Target.Algorithm_wrapper, o)) ->
+					make_sref settings.names.algorithm_name ref (Order.string_of_wrapper_order o)
+				| Target.Visible_target (Target.Wrapper_target (Target.Table_wrapper, o)) ->
+					make_sref settings.names.table_name ref (Order.string_of_wrapper_order o)
+				| Target.Visible_target (Target.Wrapper_target (Target.Figure_wrapper, o)) ->
+					make_sref settings.names.figure_name ref (Order.string_of_wrapper_order o)
 				| _ ->
 					raise Command_sref_with_non_block)
 
 		| `Mref (ref, seq) ->
-			make_internal_link (`User_label ref) (write_nonlink_seq seq)
-
-
-	and write_super_node = function
-		| #Node.M.nonlink_node_t as node ->
-			(write_nonlink_node node :> super_node_xhtml_t)
-		| #Node.M.link_node_t as node->
-			(write_link_node node :> super_node_xhtml_t) in
+			make_internal_link (`User_label ref) (write_nonlink_seq seq) in
 
 
 	(************************************************************************)
@@ -274,6 +268,121 @@ let write_valid_document settings classname doc =
 	and write_item_frag = function
 		| (hd, tl) -> fplus (fun el -> XHTML.M.li (write_nestable_frag el)) hd tl
 
+
+	and write_super_block = function
+		| #Block.M.top_block_t as blk ->
+			write_top_block blk
+		| #Block.M.nestable_block_t as blk ->
+			write_nestable_block blk
+
+
+	and write_top_block = function
+		| `Heading heading ->
+			write_heading_block heading
+		| `Title seq ->
+			XHTML.M.h1 ~a:[a_class ["doc_title"]] (write_super_seq seq)
+		| `Subtitle seq ->
+			XHTML.M.h2 ~a:[a_class ["doc_title"]] (write_super_seq seq)
+		| `Abstract frag ->
+			XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_paragraph_frag frag))
+		| `Part seq ->
+			XHTML.M.h1 ~a:[a_class ["doc_part"]] (write_super_seq seq)
+		| `Rule ->
+			XHTML.M.hr ()
+
+
+	and write_heading_block blk =
+		let make_sectional level label order_str content =
+			let cons = match level with
+				| Level1 -> XHTML.M.h2
+				| Level2 -> XHTML.M.h3
+				| Level3 -> XHTML.M.h4
+			in cons ?a:(Some [a_id (make_label label); a_class ["doc_sec"]]) ((wrap_order order_str) @ [span content])
+		in match blk with
+
+			| `Section (level, label, order, seq) ->
+				make_sectional level label (Order.string_of_section_order order) (write_super_seq seq)
+
+			| `Appendix (level, label, order, seq) ->
+				make_sectional level label (Order.string_of_appendix_order order) (write_super_seq seq)
+
+			| `Bibliography (label, order) ->
+				let name = settings.names.bibliography_name in
+				let title = [make_sectional Level1 label (Order.string_of_preset_order order) [XHTML.M.pcdata name]] in
+				let bibs = match doc.Valid.bibs with
+					| []	 -> []
+					| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ul ~a:[a_class ["doc_bibs"]] hd tl]
+				in XHTML.M.div (title @ bibs)
+
+			| `Notes (label, order) ->
+				let name = settings.names.notes_name in
+				let title = [make_sectional Level1 label (Order.string_of_preset_order order) [XHTML.M.pcdata name]] in
+				let notes = match doc.Valid.notes with
+					| []	 -> []
+					| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ul ~a:[a_class ["doc_notes"]] hd tl]
+				in XHTML.M.div (title @ notes)
+
+			| `Toc (label, order) ->
+				let name = settings.names.toc_name in
+				let title = [make_sectional Level1 label (Order.string_of_preset_order order) [XHTML.M.pcdata name]] in
+				let toc = match doc.Valid.toc with
+					| []	 -> []
+					| hd::tl -> let (hd, tl) = fplus write_toc_entry hd tl in [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
+				in XHTML.M.div (title @ toc)
+
+
+	and write_nestable_block = function
+
+		| #Block.M.paragraph_block_t as blk ->
+			write_paragraph_block blk
+
+		| #Block.M.itemize_block_t as blk ->
+			write_itemize_block blk
+
+		| #Block.M.enumerate_block_t as blk ->
+			write_enumerate_block blk
+
+		| #Block.M.quote_block_t as blk ->
+			write_quote_block blk
+
+		| #Block.M.math_block_t as blk ->
+			write_math_block blk
+
+		| #Block.M.code_block_t as blk ->
+			write_code_block blk
+
+		| #Block.M.verbatim_block_t as blk ->
+			write_verbatim_block blk
+
+		| #Block.M.tabular_block_t as blk ->
+			write_tabular_block blk
+
+		| #Block.M.image_block_t as blk ->
+			write_image_block blk
+
+		| #Block.M.subpage_block_t as blk ->
+			write_subpage_block blk
+
+		| `Equation (wrapper, equation) ->
+			let wrapper_name = settings.names.equation_name
+			and wrapper_content = write_equation_block equation
+			in write_wrapper wrapper "doc_eq" wrapper_name wrapper_content
+
+		| `Algorithm (wrapper, algorithm) ->
+			let wrapper_name = settings.names.algorithm_name
+			and wrapper_content = write_algorithm_block algorithm
+			in write_wrapper wrapper "doc_alg" wrapper_name wrapper_content
+
+		| `Table (wrapper, table) ->
+			let wrapper_name = settings.names.table_name
+			and wrapper_content = write_table_block table
+			in write_wrapper wrapper "doc_table" wrapper_name wrapper_content
+
+		| `Figure (wrapper, figure) ->
+			let wrapper_name = settings.names.figure_name
+			and wrapper_content = write_figure_block figure
+			in write_wrapper wrapper "doc_fig" wrapper_name wrapper_content
+	
 
 	and write_paragraph_block = function
 		| `Paragraph seq ->
@@ -355,7 +464,7 @@ let write_valid_document settings classname doc =
 
 
 	and write_caption order wrapper_name caption =
-		let caption_head = XHTML.M.h1 [pcdata (wrapper_name ^ "  " ^ (Order.string_of_order order) ^ ":")]
+		let caption_head = XHTML.M.h1 [pcdata (wrapper_name ^ "  " ^ (Order.string_of_wrapper_order order) ^ ":")]
 		and caption_body = XHTML.M.p (write_super_seq caption)
 		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
 
@@ -366,114 +475,6 @@ let write_valid_document settings classname doc =
 		let style = "" in
 		let classnames = ["doc_wrapper"; wrapper_classname; style]
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
-
-
-	and write_nestable_block = function
-
-		| #Block.M.paragraph_block_t as blk ->
-			write_paragraph_block blk
-
-		| #Block.M.itemize_block_t as blk ->
-			write_itemize_block blk
-
-		| #Block.M.enumerate_block_t as blk ->
-			write_enumerate_block blk
-
-		| #Block.M.quote_block_t as blk ->
-			write_quote_block blk
-
-		| #Block.M.math_block_t as blk ->
-			write_math_block blk
-
-		| #Block.M.code_block_t as blk ->
-			write_code_block blk
-
-		| #Block.M.verbatim_block_t as blk ->
-			write_verbatim_block blk
-
-		| #Block.M.tabular_block_t as blk ->
-			write_tabular_block blk
-
-		| #Block.M.image_block_t as blk ->
-			write_image_block blk
-
-		| #Block.M.subpage_block_t as blk ->
-			write_subpage_block blk
-
-		| `Equation (wrapper, equation) ->
-			let wrapper_name = settings.names.equation_name
-			and wrapper_content = write_equation_block equation
-			in write_wrapper wrapper "doc_eq" wrapper_name wrapper_content
-
-		| `Algorithm (wrapper, algorithm) ->
-			let wrapper_name = settings.names.algorithm_name
-			and wrapper_content = write_algorithm_block algorithm
-			in write_wrapper wrapper "doc_alg" wrapper_name wrapper_content
-
-		| `Table (wrapper, table) ->
-			let wrapper_name = settings.names.table_name
-			and wrapper_content = write_table_block table
-			in write_wrapper wrapper "doc_table" wrapper_name wrapper_content
-
-		| `Figure (wrapper, figure) ->
-			let wrapper_name = settings.names.figure_name
-			and wrapper_content = write_figure_block figure
-			in write_wrapper wrapper "doc_fig" wrapper_name wrapper_content
-	
-
-	and write_heading_block = function
-
-		| `Section (level, label, order, seq) ->
-			make_sectional level label order (write_super_seq seq)
-
-		| `Appendix (level, label, order, seq) ->
-			make_sectional level label order (write_super_seq seq)
-
-		| `Bibliography (label, order) ->
-			let name = settings.names.bibliography_name in
-			let title = [make_sectional Level.Level1 label order [XHTML.M.pcdata name]] in
-			let bibs = match doc.Valid.bibs with
-				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ul ~a:[a_class ["doc_bibs"]] hd tl]
-			in XHTML.M.div (title @ bibs)
-
-		| `Notes (label, order) ->
-			let name = settings.names.notes_name in
-			let title = [make_sectional Level.Level1 label order [XHTML.M.pcdata name]] in
-			let notes = match doc.Valid.notes with
-				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ul ~a:[a_class ["doc_notes"]] hd tl]
-			in XHTML.M.div (title @ notes)
-
-		| `Toc (label, order) ->
-			let name = settings.names.toc_name in
-			let title = [make_sectional Level.Level1 label order [XHTML.M.pcdata name]] in
-			let toc = match doc.Valid.toc with
-				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_toc_entry hd tl in [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
-			in XHTML.M.div (title @ toc)
-
-
-	and write_top_block = function
-		| `Heading heading ->
-			write_heading_block heading
-		| `Title seq ->
-			XHTML.M.h1 ~a:[a_class ["doc_title"]] (write_super_seq seq)
-		| `Subtitle seq ->
-			XHTML.M.h2 ~a:[a_class ["doc_title"]] (write_super_seq seq)
-		| `Abstract frag ->
-			XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_paragraph_frag frag))
-		| `Part seq ->
-			XHTML.M.h1 ~a:[a_class ["doc_part"]] (write_super_seq seq)
-		| `Rule ->
-			XHTML.M.hr ()
-
-
-	and write_super_block = function
-		| #Block.M.top_block_t as blk ->
-			write_top_block blk
-		| #Block.M.nestable_block_t as blk ->
-			write_nestable_block blk
 
 
 	(************************************************************************)
@@ -493,17 +494,20 @@ let write_valid_document settings classname doc =
 			]
 
 
-	and write_toc_entry = function
-		| `Section (_, label, order, seq) ->
-			make_toc_entry label order (write_super_seq seq)
-		| `Appendix (_, label, order, seq) ->
-			make_toc_entry label order (write_super_seq seq)
-		| `Bibliography (label, order) ->
-			make_toc_entry label order [pcdata settings.names.bibliography_name]
-		| `Notes (label, order) ->
-			make_toc_entry label order [pcdata settings.names.notes_name]
-		| `Toc (label, order) ->
-			make_toc_entry label order [pcdata settings.names.toc_name]
+	and write_toc_entry sec =
+		let make_toc_entry label order_str content =
+		        XHTML.M.li [make_internal_link label ((wrap_order order_str) @ [span content])]
+		in match sec with
+			| `Section (_, label, order, seq) ->
+				make_toc_entry label (Order.string_of_section_order order) (write_super_seq seq)
+			| `Appendix (_, label, order, seq) ->
+				make_toc_entry label (Order.string_of_appendix_order order) (write_super_seq seq)
+			| `Bibliography (label, order) ->
+				make_toc_entry label (Order.string_of_preset_order order) [pcdata settings.names.bibliography_name]
+			| `Notes (label, order) ->
+				make_toc_entry label (Order.string_of_preset_order order) [pcdata settings.names.notes_name]
+			| `Toc (label, order) ->
+				make_toc_entry label (Order.string_of_preset_order order) [pcdata settings.names.toc_name]
 
 
 	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_super_frag doc.Valid.content)
