@@ -103,10 +103,10 @@ let convert_to_composition contents =
 		| `Title _				-> raise (Invalid_composition_subset "title")
 		| `Subtitle _				-> raise (Invalid_composition_subset "subtitle")
 		| `Abstract _				-> raise (Invalid_composition_subset "abstract")
-		| `Part _				-> raise (Invalid_composition_subset "part")
 		| `Rule					-> raise (Invalid_composition_subset "rule")
 
 	and convert_heading = function
+		| `Part _				-> raise (Invalid_composition_subset "part")
 		| `Section _				-> raise (Invalid_composition_subset "section")
 		| `Appendix _				-> raise (Invalid_composition_subset "appendix")
 		| `Bibliography _			-> raise (Invalid_composition_subset "bibliography")

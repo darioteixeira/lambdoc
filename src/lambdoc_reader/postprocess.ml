@@ -26,8 +26,8 @@ open Ast.M
 (********************************************************************************)
 
 (**	Processes an AST as provided by the parser, producing the corresponding
-	document.  In addition, a list of labels, bibliography entries, notes,
-	and possible errors is also returned.  Note that many of the internal
+	document.  In addition, a label dictionary, bibliography entries, notes,
+	and possible errors are also returned.  Note that many of the internal
 	functions have explicit type annotations.  While these are not required
 	by the language, they make error messages far more comprehensible in
 	a context where polymorphic variants are heavily used.
@@ -44,7 +44,8 @@ let process_document feature_map document_ast =
 	and notes = DynArray.create ()
 	and references = DynArray.create ()
 	and toc = DynArray.create ()
-        and labels = Labelmap.create ()
+        and labelmap = Labelmap.create ()
+	and part_counter = Order.make_ordinal_counter ()
 	and section_counter = Order.make_hierarchy_counter ()
 	and appendix_counter = Order.make_hierarchy_counter ()
 	and algorithm_counter = Order.make_ordinal_counter ()
@@ -153,9 +154,9 @@ let process_document feature_map document_ast =
 		match comm.comm_label with
 		| Some thing ->
 			let new_label = `User_label thing in
-			(if Labelmap.mem labels new_label
+			(if Labelmap.mem labelmap new_label
 			then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, thing)))
-			else Labelmap.add labels new_label target);
+			else Labelmap.add labelmap new_label target);
 			new_label
 		| None ->
 			incr auto_label_counter;
@@ -413,9 +414,9 @@ let process_document feature_map document_ast =
 						| Some ""	-> Order.none_section_order subpaged
 						| Some other	-> Order.user_section_order other level subpaged in
 					let label = make_label comm (Target.section_target order)
-					in Block.M.section level label order (convert_super_seq seq)
-			in (if not subpaged then add_toc_entry block);
-			Some block
+					in Block.M.section level label order (convert_super_seq seq) in
+			let () = if not subpaged then add_toc_entry block
+			in Some block
 		in check_comm comm feature (Some subpaged) elem in
 
 
@@ -466,20 +467,27 @@ let process_document feature_map document_ast =
 			let elem () = Some (Block.M.abstract (convert_paragraph_frag frag))
 			in check_comm comm `Feature_abstract None elem
 
-		| `AST_part (comm, seq) ->
-			let elem () = Some (Block.M.part (convert_super_seq seq))
-			in check_comm comm `Feature_part (Some subpaged) elem
-
 		| `AST_rule comm ->
 			let elem () = Some (Block.M.rule ())
 			in check_comm comm `Feature_rule None elem
 
-		| `AST_appendix comm ->
+		| `AST_start_appendix comm ->
 			let elem () = appendixed := true; None
 			in check_comm comm `Feature_appendix None elem
 
 
 	and convert_heading_block : bool -> Ast.M.heading_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
+
+		| `AST_part (comm, seq) ->
+			let elem () =
+				let order = match comm.comm_order with
+					| None		-> Order.auto_part_order part_counter subpaged
+					| Some other	-> Order.user_part_order other subpaged in
+				let label = make_label comm (Target.part_target order) in
+				let block = Block.M.part label order (convert_super_seq seq) in
+				let () = if not subpaged then add_toc_entry block
+				in Some block
+			in check_comm comm `Feature_part (Some subpaged) elem
 
 		| `AST_section (comm, seq) ->
 			convert_sectional Level1 `Feature_section comm seq subpaged
@@ -786,7 +794,7 @@ let process_document feature_map document_ast =
 	let filter_references () =
 		let filter_reference (target_checker, comm, label) =
 			try
-				let target = Labelmap.find labels (`User_label label) in
+				let target = Labelmap.find labelmap (`User_label label) in
 				match target_checker target with
 				| `Valid_target ->
 					()
@@ -818,7 +826,7 @@ let process_document feature_map document_ast =
 	and res_notes = DynArray.to_list notes
 	and res_toc = DynArray.to_list toc
 	and res_errors = DynArray.to_list errors
-	in (contents, res_bibs, res_notes, res_toc, labels, res_errors)
+	in (contents, res_bibs, res_notes, res_toc, labelmap, res_errors)
 
 
 (********************************************************************************)
@@ -862,10 +870,10 @@ let sort_errors errors =
 
 let process_manuscript ?deny_list ?accept_list ?default source document_ast =
 	let feature_map = Features.load_manuscript_features ?deny_list ?accept_list ?default () in
-	let (contents, bibs, notes, toc, labels, errors) = process_document feature_map document_ast in
+	let (contents, bibs, notes, toc, labelmap, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
-		Ambivalent.make_valid_manuscript contents bibs notes toc labels
+		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap
 	else
 		let sorted_errors = sort_errors (collate_errors source errors)
 		in Ambivalent.make_invalid_manuscript sorted_errors

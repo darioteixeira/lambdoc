@@ -285,20 +285,23 @@ let write_valid_document settings classname doc =
 			XHTML.M.h2 ~a:[a_class ["doc_title"]] (write_super_seq seq)
 		| `Abstract frag ->
 			XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_paragraph_frag frag))
-		| `Part seq ->
-			XHTML.M.h1 ~a:[a_class ["doc_part"]] (write_super_seq seq)
 		| `Rule ->
 			XHTML.M.hr ()
 
 
 	and write_heading_block blk =
+		let make_heading cons label order_str classname content =
+			cons ?a:(Some [a_id (make_label label); a_class [classname]]) ((wrap_order order_str) @ [span content]) in
 		let make_sectional level label order_str content =
 			let cons = match level with
-				| Level1 -> XHTML.M.h2
-				| Level2 -> XHTML.M.h3
-				| Level3 -> XHTML.M.h4
-			in cons ?a:(Some [a_id (make_label label); a_class ["doc_sec"]]) ((wrap_order order_str) @ [span content])
+				| Level1 -> XHTML.M.h1
+				| Level2 -> XHTML.M.h2
+				| Level3 -> XHTML.M.h3
+			in make_heading cons label order_str "doc_sec" content
 		in match blk with
+
+			| `Part (label, order, seq) ->
+				make_heading XHTML.M.h1 label (Order.string_of_part_order order) "doc_part" (write_super_seq seq)
 
 			| `Section (level, label, order, seq) ->
 				make_sectional level label (Order.string_of_section_order order) (write_super_seq seq)
@@ -498,6 +501,8 @@ let write_valid_document settings classname doc =
 		let make_toc_entry label order_str content =
 		        XHTML.M.li [make_internal_link label ((wrap_order order_str) @ [span content])]
 		in match sec with
+			| `Part (label, order, seq) ->
+				make_toc_entry label (Order.string_of_part_order order) (write_super_seq seq)
 			| `Section (_, label, order, seq) ->
 				make_toc_entry label (Order.string_of_section_order order) (write_super_seq seq)
 			| `Appendix (_, label, order, seq) ->

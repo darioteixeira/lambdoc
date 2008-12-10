@@ -153,7 +153,8 @@ sig
 		]
 
 	type heading_block_t =
-		[ `AST_section of command_t * super_seq_t
+		[ `AST_part of command_t * super_seq_t
+		| `AST_section of command_t * super_seq_t
 		| `AST_subsection of command_t * super_seq_t
 		| `AST_subsubsection of command_t * super_seq_t
 		| `AST_toc of command_t
@@ -166,9 +167,8 @@ sig
 		| `AST_title of command_t * super_seq_t
 		| `AST_subtitle of command_t * super_seq_t
 		| `AST_abstract of command_t * paragraph_block_t list
-		| `AST_part of command_t * super_seq_t
 		| `AST_rule of command_t
-		| `AST_appendix of command_t
+		| `AST_start_appendix of command_t
 		]
 
 	type super_block_t =

@@ -85,7 +85,8 @@ sig
 		the Bibliography are automatically mapped to the highest hierarchy level.
 	*)
 	type heading_block_t =
-		[ `Section of level_t * Label.t * Order.section_order_t * Node.M.super_seq_t
+		[ `Part of Label.t * Order.part_order_t * Node.M.super_seq_t
+		| `Section of level_t * Label.t * Order.section_order_t * Node.M.super_seq_t
 		| `Appendix of level_t * Label.t * Order.appendix_order_t * Node.M.super_seq_t
 		| `Bibliography of Label.t * Order.preset_order_t
 		| `Notes of Label.t * Order.preset_order_t
@@ -100,7 +101,6 @@ sig
 		| `Title of Node.M.super_seq_t
 		| `Subtitle of Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
-		| `Part of Node.M.super_seq_t
 		| `Rule
 		] (*with sexp*)
 
@@ -111,6 +111,8 @@ sig
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
+	val part: Label.t -> Order.part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+		([> top_block_t ], [> `Manuscript ]) t
 	val section: level_t -> Label.t -> Order.section_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val appendix: level_t -> Label.t -> Order.appendix_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
@@ -127,8 +129,6 @@ sig
 	val subtitle: ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val abstract: (paragraph_block_t, 'b) t list ->
-		([> top_block_t ], [> `Manuscript ]) t
-	val part: ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val rule: unit ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -204,7 +204,8 @@ struct
 		] (*with sexp*)
 
 	type heading_block_t =
-		[ `Section of level_t * Label.t * Order.section_order_t * Node.M.super_seq_t
+		[ `Part of Label.t * Order.part_order_t * Node.M.super_seq_t
+		| `Section of level_t * Label.t * Order.section_order_t * Node.M.super_seq_t
 		| `Appendix of level_t * Label.t * Order.appendix_order_t * Node.M.super_seq_t
 		| `Bibliography of Label.t * Order.preset_order_t
 		| `Notes of Label.t * Order.preset_order_t
@@ -216,7 +217,6 @@ struct
 		| `Title of Node.M.super_seq_t
 		| `Subtitle of Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
-		| `Part of Node.M.super_seq_t
 		| `Rule
 		] (*with sexp*)
 
@@ -224,6 +224,7 @@ struct
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
+	let part label order seq = `Heading (`Part (label, order, (seq :> Node.M.super_seq_t)))
 	let section level label order seq = `Heading (`Section (level, label, order, (seq :> Node.M.super_seq_t)))
 	let appendix level label order seq = `Heading (`Appendix (level, label, order, (seq :> Node.M.super_seq_t)))
 	let bibliography label order = `Heading (`Bibliography (label, order))
@@ -233,7 +234,6 @@ struct
 	let title seq = `Title (seq :> Node.M.super_seq_t)
 	let subtitle seq = `Subtitle (seq :> Node.M.super_seq_t)
 	let abstract frag = `Abstract frag
-	let part seq = `Part (seq :> Node.M.super_seq_t)
 	let rule () = `Rule
 
 	let paragraph seq = `Paragraph (seq :> Node.M.super_seq_t)
