@@ -41,11 +41,11 @@ type permission_t =
 let forbidden_class =
 	(Forbidden, Forbidden, Forbidden, Forbidden)
 
-let user_sectional_class subpaged =
+let custom_heading_class subpaged =
 	let perm_order = if subpaged then Mandatory0 else Forbidden0
 	in (Optional, perm_order, Forbidden, Forbidden)
 
-let preset_sectional_class =
+let preset_heading_class =
 	(Optional, Forbidden, Forbidden, Forbidden)
 
 let listing_class =
@@ -54,7 +54,7 @@ let listing_class =
 let quote_class =
 	(Forbidden, Forbidden, Optional, Forbidden)
 
-let alignable_class =
+let floater_class =
 	(Forbidden, Forbidden, Optional, Forbidden)
 
 let code_class =
@@ -131,56 +131,76 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra, perm_s
 (**	Checks a command feature.
 *)
 let check_command_feature errors comm maybe_subpaged feature =
+
 	let get_subpaged = function
 		| Some subpaged	-> subpaged
-		| None		-> failwith "Feature requires 'subpaged' be set but it it is not!" in
+		| None		-> invalid_arg "Feature requires that 'subpaged' be set but it is not!" in
+
+	let non_reference_inline_feature_set = function
+		| `Feature_bold		-> forbidden_class
+		| `Feature_emph		-> forbidden_class
+		| `Feature_mono		-> forbidden_class
+		| `Feature_caps		-> forbidden_class
+		| `Feature_thru		-> forbidden_class
+		| `Feature_sup		-> forbidden_class
+		| `Feature_sub		-> forbidden_class
+		| `Feature_box		-> forbidden_class
+		| `Feature_link		-> forbidden_class
+
+	and reference_inline_feature_set = function
+		| `Feature_see		-> forbidden_class
+		| `Feature_cite		-> forbidden_class
+		| `Feature_ref		-> forbidden_class
+		| `Feature_sref		-> forbidden_class
+		| `Feature_mref		-> forbidden_class
+
+	and non_reference_block_feature_set = function
+		| `Feature_itemize	-> listing_class
+		| `Feature_enumerate	-> listing_class
+		| `Feature_quote	-> floater_class
+		| `Feature_mathtex_blk	-> floater_class
+		| `Feature_mathml_blk	-> floater_class
+		| `Feature_code		-> code_class
+		| `Feature_verbatim	-> floater_class
+		| `Feature_tabular	-> tabular_class
+		| `Feature_image	-> floater_class
+		| `Feature_subpage	-> floater_class
+
+	and reference_block_feature_set = function
+		| `Feature_equation	-> wrapper_class (get_subpaged maybe_subpaged)
+		| `Feature_algorithm	-> wrapper_class (get_subpaged maybe_subpaged)
+		| `Feature_table	-> wrapper_class (get_subpaged maybe_subpaged)
+		| `Feature_figure	-> wrapper_class (get_subpaged maybe_subpaged)
+
+		| `Feature_caption	-> forbidden_class
+		| `Feature_bib		-> ghost_class
+		| `Feature_note		-> ghost_class
+
+		| `Feature_bib_title	-> forbidden_class
+		| `Feature_bib_author	-> forbidden_class
+		| `Feature_bib_resource	-> forbidden_class
+
+		| `Feature_part		-> custom_heading_class (get_subpaged maybe_subpaged)
+		| `Feature_appendix	-> forbidden_class
+		| `Feature_section1	-> custom_heading_class (get_subpaged maybe_subpaged)
+		| `Feature_section2	-> custom_heading_class (get_subpaged maybe_subpaged)
+		| `Feature_section3	-> custom_heading_class (get_subpaged maybe_subpaged)
+
+		| `Feature_bibliography	-> preset_heading_class
+		| `Feature_notes	-> preset_heading_class
+		| `Feature_toc		-> preset_heading_class
+
+		| `Feature_title1	-> forbidden_class
+		| `Feature_title2	-> forbidden_class
+		| `Feature_title3	-> forbidden_class
+		| `Feature_abstract	-> forbidden_class
+		| `Feature_rule		-> forbidden_class in
+
 	let permission_set = match feature with
-		| `Feature_bold			-> forbidden_class
-		| `Feature_emph			-> forbidden_class
-		| `Feature_mono			-> forbidden_class
-		| `Feature_caps			-> forbidden_class
-		| `Feature_thru			-> forbidden_class
-		| `Feature_sup			-> forbidden_class
-		| `Feature_sub			-> forbidden_class
-		| `Feature_box			-> forbidden_class
-		| `Feature_link			-> forbidden_class
-		| `Feature_see			-> forbidden_class
-		| `Feature_cite			-> forbidden_class
-		| `Feature_ref			-> forbidden_class
-		| `Feature_sref			-> forbidden_class
-		| `Feature_mref			-> forbidden_class
-		| `Feature_itemize		-> listing_class
-		| `Feature_enumerate		-> listing_class
-		| `Feature_quote		-> alignable_class
-		| `Feature_mathtex_blk		-> alignable_class
-		| `Feature_mathml_blk		-> alignable_class
-		| `Feature_code			-> code_class
-		| `Feature_verbatim		-> alignable_class
-		| `Feature_tabular		-> tabular_class
-		| `Feature_image		-> alignable_class
-		| `Feature_subpage		-> alignable_class
-		| `Feature_caption		-> forbidden_class
-		| `Feature_bib_title		-> forbidden_class
-		| `Feature_bib_author		-> forbidden_class
-		| `Feature_bib_resource		-> forbidden_class
-		| `Feature_equation		-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_algorithm		-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_table		-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_figure		-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_bib			-> ghost_class
-		| `Feature_note			-> ghost_class
-		| `Feature_section		-> user_sectional_class (get_subpaged maybe_subpaged)
-		| `Feature_subsection		-> user_sectional_class (get_subpaged maybe_subpaged)
-		| `Feature_subsubsection	-> user_sectional_class (get_subpaged maybe_subpaged)
-		| `Feature_toc			-> preset_sectional_class
-		| `Feature_bibliography		-> preset_sectional_class
-		| `Feature_notes		-> preset_sectional_class
-		| `Feature_title		-> forbidden_class
-		| `Feature_subtitle		-> forbidden_class
-		| `Feature_abstract		-> forbidden_class
-		| `Feature_part			-> user_sectional_class (get_subpaged maybe_subpaged)
-		| `Feature_rule			-> forbidden_class
-		| `Feature_appendix		-> forbidden_class
-		| `Feature_setting		-> forbidden_class
+		| #Features.non_reference_inline_feature_t as x	-> non_reference_inline_feature_set x
+		| #Features.reference_inline_feature_t as x	-> reference_inline_feature_set x
+		| #Features.non_reference_block_feature_t as x	-> non_reference_block_feature_set x
+		| #Features.reference_block_feature_t as x	-> reference_block_feature_set x
+
 	in check_permission_set errors comm permission_set
 

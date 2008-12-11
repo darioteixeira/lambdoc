@@ -171,9 +171,9 @@ let process_document feature_map document_ast =
 
 	(*	Adds a new TOC entry.
 	*)
-	and add_toc_entry = function
-		| `Heading blk	-> DynArray.add toc blk
-		| _		-> failwith "Attempted to add non-heading entry into TOC" in
+	and add_toc_entry blk = function
+		| false	-> DynArray.add toc blk
+		| true	-> () in
 
 
 	(************************************************************************)
@@ -326,9 +326,10 @@ let process_document feature_map document_ast =
 		| `AST_ref (comm, label) ->
 			let elem () =
 				let target_checker = function
-					| o when Target.is_none o	-> `Empty_target
-					| Target.Visible_target _	-> `Valid_target
-					| _				-> `Wrong_target Error.Target_label
+					| Target.Visible_target (Target.Part_target `None_given)	-> `Empty_target
+					| Target.Visible_target (Target.Section_target `None_given)	-> `Empty_target
+					| Target.Visible_target _					-> `Valid_target
+					| _								-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.M.ref label)
 			in check_comm comm `Feature_ref None elem
@@ -336,9 +337,10 @@ let process_document feature_map document_ast =
 		| `AST_sref (comm, label) ->
 			let elem () =
 				let target_checker = function
-					| o when Target.is_none o	-> `Empty_target
-					| Target.Visible_target o	-> `Valid_target
-					| _				-> `Wrong_target Error.Target_label
+					| Target.Visible_target (Target.Part_target `None_given)	-> `Empty_target
+					| Target.Visible_target (Target.Section_target `None_given)	-> `Empty_target
+					| Target.Visible_target _					-> `Valid_target
+					| _								-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
 				Some (Node.M.sref label)
 			in check_comm comm `Feature_sref None elem
@@ -394,33 +396,6 @@ let process_document feature_map document_ast =
 
 
 	(************************************************************************)
-	(* Postprocessing functions for sectional commands.			*)
-	(************************************************************************)
-
-	let convert_sectional level feature comm seq subpaged =
-		let elem () =
-			let block =
-				if !appendixed
-				then
-					let order = match comm.comm_order with
-						| None		-> Order.auto_appendix_order appendix_counter level subpaged
-						| Some ""	-> Order.none_appendix_order subpaged
-						| Some other	-> Order.user_appendix_order other level subpaged in
-					let label = make_label comm (Target.appendix_target order)
-					in Block.M.appendix level label order (convert_super_seq seq)
-				else
-					let order = match comm.comm_order with
-						| None		-> Order.auto_section_order section_counter level subpaged
-						| Some ""	-> Order.none_section_order subpaged
-						| Some other	-> Order.user_section_order other level subpaged in
-					let label = make_label comm (Target.section_target order)
-					in Block.M.section level label order (convert_super_seq seq) in
-			let () = if not subpaged then add_toc_entry block
-			in Some block
-		in check_comm comm feature (Some subpaged) elem in
-
-
-	(************************************************************************)
 	(* Postprocessing functions for document blocks.			*)
 	(************************************************************************)
 
@@ -452,16 +427,16 @@ let process_document feature_map document_ast =
 
 	and convert_top_block : bool -> Ast.M.top_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
 
-		| `AST_heading heading ->
-			(convert_heading_block subpaged heading :> (Block.M.top_block_t, _) Block.M.t option)
+		| #Ast.M.heading_block_t as blk ->
+			(convert_heading_block subpaged blk :> (Block.M.top_block_t, _) Block.M.t option)
 
-		| `AST_title (comm, seq) ->
-			let elem () = Some (Block.M.title (convert_super_seq seq))
-			in check_comm comm `Feature_title None elem
-
-		| `AST_subtitle (comm, seq) ->
-			let elem () = Some (Block.M.subtitle (convert_super_seq seq))
-			in check_comm comm `Feature_subtitle None elem
+		| `AST_title (level, comm, seq) ->
+			let elem () = Some (Block.M.title Level1 (convert_super_seq seq))
+			and feature = match level with
+				| Level1 -> `Feature_title1
+				| Level2 -> `Feature_title2
+				| Level3 -> `Feature_title3
+			in check_comm comm feature None elem
 
 		| `AST_abstract (comm, frag) ->
 			let elem () = Some (Block.M.abstract (convert_paragraph_frag frag))
@@ -471,57 +446,66 @@ let process_document feature_map document_ast =
 			let elem () = Some (Block.M.rule ())
 			in check_comm comm `Feature_rule None elem
 
-		| `AST_start_appendix comm ->
-			let elem () = appendixed := true; None
-			in check_comm comm `Feature_appendix None elem
 
-
-	and convert_heading_block : bool -> Ast.M.heading_block_t -> (Block.M.top_block_t, _) Block.M.t option = function subpaged -> function
+	and convert_heading_block : bool -> Ast.M.heading_block_t -> (Block.M.heading_block_t, _) Block.M.t option = function subpaged -> function
 
 		| `AST_part (comm, seq) ->
 			let elem () =
 				let order = match comm.comm_order with
-					| None		-> Order.auto_part_order part_counter subpaged
-					| Some other	-> Order.user_part_order other subpaged in
+					| None		-> Order.auto_part_order part_counter
+					| Some ""	-> Order.none_order ()
+					| Some other	-> Order.user_part_order other in
 				let label = make_label comm (Target.part_target order) in
-				let block = Block.M.part label order (convert_super_seq seq) in
-				let () = if not subpaged then add_toc_entry block
+				let block = Block.M.custom_part label order (convert_super_seq seq) in
+				let () = add_toc_entry block subpaged
 				in Some block
 			in check_comm comm `Feature_part (Some subpaged) elem
 
-		| `AST_section (comm, seq) ->
-			convert_sectional Level1 `Feature_section comm seq subpaged
-
-		| `AST_subsection (comm, seq) ->
-			convert_sectional Level2 `Feature_subsection comm seq subpaged
-
-		| `AST_subsubsection (comm, seq) ->
-			convert_sectional Level3 `Feature_subsubsection comm seq subpaged
-
-		| `AST_toc comm ->
+		| `AST_appendix comm ->
 			let elem () =
-				let order = Order.none_preset_order subpaged in
-				let label = make_label comm (Target.preset_target order)
-				in Some (Block.M.toc label order)
-			in check_comm comm `Feature_toc None elem
+				let order = Order.none_order () in
+				let label = make_label comm (Target.part_target order) in
+				let block = Block.M.appendix label order in
+				let () = add_toc_entry block subpaged in
+				let () = appendixed := true
+				in Some block
+			in check_comm comm `Feature_appendix None elem
+
+		| `AST_section (level, comm, seq) ->
+			let elem () =
+				let counter = if !appendixed then appendix_counter else section_counter in
+				let order = match comm.comm_order with
+					| None		-> Order.auto_section_order counter level
+					| Some ""	-> Order.none_order ()
+					| Some other	-> Order.user_section_order other level in
+				let label = make_label comm (Target.section_target order) in
+				let block = Block.M.custom_section level label order !appendixed (convert_super_seq seq) in
+				let () = add_toc_entry block subpaged
+				in Some block
+			and feature = match level with
+				| Level1 -> `Feature_section1
+				| Level2 -> `Feature_section2
+				| Level3 -> `Feature_section3
+			in check_comm comm feature (Some subpaged) elem
 
 		| `AST_bibliography comm ->
-			let elem () =
-				let order = Order.none_preset_order subpaged in
-				let label = make_label comm (Target.preset_target order) in
-				let block = Block.M.bibliography label order in
-				let () = add_toc_entry block
-				in Some block
-			in check_comm comm `Feature_bibliography None elem
+			convert_preset_sectional Block.M.bibliography `Feature_bibliography comm true subpaged
 
 		| `AST_notes comm ->
-			let elem () =
-				let order = Order.none_preset_order subpaged in
-				let label = make_label comm (Target.preset_target order) in
-				let block = Block.M.notes label order in
-				let () = add_toc_entry block
-				in Some block
-			in check_comm comm `Feature_notes None elem
+			convert_preset_sectional Block.M.notes `Feature_notes comm true subpaged
+
+		| `AST_toc comm ->
+			convert_preset_sectional Block.M.toc `Feature_toc comm false subpaged
+
+
+	and convert_preset_sectional cons feature comm to_toc subpaged = 
+		let elem () =
+			let order = Order.none_order () in
+			let label = make_label comm (Target.section_target order) in
+			let block = cons label order in
+			let () = if to_toc then add_toc_entry block subpaged else ()
+			in Some block
+		in check_comm comm `Feature_notes (Some subpaged) elem
 
 
 	and convert_nestable_block : bool -> Ast.M.nestable_block_t -> (Block.M.nestable_block_t, _) Block.M.t option = function subpaged -> function
@@ -597,7 +581,7 @@ let process_document feature_map document_ast =
 
 		| `AST_bib (comm, title, author, resource) ->
 			let elem () =
-				let order = Order.auto_bib_order bib_counter subpaged in
+				let order = Order.auto_bib_order bib_counter in
 				let label = make_label comm (Target.bib_target order)
 				and title = convert_bib_title_block title
 				and author = convert_bib_author_block author
@@ -620,7 +604,7 @@ let process_document feature_map document_ast =
 
 		| `AST_note (comm, frag) ->
 			let elem () =
-				let order = Order.auto_note_order note_counter subpaged in
+				let order = Order.auto_note_order note_counter in
 				let label = make_label comm (Target.note_target order) in
 				let note =
 					{
@@ -778,8 +762,8 @@ let process_document feature_map document_ast =
 
 	and convert_wrapper comm counter target_maker caption_block subpaged =
 		let order = match comm.comm_order with
-			| None		-> Order.auto_wrapper_order counter subpaged
-			| Some thing	-> Order.user_wrapper_order thing subpaged in
+			| None		-> Order.auto_wrapper_order counter
+			| Some thing	-> Order.user_wrapper_order thing in
 		let label = make_label comm (target_maker order) in
 		let maybe_caption = convert_caption_block caption_block
 		in match (label, order, maybe_caption) with

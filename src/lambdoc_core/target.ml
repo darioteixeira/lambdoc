@@ -32,8 +32,6 @@ type wrapper_t =
 *)
 type visible_target_t =
 	| Section_target of Order.section_order_t
-	| Appendix_target of Order.appendix_order_t
-	| Preset_target of Order.preset_order_t
 	| Part_target of Order.part_order_t
 	| Wrapper_target of wrapper_t * Order.wrapper_order_t
 	(*with sexp*)
@@ -56,10 +54,6 @@ type t =
 
 let section_target o = Visible_target (Section_target o)
 
-let appendix_target o = Visible_target (Appendix_target o)
-
-let preset_target o = Visible_target (Preset_target o)
-
 let part_target o = Visible_target (Part_target o)
 
 let algorithm_target o = Visible_target (Wrapper_target (Algorithm_wrapper, o))
@@ -74,8 +68,3 @@ let bib_target o = Bib_target o
 
 let note_target o = Note_target o
 
-let is_none = function
-	| Visible_target (Section_target `None_given)
-	| Visible_target (Appendix_target `None_given)
-	| Visible_target (Preset_target `None_given)	-> true
-	| _						-> false

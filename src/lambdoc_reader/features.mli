@@ -16,40 +16,70 @@
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type default_t = [ `Accept | `Deny ]
+(********************************************************************************)
+(**	{3 Auxiliary type definitions}						*)
+(********************************************************************************)
 
+type non_command_inline_feature_t =
+	[ `Feature_plain | `Feature_entity | `Feature_mathtex_inl | `Feature_mathml_inl
+	]
+
+type non_reference_inline_feature_t =
+	[ `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru
+	| `Feature_sup | `Feature_sub | `Feature_box | `Feature_link
+	]
+
+type reference_inline_feature_t =
+	[ `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref | `Feature_mref
+	]
+
+type non_command_block_feature_t =
+	[ `Feature_paragraph
+	]
+
+type non_reference_block_feature_t =
+	[ `Feature_itemize | `Feature_enumerate | `Feature_quote | `Feature_mathtex_blk | `Feature_mathml_blk
+	| `Feature_code | `Feature_verbatim | `Feature_tabular | `Feature_image | `Feature_subpage
+	]
+
+type reference_block_feature_t =
+	[ `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure 
+	| `Feature_caption | `Feature_bib | `Feature_note
+	| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
+	| `Feature_part | `Feature_appendix | `Feature_section1 | `Feature_section2 | `Feature_section3
+	| `Feature_bibliography | `Feature_notes | `Feature_toc
+	| `Feature_title1 | `Feature_title2 | `Feature_title3 | `Feature_abstract | `Feature_rule
+	]
+
+
+(********************************************************************************)
+(**	{3 Main type definitions}						*)
+(********************************************************************************)
 
 type composition_feature_t =
-	[ `Feature_plain | `Feature_entity | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_bold
-	| `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru | `Feature_sup | `Feature_sub
-	| `Feature_box | `Feature_link | `Feature_paragraph | `Feature_itemize | `Feature_enumerate
-	| `Feature_quote | `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_code | `Feature_verbatim
-	| `Feature_tabular | `Feature_image | `Feature_subpage
+	[ non_command_inline_feature_t 
+	| non_reference_inline_feature_t 
+	| non_command_block_feature_t 
+	| non_reference_block_feature_t 
 	]
 
 
 type manuscript_feature_t =
-	[ composition_feature_t
-	| `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref | `Feature_mref | `Feature_caption
-	| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource | `Feature_equation
-	| `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib | `Feature_note
-	| `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
-	| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_subtitle | `Feature_abstract
-	| `Feature_part | `Feature_rule | `Feature_appendix
+	[ composition_feature_t 
+	| reference_inline_feature_t 
+	| reference_block_feature_t 
 	]
 
 
 type command_feature_t =
-	[ `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru | `Feature_sup
-	| `Feature_sub | `Feature_box | `Feature_link | `Feature_itemize | `Feature_enumerate | `Feature_quote
-	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_code | `Feature_verbatim | `Feature_tabular
-	| `Feature_image | `Feature_subpage | `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref
-	| `Feature_mref | `Feature_caption | `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
-	| `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure | `Feature_bib
-	| `Feature_note | `Feature_section | `Feature_subsection | `Feature_subsubsection | `Feature_toc
-	| `Feature_bibliography | `Feature_notes | `Feature_title | `Feature_subtitle | `Feature_abstract
-	| `Feature_part | `Feature_rule | `Feature_appendix
+	[ non_reference_inline_feature_t 
+	| non_reference_block_feature_t 
+	| reference_inline_feature_t 
+	| reference_block_feature_t 
 	]
+
+
+type default_t = [ `Accept | `Deny ]
 
 
 type t

@@ -154,21 +154,18 @@ sig
 
 	type heading_block_t =
 		[ `AST_part of command_t * super_seq_t
-		| `AST_section of command_t * super_seq_t
-		| `AST_subsection of command_t * super_seq_t
-		| `AST_subsubsection of command_t * super_seq_t
+		| `AST_appendix of command_t
+		| `AST_section of level_t * command_t * super_seq_t
 		| `AST_toc of command_t
 		| `AST_bibliography of command_t
 		| `AST_notes of command_t
 		]
 
 	type top_block_t =
-		[ `AST_heading of heading_block_t
-		| `AST_title of command_t * super_seq_t
-		| `AST_subtitle of command_t * super_seq_t
+		[ heading_block_t
+		| `AST_title of level_t * command_t * super_seq_t
 		| `AST_abstract of command_t * paragraph_block_t list
 		| `AST_rule of command_t
-		| `AST_start_appendix of command_t
 		]
 
 	type super_block_t =

@@ -20,7 +20,6 @@ open Basic
 (********************************************************************************)
 
 exception Invalid_number_of_levels of level_t * int
-exception Invalid_appendix_string of string
 
 
 (********************************************************************************)
@@ -37,9 +36,9 @@ type ordinal_t = int
 type ordinal_counter_t = ordinal_t
 
 
-(**	Ordinal converters.
+(**	Ordinal converter.
 *)
-type ordinal_converters_t = (string -> ordinal_t) * (ordinal_t -> string)
+type ordinal_converter_t = (ordinal_t -> string)
 
 
 (**	Hierarchical ordering.
@@ -58,11 +57,11 @@ type hierarchical_counter_t = int * int * int
 (**	Hierarchical converters.
 *)
 
-type hierarchical_converters_t =
+type hierarchical_converter_t =
 	{
-	level1: (string -> int) * (int -> string);
-	level2: (string -> int) * (int -> string);
-	level3: (string -> int) * (int -> string);
+	level1: (int -> string);
+	level2: (int -> string);
+	level3: (int -> string);
 	}
 
 
@@ -76,19 +75,17 @@ type hierarchical_converters_t =
 *)
 
 type 'a auto_given_t = [ `Auto_given of 'a ] (*with sexp*)
-type 'a user_given_t = [ `User_given of 'a ] (*with sexp*)
+type user_given_t = [ `User_given of string ] (*with sexp*)
 type none_given_t = [ `None_given ] (*with sexp*)
-type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] (*with sexp*)
+type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] (*with sexp*)
 
 
 (**	Definition of the publicly visible ordering types.
 *)
 
-type section_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
-type appendix_order_t = (hierarchical_t as 'a, ['a auto_given_t | 'a user_given_t | none_given_t ]) given_t (*with sexp*)
-type preset_order_t = (hierarchical_t, none_given_t) given_t (*with sexp*)
-type part_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
-type wrapper_order_t = (ordinal_t as 'a, ['a auto_given_t | 'a user_given_t]) given_t (*with sexp*)
+type part_order_t = (ordinal_t as 'a, [ 'a auto_given_t | user_given_t | none_given_t ]) given_t (*with sexp*)
+type section_order_t = (hierarchical_t as 'a, [ 'a auto_given_t | user_given_t | none_given_t ]) given_t (*with sexp*)
+type wrapper_order_t = (ordinal_t as 'a, [ 'a auto_given_t | user_given_t]) given_t (*with sexp*)
 type bib_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
 type note_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
 
@@ -100,25 +97,6 @@ type note_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
 (********************************************************************************)
 (**	{3 Conversion functions}						*)
 (********************************************************************************)
-
-(**	This function converts a sequence of uppercase letters into its ordinal
-	representation.  It is the inverse of {!alphaseq_of_int}.  Note that
-	the maximum sequence length is capped at 3, which is far more than any
-	reasonable document will require (18278 appendices should be enough
-	for everybody).
-*)
-let int_of_alphaseq =
-	let rex = Pcre.regexp ("^[A-Z]{1,3}$")
-	in fun str -> match Pcre.pmatch ~rex str with
-		| true ->
-			let chars = List.rev (String.explode str) in
-			let pow26 e = List.fold_left ( * ) 1 (List.make e 26) in
-			let pos_value pos c = (pow26 pos) * ((int_of_char c) - 64) in
-			let values = List.mapi pos_value chars
-			in List.fold_left (+) 0 values
-		| false ->
-			raise (Invalid_appendix_string str)
-
 
 (**	This function converts an ordinal number into a sequence of uppercase
 	letters used for numbering appendices.  Ordinal 1 is converted to "A",
@@ -171,29 +149,6 @@ let roman_of_int i =
 
 
 (********************************************************************************)
-(**	{3 Predefined converters}						*)
-(********************************************************************************)
-
-let arabic_converters = (int_of_string, string_of_int)
-
-let roman_converters = (int_of_string, roman_of_int)
-
-let section_converters =
-	{
-	level1 = (int_of_string, string_of_int);
-	level2 = (int_of_string, string_of_int);
-	level3 = (int_of_string, string_of_int);
-	}
-
-let appendix_converters =
-	{
-	level1 = (int_of_alphaseq, alphaseq_of_int);
-	level2 = (int_of_string, string_of_int);
-	level3 = (int_of_string, string_of_int);
-	}
-
-
-(********************************************************************************)
 (**	{3 Creation of counters}						*)
 (********************************************************************************)
 
@@ -214,31 +169,22 @@ let incr_hierarchy_counter counter level =
 		| Level3 -> (l1, l2, l3+1)
 
 
-let ordinal_of_counter counter subpaged =
-	match subpaged with
-		| false ->
-			let () = incr counter
-			in `Auto_given !counter
-		| true ->
-			invalid_arg "Cannot break subpaging rules!"
+let ordinal_of_counter counter =
+	let () = incr counter
+	in `Auto_given !counter
 
 
-let hierarchical_of_counter counter level subpaged =
-	match subpaged with
-		| false	->
-			let () = incr_hierarchy_counter counter level in
-			let (l1, l2, l3) = !counter
-			in (match level with
-				| Level1 -> `Auto_given (Level1_order l1)
-				| Level2 -> `Auto_given (Level2_order (l1, l2))
-				| Level3 -> `Auto_given (Level3_order (l1, l2, l3)))
-		| true ->
-			invalid_arg "Cannot break subpaging rules!"
+let hierarchical_of_counter counter level =
+	let () = incr_hierarchy_counter counter level in
+	let (l1, l2, l3) = !counter
+	in (match level with
+		| Level1 -> `Auto_given (Level1_order l1)
+		| Level2 -> `Auto_given (Level2_order (l1, l2))
+		| Level3 -> `Auto_given (Level3_order (l1, l2, l3)))
 
 
-let auto_section_order = hierarchical_of_counter
-let auto_appendix_order = hierarchical_of_counter
 let auto_part_order = ordinal_of_counter
+let auto_section_order = hierarchical_of_counter
 let auto_wrapper_order = ordinal_of_counter
 let auto_bib_order = ordinal_of_counter
 let auto_note_order = ordinal_of_counter
@@ -248,83 +194,73 @@ let auto_note_order = ordinal_of_counter
 (**	{3 Constructors from strings}						*)
 (********************************************************************************)
 
-let ordinal_of_string (conv, _) str subpaged =
-	match subpaged with
-		| true ->
-			`User_given (conv str)
-		| false ->
-			invalid_arg "Cannot break subpaging rules!"
+let ordinal_of_string str = `User_given str
 
 
-let hierarchical_of_string convs str level subpaged =
-	let (conv1, _) = convs.level1
-	and (conv2, _) = convs.level2
-	and (conv3, _) = convs.level3
-	in match subpaged with
-		| true ->
-			(match (level, String.nsplit str ".") with
-				| (Level1, [a])		-> `User_given (Level1_order (conv1 a))
-				| (Level2, [a; b])	-> `User_given (Level2_order (conv1 a, conv2 b))
-				| (Level3, [a; b; c])	-> `User_given (Level3_order (conv1 a, conv2 b, conv3 c))
-				| (expected, found)		-> raise (Invalid_number_of_levels (expected, List.length found)))
-		| false ->
-			invalid_arg "Cannot break subpaging rules!"
+let hierarchical_of_string str level =
+	match (level, List.length (String.nsplit str ".")) with
+		| (Level1, 1)
+		| (Level2, 2)
+		| (Level3, 3)		-> `User_given str
+		| (expected, found)	-> raise (Invalid_number_of_levels (expected, found))
 
 
-let user_section_order = hierarchical_of_string section_converters
-let user_appendix_order = hierarchical_of_string appendix_converters
-let user_part_order = ordinal_of_string roman_converters
-let user_wrapper_order = ordinal_of_string arabic_converters
+let user_section_order = hierarchical_of_string
+let user_part_order = ordinal_of_string
+let user_wrapper_order = ordinal_of_string
 
 
 (********************************************************************************)
-(**	{3 Constructors from nothing}						*)
+(**	{3 Unit constructor}							*)
 (********************************************************************************)
 
-let none_section_order _ = `None_given
-let none_appendix_order _ = `None_given
-let none_preset_order _ = `None_given
+let none_order () = `None_given
 
 
 (********************************************************************************)
-(**	{3 Checkers}								*)
+(**	{3 Predefined converters}						*)
 (********************************************************************************)
 
-let is_none = function
-	| `Auto_given _	-> false
-	| `User_given _	-> false
-	| `None_given	-> true
+let arabic_converter = string_of_int
+
+let roman_converter = roman_of_int
+
+let section_converter =
+	{
+	level1 = string_of_int;
+	level2 = string_of_int;
+	level3 = string_of_int;
+	}
+
+let appendix_converter =
+	{
+	level1 = alphaseq_of_int;
+	level2 = string_of_int;
+	level3 = string_of_int;
+	}
 
 
 (********************************************************************************)
 (**	{3 Printers}								*)
 (********************************************************************************)
 
-let string_of_ordinal (_, of_ordinal) = function
-	| `Auto_given o	-> of_ordinal o
-	| `User_given o	-> of_ordinal o
+let string_of_ordinal conv = function
+	| `Auto_given o	-> conv o
+	| `User_given o	-> o
 	| `None_given	-> ""
 
 
-let string_of_hierarchical converters ord =
-	let (_, f1) = converters.level1
-	and (_, f2) = converters.level2
-	and (_, f3) = converters.level3 in
-	let sprint_hierarchy = function
-		| Level1_order l1		-> f1 l1
-		| Level2_order (l1, l2)		-> (f1 l1) ^ "." ^ (f2 l2)
-		| Level3_order (l1, l2, l3)	-> (f1 l1) ^ "." ^ (f2 l2) ^ "." ^ (f3 l3)
-	in match ord with
-		| `Auto_given o	-> sprint_hierarchy o
-		| `User_given o	-> sprint_hierarchy o
-		| `None_given	-> ""
+let string_of_hierarchical conv = function
+	| `Auto_given (Level1_order l1)			-> conv.level1 l1
+	| `Auto_given (Level2_order (l1, l2))		-> (conv.level1 l1) ^ "." ^ (conv.level2 l2)
+	| `Auto_given (Level3_order (l1, l2, l3))	-> (conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3)
+	| `User_given o					-> o
+	| `None_given					-> ""
 
 
-let string_of_section_order = string_of_hierarchical section_converters
-let string_of_appendix_order = string_of_hierarchical appendix_converters
-let string_of_preset_order = string_of_hierarchical section_converters
-let string_of_part_order = string_of_ordinal roman_converters
-let string_of_wrapper_order = string_of_ordinal arabic_converters
-let string_of_bib_order = string_of_ordinal arabic_converters
-let string_of_note_order = string_of_ordinal arabic_converters
+let string_of_part_order ?(conv = arabic_converter) = string_of_ordinal conv
+let string_of_section_order ?(conv = section_converter) = string_of_hierarchical conv
+let string_of_wrapper_order ?(conv = arabic_converter) = string_of_ordinal conv
+let string_of_bib_order ?(conv = arabic_converter) = string_of_ordinal conv
+let string_of_note_order ?(conv = arabic_converter) = string_of_ordinal conv
 

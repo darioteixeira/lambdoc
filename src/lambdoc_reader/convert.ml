@@ -99,19 +99,14 @@ let convert_to_composition contents =
 		| #Block.M.nestable_block_t as blk	-> (convert_nestable_block blk :> (Block.M.super_block_t, _) Block.M.t)
 
 	and convert_top_block = function
-		| `Heading heading			-> convert_heading heading
+		| #Block.M.heading_block_t as blk	-> (convert_heading blk :> (Block.M.top_block_t, _) Block.M.t)
 		| `Title _				-> raise (Invalid_composition_subset "title")
-		| `Subtitle _				-> raise (Invalid_composition_subset "subtitle")
 		| `Abstract _				-> raise (Invalid_composition_subset "abstract")
 		| `Rule					-> raise (Invalid_composition_subset "rule")
 
 	and convert_heading = function
 		| `Part _				-> raise (Invalid_composition_subset "part")
 		| `Section _				-> raise (Invalid_composition_subset "section")
-		| `Appendix _				-> raise (Invalid_composition_subset "appendix")
-		| `Bibliography _			-> raise (Invalid_composition_subset "bibliography")
-		| `Notes _				-> raise (Invalid_composition_subset "notes")
-		| `Toc _				-> raise (Invalid_composition_subset "toc")
 
 	and convert_nestable_block = function
 		| #Block.M.paragraph_block_t as blk	-> (convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
