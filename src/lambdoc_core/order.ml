@@ -19,7 +19,7 @@ open Basic
 (**	{Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_number_of_levels of level_t * int
+exception Invalid_number_of_levels of hierarchical_level_t * int
 
 
 (********************************************************************************)
@@ -77,17 +77,7 @@ type hierarchical_converter_t =
 type 'a auto_given_t = [ `Auto_given of 'a ] (*with sexp*)
 type user_given_t = [ `User_given of string ] (*with sexp*)
 type none_given_t = [ `None_given ] (*with sexp*)
-type ('a, 'b) given_t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] (*with sexp*)
-
-
-(**	Definition of the publicly visible ordering types.
-*)
-
-type part_order_t = (ordinal_t as 'a, [ 'a auto_given_t | user_given_t | none_given_t ]) given_t (*with sexp*)
-type section_order_t = (hierarchical_t as 'a, [ 'a auto_given_t | user_given_t | none_given_t ]) given_t (*with sexp*)
-type wrapper_order_t = (ordinal_t as 'a, [ 'a auto_given_t | user_given_t]) given_t (*with sexp*)
-type bib_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
-type note_order_t = (ordinal_t as 'a, 'a auto_given_t) given_t (*with sexp*)
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] (*with sexp*)
 
 
 (********************************************************************************)
@@ -158,63 +148,38 @@ let make_hierarchy_counter () = ref (0, 0, 0)
 
 
 (********************************************************************************)
-(**	{3 Constructors from counters}						*)
+(**	{3 Constructors}							*)
 (********************************************************************************)
 
-let incr_hierarchy_counter counter level =
-	let (l1, l2, l3) = !counter
-	in counter := match level with
-		| Level1 -> (l1+1, 0, 0)
-		| Level2 -> (l1, l2+1, 0)
-		| Level3 -> (l1, l2, l3+1)
-
-
-let ordinal_of_counter counter =
+let auto_ordinal counter =
 	let () = incr counter
 	in `Auto_given !counter
 
 
-let hierarchical_of_counter counter level =
-	let () = incr_hierarchy_counter counter level in
-	let (l1, l2, l3) = !counter
-	in (match level with
-		| Level1 -> `Auto_given (Level1_order l1)
-		| Level2 -> `Auto_given (Level2_order (l1, l2))
-		| Level3 -> `Auto_given (Level3_order (l1, l2, l3)))
+let auto_hierarchical level counter =
+	let (l1, l2, l3) = match (level, !counter) with
+		| (`Level1, (l1, _, _))		-> (l1+1, 0, 0)
+		| (`Level2, (l1, l2, _))	-> (l1, l2+1, 0)
+		| (`Level3, (l1, l2, l3))	-> (l1, l2, l3+1) in
+	let () = counter := (l1, l2, l3)
+	in match level with
+		| `Level1 -> `Auto_given (Level1_order l1)
+		| `Level2 -> `Auto_given (Level2_order (l1, l2))
+		| `Level3 -> `Auto_given (Level3_order (l1, l2, l3))
 
 
-let auto_part_order = ordinal_of_counter
-let auto_section_order = hierarchical_of_counter
-let auto_wrapper_order = ordinal_of_counter
-let auto_bib_order = ordinal_of_counter
-let auto_note_order = ordinal_of_counter
+let user_ordinal str = `User_given str
 
 
-(********************************************************************************)
-(**	{3 Constructors from strings}						*)
-(********************************************************************************)
-
-let ordinal_of_string str = `User_given str
-
-
-let hierarchical_of_string str level =
+let user_hierarchical level str =
 	match (level, List.length (String.nsplit str ".")) with
-		| (Level1, 1)
-		| (Level2, 2)
-		| (Level3, 3)		-> `User_given str
+		| (`Level1, 1)
+		| (`Level2, 2)
+		| (`Level3, 3)		-> `User_given str
 		| (expected, found)	-> raise (Invalid_number_of_levels (expected, found))
 
 
-let user_section_order = hierarchical_of_string
-let user_part_order = ordinal_of_string
-let user_wrapper_order = ordinal_of_string
-
-
-(********************************************************************************)
-(**	{3 Unit constructor}							*)
-(********************************************************************************)
-
-let none_order () = `None_given
+let none () = `None_given
 
 
 (********************************************************************************)
@@ -225,14 +190,14 @@ let arabic_converter = string_of_int
 
 let roman_converter = roman_of_int
 
-let section_converter =
+let mainbody_converter =
 	{
 	level1 = string_of_int;
 	level2 = string_of_int;
 	level3 = string_of_int;
 	}
 
-let appendix_converter =
+let appendixed_converter =
 	{
 	level1 = alphaseq_of_int;
 	level2 = string_of_int;
@@ -256,11 +221,4 @@ let string_of_hierarchical conv = function
 	| `Auto_given (Level3_order (l1, l2, l3))	-> (conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3)
 	| `User_given o					-> o
 	| `None_given					-> ""
-
-
-let string_of_part_order ?(conv = arabic_converter) = string_of_ordinal conv
-let string_of_section_order ?(conv = section_converter) = string_of_hierarchical conv
-let string_of_wrapper_order ?(conv = arabic_converter) = string_of_ordinal conv
-let string_of_bib_order ?(conv = arabic_converter) = string_of_ordinal conv
-let string_of_note_order ?(conv = arabic_converter) = string_of_ordinal conv
 

@@ -192,7 +192,6 @@ let check_command_feature errors comm maybe_subpaged feature =
 
 		| `Feature_title1	-> forbidden_class
 		| `Feature_title2	-> forbidden_class
-		| `Feature_title3	-> forbidden_class
 		| `Feature_abstract	-> forbidden_class
 		| `Feature_rule		-> forbidden_class in
 

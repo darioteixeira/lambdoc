@@ -31,9 +31,9 @@ type wrapper_t =
 (**	The various variations of visible targets.
 *)
 type visible_target_t =
-	| Section_target of Order.section_order_t
-	| Part_target of Order.part_order_t
-	| Wrapper_target of wrapper_t * Order.wrapper_order_t
+	| Section_target of Block.M.section_location_t * Block.M.section_order_t
+	| Part_target of Block.M.part_order_t
+	| Wrapper_target of wrapper_t * Block.M.wrapper_order_t
 	(*with sexp*)
 
 
@@ -43,8 +43,8 @@ type visible_target_t =
 *)
 type t =
 	| Visible_target of visible_target_t
-	| Bib_target of Order.bib_order_t
-	| Note_target of Order.note_order_t
+	| Bib_target of Block.M.bib_order_t
+	| Note_target of Block.M.note_order_t
 	(*with sexp*)
 
 
@@ -52,19 +52,19 @@ type t =
 (**	{2 Public functions}							*)
 (********************************************************************************)
 
-let section_target o = Visible_target (Section_target o)
+let section_target location order = Visible_target (Section_target (location, order))
 
-let part_target o = Visible_target (Part_target o)
+let part_target order = Visible_target (Part_target order)
 
-let algorithm_target o = Visible_target (Wrapper_target (Algorithm_wrapper, o))
+let algorithm_target order = Visible_target (Wrapper_target (Algorithm_wrapper, order))
 
-let equation_target o = Visible_target (Wrapper_target (Equation_wrapper, o))
+let equation_target order = Visible_target (Wrapper_target (Equation_wrapper, order))
 
-let figure_target o = Visible_target (Wrapper_target (Figure_wrapper, o))
+let figure_target order = Visible_target (Wrapper_target (Figure_wrapper, order))
 
-let table_target o = Visible_target (Wrapper_target (Table_wrapper, o))
+let table_target order = Visible_target (Wrapper_target (Table_wrapper, order))
 
-let bib_target o = Bib_target o
+let bib_target order = Bib_target order
 
-let note_target o = Note_target o
+let note_target order = Note_target order
 

@@ -155,7 +155,7 @@ sig
 	type heading_block_t =
 		[ `AST_part of command_t * super_seq_t
 		| `AST_appendix of command_t
-		| `AST_section of level_t * command_t * super_seq_t
+		| `AST_section of hierarchical_level_t * command_t * super_seq_t
 		| `AST_toc of command_t
 		| `AST_bibliography of command_t
 		| `AST_notes of command_t
@@ -163,7 +163,7 @@ sig
 
 	type top_block_t =
 		[ heading_block_t
-		| `AST_title of level_t * command_t * super_seq_t
+		| `AST_title of title_level_t * command_t * super_seq_t
 		| `AST_abstract of command_t * paragraph_block_t list
 		| `AST_rule of command_t
 		]

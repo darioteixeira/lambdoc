@@ -45,7 +45,7 @@ type reference_block_feature_t =
 	| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
 	| `Feature_part | `Feature_appendix | `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
-	| `Feature_title1 | `Feature_title2 | `Feature_title3 | `Feature_abstract | `Feature_rule
+	| `Feature_title1 | `Feature_title2 | `Feature_abstract | `Feature_rule
 	]
 
 
@@ -124,7 +124,7 @@ let reference_block_features =
 	`Feature_bib_title; `Feature_bib_author; `Feature_bib_resource;
 	`Feature_part; `Feature_appendix; `Feature_section1; `Feature_section2; `Feature_section3;
 	`Feature_bibliography; `Feature_notes; `Feature_toc;
-	`Feature_title1; `Feature_title2; `Feature_title3; `Feature_abstract; `Feature_rule;
+	`Feature_title1; `Feature_title2; `Feature_abstract; `Feature_rule;
 	]
 
 
@@ -241,7 +241,6 @@ let describe_reference_block_feature = function
 
 	| `Feature_title1	-> ("title1", "document title1")
 	| `Feature_title2	-> ("title2", "document title2")
-	| `Feature_title3	-> ("title3", "document title3")
 	| `Feature_abstract	-> ("abstract", "document abstract")
 	| `Feature_rule		-> ("rule", "document rule")
 

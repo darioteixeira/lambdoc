@@ -19,6 +19,16 @@ open Basic
 
 module rec M:
 sig
+	(**	Definition of the ordering types for the various kinds of blocks.
+	*)
+
+	type part_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
+	type section_order_t = (Order.hierarchical_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
+	type wrapper_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
+	type bib_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
+	type note_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
+
+
 	(**	A super fragment is a list of super blocks.
 	*)
 	type super_frag_t = M.super_block_t list (*with sexp*)
@@ -57,7 +67,7 @@ sig
 	(**	The tuple of all common fields to wrappers.  The fields
 		are the wrapper's label, its order, and a caption.
 	*)
-	type wrapper_t = Label.t * Order.wrapper_order_t * Node.M.super_seq_t (*with sexp*)
+	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t (*with sexp*)
 
 
 	(**	Nestable blocks may be nested.
@@ -88,10 +98,18 @@ sig
 		] (*with sexp*)
 
 
+	(**	Section locations.
+	*)
+	type section_location_t =
+		[ `Mainbody
+		| `Appendixed
+		] (*with sexp*)
+
+
 	(**	Definition of the existing variations for sectional blocks.
 	*)
 	type section_t =
-		[ `Custom_section of level_t * bool * Node.M.super_seq_t
+		[ `Custom_section of section_location_t * hierarchical_level_t * Node.M.super_seq_t
 		| `Bibliography
 		| `Notes
 		| `Toc
@@ -100,8 +118,8 @@ sig
 	(**
 	*)
 	type heading_block_t =
-		[ `Part of Label.t * Order.part_order_t * part_t
-		| `Section of Label.t * Order.section_order_t * section_t
+		[ `Part of Label.t * part_order_t * part_t
+		| `Section of Label.t * section_order_t * section_t
 		] (*with sexp*)
 
 
@@ -110,7 +128,7 @@ sig
 	*)
 	type top_block_t =
 		[ heading_block_t
-		| `Title of level_t * Node.M.super_seq_t
+		| `Title of Level.title_t * Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
 		] (*with sexp*)
@@ -122,11 +140,11 @@ sig
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	val custom_part: Label.t -> Order.part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val custom_part: Label.t -> part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> heading_block_t ], [> `Manuscript ]) t
 	val appendix: Label.t -> Order.none_given_t ->
 		([> heading_block_t ], [> `Manuscript ]) t
-	val custom_section: level_t -> Label.t -> Order.section_order_t -> bool -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val custom_section: section_location_t -> hierarchical_level_t -> Label.t -> section_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> heading_block_t ], [> `Manuscript ]) t
 	val bibliography: Label.t -> Order.none_given_t ->
 		([> heading_block_t ], [> `Manuscript ]) t
@@ -134,7 +152,7 @@ sig
 		([> heading_block_t ], [> `Manuscript ]) t
 	val toc: Label.t -> Order.none_given_t ->
 		([> heading_block_t ], [> `Manuscript ]) t
-	val title: level_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val title: Level.title_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val abstract: (paragraph_block_t, 'b) t list ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -172,6 +190,12 @@ sig
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
+	type part_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
+	type section_order_t = (Order.hierarchical_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
+	type wrapper_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
+	type bib_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
+	type note_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
+
 	type super_frag_t = M.super_block_t list (*with sexp*)
 
 	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
@@ -192,7 +216,7 @@ struct
 	type table_block_t = [ tabular_block_t ] (*with sexp*)
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
-	type wrapper_t = Label.t * Order.wrapper_order_t * Node.M.super_seq_t (*with sexp*)
+	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t (*with sexp*)
 
 	type nestable_block_t =
 		[ paragraph_block_t
@@ -216,21 +240,26 @@ struct
 		| `Appendix
 		] (*with sexp*)
 
+	type section_location_t =
+		[ `Mainbody
+		| `Appendixed
+		] (*with sexp*)
+
 	type section_t =
-		[ `Custom_section of level_t * bool * Node.M.super_seq_t
+		[ `Custom_section of section_location_t * hierarchical_level_t * Node.M.super_seq_t
 		| `Bibliography
 		| `Notes
 		| `Toc
 		] (*with sexp*)
 
 	type heading_block_t =
-		[ `Part of Label.t * Order.part_order_t * part_t
-		| `Section of Label.t * Order.section_order_t * section_t
+		[ `Part of Label.t * part_order_t * part_t
+		| `Section of Label.t * section_order_t * section_t
 		] (*with sexp*)
 
 	type top_block_t =
 		[ heading_block_t
-		| `Title of level_t * Node.M.super_seq_t
+		| `Title of Level.title_t * Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
 		] (*with sexp*)
@@ -240,11 +269,11 @@ struct
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
 	let custom_part label order seq = `Part (label, order, `Custom_part (seq :> Node.M.super_seq_t))
-	let appendix label order = `Part (label, (order :> Order.part_order_t), `Appendix)
-	let custom_section level label order appendixed seq = `Section (label, order, `Custom_section (level, appendixed, (seq :> Node.M.super_seq_t)))
-	let bibliography label order = `Section (label, (order :> Order.section_order_t), `Bibliography)
-	let notes label order = `Section (label, (order :> Order.section_order_t), `Notes)
-	let toc label order = `Section (label, (order :> Order.section_order_t), `Toc)
+	let appendix label order = `Part (label, (order :> part_order_t), `Appendix)
+	let custom_section location level label order seq = `Section (label, order, `Custom_section (location, level, (seq :> Node.M.super_seq_t)))
+	let bibliography label order = `Section (label, (order :> section_order_t), `Bibliography)
+	let notes label order = `Section (label, (order :> section_order_t), `Notes)
+	let toc label order = `Section (label, (order :> section_order_t), `Toc)
 	let title level seq = `Title (level, (seq :> Node.M.super_seq_t))
 	let abstract frag = `Abstract frag
 	let rule () = `Rule

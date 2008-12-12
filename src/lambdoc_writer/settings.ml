@@ -20,15 +20,16 @@ open Basic
 
 type names_t =
 	{
-	section_name: plain_t;
+	part_name: plain_t;
 	appendix_name: plain_t;
+	section_name: plain_t;
+	bibliography_name: plain_t;
+	notes_name: plain_t;
+	toc_name: plain_t;
 	equation_name: plain_t;
 	algorithm_name: plain_t;
 	table_name: plain_t;
 	figure_name: plain_t;
-	bibliography_name: plain_t;
-	notes_name: plain_t;
-	toc_name: plain_t;
 	}
 
 type t =
@@ -45,28 +46,30 @@ type t =
 
 let english_names =
 	{
-	section_name = "Section";
+	part_name = "Part";
 	appendix_name = "Appendix";
+	section_name = "Section";
+	bibliography_name = "Bibliography";
+	notes_name = "Notes";
+	toc_name = "Table of Contents";
 	equation_name = "Eq.";
 	algorithm_name = "Alg.";
 	table_name = "Tab.";
 	figure_name = "Fig.";
-	bibliography_name = "Bibliography";
-	notes_name = "Notes";
-	toc_name = "Table of Contents";
 	}
 
 let portuguese_names =
 	{
-	section_name = "Secção";
+	part_name = "Parte";
 	appendix_name = "Apêndice";
+	section_name = "Secção";
+	bibliography_name = "Bibliografia";
+	notes_name = "Notas";
+	toc_name = "Índice";
 	equation_name = "Eq.";
 	algorithm_name = "Alg.";
 	table_name = "Tab.";
 	figure_name = "Fig.";
-	bibliography_name = "Bibliografia";
-	notes_name = "Notas";
-	toc_name = "Índice";
 	}
 
 let make bullet numbering names =

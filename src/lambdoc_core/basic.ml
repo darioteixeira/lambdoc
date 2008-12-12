@@ -37,16 +37,25 @@ type tag_t = string (*with sexp*)		(** The type used for tags. *)
 type 'a plus_t = 'a * 'a list (*with sexp*)	(** The type of non-empty lists. *)
 
 
-(**     Definition of hierarchy levels.  We support a three-level hierarchy,
-        equivalent to XHTML's H1, H2, and H3.  For sections, these levels can
-        be interpreted as "section", "subsection", and "subsubsection". A
-	similar interpretation can be made for titles.
+(**     Definition of hierarchy levels for sections.  We support a three-level
+	hierarchy, equivalent to XHTML's H1, H2, and H3.  These can be interpreted
+	as "section", "subsection", and "subsubsection". 
 *)
-type level_t =
-        | Level1
-        | Level2
-        | Level3
-        (*with sexp*)
+type hierarchical_level_t =
+        [ `Level1
+        | `Level2
+        | `Level3
+        ] (*with sexp*)
+
+
+(**     Definition of hierarchy levels for titles.  We support a two-level
+	hierarchy, equivalent to XHTML's H1 and H2.  These can be interpreted
+	as "title" and "subtitle".
+*)
+type title_level_t =
+	[ `Level1
+	| `Level2
+        ] (*with sexp*)
 
 
 (********************************************************************************)

@@ -48,7 +48,7 @@ type reference_block_feature_t =
 	| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
 	| `Feature_part | `Feature_appendix | `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
-	| `Feature_title1 | `Feature_title2 | `Feature_title3 | `Feature_abstract | `Feature_rule
+	| `Feature_title1 | `Feature_title2 | `Feature_abstract | `Feature_rule
 	]
 
 
