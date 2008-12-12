@@ -90,11 +90,21 @@ sig
 		] (*with sexp*)
 
 
-	(**	Definition of the existing variations for part-level blocks.
+	(**	Part content.
 	*)
-	type part_t =
-		[ `Custom_part of Node.M.super_seq_t
+	type part_content_t =
+		[ `Custom of Node.M.super_seq_t
 		| `Appendix
+		] (*with sexp*)
+
+
+	(**	Section content.
+	*)
+	type section_content_t =
+		[ `Custom of Node.M.super_seq_t
+		| `Bibliography
+		| `Notes
+		| `Toc
 		] (*with sexp*)
 
 
@@ -106,20 +116,11 @@ sig
 		] (*with sexp*)
 
 
-	(**	Definition of the existing variations for sectional blocks.
-	*)
-	type section_t =
-		[ `Custom_section of section_location_t * hierarchical_level_t * Node.M.super_seq_t
-		| `Bibliography
-		| `Notes
-		| `Toc
-		] (*with sexp*)
-
-	(**
+	(**	Heading blocks.
 	*)
 	type heading_block_t =
-		[ `Part of Label.t * part_order_t * part_t
-		| `Section of Label.t * section_order_t * section_t
+		[ `Part of Label.t * part_order_t * part_content_t
+		| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
 		] (*with sexp*)
 
 
@@ -140,17 +141,17 @@ sig
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	val custom_part: Label.t -> part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val part: Label.t -> part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> heading_block_t ], [> `Manuscript ]) t
-	val appendix: Label.t -> Order.none_given_t ->
+	val section: Label.t -> section_order_t -> section_location_t -> hierarchical_level_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> heading_block_t ], [> `Manuscript ]) t
-	val custom_section: section_location_t -> hierarchical_level_t -> Label.t -> section_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val appendix: Label.t ->
 		([> heading_block_t ], [> `Manuscript ]) t
-	val bibliography: Label.t -> Order.none_given_t ->
+	val bibliography: Label.t ->
 		([> heading_block_t ], [> `Manuscript ]) t
-	val notes: Label.t -> Order.none_given_t ->
+	val notes: Label.t -> 
 		([> heading_block_t ], [> `Manuscript ]) t
-	val toc: Label.t -> Order.none_given_t ->
+	val toc: Label.t -> 
 		([> heading_block_t ], [> `Manuscript ]) t
 	val title: Level.title_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -235,9 +236,16 @@ struct
 		| `Figure of wrapper_t * figure_block_t
 		] (*with sexp*)
 
-	type part_t =
-		[ `Custom_part of Node.M.super_seq_t
+	type part_content_t =
+		[ `Custom of Node.M.super_seq_t
 		| `Appendix
+		] (*with sexp*)
+
+	type section_content_t =
+		[ `Custom of Node.M.super_seq_t
+		| `Bibliography
+		| `Notes
+		| `Toc
 		] (*with sexp*)
 
 	type section_location_t =
@@ -245,16 +253,9 @@ struct
 		| `Appendixed
 		] (*with sexp*)
 
-	type section_t =
-		[ `Custom_section of section_location_t * hierarchical_level_t * Node.M.super_seq_t
-		| `Bibliography
-		| `Notes
-		| `Toc
-		] (*with sexp*)
-
 	type heading_block_t =
-		[ `Part of Label.t * part_order_t * part_t
-		| `Section of Label.t * section_order_t * section_t
+		[ `Part of Label.t * part_order_t * part_content_t
+		| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
 		] (*with sexp*)
 
 	type top_block_t =
@@ -268,12 +269,12 @@ struct
 
 	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t] (*with sexp*)
 
-	let custom_part label order seq = `Part (label, order, `Custom_part (seq :> Node.M.super_seq_t))
-	let appendix label order = `Part (label, (order :> part_order_t), `Appendix)
-	let custom_section location level label order seq = `Section (label, order, `Custom_section (location, level, (seq :> Node.M.super_seq_t)))
-	let bibliography label order = `Section (label, (order :> section_order_t), `Bibliography)
-	let notes label order = `Section (label, (order :> section_order_t), `Notes)
-	let toc label order = `Section (label, (order :> section_order_t), `Toc)
+	let part label order seq = `Part (label, order, `Custom (seq :> Node.M.super_seq_t))
+	let section label order location level seq = `Section (label, order, location, level, `Custom (seq :> Node.M.super_seq_t))
+	let appendix label = `Part (label, Order.none (), `Appendix)
+	let bibliography label = `Section (label, Order.none (), `Mainbody, `Level1, `Bibliography)
+	let notes label = `Section (label, Order.none (), `Mainbody, `Level1, `Notes)
+	let toc label = `Section (label, Order.none (), `Mainbody, `Level1, `Toc)
 	let title level seq = `Title (level, (seq :> Node.M.super_seq_t))
 	let abstract frag = `Abstract frag
 	let rule () = `Rule

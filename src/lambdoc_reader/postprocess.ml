@@ -455,20 +455,10 @@ let process_document feature_map document_ast =
 					| Some ""	-> Order.none ()
 					| Some other	-> Order.user_ordinal other in
 				let label = make_label comm (Target.part_target order) in
-				let block = Block.M.custom_part label order (convert_super_seq seq) in
+				let block = Block.M.part label order (convert_super_seq seq) in
 				let () = add_toc_entry block subpaged
 				in Some block
 			in check_comm comm `Feature_part (Some subpaged) elem
-
-		| `AST_appendix comm ->
-			let elem () =
-				let order = Order.none () in
-				let label = make_label comm (Target.part_target order) in
-				let block = Block.M.appendix label order in
-				let () = add_toc_entry block subpaged in
-				let () = appendixed := true
-				in Some block
-			in check_comm comm `Feature_appendix None elem
 
 		| `AST_section (level, comm, seq) ->
 			let elem () =
@@ -481,7 +471,7 @@ let process_document feature_map document_ast =
 					| Some ""	-> Order.none ()
 					| Some other	-> Order.user_hierarchical level other in
 				let label = make_label comm (Target.section_target location order) in
-				let block = Block.M.custom_section location level label order (convert_super_seq seq) in
+				let block = Block.M.section label order location level (convert_super_seq seq) in
 				let () = add_toc_entry block subpaged
 				in Some block
 			and feature = match level with
@@ -489,6 +479,16 @@ let process_document feature_map document_ast =
 				| `Level2 -> `Feature_section2
 				| `Level3 -> `Feature_section3
 			in check_comm comm feature (Some subpaged) elem
+
+		| `AST_appendix comm ->
+			let elem () =
+				let order = Order.none () in
+				let label = make_label comm (Target.part_target order) in
+				let block = Block.M.appendix label in
+				let () = add_toc_entry block subpaged in
+				let () = appendixed := true
+				in Some block
+			in check_comm comm `Feature_appendix None elem
 
 		| `AST_bibliography comm ->
 			convert_preset_sectional Block.M.bibliography `Feature_bibliography comm true subpaged
@@ -504,7 +504,7 @@ let process_document feature_map document_ast =
 		let elem () =
 			let order = Order.none () in
 			let label = make_label comm (Target.section_target `Mainbody order) in
-			let block = cons label order in
+			let block = cons label in
 			let () = if to_toc then add_toc_entry block subpaged else ()
 			in Some block
 		in check_comm comm `Feature_notes (Some subpaged) elem

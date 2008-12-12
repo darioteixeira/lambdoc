@@ -317,35 +317,34 @@ let write_valid_document settings classname doc =
 
 	and write_heading_block = function
 
-		| `Part (label, order, `Custom_part seq) ->
+		| `Part (label, order, `Custom seq) ->
 			make_heading XHTML.M.h1 label (part_conv order) "doc_part" (write_super_seq seq)
 
 		| `Part (label, order, `Appendix) ->
-			let name = settings.names.appendix_name
-			in make_heading XHTML.M.h1 label (part_conv order) "doc_part" [XHTML.M.pcdata name]
+			make_heading XHTML.M.h1 label (part_conv order) "doc_part" [XHTML.M.pcdata settings.names.appendix_name]
 
-		| `Section (label, order, `Custom_section (location, level, seq)) ->
+		| `Section (label, order, location, level, `Custom seq) ->
 			make_sectional level label (section_conv location order) (write_super_seq seq)
 
-		| `Section (label, order, `Bibliography) ->
+		| `Section (label, order, location, level, `Bibliography) ->
 			let name = settings.names.bibliography_name in
-			let title = [make_sectional `Level1 label (section_conv `Mainbody order) [XHTML.M.pcdata name]] in
+			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
 			let bibs = match doc.Valid.bibs with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ul ~a:[a_class ["doc_bibs"]] hd tl]
 			in XHTML.M.div (title @ bibs)
 
-		| `Section (label, order, `Notes) ->
+		| `Section (label, order, location, level, `Notes) ->
 			let name = settings.names.notes_name in
-			let title = [make_sectional `Level1 label (section_conv `Mainbody order) [XHTML.M.pcdata name]] in
+			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
 			let notes = match doc.Valid.notes with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ul ~a:[a_class ["doc_notes"]] hd tl]
 			in XHTML.M.div (title @ notes)
 
-		| `Section (label, order, `Toc) ->
+		| `Section (label, order, location, level, `Toc) ->
 			let name = settings.names.toc_name in
-			let title = [make_sectional `Level1 label (section_conv `Mainbody order) [XHTML.M.pcdata name]] in
+			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
 			let toc = match doc.Valid.toc with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_toc_entry hd tl in [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
@@ -519,18 +518,19 @@ let write_valid_document settings classname doc =
 		let make_toc_entry label order_str content =
 		        XHTML.M.li [make_internal_link label ((wrap_order order_str) @ [span content])]
 		in match sec with
-			| `Part (label, order, `Custom_part seq) ->
+			| `Part (label, order, `Custom seq) ->
 				make_toc_entry label (part_conv order) (write_super_seq seq)
 			| `Part (label, order, `Appendix) ->
 				make_toc_entry label (part_conv order) [pcdata settings.names.appendix_name]
-			| `Section (label, order, `Custom_section (location, level, seq)) ->
+			| `Section (label, order, location, level, `Custom seq) ->
 				make_toc_entry label (section_conv location order) (write_super_seq seq)
-			| `Section (label, order, `Bibliography) ->
-				make_toc_entry label (section_conv `Mainbody order) [pcdata settings.names.bibliography_name]
-			| `Section (label, order, `Notes) ->
-				make_toc_entry label (section_conv `Mainbody order) [pcdata settings.names.notes_name]
-			| `Section (label, order, `Toc) ->
-				make_toc_entry label (section_conv `Mainbody order) [pcdata settings.names.toc_name]
+			| `Section (label, order, location, level, `Bibliography) ->
+				make_toc_entry label (section_conv location order) [pcdata settings.names.bibliography_name]
+			| `Section (label, order, location, level, `Notes) ->
+				make_toc_entry label (section_conv location order) [pcdata settings.names.notes_name]
+			| `Section (label, order, location, level, `Toc) ->
+				make_toc_entry label (section_conv location order) [pcdata settings.names.toc_name]
+
 
 	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_super_frag doc.Valid.content)
 

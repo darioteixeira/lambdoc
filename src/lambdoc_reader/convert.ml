@@ -107,6 +107,10 @@ let convert_to_composition contents =
 	and convert_heading = function
 		| `Part _				-> raise (Invalid_composition_subset "part")
 		| `Section _				-> raise (Invalid_composition_subset "section")
+		| `Appendix _				-> raise (Invalid_composition_subset "appendix")
+		| `Bibliography _			-> raise (Invalid_composition_subset "bibliography")
+		| `Notes _				-> raise (Invalid_composition_subset "notes")
+		| `Toc _				-> raise (Invalid_composition_subset "toc")
 
 	and convert_nestable_block = function
 		| #Block.M.paragraph_block_t as blk	-> (convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
