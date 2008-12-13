@@ -25,13 +25,26 @@ exception Invalid_number_of_levels of hierarchical_level_t * int
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type ordinal_t
-type ordinal_counter_t
-type ordinal_converter_t
+type ordinal_t = int
 
-type hierarchical_t
+type ordinal_counter_t
+
+type ordinal_converter_t = (ordinal_t -> string)
+
+type hierarchical_t = 
+	| Level1_order of int
+	| Level2_order of int * int
+	| Level3_order of int * int * int
+
 type hierarchical_counter_t
-type hierarchical_converter_t
+
+type hierarchical_converter_t =
+	{
+	level1: (int -> string);
+	level2: (int -> string);
+	level3: (int -> string);
+	}
+
 
 type 'a auto_given_t = [ `Auto_given of 'a ] (*with sexp*)
 type user_given_t = [ `User_given of string ] (*with sexp*)
@@ -40,7 +53,7 @@ type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_gi
 
 
 (********************************************************************************)
-(**	{3 Public functions and values}						*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
 (********************************************************************************)
@@ -60,16 +73,6 @@ val auto_hierarchical: hierarchical_level_t -> hierarchical_counter_t ref -> [> 
 val user_ordinal: string -> [> `User_given of string ]
 val user_hierarchical: hierarchical_level_t -> string -> [> `User_given of string ]
 val none: unit -> [> `None_given ]
-
-
-(********************************************************************************)
-(**	{3 Predefined converters}						*)
-(********************************************************************************)
-
-val arabic_converter: ordinal_converter_t
-val roman_converter: ordinal_converter_t
-val mainbody_converter: hierarchical_converter_t
-val appendixed_converter: hierarchical_converter_t
 
 
 (********************************************************************************)

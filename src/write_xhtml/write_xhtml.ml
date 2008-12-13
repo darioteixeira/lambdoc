@@ -100,23 +100,23 @@ let make_sectional level label order_str content =
 (**	{3 Converters}								*)
 (********************************************************************************)
 
-let part_conv order = Order.string_of_ordinal Order.roman_converter order
+let part_conv order = Order.string_of_ordinal Printers.roman order
 
 
 let section_conv location order =
 	let conv = match location with
-		| `Mainbody	-> Order.mainbody_converter
-		| `Appendixed	-> Order.appendixed_converter
+		| `Mainbody	-> Printers.mainbody
+		| `Appendixed	-> Printers.appendixed
 	in Order.string_of_hierarchical conv order
 
 
-let wrapper_conv order = Order.string_of_ordinal Order.arabic_converter order
+let wrapper_conv order = Order.string_of_ordinal Printers.arabic order
 
 
-let bib_conv order = Order.string_of_ordinal Order.arabic_converter order
+let bib_conv order = Order.string_of_ordinal Printers.arabic order
 
 
-let note_conv order = Order.string_of_ordinal Order.arabic_converter order
+let note_conv order = Order.string_of_ordinal Printers.arabic order
 
 
 (********************************************************************************)
