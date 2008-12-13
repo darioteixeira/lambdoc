@@ -129,7 +129,7 @@ sig
 	*)
 	type top_block_t =
 		[ heading_block_t
-		| `Title of Level.title_t * Node.M.super_seq_t
+		| `Title of title_level_t * Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
 		] (*with sexp*)
@@ -153,7 +153,7 @@ sig
 		([> heading_block_t ], [> `Manuscript ]) t
 	val toc: Label.t -> 
 		([> heading_block_t ], [> `Manuscript ]) t
-	val title: Level.title_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
+	val title: title_level_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> top_block_t ], [> `Manuscript ]) t
 	val abstract: (paragraph_block_t, 'b) t list ->
 		([> top_block_t ], [> `Manuscript ]) t
@@ -260,7 +260,7 @@ struct
 
 	type top_block_t =
 		[ heading_block_t
-		| `Title of Level.title_t * Node.M.super_seq_t
+		| `Title of title_level_t * Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
 		] (*with sexp*)
