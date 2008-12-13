@@ -1,2 +1,1 @@
-<lambtex_reader_impl>: include
-<*.cmx>: for-pack(Lambdoc)
+<*.cmx>: for-pack(Read_lambtex)
