@@ -54,7 +54,7 @@ let convert_to_composition contents =
 		| `Thru seq			-> Node.M.thru (convert_super_seq seq)
 		| `Sup seq			-> Node.M.sup (convert_super_seq seq)
 		| `Sub seq			-> Node.M.sub (convert_super_seq seq)
-		| `Box seq			-> Node.M.box (convert_super_seq seq)
+		| `Mbox seq			-> Node.M.mbox (convert_super_seq seq)
 
 	and convert_link_node = function
 		| `Link (lnk, seq)		-> Node.M.link lnk (convert_nonlink_seq seq)

@@ -23,7 +23,7 @@ type non_command_inline_feature_t =
 
 type non_reference_inline_feature_t =
 	[ `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru
-	| `Feature_sup | `Feature_sub | `Feature_box | `Feature_link
+	| `Feature_sup | `Feature_sub | `Feature_mbox | `Feature_link
 	]
 
 type reference_inline_feature_t =
@@ -98,7 +98,7 @@ let non_command_inline_features =
 let non_reference_inline_features =
 	[
 	`Feature_bold; `Feature_emph; `Feature_mono; `Feature_caps; `Feature_thru;
-	`Feature_sup; `Feature_sub; `Feature_box; `Feature_link;
+	`Feature_sup; `Feature_sub; `Feature_mbox; `Feature_link;
 	]
 
 let reference_inline_features =
@@ -186,7 +186,7 @@ let describe_non_reference_inline_feature = function
 	| `Feature_thru		-> ("thru", "strike-through text")
 	| `Feature_sup		-> ("sup", "superscript text")
 	| `Feature_sub		-> ("sub", "subscript text")
-	| `Feature_box		-> ("box", "boxed text")
+	| `Feature_mbox		-> ("mbox", "boxed text")
 	| `Feature_link		-> ("link", "external link")
 
 

@@ -33,7 +33,7 @@ sig
 		| `Thru of super_seq_t
 		| `Sup of super_seq_t
 		| `Sub of super_seq_t
-		| `Box of super_seq_t
+		| `Mbox of super_seq_t
 		] (*with sexp*)
 
 	type link_node_t =
@@ -59,7 +59,7 @@ sig
 	val thru: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
 	val sup: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
 	val sub: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val box: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
+	val mbox: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
 
 	val link: link_t -> ([< nonlink_node_t], 'b) t list -> ([> link_node_t ], 'b) t
 	val see: ref_t -> ([> link_node_t ], [> `Manuscript ]) t
@@ -83,7 +83,7 @@ struct
 		| `Thru of super_seq_t
 		| `Sup of super_seq_t
 		| `Sub of super_seq_t
-		| `Box of super_seq_t
+		| `Mbox of super_seq_t
 		] (*with sexp*)
 
 	type link_node_t =
@@ -109,7 +109,7 @@ struct
 	let thru seq = `Thru (seq :> (super_node_t, _) t list)
 	let sup seq = `Sup (seq :> (super_node_t, _) t list)
 	let sub seq = `Sub (seq :> (super_node_t, _) t list)
-	let box seq = `Box (seq :> (super_node_t, _) t list)
+	let mbox seq = `Mbox (seq :> (super_node_t, _) t list)
 
 	let link lnk seq = `Link (lnk, (seq :> (nonlink_node_t, _) t list))
 	let see ref = `See ref

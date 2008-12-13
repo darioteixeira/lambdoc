@@ -56,7 +56,7 @@ sig
 		| `AST_thru of command_t * super_seq_t
 		| `AST_sup of command_t * super_seq_t
 		| `AST_sub of command_t * super_seq_t
-		| `AST_box of command_t * super_seq_t
+		| `AST_mbox of command_t * super_seq_t
 		]
 
 	type link_node_t =

@@ -26,7 +26,7 @@ type non_command_inline_feature_t =
 
 type non_reference_inline_feature_t =
 	[ `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru
-	| `Feature_sup | `Feature_sub | `Feature_box | `Feature_link
+	| `Feature_sup | `Feature_sub | `Feature_mbox | `Feature_link
 	]
 
 type reference_inline_feature_t =

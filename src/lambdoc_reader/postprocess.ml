@@ -294,9 +294,9 @@ let process_document feature_map document_ast =
 			let elem () = Some (Node.M.sub (convert_super_seq seq))
 			in check_comm comm `Feature_sub None elem
 
-		| `AST_box (comm, seq) ->
-			let elem () = Some (Node.M.box (convert_super_seq seq))
-			in check_comm comm `Feature_box None elem
+		| `AST_mbox (comm, seq) ->
+			let elem () = Some (Node.M.mbox (convert_super_seq seq))
+			in check_comm comm `Feature_mbox None elem
 
 
 	and convert_link_node : Ast.M.link_node_t -> (Node.M.link_node_t, _) Node.M.t option = function

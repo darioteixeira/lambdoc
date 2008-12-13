@@ -144,7 +144,7 @@ let check_command_feature errors comm maybe_subpaged feature =
 		| `Feature_thru		-> forbidden_class
 		| `Feature_sup		-> forbidden_class
 		| `Feature_sub		-> forbidden_class
-		| `Feature_box		-> forbidden_class
+		| `Feature_mbox		-> forbidden_class
 		| `Feature_link		-> forbidden_class
 
 	and reference_inline_feature_set = function

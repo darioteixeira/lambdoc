@@ -166,7 +166,7 @@ let write_valid_document settings classname doc =
 			XHTML.M.sup (write_super_seq seq)
 		| `Sub seq ->
 			XHTML.M.sub (write_super_seq seq)
-		| `Box seq ->
+		| `Mbox seq ->
 			XHTML.M.span ~a:[a_class ["doc_box"]] (write_super_seq seq)
 
 
