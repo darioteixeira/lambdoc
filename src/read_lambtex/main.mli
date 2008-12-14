@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Interface file for Lambtex_reader.
+(*	Interface file for Main module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,5 +8,5 @@
 *)
 (********************************************************************************)
 
-include Document_reader.S
+include Reader.S
 

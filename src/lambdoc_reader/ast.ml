@@ -156,9 +156,9 @@ sig
 		[ `AST_part of command_t * super_seq_t
 		| `AST_appendix of command_t
 		| `AST_section of hierarchical_level_t * command_t * super_seq_t
-		| `AST_toc of command_t
 		| `AST_bibliography of command_t
 		| `AST_notes of command_t
+		| `AST_toc of command_t
 		]
 
 	type top_block_t =

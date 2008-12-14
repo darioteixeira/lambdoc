@@ -18,9 +18,9 @@
 
 open Lexing
 open ExtString
-open Document_ast.Ast
-open Lambtex_parser
-open Lambtex_scanner
+open Ast.M
+open Parser
+open Scanner
 
 
 (********************************************************************************)
@@ -129,7 +129,7 @@ let get_simple_tag params =
 		| "thru"		-> (THRU params,		Inl,	[Store [Inline]])
 		| "sup"			-> (SUP params,			Inl,	[Store [Inline]])
 		| "sub"			-> (SUB params,			Inl,	[Store [Inline]])
-		| "box"			-> (BOX params,			Inl,	[Store [Inline]])
+		| "mbox"		-> (MBOX params,		Inl,	[Store [Inline]])
 
 		| "link"		-> (LINK params,		Inl,	[Store [Raw; Inline]])
 		| "see"			-> (SEE params,			Inl,	[Store [Raw]])
@@ -138,18 +138,18 @@ let get_simple_tag params =
 		| "sref"		-> (SREF params,		Inl,	[Store [Raw]])
 		| "mref"		-> (MREF params,		Inl,	[Store [Raw; Inline]])
 
+		| "part"		-> (PART params, 		Blk,	[Store [Inline]])
+		| "appendix"		-> (APPENDIX params,		Blk,	[])
 		| "section"		-> (SECTION params,		Blk,	[Store [Inline]])
 		| "subsection"		-> (SUBSECTION params,		Blk,	[Store [Inline]])
 		| "subsubsection"	-> (SUBSUBSECTION params,	Blk,	[Store [Inline]])
-		| "toc"			-> (TOC params,			Blk,	[])
 		| "bibliography"	-> (BIBLIOGRAPHY params,	Blk,	[])
 		| "notes"		-> (NOTES params,		Blk,	[])
-
+		| "toc"			-> (TOC params,			Blk,	[])
 		| "title"		-> (TITLE params, 		Blk,	[Store [Inline]])
 		| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
-		| "part"		-> (PART params, 		Blk,	[Store [Inline]])
 		| "rule"		-> (RULE params,		Blk,	[])
-		| "appendix"		-> (APPENDIX params,		Blk,	[])
+
 		| "item"		-> (NEW_ITEM params,		Blk,	[])
 		| "image"		-> (IMAGE params,		Blk,	[Store [Raw]])
 		| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
@@ -301,16 +301,16 @@ object (self)
 	method private produce lexbuf =
 
 		let scanner = match self#get_env () with
-			| Some Inline		-> Lambtex_scanner.general_scanner
-			| Some Tabular		-> Lambtex_scanner.tabular_scanner
-			| Some Verbatim		-> Lambtex_scanner.verbatim_scanner
-			| Some Code		-> Lambtex_scanner.code_scanner
-			| Some Raw		-> Lambtex_scanner.raw_scanner
-			| Some Mathtex_inl	-> Lambtex_scanner.mathtex_inl_scanner
-			| Some Mathml_inl	-> Lambtex_scanner.mathml_inl_scanner
-			| Some Mathtex_blk	-> Lambtex_scanner.mathtex_blk_scanner
-			| Some Mathml_blk	-> Lambtex_scanner.mathml_blk_scanner
-			| None			-> Lambtex_scanner.general_scanner in
+			| Some Inline		-> Scanner.general_scanner
+			| Some Tabular		-> Scanner.tabular_scanner
+			| Some Verbatim		-> Scanner.verbatim_scanner
+			| Some Code		-> Scanner.code_scanner
+			| Some Raw		-> Scanner.raw_scanner
+			| Some Mathtex_inl	-> Scanner.mathtex_inl_scanner
+			| Some Mathml_inl	-> Scanner.mathml_inl_scanner
+			| Some Mathtex_blk	-> Scanner.mathtex_blk_scanner
+			| Some Mathml_blk	-> Scanner.mathml_blk_scanner
+			| None			-> Scanner.general_scanner in
 
 		let (maybe_token, actions) = match scanner lexbuf with
 			| `Tok_simple_comm buf			-> issue_simple_command buf

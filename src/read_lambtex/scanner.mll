@@ -18,7 +18,7 @@
 {
 open Lexing
 open ExtString
-open Lambtex_parser
+open Parser
 
 
 (**	The set of all tokens output by the various scanners.

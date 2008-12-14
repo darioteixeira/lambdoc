@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Lambtex_reader.
+(*	Implementation file for Main module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -12,14 +12,13 @@
 *)
 
 open Lexing
-open Lambtex_reader_impl
 
 
 (********************************************************************************)
 (*	{2 Reader module}							*)
 (********************************************************************************)
 
-module Reader : Document_reader.READER =
+module Lambtex_reader : Reader.READER =
 struct
 	exception Parsing_error of int
 	exception Unknown_env_command of int * string
@@ -27,19 +26,19 @@ struct
 
 	let ast_from_string str =
 		let lexbuf = Lexing.from_string str in
-		let tokenizer = new Lambtex_tokenizer.tokenizer in
+		let tokenizer = new Tokenizer.tokenizer in
 		try
-			Lambtex_parser.document tokenizer#consume lexbuf
+			Parser.document tokenizer#consume lexbuf
 		with
-			| Lambtex_parser.Error ->
+			| Parser.Error ->
 				raise (Parsing_error lexbuf.lex_curr_p.pos_lnum)
-			| Lambtex_tokenizer.Unknown_env_command tag ->
+			| Tokenizer.Unknown_env_command tag ->
 				raise (Unknown_env_command (lexbuf.lex_curr_p.pos_lnum, tag))
-			| Lambtex_tokenizer.Unknown_simple_command tag ->
+			| Tokenizer.Unknown_simple_command tag ->
 				raise (Unknown_simple_command (lexbuf.lex_curr_p.pos_lnum, tag))
 end
 
-module M = Document_reader.Make_reader (Reader)
+module M = Reader.Make_reader (Lambtex_reader)
 
 include M
 

@@ -12,8 +12,8 @@
 *)
 
 open Printf
-open Document_ast.Ast
-open Lambtex_parser
+open Ast.M
+open Parser
 
 
 let maybe_sprintf opening closing = function
@@ -92,7 +92,7 @@ let to_string = function
 	| THRU comm			-> sprintf "THRU: %s" (sprintf_command comm)
 	| SUP comm			-> sprintf "SUP: %s" (sprintf_command comm)
 	| SUB comm			-> sprintf "SUB: %s" (sprintf_command comm)
-	| BOX comm			-> sprintf "BOX: %s" (sprintf_command comm)
+	| MBOX comm			-> sprintf "MBOX: %s" (sprintf_command comm)
 
 	| LINK comm			-> sprintf "LINK: %s" (sprintf_command comm)
 	| SEE comm			-> sprintf "SEE: %s" (sprintf_command comm)
@@ -101,18 +101,18 @@ let to_string = function
 	| SREF comm			-> sprintf "SREF: %s" (sprintf_command comm)
 	| MREF comm			-> sprintf "MREF: %s" (sprintf_command comm)
 
+	| PART comm			-> sprintf "PART: %s" (sprintf_command comm)
+	| APPENDIX comm			-> sprintf "APPENDIX: %s" (sprintf_command comm)
 	| SECTION comm			-> sprintf "SECTION: %s" (sprintf_command comm)
 	| SUBSECTION comm		-> sprintf "SUBSECTION: %s" (sprintf_command comm)
 	| SUBSUBSECTION comm		-> sprintf "SUBSUBSECTION: %s" (sprintf_command comm)
-	| TOC comm			-> sprintf "TOC: %s" (sprintf_command comm)
 	| BIBLIOGRAPHY comm		-> sprintf "BIBLIOGRAPHY: %s" (sprintf_command comm)
 	| NOTES comm			-> sprintf "NOTES: %s" (sprintf_command comm)
-
+	| TOC comm			-> sprintf "TOC: %s" (sprintf_command comm)
 	| TITLE comm			-> sprintf "TITLE: %s" (sprintf_command comm)
 	| SUBTITLE comm			-> sprintf "SUBTITLE: %s" (sprintf_command comm)
-	| PART comm			-> sprintf "PART: %s" (sprintf_command comm)
 	| RULE comm			-> sprintf "RULE: %s" (sprintf_command comm)
-	| APPENDIX comm			-> sprintf "APPENDIX: %s" (sprintf_command comm)
+
 	| NEW_ITEM comm			-> sprintf "NEW_ITEM: %s" (sprintf_command comm)
 	| IMAGE comm			-> sprintf "IMAGE: %s" (sprintf_command comm)
 	| CAPTION comm			-> sprintf "CAPTION: %s" (sprintf_command comm)

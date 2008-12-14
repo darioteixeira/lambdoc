@@ -9,8 +9,7 @@
 /********************************************************************************/
 
 %{
-open Document_basic
-open Document_ast
+open Basic
 %}
 
 
@@ -22,18 +21,18 @@ open Document_ast
 %token BEGIN
 %token END
 
-%token <Document_ast.Ast.operator_t> NEW_PAR
-%token <Document_ast.Ast.operator_t> COLUMN_SEP
-%token <Document_ast.Ast.operator_t> ROW_END
+%token <Ast.M.operator_t> NEW_PAR
+%token <Ast.M.operator_t> COLUMN_SEP
+%token <Ast.M.operator_t> ROW_END
 
 
 /********************************************************************************/
 /* Basic elements.								*/
 /********************************************************************************/
 
-%token <Document_basic.raw_t> RAW
-%token <Document_ast.Ast.operator_t * Document_basic.plain_t> PLAIN
-%token <Document_ast.Ast.operator_t * Document_basic.entity_t> ENTITY
+%token <Basic.raw_t> RAW
+%token <Ast.M.operator_t * Basic.plain_t> PLAIN
+%token <Ast.M.operator_t * Basic.entity_t> ENTITY
 
 
 /********************************************************************************/
@@ -41,11 +40,11 @@ open Document_ast
 /* Presently, the only existing environment operators are [$ $] and <$ $>.	*/
 /********************************************************************************/
 
-%token <Document_ast.Ast.operator_t> BEGIN_MATHTEX_INL
-%token <Document_ast.Ast.operator_t> END_MATHTEX_INL
+%token <Ast.M.operator_t> BEGIN_MATHTEX_INL
+%token <Ast.M.operator_t> END_MATHTEX_INL
 
-%token <Document_ast.Ast.operator_t> BEGIN_MATHML_INL
-%token <Document_ast.Ast.operator_t> END_MATHML_INL
+%token <Ast.M.operator_t> BEGIN_MATHML_INL
+%token <Ast.M.operator_t> END_MATHML_INL
 
 
 /********************************************************************************/
@@ -53,96 +52,96 @@ open Document_ast
 /* All environment commands are composed of a begin/end pair.			*/
 /********************************************************************************/
 
-%token <Document_ast.Ast.command_t> BEGIN_ABSTRACT
-%token <Document_ast.Ast.command_t> END_ABSTRACT
+%token <Ast.M.command_t> BEGIN_ABSTRACT
+%token <Ast.M.command_t> END_ABSTRACT
 
-%token <Document_ast.Ast.command_t> BEGIN_ITEMIZE
-%token <Document_ast.Ast.command_t> END_ITEMIZE
+%token <Ast.M.command_t> BEGIN_ITEMIZE
+%token <Ast.M.command_t> END_ITEMIZE
 
-%token <Document_ast.Ast.command_t> BEGIN_ENUMERATE
-%token <Document_ast.Ast.command_t> END_ENUMERATE
+%token <Ast.M.command_t> BEGIN_ENUMERATE
+%token <Ast.M.command_t> END_ENUMERATE
 
-%token <Document_ast.Ast.command_t> BEGIN_QUOTE
-%token <Document_ast.Ast.command_t> END_QUOTE
+%token <Ast.M.command_t> BEGIN_QUOTE
+%token <Ast.M.command_t> END_QUOTE
 
-%token <Document_ast.Ast.command_t> BEGIN_MATHTEX_BLK
-%token <Document_ast.Ast.command_t> END_MATHTEX_BLK
+%token <Ast.M.command_t> BEGIN_MATHTEX_BLK
+%token <Ast.M.command_t> END_MATHTEX_BLK
 
-%token <Document_ast.Ast.command_t> BEGIN_MATHML_BLK
-%token <Document_ast.Ast.command_t> END_MATHML_BLK
+%token <Ast.M.command_t> BEGIN_MATHML_BLK
+%token <Ast.M.command_t> END_MATHML_BLK
 
-%token <Document_ast.Ast.command_t> BEGIN_CODE
-%token <Document_ast.Ast.command_t> END_CODE
+%token <Ast.M.command_t> BEGIN_CODE
+%token <Ast.M.command_t> END_CODE
 
-%token <Document_ast.Ast.command_t> BEGIN_VERBATIM
-%token <Document_ast.Ast.command_t> END_VERBATIM
+%token <Ast.M.command_t> BEGIN_VERBATIM
+%token <Ast.M.command_t> END_VERBATIM
 
-%token <Document_ast.Ast.command_t> BEGIN_TABULAR
-%token <Document_ast.Ast.command_t> END_TABULAR
+%token <Ast.M.command_t> BEGIN_TABULAR
+%token <Ast.M.command_t> END_TABULAR
 
-%token <Document_ast.Ast.command_t> BEGIN_SUBPAGE
-%token <Document_ast.Ast.command_t> END_SUBPAGE
+%token <Ast.M.command_t> BEGIN_SUBPAGE
+%token <Ast.M.command_t> END_SUBPAGE
 
-%token <Document_ast.Ast.command_t> BEGIN_EQUATION
-%token <Document_ast.Ast.command_t> END_EQUATION
+%token <Ast.M.command_t> BEGIN_EQUATION
+%token <Ast.M.command_t> END_EQUATION
 
-%token <Document_ast.Ast.command_t> BEGIN_ALGORITHM 
-%token <Document_ast.Ast.command_t> END_ALGORITHM
+%token <Ast.M.command_t> BEGIN_ALGORITHM 
+%token <Ast.M.command_t> END_ALGORITHM
 
-%token <Document_ast.Ast.command_t> BEGIN_TABLE
-%token <Document_ast.Ast.command_t> END_TABLE
+%token <Ast.M.command_t> BEGIN_TABLE
+%token <Ast.M.command_t> END_TABLE
 
-%token <Document_ast.Ast.command_t> BEGIN_FIGURE
-%token <Document_ast.Ast.command_t> END_FIGURE
+%token <Ast.M.command_t> BEGIN_FIGURE
+%token <Ast.M.command_t> END_FIGURE
 
-%token <Document_ast.Ast.command_t> BEGIN_BIB
-%token <Document_ast.Ast.command_t> END_BIB
+%token <Ast.M.command_t> BEGIN_BIB
+%token <Ast.M.command_t> END_BIB
 
-%token <Document_ast.Ast.command_t> BEGIN_NOTE
-%token <Document_ast.Ast.command_t> END_NOTE
+%token <Ast.M.command_t> BEGIN_NOTE
+%token <Ast.M.command_t> END_NOTE
 
 
 /********************************************************************************/
 /* Simple commands.								*/
 /********************************************************************************/
 
-%token <Document_ast.Ast.command_t> BOLD
-%token <Document_ast.Ast.command_t> EMPH
-%token <Document_ast.Ast.command_t> MONO
-%token <Document_ast.Ast.command_t> CAPS
-%token <Document_ast.Ast.command_t> THRU
-%token <Document_ast.Ast.command_t> SUP
-%token <Document_ast.Ast.command_t> SUB
-%token <Document_ast.Ast.command_t> BOX
+%token <Ast.M.command_t> BOLD
+%token <Ast.M.command_t> EMPH
+%token <Ast.M.command_t> MONO
+%token <Ast.M.command_t> CAPS
+%token <Ast.M.command_t> THRU
+%token <Ast.M.command_t> SUP
+%token <Ast.M.command_t> SUB
+%token <Ast.M.command_t> MBOX
 
-%token <Document_ast.Ast.command_t> LINK
-%token <Document_ast.Ast.command_t> SEE
-%token <Document_ast.Ast.command_t> CITE
-%token <Document_ast.Ast.command_t> REF
-%token <Document_ast.Ast.command_t> SREF
-%token <Document_ast.Ast.command_t> MREF
+%token <Ast.M.command_t> LINK
+%token <Ast.M.command_t> SEE
+%token <Ast.M.command_t> CITE
+%token <Ast.M.command_t> REF
+%token <Ast.M.command_t> SREF
+%token <Ast.M.command_t> MREF
 
-%token <Document_ast.Ast.command_t> SECTION
-%token <Document_ast.Ast.command_t> SUBSECTION
-%token <Document_ast.Ast.command_t> SUBSUBSECTION
-%token <Document_ast.Ast.command_t> TOC
-%token <Document_ast.Ast.command_t> BIBLIOGRAPHY
-%token <Document_ast.Ast.command_t> NOTES
+%token <Ast.M.command_t> PART
+%token <Ast.M.command_t> APPENDIX
+%token <Ast.M.command_t> SECTION
+%token <Ast.M.command_t> SUBSECTION
+%token <Ast.M.command_t> SUBSUBSECTION
+%token <Ast.M.command_t> BIBLIOGRAPHY
+%token <Ast.M.command_t> NOTES
+%token <Ast.M.command_t> TOC
+%token <Ast.M.command_t> TITLE
+%token <Ast.M.command_t> SUBTITLE
+%token <Ast.M.command_t> RULE
 
-%token <Document_ast.Ast.command_t> TITLE
-%token <Document_ast.Ast.command_t> SUBTITLE
-%token <Document_ast.Ast.command_t> PART
-%token <Document_ast.Ast.command_t> RULE
-%token <Document_ast.Ast.command_t> APPENDIX
-%token <Document_ast.Ast.command_t> NEW_ITEM
-%token <Document_ast.Ast.command_t> IMAGE
-%token <Document_ast.Ast.command_t> CAPTION
-%token <Document_ast.Ast.command_t> HEAD
-%token <Document_ast.Ast.command_t> FOOT
-%token <Document_ast.Ast.command_t> BODY
-%token <Document_ast.Ast.command_t> BIB_TITLE
-%token <Document_ast.Ast.command_t> BIB_AUTHOR
-%token <Document_ast.Ast.command_t> BIB_RESOURCE
+%token <Ast.M.command_t> NEW_ITEM
+%token <Ast.M.command_t> IMAGE
+%token <Ast.M.command_t> CAPTION
+%token <Ast.M.command_t> HEAD
+%token <Ast.M.command_t> FOOT
+%token <Ast.M.command_t> BODY
+%token <Ast.M.command_t> BIB_TITLE
+%token <Ast.M.command_t> BIB_AUTHOR
+%token <Ast.M.command_t> BIB_RESOURCE
 
 
 /********************************************************************************/
@@ -151,44 +150,44 @@ open Document_ast
 /* compiler can warn us if we forgot about some case.				*/
 /********************************************************************************/
 
-%type <Document_ast.Ast.t>			document
-%type <Document_ast.Ast.super_block_t>		super_block
-%type <Document_ast.Ast.top_block_t>		top_block
-%type <Document_ast.Ast.heading_block_t>	heading_block
-%type <Document_ast.Ast.nestable_block_t>	nestable_block
-%type <Document_ast.Ast.item_frag_t>		items
+%type <Ast.M.t>				document
+%type <Ast.M.super_block_t>		super_block
+%type <Ast.M.top_block_t>		top_block
+%type <Ast.M.heading_block_t>		heading_block
+%type <Ast.M.nestable_block_t>		nestable_block
+%type <Ast.M.item_frag_t>		items
 
-%type <Document_ast.Ast.caption_block_t>	caption_block
-%type <Document_ast.Ast.paragraph_block_t>	paragraph_block
-%type <Document_ast.Ast.itemize_block_t>	itemize_block
-%type <Document_ast.Ast.enumerate_block_t>	enumerate_block
-%type <Document_ast.Ast.quote_block_t>		quote_block
-%type <Document_ast.Ast.mathtex_block_t>	mathtex_block
-%type <Document_ast.Ast.mathml_block_t>		mathml_block
-%type <Document_ast.Ast.code_block_t>		code_block
-%type <Document_ast.Ast.verbatim_block_t>	verbatim_block
-%type <Document_ast.Ast.tabular_block_t>	tabular_block
-%type <Document_ast.Ast.image_block_t>		image_block
-%type <Document_ast.Ast.subpage_block_t>	subpage_block
-%type <Document_ast.Ast.bib_title_block_t>	bib_title_block
-%type <Document_ast.Ast.bib_author_block_t>	bib_author_block
-%type <Document_ast.Ast.bib_resource_block_t>	bib_resource_block
+%type <Ast.M.caption_block_t>		caption_block
+%type <Ast.M.paragraph_block_t>		paragraph_block
+%type <Ast.M.itemize_block_t>		itemize_block
+%type <Ast.M.enumerate_block_t>		enumerate_block
+%type <Ast.M.quote_block_t>		quote_block
+%type <Ast.M.mathtex_block_t>		mathtex_block
+%type <Ast.M.mathml_block_t>		mathml_block
+%type <Ast.M.code_block_t>		code_block
+%type <Ast.M.verbatim_block_t>		verbatim_block
+%type <Ast.M.tabular_block_t>		tabular_block
+%type <Ast.M.image_block_t>		image_block
+%type <Ast.M.subpage_block_t>		subpage_block
+%type <Ast.M.bib_title_block_t>		bib_title_block
+%type <Ast.M.bib_author_block_t>	bib_author_block
+%type <Ast.M.bib_resource_block_t>	bib_resource_block
 
-%type <Document_ast.Ast.equation_block_t>	equation_block
-%type <Document_ast.Ast.algorithm_block_t>	algorithm_block
-%type <Document_ast.Ast.table_block_t>		table_block
-%type <Document_ast.Ast.figure_block_t>		figure_block
+%type <Ast.M.equation_block_t>		equation_block
+%type <Ast.M.algorithm_block_t>		algorithm_block
+%type <Ast.M.table_block_t>		table_block
+%type <Ast.M.figure_block_t>		figure_block
 
-%type <Document_ast.Ast.tabular_t>		tabular
-%type <Document_ast.Ast.tabular_group_t>	head
-%type <Document_ast.Ast.tabular_group_t>	foot
-%type <Document_ast.Ast.tabular_group_t>	body
-%type <Document_ast.Ast.tabular_row_t>		row
-%type <Document_ast.Ast.super_seq_t list>	columns
+%type <Ast.M.tabular_t>			tabular
+%type <Ast.M.tabular_group_t>		head
+%type <Ast.M.tabular_group_t>		foot
+%type <Ast.M.tabular_group_t>		body
+%type <Ast.M.tabular_row_t>		row
+%type <Ast.M.super_seq_t list>		columns
 
-%type <Document_ast.Ast.super_node_t>		super_node
-%type <Document_ast.Ast.nonlink_node_t>		nonlink_node
-%type <Document_ast.Ast.link_node_t>		link_node
+%type <Ast.M.super_node_t>		super_node
+%type <Ast.M.nonlink_node_t>		nonlink_node
+%type <Ast.M.link_node_t>		link_node
 
 
 /********************************************************************************/
@@ -208,38 +207,38 @@ document:
 /********************************************************************************/
 
 super_block:
-	| top_block								{($1 :> Ast.super_block_t)}
-	| nestable_block							{($1 :> Ast.super_block_t)}
+	| top_block								{($1 :> Ast.M.super_block_t)}
+	| nestable_block							{($1 :> Ast.M.super_block_t)}
 
 top_block:
-	| heading_block								{`AST_heading $1}
-	| TITLE BEGIN super_node+ END						{`AST_title ($1, $3)}
-	| SUBTITLE BEGIN super_node+ END					{`AST_subtitle ($1, $3)}
-	| PART BEGIN super_node+ END						{`AST_part ($1, $3)}
+	| heading_block								{($1 :> Ast.M.top_block_t)}
+	| TITLE BEGIN super_node+ END						{`AST_title (`Level1, $1, $3)}
+	| SUBTITLE BEGIN super_node+ END					{`AST_title (`Level2, $1, $3)}
 	| BEGIN_ABSTRACT paragraph_block+ END_ABSTRACT				{`AST_abstract ($1, $2)}
 	| RULE									{`AST_rule $1}
-	| APPENDIX								{`AST_appendix $1}
 
 heading_block:
-	| SECTION BEGIN super_node+ END						{`AST_section ($1, $3)}
-	| SUBSECTION BEGIN super_node+ END					{`AST_subsection ($1, $3)}
-	| SUBSUBSECTION BEGIN super_node+ END					{`AST_subsubsection ($1, $3)}
-	| TOC									{`AST_toc $1} 
+	| PART BEGIN super_node+ END						{`AST_part ($1, $3)}
+	| APPENDIX								{`AST_appendix $1}
+	| SECTION BEGIN super_node+ END						{`AST_section (`Level1, $1, $3)}
+	| SUBSECTION BEGIN super_node+ END					{`AST_section (`Level2, $1, $3)}
+	| SUBSUBSECTION BEGIN super_node+ END					{`AST_section (`Level3, $1, $3)}
 	| BIBLIOGRAPHY								{`AST_bibliography $1}
 	| NOTES									{`AST_notes $1}
+	| TOC									{`AST_toc $1} 
 
 nestable_block:
-	| paragraph_block							{($1 :> Ast.nestable_block_t)}
-	| itemize_block								{($1 :> Ast.nestable_block_t)}
-	| enumerate_block							{($1 :> Ast.nestable_block_t)}
-	| quote_block								{($1 :> Ast.nestable_block_t)}
-	| mathtex_block								{($1 :> Ast.nestable_block_t)}
-	| mathml_block								{($1 :> Ast.nestable_block_t)}
-	| code_block								{($1 :> Ast.nestable_block_t)}
-	| verbatim_block							{($1 :> Ast.nestable_block_t)}
-	| tabular_block								{($1 :> Ast.nestable_block_t)}
-	| image_block								{($1 :> Ast.nestable_block_t)}
-	| subpage_block								{($1 :> Ast.nestable_block_t)}
+	| paragraph_block							{($1 :> Ast.M.nestable_block_t)}
+	| itemize_block								{($1 :> Ast.M.nestable_block_t)}
+	| enumerate_block							{($1 :> Ast.M.nestable_block_t)}
+	| quote_block								{($1 :> Ast.M.nestable_block_t)}
+	| mathtex_block								{($1 :> Ast.M.nestable_block_t)}
+	| mathml_block								{($1 :> Ast.M.nestable_block_t)}
+	| code_block								{($1 :> Ast.M.nestable_block_t)}
+	| verbatim_block							{($1 :> Ast.M.nestable_block_t)}
+	| tabular_block								{($1 :> Ast.M.nestable_block_t)}
+	| image_block								{($1 :> Ast.M.nestable_block_t)}
+	| subpage_block								{($1 :> Ast.M.nestable_block_t)}
 	| BEGIN_EQUATION equation_block caption_block END_EQUATION		{`AST_equation ($1, $3, $2)}
 	| BEGIN_ALGORITHM algorithm_block caption_block END_ALGORITHM		{`AST_algorithm ($1, $3, $2)}
 	| BEGIN_TABLE table_block caption_block END_TABLE			{`AST_table ($1, $3, $2)}
@@ -278,19 +277,19 @@ bib_resource_block:	| BIB_RESOURCE BEGIN super_node+ END			{`AST_bib_resource ($
 /********************************************************************************/
 
 equation_block:
-	| mathtex_block		{($1 :> Ast.equation_block_t)}
-	| mathml_block		{($1 :> Ast.equation_block_t)}
+	| mathtex_block		{($1 :> Ast.M.equation_block_t)}
+	| mathml_block		{($1 :> Ast.M.equation_block_t)}
 
 algorithm_block:
-	| code_block		{($1 :> Ast.algorithm_block_t)}
+	| code_block		{($1 :> Ast.M.algorithm_block_t)}
 
 table_block:
-	| tabular_block		{($1 :> Ast.table_block_t)}
+	| tabular_block		{($1 :> Ast.M.table_block_t)}
 
 figure_block:
-	| image_block		{($1 :> Ast.figure_block_t)}
-	| verbatim_block	{($1 :> Ast.figure_block_t)}
-	| subpage_block		{($1 :> Ast.figure_block_t)}
+	| image_block		{($1 :> Ast.M.figure_block_t)}
+	| verbatim_block	{($1 :> Ast.M.figure_block_t)}
+	| subpage_block		{($1 :> Ast.M.figure_block_t)}
 
 
 /********************************************************************************/
@@ -298,8 +297,8 @@ figure_block:
 /********************************************************************************/
 
 tabular:
-	| head? body+ foot?			{{Ast.thead = $1; Ast.tfoot = $3; Ast.tbodies = $2;}}
-	| row+ body* foot?			{{Ast.thead = None; Ast.tfoot = $3; Ast.tbodies = (None, $1) :: $2;}}
+	| head? body+ foot?			{{Ast.M.thead = $1; Ast.M.tfoot = $3; Ast.M.tbodies = $2;}}
+	| row+ body* foot?			{{Ast.M.thead = None; Ast.M.tfoot = $3; Ast.M.tbodies = (None, $1) :: $2;}}
 
 
 head:
@@ -339,7 +338,7 @@ nonlink_node:
 	| THRU BEGIN super_node+ END				{`AST_thru ($1, $3)}
 	| SUP BEGIN super_node+ END				{`AST_sup ($1, $3)}
 	| SUB BEGIN super_node+ END				{`AST_sub ($1, $3)}
-	| BOX BEGIN super_node+ END				{`AST_box ($1, $3)}
+	| MBOX BEGIN super_node+ END				{`AST_mbox ($1, $3)}
 
 link_node:
 	| LINK BEGIN RAW END BEGIN nonlink_node+ END		{`AST_link ($1, $3, $6)}
@@ -350,6 +349,6 @@ link_node:
 	| MREF BEGIN RAW END BEGIN nonlink_node+ END		{`AST_mref ($1, $3, $6)}
 
 super_node:
-	| nonlink_node						{($1 :> Ast.super_node_t)}
-	| link_node						{($1 :> Ast.super_node_t)}
+	| nonlink_node						{($1 :> Ast.M.super_node_t)}
+	| link_node						{($1 :> Ast.M.super_node_t)}
 
