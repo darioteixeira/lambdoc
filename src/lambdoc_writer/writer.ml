@@ -11,6 +11,12 @@
 (**	Document writer.
 *)
 
+open Lambdoc_core
+
+
+(********************************************************************************)
+(**	{2 Type definitions}							*)
+(********************************************************************************)
 
 (**	The module type that all wannabe document writers must export.
 *)

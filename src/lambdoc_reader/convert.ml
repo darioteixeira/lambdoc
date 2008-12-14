@@ -11,6 +11,7 @@
 (**	Conversion functions on documents.
 *)
 
+open Lambdoc_core
 open Basic
 
 

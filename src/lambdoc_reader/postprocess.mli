@@ -12,6 +12,8 @@
 	a document AST into a proper, final, ambivalent document.
 *)
 
+open Lambdoc_core
+
 
 (********************************************************************************)
 (**	{2 Public functions and values}						*)

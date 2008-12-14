@@ -1,6 +1,1 @@
 true: use_menhir, pkg_threads, pkg_unix, pkg_extlib, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, pkg_blahcaml, pkg_camlhighlight
-<lambdoc_core>: include
-<lambdoc_reader>: include
-<lambdoc_writer>: include
-<write_xhtml>: include
-<read_lambtex>: include

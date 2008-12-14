@@ -13,6 +13,7 @@
 *)
 
 open ExtString
+open Lambdoc_core
 open Basic
 open Ast.M
 

@@ -12,6 +12,7 @@
 *)
 
 open Printf
+open Lambdoc_reader
 open Ast.M
 open Parser
 

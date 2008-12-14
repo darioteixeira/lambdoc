@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Write_xhtml module.
+(*	Implementation file for Main module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -18,6 +18,8 @@ open ExtList
 open ExtString
 open XHTML.M
 
+open Lambdoc_core
+open Lambdoc_writer
 open Basic
 open Valid
 open Settings

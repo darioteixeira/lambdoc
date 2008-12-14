@@ -11,6 +11,7 @@
 (**	Definition of document settings.
 *)
 
+open Lambdoc_core
 open Basic
 
 

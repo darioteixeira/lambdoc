@@ -8,10 +8,6 @@
 */
 /********************************************************************************/
 
-%{
-open Basic
-%}
-
 
 /********************************************************************************/
 /* Operators.									*/
@@ -21,18 +17,18 @@ open Basic
 %token BEGIN
 %token END
 
-%token <Ast.M.operator_t> NEW_PAR
-%token <Ast.M.operator_t> COLUMN_SEP
-%token <Ast.M.operator_t> ROW_END
+%token <Lambdoc_reader.Ast.M.operator_t> NEW_PAR
+%token <Lambdoc_reader.Ast.M.operator_t> COLUMN_SEP
+%token <Lambdoc_reader.Ast.M.operator_t> ROW_END
 
 
 /********************************************************************************/
 /* Basic elements.								*/
 /********************************************************************************/
 
-%token <Basic.raw_t> RAW
-%token <Ast.M.operator_t * Basic.plain_t> PLAIN
-%token <Ast.M.operator_t * Basic.entity_t> ENTITY
+%token <Lambdoc_core.Basic.raw_t> RAW
+%token <Lambdoc_reader.Ast.M.operator_t * Lambdoc_core.Basic.plain_t> PLAIN
+%token <Lambdoc_reader.Ast.M.operator_t * Lambdoc_core.Basic.entity_t> ENTITY
 
 
 /********************************************************************************/
@@ -40,11 +36,11 @@ open Basic
 /* Presently, the only existing environment operators are [$ $] and <$ $>.	*/
 /********************************************************************************/
 
-%token <Ast.M.operator_t> BEGIN_MATHTEX_INL
-%token <Ast.M.operator_t> END_MATHTEX_INL
+%token <Lambdoc_reader.Ast.M.operator_t> BEGIN_MATHTEX_INL
+%token <Lambdoc_reader.Ast.M.operator_t> END_MATHTEX_INL
 
-%token <Ast.M.operator_t> BEGIN_MATHML_INL
-%token <Ast.M.operator_t> END_MATHML_INL
+%token <Lambdoc_reader.Ast.M.operator_t> BEGIN_MATHML_INL
+%token <Lambdoc_reader.Ast.M.operator_t> END_MATHML_INL
 
 
 /********************************************************************************/
@@ -52,96 +48,96 @@ open Basic
 /* All environment commands are composed of a begin/end pair.			*/
 /********************************************************************************/
 
-%token <Ast.M.command_t> BEGIN_ABSTRACT
-%token <Ast.M.command_t> END_ABSTRACT
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_ABSTRACT
+%token <Lambdoc_reader.Ast.M.command_t> END_ABSTRACT
 
-%token <Ast.M.command_t> BEGIN_ITEMIZE
-%token <Ast.M.command_t> END_ITEMIZE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_ITEMIZE
+%token <Lambdoc_reader.Ast.M.command_t> END_ITEMIZE
 
-%token <Ast.M.command_t> BEGIN_ENUMERATE
-%token <Ast.M.command_t> END_ENUMERATE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_ENUMERATE
+%token <Lambdoc_reader.Ast.M.command_t> END_ENUMERATE
 
-%token <Ast.M.command_t> BEGIN_QUOTE
-%token <Ast.M.command_t> END_QUOTE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_QUOTE
+%token <Lambdoc_reader.Ast.M.command_t> END_QUOTE
 
-%token <Ast.M.command_t> BEGIN_MATHTEX_BLK
-%token <Ast.M.command_t> END_MATHTEX_BLK
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_MATHTEX_BLK
+%token <Lambdoc_reader.Ast.M.command_t> END_MATHTEX_BLK
 
-%token <Ast.M.command_t> BEGIN_MATHML_BLK
-%token <Ast.M.command_t> END_MATHML_BLK
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_MATHML_BLK
+%token <Lambdoc_reader.Ast.M.command_t> END_MATHML_BLK
 
-%token <Ast.M.command_t> BEGIN_CODE
-%token <Ast.M.command_t> END_CODE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_CODE
+%token <Lambdoc_reader.Ast.M.command_t> END_CODE
 
-%token <Ast.M.command_t> BEGIN_VERBATIM
-%token <Ast.M.command_t> END_VERBATIM
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_VERBATIM
+%token <Lambdoc_reader.Ast.M.command_t> END_VERBATIM
 
-%token <Ast.M.command_t> BEGIN_TABULAR
-%token <Ast.M.command_t> END_TABULAR
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_TABULAR
+%token <Lambdoc_reader.Ast.M.command_t> END_TABULAR
 
-%token <Ast.M.command_t> BEGIN_SUBPAGE
-%token <Ast.M.command_t> END_SUBPAGE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_SUBPAGE
+%token <Lambdoc_reader.Ast.M.command_t> END_SUBPAGE
 
-%token <Ast.M.command_t> BEGIN_EQUATION
-%token <Ast.M.command_t> END_EQUATION
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_EQUATION
+%token <Lambdoc_reader.Ast.M.command_t> END_EQUATION
 
-%token <Ast.M.command_t> BEGIN_ALGORITHM 
-%token <Ast.M.command_t> END_ALGORITHM
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_ALGORITHM 
+%token <Lambdoc_reader.Ast.M.command_t> END_ALGORITHM
 
-%token <Ast.M.command_t> BEGIN_TABLE
-%token <Ast.M.command_t> END_TABLE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_TABLE
+%token <Lambdoc_reader.Ast.M.command_t> END_TABLE
 
-%token <Ast.M.command_t> BEGIN_FIGURE
-%token <Ast.M.command_t> END_FIGURE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_FIGURE
+%token <Lambdoc_reader.Ast.M.command_t> END_FIGURE
 
-%token <Ast.M.command_t> BEGIN_BIB
-%token <Ast.M.command_t> END_BIB
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_BIB
+%token <Lambdoc_reader.Ast.M.command_t> END_BIB
 
-%token <Ast.M.command_t> BEGIN_NOTE
-%token <Ast.M.command_t> END_NOTE
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_NOTE
+%token <Lambdoc_reader.Ast.M.command_t> END_NOTE
 
 
 /********************************************************************************/
 /* Simple commands.								*/
 /********************************************************************************/
 
-%token <Ast.M.command_t> BOLD
-%token <Ast.M.command_t> EMPH
-%token <Ast.M.command_t> MONO
-%token <Ast.M.command_t> CAPS
-%token <Ast.M.command_t> THRU
-%token <Ast.M.command_t> SUP
-%token <Ast.M.command_t> SUB
-%token <Ast.M.command_t> MBOX
+%token <Lambdoc_reader.Ast.M.command_t> BOLD
+%token <Lambdoc_reader.Ast.M.command_t> EMPH
+%token <Lambdoc_reader.Ast.M.command_t> MONO
+%token <Lambdoc_reader.Ast.M.command_t> CAPS
+%token <Lambdoc_reader.Ast.M.command_t> THRU
+%token <Lambdoc_reader.Ast.M.command_t> SUP
+%token <Lambdoc_reader.Ast.M.command_t> SUB
+%token <Lambdoc_reader.Ast.M.command_t> MBOX
 
-%token <Ast.M.command_t> LINK
-%token <Ast.M.command_t> SEE
-%token <Ast.M.command_t> CITE
-%token <Ast.M.command_t> REF
-%token <Ast.M.command_t> SREF
-%token <Ast.M.command_t> MREF
+%token <Lambdoc_reader.Ast.M.command_t> LINK
+%token <Lambdoc_reader.Ast.M.command_t> SEE
+%token <Lambdoc_reader.Ast.M.command_t> CITE
+%token <Lambdoc_reader.Ast.M.command_t> REF
+%token <Lambdoc_reader.Ast.M.command_t> SREF
+%token <Lambdoc_reader.Ast.M.command_t> MREF
 
-%token <Ast.M.command_t> PART
-%token <Ast.M.command_t> APPENDIX
-%token <Ast.M.command_t> SECTION
-%token <Ast.M.command_t> SUBSECTION
-%token <Ast.M.command_t> SUBSUBSECTION
-%token <Ast.M.command_t> BIBLIOGRAPHY
-%token <Ast.M.command_t> NOTES
-%token <Ast.M.command_t> TOC
-%token <Ast.M.command_t> TITLE
-%token <Ast.M.command_t> SUBTITLE
-%token <Ast.M.command_t> RULE
+%token <Lambdoc_reader.Ast.M.command_t> PART
+%token <Lambdoc_reader.Ast.M.command_t> APPENDIX
+%token <Lambdoc_reader.Ast.M.command_t> SECTION
+%token <Lambdoc_reader.Ast.M.command_t> SUBSECTION
+%token <Lambdoc_reader.Ast.M.command_t> SUBSUBSECTION
+%token <Lambdoc_reader.Ast.M.command_t> BIBLIOGRAPHY
+%token <Lambdoc_reader.Ast.M.command_t> NOTES
+%token <Lambdoc_reader.Ast.M.command_t> TOC
+%token <Lambdoc_reader.Ast.M.command_t> TITLE
+%token <Lambdoc_reader.Ast.M.command_t> SUBTITLE
+%token <Lambdoc_reader.Ast.M.command_t> RULE
 
-%token <Ast.M.command_t> NEW_ITEM
-%token <Ast.M.command_t> IMAGE
-%token <Ast.M.command_t> CAPTION
-%token <Ast.M.command_t> HEAD
-%token <Ast.M.command_t> FOOT
-%token <Ast.M.command_t> BODY
-%token <Ast.M.command_t> BIB_TITLE
-%token <Ast.M.command_t> BIB_AUTHOR
-%token <Ast.M.command_t> BIB_RESOURCE
+%token <Lambdoc_reader.Ast.M.command_t> NEW_ITEM
+%token <Lambdoc_reader.Ast.M.command_t> IMAGE
+%token <Lambdoc_reader.Ast.M.command_t> CAPTION
+%token <Lambdoc_reader.Ast.M.command_t> HEAD
+%token <Lambdoc_reader.Ast.M.command_t> FOOT
+%token <Lambdoc_reader.Ast.M.command_t> BODY
+%token <Lambdoc_reader.Ast.M.command_t> BIB_TITLE
+%token <Lambdoc_reader.Ast.M.command_t> BIB_AUTHOR
+%token <Lambdoc_reader.Ast.M.command_t> BIB_RESOURCE
 
 
 /********************************************************************************/
@@ -150,44 +146,44 @@ open Basic
 /* compiler can warn us if we forgot about some case.				*/
 /********************************************************************************/
 
-%type <Ast.M.t>				document
-%type <Ast.M.super_block_t>		super_block
-%type <Ast.M.top_block_t>		top_block
-%type <Ast.M.heading_block_t>		heading_block
-%type <Ast.M.nestable_block_t>		nestable_block
-%type <Ast.M.item_frag_t>		items
+%type <Lambdoc_reader.Ast.M.t>				document
+%type <Lambdoc_reader.Ast.M.super_block_t>		super_block
+%type <Lambdoc_reader.Ast.M.top_block_t>		top_block
+%type <Lambdoc_reader.Ast.M.heading_block_t>		heading_block
+%type <Lambdoc_reader.Ast.M.nestable_block_t>		nestable_block
+%type <Lambdoc_reader.Ast.M.item_frag_t>		items
 
-%type <Ast.M.caption_block_t>		caption_block
-%type <Ast.M.paragraph_block_t>		paragraph_block
-%type <Ast.M.itemize_block_t>		itemize_block
-%type <Ast.M.enumerate_block_t>		enumerate_block
-%type <Ast.M.quote_block_t>		quote_block
-%type <Ast.M.mathtex_block_t>		mathtex_block
-%type <Ast.M.mathml_block_t>		mathml_block
-%type <Ast.M.code_block_t>		code_block
-%type <Ast.M.verbatim_block_t>		verbatim_block
-%type <Ast.M.tabular_block_t>		tabular_block
-%type <Ast.M.image_block_t>		image_block
-%type <Ast.M.subpage_block_t>		subpage_block
-%type <Ast.M.bib_title_block_t>		bib_title_block
-%type <Ast.M.bib_author_block_t>	bib_author_block
-%type <Ast.M.bib_resource_block_t>	bib_resource_block
+%type <Lambdoc_reader.Ast.M.caption_block_t>		caption_block
+%type <Lambdoc_reader.Ast.M.paragraph_block_t>		paragraph_block
+%type <Lambdoc_reader.Ast.M.itemize_block_t>		itemize_block
+%type <Lambdoc_reader.Ast.M.enumerate_block_t>		enumerate_block
+%type <Lambdoc_reader.Ast.M.quote_block_t>		quote_block
+%type <Lambdoc_reader.Ast.M.mathtex_block_t>		mathtex_block
+%type <Lambdoc_reader.Ast.M.mathml_block_t>		mathml_block
+%type <Lambdoc_reader.Ast.M.code_block_t>		code_block
+%type <Lambdoc_reader.Ast.M.verbatim_block_t>		verbatim_block
+%type <Lambdoc_reader.Ast.M.tabular_block_t>		tabular_block
+%type <Lambdoc_reader.Ast.M.image_block_t>		image_block
+%type <Lambdoc_reader.Ast.M.subpage_block_t>		subpage_block
+%type <Lambdoc_reader.Ast.M.bib_title_block_t>		bib_title_block
+%type <Lambdoc_reader.Ast.M.bib_author_block_t>		bib_author_block
+%type <Lambdoc_reader.Ast.M.bib_resource_block_t>	bib_resource_block
 
-%type <Ast.M.equation_block_t>		equation_block
-%type <Ast.M.algorithm_block_t>		algorithm_block
-%type <Ast.M.table_block_t>		table_block
-%type <Ast.M.figure_block_t>		figure_block
+%type <Lambdoc_reader.Ast.M.equation_block_t>		equation_block
+%type <Lambdoc_reader.Ast.M.algorithm_block_t>		algorithm_block
+%type <Lambdoc_reader.Ast.M.table_block_t>		table_block
+%type <Lambdoc_reader.Ast.M.figure_block_t>		figure_block
 
-%type <Ast.M.tabular_t>			tabular
-%type <Ast.M.tabular_group_t>		head
-%type <Ast.M.tabular_group_t>		foot
-%type <Ast.M.tabular_group_t>		body
-%type <Ast.M.tabular_row_t>		row
-%type <Ast.M.super_seq_t list>		columns
+%type <Lambdoc_reader.Ast.M.tabular_t>			tabular
+%type <Lambdoc_reader.Ast.M.tabular_group_t>		head
+%type <Lambdoc_reader.Ast.M.tabular_group_t>		foot
+%type <Lambdoc_reader.Ast.M.tabular_group_t>		body
+%type <Lambdoc_reader.Ast.M.tabular_row_t>		row
+%type <Lambdoc_reader.Ast.M.super_seq_t list>		columns
 
-%type <Ast.M.super_node_t>		super_node
-%type <Ast.M.nonlink_node_t>		nonlink_node
-%type <Ast.M.link_node_t>		link_node
+%type <Lambdoc_reader.Ast.M.super_node_t>		super_node
+%type <Lambdoc_reader.Ast.M.nonlink_node_t>		nonlink_node
+%type <Lambdoc_reader.Ast.M.link_node_t>		link_node
 
 
 /********************************************************************************/
@@ -207,11 +203,11 @@ document:
 /********************************************************************************/
 
 super_block:
-	| top_block								{($1 :> Ast.M.super_block_t)}
-	| nestable_block							{($1 :> Ast.M.super_block_t)}
+	| top_block								{($1 :> Lambdoc_reader.Ast.M.super_block_t)}
+	| nestable_block							{($1 :> Lambdoc_reader.Ast.M.super_block_t)}
 
 top_block:
-	| heading_block								{($1 :> Ast.M.top_block_t)}
+	| heading_block								{($1 :> Lambdoc_reader.Ast.M.top_block_t)}
 	| TITLE BEGIN super_node+ END						{`AST_title (`Level1, $1, $3)}
 	| SUBTITLE BEGIN super_node+ END					{`AST_title (`Level2, $1, $3)}
 	| BEGIN_ABSTRACT paragraph_block+ END_ABSTRACT				{`AST_abstract ($1, $2)}
@@ -228,17 +224,17 @@ heading_block:
 	| TOC									{`AST_toc $1} 
 
 nestable_block:
-	| paragraph_block							{($1 :> Ast.M.nestable_block_t)}
-	| itemize_block								{($1 :> Ast.M.nestable_block_t)}
-	| enumerate_block							{($1 :> Ast.M.nestable_block_t)}
-	| quote_block								{($1 :> Ast.M.nestable_block_t)}
-	| mathtex_block								{($1 :> Ast.M.nestable_block_t)}
-	| mathml_block								{($1 :> Ast.M.nestable_block_t)}
-	| code_block								{($1 :> Ast.M.nestable_block_t)}
-	| verbatim_block							{($1 :> Ast.M.nestable_block_t)}
-	| tabular_block								{($1 :> Ast.M.nestable_block_t)}
-	| image_block								{($1 :> Ast.M.nestable_block_t)}
-	| subpage_block								{($1 :> Ast.M.nestable_block_t)}
+	| paragraph_block							{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| itemize_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| enumerate_block							{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| quote_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| mathtex_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| mathml_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| code_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| verbatim_block							{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| tabular_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| image_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| subpage_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
 	| BEGIN_EQUATION equation_block caption_block END_EQUATION		{`AST_equation ($1, $3, $2)}
 	| BEGIN_ALGORITHM algorithm_block caption_block END_ALGORITHM		{`AST_algorithm ($1, $3, $2)}
 	| BEGIN_TABLE table_block caption_block END_TABLE			{`AST_table ($1, $3, $2)}
@@ -277,19 +273,19 @@ bib_resource_block:	| BIB_RESOURCE BEGIN super_node+ END			{`AST_bib_resource ($
 /********************************************************************************/
 
 equation_block:
-	| mathtex_block		{($1 :> Ast.M.equation_block_t)}
-	| mathml_block		{($1 :> Ast.M.equation_block_t)}
+	| mathtex_block		{($1 :> Lambdoc_reader.Ast.M.equation_block_t)}
+	| mathml_block		{($1 :> Lambdoc_reader.Ast.M.equation_block_t)}
 
 algorithm_block:
-	| code_block		{($1 :> Ast.M.algorithm_block_t)}
+	| code_block		{($1 :> Lambdoc_reader.Ast.M.algorithm_block_t)}
 
 table_block:
-	| tabular_block		{($1 :> Ast.M.table_block_t)}
+	| tabular_block		{($1 :> Lambdoc_reader.Ast.M.table_block_t)}
 
 figure_block:
-	| image_block		{($1 :> Ast.M.figure_block_t)}
-	| verbatim_block	{($1 :> Ast.M.figure_block_t)}
-	| subpage_block		{($1 :> Ast.M.figure_block_t)}
+	| image_block		{($1 :> Lambdoc_reader.Ast.M.figure_block_t)}
+	| verbatim_block	{($1 :> Lambdoc_reader.Ast.M.figure_block_t)}
+	| subpage_block		{($1 :> Lambdoc_reader.Ast.M.figure_block_t)}
 
 
 /********************************************************************************/
@@ -297,8 +293,8 @@ figure_block:
 /********************************************************************************/
 
 tabular:
-	| head? body+ foot?			{{Ast.M.thead = $1; Ast.M.tfoot = $3; Ast.M.tbodies = $2;}}
-	| row+ body* foot?			{{Ast.M.thead = None; Ast.M.tfoot = $3; Ast.M.tbodies = (None, $1) :: $2;}}
+	| head? body+ foot?			{{Lambdoc_reader.Ast.M.thead = $1; Lambdoc_reader.Ast.M.tfoot = $3; Lambdoc_reader.Ast.M.tbodies = $2;}}
+	| row+ body* foot?			{{Lambdoc_reader.Ast.M.thead = None; Lambdoc_reader.Ast.M.tfoot = $3; Lambdoc_reader.Ast.M.tbodies = (None, $1) :: $2;}}
 
 
 head:
@@ -349,6 +345,6 @@ link_node:
 	| MREF BEGIN RAW END BEGIN nonlink_node+ END		{`AST_mref ($1, $3, $6)}
 
 super_node:
-	| nonlink_node						{($1 :> Ast.M.super_node_t)}
-	| link_node						{($1 :> Ast.M.super_node_t)}
+	| nonlink_node						{($1 :> Lambdoc_reader.Ast.M.super_node_t)}
+	| link_node						{($1 :> Lambdoc_reader.Ast.M.super_node_t)}
 

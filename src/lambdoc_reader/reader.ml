@@ -11,11 +11,12 @@
 (**	Document reader.
 *)
 
+open Lambdoc_core
 open Basic
 
 
 (********************************************************************************)
-(*	{2 Public modules}							*)
+(**	{2 Type definitions}							*)
 (********************************************************************************)
 
 (**	The module type that all wannabe document readers must export.
@@ -49,6 +50,10 @@ sig
 		Ambivalent.composition_t
 end
 
+
+(********************************************************************************)
+(**	{2 Modules and functors}						*)
+(********************************************************************************)
 
 (**	The functor that creates a document reader.
 *)

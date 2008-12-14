@@ -11,6 +11,7 @@
 (**	Definition of the document AST that all parsers are supposed to generate.
 *)
 
+open Lambdoc_core
 open Basic
 
 

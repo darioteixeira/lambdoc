@@ -12,13 +12,14 @@
 *)
 
 open Lexing
+open Lambdoc_reader
 
 
 (********************************************************************************)
 (*	{2 Reader module}							*)
 (********************************************************************************)
 
-module Lambtex_reader : Reader.READER =
+module R : Reader.READER =
 struct
 	exception Parsing_error of int
 	exception Unknown_env_command of int * string
@@ -38,7 +39,7 @@ struct
 				raise (Unknown_simple_command (lexbuf.lex_curr_p.pos_lnum, tag))
 end
 
-module M = Reader.Make_reader (Lambtex_reader)
+module M = Reader.Make_reader (R)
 
 include M
 

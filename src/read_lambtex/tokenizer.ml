@@ -18,6 +18,7 @@
 
 open Lexing
 open ExtString
+open Lambdoc_reader
 open Ast.M
 open Parser
 open Scanner

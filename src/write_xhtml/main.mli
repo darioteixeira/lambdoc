@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Interface file for Xhtml_writer.
+(*	Interface file for Main module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -7,6 +7,8 @@
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
+
+open Lambdoc_writer
 
 include Writer.S with type t = [ `Div ] XHTML.M.elt
 
