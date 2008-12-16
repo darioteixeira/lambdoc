@@ -45,13 +45,13 @@ sig
 	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
 	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
-	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
-	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Alignment.t * Code.t ] (*with sexp*) 
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
-	type image_block_t = [ `Image of Alignment.t * alias_t ] (*with sexp*) 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*) 
+	type quote_block_t = [ `Quote of Floater.t * nestable_frag_t ] (*with sexp*)
+	type math_block_t = [ `Math of Floater.t * Math.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Floater.t * Code.t ] (*with sexp*) 
+	type tabular_block_t = [ `Tabular of Floater.t * Tabular.t ] (*with sexp*) 
+	type image_block_t = [ `Image of Floater.t * alias_t ] (*with sexp*) 
+	type verbatim_block_t = [ `Verbatim of Floater.t * raw_t ] (*with sexp*) 
+	type subpage_block_t = [ `Subpage of Floater.t * super_frag_t ] (*with sexp*) 
 
 
 	(**	The various types of wrapper blocks.  Wrappers are just
@@ -166,19 +166,19 @@ sig
 		([> itemize_block_t ], 'b) t
 	val enumerate: Numbering.t -> (nestable_block_t, 'b) t list plus_t ->
 		([> enumerate_block_t ], 'b) t
-	val quote: Alignment.t -> (nestable_block_t, 'b) t list ->
+	val quote: Floater.t -> (nestable_block_t, 'b) t list ->
 		([> quote_block_t ], 'b) t
-	val math: Alignment.t -> Math.t ->
+	val math: Floater.t -> Math.t ->
 		([> math_block_t ], [> `Composition]) t
-	val code: Alignment.t -> Code.t ->
+	val code: Floater.t -> Code.t ->
 		([> code_block_t ], [> `Composition]) t
-	val verbatim: Alignment.t -> raw_t ->
+	val verbatim: Floater.t -> raw_t ->
 		([> verbatim_block_t ], [> `Composition]) t
-	val tabular: Alignment.t -> Tabular.t ->
+	val tabular: Floater.t -> Tabular.t ->
 		([> tabular_block_t ], [> `Manuscript]) t
-	val image: Alignment.t -> alias_t ->
+	val image: Floater.t -> alias_t ->
 		([> image_block_t ], [> `Composition]) t
-	val subpage: Alignment.t -> ([< super_block_t ], 'b) t list ->
+	val subpage: Floater.t -> ([< super_block_t ], 'b) t list ->
 		([> subpage_block_t ], 'b) t
 
 	val equation: wrapper_t -> equation_block_t ->
@@ -204,13 +204,13 @@ struct
 	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
 	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
-	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
-	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Alignment.t * Code.t ] (*with sexp*) 
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
-	type image_block_t = [ `Image of Alignment.t * alias_t ] (*with sexp*) 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*) 
+	type quote_block_t = [ `Quote of Floater.t * nestable_frag_t ] (*with sexp*)
+	type math_block_t = [ `Math of Floater.t * Math.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Floater.t * Code.t ] (*with sexp*) 
+	type tabular_block_t = [ `Tabular of Floater.t * Tabular.t ] (*with sexp*) 
+	type image_block_t = [ `Image of Floater.t * alias_t ] (*with sexp*) 
+	type verbatim_block_t = [ `Verbatim of Floater.t * raw_t ] (*with sexp*) 
+	type subpage_block_t = [ `Subpage of Floater.t * super_frag_t ] (*with sexp*) 
 
 	type equation_block_t = [ math_block_t ] (*with sexp*)
 	type printout_block_t = [ code_block_t ] (*with sexp*)
@@ -282,13 +282,13 @@ struct
 	let paragraph seq = `Paragraph (seq :> Node.M.super_seq_t)
 	let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_frags))
 	let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
-	let quote alignment frag = `Quote (alignment, frag)
-	let math alignment math = `Math (alignment, math)
-	let code alignment highlight = `Code (alignment, highlight)
-	let verbatim alignment txt = `Verbatim (alignment, txt)
-	let tabular alignment tab = `Tabular (alignment, tab)
-	let image alignment alias = `Image (alignment, alias)
-	let subpage alignment frag = `Subpage (alignment, (frag :> super_block_t list))
+	let quote floater frag = `Quote (floater, frag)
+	let math floater math = `Math (floater, math)
+	let code floater code = `Code (floater, code)
+	let verbatim floater txt = `Verbatim (floater, txt)
+	let tabular floater tab = `Tabular (floater, tab)
+	let image floater alias = `Image (floater, alias)
+	let subpage floater frag = `Subpage (floater, (frag :> super_block_t list))
 
 	let equation (label, order, caption) math = `Equation ((label, order, caption), math)
 	let printout (label, order, caption) code = `Printout ((label, order, caption), code)

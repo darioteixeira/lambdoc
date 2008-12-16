@@ -29,10 +29,10 @@ open Settings
 (**	{2 Exceptions}								*)
 (********************************************************************************)
 
-exception Command_see_with_non_note
-exception Command_cite_with_non_bib
-exception Command_ref_with_non_visible_block
-exception Command_sref_with_non_visible_block
+exception Command_see_with_non_note of Target.t
+exception Command_cite_with_non_bib of Target.t
+exception Command_ref_with_non_visible_block of Target.t
+exception Command_sref_with_non_visible_block of Target.t
 exception Empty_error_context
 exception Empty_error_list
 
@@ -80,8 +80,8 @@ let wrap_order = function
 	| other	-> [span [pcdata other]]
 
 
-let make_align align =
-	"doc_align_" ^ (Alignment.to_string align)
+let make_floater floater =
+	"doc_float_" ^ (Floater.to_string floater)
 
 
 let cons_of_level = function
@@ -193,7 +193,7 @@ let write_valid_document settings classname doc =
 					let content = [pcdata (sprintf "(%s)" (note_conv order))]
 					in make_internal_link ~classname:"doc_see" label content
 				| _ ->
-					raise Command_see_with_non_note)
+					raise (Command_see_with_non_note target))
 
 		| `Cite ref ->
 			let label = `User_label ref in
@@ -203,7 +203,7 @@ let write_valid_document settings classname doc =
 					let content = [pcdata (sprintf "[%s]" (bib_conv order))]
 					in make_internal_link ~classname:"doc_cite" label content
 				| _ ->
-					raise Command_cite_with_non_bib)
+					raise (Command_cite_with_non_bib target))
 
 		| `Ref ref ->
 			let label = `User_label ref in
@@ -219,7 +219,7 @@ let write_valid_document settings classname doc =
 					let content = [pcdata (wrapper_conv order)]
 					in make_internal_link label content
 				| _ ->
-					raise Command_ref_with_non_visible_block)
+					raise (Command_ref_with_non_visible_block target))
 
 		| `Sref ref ->
 			let target = Labelmap.find doc.labelmap (`User_label ref) in
@@ -238,7 +238,7 @@ let write_valid_document settings classname doc =
 				| Target.Visible_target (Target.Wrapper_target (Target.Figure_wrapper, order)) ->
 					make_sref settings.names.figure_name (wrapper_conv order)
 				| _ ->
-					raise Command_sref_with_non_visible_block)
+					raise (Command_sref_with_non_visible_block target))
 
 		| `Mref (ref, seq) ->
 			make_internal_link (`User_label ref) (write_nonlink_seq ~nbspfy seq) in
@@ -248,7 +248,7 @@ let write_valid_document settings classname doc =
 	(* Converters for tabular environment.					*)
 	(************************************************************************)
 
-	let write_tabular align tab =
+	let write_tabular ~wrapped floater tab =
 
 		let ord = ref (-1) in
 
@@ -284,7 +284,9 @@ let write_valid_document settings classname doc =
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
-		in XHTML.M.tablex ~a:[a_class ["doc_tab"]] ?thead ?tfoot tbody_hd tbody_tl in
+		and style = if wrapped then [] else [make_floater floater]
+
+		in (floater, XHTML.M.tablex ~a:[a_class (["doc_tab"] @ style)] ?thead ?tfoot tbody_hd tbody_tl) in
 
 
 	(************************************************************************)
@@ -318,7 +320,7 @@ let write_valid_document settings classname doc =
 		| #Block.M.heading_block_t as blk ->
 			write_heading_block blk
 		| `Title (level, seq) ->
-			XHTML.M.h1 ~a:[a_class ["doc_title"]] (write_super_seq seq)
+			(cons_of_level level) ~a:[a_class ["doc_title"]] (write_super_seq seq)
 		| `Abstract frag ->
 			XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_paragraph_frag frag))
 		| `Rule ->
@@ -376,42 +378,48 @@ let write_valid_document settings classname doc =
 			write_quote_block blk
 
 		| #Block.M.math_block_t as blk ->
-			write_math_block blk
+			let (_, content) = write_math_block ~wrapped:false blk
+			in content
 
 		| #Block.M.code_block_t as blk ->
-			write_code_block blk
+			let (_, content) = write_code_block ~wrapped:false blk
+			in content
 
 		| #Block.M.verbatim_block_t as blk ->
-			write_verbatim_block blk
+			let (_, content) = write_verbatim_block ~wrapped:false blk
+			in content
 
 		| #Block.M.tabular_block_t as blk ->
-			write_tabular_block blk
+			let (_, content) = write_tabular_block ~wrapped:false blk
+			in content
 
 		| #Block.M.image_block_t as blk ->
-			write_image_block blk
+			let (_, content) = write_image_block ~wrapped:false blk
+			in content
 
 		| #Block.M.subpage_block_t as blk ->
-			write_subpage_block blk
+			let (_, content) = write_subpage_block ~wrapped:false blk
+			in content
 
 		| `Equation (wrapper, equation) ->
-			let wrapper_name = settings.names.equation_name
-			and wrapper_content = write_equation_block equation
-			in write_wrapper wrapper "doc_eq" wrapper_name wrapper_content
+			let name = settings.names.equation_name
+			and (floater, content) = write_equation_block equation
+			in write_wrapper wrapper "doc_eq" name content floater
 
 		| `Printout (wrapper, printout) ->
-			let wrapper_name = settings.names.printout_name
-			and wrapper_content = write_printout_block printout
-			in write_wrapper wrapper "doc_prt" wrapper_name wrapper_content
+			let name = settings.names.printout_name
+			and (floater, content) = write_printout_block printout
+			in write_wrapper wrapper "doc_prt" name content floater
 
 		| `Table (wrapper, table) ->
-			let wrapper_name = settings.names.table_name
-			and wrapper_content = write_table_block table
-			in write_wrapper wrapper "doc_table" wrapper_name wrapper_content
+			let name = settings.names.table_name
+			and (floater, content) = write_table_block table
+			in write_wrapper wrapper "doc_table" name content floater
 
 		| `Figure (wrapper, figure) ->
-			let wrapper_name = settings.names.figure_name
-			and wrapper_content = write_figure_block figure
-			in write_wrapper wrapper "doc_fig" wrapper_name wrapper_content
+			let name = settings.names.figure_name
+			and (floater, content) = write_figure_block figure
+			in write_wrapper wrapper "doc_fig" name content floater
 	
 
 	and write_paragraph_block = function
@@ -434,63 +442,68 @@ let write_valid_document settings classname doc =
 
 
 	and write_quote_block = function
-		| `Quote (align, frag) ->
-			XHTML.M.blockquote ~a:[a_class ["doc_quote"; make_align align]] (write_nestable_frag frag)
+		| `Quote (floater, frag) ->
+			XHTML.M.blockquote ~a:[a_class ["doc_quote"; make_floater floater]] (write_nestable_frag frag)
 
 
-	and write_math_block = function
-		| `Math (align, math) ->
-			XHTML.M.div ~a:[a_class ["doc_math"; make_align align]] [Math.to_block_xhtml math]
+	and write_math_block ~wrapped = function
+		| `Math (floater, math) ->
+			let style = if wrapped then [] else [make_floater floater]
+			in (floater, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math])
 
 
-	and write_code_block = function
-		| `Code (align, highlight) ->
-			Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:[make_align align] ~numbered:true ~zebra:true highlight
+	and write_code_block ~wrapped = function
+		| `Code (floater, code) ->
+			let style = if wrapped then [] else [make_floater floater]
+			in (floater, Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:true ~zebra:true code)
 
 
-	and write_verbatim_block = function
-		| `Verbatim (align, txt) ->
-			XHTML.M.pre ~a:[a_class ["doc_verbatim"; make_align align]] [XHTML.M.pcdata txt]
+	and write_verbatim_block ~wrapped = function
+		| `Verbatim (floater, txt) ->
+			let style = if wrapped then [] else [make_floater floater]
+			in (floater, XHTML.M.pre ~a:[a_class (["doc_verbatim"] @ style)] [XHTML.M.pcdata txt])
 
 
-	and write_tabular_block = function
-		| `Tabular (align, tab) ->
-			write_tabular align tab
+	and write_tabular_block ~wrapped = function
+		| `Tabular (floater, tab) ->
+			write_tabular ~wrapped floater tab
 
 
-	and write_image_block = function
-		| `Image (align, alias) ->
+	and write_image_block ~wrapped = function
+		| `Image (floater, alias) ->
+			let style = if wrapped then [] else [make_floater floater] in
 			let image = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
-			in XHTML.M.div ~a:[a_class ["doc_image"; make_align align]] [image]
+			in (floater, XHTML.M.div ~a:[a_class (["doc_image"] @ style)] [image])
 
 
-	and write_subpage_block = function
-		| `Subpage (align, frag) ->
-			XHTML.M.div ~a:[a_class ["doc_subpage"; make_align align]] (write_super_frag frag)
+	and write_subpage_block ~wrapped = function
+		| `Subpage (floater, frag) ->
+			let style = if wrapped then [] else [make_floater floater]
+			in (floater, XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_super_frag frag))
 
 
 	and write_equation_block = function
 		| #Block.M.math_block_t as blk ->
-			write_math_block blk
+			write_math_block ~wrapped:true blk
 
 
 	and write_printout_block = function
 		| #Block.M.code_block_t as blk ->
-			write_code_block blk
+			write_code_block ~wrapped:true blk
 
 
 	and write_table_block = function
 		| #Block.M.tabular_block_t as blk ->
-			write_tabular_block blk
+			write_tabular_block ~wrapped:true blk
 
 
 	and write_figure_block = function
 		| #Block.M.image_block_t as blk ->
-			write_image_block blk
+			write_image_block ~wrapped:true blk
 		| #Block.M.verbatim_block_t as blk ->
-			write_verbatim_block blk
+			write_verbatim_block ~wrapped:true blk
 		| #Block.M.subpage_block_t as blk ->
-			write_subpage_block blk
+			write_subpage_block ~wrapped:true blk
 
 
 	and write_caption order wrapper_name caption =
@@ -499,11 +512,9 @@ let write_valid_document settings classname doc =
 		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
 
 
-	and write_wrapper (label, order, caption) wrapper_classname wrapper_name wrapper_content =
-		let caption_content = write_caption order wrapper_name caption in
-		(*let style = "doc_align_" ^ (Alignment.to_string align) in*)
-		let style = "" in
-		let classnames = ["doc_wrapper"; wrapper_classname; style]
+	and write_wrapper (label, order, caption) classname name wrapper_content floater =
+		let caption_content = write_caption order name caption in
+		let classnames = ["doc_wrapper"; classname; make_floater floater]
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 
 
@@ -609,8 +620,8 @@ let write_error (error_context, error_msg) =
 		| Error.Unknown_numbering (tag, num) ->
 			sprintf "Unknown numbering '%s' for command '%s'.  Valid numberings are 'default', 'decimal', 'roman', 'Roman', 'alpha', 'Alpha', and 'none'." num tag
 
-		| Error.Unknown_alignment (tag, align) ->
-			sprintf "Unknown alignment '%s' for command '%s'.  Valid alignments are 'center', 'left', and 'right'." align tag
+		| Error.Unknown_floater (tag, floater) ->
+			sprintf "Unknown floater '%s' for command '%s'.  Valid floaters are 'center', 'left', and 'right'." floater tag
 
 		| Error.Unknown_language (tag, lang) ->
 			sprintf "Unknown language '%s' for command '%s'.  Valid languages are 'c', 'ocaml', and 'pascal'." lang tag

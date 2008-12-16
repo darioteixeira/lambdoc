@@ -45,6 +45,18 @@
 h1.doc_title	{font-size: 190%; margin-bottom: 1.5em;}
 h2.doc_title	{font-size: 150%; margin: 0.5em auto;}
 
+h1.doc_part
+	{
+	clear: both;
+	margin: 1.5em 0 1em;
+	padding: 0.5em 0;
+	border-top: 1px solid #333;
+	border-bottom: 1px solid #333;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	text-align: center;
+	}
+
 h1.doc_sec,
 h2.doc_sec,
 h3.doc_sec
@@ -55,11 +67,12 @@ h3.doc_sec
 	text-transform: capitalize;
 	}
 
-.doc_sec > span + span
+.doc_part > span + span, .doc_sec > span + span
 	{
 	margin-left: 0.75em;
 	}
 
+h1.doc_part	{font-size: 150%;}
 h1.doc_sec	{font-size: 150%;}
 h2.doc_sec	{font-size: 130%;}
 h3.doc_sec	{font-size: 110%;}

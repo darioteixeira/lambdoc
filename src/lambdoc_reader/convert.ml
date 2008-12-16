@@ -132,13 +132,13 @@ let convert_to_composition contents =
 	and convert_paragraph_block (`Paragraph seq)			= Block.M.paragraph (convert_super_seq seq)
 	and convert_itemize_block (`Itemize (bul, (hd, tl)))		= Block.M.itemize bul (fplus convert_nestable_frag hd tl)
 	and convert_enumerate_block (`Enumerate (num, (hd, tl)))	= Block.M.enumerate num (fplus convert_nestable_frag hd tl)
-	and convert_quote_block (`Quote (alignment, frag))		= Block.M.quote alignment (convert_nestable_frag frag)
-	and convert_math_block (`Math (alignment, math))		= Block.M.math alignment math
-	and convert_code_block (`Code (alignment, highlight))		= Block.M.code alignment highlight
-	and convert_verbatim_block (`Verbatim (alignment, txt))		= Block.M.verbatim alignment txt
-	and convert_tabular_block (`Tabular (alignment, tab))		= Block.M.tabular alignment (convert_tabular tab)
-	and convert_image_block (`Image (alignment, alias))		= Block.M.image alignment alias
-	and convert_subpage_block (`Subpage (alignment, frag))		= Block.M.subpage alignment (convert_super_frag frag)
+	and convert_quote_block (`Quote (floater, frag))		= Block.M.quote floater (convert_nestable_frag frag)
+	and convert_math_block (`Math (floater, math))		= Block.M.math floater math
+	and convert_code_block (`Code (floater, highlight))		= Block.M.code floater highlight
+	and convert_verbatim_block (`Verbatim (floater, txt))		= Block.M.verbatim floater txt
+	and convert_tabular_block (`Tabular (floater, tab))		= Block.M.tabular floater (convert_tabular tab)
+	and convert_image_block (`Image (floater, alias))		= Block.M.image floater alias
+	and convert_subpage_block (`Subpage (floater, frag))		= Block.M.subpage floater (convert_super_frag frag)
 
 	in convert_super_frag contents
 

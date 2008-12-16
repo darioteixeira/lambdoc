@@ -97,21 +97,21 @@ let process_document feature_map document_ast =
 					Numbering.Default
 
 
-	(**	This subfunction returns the type of alignment associated
+	(**	This subfunction returns the type of floater associated
 		with a floater environment.  If no extra parameter is given,
-		the alignment type is assumed to be [Center].
+		the floater type is assumed to be [Center].
 	*)
-	and get_alignment comm = function
+	and get_floater comm = function
 		| None	->
-			Alignment.Center
+			Floater.Center
 		| Some thing ->
 			try
-				Alignment.of_string thing
+				Floater.of_string thing
 			with
-				Alignment.Unknown_alignment x ->
-					let msg = Error.Unknown_alignment (comm.comm_tag, x) in
+				Floater.Unknown_floater x ->
+					let msg = Error.Unknown_floater (comm.comm_tag, x) in
 					DynArray.add errors (comm.comm_linenum, msg);
-					Alignment.Center
+					Floater.Center
 
 
 	(**	This subfunction returns the language used for syntax highlighting.
@@ -133,7 +133,7 @@ let process_document feature_map document_ast =
 					None
 
 
-	(**	This subfunction returns the column alignment and weight associated
+	(**	This subfunction returns the column floater and weight associated
 		with a column specifier.
 	*)
 	and get_column comm spec =
@@ -645,24 +645,24 @@ let process_document feature_map document_ast =
 	and convert_quote_block : bool -> Ast.M.quote_block_t -> (Block.M.quote_block_t, _) Block.M.t option = function subpaged -> function
 		| `AST_quote (comm, frag) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
+				let floater = get_floater comm comm.comm_extra
+				in Some (Block.M.quote floater (convert_nestable_frag subpaged frag))
 			in check_comm comm `Feature_quote None elem
 
 
 	and convert_mathtex_block : Ast.M.mathtex_block_t -> (Block.M.math_block_t, _) Block.M.t option = function
 		| `AST_mathtex_blk (comm, txt) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in convert_mathtex (Block.M.math alignment) comm.comm_linenum txt
+				let floater = get_floater comm comm.comm_extra
+				in convert_mathtex (Block.M.math floater) comm.comm_linenum txt
 			in check_comm comm `Feature_mathtex_blk None elem
 
 
 	and convert_mathml_block : Ast.M.mathml_block_t -> (Block.M.math_block_t, _) Block.M.t option = function
 		| `AST_mathml_blk (comm, txt) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in convert_mathml (Block.M.math alignment) comm.comm_linenum txt
+				let floater = get_floater comm comm.comm_extra
+				in convert_mathml (Block.M.math floater) comm.comm_linenum txt
 			in check_comm comm `Feature_mathml_blk None elem
 
 
@@ -671,40 +671,40 @@ let process_document feature_map document_ast =
 			let elem () =
 				let lang = get_language comm comm.comm_secondary in
 				let highlight = Code.from_string lang txt
-				and alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.code alignment highlight)
+				and floater = get_floater comm comm.comm_extra
+				in Some (Block.M.code floater highlight)
 			in check_comm comm `Feature_code None elem
 
 
 	and convert_verbatim_block : Ast.M.verbatim_block_t -> (Block.M.verbatim_block_t, _) Block.M.t option = function
 		| `AST_verbatim (comm, txt) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.verbatim alignment txt)
+				let floater = get_floater comm comm.comm_extra
+				in Some (Block.M.verbatim floater txt)
 			in check_comm comm `Feature_verbatim None elem
 
 
 	and convert_tabular_block : Ast.M.tabular_block_t -> (Block.M.tabular_block_t, _) Block.M.t option = function
 		| `AST_tabular (comm, tab) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.tabular alignment (convert_tabular comm tab))
+				let floater = get_floater comm comm.comm_extra
+				in Some (Block.M.tabular floater (convert_tabular comm tab))
 			in check_comm comm `Feature_tabular None elem
 
 
 	and convert_image_block : Ast.M.image_block_t -> (Block.M.image_block_t, _) Block.M.t option = function
 		| `AST_image (comm, alias) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.image alignment alias)
+				let floater = get_floater comm comm.comm_extra
+				in Some (Block.M.image floater alias)
 			in check_comm comm `Feature_image None elem
 
 
 	and convert_subpage_block : Ast.M.subpage_block_t -> (Block.M.subpage_block_t, _) Block.M.t option = function
 		| `AST_subpage (comm, subpage) ->
 			let elem () =
-				let alignment = get_alignment comm comm.comm_extra
-				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
+				let floater = get_floater comm comm.comm_extra
+				in Some (Block.M.subpage floater (convert_super_frag true subpage))
 			in check_comm comm `Feature_subpage None elem
 
 
