@@ -132,50 +132,58 @@ let write_valid_document settings classname doc =
 	(* Converters for inline context.					*)
 	(************************************************************************)
 
-	let rec write_super_seq seq =
-		List.map write_super_node seq
+	let rec write_super_seq ?(nbspfy=false) seq =
+		List.map (write_super_node ~nbspfy) seq
 
 
-	and write_nonlink_seq seq =
-		List.map write_nonlink_node seq
+	and write_nonlink_seq ~nbspfy seq =
+		List.map (write_nonlink_node ~nbspfy) seq
 
 
-	and write_super_node = function
+	and write_super_node ~nbspfy = function
 		| #Node.M.nonlink_node_t as node ->
-			(write_nonlink_node node :> super_node_xhtml_t)
+			(write_nonlink_node ~nbspfy node :> super_node_xhtml_t)
 		| #Node.M.link_node_t as node->
-			(write_link_node node :> super_node_xhtml_t)
+			(write_link_node ~nbspfy node :> super_node_xhtml_t)
 
 
-	and write_nonlink_node: Node.M.nonlink_node_t -> nonlink_node_xhtml_t = function
+	and write_nonlink_node ~nbspfy node : nonlink_node_xhtml_t = match node with
 		| `Plain txt ->
-			XHTML.M.pcdata txt 
+			let to_nbsp txt =
+				let rec trans = function
+					| hd1 :: hd2 :: tl	-> (XHTML.M.pcdata hd1) :: (XHTML.M.space ()) :: (trans (hd2 :: tl))
+					| hd :: tl		-> (XHTML.M.pcdata hd) :: (trans tl)
+					| []			-> []
+				in trans (String.nsplit txt " ")
+			in if nbspfy
+			then XHTML.M.span (to_nbsp txt)
+			else XHTML.M.pcdata txt 
 		| `Entity txt ->
 			XHTML.M.entity txt
 		| `Math math ->
 			XHTML.M.span ~a:[a_class ["doc_math"]] [Math.to_inline_xhtml math]
 		| `Bold seq ->
-			XHTML.M.b (write_super_seq seq)
+			XHTML.M.b (write_super_seq ~nbspfy seq)
 		| `Emph seq ->
-			XHTML.M.i (write_super_seq seq)
+			XHTML.M.i (write_super_seq ~nbspfy seq)
 		| `Mono seq ->
-			XHTML.M.span ~a:[a_class ["doc_mono"]] (write_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_mono"]] (write_super_seq ~nbspfy seq)
 		| `Caps seq ->
-			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_super_seq ~nbspfy seq)
 		| `Thru seq ->
-			XHTML.M.span ~a:[a_class ["doc_thru"]] (write_super_seq seq)
+			XHTML.M.span ~a:[a_class ["doc_thru"]] (write_super_seq ~nbspfy seq)
 		| `Sup seq ->
-			XHTML.M.sup (write_super_seq seq)
+			XHTML.M.sup (write_super_seq ~nbspfy seq)
 		| `Sub seq ->
-			XHTML.M.sub (write_super_seq seq)
+			XHTML.M.sub (write_super_seq ~nbspfy seq)
 		| `Mbox seq ->
-			XHTML.M.span ~a:[a_class ["doc_box"]] (write_super_seq seq)
+			XHTML.M.span (write_super_seq ~nbspfy:true seq)
 
 
-	and write_link_node : Node.M.link_node_t -> link_node_xhtml_t = function
+	and write_link_node ~nbspfy node : link_node_xhtml_t = match node with
 
 		| `Link (lnk, seq) ->
-			make_external_link lnk (write_nonlink_seq seq)
+			make_external_link lnk (write_nonlink_seq ~nbspfy seq)
 
 		| `See ref ->
 			let label = `User_label ref in
@@ -233,7 +241,7 @@ let write_valid_document settings classname doc =
 					raise Command_sref_with_non_visible_block)
 
 		| `Mref (ref, seq) ->
-			make_internal_link (`User_label ref) (write_nonlink_seq seq) in
+			make_internal_link (`User_label ref) (write_nonlink_seq ~nbspfy seq) in
 
 
 	(************************************************************************)
