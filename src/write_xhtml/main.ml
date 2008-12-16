@@ -231,8 +231,8 @@ let write_valid_document settings classname doc =
 					make_sref settings.names.section_name (section_conv location order)
 				| Target.Visible_target (Target.Wrapper_target (Target.Equation_wrapper, order)) ->
 					make_sref settings.names.equation_name (wrapper_conv order)
-				| Target.Visible_target (Target.Wrapper_target (Target.Algorithm_wrapper, order)) ->
-					make_sref settings.names.algorithm_name (wrapper_conv order)
+				| Target.Visible_target (Target.Wrapper_target (Target.Printout_wrapper, order)) ->
+					make_sref settings.names.printout_name (wrapper_conv order)
 				| Target.Visible_target (Target.Wrapper_target (Target.Table_wrapper, order)) ->
 					make_sref settings.names.table_name (wrapper_conv order)
 				| Target.Visible_target (Target.Wrapper_target (Target.Figure_wrapper, order)) ->
@@ -398,10 +398,10 @@ let write_valid_document settings classname doc =
 			and wrapper_content = write_equation_block equation
 			in write_wrapper wrapper "doc_eq" wrapper_name wrapper_content
 
-		| `Algorithm (wrapper, algorithm) ->
-			let wrapper_name = settings.names.algorithm_name
-			and wrapper_content = write_algorithm_block algorithm
-			in write_wrapper wrapper "doc_alg" wrapper_name wrapper_content
+		| `Printout (wrapper, printout) ->
+			let wrapper_name = settings.names.printout_name
+			and wrapper_content = write_printout_block printout
+			in write_wrapper wrapper "doc_prt" wrapper_name wrapper_content
 
 		| `Table (wrapper, table) ->
 			let wrapper_name = settings.names.table_name
@@ -474,7 +474,7 @@ let write_valid_document settings classname doc =
 			write_math_block blk
 
 
-	and write_algorithm_block = function
+	and write_printout_block = function
 		| #Block.M.code_block_t as blk ->
 			write_code_block blk
 

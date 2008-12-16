@@ -59,7 +59,7 @@ sig
 	*)
 
 	type equation_block_t = [ math_block_t ] (*with sexp*)
-	type algorithm_block_t = [ code_block_t ] (*with sexp*)
+	type printout_block_t = [ code_block_t ] (*with sexp*)
 	type table_block_t = [ tabular_block_t ] (*with sexp*)
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
@@ -84,7 +84,7 @@ sig
 		| image_block_t
 		| subpage_block_t
 		| `Equation of wrapper_t * equation_block_t
-		| `Algorithm of wrapper_t * algorithm_block_t
+		| `Printout of wrapper_t * printout_block_t
 		| `Table of wrapper_t * table_block_t
 		| `Figure of wrapper_t * figure_block_t
 		] (*with sexp*)
@@ -183,7 +183,7 @@ sig
 
 	val equation: wrapper_t -> equation_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val algorithm: wrapper_t -> algorithm_block_t ->
+	val printout: wrapper_t -> printout_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
 	val table: wrapper_t -> table_block_t ->
 		([> nestable_block_t ], [> `Manuscript]) t
@@ -213,7 +213,7 @@ struct
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*) 
 
 	type equation_block_t = [ math_block_t ] (*with sexp*)
-	type algorithm_block_t = [ code_block_t ] (*with sexp*)
+	type printout_block_t = [ code_block_t ] (*with sexp*)
 	type table_block_t = [ tabular_block_t ] (*with sexp*)
 	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
@@ -231,7 +231,7 @@ struct
 		| image_block_t
 		| subpage_block_t
 		| `Equation of wrapper_t * equation_block_t
-		| `Algorithm of wrapper_t * algorithm_block_t
+		| `Printout of wrapper_t * printout_block_t
 		| `Table of wrapper_t * table_block_t
 		| `Figure of wrapper_t * figure_block_t
 		] (*with sexp*)
@@ -291,7 +291,7 @@ struct
 	let subpage alignment frag = `Subpage (alignment, (frag :> super_block_t list))
 
 	let equation (label, order, caption) math = `Equation ((label, order, caption), math)
-	let algorithm (label, order, caption) code = `Algorithm ((label, order, caption), code)
+	let printout (label, order, caption) code = `Printout ((label, order, caption), code)
 	let table (label, order, caption) tabular = `Table ((label, order, caption), tabular)
 	let figure (label, order, caption) figure = `Figure ((label, order, caption), figure)
 end

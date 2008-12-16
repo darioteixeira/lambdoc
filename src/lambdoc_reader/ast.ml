@@ -121,7 +121,7 @@ sig
 		| mathml_block_t
 		]
 
-	type algorithm_block_t =
+	type printout_block_t =
 		code_block_t
 
 	type table_block_t =
@@ -146,7 +146,7 @@ sig
 		| image_block_t
 		| subpage_block_t
 		| `AST_equation of command_t * caption_block_t * equation_block_t
-		| `AST_algorithm of command_t * caption_block_t * algorithm_block_t
+		| `AST_printout of command_t * caption_block_t * printout_block_t
 		| `AST_table of command_t * caption_block_t * table_block_t
 		| `AST_figure of command_t * caption_block_t * figure_block_t
 		| `AST_bib of command_t * bib_title_block_t * bib_author_block_t * bib_resource_block_t

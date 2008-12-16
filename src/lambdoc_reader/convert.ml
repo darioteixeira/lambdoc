@@ -125,7 +125,7 @@ let convert_to_composition contents =
 		| #Block.M.image_block_t as blk		-> (convert_image_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
 		| #Block.M.subpage_block_t as blk	-> (convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
 		| `Equation _				-> raise (Invalid_composition_subset "equation")
-		| `Algorithm _				-> raise (Invalid_composition_subset "algorithm")
+		| `Printout _				-> raise (Invalid_composition_subset "printout")
 		| `Table _				-> raise (Invalid_composition_subset "table")
 		| `Figure _				-> raise (Invalid_composition_subset "figure")
 

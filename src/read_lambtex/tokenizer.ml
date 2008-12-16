@@ -105,7 +105,7 @@ let get_env_tag params is_begin =
 		| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push_env Tabular],	[Pop_env])
 		| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],			[])
 		| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],			[])
-		| "algorithm"	-> (BEGIN_ALGORITHM params,	END_ALGORITHM params,		[],			[])
+		| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],			[])
 		| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],			[])
 		| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],			[])
 		| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],			[])

@@ -169,7 +169,7 @@ let check_command_feature errors comm maybe_subpaged feature =
 
 	and reference_block_feature_set = function
 		| `Feature_equation	-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_algorithm	-> wrapper_class (get_subpaged maybe_subpaged)
+		| `Feature_printout	-> wrapper_class (get_subpaged maybe_subpaged)
 		| `Feature_table	-> wrapper_class (get_subpaged maybe_subpaged)
 		| `Feature_figure	-> wrapper_class (get_subpaged maybe_subpaged)
 

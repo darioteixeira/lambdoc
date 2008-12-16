@@ -28,7 +28,7 @@ type names_t =
 	notes_name: plain_t;
 	toc_name: plain_t;
 	equation_name: plain_t;
-	algorithm_name: plain_t;
+	printout_name: plain_t;
 	table_name: plain_t;
 	figure_name: plain_t;
 	}
@@ -54,7 +54,7 @@ let english_names =
 	notes_name = "Notes";
 	toc_name = "Table of Contents";
 	equation_name = "Eq.";
-	algorithm_name = "Alg.";
+	printout_name = "Printout";
 	table_name = "Tab.";
 	figure_name = "Fig.";
 	}
@@ -68,7 +68,7 @@ let portuguese_names =
 	notes_name = "Notas";
 	toc_name = "Índice";
 	equation_name = "Eq.";
-	algorithm_name = "Alg.";
+	printout_name = "Printout";
 	table_name = "Tab.";
 	figure_name = "Fig.";
 	}

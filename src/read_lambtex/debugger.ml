@@ -75,8 +75,8 @@ let to_string = function
 
 	| BEGIN_EQUATION comm		-> sprintf "BEGIN_EQUATION: %s" (sprintf_command comm)
 	| END_EQUATION comm		-> sprintf "END_EQUATION: %s" (sprintf_command comm)
-	| BEGIN_ALGORITHM comm		-> sprintf "BEGIN_ALGORITHM: %s" (sprintf_command comm)
-	| END_ALGORITHM comm		-> sprintf "END_ALGORITHM: %s" (sprintf_command comm)
+	| BEGIN_PRINTOUT comm		-> sprintf "BEGIN_PRINTOUT: %s" (sprintf_command comm)
+	| END_PRINTOUT comm		-> sprintf "END_PRINTOUT: %s" (sprintf_command comm)
 	| BEGIN_TABLE comm		-> sprintf "BEGIN_TABLE: %s" (sprintf_command comm)
 	| END_TABLE comm		-> sprintf "END_TABLE: %s" (sprintf_command comm)
 	| BEGIN_FIGURE comm		-> sprintf "BEGIN_FIGURE: %s" (sprintf_command comm)

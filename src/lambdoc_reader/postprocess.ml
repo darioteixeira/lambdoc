@@ -49,7 +49,7 @@ let process_document feature_map document_ast =
 	and part_counter = Order.make_ordinal_counter ()
 	and section_counter = Order.make_hierarchy_counter ()
 	and appendix_counter = Order.make_hierarchy_counter ()
-	and algorithm_counter = Order.make_ordinal_counter ()
+	and printout_counter = Order.make_ordinal_counter ()
 	and equation_counter = Order.make_ordinal_counter ()
 	and figure_counter = Order.make_ordinal_counter ()
 	and table_counter = Order.make_ordinal_counter ()
@@ -555,14 +555,14 @@ let process_document feature_map document_ast =
 					| _					-> None
 			in check_comm comm `Feature_equation (Some subpaged) elem
 
-		| `AST_algorithm (comm, cap, alg) ->
+		| `AST_printout (comm, cap, alg) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm algorithm_counter Target.algorithm_target cap subpaged
-				and maybe_algorithm = convert_algorithm_block alg
-				in match (maybe_wrapper, maybe_algorithm) with
-					| (Some wrapper, Some algorithm)	-> Some (Block.M.algorithm wrapper algorithm)
+				let maybe_wrapper = convert_wrapper comm printout_counter Target.printout_target cap subpaged
+				and maybe_printout = convert_printout_block alg
+				in match (maybe_wrapper, maybe_printout) with
+					| (Some wrapper, Some printout)	-> Some (Block.M.printout wrapper printout)
 					| _					-> None
-			in check_comm comm `Feature_algorithm (Some subpaged) elem
+			in check_comm comm `Feature_printout (Some subpaged) elem
 
 		| `AST_table (comm, cap, tab) ->
 			let elem () =
@@ -733,9 +733,9 @@ let process_document feature_map document_ast =
 			(convert_mathml_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
 
 
-	and convert_algorithm_block : Ast.M.algorithm_block_t -> Block.M.algorithm_block_t option = function
+	and convert_printout_block : Ast.M.printout_block_t -> Block.M.printout_block_t option = function
 		| #Ast.M.code_block_t as blk ->
-			(convert_code_block blk :> (Block.M.algorithm_block_t, _) Block.M.t option)
+			(convert_code_block blk :> (Block.M.printout_block_t, _) Block.M.t option)
 
 
 	and convert_table_block : Ast.M.table_block_t -> Block.M.table_block_t option = function

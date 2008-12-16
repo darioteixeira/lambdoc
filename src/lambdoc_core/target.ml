@@ -21,7 +21,7 @@ TYPE_CONV_PATH "Document"
 (**	The various types of wrappers.
 *)
 type wrapper_t =
-	| Algorithm_wrapper
+	| Printout_wrapper
 	| Equation_wrapper
 	| Figure_wrapper
 	| Table_wrapper
@@ -56,7 +56,7 @@ let section_target location order = Visible_target (Section_target (location, or
 
 let part_target order = Visible_target (Part_target order)
 
-let algorithm_target order = Visible_target (Wrapper_target (Algorithm_wrapper, order))
+let printout_target order = Visible_target (Wrapper_target (Printout_wrapper, order))
 
 let equation_target order = Visible_target (Wrapper_target (Equation_wrapper, order))
 

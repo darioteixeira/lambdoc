@@ -8,6 +8,10 @@
 */
 /********************************************************************************/
 
+%{
+open Lambdoc_reader
+%}
+
 
 /********************************************************************************/
 /* Operators.									*/
@@ -81,8 +85,8 @@
 %token <Lambdoc_reader.Ast.M.command_t> BEGIN_EQUATION
 %token <Lambdoc_reader.Ast.M.command_t> END_EQUATION
 
-%token <Lambdoc_reader.Ast.M.command_t> BEGIN_ALGORITHM 
-%token <Lambdoc_reader.Ast.M.command_t> END_ALGORITHM
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_PRINTOUT 
+%token <Lambdoc_reader.Ast.M.command_t> END_PRINTOUT
 
 %token <Lambdoc_reader.Ast.M.command_t> BEGIN_TABLE
 %token <Lambdoc_reader.Ast.M.command_t> END_TABLE
@@ -170,7 +174,7 @@
 %type <Lambdoc_reader.Ast.M.bib_resource_block_t>	bib_resource_block
 
 %type <Lambdoc_reader.Ast.M.equation_block_t>		equation_block
-%type <Lambdoc_reader.Ast.M.algorithm_block_t>		algorithm_block
+%type <Lambdoc_reader.Ast.M.printout_block_t>		printout_block
 %type <Lambdoc_reader.Ast.M.table_block_t>		table_block
 %type <Lambdoc_reader.Ast.M.figure_block_t>		figure_block
 
@@ -203,11 +207,11 @@ document:
 /********************************************************************************/
 
 super_block:
-	| top_block								{($1 :> Lambdoc_reader.Ast.M.super_block_t)}
-	| nestable_block							{($1 :> Lambdoc_reader.Ast.M.super_block_t)}
+	| top_block								{($1 :> Ast.M.super_block_t)}
+	| nestable_block							{($1 :> Ast.M.super_block_t)}
 
 top_block:
-	| heading_block								{($1 :> Lambdoc_reader.Ast.M.top_block_t)}
+	| heading_block								{($1 :> Ast.M.top_block_t)}
 	| TITLE BEGIN super_node+ END						{`AST_title (`Level1, $1, $3)}
 	| SUBTITLE BEGIN super_node+ END					{`AST_title (`Level2, $1, $3)}
 	| BEGIN_ABSTRACT paragraph_block+ END_ABSTRACT				{`AST_abstract ($1, $2)}
@@ -224,19 +228,19 @@ heading_block:
 	| TOC									{`AST_toc $1} 
 
 nestable_block:
-	| paragraph_block							{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| itemize_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| enumerate_block							{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| quote_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| mathtex_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| mathml_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| code_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| verbatim_block							{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| tabular_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| image_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
-	| subpage_block								{($1 :> Lambdoc_reader.Ast.M.nestable_block_t)}
+	| paragraph_block							{($1 :> Ast.M.nestable_block_t)}
+	| itemize_block								{($1 :> Ast.M.nestable_block_t)}
+	| enumerate_block							{($1 :> Ast.M.nestable_block_t)}
+	| quote_block								{($1 :> Ast.M.nestable_block_t)}
+	| mathtex_block								{($1 :> Ast.M.nestable_block_t)}
+	| mathml_block								{($1 :> Ast.M.nestable_block_t)}
+	| code_block								{($1 :> Ast.M.nestable_block_t)}
+	| verbatim_block							{($1 :> Ast.M.nestable_block_t)}
+	| tabular_block								{($1 :> Ast.M.nestable_block_t)}
+	| image_block								{($1 :> Ast.M.nestable_block_t)}
+	| subpage_block								{($1 :> Ast.M.nestable_block_t)}
 	| BEGIN_EQUATION equation_block caption_block END_EQUATION		{`AST_equation ($1, $3, $2)}
-	| BEGIN_ALGORITHM algorithm_block caption_block END_ALGORITHM		{`AST_algorithm ($1, $3, $2)}
+	| BEGIN_PRINTOUT printout_block caption_block END_PRINTOUT		{`AST_printout ($1, $3, $2)}
 	| BEGIN_TABLE table_block caption_block END_TABLE			{`AST_table ($1, $3, $2)}
 	| BEGIN_FIGURE figure_block caption_block END_FIGURE			{`AST_figure ($1, $3, $2)}
 	| BEGIN_BIB bib_title_block bib_author_block bib_resource_block END_BIB	{`AST_bib ($1, $2, $3, $4)}
@@ -273,19 +277,19 @@ bib_resource_block:	| BIB_RESOURCE BEGIN super_node+ END			{`AST_bib_resource ($
 /********************************************************************************/
 
 equation_block:
-	| mathtex_block		{($1 :> Lambdoc_reader.Ast.M.equation_block_t)}
-	| mathml_block		{($1 :> Lambdoc_reader.Ast.M.equation_block_t)}
+	| mathtex_block		{($1 :> Ast.M.equation_block_t)}
+	| mathml_block		{($1 :> Ast.M.equation_block_t)}
 
-algorithm_block:
-	| code_block		{($1 :> Lambdoc_reader.Ast.M.algorithm_block_t)}
+printout_block:
+	| code_block		{($1 :> Ast.M.printout_block_t)}
 
 table_block:
-	| tabular_block		{($1 :> Lambdoc_reader.Ast.M.table_block_t)}
+	| tabular_block		{($1 :> Ast.M.table_block_t)}
 
 figure_block:
-	| image_block		{($1 :> Lambdoc_reader.Ast.M.figure_block_t)}
-	| verbatim_block	{($1 :> Lambdoc_reader.Ast.M.figure_block_t)}
-	| subpage_block		{($1 :> Lambdoc_reader.Ast.M.figure_block_t)}
+	| image_block		{($1 :> Ast.M.figure_block_t)}
+	| verbatim_block	{($1 :> Ast.M.figure_block_t)}
+	| subpage_block		{($1 :> Ast.M.figure_block_t)}
 
 
 /********************************************************************************/
@@ -293,8 +297,8 @@ figure_block:
 /********************************************************************************/
 
 tabular:
-	| head? body+ foot?			{{Lambdoc_reader.Ast.M.thead = $1; Lambdoc_reader.Ast.M.tfoot = $3; Lambdoc_reader.Ast.M.tbodies = $2;}}
-	| row+ body* foot?			{{Lambdoc_reader.Ast.M.thead = None; Lambdoc_reader.Ast.M.tfoot = $3; Lambdoc_reader.Ast.M.tbodies = (None, $1) :: $2;}}
+	| head? body+ foot?			{{Ast.M.thead = $1; Ast.M.tfoot = $3; Ast.M.tbodies = $2;}}
+	| row+ body* foot?			{{Ast.M.thead = None; Ast.M.tfoot = $3; Ast.M.tbodies = (None, $1) :: $2;}}
 
 
 head:
@@ -345,6 +349,6 @@ link_node:
 	| MREF BEGIN RAW END BEGIN nonlink_node+ END		{`AST_mref ($1, $3, $6)}
 
 super_node:
-	| nonlink_node						{($1 :> Lambdoc_reader.Ast.M.super_node_t)}
-	| link_node						{($1 :> Lambdoc_reader.Ast.M.super_node_t)}
+	| nonlink_node						{($1 :> Ast.M.super_node_t)}
+	| link_node						{($1 :> Ast.M.super_node_t)}
 

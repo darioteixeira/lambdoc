@@ -40,7 +40,7 @@ type non_reference_block_feature_t =
 	]
 
 type reference_block_feature_t =
-	[ `Feature_equation | `Feature_algorithm | `Feature_table | `Feature_figure 
+	[ `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_caption | `Feature_bib | `Feature_note
 	| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
 	| `Feature_part | `Feature_appendix | `Feature_section1 | `Feature_section2 | `Feature_section3
@@ -119,7 +119,7 @@ let non_reference_block_features =
 
 let reference_block_features =
 	[
-	`Feature_equation; `Feature_algorithm; `Feature_table; `Feature_figure;
+	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_caption; `Feature_bib; `Feature_note;
 	`Feature_bib_title; `Feature_bib_author; `Feature_bib_resource;
 	`Feature_part; `Feature_appendix; `Feature_section1; `Feature_section2; `Feature_section3;
@@ -217,7 +217,7 @@ let describe_non_reference_block_feature = function
 
 let describe_reference_block_feature = function
 	| `Feature_equation	-> ("equation", "equation wrapper")
-	| `Feature_algorithm	-> ("algorithm", "algorithm wrapper")
+	| `Feature_printout	-> ("printout", "printout wrapper")
 	| `Feature_table	-> ("table", "table wrapper")
 	| `Feature_figure	-> ("figure", "figure wrapper")
 
