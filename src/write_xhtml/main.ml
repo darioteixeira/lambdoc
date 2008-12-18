@@ -81,7 +81,7 @@ let wrap_order = function
 
 
 let make_floater floater =
-	"doc_float_" ^ (Floater.to_string floater)
+	["doc_floater"; "doc_float_" ^ (Floater.to_string floater)]
 
 
 let cons_of_level = function
@@ -284,7 +284,7 @@ let write_valid_document settings classname doc =
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
-		and style = if wrapped then [] else [make_floater floater]
+		and style = if wrapped then [] else (make_floater floater)
 
 		in (floater, XHTML.M.tablex ~a:[a_class (["doc_tab"] @ style)] ?thead ?tfoot tbody_hd tbody_tl) in
 
@@ -443,25 +443,25 @@ let write_valid_document settings classname doc =
 
 	and write_quote_block = function
 		| `Quote (floater, frag) ->
-			XHTML.M.blockquote ~a:[a_class ["doc_quote"; make_floater floater]] (write_nestable_frag frag)
+			XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ make_floater floater)] (write_nestable_frag frag)
 
 
 	and write_math_block ~wrapped = function
 		| `Math (floater, math) ->
-			let style = if wrapped then [] else [make_floater floater]
+			let style = if wrapped then [] else (make_floater floater)
 			in (floater, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math])
 
 
 	and write_code_block ~wrapped = function
 		| `Code (floater, code) ->
-			let style = if wrapped then [] else [make_floater floater]
+			let style = if wrapped then [] else (make_floater floater)
 			in (floater, Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:true ~zebra:true code)
 
 
 	and write_verbatim_block ~wrapped = function
 		| `Verbatim (floater, txt) ->
-			let style = if wrapped then [] else [make_floater floater]
-			in (floater, XHTML.M.pre ~a:[a_class (["doc_verbatim"] @ style)] [XHTML.M.pcdata txt])
+			let style = if wrapped then [] else (make_floater floater)
+			in (floater, XHTML.M.pre ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.pcdata txt])
 
 
 	and write_tabular_block ~wrapped = function
@@ -471,14 +471,14 @@ let write_valid_document settings classname doc =
 
 	and write_image_block ~wrapped = function
 		| `Image (floater, alias) ->
-			let style = if wrapped then [] else [make_floater floater] in
+			let style = if wrapped then [] else (make_floater floater) in
 			let image = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
-			in (floater, XHTML.M.div ~a:[a_class (["doc_image"] @ style)] [image])
+			in (floater, XHTML.M.div ~a:[a_class (["doc_img"] @ style)] [image])
 
 
 	and write_subpage_block ~wrapped = function
 		| `Subpage (floater, frag) ->
-			let style = if wrapped then [] else [make_floater floater]
+			let style = if wrapped then [] else (make_floater floater)
 			in (floater, XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_super_frag frag))
 
 
@@ -514,7 +514,7 @@ let write_valid_document settings classname doc =
 
 	and write_wrapper (label, order, caption) classname name wrapper_content floater =
 		let caption_content = write_caption order name caption in
-		let classnames = ["doc_wrapper"; classname; make_floater floater]
+		let classnames = ["doc_wrapper"; classname] @ (make_floater floater)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 
 

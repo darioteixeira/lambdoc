@@ -54,7 +54,7 @@ let english_names =
 	notes_name = "Notes";
 	toc_name = "Table of Contents";
 	equation_name = "Eq.";
-	printout_name = "Printout";
+	printout_name = "Print.";
 	table_name = "Tab.";
 	figure_name = "Fig.";
 	}
@@ -68,7 +68,7 @@ let portuguese_names =
 	notes_name = "Notas";
 	toc_name = "Índice";
 	equation_name = "Eq.";
-	printout_name = "Printout";
+	printout_name = "Print.";
 	table_name = "Tab.";
 	figure_name = "Fig.";
 	}

@@ -98,7 +98,7 @@ let get_env_tag params is_begin =
 		| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
 		| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
 		| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],			[])
-		| "tex"		-> (BEGIN_MATHTEX_BLK params,	END_MATHTEX_BLK params,		[Push_env Mathtex_blk],	[Pop_env])
+		| "mathtex"	-> (BEGIN_MATHTEX_BLK params,	END_MATHTEX_BLK params,		[Push_env Mathtex_blk],	[Pop_env])
 		| "mathml"	-> (BEGIN_MATHML_BLK params,	END_MATHML_BLK params,		[Push_env Mathml_blk],	[Pop_env])
 		| "code"	-> (BEGIN_CODE params,		END_CODE params,		[Push_env Code],	[Pop_env])
 		| "verbatim"	-> (BEGIN_VERBATIM params,	END_VERBATIM params,		[Push_env Verbatim],	[Pop_env])

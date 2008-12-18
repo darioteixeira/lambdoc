@@ -271,7 +271,7 @@ and mathml_inl_scanner = parse
 	only pays attention to the EOF character and the environment terminator "\end{tex}".
 *)
 and mathtex_blk_scanner = parse
-	| "\\end{tex}"		{`Tok_env_comm lexbuf}
+	| "\\end{mathtex}"	{`Tok_env_comm lexbuf}
 	| eof			{`Tok_eof}
 	| _			{incr_linenum lexbuf; `Tok_raw (String.sub (Lexing.lexeme lexbuf) 0 1)}
 
