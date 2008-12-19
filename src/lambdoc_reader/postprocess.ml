@@ -540,8 +540,8 @@ let process_document feature_map document_ast =
 		| #Ast.M.tabular_block_t as blk ->
 			(convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
-		| #Ast.M.image_block_t as blk ->
-			(convert_image_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
+		| #Ast.M.bitmap_block_t as blk ->
+			(convert_bitmap_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.subpage_block_t as blk ->
 			(convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
@@ -692,12 +692,12 @@ let process_document feature_map document_ast =
 			in check_comm comm `Feature_tabular None elem
 
 
-	and convert_image_block : Ast.M.image_block_t -> (Block.M.image_block_t, _) Block.M.t option = function
-		| `AST_image (comm, alias) ->
+	and convert_bitmap_block : Ast.M.bitmap_block_t -> (Block.M.bitmap_block_t, _) Block.M.t option = function
+		| `AST_bitmap (comm, alias) ->
 			let elem () =
 				let floater = get_floater comm comm.comm_extra
-				in Some (Block.M.image floater alias)
-			in check_comm comm `Feature_image None elem
+				in Some (Block.M.bitmap floater alias)
+			in check_comm comm `Feature_bitmap None elem
 
 
 	and convert_subpage_block : Ast.M.subpage_block_t -> (Block.M.subpage_block_t, _) Block.M.t option = function
@@ -744,8 +744,8 @@ let process_document feature_map document_ast =
 
 
 	and convert_figure_block : Ast.M.figure_block_t -> Block.M.figure_block_t option = function
-		| #Ast.M.image_block_t as blk ->
-			(convert_image_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
+		| #Ast.M.bitmap_block_t as blk ->
+			(convert_bitmap_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
 		| #Ast.M.verbatim_block_t as blk ->
 			(convert_verbatim_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
 		| #Ast.M.subpage_block_t as blk ->

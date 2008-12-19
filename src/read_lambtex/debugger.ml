@@ -115,7 +115,7 @@ let to_string = function
 	| RULE comm			-> sprintf "RULE: %s" (sprintf_command comm)
 
 	| NEW_ITEM comm			-> sprintf "NEW_ITEM: %s" (sprintf_command comm)
-	| IMAGE comm			-> sprintf "IMAGE: %s" (sprintf_command comm)
+	| BITMAP comm			-> sprintf "BITMAP: %s" (sprintf_command comm)
 	| CAPTION comm			-> sprintf "CAPTION: %s" (sprintf_command comm)
 	| HEAD comm			-> sprintf "HEAD: %s" (sprintf_command comm)
 	| FOOT comm			-> sprintf "FOOT: %s" (sprintf_command comm)

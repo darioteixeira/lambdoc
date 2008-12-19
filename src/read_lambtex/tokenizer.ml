@@ -152,7 +152,7 @@ let get_simple_tag params =
 		| "rule"		-> (RULE params,		Blk,	[])
 
 		| "item"		-> (NEW_ITEM params,		Blk,	[])
-		| "image"		-> (IMAGE params,		Blk,	[Store [Raw]])
+		| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw]])
 		| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 		| "head"		-> (HEAD params,		Blk,	[])
 		| "foot"		-> (FOOT params,		Blk,	[])

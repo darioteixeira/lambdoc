@@ -352,13 +352,13 @@ div.doc_math
 /* Image environments.			 					*/
 /********************************************************************************/
 
-.doc_img
+.doc_bitmap
 	{
 	margin: 2em auto;
 	text-align: center;
 	}
 
-.doc_img > img
+.doc_bitmap > img
 	{
 	border: 1px dashed #000;
 	}

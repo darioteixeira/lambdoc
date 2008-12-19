@@ -36,7 +36,7 @@ type non_command_block_feature_t =
 
 type non_reference_block_feature_t =
 	[ `Feature_itemize | `Feature_enumerate | `Feature_quote | `Feature_mathtex_blk | `Feature_mathml_blk
-	| `Feature_code | `Feature_verbatim | `Feature_tabular | `Feature_image | `Feature_subpage
+	| `Feature_code | `Feature_verbatim | `Feature_tabular | `Feature_bitmap | `Feature_subpage
 	]
 
 type reference_block_feature_t =
@@ -114,7 +114,7 @@ let non_command_block_features =
 let non_reference_block_features =
 	[
 	`Feature_itemize; `Feature_enumerate; `Feature_quote; `Feature_mathtex_blk; `Feature_mathml_blk;
-	`Feature_code; `Feature_verbatim; `Feature_tabular; `Feature_image; `Feature_subpage;
+	`Feature_code; `Feature_verbatim; `Feature_tabular; `Feature_bitmap; `Feature_subpage;
 	]
 
 let reference_block_features =
@@ -211,7 +211,7 @@ let describe_non_reference_block_feature = function
 	| `Feature_code		-> ("code", "code block")
 	| `Feature_verbatim	-> ("verbatim", "verbatim block")
 	| `Feature_tabular	-> ("tabular", "tabular")
-	| `Feature_image	-> ("image", "image block")
+	| `Feature_bitmap	-> ("bitmap", "bitmap block")
 	| `Feature_subpage	-> ("subpage", "subpage block")
 
 

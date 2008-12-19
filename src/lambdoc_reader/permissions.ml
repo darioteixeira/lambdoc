@@ -164,7 +164,7 @@ let check_command_feature errors comm maybe_subpaged feature =
 		| `Feature_code		-> code_class
 		| `Feature_verbatim	-> floater_class
 		| `Feature_tabular	-> tabular_class
-		| `Feature_image	-> floater_class
+		| `Feature_bitmap	-> floater_class
 		| `Feature_subpage	-> floater_class
 
 	and reference_block_feature_set = function

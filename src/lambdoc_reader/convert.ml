@@ -122,7 +122,7 @@ let convert_to_composition contents =
 		| #Block.M.code_block_t as blk		-> (convert_code_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
 		| #Block.M.verbatim_block_t as blk	-> (convert_verbatim_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
 		| #Block.M.tabular_block_t as blk	-> (convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.image_block_t as blk		-> (convert_image_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.bitmap_block_t as blk		-> (convert_bitmap_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
 		| #Block.M.subpage_block_t as blk	-> (convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
 		| `Equation _				-> raise (Invalid_composition_subset "equation")
 		| `Printout _				-> raise (Invalid_composition_subset "printout")
@@ -137,7 +137,7 @@ let convert_to_composition contents =
 	and convert_code_block (`Code (floater, highlight))		= Block.M.code floater highlight
 	and convert_verbatim_block (`Verbatim (floater, txt))		= Block.M.verbatim floater txt
 	and convert_tabular_block (`Tabular (floater, tab))		= Block.M.tabular floater (convert_tabular tab)
-	and convert_image_block (`Image (floater, alias))		= Block.M.image floater alias
+	and convert_bitmap_block (`Bitmap (floater, alias))		= Block.M.bitmap floater alias
 	and convert_subpage_block (`Subpage (floater, frag))		= Block.M.subpage floater (convert_super_frag frag)
 
 	in convert_super_frag contents

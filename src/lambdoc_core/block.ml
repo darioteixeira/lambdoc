@@ -49,7 +49,7 @@ sig
 	type math_block_t = [ `Math of Floater.t * Math.t ] (*with sexp*) 
 	type code_block_t = [ `Code of Floater.t * Code.t ] (*with sexp*) 
 	type tabular_block_t = [ `Tabular of Floater.t * Tabular.t ] (*with sexp*) 
-	type image_block_t = [ `Image of Floater.t * alias_t ] (*with sexp*) 
+	type bitmap_block_t = [ `Bitmap of Floater.t * alias_t ] (*with sexp*) 
 	type verbatim_block_t = [ `Verbatim of Floater.t * raw_t ] (*with sexp*) 
 	type subpage_block_t = [ `Subpage of Floater.t * super_frag_t ] (*with sexp*) 
 
@@ -61,7 +61,7 @@ sig
 	type equation_block_t = [ math_block_t ] (*with sexp*)
 	type printout_block_t = [ code_block_t ] (*with sexp*)
 	type table_block_t = [ tabular_block_t ] (*with sexp*)
-	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
+	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
 
 	(**	The tuple of all common fields to wrappers.  The fields
@@ -81,7 +81,7 @@ sig
 		| code_block_t
 		| verbatim_block_t
 		| tabular_block_t
-		| image_block_t
+		| bitmap_block_t
 		| subpage_block_t
 		| `Equation of wrapper_t * equation_block_t
 		| `Printout of wrapper_t * printout_block_t
@@ -176,8 +176,8 @@ sig
 		([> verbatim_block_t ], [> `Composition]) t
 	val tabular: Floater.t -> Tabular.t ->
 		([> tabular_block_t ], [> `Manuscript]) t
-	val image: Floater.t -> alias_t ->
-		([> image_block_t ], [> `Composition]) t
+	val bitmap: Floater.t -> alias_t ->
+		([> bitmap_block_t ], [> `Composition]) t
 	val subpage: Floater.t -> ([< super_block_t ], 'b) t list ->
 		([> subpage_block_t ], 'b) t
 
@@ -208,14 +208,14 @@ struct
 	type math_block_t = [ `Math of Floater.t * Math.t ] (*with sexp*) 
 	type code_block_t = [ `Code of Floater.t * Code.t ] (*with sexp*) 
 	type tabular_block_t = [ `Tabular of Floater.t * Tabular.t ] (*with sexp*) 
-	type image_block_t = [ `Image of Floater.t * alias_t ] (*with sexp*) 
+	type bitmap_block_t = [ `Bitmap of Floater.t * alias_t ] (*with sexp*) 
 	type verbatim_block_t = [ `Verbatim of Floater.t * raw_t ] (*with sexp*) 
 	type subpage_block_t = [ `Subpage of Floater.t * super_frag_t ] (*with sexp*) 
 
 	type equation_block_t = [ math_block_t ] (*with sexp*)
 	type printout_block_t = [ code_block_t ] (*with sexp*)
 	type table_block_t = [ tabular_block_t ] (*with sexp*)
-	type figure_block_t = [ image_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
+	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
 	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t (*with sexp*)
 
@@ -228,7 +228,7 @@ struct
 		| code_block_t
 		| verbatim_block_t
 		| tabular_block_t
-		| image_block_t
+		| bitmap_block_t
 		| subpage_block_t
 		| `Equation of wrapper_t * equation_block_t
 		| `Printout of wrapper_t * printout_block_t
@@ -287,7 +287,7 @@ struct
 	let code floater code = `Code (floater, code)
 	let verbatim floater txt = `Verbatim (floater, txt)
 	let tabular floater tab = `Tabular (floater, tab)
-	let image floater alias = `Image (floater, alias)
+	let bitmap floater alias = `Bitmap (floater, alias)
 	let subpage floater frag = `Subpage (floater, (frag :> super_block_t list))
 
 	let equation (label, order, caption) math = `Equation ((label, order, caption), math)

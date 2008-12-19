@@ -39,7 +39,7 @@ type non_command_block_feature_t =
 
 type non_reference_block_feature_t =
 	[ `Feature_itemize | `Feature_enumerate | `Feature_quote | `Feature_mathtex_blk | `Feature_mathml_blk
-	| `Feature_code | `Feature_verbatim | `Feature_tabular | `Feature_image | `Feature_subpage
+	| `Feature_code | `Feature_verbatim | `Feature_tabular | `Feature_bitmap | `Feature_subpage
 	]
 
 type reference_block_feature_t =

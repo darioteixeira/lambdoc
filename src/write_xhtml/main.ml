@@ -393,8 +393,8 @@ let write_valid_document settings classname doc =
 			let (_, content) = write_tabular_block ~wrapped:false blk
 			in content
 
-		| #Block.M.image_block_t as blk ->
-			let (_, content) = write_image_block ~wrapped:false blk
+		| #Block.M.bitmap_block_t as blk ->
+			let (_, content) = write_bitmap_block ~wrapped:false blk
 			in content
 
 		| #Block.M.subpage_block_t as blk ->
@@ -469,11 +469,11 @@ let write_valid_document settings classname doc =
 			write_tabular ~wrapped floater tab
 
 
-	and write_image_block ~wrapped = function
-		| `Image (floater, alias) ->
+	and write_bitmap_block ~wrapped = function
+		| `Bitmap (floater, alias) ->
 			let style = if wrapped then [] else (make_floater floater) in
-			let image = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
-			in (floater, XHTML.M.div ~a:[a_class (["doc_img"] @ style)] [image])
+			let bitmap = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
+			in (floater, XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap])
 
 
 	and write_subpage_block ~wrapped = function
@@ -498,8 +498,8 @@ let write_valid_document settings classname doc =
 
 
 	and write_figure_block = function
-		| #Block.M.image_block_t as blk ->
-			write_image_block ~wrapped:true blk
+		| #Block.M.bitmap_block_t as blk ->
+			write_bitmap_block ~wrapped:true blk
 		| #Block.M.verbatim_block_t as blk ->
 			write_verbatim_block ~wrapped:true blk
 		| #Block.M.subpage_block_t as blk ->

@@ -134,7 +134,7 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.M.command_t> RULE
 
 %token <Lambdoc_reader.Ast.M.command_t> NEW_ITEM
-%token <Lambdoc_reader.Ast.M.command_t> IMAGE
+%token <Lambdoc_reader.Ast.M.command_t> BITMAP
 %token <Lambdoc_reader.Ast.M.command_t> CAPTION
 %token <Lambdoc_reader.Ast.M.command_t> HEAD
 %token <Lambdoc_reader.Ast.M.command_t> FOOT
@@ -167,7 +167,7 @@ open Lambdoc_reader
 %type <Lambdoc_reader.Ast.M.code_block_t>		code_block
 %type <Lambdoc_reader.Ast.M.verbatim_block_t>		verbatim_block
 %type <Lambdoc_reader.Ast.M.tabular_block_t>		tabular_block
-%type <Lambdoc_reader.Ast.M.image_block_t>		image_block
+%type <Lambdoc_reader.Ast.M.bitmap_block_t>		bitmap_block
 %type <Lambdoc_reader.Ast.M.subpage_block_t>		subpage_block
 %type <Lambdoc_reader.Ast.M.bib_title_block_t>		bib_title_block
 %type <Lambdoc_reader.Ast.M.bib_author_block_t>		bib_author_block
@@ -237,7 +237,7 @@ nestable_block:
 	| code_block								{($1 :> Ast.M.nestable_block_t)}
 	| verbatim_block							{($1 :> Ast.M.nestable_block_t)}
 	| tabular_block								{($1 :> Ast.M.nestable_block_t)}
-	| image_block								{($1 :> Ast.M.nestable_block_t)}
+	| bitmap_block								{($1 :> Ast.M.nestable_block_t)}
 	| subpage_block								{($1 :> Ast.M.nestable_block_t)}
 	| BEGIN_EQUATION equation_block caption_block END_EQUATION		{`AST_equation ($1, $3, $2)}
 	| BEGIN_PRINTOUT printout_block caption_block END_PRINTOUT		{`AST_printout ($1, $3, $2)}
@@ -265,7 +265,7 @@ mathml_block:		| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{`AST_mathml_blk ($1, $2)
 code_block:		| BEGIN_CODE RAW END_CODE				{`AST_code ($1, $2)}
 verbatim_block:		| BEGIN_VERBATIM RAW END_VERBATIM			{`AST_verbatim ($1, $2)}
 tabular_block:		| BEGIN_TABULAR tabular END_TABULAR			{`AST_tabular ($1, $2)}
-image_block:		| IMAGE BEGIN RAW END					{`AST_image ($1, $3)}
+bitmap_block:		| BITMAP BEGIN RAW END					{`AST_bitmap ($1, $3)}
 subpage_block:		| BEGIN_SUBPAGE super_block+ END_SUBPAGE		{`AST_subpage ($1, $2)}
 bib_title_block:	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 bib_author_block:	| BIB_AUTHOR BEGIN super_node+ END			{`AST_bib_author ($1, $3)}
@@ -287,7 +287,7 @@ table_block:
 	| tabular_block		{($1 :> Ast.M.table_block_t)}
 
 figure_block:
-	| image_block		{($1 :> Ast.M.figure_block_t)}
+	| bitmap_block		{($1 :> Ast.M.figure_block_t)}
 	| verbatim_block	{($1 :> Ast.M.figure_block_t)}
 	| subpage_block		{($1 :> Ast.M.figure_block_t)}
 
