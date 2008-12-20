@@ -43,13 +43,13 @@ exception Unknown_simple_command of string
 type environment_t =
 	| Inline
 	| Tabular
-	| Verbatim
-	| Code
 	| Raw
 	| Mathtex_inl
 	| Mathml_inl
-	| Mathtex_blk
-	| Mathml_blk
+	| Mathtex_blk of string
+	| Mathml_blk of string
+	| Verbatim of string
+	| Code of string
 
 
 (**	Declaration of the two scanning contexts.  A [Blk] (block) context
@@ -84,37 +84,6 @@ type action_t =
 (********************************************************************************)
 (**	{2 Tag-building functions}						*)
 (********************************************************************************)
-
-(**	This function returns the tag information corresponding to the string
-	form of the supplied environment tag.  An environment tag is one that
-	begins with a \begin declaration and ends with a corresponding \end.
-	The information returned is a pair consisting of the parser token,
-	and a list of actions for the automaton.
-
-*)
-let get_env_tag params is_begin =
-	let (token_begin, token_end, actions_begin, actions_end) = match params.comm_tag with
-		| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],			[])
-		| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
-		| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
-		| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],			[])
-		| "mathtex"	-> (BEGIN_MATHTEX_BLK params,	END_MATHTEX_BLK params,		[Push_env Mathtex_blk],	[Pop_env])
-		| "mathml"	-> (BEGIN_MATHML_BLK params,	END_MATHML_BLK params,		[Push_env Mathml_blk],	[Pop_env])
-		| "code"	-> (BEGIN_CODE params,		END_CODE params,		[Push_env Code],	[Pop_env])
-		| "verbatim"	-> (BEGIN_VERBATIM params,	END_VERBATIM params,		[Push_env Verbatim],	[Pop_env])
-		| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push_env Tabular],	[Pop_env])
-		| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],			[])
-		| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],			[])
-		| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],			[])
-		| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],			[])
-		| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],			[])
-		| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],			[])
-		| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],			[])
-		| other		-> raise (Unknown_env_command other)
-	in if is_begin
-	then (Some (token_begin), (Set_con Blk) :: actions_begin)
-	else (Some (token_end), (Set_con Blk) :: actions_end)
-
 
 (**	This function returns the tag information corresponding to the string form
 	of the supplied simple tag.  A simple tag is one whose begin is signaled by
@@ -164,6 +133,49 @@ let get_simple_tag params =
 	in (Some token, (Set_con context) :: actions)
 
 
+(**	This function returns the tag information corresponding to the string
+	form of the supplied environment tag.  An environment tag is one that
+	begins with a \begin declaration and ends with a corresponding \end.
+	The information returned is a pair consisting of the parser token,
+	and a list of actions for the automaton.
+
+*)
+let get_env_tag params is_begin =
+	let (token_begin, token_end, actions_begin, actions_end) =
+
+		(* First check if it matches any of the literal environment prefixes. *)
+
+		if String.starts_with params.comm_tag "mathtex"
+		then (BEGIN_MATHTEX_BLK params, END_MATHTEX_BLK params, [Push_env (Mathtex_blk params.comm_tag)], [Pop_env])
+		else if String.starts_with params.comm_tag "mathml"
+		then (BEGIN_MATHML_BLK params, END_MATHML_BLK params, [Push_env (Mathml_blk params.comm_tag)], [Pop_env])
+		else if String.starts_with params.comm_tag "verbatim"
+		then (BEGIN_VERBATIM params, END_VERBATIM params, [Push_env (Verbatim params.comm_tag)], [Pop_env])
+		else if String.starts_with params.comm_tag "code"
+		then (BEGIN_CODE params, END_CODE params, [Push_env (Code params.comm_tag)], [Pop_env])
+
+		(* If not literal, then test the other environments. *)
+
+		else match params.comm_tag with
+			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],			[])
+			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
+			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
+			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],			[])
+			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push_env Tabular],	[Pop_env])
+			| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],			[])
+			| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],			[])
+			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],			[])
+			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],			[])
+			| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],			[])
+			| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],			[])
+			| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],			[])
+			| other		-> raise (Unknown_env_command other)
+
+	in if is_begin
+	then (Some (token_begin), (Set_con Blk) :: actions_begin)
+	else (Some (token_end), (Set_con Blk) :: actions_end)
+
+
 (********************************************************************************)
 (**	{2 Functions to process commands and parameters}			*)
 (********************************************************************************)
@@ -173,12 +185,12 @@ let get_simple_tag params =
 
 let pat_env = "\\\\(?<env>(begin)|(end))"
 let pat_command = "\\\\(?<command>\\w+)"
-let pat_primary = "\\{(?<primary>\\w+)\\}"
+let pat_primary = "\\{(?<primary>[\\w_]+)\\}"
 let pat_secondary = "(?<secondary>\\{\\w*\\})?"
 
-let pat_order = "(?<order>\\([\\.\\d]*\\))"
+let pat_order = "(?<order>\\([\\w\\d\\.]*\\))"
 let pat_label = "(?<label>\\[[\\w\\d\\-:_]*\\])"
-let pat_extra = "(?<extra><[\\w\\d]*>)"
+let pat_extra = "(?<extra><\\w*>)"
 let pat_optional = "(" ^ pat_order ^ "|" ^ pat_extra ^ "|" ^ pat_label ^")*"
 
 
@@ -304,18 +316,19 @@ object (self)
 		let scanner = match self#get_env () with
 			| Some Inline		-> Scanner.general_scanner
 			| Some Tabular		-> Scanner.tabular_scanner
-			| Some Verbatim		-> Scanner.verbatim_scanner
-			| Some Code		-> Scanner.code_scanner
+			| Some Verbatim term	-> Scanner.literal_scanner term
+			| Some Code term	-> Scanner.literal_scanner term
 			| Some Raw		-> Scanner.raw_scanner
 			| Some Mathtex_inl	-> Scanner.mathtex_inl_scanner
 			| Some Mathml_inl	-> Scanner.mathml_inl_scanner
-			| Some Mathtex_blk	-> Scanner.mathtex_blk_scanner
-			| Some Mathml_blk	-> Scanner.mathml_blk_scanner
+			| Some Mathtex_blk term	-> Scanner.literal_scanner term
+			| Some Mathml_blk term	-> Scanner.literal_scanner term
 			| None			-> Scanner.general_scanner in
 
 		let (maybe_token, actions) = match scanner lexbuf with
 			| `Tok_simple_comm buf			-> issue_simple_command buf
-			| `Tok_env_comm buf			-> issue_env_command buf
+			| `Tok_env_begin buf			-> issue_env_command buf
+			| `Tok_env_end buf			-> issue_env_command buf
 			| `Tok_begin				-> (Some BEGIN,					[Fetch; Push_con])
 			| `Tok_end				-> (Some END,					[Pop_env; Pop_con])
 			| `Tok_begin_mathtex_inl buf		-> (Some (BEGIN_MATHTEX_INL (build_op buf)),	[Set_con Inl; Push_con; Push_env Mathtex_inl])
