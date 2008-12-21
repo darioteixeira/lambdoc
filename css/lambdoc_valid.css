@@ -458,12 +458,17 @@ div.doc_math
 	margin-top: 0.75em;
 	}
 
-.doc_bib_ord
+.doc_bibs > li > span
 	{
-	display: block;
+	width: 2.5em;
 	float: left;
-	width: 2em;
 	font-weight: bold;
+	text-align: right;
+	}
+
+.doc_bibs > li > p
+	{
+	margin-left: 3em;
 	}
 
 .doc_bib_author
@@ -484,7 +489,7 @@ div.doc_math
 .doc_bib_resource
 	{
 	display: block;
-	margin: 0.25em 0 0 2em;
+	margin-top: 0.25em;
 	}
 
 
@@ -500,12 +505,14 @@ div.doc_math
 
 .doc_notes > li > span
 	{
+	width: 2.5em;
 	float: left;
 	font-weight: bold;
+	text-align: right;
 	}
 
 .doc_notes > li > div
 	{
-	margin-left: 2em;
+	margin-left: 3em;
 	}
 

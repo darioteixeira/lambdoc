@@ -533,10 +533,13 @@ let write_valid_document settings classname doc =
 	and write_bib bib =
 		XHTML.M.li ~a:[a_id (make_label bib.Bib.label)]
 			[
-			XHTML.M.span ~a:[a_class ["doc_bib_ord"]] [pcdata ("[" ^ (bib_conv bib.Bib.order) ^ "]")];
-			XHTML.M.span ~a:[a_class ["doc_bib_author"]] (write_super_seq bib.Bib.author);
-			XHTML.M.span ~a:[a_class ["doc_bib_title"]] (write_super_seq bib.Bib.title);
-			XHTML.M.span ~a:[a_class ["doc_bib_resource"]] (write_super_seq bib.Bib.resource)
+			XHTML.M.span [pcdata ("[" ^ (bib_conv bib.Bib.order) ^ "]")];
+			XHTML.M.p
+				[
+				XHTML.M.span ~a:[a_class ["doc_bib_author"]] (write_super_seq bib.Bib.author);
+				XHTML.M.span ~a:[a_class ["doc_bib_title"]] (write_super_seq bib.Bib.title);
+				XHTML.M.span ~a:[a_class ["doc_bib_resource"]] (write_super_seq bib.Bib.resource);
+				]
 			]
 
 

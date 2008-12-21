@@ -875,7 +875,169 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 \where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
 \end{bib}
 
-\begin[bib4]{bib}
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
+\what{This is the title of the article}
+\who{John McAuthor}
+\where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\end{bib}
+
+\begin{bib}
 \what{This is the title of the article}
 \who{John McAuthor}
 \where{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
@@ -902,6 +1064,168 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 \end{note}
 
 \begin[note3]{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+\end{note}
+
+\begin{note}
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
