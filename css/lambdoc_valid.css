@@ -24,9 +24,11 @@ body	{
 /* Inline text.									*/
 /********************************************************************************/
 
-.doc_mono	{font-family: monospace;}
+.doc_mono	{font-family: monospace; color: #666;}
 .doc_caps	{font-variant: small-caps;}
 .doc_thru	{text-decoration: line-through;}
+sup		{vertical-align: 0.3em;}
+sub		{vertical-align: -0.1em;}
 
 
 /********************************************************************************/
@@ -42,7 +44,7 @@ body	{
 	{
 	margin-left: 0.3em;
 	font-size: smaller;
-	vertical-align: 10%;
+	vertical-align: 0.2em;
 	color: #0000cc;
 	}
 
@@ -188,8 +190,8 @@ h3.doc_sec	{font-size: 1em;}		/* For default of 14 * 1 = 14px */
 	}
 
 .doc_float_center	{margin: 2em 1em;}
-.doc_float_right	{margin: 0.5em 0 1em 1.5em; float: right; max-width: 35%;}
-.doc_float_left		{margin: 0.5em 1.5em 1em 0; float: left; max-width: 35%;}
+.doc_float_right	{margin: 0.3em 0 1em 1.5em; float: right; max-width: 35%;}
+.doc_float_left		{margin: 0.3em 1.5em 1em 0; float: left; max-width: 35%;}
 
 
 /********************************************************************************/
@@ -445,46 +447,65 @@ div.doc_math
 /* CSS for story bibliography.		 					*/
 /********************************************************************************/
 
-.story_bibliography
+.doc_bibs
 	{
-	margin-left: 2em;
-	list-style-type: decimal;
+	padding: 0;
+	list-style-type: none;
 	}
 
-.biblio_entry
+.doc_bibs > li
 	{
-	margin-bottom: 0.5em;
+	margin-top: 0.75em;
 	}
 
-.biblio_author
+.doc_bib_ord
 	{
+	display: block;
+	float: left;
+	width: 2em;
+	font-weight: bold;
 	}
 
-.biblio_author:after
+.doc_bib_author
+	{
+	margin-right: 0.5em;
+	}
+
+.doc_bib_author:after
 	{
 	content: ':';
 	}
 
-.biblio_title
+.doc_bib_title
 	{
-	margin-left: 0.2em;
 	font-style: italic;
-	text-transform: capitalize;
 	}
 
-.biblio_title:before
-	{
-	content: '\201c';
-	}
-
-.biblio_title:after
-	{
-	content: '\201d';
-	}
-
-.biblio_resource
+.doc_bib_resource
 	{
 	display: block;
-	margin-top: 0.2em;
+	margin: 0.25em 0 0 2em;
+	}
+
+
+/********************************************************************************/
+/* CSS for story notes.			 					*/
+/********************************************************************************/
+
+.doc_notes
+	{
+	padding: 0;
+	list-style-type: none;
+	}
+
+.doc_notes > li > span
+	{
+	float: left;
+	font-weight: bold;
+	}
+
+.doc_notes > li > div
+	{
+	margin-left: 2em;
 	}
 

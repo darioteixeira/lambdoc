@@ -343,7 +343,7 @@ let write_valid_document settings classname doc =
 			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
 			let bibs = match doc.Valid.bibs with
 				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ul ~a:[a_class ["doc_bibs"]] hd tl]
+				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
 			in XHTML.M.div (title @ bibs)
 
 		| `Section (label, order, location, level, `Notes) ->
@@ -351,7 +351,7 @@ let write_valid_document settings classname doc =
 			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
 			let notes = match doc.Valid.notes with
 				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ul ~a:[a_class ["doc_notes"]] hd tl]
+				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
 			in XHTML.M.div (title @ notes)
 
 		| `Section (label, order, location, level, `Toc) ->
@@ -523,15 +523,20 @@ let write_valid_document settings classname doc =
 	(************************************************************************)
 
 	and write_note note =
-		XHTML.M.li ~a:[a_class ["doc_note"]] (write_nestable_frag note.Note.content)
+		XHTML.M.li ~a:[a_id (make_label note.Note.label)]
+			[
+			XHTML.M.span [pcdata ("(" ^ (note_conv note.Note.order) ^ ")")];
+			XHTML.M.div (write_nestable_frag note.Note.content);
+			]
 
 
 	and write_bib bib =
-		XHTML.M.li
+		XHTML.M.li ~a:[a_id (make_label bib.Bib.label)]
 			[
-			XHTML.M.p ~a:[a_class ["doc_bib_title"]] (write_super_seq bib.Bib.title);
-			XHTML.M.p ~a:[a_class ["doc_bib_author"]] (write_super_seq bib.Bib.author);
-			XHTML.M.p ~a:[a_class ["doc_bib_resource"]] (write_super_seq bib.Bib.resource)
+			XHTML.M.span ~a:[a_class ["doc_bib_ord"]] [pcdata ("[" ^ (bib_conv bib.Bib.order) ^ "]")];
+			XHTML.M.span ~a:[a_class ["doc_bib_author"]] (write_super_seq bib.Bib.author);
+			XHTML.M.span ~a:[a_class ["doc_bib_title"]] (write_super_seq bib.Bib.title);
+			XHTML.M.span ~a:[a_class ["doc_bib_resource"]] (write_super_seq bib.Bib.resource)
 			]
 
 
