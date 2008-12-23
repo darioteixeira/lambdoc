@@ -80,10 +80,6 @@ let wrap_order = function
 	| other	-> [span [pcdata other]]
 
 
-let make_floater floater =
-	["doc_floater"; "doc_float_" ^ (Floater.to_string floater)]
-
-
 let cons_of_level = function
 	| `Level1 -> XHTML.M.h1
 	| `Level2 -> XHTML.M.h2
@@ -248,7 +244,7 @@ let write_valid_document settings classname doc =
 	(* Converters for tabular environment.					*)
 	(************************************************************************)
 
-	let write_tabular ~wrapped floater tab =
+	let write_tabular style tab =
 
 		let ord = ref (-1) in
 
@@ -284,9 +280,7 @@ let write_valid_document settings classname doc =
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
-		and style = if wrapped then ["doc_wrapped"] else (make_floater floater)
-
-		in (floater, XHTML.M.tablex ~a:[a_class (["doc_tab"] @ style)] ?thead ?tfoot tbody_hd tbody_tl) in
+		in XHTML.M.tablex ~a:[a_class (["doc_tab"] @ style)] ?thead ?tfoot tbody_hd tbody_tl in
 
 
 	(************************************************************************)
@@ -374,53 +368,54 @@ let write_valid_document settings classname doc =
 		| #Block.M.enumerate_block_t as blk ->
 			write_enumerate_block blk
 
-		| #Block.M.quote_block_t as blk ->
-			write_quote_block blk
-
-		| #Block.M.math_block_t as blk ->
-			let (_, content) = write_math_block ~wrapped:false blk
-			in content
-
-		| #Block.M.code_block_t as blk ->
-			let (_, content) = write_code_block ~wrapped:false blk
-			in content
-
-		| #Block.M.verbatim_block_t as blk ->
-			let (_, content) = write_verbatim_block ~wrapped:false blk
-			in content
-
-		| #Block.M.tabular_block_t as blk ->
-			let (_, content) = write_tabular_block ~wrapped:false blk
-			in content
-
-		| #Block.M.bitmap_block_t as blk ->
-			let (_, content) = write_bitmap_block ~wrapped:false blk
-			in content
-
-		| #Block.M.subpage_block_t as blk ->
-			let (_, content) = write_subpage_block ~wrapped:false blk
-			in content
+		| `Floater (alignment, blk) ->
+			let style = ["doc_floater"; "doc_float_" ^ (Alignment.to_string alignment)]
+			in write_floater_block style blk
 
 		| `Equation (wrapper, equation) ->
 			let name = settings.names.equation_name
-			and (floater, content) = write_equation_block equation
-			in write_wrapper wrapper "doc_eq" name content floater
+			and content = write_equation_block equation
+			in write_wrapper wrapper "doc_eq" name content
 
 		| `Printout (wrapper, printout) ->
 			let name = settings.names.printout_name
-			and (floater, content) = write_printout_block printout
-			in write_wrapper wrapper "doc_prt" name content floater
+			and content = write_printout_block printout
+			in write_wrapper wrapper "doc_prt" name content
 
 		| `Table (wrapper, table) ->
 			let name = settings.names.table_name
-			and (floater, content) = write_table_block table
-			in write_wrapper wrapper "doc_table" name content floater
+			and content = write_table_block table
+			in write_wrapper wrapper "doc_table" name content
 
 		| `Figure (wrapper, figure) ->
 			let name = settings.names.figure_name
-			and (floater, content) = write_figure_block figure
-			in write_wrapper wrapper "doc_fig" name content floater
+			and content = write_figure_block figure
+			in write_wrapper wrapper "doc_fig" name content
 	
+
+	and write_floater_block style = function
+
+		| #Block.M.quote_block_t as blk ->
+			write_quote_block style blk
+
+		| #Block.M.math_block_t as blk ->
+			write_math_block style blk
+
+		| #Block.M.code_block_t as blk ->
+			write_code_block style blk
+
+		| #Block.M.verbatim_block_t as blk ->
+			write_verbatim_block style blk
+
+		| #Block.M.tabular_block_t as blk ->
+			write_tabular_block style blk
+
+		| #Block.M.bitmap_block_t as blk ->
+			write_bitmap_block style blk
+
+		| #Block.M.subpage_block_t as blk ->
+			write_subpage_block style blk
+
 
 	and write_paragraph_block = function
 		| `Paragraph seq ->
@@ -441,69 +436,64 @@ let write_valid_document settings classname doc =
 			in XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl
 
 
-	and write_quote_block = function
-		| `Quote (floater, frag) ->
-			XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ make_floater floater)] (write_nestable_frag frag)
+	and write_quote_block style = function
+		| `Quote frag ->
+			XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ style)] (write_nestable_frag frag)
 
 
-	and write_math_block ~wrapped = function
-		| `Math (floater, math) ->
-			let style = if wrapped then ["doc_wrapped"] else (make_floater floater)
-			in (floater, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math])
+	and write_math_block style = function
+		| `Math math ->
+			XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math]
 
 
-	and write_code_block ~wrapped = function
-		| `Code (floater, code) ->
-			let style = if wrapped then ["doc_wrapped"] else (make_floater floater)
-			in (floater, Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:true ~zebra:true code)
+	and write_code_block style = function
+		| `Code code ->
+			Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:true ~zebra:true code
 
 
-	and write_verbatim_block ~wrapped = function
-		| `Verbatim (floater, txt) ->
-			let style = if wrapped then ["doc_wrapped"] else (make_floater floater)
-			in (floater, XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.pre [XHTML.M.pcdata txt]])
+	and write_verbatim_block style = function
+		| `Verbatim txt ->
+			XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.pre [XHTML.M.pcdata txt]]
 
 
-	and write_tabular_block ~wrapped = function
-		| `Tabular (floater, tab) ->
-			write_tabular ~wrapped floater tab
+	and write_tabular_block style = function
+		| `Tabular tab ->
+			write_tabular style tab
 
 
-	and write_bitmap_block ~wrapped = function
-		| `Bitmap (floater, alias) ->
-			let style = if wrapped then ["doc_wrapped"] else (make_floater floater) in
+	and write_bitmap_block style = function
+		| `Bitmap alias ->
 			let bitmap = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
-			in (floater, XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap])
+			in XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]
 
 
-	and write_subpage_block ~wrapped = function
-		| `Subpage (floater, frag) ->
-			let style = if wrapped then ["doc_wrapped"] else (make_floater floater)
-			in (floater, XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_super_frag frag))
+	and write_subpage_block style = function
+		| `Subpage frag ->
+			XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_super_frag frag)
 
 
 	and write_equation_block = function
 		| #Block.M.math_block_t as blk ->
-			write_math_block ~wrapped:true blk
+			write_math_block [] blk
 
 
 	and write_printout_block = function
 		| #Block.M.code_block_t as blk ->
-			write_code_block ~wrapped:true blk
+			write_code_block [] blk
 
 
 	and write_table_block = function
 		| #Block.M.tabular_block_t as blk ->
-			write_tabular_block ~wrapped:true blk
+			write_tabular_block [] blk
 
 
 	and write_figure_block = function
 		| #Block.M.bitmap_block_t as blk ->
-			write_bitmap_block ~wrapped:true blk
+			write_bitmap_block [] blk
 		| #Block.M.verbatim_block_t as blk ->
-			write_verbatim_block ~wrapped:true blk
+			write_verbatim_block [] blk
 		| #Block.M.subpage_block_t as blk ->
-			write_subpage_block ~wrapped:true blk
+			write_subpage_block [] blk
 
 
 	and write_caption order wrapper_name caption =
@@ -512,9 +502,9 @@ let write_valid_document settings classname doc =
 		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
 
 
-	and write_wrapper (label, order, caption) classname name wrapper_content floater =
+	and write_wrapper (label, order, caption) classname name wrapper_content =
 		let caption_content = write_caption order name caption in
-		let classnames = ["doc_wrapper"; classname] @ (make_floater floater)
+		let classnames = ["doc_wrapper"; classname]
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 
 
@@ -628,8 +618,8 @@ let write_error (error_context, error_msg) =
 		| Error.Unknown_numbering (tag, num) ->
 			sprintf "Unknown numbering '%s' for command '%s'.  Valid numberings are 'default', 'decimal', 'roman', 'Roman', 'alpha', 'Alpha', and 'none'." num tag
 
-		| Error.Unknown_floater (tag, floater) ->
-			sprintf "Unknown floater '%s' for command '%s'.  Valid floaters are 'center', 'left', and 'right'." floater tag
+		| Error.Unknown_alignment (tag, alignment) ->
+			sprintf "Unknown alignment '%s' for command '%s'.  Valid alignments are 'center', 'left', and 'right'." alignment tag
 
 		| Error.Unknown_language (tag, lang) ->
 			sprintf "Unknown language '%s' for command '%s'.  Valid languages are 'c', 'ocaml', and 'pascal'." lang tag
