@@ -37,7 +37,7 @@ type composition_t = [`Composition] t (*with sexp*)
 
 let make_manuscript content bibs notes toc labelmap =
 	{
-	content = (content : ('a, 'b) Block.M.t list :> (Block.M.super_block_t, 'b) Block.M.t list);
+	content = (content : ([< Block.M.super_block_t ], _) Block.M.t list :> (Block.M.super_block_t, [ `Manuscript ]) Block.M.t list);
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
@@ -46,7 +46,7 @@ let make_manuscript content bibs notes toc labelmap =
 
 let make_composition content =
 	{
-	content = (content : ('a, 'b) Block.M.t list :> (Block.M.super_block_t, 'b) Block.M.t list);
+	content = (content : ([< Block.M.super_block_t ], _) Block.M.t list :> (Block.M.super_block_t, [ `Composition ]) Block.M.t list);
 	bibs = [];
 	notes = [];
 	toc = [];

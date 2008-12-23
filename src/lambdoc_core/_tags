@@ -1,4 +1,5 @@
 <*.cmx>: for-pack(Lambdoc_core)
+<alignment.*>: pkg_sexplib.syntax, syntax_camlp4o
 <ambivalent.*>: pkg_sexplib.syntax, syntax_camlp4o
 <basic.*>: pkg_sexplib.syntax, syntax_camlp4o
 <bib.*>: pkg_sexplib.syntax, syntax_camlp4o
@@ -6,7 +7,6 @@
 <bullet.*>: pkg_sexplib.syntax, syntax_camlp4o
 <code.*>: pkg_sexplib.syntax, syntax_camlp4o
 <error.*>: pkg_sexplib.syntax, syntax_camlp4o
-<floater.*>: pkg_sexplib.syntax, syntax_camlp4o
 <invalid.*>: pkg_sexplib.syntax, syntax_camlp4o
 <label.*>: pkg_sexplib.syntax, syntax_camlp4o
 <math.*>: pkg_sexplib.syntax, syntax_camlp4o

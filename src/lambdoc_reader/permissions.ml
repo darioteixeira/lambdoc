@@ -131,7 +131,7 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra, perm_s
 
 (**	Checks a command feature.
 *)
-let check_command_feature errors comm maybe_subpaged feature =
+let check_command_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm feature =
 
 	let get_subpaged = function
 		| Some subpaged	-> subpaged

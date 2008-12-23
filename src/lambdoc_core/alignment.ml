@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Implementation file for Floater module.
+(*	Implementation file for Alignment module.
 
 	Copyright (c) 2007-2008 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-(**	Definition of document floaters.
+(**	Definition of possible alignments for document floaters.
 *)
 
 TYPE_CONV_PATH "Document"
@@ -18,7 +18,7 @@ TYPE_CONV_PATH "Document"
 (**	{Exceptions}								*)
 (********************************************************************************)
 
-exception Unknown_floater of string
+exception Unknown_alignment of string
 
 
 (********************************************************************************)
@@ -39,7 +39,7 @@ let of_string = function
 	| "center"	-> Center
 	| "left"	-> Left
 	| "right"	-> Right
-	| other		-> raise (Unknown_floater other)
+	| other		-> raise (Unknown_alignment other)
 
 let to_string = function
 	| Center	-> "center"

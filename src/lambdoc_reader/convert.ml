@@ -100,12 +100,12 @@ let convert_to_composition contents =
 		| #Block.M.nestable_block_t as blk	-> (convert_nestable_block blk :> (Block.M.super_block_t, _) Block.M.t)
 
 	and convert_top_block = function
-		| #Block.M.heading_block_t as blk	-> (convert_heading blk :> (Block.M.top_block_t, _) Block.M.t)
+		| #Block.M.heading_block_t as blk	-> (convert_heading_block blk :> (Block.M.top_block_t, _) Block.M.t)
 		| `Title _				-> raise (Invalid_composition_subset "title")
 		| `Abstract _				-> raise (Invalid_composition_subset "abstract")
 		| `Rule					-> raise (Invalid_composition_subset "rule")
 
-	and convert_heading = function
+	and convert_heading_block = function
 		| `Part _				-> raise (Invalid_composition_subset "part")
 		| `Section _				-> raise (Invalid_composition_subset "section")
 		| `Appendix _				-> raise (Invalid_composition_subset "appendix")
@@ -114,31 +114,34 @@ let convert_to_composition contents =
 		| `Toc _				-> raise (Invalid_composition_subset "toc")
 
 	and convert_nestable_block = function
-		| #Block.M.paragraph_block_t as blk	-> (convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.itemize_block_t as blk	-> (convert_itemize_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.enumerate_block_t as blk	-> (convert_enumerate_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.quote_block_t as blk		-> (convert_quote_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.math_block_t as blk		-> (convert_math_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.code_block_t as blk		-> (convert_code_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.verbatim_block_t as blk	-> (convert_verbatim_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.tabular_block_t as blk	-> (convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.bitmap_block_t as blk		-> (convert_bitmap_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
-		| #Block.M.subpage_block_t as blk	-> (convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t)
+		| #Block.M.paragraph_block_t as blk	-> convert_paragraph_block blk
+		| #Block.M.itemize_block_t as blk	-> convert_itemize_block blk
+		| #Block.M.enumerate_block_t as blk	-> convert_enumerate_block blk
+		| `Floater (align, blk)			-> Block.M.floater align (convert_floater_block blk)
 		| `Equation _				-> raise (Invalid_composition_subset "equation")
 		| `Printout _				-> raise (Invalid_composition_subset "printout")
 		| `Table _				-> raise (Invalid_composition_subset "table")
 		| `Figure _				-> raise (Invalid_composition_subset "figure")
 
+	and convert_floater_block = function
+		| #Block.M.quote_block_t as blk		-> convert_quote_block blk
+		| #Block.M.math_block_t as blk		-> convert_math_block blk
+		| #Block.M.code_block_t as blk		-> convert_code_block blk
+		| #Block.M.verbatim_block_t as blk	-> convert_verbatim_block blk
+		| #Block.M.tabular_block_t as blk	-> convert_tabular_block blk
+		| #Block.M.bitmap_block_t as blk	-> convert_bitmap_block blk
+		| #Block.M.subpage_block_t as blk	-> convert_subpage_block blk
+
 	and convert_paragraph_block (`Paragraph seq)			= Block.M.paragraph (convert_super_seq seq)
 	and convert_itemize_block (`Itemize (bul, (hd, tl)))		= Block.M.itemize bul (fplus convert_nestable_frag hd tl)
 	and convert_enumerate_block (`Enumerate (num, (hd, tl)))	= Block.M.enumerate num (fplus convert_nestable_frag hd tl)
-	and convert_quote_block (`Quote (floater, frag))		= Block.M.quote floater (convert_nestable_frag frag)
-	and convert_math_block (`Math (floater, math))		= Block.M.math floater math
-	and convert_code_block (`Code (floater, highlight))		= Block.M.code floater highlight
-	and convert_verbatim_block (`Verbatim (floater, txt))		= Block.M.verbatim floater txt
-	and convert_tabular_block (`Tabular (floater, tab))		= Block.M.tabular floater (convert_tabular tab)
-	and convert_bitmap_block (`Bitmap (floater, alias))		= Block.M.bitmap floater alias
-	and convert_subpage_block (`Subpage (floater, frag))		= Block.M.subpage floater (convert_super_frag frag)
+	and convert_quote_block (`Quote frag)				= Block.M.quote (convert_nestable_frag frag)
+	and convert_math_block (`Math math)				= Block.M.math math
+	and convert_code_block (`Code code)				= Block.M.code code
+	and convert_verbatim_block (`Verbatim txt)			= Block.M.verbatim txt
+	and convert_tabular_block (`Tabular tab)			= Block.M.tabular (convert_tabular tab)
+	and convert_bitmap_block (`Bitmap alias)			= Block.M.bitmap alias
+	and convert_subpage_block (`Subpage frag)			= Block.M.subpage (convert_super_frag frag)
 
 	in convert_super_frag contents
 
