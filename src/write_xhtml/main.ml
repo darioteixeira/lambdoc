@@ -86,6 +86,9 @@ let cons_of_level = function
 	| `Level3 -> XHTML.M.h3
 
 
+let make_alignment alignment = ["doc_aligned"; "doc_align_" ^ (Alignment.to_string alignment)]
+	
+
 let make_heading cons label order_str classname content =
 	cons ?a:(Some [a_id (make_label label); a_class [classname]]) ((wrap_order order_str) @ [span content])
 
@@ -368,54 +371,47 @@ let write_valid_document settings classname doc =
 		| #Block.M.enumerate_block_t as blk ->
 			write_enumerate_block blk
 
-		| `Floater (alignment, blk) ->
-			let style = ["doc_floater"; "doc_float_" ^ (Alignment.to_string alignment)]
-			in write_floater_block style blk
+		| #Block.M.quote_block_t as blk ->
+			write_quote_block ~wrapped:false blk
+
+		| #Block.M.math_block_t as blk ->
+			write_math_block ~wrapped:false blk
+
+		| #Block.M.code_block_t as blk ->
+			write_code_block ~wrapped:false blk
+
+		| #Block.M.verbatim_block_t as blk ->
+			write_verbatim_block ~wrapped:false blk
+
+		| #Block.M.tabular_block_t as blk ->
+			write_tabular_block ~wrapped:false blk
+
+		| #Block.M.bitmap_block_t as blk ->
+			write_bitmap_block ~wrapped:false blk
+
+		| #Block.M.subpage_block_t as blk ->
+			write_subpage_block ~wrapped:false blk
 
 		| `Equation (wrapper, equation) ->
 			let name = settings.names.equation_name
-			and content = write_equation_block equation
-			in write_wrapper wrapper "doc_eq" name content
+			and (alignment, content) = write_equation_block equation
+			in write_wrapper wrapper alignment "doc_eq" name content
 
 		| `Printout (wrapper, printout) ->
 			let name = settings.names.printout_name
-			and content = write_printout_block printout
-			in write_wrapper wrapper "doc_prt" name content
+			and (alignment, content) = write_printout_block printout
+			in write_wrapper wrapper alignment "doc_prt" name content
 
 		| `Table (wrapper, table) ->
 			let name = settings.names.table_name
-			and content = write_table_block table
-			in write_wrapper wrapper "doc_table" name content
+			and (alignment, content) = write_table_block table
+			in write_wrapper wrapper alignment "doc_table" name content
 
 		| `Figure (wrapper, figure) ->
 			let name = settings.names.figure_name
-			and content = write_figure_block figure
-			in write_wrapper wrapper "doc_fig" name content
+			and (alignment, content) = write_figure_block figure
+			in write_wrapper wrapper alignment "doc_fig" name content
 	
-
-	and write_floater_block style = function
-
-		| #Block.M.quote_block_t as blk ->
-			write_quote_block style blk
-
-		| #Block.M.math_block_t as blk ->
-			write_math_block style blk
-
-		| #Block.M.code_block_t as blk ->
-			write_code_block style blk
-
-		| #Block.M.verbatim_block_t as blk ->
-			write_verbatim_block style blk
-
-		| #Block.M.tabular_block_t as blk ->
-			write_tabular_block style blk
-
-		| #Block.M.bitmap_block_t as blk ->
-			write_bitmap_block style blk
-
-		| #Block.M.subpage_block_t as blk ->
-			write_subpage_block style blk
-
 
 	and write_paragraph_block = function
 		| `Paragraph seq ->
@@ -436,75 +432,82 @@ let write_valid_document settings classname doc =
 			in XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl
 
 
-	and write_quote_block style = function
-		| `Quote frag ->
-			XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ style)] (write_nestable_frag frag)
+	and write_quote_block ~wrapped = function
+		| `Quote (alignment, frag) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ style)] (write_nestable_frag frag)
 
 
-	and write_math_block style = function
-		| `Math math ->
-			XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math]
+	and write_math_block ~wrapped = function
+		| `Math (alignment, math) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math]
 
 
-	and write_code_block style = function
-		| `Code code ->
-			Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:true ~zebra:true code
+	and write_code_block ~wrapped = function
+		| `Code (alignment, code) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:true ~zebra:true code
 
 
-	and write_verbatim_block style = function
-		| `Verbatim txt ->
-			XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.pre [XHTML.M.pcdata txt]]
+	and write_verbatim_block ~wrapped = function
+		| `Verbatim (alignment, txt) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.pre [XHTML.M.pcdata txt]]
 
 
-	and write_tabular_block style = function
-		| `Tabular tab ->
-			write_tabular style tab
+	and write_tabular_block ~wrapped = function
+		| `Tabular (alignment, tab) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in write_tabular style tab
 
 
-	and write_bitmap_block style = function
-		| `Bitmap alias ->
+	and write_bitmap_block ~wrapped = function
+		| `Bitmap (alignment, alias) ->
+			let style = if wrapped then [] else make_alignment alignment in
 			let bitmap = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
 			in XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]
 
 
-	and write_subpage_block style = function
-		| `Subpage frag ->
-			XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_super_frag frag)
+	and write_subpage_block ~wrapped = function
+		| `Subpage (alignment, frag) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_super_frag frag)
 
 
 	and write_equation_block = function
-		| #Block.M.math_block_t as blk ->
-			write_math_block [] blk
+		| `Math (alignment, _) as blk ->
+			(alignment, write_math_block ~wrapped:true blk)
 
 
 	and write_printout_block = function
-		| #Block.M.code_block_t as blk ->
-			write_code_block [] blk
+		| `Code (alignment, _) as blk->
+			(alignment, write_code_block ~wrapped:true blk)
 
 
 	and write_table_block = function
-		| #Block.M.tabular_block_t as blk ->
-			write_tabular_block [] blk
+		| `Tabular (alignment, _) as blk->
+			(alignment, write_tabular_block ~wrapped:true blk)
 
 
 	and write_figure_block = function
-		| #Block.M.bitmap_block_t as blk ->
-			write_bitmap_block [] blk
-		| #Block.M.verbatim_block_t as blk ->
-			write_verbatim_block [] blk
-		| #Block.M.subpage_block_t as blk ->
-			write_subpage_block [] blk
+		| `Bitmap (alignment, _) as blk->
+			(alignment, write_bitmap_block ~wrapped:true blk)
+		| `Verbatim (alignment, _) as blk ->
+			(alignment, write_verbatim_block ~wrapped:true blk)
+		| `Subpage (alignment, _) as blk ->
+			(alignment, write_subpage_block ~wrapped:true blk)
 
 
 	and write_caption order wrapper_name caption =
-		let caption_head = XHTML.M.h1 [pcdata (wrapper_name ^ "  " ^ (wrapper_conv order) ^ ":")]
-		and caption_body = XHTML.M.p (write_super_seq caption)
-		in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
+		let caption_head = XHTML.M.span [pcdata wrapper_name; entity "thinsp"; pcdata ((wrapper_conv order) ^ ":")]
+		and caption_body = XHTML.M.span (write_super_seq caption)
+		in XHTML.M.p ~a:[a_class ["doc_caption"]] [caption_head; caption_body]
 
 
-	and write_wrapper (label, order, caption) classname name wrapper_content =
+	and write_wrapper (label, order, caption) alignment classname name wrapper_content =
 		let caption_content = write_caption order name caption in
-		let classnames = ["doc_wrapper"; classname]
+		let classnames = ["doc_wrapper"; classname] @ (make_alignment alignment)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 
 

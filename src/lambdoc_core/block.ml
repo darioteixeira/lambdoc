@@ -44,28 +44,13 @@ sig
 	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
 	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
-	type quote_block_t = [ `Quote of nestable_frag_t ] (*with sexp*)
-	type math_block_t = [ `Math of Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Code.t ] (*with sexp*) 
-	type tabular_block_t = [ `Tabular of Tabular.t ] (*with sexp*) 
-	type bitmap_block_t = [ `Bitmap of alias_t ] (*with sexp*) 
-	type verbatim_block_t = [ `Verbatim of raw_t ] (*with sexp*) 
-	type subpage_block_t = [ `Subpage of super_frag_t ] (*with sexp*)
-
-
-	(**	A floater block is one of the basic blocks that may be used
-		as a free-floating (ie, it can be placed in the centre, left,
-		or right of the page) and non-wrapped block.
-	*)
-	type floater_block_t =
-		[ quote_block_t
-		| math_block_t
-		| code_block_t
-		| verbatim_block_t
-		| tabular_block_t
-		| bitmap_block_t
-		| subpage_block_t
-		] (*with sexp*)
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
+	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Alignment.t * Code.t ] (*with sexp*) 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
+	type bitmap_block_t = [ `Bitmap of Alignment.t * alias_t ] (*with sexp*) 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
 
 
 	(**	The various types of wrapper blocks.  Wrappers are just
@@ -90,7 +75,13 @@ sig
 		[ paragraph_block_t
 		| itemize_block_t
 		| enumerate_block_t
-		| `Floater of Alignment.t * floater_block_t
+		| quote_block_t
+		| math_block_t
+		| code_block_t
+		| verbatim_block_t
+		| tabular_block_t
+		| bitmap_block_t
+		| subpage_block_t
 		| `Equation of wrapper_t * equation_block_t
 		| `Printout of wrapper_t * printout_block_t
 		| `Table of wrapper_t * table_block_t
@@ -147,7 +138,7 @@ sig
 	*)
 	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
 
-	type (+'a, 'b) t = 'a constraint 'a = [< floater_block_t | super_block_t] (*with sexp*)
+	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t ] (*with sexp*)
 
 	val part: Label.t -> part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> heading_block_t ], [> `Manuscript ]) t
@@ -174,29 +165,27 @@ sig
 		([> itemize_block_t ], 'b) t
 	val enumerate: Numbering.t -> (nestable_block_t, 'b) t list plus_t ->
 		([> enumerate_block_t ], 'b) t
-	val quote: (nestable_block_t, 'b) t list ->
+	val quote: Alignment.t -> (nestable_block_t, 'b) t list ->
 		([> quote_block_t ], 'b) t
-	val math: Math.t ->
+	val math: Alignment.t -> Math.t ->
 		([> math_block_t ], [> `Composition]) t
-	val code: Code.t ->
+	val code: Alignment.t -> Code.t ->
 		([> code_block_t ], [> `Composition]) t
-	val verbatim: raw_t ->
+	val verbatim: Alignment.t -> raw_t ->
 		([> verbatim_block_t ], [> `Composition]) t
-	val tabular: Tabular.t ->
+	val tabular: Alignment.t -> Tabular.t ->
 		([> tabular_block_t ], [> `Manuscript]) t
-	val bitmap: alias_t ->
+	val bitmap: Alignment.t -> alias_t ->
 		([> bitmap_block_t ], [> `Composition]) t
-	val subpage: ([< super_block_t ], 'b) t list ->
+	val subpage: Alignment.t -> ([< super_block_t ], 'b) t list ->
 		([> subpage_block_t ], 'b) t
-	val floater: Alignment.t -> ([< floater_block_t], 'b) t ->
-		([> nestable_block_t ], 'b) t
-	val equation: wrapper_t -> [< equation_block_t ] ->
+	val equation: wrapper_t -> (equation_block_t, _) t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val printout: wrapper_t -> [< printout_block_t ] ->
+	val printout: wrapper_t -> (printout_block_t, _) t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val table: wrapper_t -> [< table_block_t ] ->
+	val table: wrapper_t -> (table_block_t, _) t ->
 		([> nestable_block_t ], [> `Manuscript]) t
-	val figure: wrapper_t -> [< figure_block_t ] ->
+	val figure: wrapper_t -> (figure_block_t, _) t ->
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
@@ -212,23 +201,13 @@ struct
 	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
 	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
-	type quote_block_t = [ `Quote of nestable_frag_t ] (*with sexp*)
-	type math_block_t = [ `Math of Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Code.t ] (*with sexp*) 
-	type tabular_block_t = [ `Tabular of Tabular.t ] (*with sexp*) 
-	type bitmap_block_t = [ `Bitmap of alias_t ] (*with sexp*) 
-	type verbatim_block_t = [ `Verbatim of raw_t ] (*with sexp*) 
-	type subpage_block_t = [ `Subpage of super_frag_t ] (*with sexp*) 
-
-	type floater_block_t =
-		[ quote_block_t
-		| math_block_t
-		| code_block_t
-		| verbatim_block_t
-		| tabular_block_t
-		| bitmap_block_t
-		| subpage_block_t
-		] (*with sexp*)
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
+	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Alignment.t * Code.t ] (*with sexp*) 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
+	type bitmap_block_t = [ `Bitmap of Alignment.t * alias_t ] (*with sexp*) 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
 
 	type equation_block_t = [ math_block_t ] (*with sexp*)
 	type printout_block_t = [ code_block_t ] (*with sexp*)
@@ -241,7 +220,13 @@ struct
 		[ paragraph_block_t
 		| itemize_block_t
 		| enumerate_block_t
-		| `Floater of Alignment.t * floater_block_t
+		| quote_block_t
+		| math_block_t
+		| code_block_t
+		| verbatim_block_t
+		| tabular_block_t
+		| bitmap_block_t
+		| subpage_block_t
 		| `Equation of wrapper_t * equation_block_t
 		| `Printout of wrapper_t * printout_block_t
 		| `Table of wrapper_t * table_block_t
@@ -279,7 +264,7 @@ struct
 
 	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
 
-	type (+'a, 'b) t = 'a constraint 'a = [< floater_block_t | super_block_t ] (*with sexp*)
+	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t ] (*with sexp*)
 
 	let part label order seq = `Part (label, order, `Custom (seq :> Node.M.super_seq_t))
 	let section label order location level seq = `Section (label, order, location, level, `Custom (seq :> Node.M.super_seq_t))
@@ -294,17 +279,16 @@ struct
 	let paragraph seq = `Paragraph (seq :> Node.M.super_seq_t)
 	let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_frags))
 	let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
-	let quote frag = `Quote frag
-	let math mth = `Math mth
-	let code txt = `Code txt
-	let verbatim txt = `Verbatim txt
-	let tabular tab = `Tabular tab
-	let bitmap alias = `Bitmap alias
-	let subpage frag = `Subpage (frag :> super_block_t list)
-	let floater alignment floater_blk = `Floater (alignment, (floater_blk :> floater_block_t))
-	let equation wrapper equation_blk = `Equation (wrapper, (equation_blk :> equation_block_t))
-	let printout wrapper printout_blk = `Printout (wrapper, (printout_blk :> printout_block_t))
-	let table wrapper table_blk = `Table (wrapper, (table_blk :> table_block_t))
-	let figure wrapper figure_blk = `Figure (wrapper, (figure_blk :> figure_block_t))
+	let quote alignment frag = `Quote (alignment, frag)
+	let math alignment mth = `Math (alignment, mth)
+	let code alignment txt = `Code (alignment, txt)
+	let verbatim alignment txt = `Verbatim (alignment, txt)
+	let tabular alignment tab = `Tabular (alignment, tab)
+	let bitmap alignment alias = `Bitmap (alignment, alias)
+	let subpage alignment frag = `Subpage (alignment, (frag :> super_block_t list))
+	let equation wrapper equation_blk = `Equation (wrapper, equation_blk)
+	let printout wrapper printout_blk = `Printout (wrapper, printout_blk)
+	let table wrapper table_blk = `Table (wrapper, table_blk)
+	let figure wrapper figure_blk = `Figure (wrapper, figure_blk)
 end
 

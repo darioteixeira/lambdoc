@@ -37,14 +37,14 @@ type composition_t = [`Composition] t (*with sexp*)
 (********************************************************************************)
 
 val make_manuscript:
-	([< Block.M.super_block_t], [< `Composition | `Manuscript]) Block.M.t list ->
+	([< Block.M.super_block_t ], [< `Composition | `Manuscript]) Block.M.t list ->
 	Bib.t list ->
 	Note.t list ->
 	Block.M.heading_block_t list ->
 	Labelmap.t ->
 	manuscript_t
 
-val make_composition: ([< Block.M.super_block_t], [< `Composition]) Block.M.t list -> composition_t
+val make_composition: ([< Block.M.super_block_t ], [< `Composition]) Block.M.t list -> composition_t
 
 (*
 val serialize_manuscript: manuscript_t -> string

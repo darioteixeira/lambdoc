@@ -518,45 +518,45 @@ let process_document feature_map document_ast =
 	and convert_nestable_block ~subpaged = function
 
 		| #Ast.M.paragraph_block_t as blk ->
-			((convert_paragraph_block blk) :> (Block.M.nestable_block_t, _) Block.M.t option)
+			(convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.itemize_block_t as blk ->
-			((convert_itemize_block ~subpaged blk) :> (Block.M.nestable_block_t, _) Block.M.t option)
+			(convert_itemize_block ~subpaged blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.enumerate_block_t as blk ->
-			((convert_enumerate_block ~subpaged blk) :> (Block.M.nestable_block_t, _) Block.M.t option)
+			(convert_enumerate_block ~subpaged blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.quote_block_t as blk ->
-			convert_floater (convert_quote_block ~subpaged blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_quote_block ~subpaged blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.mathtex_block_t as blk ->
-			convert_floater (convert_mathtex_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_mathtex_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.mathml_block_t as blk ->
-			convert_floater (convert_mathml_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_mathml_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.code_block_t as blk ->
-			convert_floater (convert_code_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_code_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.verbatim_block_t as blk ->
-			convert_floater (convert_verbatim_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_verbatim_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.tabular_block_t as blk ->
-			convert_floater (convert_tabular_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.bitmap_block_t as blk ->
-			convert_floater (convert_bitmap_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_bitmap_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| #Ast.M.subpage_block_t as blk ->
-			convert_floater (convert_subpage_block ~wrapped:false blk :> (Alignment.t * (Block.M.floater_block_t, _) Block.M.t) option)
+			(convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
 
 		| `AST_equation (comm, cap, blk) ->
 			let elem () =
 				let maybe_wrapper = convert_wrapper comm equation_counter Target.equation_target cap subpaged
 				and maybe_equation = convert_equation_block blk
 				in match (maybe_wrapper, maybe_equation) with
-					| (Some wrapper, Some (_, equation))	-> Some (Block.M.equation wrapper equation)
-					| _					-> None
+					| (Some wrapper, Some equation)	-> Some (Block.M.equation wrapper equation)
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_equation comm elem
 
 		| `AST_printout (comm, cap, blk) ->
@@ -564,8 +564,8 @@ let process_document feature_map document_ast =
 				let maybe_wrapper = convert_wrapper comm printout_counter Target.printout_target cap subpaged
 				and maybe_printout = convert_printout_block blk
 				in match (maybe_wrapper, maybe_printout) with
-					| (Some wrapper, Some (_, printout))	-> Some (Block.M.printout wrapper printout)
-					| _					-> None
+					| (Some wrapper, Some printout)	-> Some (Block.M.printout wrapper printout)
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_printout comm elem
 
 		| `AST_table (comm, cap, blk) ->
@@ -573,8 +573,8 @@ let process_document feature_map document_ast =
 				let maybe_wrapper = convert_wrapper comm table_counter Target.table_target cap subpaged
 				and maybe_table = convert_table_block blk
 				in match (maybe_wrapper, maybe_table) with
-					| (Some wrapper, Some (_, table))	-> Some (Block.M.table wrapper table)
-					| _					-> None
+					| (Some wrapper, Some table)	-> Some (Block.M.table wrapper table)
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_table comm elem
 
 		| `AST_figure (comm, cap, blk) ->
@@ -582,8 +582,8 @@ let process_document feature_map document_ast =
 				let maybe_wrapper = convert_wrapper comm figure_counter Target.figure_target cap subpaged
 				and maybe_figure = convert_figure_block blk
 				in match (maybe_wrapper, maybe_figure) with
-					| (Some wrapper, Some (_, figure))	-> Some (Block.M.figure wrapper figure)
-					| _					-> None
+					| (Some wrapper, Some figure)	-> Some (Block.M.figure wrapper figure)
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_figure comm elem
 
 		| `AST_bib (comm, title, author, resource) ->
@@ -650,69 +650,65 @@ let process_document feature_map document_ast =
 		| `AST_quote (comm, frag) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in Some (alignment, Block.M.quote (convert_nestable_frag subpaged frag))
+				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
 			in check_comm `Feature_quote comm elem
 
 
-	and convert_mathtex_block ~wrapped = function
+	and convert_mathtex_block = function
 		| `AST_mathtex_blk (comm, txt) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in match convert_mathtex Block.M.math comm.comm_linenum txt with
-					| Some blk	-> Some (alignment, blk)
-					| None		-> None
+				in convert_mathtex (Block.M.math alignment) comm.comm_linenum txt
 			in check_comm `Feature_mathtex_blk comm elem
 
 
-	and convert_mathml_block ~wrapped = function
+	and convert_mathml_block = function
 		| `AST_mathml_blk (comm, txt) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in match convert_mathml Block.M.math comm.comm_linenum txt with
-					| Some blk	-> Some (alignment, blk)
-					| None		-> None
+				in convert_mathml (Block.M.math alignment) comm.comm_linenum txt
 			in check_comm `Feature_mathml_blk comm elem
 
 
-	and convert_code_block ~wrapped = function
+	and convert_code_block = function
 		| `AST_code (comm, txt) ->
 			let elem () =
 				let lang = get_language errors comm comm.comm_secondary in
 				let highlight = Code.from_string lang txt
 				and alignment = get_alignment errors comm comm.comm_extra
-				in Some (alignment, Block.M.code highlight)
+				in Some (Block.M.code alignment highlight)
 			in check_comm `Feature_code comm elem
 
 
-	and convert_verbatim_block ~wrapped = function
+	and convert_verbatim_block = function
 		| `AST_verbatim (comm, txt) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in Some (alignment, Block.M.verbatim txt)
+				in Some (Block.M.verbatim alignment txt)
 			in check_comm `Feature_verbatim comm elem
 
 
-	and convert_tabular_block ~wrapped = function
+	and convert_tabular_block = function
 		| `AST_tabular (comm, tab) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in Some (alignment, Block.M.tabular (convert_tabular comm tab))
+				in Some (Block.M.tabular alignment (convert_tabular comm tab))
 			in check_comm `Feature_tabular comm elem
 
 
-	and convert_bitmap_block ~wrapped = function
+	and convert_bitmap_block = function
 		| `AST_bitmap (comm, alias) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in Some (alignment, Block.M.bitmap alias)
+				in Some (Block.M.bitmap alignment alias)
 			in check_comm `Feature_bitmap comm elem
 
 
-	and convert_subpage_block ~wrapped = function
+	and convert_subpage_block = function
 		| `AST_subpage (comm, subpage) ->
 			let elem () =
 				let alignment = get_alignment errors comm comm.comm_extra
-				in Some (alignment, Block.M.subpage (convert_super_frag true subpage))
+				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
 			in check_comm `Feature_subpage comm elem
 
 
@@ -736,28 +732,28 @@ let process_document feature_map document_ast =
 
 	and convert_equation_block = function
 		| #Ast.M.mathtex_block_t as blk ->
-			(convert_mathtex_block ~wrapped:true blk :> (Alignment.t * (Block.M.equation_block_t, _) Block.M.t) option)
+			(convert_mathtex_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
 		| #Ast.M.mathml_block_t as blk ->
-			(convert_mathml_block ~wrapped:true blk :> (Alignment.t * (Block.M.equation_block_t, _) Block.M.t) option)
+			(convert_mathml_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
 
 
 	and convert_printout_block = function
 		| #Ast.M.code_block_t as blk ->
-			(convert_code_block ~wrapped:true blk :> (Alignment.t * (Block.M.printout_block_t, _) Block.M.t) option)
+			(convert_code_block blk :> (Block.M.printout_block_t, _) Block.M.t option)
 
 
 	and convert_table_block = function
 		| #Ast.M.tabular_block_t as blk ->
-			(convert_tabular_block ~wrapped:true blk :> (Alignment.t * (Block.M.table_block_t, _) Block.M.t) option)
+			(convert_tabular_block blk :> (Block.M.table_block_t, _) Block.M.t option)
 
 
 	and convert_figure_block = function
 		| #Ast.M.bitmap_block_t as blk ->
-			(convert_bitmap_block ~wrapped:true blk :> (Alignment.t * (Block.M.figure_block_t, _) Block.M.t) option)
+			(convert_bitmap_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
 		| #Ast.M.verbatim_block_t as blk ->
-			(convert_verbatim_block ~wrapped:true blk :> (Alignment.t * (Block.M.figure_block_t, _) Block.M.t) option)
+			(convert_verbatim_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
 		| #Ast.M.subpage_block_t as blk ->
-			(convert_subpage_block ~wrapped:true blk :> (Alignment.t * (Block.M.figure_block_t, _) Block.M.t) option)
+			(convert_subpage_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
 
 
 	and convert_caption_block = function
@@ -769,11 +765,6 @@ let process_document feature_map document_ast =
 	and convert_item_block ~subpaged = function
 		| `AST_item (comm, frag) ->
 			convert_nestable_frag subpaged frag
-
-
-	and convert_floater = function
-		| Some (alignment, block)	-> Some (Block.M.floater alignment block :> (Block.M.nestable_block_t, _) Block.M.t)
-		| None				-> None
 
 
 	and convert_wrapper comm counter target_maker caption_block subpaged =

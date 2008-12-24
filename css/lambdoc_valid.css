@@ -69,7 +69,7 @@ sub		{vertical-align: -0.1em;}
 h1.doc_title	{font-size: 1.714em; margin: 1.5em 0;}		/* For default of 14 * 1.714 = 24px */
 h2.doc_title	{font-size: 1.429em; margin: 0.5em 0;}		/* For default of 14 * 1.429 = 20px */
 
-h1.doc_part
+.doc_part
 	{
 	clear: both;
 	margin: 1.5em 0 1em;
@@ -181,24 +181,26 @@ h3.doc_sec	{font-size: 1em;}		/* For default of 14 * 1 = 14px */
 
 
 /********************************************************************************/
-/* CSS common to all floaters.							*/
+/* CSS common to all alignable blocks.						*/
 /********************************************************************************/
 
-.doc_floater
+.doc_aligned
 	{
 	clear: both;
 	}
 
-.doc_float_center	{margin: 2em 1em;}
-.doc_float_right	{margin: 0.3em 0 1em 1.5em; float: right; max-width: 35%;}
-.doc_float_left		{margin: 0.3em 1.5em 1em 0; float: left; max-width: 35%;}
+.doc_align_center	{margin: 2em 1em;}
+.doc_align_right	{margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
+.doc_align_left		{margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
+
+.doc_wrapper.doc_align_center	{margin: 2.5em 1em;}
 
 
 /********************************************************************************/
 /* Quote environments.								*/
 /********************************************************************************/
 
-blockquote.doc_quote
+.doc_quote
 	{
 	clear: both;
 	padding: 0 0.5em 0 2em;
@@ -209,7 +211,7 @@ blockquote.doc_quote
 	quotes: "\201c" "\201d";
 	}
 
-blockquote.doc_quote:before
+.doc_quote:before
 	{
 	display: block;
 	font-family: "Georgia", serif;
@@ -226,7 +228,7 @@ blockquote.doc_quote:before
 /* Mathematics environments.							*/
 /********************************************************************************/
 
-div.doc_math
+.doc_math
 	{
 	text-align: center;
 	}
@@ -320,7 +322,8 @@ div.doc_math
 	font-size: 0.929em;
 	}
 
-.doc_tab.doc_float_center
+.doc_tab.doc_align_center,
+.doc_align_center > .doc_tab
 	{
 	margin: 2em auto;
 	}
@@ -390,39 +393,20 @@ div.doc_math
 
 
 /********************************************************************************/
-/* CSS for wrappers.								*/
+/* CSS for wrapper captions.							*/
 /********************************************************************************/
-
-.doc_wrapper
-	{
-	margin: 2.5em 1em 2.5em;
-	}
-
-.doc_wrapper > .doc_wrapped
-	{
-	margin: 0 auto;
-	}
 
 .doc_caption
 	{
-	margin: 1em 0 0 0;
+	margin: 1em 0;
+	padding: 0 0.5em;
 	font-size: 0.929em;
 	}
 
-.doc_caption > h1
+.doc_caption > span:first-child
 	{
-	float: left;
-	width: 5em;
-	margin: 0 0.5em 0 0;
-	text-align: right;
 	font-weight: bold;
-	font-size: 1em;
-	}
-
-.doc_caption > p
-	{
-	margin: 0 0 0 5.5em;	/* Left = H1 (width + margin-right) */
-	text-align: justify;
+	margin-right: 0.5em;
 	}
 
 
