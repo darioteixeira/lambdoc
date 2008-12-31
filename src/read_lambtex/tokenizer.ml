@@ -229,8 +229,8 @@ let build_op lexbuf =
 (**	Issues an environment command.
 *)
 let issue_env_command =
-	let rex = Pcre.regexp ("^" ^ pat_env ^ pat_optional ^ pat_primary ^ pat_secondary ^ "$") in
-	fun lexbuf ->
+	let rex = Pcre.regexp ("^" ^ pat_env ^ pat_optional ^ pat_primary ^ pat_secondary ^ "$")
+	in fun lexbuf ->
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "env" subs
 		and primary = Pcre.get_named_substring rex "primary" subs in
@@ -241,8 +241,8 @@ let issue_env_command =
 (**	Issues a simple command.
 *)
 let issue_simple_command =
-	let rex = Pcre.regexp ("^" ^ pat_command ^ pat_optional ^ "$") in
-	fun lexbuf ->
+	let rex = Pcre.regexp ("^" ^ pat_command ^ pat_optional ^ "$")
+	in fun lexbuf ->
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "command" subs in
 		let params = build_command lexbuf command rex subs in
