@@ -13,6 +13,7 @@
 
 open ExtList
 open ExtString
+open Lambdoc_core
 
 
 (********************************************************************************)
@@ -30,13 +31,6 @@ struct
 			else m
 		in fold func map empty
 end
-
-
-(********************************************************************************)
-(**	{2 Exceptions}								*)
-(********************************************************************************)
-
-exception Solution_found of property_data_t option array * bool array
 
 
 (********************************************************************************)
@@ -83,6 +77,13 @@ type result_t =
 	| Positive of property_data_t
 	| Undecided of property_data_t
 	| Negative
+
+
+(********************************************************************************)
+(**	{2 Exceptions}								*)
+(********************************************************************************)
+
+exception Solution_found of property_data_t option array * bool array
 
 
 (********************************************************************************)
@@ -230,7 +231,7 @@ let solve assigned taken undecided =
 
 
 let process str handles =
-	let (num_fields, results) = prepare str handles
+	let (num_fields, results) = prepare str handles in
 	let (assigned, taken, undecided) = summarise num_fields results
 	in solve assigned taken undecided
 
