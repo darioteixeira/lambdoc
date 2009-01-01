@@ -15,13 +15,6 @@ TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
-(**	{Exceptions}								*)
-(********************************************************************************)
-
-exception Unknown_alignment of string
-
-
-(********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
@@ -39,7 +32,7 @@ let of_string = function
 	| "center"	-> Center
 	| "left"	-> Left
 	| "right"	-> Right
-	| other		-> raise (Unknown_alignment other)
+	| other		-> invalid_arg "Unknown alignment"
 
 let to_string = function
 	| Center	-> "center"

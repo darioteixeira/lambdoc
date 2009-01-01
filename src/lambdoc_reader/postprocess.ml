@@ -26,56 +26,6 @@ open Ast.M
 (**	{3 Helper sub-functions}						*)
 (********************************************************************************)
 
-(**	This subfunction returns the type of bullet associated with an itemize
-	environment.  If no extra parameter is given, the bullet type is assumed
-	to be the default.
-*)
-let get_bullet errors comm = function
-	| None ->
-		Bullet.Default
-	| Some thing ->
-		try
-			Bullet.of_string thing
-		with
-			Bullet.Unknown_bullet x ->
-				let msg = Error.Unknown_bullet (comm.comm_tag, x)
-				in	DynArray.add errors (comm.comm_linenum, msg);
-					Bullet.Default
-
-
-(**	This subfunction returns the type of numbering associated with an enumerate
-	environment.  If no extra parameter is given, the numbering type is assumed
-	to be the default.
-*)
-let get_numbering errors comm = function
-	| None ->
-		Numbering.Default
-	| Some thing ->
-		try
-			Numbering.of_string thing
-		with
-			Numbering.Unknown_numbering x ->
-				let msg = Error.Unknown_numbering (comm.comm_tag, x)
-				in	DynArray.add errors (comm.comm_linenum, msg);
-					Numbering.Default
-
-
-(**	This subfunction returns the type of alignment associated with a floater block.
-	If no extra parameter is given, the alignment type is assumed to be [Center].
-*)
-let get_alignment errors comm = function
-	| None	->
-		Alignment.Center
-	| Some thing ->
-		try
-			Alignment.of_string thing
-		with
-			Alignment.Unknown_alignment x ->
-				let msg = Error.Unknown_alignment (comm.comm_tag, x)
-				in	DynArray.add errors (comm.comm_linenum, msg);
-					Alignment.Center
-
-
 (**	This subfunction returns the language used for syntax highlighting.
 	It invokes the utility function from the Code module, and adds an
 	error if the language is unknown.
@@ -633,7 +583,7 @@ let process_document feature_map document_ast =
 	and convert_itemize_block ~subpaged = function
 		| `AST_itemize (comm, items) ->
 			let elem () =
-				let bullet = get_bullet errors comm comm.comm_extra
+				let bullet = Extra.parse_for_itemize errors comm comm.comm_extra
 				in Some (Block.M.itemize bullet (convert_item_frag subpaged items))
 			in check_comm `Feature_itemize comm elem
 
@@ -641,7 +591,7 @@ let process_document feature_map document_ast =
 	and convert_enumerate_block ~subpaged = function
 		| `AST_enumerate (comm, items) ->
 			let elem () =
-				let numbering = get_numbering errors comm comm.comm_extra
+				let numbering = Extra.parse_for_enumerate errors comm comm.comm_extra
 				in Some (Block.M.enumerate numbering (convert_item_frag subpaged items))
 			in check_comm `Feature_enumerate comm elem
 
@@ -649,7 +599,7 @@ let process_document feature_map document_ast =
 	and convert_quote_block ~subpaged = function
 		| `AST_quote (comm, frag) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_quote errors comm comm.comm_extra
 				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
 			in check_comm `Feature_quote comm elem
 
@@ -657,7 +607,7 @@ let process_document feature_map document_ast =
 	and convert_mathtex_block = function
 		| `AST_mathtex_blk (comm, txt) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_mathtex errors comm comm.comm_extra
 				in convert_mathtex (Block.M.math alignment) comm.comm_linenum txt
 			in check_comm `Feature_mathtex_blk comm elem
 
@@ -665,7 +615,7 @@ let process_document feature_map document_ast =
 	and convert_mathml_block = function
 		| `AST_mathml_blk (comm, txt) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_mathml errors comm comm.comm_extra
 				in convert_mathml (Block.M.math alignment) comm.comm_linenum txt
 			in check_comm `Feature_mathml_blk comm elem
 
@@ -675,7 +625,7 @@ let process_document feature_map document_ast =
 			let elem () =
 				let lang = get_language errors comm comm.comm_secondary in
 				let highlight = Code.from_string lang txt
-				and alignment = get_alignment errors comm comm.comm_extra
+				and alignment = Extra.parse_for_code errors comm comm.comm_extra
 				in Some (Block.M.code alignment highlight)
 			in check_comm `Feature_code comm elem
 
@@ -683,7 +633,7 @@ let process_document feature_map document_ast =
 	and convert_verbatim_block = function
 		| `AST_verbatim (comm, txt) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_verbatim errors comm comm.comm_extra
 				in Some (Block.M.verbatim alignment txt)
 			in check_comm `Feature_verbatim comm elem
 
@@ -691,7 +641,7 @@ let process_document feature_map document_ast =
 	and convert_tabular_block = function
 		| `AST_tabular (comm, tab) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_tabular errors comm comm.comm_extra
 				in Some (Block.M.tabular alignment (convert_tabular comm tab))
 			in check_comm `Feature_tabular comm elem
 
@@ -699,7 +649,7 @@ let process_document feature_map document_ast =
 	and convert_bitmap_block = function
 		| `AST_bitmap (comm, alias) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_bitmap errors comm comm.comm_extra
 				in Some (Block.M.bitmap alignment alias)
 			in check_comm `Feature_bitmap comm elem
 
@@ -707,7 +657,7 @@ let process_document feature_map document_ast =
 	and convert_subpage_block = function
 		| `AST_subpage (comm, subpage) ->
 			let elem () =
-				let alignment = get_alignment errors comm comm.comm_extra
+				let alignment = Extra.parse_for_subpage errors comm comm.comm_extra
 				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
 			in check_comm `Feature_subpage comm elem
 

@@ -615,23 +615,20 @@ let write_error (error_context, error_msg) =
 			let exp_reason = explain_reason "a" "secondary" reason
 			in sprintf "Invalid secondary parameter for command '%s': %s." tag exp_reason
 
-		| Error.Unknown_bullet (tag, bul) ->
-			sprintf "Unknown bullet '%s' for command '%s'.  Valid bullet types are 'default', 'disc', 'circle', 'square', and 'none'." bul tag
-
-		| Error.Unknown_numbering (tag, num) ->
-			sprintf "Unknown numbering '%s' for command '%s'.  Valid numberings are 'default', 'decimal', 'roman', 'Roman', 'alpha', 'Alpha', and 'none'." num tag
-
-		| Error.Unknown_alignment (tag, alignment) ->
-			sprintf "Unknown alignment '%s' for command '%s'.  Valid alignments are 'center', 'left', and 'right'." alignment tag
-
-		| Error.Unknown_language (tag, lang) ->
-			sprintf "Unknown language '%s' for command '%s'.  Valid languages are 'c', 'ocaml', and 'pascal'." lang tag
-
 		| Error.Unknown_env_command tag ->
 			sprintf "Unknown command '\\begin{%s}.'" tag
 
 		| Error.Unknown_simple_command tag ->
 			sprintf "Unknown command '\\%s'." tag
+
+		| Error.Unknown_extra_parameter (tag, extra, col, field) ->
+			sprintf "Unknown extra command '%s'" extra
+
+		| Error.Unknown_language (tag, lang) ->
+			sprintf "Unknown language '%s' for command '%s'.  Valid languages are 'c', 'ocaml', and 'pascal'." lang tag
+
+		| Error.Invalid_extra_parameter tag ->
+			sprintf "Invalid extra parameter for tag '%s'" tag
 
 		| Error.Duplicate_label (tag, label) ->
 			sprintf "Command '%s' attempts to redefine label '%s'." tag label

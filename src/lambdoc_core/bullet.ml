@@ -16,13 +16,6 @@ TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
-(**	{Exceptions}								*)
-(********************************************************************************)
-
-exception Unknown_bullet of string
-
-
-(********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
@@ -45,7 +38,7 @@ let of_string = function
 	| "circle"	-> Circle
 	| "square"	-> Square
 	| "none"	-> None
-	| other		-> raise (Unknown_bullet other)
+	| other		-> invalid_arg "Unknown bullet"
 
 let to_string = function
 	| Default	-> "default"

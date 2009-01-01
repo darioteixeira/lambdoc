@@ -8,12 +8,12 @@
 *)
 (********************************************************************************)
 
-(**	Definition of the extra parameters.
-*)
-
+open ExtArray
 open ExtList
 open ExtString
 open Lambdoc_core
+open Error
+open Ast.M
 
 
 (********************************************************************************)
@@ -44,7 +44,6 @@ type handle_t =
 	| Width_hnd
 	| Height_hnd
 	| Linenums_hnd
-	| Zebra_hnd
 
 
 type property_kind_t =
@@ -90,6 +89,8 @@ exception Solution_found of property_data_t option array * bool array
 (**	{2 Definition of functions and values}					*)
 (********************************************************************************)
 
+(**	Definition of the key and property kind associated with each handle.
+*)
 let id_of_handle = function
 	| Bullet_hnd	-> ("bul", Bullet_kind)
 	| Numbering_hnd	-> ("num", Numbering_kind)
@@ -97,15 +98,19 @@ let id_of_handle = function
 	| Width_hnd	-> ("w", Numeric_kind)
 	| Height_hnd	-> ("h", Numeric_kind)
 	| Linenums_hnd	-> ("linenums", Boolean_kind)
-	| Zebra_hnd	-> ("zebra", Boolean_kind)
 
 
-let fields_from_string =
+(**	This function does the low-level, regular-expression based parsing
+	of each field.  At this point we don't care yet about the semantics
+	or allowed meaning for each field.  All we care are the various
+	ways that users can use to express a property.
+*)
+let fields_of_strings =
 	let truth_rex = Pcre.regexp "^((?<key>[a-z]+)=)?((?<true>(true)|(yes))|(?<false>(false)|(no)))$"
 	and negated_rex = Pcre.regexp "^!(?<negated>[a-z]+)$"
 	and unnamed_rex = Pcre.regexp "^(?<unnamed>[a-z0-9]+)$"
 	and keyvalue_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>[a-z0-9]+)$"
-	in fun str ->
+	in fun strs ->
 		let field_of_string str =
 			try
 				let subs = Pcre.exec ~rex:truth_rex str in
@@ -135,10 +140,15 @@ let fields_from_string =
 			with
 				Not_found -> Invalid_field str
 
-		in List.map field_of_string (String.nsplit str ",")
+		in Array.map field_of_string strs
 
 
-let matcher key kind field = match (key, kind, field) with
+(**	This function matches a property (defined by a key and a property kind)
+	with a field parsed by {!fields_of_strings}.  It returns the associated
+	data wrapped inside a {!result_t}.  That way, other functions can tell
+	the degree of certainty associated with a matching.
+*)
+let matcher errors comm key kind field = match (key, kind, field) with
 
 	| (key, Boolean_kind, Boolean_field (Some k, v)) when key = k ->
 		Positive (Boolean_data v)
@@ -147,42 +157,73 @@ let matcher key kind field = match (key, kind, field) with
 	| (key, Boolean_kind, Unnamed_field k) when key = k ->
 		Positive (Boolean_data true)
 	| (key, Boolean_kind, Keyvalue_field (k, v)) when key = k ->
-		failwith "oops"
+		let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+		in	DynArray.add errors (comm.comm_linenum, msg);
+			Negative
+
 	| (key, Numeric_kind, Unnamed_field v) ->
 		(try Undecided (Numeric_data (int_of_string v)) with Failure _ -> Negative)
 	| (key, Numeric_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Numeric_data (int_of_string v)) with Failure _ -> failwith "oops")
+		(try Positive (Numeric_data (int_of_string v))
+		with Failure _ ->
+			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative)
+
 	| (key, Bullet_kind, Unnamed_field v) ->
 		(try Undecided (Bullet_data (Bullet.of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Bullet_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Bullet_data (Bullet.of_string v)) with Invalid_argument _ -> failwith "oops")
+		(try Positive (Bullet_data (Bullet.of_string v))
+		with Invalid_argument _ ->
+			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative)
+
 	| (key, Numbering_kind, Unnamed_field v) ->
 		(try Undecided (Numbering_data (Numbering.of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Numbering_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Numbering_data (Numbering.of_string v)) with Invalid_argument _ -> failwith "oops")
+		(try Positive (Numbering_data (Numbering.of_string v))
+		with Invalid_argument _ ->
+			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative)
+
 	| (key, Alignment_kind, Unnamed_field v) ->
 		(try Undecided (Alignment_data (Alignment.of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Alignment_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Alignment_data (Alignment.of_string v)) with Invalid_argument _ -> failwith "oops")
+		(try Positive (Alignment_data (Alignment.of_string v))
+		with Invalid_argument _ ->
+			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative)
+
 	| _ ->
-		Negative
+		let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+		in	DynArray.add errors (comm.comm_linenum, msg);
+			Negative
 
 
-let prepare str handles =
-	let fields = fields_from_string str in
+(**	Does the basic preprocessing on the raw data, preparing it for crunching
+	by the subsequent functions.
+*)
+let prepare errors comm strs handles =
+	let fields = fields_of_strings strs in
 	let result_from_handle hnd =
 		let (key, kind) = id_of_handle hnd
-		in List.map (matcher key kind) fields
-	in ((List.length fields), (List.map result_from_handle handles))
+		in Array.map (matcher errors comm key kind) fields
+	in (fields, (List.map result_from_handle handles))
 
 
+(**	Summarises the data processed so far, returning a triple containing
+	a) an array of the assignments for each property handle, b) an array
+	indicating whether each of the original fields has already been taken
+	or not, and c) a map of possible but still undecided assignments.
+*)
 let summarise num_fields results =
-
 	let num_rows = List.length results in
 	let assigned = Array.make num_rows None
 	and taken = Array.make num_fields false
 	and undecided = ref Undecided.empty in
-	
 	let sum_result row result =
 		let f col = function
 			| Positive x ->
@@ -205,12 +246,16 @@ let summarise num_fields results =
 						undecided := Undecided.add (row, col) x !undecided)
 			| Negative ->
 				()
-		in List.iteri f result
+		in Array.iteri f result
 
 	in	List.iteri sum_result results;
 		(assigned, taken, !undecided)
 
 
+(**	This function tries to assign all the fields that are still undecided.
+	It is basically a poor-man's Prolog unification algorithm, complete
+	with backtracking.
+*)
 let solve assigned taken undecided =
 	let rec really_solve assigned taken undecided =
 		let assign (row, col) value = match (assigned.(row), taken.(col)) with
@@ -230,8 +275,75 @@ let solve assigned taken undecided =
 		Solution_found (assigned, taken) -> Some (assigned, taken)
 
 
-let process str handles =
-	let (num_fields, results) = prepare str handles in
-	let (assigned, taken, undecided) = summarise num_fields results
-	in solve assigned taken undecided
+(**	High-level processing function.
+*)
+let process errors comm maybe_extra handles =
+	match maybe_extra with
+		| Some extra ->
+			let strs = Array.of_list (String.nsplit extra ",") in
+			let (fields, results) = prepare errors comm strs handles in
+			let (assigned, taken, undecided) = summarise (Array.length fields) results
+			in (match solve assigned taken undecided with
+				| Some (assigned, taken) ->
+					let any_untaken = ref false in
+					let check col elem =
+						if elem
+						then	()
+						else	(any_untaken := true;
+							let msg = Error.Unknown_extra_parameter (comm.comm_tag, extra, col, strs.(col))
+							in DynArray.add errors (comm.comm_linenum, msg))
+					in	Array.iteri check taken;
+						if !any_untaken
+						then failwith "Untaken"
+						else assigned
+				| None ->
+					failwith "Solution not found")
+		| None ->
+			Array.make (List.length handles) None
+
+
+
+(********************************************************************************)
+(**	{3 Wrappers}								*)
+(********************************************************************************)
+
+let get_bullet = function
+	| Some (Bullet_data x)	-> x
+	| _			-> Bullet.Default
+
+let get_numbering = function
+	| Some (Numbering_data x)	-> x
+	| _				-> Numbering.Default
+
+let get_alignment = function
+	| Some (Alignment_data x)	-> x
+	| _				-> Alignment.Center
+
+let parse_floater errors comm extra =
+	let assigned = process errors comm extra [Alignment_hnd]
+	in get_alignment assigned.(0)
+
+
+(********************************************************************************)
+(**	{2 Public functions and values}						*)
+(********************************************************************************)
+
+let parse_for_itemize errors comm extra =
+	let assigned = process errors comm extra [Bullet_hnd]
+	in get_bullet assigned.(0)
+
+
+let parse_for_enumerate errors comm extra =
+	let assigned = process errors comm extra [Numbering_hnd]
+	in get_numbering assigned.(0)
+
+
+let parse_for_quote = parse_floater
+let parse_for_mathtex = parse_floater
+let parse_for_mathml = parse_floater
+let parse_for_code = parse_floater
+let parse_for_verbatim = parse_floater
+let parse_for_tabular = parse_floater
+let parse_for_bitmap = parse_floater
+let parse_for_subpage = parse_floater
 

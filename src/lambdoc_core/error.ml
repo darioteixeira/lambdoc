@@ -56,12 +56,14 @@ type error_msg_t =
 	| Bad_order_parameter of tag_t * invalid_parameter_reason_t
 	| Bad_extra_parameter of tag_t * invalid_parameter_reason_t
 	| Bad_secondary_parameter of tag_t * invalid_parameter_reason_t
-	| Unknown_bullet of tag_t * string
-	| Unknown_numbering of tag_t * string
-	| Unknown_alignment of tag_t * string
-	| Unknown_language of tag_t * string
+
 	| Unknown_env_command of tag_t
 	| Unknown_simple_command of tag_t
+	| Unknown_extra_parameter of tag_t * string * int * string
+	| Unknown_language of tag_t * string
+
+	| Invalid_extra_parameter of tag_t
+
 	| Duplicate_label of tag_t * ref_t
 	| Invalid_column_specifier of tag_t * char
 	| Invalid_mathtex of string

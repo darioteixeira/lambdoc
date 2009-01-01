@@ -16,13 +16,6 @@ TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
-(**	{Exceptions}								*)
-(********************************************************************************)
-
-exception Unknown_numbering of string
-
-
-(********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
@@ -48,7 +41,7 @@ let of_string = function
 	| "a"		-> Lower_alpha
 	| "A"		-> Upper_alpha
 	| "none"	-> None
-	| other		-> raise (Unknown_numbering other)
+	| other		-> invalid_arg "Unknown numbering"
 
 let to_string = function
 	| Default
