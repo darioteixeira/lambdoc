@@ -6,7 +6,7 @@ open Features
 (* Service "coucou".							*)
 (* --------------------------------------------------------------------	*)
 
-let src = IO.read_all (IO.input_channel (open_in "complete.ltex"))
+let src = IO.read_all (IO.input_channel (open_in "sample.ltex"))
 
 let coucou_handler sp () () =
 	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in

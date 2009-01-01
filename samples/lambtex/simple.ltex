@@ -1,10 +1,6 @@
-\begin{tabular}{ll}
-\head
-Name	| Phone $
-\body
-John	| 123456 $
-Mary	| 234567 $
-Mark	| 345678 $
-Claire	| 456789 $
-\end{tabular}
+\section{Introduction}
+
+\begin{quote}
+This is a quotation.
+\end{quote}
 
