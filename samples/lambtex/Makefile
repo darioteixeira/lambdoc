@@ -1,4 +1,4 @@
-NAME=samples
+NAME=sample
 
 all: $(NAME).cma $(NAME).cmxs
 
