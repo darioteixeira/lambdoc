@@ -23,7 +23,7 @@ val parse_for_enumerate:	(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t
 val parse_for_quote: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t
 val parse_for_mathtex: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t
 val parse_for_mathml: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t
-val parse_for_code:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t
+val parse_for_code:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t * bool
 val parse_for_verbatim:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t
 val parse_for_tabular:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t
 val parse_for_bitmap:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> string option -> Alignment.t

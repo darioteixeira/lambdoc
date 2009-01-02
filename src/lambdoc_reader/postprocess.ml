@@ -625,8 +625,8 @@ let process_document feature_map document_ast =
 			let elem () =
 				let lang = get_language errors comm comm.comm_secondary in
 				let highlight = Code.from_string lang txt
-				and alignment = Extra.parse_for_code errors comm comm.comm_extra
-				in Some (Block.M.code alignment highlight)
+				and (alignment, linenums) = Extra.parse_for_code errors comm comm.comm_extra
+				in Some (Block.M.code alignment linenums highlight)
 			in check_comm `Feature_code comm elem
 
 

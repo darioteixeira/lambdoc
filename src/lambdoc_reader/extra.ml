@@ -295,9 +295,7 @@ let process errors comm maybe_extra handles =
 							let msg = Error.Invalid_extra_unknown_parameter (comm.comm_tag, col, strs.(col))
 							in DynArray.add errors (comm.comm_linenum, msg))
 					in	Array.iteri check taken;
-						if !any_untaken
-						then failwith "Untaken"
-						else assigned
+						assigned
 				| None ->
 					failwith "Solution not found")
 		| None ->
@@ -308,6 +306,10 @@ let process errors comm maybe_extra handles =
 (********************************************************************************)
 (**	{3 Wrappers}								*)
 (********************************************************************************)
+
+let get_linenums = function
+	| Some (Boolean_data x)		-> x
+	| _				-> true
 
 let get_bullet = function
 	| Some (Bullet_data x)	-> x
@@ -339,13 +341,21 @@ let parse_for_enumerate errors comm extra =
 	let assigned = process errors comm extra [Numbering_hnd]
 	in get_numbering assigned.(0)
 
-
 let parse_for_quote = parse_floater
+
 let parse_for_mathtex = parse_floater
+
 let parse_for_mathml = parse_floater
-let parse_for_code = parse_floater
+
+let parse_for_code errors comm extra =
+	let assigned = process errors comm extra [Alignment_hnd; Linenums_hnd]
+	in (get_alignment assigned.(0), get_linenums assigned.(1))
+
 let parse_for_verbatim = parse_floater
+
 let parse_for_tabular = parse_floater
+
 let parse_for_bitmap = parse_floater
+
 let parse_for_subpage = parse_floater
 

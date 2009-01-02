@@ -1,6 +1,10 @@
 \section{Introduction}
 
-\begin<left>{quote}
+\begin<right>{quote}
 This is a quotation.
 \end{quote}
+
+\begin{code}{ocaml}
+let x = 10
+\end{code}
 
