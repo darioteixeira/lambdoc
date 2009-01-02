@@ -1,45 +1,51 @@
 /********************************************************************************/
-/* Lambdoc CSS. 								*/
+/* Lambdoc_invalid CSS. 							*/
 /********************************************************************************/
 
 /********************************************************************************/
 /* High-level document CSS.							*/
 /********************************************************************************/
 
-.doc
+.doc_error
 	{
-	margin: auto;
-	width: 50em;
+	margin: 1em 0;
+	}
+
+.doc_error_head
+	{
+	font-size: 1.071em;		/* For size of 14 * 1.071 = 15px */
 	}
 
 .doc_error_lines
 	{
-	padding: 0.5em;
+	padding: 0;
 	border: 1px dotted #666;
-	background: #ffc;
 	list-style-type: none;
-	}
-
-.doc_error_lines > li
-	{
+	font-size: 0.857em;		/* For size of 14 * 0.857 = 12px */
 	font-family: monospace;
+	background: #ffc;
 	}
 
 .doc_error_lines > li > span:first-child
 	{
 	display: block;
-	clear: both;
 	float: left;
+	clear: left;
+	width: 3em;
+	padding: 0.2em 0;
+	text-align: right;
+	font-weight: bold;
 	}
 
 .doc_error_lines > li > span + span
 	{
+	min-height: 1.6em;
 	display: block;
-	min-height: 1em;
-	margin-left: 3em;
+	margin-left: 3.5em;
+	border-left: 1px solid #999;
+	padding: 0.2em 0.5em;
 	}
 
-.doc_error_actual
-	{
-	color: red;
-	}
+.doc_error_around	{background: #f9f9f9; color: #000;}
+.doc_error_actual	{background: #f3f6fc; color: #c33;}
+

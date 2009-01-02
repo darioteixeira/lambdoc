@@ -117,7 +117,7 @@ let alpha = ['a'-'z' 'A'-'Z']
 let deci = ['0'-'9']
 let order_char = alpha | deci | '.'
 let label_char = alpha | deci | '-' | ':' | '_'
-let extra_char = alpha | deci | ',' | '!'
+let extra_char = alpha | deci | '=' | ',' | '!' 
 
 let order = '(' order_char* ')'
 let label = '[' label_char+ ']'

@@ -589,9 +589,9 @@ let write_error (error_context, error_msg) =
 
 	in XHTML.M.li ~a:[a_class ["doc_error"]]
 		[
-		XHTML.M.h1 [pcdata (sprintf "Error in line %d:" line_number)];
+		XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata (sprintf "Error in line %d:" line_number)];
 		show_context;
-		XHTML.M.p [pcdata (Explanations.explain_error error_msg)]
+		XHTML.M.p ~a:[a_class ["doc_error_msg"]] [pcdata (Explanations.explain_error error_msg)]
 		]
 
 

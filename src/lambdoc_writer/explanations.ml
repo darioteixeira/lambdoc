@@ -77,7 +77,7 @@ let explain_error = function
 		sprintf "In command '%s', the value '%s' assigned to field %d of the extra parameter cannot be interpreted." tag field col
 
 	| Error.Invalid_language (tag, lang) ->
-		sprintf "Unknown language '%s' for command '%s'" lang tag
+		sprintf "Unknown language '%s' for command '%s'." lang tag
 
 	| Error.Invalid_mathtex txt ->
 		sprintf "Invalid mathtex expression '%s'." txt
@@ -118,5 +118,5 @@ let explain_error = function
 		sprintf "The feature '%s' requested by operator '%s' has been flagged as invalid for this document." description op
 
 	| Error.Syntax_error ->
-		"Syntax error"
+		"Syntax error."
 

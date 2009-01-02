@@ -190,7 +190,7 @@ let pat_secondary = "(?<secondary>\\{\\w*\\})?"
 
 let pat_order = "(?<order>\\([\\w\\d\\.]*\\))"
 let pat_label = "(?<label>\\[[\\w\\d\\-:_]*\\])"
-let pat_extra = "(?<extra><[\\w\\d,!]*>)"
+let pat_extra = "(?<extra><[\\w\\d=,!]*>)"
 let pat_optional = "(" ^ pat_order ^ "|" ^ pat_extra ^ "|" ^ pat_label ^")*"
 
 
