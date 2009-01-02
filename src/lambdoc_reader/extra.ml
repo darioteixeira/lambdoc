@@ -86,7 +86,11 @@ exception Solution_found of property_data_t option array * bool array
 
 
 (********************************************************************************)
-(**	{2 Definition of functions and values}					*)
+(**	{2 Private functions and values}					*)
+(********************************************************************************)
+
+(********************************************************************************)
+(**	{3 Low-level parsing functions}						*)
 (********************************************************************************)
 
 (**	Definition of the key and property kind associated with each handle.
@@ -157,7 +161,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 	| (key, Boolean_kind, Unnamed_field k) when key = k ->
 		Positive (Boolean_data true)
 	| (key, Boolean_kind, Keyvalue_field (k, v)) when key = k ->
-		let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v)
 		in	DynArray.add errors (comm.comm_linenum, msg);
 			Negative
 
@@ -166,7 +170,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 	| (key, Numeric_kind, Keyvalue_field (k, v)) when key = k ->
 		(try Positive (Numeric_data (int_of_string v))
 		with Failure _ ->
-			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
@@ -175,7 +179,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 	| (key, Bullet_kind, Keyvalue_field (k, v)) when key = k ->
 		(try Positive (Bullet_data (Bullet.of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
@@ -184,7 +188,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 	| (key, Numbering_kind, Keyvalue_field (k, v)) when key = k ->
 		(try Positive (Numbering_data (Numbering.of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
@@ -193,14 +197,12 @@ let matcher errors comm key kind field = match (key, kind, field) with
 	| (key, Alignment_kind, Keyvalue_field (k, v)) when key = k ->
 		(try Positive (Alignment_data (Alignment.of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_parameter (comm.comm_tag)
+			let msg = Error.Invalid_extra_alignment_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
 	| _ ->
-		let msg = Error.Invalid_extra_parameter (comm.comm_tag)
-		in	DynArray.add errors (comm.comm_linenum, msg);
-			Negative
+		Negative
 
 
 (**	Does the basic preprocessing on the raw data, preparing it for crunching
@@ -290,7 +292,7 @@ let process errors comm maybe_extra handles =
 						if elem
 						then	()
 						else	(any_untaken := true;
-							let msg = Error.Unknown_extra_parameter (comm.comm_tag, extra, col, strs.(col))
+							let msg = Error.Invalid_extra_unknown_parameter (comm.comm_tag, col, strs.(col))
 							in DynArray.add errors (comm.comm_linenum, msg))
 					in	Array.iteri check taken;
 						if !any_untaken

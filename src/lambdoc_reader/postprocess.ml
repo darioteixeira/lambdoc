@@ -39,8 +39,8 @@ let get_language errors comm = function
 		try
 			Some (Code.lang_of_string other)
 		with
-			Code.Unknown_language x ->
-				let msg = Error.Unknown_language (comm.comm_tag, x)
+			Invalid_argument x ->
+				let msg = Error.Invalid_language (comm.comm_tag, x)
 				in	DynArray.add errors (comm.comm_linenum, msg);
 					None
 
@@ -323,7 +323,7 @@ let process_document feature_map document_ast =
 
 		let convert_row (op, row) =
 			(if List.length row <> num_columns
-			then	let msg = Error.Wrong_column_number (comm.comm_linenum, List.length row, num_columns)
+			then	let msg = Error.Invalid_column_number (comm.comm_linenum, List.length row, num_columns)
 				in DynArray.add errors (op.op_linenum, msg));
 			match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"

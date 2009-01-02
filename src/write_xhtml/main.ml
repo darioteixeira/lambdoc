@@ -585,97 +585,13 @@ let write_error (error_context, error_msg) =
 			(List.mapi (fun ord line -> show_line_around (ord+1) line) line_after)
 		in match lines with
 			| []		-> raise Empty_error_context
-			| hd::tl	-> XHTML.M.ul ~a:[a_class ["doc_error_lines"]] hd tl in
-
-	let explain_reason article what = function
-		| Error.Reason_is_empty_when_non_empty_mandatory ->
-			sprintf "you provided an empty %s parameter, but it should contain something" what
-		| Error.Reason_is_empty_when_forbidden ->
-			sprintf "you provided an empty %s parameter, but it is altogether forbidden for this command" what
-		| Error.Reason_is_non_empty_when_forbidden str ->
-			sprintf "you provided %s %s parameter '%s', but this command forbids it" article what str
-		| Error.Reason_is_absent_when_mandatory ->
-			sprintf "you have not provided %s %s parameter, but it is mandatory for this command" article what in
-
-	let explain_msg = match error_msg with
-
-		| Error.Bad_label_parameter (tag, reason) ->
-			let exp_reason = explain_reason "a" "label" reason
-			in sprintf "Invalid labelling for command '%s': %s." tag exp_reason
-
-		| Error.Bad_order_parameter (tag, reason) ->
-			let exp_reason = explain_reason "an" "order" reason
-			in sprintf "Invalid ordering for command '%s': %s." tag exp_reason
-
-		| Error.Bad_extra_parameter (tag, reason) ->
-			let exp_reason = explain_reason "an" "extra" reason
-			in sprintf "Invalid extra parameter for command '%s': %s." tag exp_reason
-
-		| Error.Bad_secondary_parameter (tag, reason) ->
-			let exp_reason = explain_reason "a" "secondary" reason
-			in sprintf "Invalid secondary parameter for command '%s': %s." tag exp_reason
-
-		| Error.Unknown_env_command tag ->
-			sprintf "Unknown command '\\begin{%s}.'" tag
-
-		| Error.Unknown_simple_command tag ->
-			sprintf "Unknown command '\\%s'." tag
-
-		| Error.Unknown_extra_parameter (tag, extra, col, field) ->
-			sprintf "Unknown extra command '%s'" extra
-
-		| Error.Unknown_language (tag, lang) ->
-			sprintf "Unknown language '%s' for command '%s'.  Valid languages are 'c', 'ocaml', and 'pascal'." lang tag
-
-		| Error.Invalid_extra_parameter tag ->
-			sprintf "Invalid extra parameter for tag '%s'" tag
-
-		| Error.Duplicate_label (tag, label) ->
-			sprintf "Command '%s' attempts to redefine label '%s'." tag label
-
-		| Error.Invalid_column_specifier (tag, spec) ->
-			sprintf "Unknown column specifier '%c' in command '%s'.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec tag
-
-		| Error.Invalid_mathtex txt ->
-			sprintf "Invalid mathtex expression '%s'." txt
-
-		| Error.Invalid_mathml txt ->
-			sprintf "Invalid mathml expression '%s'." txt
-
-		| Error.Wrong_column_number (main_linenum, found, expected) ->
-			sprintf "Wrong number of columns for a row belonging to the tabular environment started in line %d: found %d but expected %d columns." main_linenum found expected
-
-		| Error.Empty_target (tag, label) ->
-			sprintf "Empty target for command '%s' and label '%s'." tag label
-
-		| Error.Wrong_target (tag, expected, suggested, label) ->
-			let str_expected = match expected with
-				| Error.Target_bib    -> "bibliography notes"
-				| Error.Target_note   -> "note definitions"
-				| Error.Target_label  -> "document labels"
-			and str_suggested = match suggested with
-				| Error.Target_bib    -> "'\\cite'"
-				| Error.Target_note   -> "'\\see'"
-				| Error.Target_label  -> "'\\ref', '\\sref', or '\\mref'"
-			in sprintf ("Wrong target '%s' for command '%s': this command should only be used to reference %s.  Considering your target, perhaps you mean to use command %s instead?") label tag str_expected str_suggested
-
-		| Error.Absent_target (tag, label) ->
-			sprintf "Command '%s' references an undefined label '%s'." tag label
-
-		| Error.Invalid_command_feature (comm, description) ->
-			sprintf "The feature '%s' requested by command '%s' has been flagged as invalid for this document." description comm
-
-		| Error.Invalid_operator_feature (op, description) ->
-			sprintf "The feature '%s' requested by operator '%s' has been flagged as invalid for this document." description op
-
-		| Error.Syntax_error ->
-			"Syntax error"
+			| hd::tl	-> XHTML.M.ul ~a:[a_class ["doc_error_lines"]] hd tl
 
 	in XHTML.M.li ~a:[a_class ["doc_error"]]
 		[
 		XHTML.M.h1 [pcdata (sprintf "Error in line %d:" line_number)];
 		show_context;
-		XHTML.M.p [pcdata explain_msg]
+		XHTML.M.p [pcdata (Explanations.explain_error error_msg)]
 		]
 
 

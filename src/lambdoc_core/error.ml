@@ -32,6 +32,7 @@ type error_context_t =
 	error_line_after: string list;		(** Lines immediately after the error line. *)
 	} (*with sexp*)
 
+
 (**	Reasons why a parameter can be invalid.
 *)
 type invalid_parameter_reason_t =
@@ -41,6 +42,7 @@ type invalid_parameter_reason_t =
 	| Reason_is_absent_when_mandatory
 	(*with sexp*)
 
+
 (**	Expected targets.
 *)
 type target_t =
@@ -48,6 +50,7 @@ type target_t =
 	| Target_note
 	| Target_label
 	(*with sexp*)
+
 
 (**	The various types of error messages.
 *)
@@ -59,23 +62,30 @@ type error_msg_t =
 
 	| Unknown_env_command of tag_t
 	| Unknown_simple_command of tag_t
-	| Unknown_extra_parameter of tag_t * string * int * string
-	| Unknown_language of tag_t * string
 
-	| Invalid_extra_parameter of tag_t
+	| Invalid_extra_boolean_parameter of tag_t * string * string
+	| Invalid_extra_numeric_parameter of tag_t * string * string
+	| Invalid_extra_bullet_parameter of tag_t * string * string
+	| Invalid_extra_numbering_parameter of tag_t * string * string
+	| Invalid_extra_alignment_parameter of tag_t * string * string
+	| Invalid_extra_unknown_parameter of tag_t * int * string
 
-	| Duplicate_label of tag_t * ref_t
-	| Invalid_column_specifier of tag_t * char
+	| Invalid_language of tag_t * string
 	| Invalid_mathtex of string
 	| Invalid_mathml of string
-	| Wrong_column_number of int * int * int
+	| Invalid_column_number of int * int * int
+	| Invalid_column_specifier of tag_t * char
+
+	| Duplicate_label of tag_t * ref_t
 	| Empty_target of tag_t * ref_t
 	| Wrong_target of tag_t * target_t * target_t * ref_t
 	| Absent_target of tag_t * ref_t
+
 	| Invalid_command_feature of string * string
 	| Invalid_operator_feature of string * string
 	| Syntax_error
 	(*with sexp*)
+
 
 (**	An error is a pair consisting of the context where the error
 	occurred and the error message itself.
