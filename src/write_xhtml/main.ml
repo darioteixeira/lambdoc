@@ -445,9 +445,9 @@ let write_valid_document settings classname doc =
 
 
 	and write_code_block ~wrapped = function
-		| `Code (alignment, linenums, code) ->
+		| `Code (alignment, linenums, zebra, code) ->
 			let style = if wrapped then [] else make_alignment alignment
-			in Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~numbered:linenums ~zebra:true code
+			in Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra code
 
 
 	and write_verbatim_block ~wrapped = function
@@ -481,7 +481,7 @@ let write_valid_document settings classname doc =
 
 
 	and write_printout_block = function
-		| `Code (alignment, _, _) as blk->
+		| `Code (alignment, _, _, _) as blk->
 			(alignment, write_code_block ~wrapped:true blk)
 
 

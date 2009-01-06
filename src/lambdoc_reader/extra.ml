@@ -44,6 +44,7 @@ type handle_t =
 	| Width_hnd
 	| Height_hnd
 	| Linenums_hnd
+	| Zebra_hnd
 
 
 type property_kind_t =
@@ -102,6 +103,7 @@ let id_of_handle = function
 	| Width_hnd	-> ("w", Numeric_kind)
 	| Height_hnd	-> ("h", Numeric_kind)
 	| Linenums_hnd	-> ("linenums", Boolean_kind)
+	| Zebra_hnd	-> ("zebra", Boolean_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -311,9 +313,13 @@ let get_linenums = function
 	| Some (Boolean_data x)		-> x
 	| _				-> true
 
+let get_zebra = function
+	| Some (Boolean_data x)		-> x
+	| _				-> true
+
 let get_bullet = function
-	| Some (Bullet_data x)	-> x
-	| _			-> Bullet.Default
+	| Some (Bullet_data x)		-> x
+	| _				-> Bullet.Default
 
 let get_numbering = function
 	| Some (Numbering_data x)	-> x
@@ -348,8 +354,8 @@ let parse_for_mathtex = parse_floater
 let parse_for_mathml = parse_floater
 
 let parse_for_code errors comm =
-	let assigned = process errors comm [Alignment_hnd; Linenums_hnd]
-	in (get_alignment assigned.(0), get_linenums assigned.(1))
+	let assigned = process errors comm [Alignment_hnd; Linenums_hnd; Zebra_hnd]
+	in (get_alignment assigned.(0), get_linenums assigned.(1), get_zebra assigned.(2))
 
 let parse_for_verbatim = parse_floater
 

@@ -8,12 +8,7 @@ PKG_NAME=lambdoc
 SRC_DIR=src
 BUILD_DIR=$(SRC_DIR)/_build
 
-TARGETS=$(foreach EXT, cma cmxa a, $(LIB_NAME).$(EXT)) \
-	lambdoc_core.cmi \
-	lambdoc_reader.cmi \
-	lambdoc_writer.cmi \
-	read_lambtex.cmi \
-	write_xhtml.cmi
+TARGETS=lambdoc.cma lambdoc.cmxa lambdoc.a lambdoc_core.cmi lambdoc_reader.cmi lambdoc_writer.cmi read_lambtex.cmi write_xhtml.cmi
 
 FQTARGETS=$(foreach TARGET, $(TARGETS), $(BUILD_DIR)/$(TARGET))
 

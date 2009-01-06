@@ -46,7 +46,7 @@ sig
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
 	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
 	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Alignment.t * bool * Code.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] (*with sexp*) 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
 	type bitmap_block_t = [ `Bitmap of Alignment.t * alias_t ] (*with sexp*) 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
@@ -169,7 +169,7 @@ sig
 		([> quote_block_t ], 'b) t
 	val math: Alignment.t -> Math.t ->
 		([> math_block_t ], [> `Composition]) t
-	val code: Alignment.t -> bool -> Code.t ->
+	val code: Alignment.t -> bool -> bool -> Code.t ->
 		([> code_block_t ], [> `Composition]) t
 	val verbatim: Alignment.t -> raw_t ->
 		([> verbatim_block_t ], [> `Composition]) t
@@ -203,7 +203,7 @@ struct
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
 	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
 	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Alignment.t * bool * Code.t ] (*with sexp*) 
+	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] (*with sexp*) 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
 	type bitmap_block_t = [ `Bitmap of Alignment.t * alias_t ] (*with sexp*) 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
@@ -281,7 +281,7 @@ struct
 	let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
 	let quote alignment frag = `Quote (alignment, frag)
 	let math alignment mth = `Math (alignment, mth)
-	let code alignment linenums txt = `Code (alignment, linenums, txt)
+	let code alignment linenums zebra txt = `Code (alignment, linenums, zebra, txt)
 	let verbatim alignment txt = `Verbatim (alignment, txt)
 	let tabular alignment tab = `Tabular (alignment, tab)
 	let bitmap alignment alias = `Bitmap (alignment, alias)
