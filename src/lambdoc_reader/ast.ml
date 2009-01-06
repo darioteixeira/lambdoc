@@ -28,7 +28,7 @@ sig
 
 	type command_t =
 		{
-		comm_tag: string option;
+		comm_tag: tag_t option;
 		comm_label: string option;
 		comm_order: string option;
 		comm_extra: string option;
