@@ -55,34 +55,33 @@ type target_t =
 (**	The various types of error messages.
 *)
 type error_msg_t =
-	| Bad_label_parameter of tag_t * invalid_parameter_reason_t
-	| Bad_order_parameter of tag_t * invalid_parameter_reason_t
-	| Bad_extra_parameter of tag_t * invalid_parameter_reason_t
-	| Bad_secondary_parameter of tag_t * invalid_parameter_reason_t
+	| Bad_label_parameter of tag_t option * invalid_parameter_reason_t
+	| Bad_order_parameter of tag_t option * invalid_parameter_reason_t
+	| Bad_extra_parameter of tag_t option * invalid_parameter_reason_t
+	| Bad_secondary_parameter of tag_t option * invalid_parameter_reason_t
 
 	| Unknown_env_command of tag_t
 	| Unknown_simple_command of tag_t
 
-	| Invalid_extra_boolean_parameter of tag_t * string * string
-	| Invalid_extra_numeric_parameter of tag_t * string * string
-	| Invalid_extra_bullet_parameter of tag_t * string * string
-	| Invalid_extra_numbering_parameter of tag_t * string * string
-	| Invalid_extra_alignment_parameter of tag_t * string * string
-	| Invalid_extra_unknown_parameter of tag_t * int * string
+	| Invalid_extra_boolean_parameter of tag_t option * string * string
+	| Invalid_extra_numeric_parameter of tag_t option * string * string
+	| Invalid_extra_bullet_parameter of tag_t option * string * string
+	| Invalid_extra_numbering_parameter of tag_t option * string * string
+	| Invalid_extra_alignment_parameter of tag_t option * string * string
+	| Invalid_extra_unknown_parameter of tag_t option * int * string
 
-	| Invalid_language of tag_t * string
-	| Invalid_mathtex of string
-	| Invalid_mathml of string
-	| Invalid_column_number of int * int * int
-	| Invalid_column_specifier of tag_t * char
+	| Invalid_language of tag_t option * string
+	| Invalid_mathtex of tag_t option * string
+	| Invalid_mathml of tag_t option * string
+	| Invalid_column_number of tag_t option * int * int * int
+	| Invalid_column_specifier of tag_t option * char
+	| Invalid_feature of tag_t option * string
 
-	| Duplicate_label of tag_t * ref_t
-	| Empty_target of tag_t * ref_t
-	| Wrong_target of tag_t * target_t * target_t * ref_t
-	| Absent_target of tag_t * ref_t
+	| Duplicate_label of tag_t option * ref_t
+	| Empty_target of tag_t option * ref_t
+	| Wrong_target of tag_t option * target_t * target_t * ref_t
+	| Absent_target of tag_t option * ref_t
 
-	| Invalid_command_feature of string * string
-	| Invalid_operator_feature of string * string
 	| Syntax_error
 	(*with sexp*)
 

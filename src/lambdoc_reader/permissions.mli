@@ -18,11 +18,11 @@ open Lambdoc_core
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-val check_command_feature:
+val check_feature:
 	?maybe_subpaged: bool option ->
 	?maybe_wrapped: bool option ->
 	(int * Error.error_msg_t) DynArray.t ->
 	Ast.M.command_t ->
-	Features.command_feature_t ->
+	Features.manuscript_feature_t ->
 	unit
 

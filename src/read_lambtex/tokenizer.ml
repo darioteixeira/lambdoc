@@ -90,8 +90,8 @@ type action_t =
 	its own escaped name.  In similarity to {!get_env_tag}, this function returns
 	a pair consisting of the parser token and a list of actions for the automaton.
 *)
-let get_simple_tag params =
-	let (token, context, actions) = match params.comm_tag with
+let get_simple_tag tag params =
+	let (token, context, actions) = match tag with
 		| "bold"		-> (BOLD params,		Inl,	[Store [Inline]])
 		| "emph"		-> (EMPH params,		Inl,	[Store [Inline]])
 		| "mono"		-> (MONO params,		Inl,	[Store [Inline]])
@@ -140,23 +140,23 @@ let get_simple_tag params =
 	and a list of actions for the automaton.
 
 *)
-let get_env_tag params is_begin =
+let get_env_tag tag params is_begin =
 	let (token_begin, token_end, actions_begin, actions_end) =
 
 		(* First check if it matches any of the literal environment prefixes. *)
 
-		if String.starts_with params.comm_tag "mathtex"
-		then (BEGIN_MATHTEX_BLK params, END_MATHTEX_BLK params, [Push_env (Mathtex_blk params.comm_tag)], [Pop_env])
-		else if String.starts_with params.comm_tag "mathml"
-		then (BEGIN_MATHML_BLK params, END_MATHML_BLK params, [Push_env (Mathml_blk params.comm_tag)], [Pop_env])
-		else if String.starts_with params.comm_tag "verbatim"
-		then (BEGIN_VERBATIM params, END_VERBATIM params, [Push_env (Verbatim params.comm_tag)], [Pop_env])
-		else if String.starts_with params.comm_tag "code"
-		then (BEGIN_CODE params, END_CODE params, [Push_env (Code params.comm_tag)], [Pop_env])
+		if String.starts_with tag "mathtex"
+		then (BEGIN_MATHTEX_BLK params, END_MATHTEX_BLK params, [Push_env (Mathtex_blk tag)], [Pop_env])
+		else if String.starts_with tag "mathml"
+		then (BEGIN_MATHML_BLK params, END_MATHML_BLK params, [Push_env (Mathml_blk tag)], [Pop_env])
+		else if String.starts_with tag "verbatim"
+		then (BEGIN_VERBATIM params, END_VERBATIM params, [Push_env (Verbatim tag)], [Pop_env])
+		else if String.starts_with tag "code"
+		then (BEGIN_CODE params, END_CODE params, [Push_env (Code tag)], [Pop_env])
 
 		(* If not literal, then test the other environments. *)
 
-		else match params.comm_tag with
+		else match tag with
 			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],			[])
 			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
 			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
@@ -205,11 +205,11 @@ let get_param rex name subs =
 		_ -> None
 
 
-(**	Builds a {!Document_ast.Ast.command_t}.
+(**	Builds a fully-featured {!Document_ast.Ast.command_t}.
 *)
 let build_command lexbuf tag rex subs =
 	{
-	comm_tag = tag;
+	comm_tag = Some tag;
 	comm_label = get_param rex "label" subs;
 	comm_order = get_param rex "order" subs;
 	comm_extra = get_param rex "extra" subs;
@@ -218,11 +218,17 @@ let build_command lexbuf tag rex subs =
 	}
 
 
-(**	Builds a {!Document_ast.Ast.operator_t}.
+(**	Builds a {!Document_ast.Ast.command_t} from an operator.
+	Only the line number field is set.
 *)
 let build_op lexbuf =
 	{
-	op_linenum = lexbuf.lex_curr_p.pos_lnum;
+	comm_tag = None;
+	comm_label = None;
+	comm_order = None;
+	comm_extra = None;
+	comm_secondary = None;
+	comm_linenum = lexbuf.lex_curr_p.pos_lnum;
 	}
 
 
@@ -235,7 +241,7 @@ let issue_env_command =
 		let command = Pcre.get_named_substring rex "env" subs
 		and primary = Pcre.get_named_substring rex "primary" subs in
 		let params = build_command lexbuf primary rex subs in
-		get_env_tag params (command = "begin")
+		get_env_tag primary params (command = "begin")
 
 
 (**	Issues a simple command.
@@ -246,7 +252,7 @@ let issue_simple_command =
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "command" subs in
 		let params = build_command lexbuf command rex subs in
-		get_simple_tag params
+		get_simple_tag command params
 
 
 (********************************************************************************)

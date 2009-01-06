@@ -15,16 +15,20 @@ open Lambdoc_core
 open Basic
 
 
+(********************************************************************************)
+(**	{2 The actual module}							*)
+(********************************************************************************)
+
 module rec M:
 sig
 
 	(************************************************************************)
-	(**	{2 Parsing data associated with operators and command tags}	*)
+	(**	{3 Parsing data associated with command tags}			*)
 	(************************************************************************)
 
 	type command_t =
 		{
-		comm_tag: string;
+		comm_tag: string option;
 		comm_label: string option;
 		comm_order: string option;
 		comm_extra: string option;
@@ -32,24 +36,19 @@ sig
 		comm_linenum: int;
 		}
 
-	type operator_t =
-		{
-		op_linenum: int;
-		}
-		
 
 	(************************************************************************)
-	(**	{2 Data types for inline context}				*)
+	(**	{3 Data types for inline context}				*)
 	(************************************************************************)
 
 	type super_seq_t = M.super_node_t list
 	type nonlink_seq_t = M.nonlink_node_t list
 
 	type nonlink_node_t =
-		[ `AST_plain of operator_t * plain_t
-		| `AST_entity of operator_t * entity_t
-		| `AST_mathtex_inl of operator_t * raw_t
-		| `AST_mathml_inl of operator_t * raw_t
+		[ `AST_plain of command_t * plain_t
+		| `AST_entity of command_t * entity_t
+		| `AST_mathtex_inl of command_t * raw_t
+		| `AST_mathml_inl of command_t * raw_t
 		| `AST_bold of command_t * super_seq_t
 		| `AST_emph of command_t * super_seq_t
 		| `AST_mono of command_t * super_seq_t
@@ -76,10 +75,10 @@ sig
 
 
 	(************************************************************************)
-	(**	{2 Data types for tabular environment}				*)
+	(**	{3 Data types for tabular environment}				*)
 	(************************************************************************)
 
-	type tabular_row_t = operator_t * super_seq_t list
+	type tabular_row_t = command_t * super_seq_t list
 
 	type tabular_group_t = command_t option * tabular_row_t list
 
@@ -92,7 +91,7 @@ sig
 
 
 	(************************************************************************)
-	(**	{2 Data types for document blocks}				*)
+	(**	{3 Data types for document blocks}				*)
 	(************************************************************************)
 
 	type super_frag_t = M.super_block_t list
@@ -101,7 +100,7 @@ sig
 
 	type caption_block_t = [ `AST_caption of command_t * super_seq_t ]
 	type item_block_t = [ `AST_item of command_t * nestable_frag_t ] 
-	type paragraph_block_t = [ `AST_paragraph of operator_t * super_seq_t ]
+	type paragraph_block_t = [ `AST_paragraph of command_t * super_seq_t ]
 	type itemize_block_t = [ `AST_itemize of command_t * item_frag_t ]
 	type enumerate_block_t = [ `AST_enumerate of command_t * item_frag_t ]
 	type quote_block_t = [ `AST_quote of command_t * nestable_frag_t ]
@@ -176,9 +175,10 @@ sig
 
 
 	(************************************************************************)
-	(* 	{2 The type {!t} itself}					*)
+	(* 	{3 The type {!t} itself}					*)
 	(************************************************************************)
 
 	type t = super_frag_t
 
 end = M
+

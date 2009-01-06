@@ -129,56 +129,42 @@ let process_document feature_map document_ast =
 		DynArray.add toc blk in
 
 
-	(************************************************************************)
-	(* Checkers for operators and commands.					*)
-	(************************************************************************)
+	(*	Checker for commands.
+	*)
 
-	let checker feature success msg_maker linenum =
+	let check_comm ?maybe_subpaged ?maybe_wrapped feature comm elem =
 		let super_feature = (feature :> Features.manuscript_feature_t) in
 		if Features.check_feature super_feature feature_map
 		then 
-			success ()
+			(Permissions.check_feature ?maybe_subpaged ?maybe_wrapped errors comm feature;
+			elem ())
 		else
-			(let (what, desc) = Features.describe_feature super_feature in
-			let msg = msg_maker (what, desc)
-			in DynArray.add errors (linenum, msg);
-			None) in
-
-
-	let check_comm ?maybe_subpaged ?maybe_wrapped feature comm elem =
-		let success () =
-			Permissions.check_command_feature ?maybe_subpaged ?maybe_wrapped errors comm feature;
-			elem ()
-		and msg_maker (what, desc) = Error.Invalid_command_feature (what, desc)
-		and linenum = comm.comm_linenum
-		in checker feature success msg_maker linenum
-
-
-	and check_op feature op elem =
-		let msg_maker (what, desc) = Error.Invalid_operator_feature (what, desc)
-		and linenum = op.op_linenum
-		in checker feature elem msg_maker linenum in
+			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe_feature super_feature)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				None in
 
 
 	(************************************************************************)
 	(* Postprocessing functions for mathematics.				*)
 	(************************************************************************)
 
-	let convert_mathtex constructor linenum txt =
+	let convert_mathtex constructor comm txt =
 		try
 			Some (constructor (Math.from_mathtex txt))
 		with
 			Math.Invalid_mathtex ->
-				DynArray.add errors (linenum, Error.Invalid_mathtex txt);
+				let msg = Error.Invalid_mathtex (comm.comm_tag, txt) in
+				DynArray.add errors (comm.comm_linenum, msg);
 				None
 
 
-	and convert_mathml constructor linenum txt =
+	and convert_mathml constructor comm txt =
 		try
 			Some (constructor (Math.from_mathml txt))
 		with
 			Math.Invalid_mathml ->
-				DynArray.add errors (linenum, Error.Invalid_mathml txt);
+				let msg = Error.Invalid_mathml (comm.comm_tag, txt) in
+				DynArray.add errors (comm.comm_linenum, msg);
 				None in
 
 
@@ -205,21 +191,21 @@ let process_document feature_map document_ast =
 
 	and convert_nonlink_node = function
 
-		| `AST_plain (op, txt) ->
+		| `AST_plain (comm, txt) ->
 			let elem () = Some (Node.M.plain txt)
-			in check_op `Feature_plain op elem
+			in check_comm `Feature_plain comm elem
 
-		| `AST_entity (op, txt) ->
+		| `AST_entity (comm, txt) ->
 			let elem () = Some (Node.M.entity txt)
-			in check_op `Feature_entity op elem
+			in check_comm `Feature_entity comm elem
 
-		| `AST_mathtex_inl (op, txt) ->
-			let elem () = convert_mathtex Node.M.math op.op_linenum txt
-			in check_op `Feature_mathtex_inl op elem
+		| `AST_mathtex_inl (comm, txt) ->
+			let elem () = convert_mathtex Node.M.math comm txt
+			in check_comm `Feature_mathtex_inl comm elem
 
-		| `AST_mathml_inl (op, txt) ->
-			let elem () = convert_mathml Node.M.math op.op_linenum txt
-			in check_op `Feature_mathml_inl op elem
+		| `AST_mathml_inl (comm, txt) ->
+			let elem () = convert_mathml Node.M.math comm txt
+			in check_comm `Feature_mathml_inl comm elem
 
 		| `AST_bold (comm, seq) ->
 			let elem () = Some (Node.M.bold (convert_super_seq seq))
@@ -321,10 +307,10 @@ let process_document feature_map document_ast =
 
 		let num_columns = Array.length tcols in
 
-		let convert_row (op, row) =
+		let convert_row (comm, row) =
 			(if List.length row <> num_columns
-			then	let msg = Error.Invalid_column_number (comm.comm_linenum, List.length row, num_columns)
-				in DynArray.add errors (op.op_linenum, msg));
+			then	let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, List.length row, num_columns)
+				in DynArray.add errors (comm.comm_linenum, msg));
 			match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"
 				| hd::tl	-> Tabular.make_row (fplus convert_super_seq hd tl) in
@@ -575,15 +561,15 @@ let process_document feature_map document_ast =
 
 
 	and convert_paragraph_block = function
-		| `AST_paragraph (op, seq) ->
+		| `AST_paragraph (comm, seq) ->
 			let elem () = Some (Block.M.paragraph (convert_super_seq seq))
-			in check_op `Feature_paragraph op elem
+			in check_comm `Feature_paragraph comm elem
 
 
 	and convert_itemize_block ~subpaged = function
 		| `AST_itemize (comm, items) ->
 			let elem () =
-				let bullet = Extra.parse_for_itemize errors comm comm.comm_extra
+				let bullet = Extra.parse_for_itemize errors comm
 				in Some (Block.M.itemize bullet (convert_item_frag subpaged items))
 			in check_comm `Feature_itemize comm elem
 
@@ -591,7 +577,7 @@ let process_document feature_map document_ast =
 	and convert_enumerate_block ~subpaged = function
 		| `AST_enumerate (comm, items) ->
 			let elem () =
-				let numbering = Extra.parse_for_enumerate errors comm comm.comm_extra
+				let numbering = Extra.parse_for_enumerate errors comm
 				in Some (Block.M.enumerate numbering (convert_item_frag subpaged items))
 			in check_comm `Feature_enumerate comm elem
 
@@ -599,7 +585,7 @@ let process_document feature_map document_ast =
 	and convert_quote_block ~subpaged = function
 		| `AST_quote (comm, frag) ->
 			let elem () =
-				let alignment = Extra.parse_for_quote errors comm comm.comm_extra
+				let alignment = Extra.parse_for_quote errors comm
 				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
 			in check_comm `Feature_quote comm elem
 
@@ -607,16 +593,16 @@ let process_document feature_map document_ast =
 	and convert_mathtex_block = function
 		| `AST_mathtex_blk (comm, txt) ->
 			let elem () =
-				let alignment = Extra.parse_for_mathtex errors comm comm.comm_extra
-				in convert_mathtex (Block.M.math alignment) comm.comm_linenum txt
+				let alignment = Extra.parse_for_mathtex errors comm
+				in convert_mathtex (Block.M.math alignment) comm txt
 			in check_comm `Feature_mathtex_blk comm elem
 
 
 	and convert_mathml_block = function
 		| `AST_mathml_blk (comm, txt) ->
 			let elem () =
-				let alignment = Extra.parse_for_mathml errors comm comm.comm_extra
-				in convert_mathml (Block.M.math alignment) comm.comm_linenum txt
+				let alignment = Extra.parse_for_mathml errors comm
+				in convert_mathml (Block.M.math alignment) comm txt
 			in check_comm `Feature_mathml_blk comm elem
 
 
@@ -625,7 +611,7 @@ let process_document feature_map document_ast =
 			let elem () =
 				let lang = get_language errors comm comm.comm_secondary in
 				let highlight = Code.from_string lang txt
-				and (alignment, linenums) = Extra.parse_for_code errors comm comm.comm_extra
+				and (alignment, linenums) = Extra.parse_for_code errors comm
 				in Some (Block.M.code alignment linenums highlight)
 			in check_comm `Feature_code comm elem
 
@@ -633,7 +619,7 @@ let process_document feature_map document_ast =
 	and convert_verbatim_block = function
 		| `AST_verbatim (comm, txt) ->
 			let elem () =
-				let alignment = Extra.parse_for_verbatim errors comm comm.comm_extra
+				let alignment = Extra.parse_for_verbatim errors comm
 				in Some (Block.M.verbatim alignment txt)
 			in check_comm `Feature_verbatim comm elem
 
@@ -641,7 +627,7 @@ let process_document feature_map document_ast =
 	and convert_tabular_block = function
 		| `AST_tabular (comm, tab) ->
 			let elem () =
-				let alignment = Extra.parse_for_tabular errors comm comm.comm_extra
+				let alignment = Extra.parse_for_tabular errors comm
 				in Some (Block.M.tabular alignment (convert_tabular comm tab))
 			in check_comm `Feature_tabular comm elem
 
@@ -649,7 +635,7 @@ let process_document feature_map document_ast =
 	and convert_bitmap_block = function
 		| `AST_bitmap (comm, alias) ->
 			let elem () =
-				let alignment = Extra.parse_for_bitmap errors comm comm.comm_extra
+				let alignment = Extra.parse_for_bitmap errors comm
 				in Some (Block.M.bitmap alignment alias)
 			in check_comm `Feature_bitmap comm elem
 
@@ -657,7 +643,7 @@ let process_document feature_map document_ast =
 	and convert_subpage_block = function
 		| `AST_subpage (comm, subpage) ->
 			let elem () =
-				let alignment = Extra.parse_for_subpage errors comm comm.comm_extra
+				let alignment = Extra.parse_for_subpage errors comm
 				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
 			in check_comm `Feature_subpage comm elem
 

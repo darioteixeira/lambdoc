@@ -131,13 +131,17 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra, perm_s
 
 (**	Checks a command feature.
 *)
-let check_command_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm feature =
+let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm feature =
 
 	let get_subpaged = function
 		| Some subpaged	-> subpaged
 		| None		-> invalid_arg "Feature requires that 'subpaged' be set but it is not!" in
 
 	let non_reference_inline_feature_set = function
+		| `Feature_plain	-> forbidden_class
+		| `Feature_entity	-> forbidden_class
+		| `Feature_mathtex_inl	-> forbidden_class
+		| `Feature_mathml_inl	-> forbidden_class
 		| `Feature_bold		-> forbidden_class
 		| `Feature_emph		-> forbidden_class
 		| `Feature_mono		-> forbidden_class
@@ -156,6 +160,7 @@ let check_command_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors co
 		| `Feature_mref		-> forbidden_class
 
 	and non_reference_block_feature_set = function
+		| `Feature_paragraph	-> forbidden_class
 		| `Feature_itemize	-> listing_class
 		| `Feature_enumerate	-> listing_class
 		| `Feature_quote	-> floater_class

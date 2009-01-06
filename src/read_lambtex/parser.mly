@@ -21,9 +21,9 @@ open Lambdoc_reader
 %token BEGIN
 %token END
 
-%token <Lambdoc_reader.Ast.M.operator_t> NEW_PAR
-%token <Lambdoc_reader.Ast.M.operator_t> COLUMN_SEP
-%token <Lambdoc_reader.Ast.M.operator_t> ROW_END
+%token <Lambdoc_reader.Ast.M.command_t> NEW_PAR
+%token <Lambdoc_reader.Ast.M.command_t> COLUMN_SEP
+%token <Lambdoc_reader.Ast.M.command_t> ROW_END
 
 
 /********************************************************************************/
@@ -31,8 +31,8 @@ open Lambdoc_reader
 /********************************************************************************/
 
 %token <Lambdoc_core.Basic.raw_t> RAW
-%token <Lambdoc_reader.Ast.M.operator_t * Lambdoc_core.Basic.plain_t> PLAIN
-%token <Lambdoc_reader.Ast.M.operator_t * Lambdoc_core.Basic.entity_t> ENTITY
+%token <Lambdoc_reader.Ast.M.command_t * Lambdoc_core.Basic.plain_t> PLAIN
+%token <Lambdoc_reader.Ast.M.command_t * Lambdoc_core.Basic.entity_t> ENTITY
 
 
 /********************************************************************************/
@@ -40,11 +40,11 @@ open Lambdoc_reader
 /* Presently, the only existing environment operators are [$ $] and <$ $>.	*/
 /********************************************************************************/
 
-%token <Lambdoc_reader.Ast.M.operator_t> BEGIN_MATHTEX_INL
-%token <Lambdoc_reader.Ast.M.operator_t> END_MATHTEX_INL
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_MATHTEX_INL
+%token <Lambdoc_reader.Ast.M.command_t> END_MATHTEX_INL
 
-%token <Lambdoc_reader.Ast.M.operator_t> BEGIN_MATHML_INL
-%token <Lambdoc_reader.Ast.M.operator_t> END_MATHML_INL
+%token <Lambdoc_reader.Ast.M.command_t> BEGIN_MATHML_INL
+%token <Lambdoc_reader.Ast.M.command_t> END_MATHML_INL
 
 
 /********************************************************************************/

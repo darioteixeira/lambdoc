@@ -34,68 +34,76 @@ let explain_reason article what = function
 		sprintf "you have not provided %s %s parameter, but in this context it is mandatory for this command" article what
 
 
+let explain_tag = function
+	| Some tag	-> sprintf "command '%s'" tag
+	| None		-> "anonymous command"
+
+
 let explain_error = function
 
 	| Error.Bad_label_parameter (tag, reason) ->
 		let exp_reason = explain_reason "a" "label" reason
-		in sprintf "Invalid labelling for command '%s': %s." tag exp_reason
+		in sprintf "Invalid labelling for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Bad_order_parameter (tag, reason) ->
 		let exp_reason = explain_reason "an" "order" reason
-		in sprintf "Invalid ordering for command '%s': %s." tag exp_reason
+		in sprintf "Invalid ordering for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Bad_extra_parameter (tag, reason) ->
 		let exp_reason = explain_reason "an" "extra" reason
-		in sprintf "Invalid extra parameter for command '%s': %s." tag exp_reason
+		in sprintf "Invalid extra parameter for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Bad_secondary_parameter (tag, reason) ->
 		let exp_reason = explain_reason "a" "secondary" reason
-		in sprintf "Invalid secondary parameter for command '%s': %s." tag exp_reason
+		in sprintf "Invalid secondary parameter for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Unknown_env_command tag ->
 		sprintf "Unknown environment command '%s'." tag
 
 	| Error.Unknown_simple_command tag ->
-		sprintf "Unknown simple command '%s'." tag
+		sprintf "Unknown simple '%s'." tag
 
 	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
-		sprintf "In command '%s', the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." tag key value
+		sprintf "In %s, the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
 	| Error.Invalid_extra_numeric_parameter (tag, key, value) ->
-		sprintf "In command '%s', the key '%s' expects a numeric parameter, yet the assigned value '%s' cannot be interpreted as such." tag key value
+		sprintf "In %s, the key '%s' expects a numeric parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
 	| Error.Invalid_extra_bullet_parameter (tag, key, value) ->
-		sprintf "In command '%s', the key '%s' expects a bullet specifier, yet the assigned value '%s' cannot be interpreted as such." tag key value
+		sprintf "In %s, the key '%s' expects a bullet specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
 	| Error.Invalid_extra_numbering_parameter (tag, key, value) ->
-		sprintf "In command '%s', the key '%s' expects a numbering specifier, yet the assigned value '%s' cannot be interpreted as such." tag key value
+		sprintf "In %s, the key '%s' expects a numbering specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
 	| Error.Invalid_extra_alignment_parameter (tag, key, value) ->
-		sprintf "In command '%s', the key '%s' expects a alignment specifier, yet the assigned value '%s' cannot be interpreted as such." tag key value
+		sprintf "In %s, the key '%s' expects a alignment specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
 	| Error.Invalid_extra_unknown_parameter (tag, col, field) ->
-		sprintf "In command '%s', the value '%s' assigned to field %d of the extra parameter cannot be interpreted." tag field col
+		sprintf "In %s, the value '%s' assigned to field %d of the extra parameter cannot be interpreted." (explain_tag tag) field col
 
 	| Error.Invalid_language (tag, lang) ->
-		sprintf "Unknown language '%s' for command '%s'." lang tag
+		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)
 
-	| Error.Invalid_mathtex txt ->
-		sprintf "Invalid mathtex expression '%s'." txt
+	| Error.Invalid_mathtex (tag, txt) ->
+		sprintf "Invalid mathtex expression '%s' in %s." txt (explain_tag tag)
 
-	| Error.Invalid_mathml txt ->
-		sprintf "Invalid mathml expression '%s'." txt
+	| Error.Invalid_mathml (tag, txt) ->
+		sprintf "Invalid mathml expression '%s' in %s." txt (explain_tag tag)
 
-	| Error.Invalid_column_number (main_linenum, found, expected) ->
-		sprintf "Wrong number of columns for a row belonging to the tabular environment started in line %d: found %d but expected %d columns." main_linenum found expected
+	| Error.Invalid_column_number (tag, linenum, found, expected) ->
+		sprintf "Wrong number of columns for a row belonging to the %s started in line %d: found %d but expected %d columns." (explain_tag tag) linenum found expected
 
 	| Error.Invalid_column_specifier (tag, spec) ->
-		sprintf "Unknown column specifier '%c' in command '%s'.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec tag
+		sprintf "Unknown column specifier '%c' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec (explain_tag tag)
+
+	| Error.Invalid_feature (tag, description) ->
+		sprintf "The feature '%s' requested by %s has been flagged as invalid for this document." description (explain_tag tag)
 
 	| Error.Duplicate_label (tag, label) ->
-		sprintf "Command '%s' attempts to redefine label '%s'." tag label
+		sprintf "Attempt to redefine label '%s' in %s." label (explain_tag tag)
 
 	| Error.Empty_target (tag, label) ->
-		sprintf "Empty target for command '%s' and label '%s'." tag label
+		sprintf "Empty target for %s and label '%s'." (explain_tag tag) label
 
 	| Error.Wrong_target (tag, expected, suggested, label) ->
 		let str_expected = match expected with
@@ -106,16 +114,10 @@ let explain_error = function
 			| Error.Target_bib    -> "'\\cite'"
 			| Error.Target_note   -> "'\\see'"
 			| Error.Target_label  -> "'\\ref', '\\sref', or '\\mref'"
-		in sprintf ("Wrong target '%s' for command '%s': this command should only be used to reference %s.  Considering your target, perhaps you mean to use command %s instead?") label tag str_expected str_suggested
+		in sprintf ("Wrong target '%s' for %s: this command should only be used to reference %s.  Considering your target, perhaps you mean to use command %s instead?") label (explain_tag tag) str_expected str_suggested
 
 	| Error.Absent_target (tag, label) ->
-		sprintf "Command '%s' references an undefined label '%s'." tag label
-
-	| Error.Invalid_command_feature (comm, description) ->
-		sprintf "The feature '%s' requested by command '%s' has been flagged as invalid for this document." description comm
-
-	| Error.Invalid_operator_feature (op, description) ->
-		sprintf "The feature '%s' requested by operator '%s' has been flagged as invalid for this document." description op
+		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
 	| Error.Syntax_error ->
 		"Syntax error."

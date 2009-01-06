@@ -279,8 +279,8 @@ let solve assigned taken undecided =
 
 (**	High-level processing function.
 *)
-let process errors comm maybe_extra handles =
-	match maybe_extra with
+let process errors comm handles =
+	match comm.comm_extra with
 		| Some extra ->
 			let strs = Array.of_list (String.nsplit extra ",") in
 			let (fields, results) = prepare errors comm strs handles in
@@ -323,8 +323,8 @@ let get_alignment = function
 	| Some (Alignment_data x)	-> x
 	| _				-> Alignment.Center
 
-let parse_floater errors comm extra =
-	let assigned = process errors comm extra [Alignment_hnd]
+let parse_floater errors comm =
+	let assigned = process errors comm [Alignment_hnd]
 	in get_alignment assigned.(0)
 
 
@@ -332,13 +332,13 @@ let parse_floater errors comm extra =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let parse_for_itemize errors comm extra =
-	let assigned = process errors comm extra [Bullet_hnd]
+let parse_for_itemize errors comm =
+	let assigned = process errors comm [Bullet_hnd]
 	in get_bullet assigned.(0)
 
 
-let parse_for_enumerate errors comm extra =
-	let assigned = process errors comm extra [Numbering_hnd]
+let parse_for_enumerate errors comm =
+	let assigned = process errors comm [Numbering_hnd]
 	in get_numbering assigned.(0)
 
 let parse_for_quote = parse_floater
@@ -347,8 +347,8 @@ let parse_for_mathtex = parse_floater
 
 let parse_for_mathml = parse_floater
 
-let parse_for_code errors comm extra =
-	let assigned = process errors comm extra [Alignment_hnd; Linenums_hnd]
+let parse_for_code errors comm =
+	let assigned = process errors comm [Alignment_hnd; Linenums_hnd]
 	in (get_alignment assigned.(0), get_linenums assigned.(1))
 
 let parse_for_verbatim = parse_floater

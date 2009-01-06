@@ -16,7 +16,7 @@ open Lambdoc_reader
 open Ast.M
 open Parser
 
-
+(*
 let maybe_sprintf opening closing = function
 	| Some thing	-> sprintf "%c%s%c" opening thing closing
 	| None		-> ""
@@ -123,4 +123,5 @@ let to_string = function
 	| BIB_TITLE comm		-> sprintf "BIB_TITLE: %s" (sprintf_command comm)
 	| BIB_AUTHOR comm		-> sprintf "BIB_AUTHOR: %s" (sprintf_command comm)
 	| BIB_RESOURCE comm		-> sprintf "BIB_RESOURCE: %s" (sprintf_command comm)
+*)
 
