@@ -59,7 +59,7 @@ let floater_class =
 	(Forbidden, Forbidden, Optional, Forbidden)
 
 let code_class =
-	(Forbidden, Forbidden, Optional, Mandatory)
+	(Forbidden, Forbidden, Optional, Mandatory0)
 	
 let tabular_class =
 	(Forbidden, Forbidden, Optional, Mandatory)

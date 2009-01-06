@@ -185,7 +185,7 @@ let get_env_tag tag params is_begin =
 
 let pat_env = "\\\\(?<env>(begin)|(end))"
 let pat_command = "\\\\(?<command>\\w+)"
-let pat_primary = "\\{(?<primary>[\\w_]+)\\}"
+let pat_primary = "\\{(?<primary>\\w+[\\w\\d_]*)\\}"
 let pat_secondary = "(?<secondary>\\{\\w*\\})?"
 
 let pat_order = "(?<order>\\([\\w\\d\\.]*\\))"

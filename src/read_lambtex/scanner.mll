@@ -123,7 +123,7 @@ let order = '(' order_char* ')'
 let label = '[' label_char+ ']'
 let extra = '<' extra_char+ '>'
 let optional = ( order | label | extra )*
-let primary = '{' (alpha | '_')+ '}'
+let primary = '{' alpha+ ( alpha | deci | '_' )* '}'
 let secondary = '{' alpha* '}'
 
 let simple_comm = '\\' alpha+ optional
