@@ -1,0 +1,16 @@
+<document>
+
+	<title label="titalo">Yada yada yada</title>
+
+	<p>Yada yada yada</p>
+
+	<p>Yada <bold>Bold</bold> yada</p>
+
+	<p>Yada <emph>Bold</emph> yada</p>
+
+	<mathtex> y = \frac{x}{2} </mathtex>
+
+	<mathml> <ola> bah </ola> </mathml>
+
+</document>
+
