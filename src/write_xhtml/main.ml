@@ -77,13 +77,20 @@ let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (mak
 
 let wrap_order = function
 	| ""	-> []
-	| other	-> [span [pcdata other]]
+	| order	-> [span [pcdata order]]
 
 
 let cons_of_level = function
 	| `Level1 -> XHTML.M.h1
 	| `Level2 -> XHTML.M.h2
 	| `Level3 -> XHTML.M.h3
+
+
+let class_of_level = function
+	| `Level0 -> "level0"
+	| `Level1 -> "level1"
+	| `Level2 -> "level2"
+	| `Level3 -> "level3"
 
 
 let make_alignment alignment = ["doc_aligned"; "doc_align_" ^ (Alignment.to_string alignment)]
@@ -537,21 +544,21 @@ let write_valid_document settings classname doc =
 
 
 	and write_toc_entry sec =
-		let make_toc_entry label order_str content =
-		        XHTML.M.li [make_internal_link label ((wrap_order order_str) @ [span content])]
+		let make_toc_entry label classname order_str content =
+		        XHTML.M.li ~a:[a_class [classname]] [make_internal_link label ((wrap_order order_str) @ [span content])]
 		in match sec with
 			| `Part (label, order, `Custom seq) ->
-				make_toc_entry label (part_conv order) (write_super_seq seq)
+				make_toc_entry label (class_of_level `Level0) (part_conv order) (write_super_seq seq)
 			| `Part (label, order, `Appendix) ->
-				make_toc_entry label (part_conv order) [pcdata settings.names.appendix_name]
+				make_toc_entry label (class_of_level `Level0) (part_conv order) [pcdata settings.names.appendix_name]
 			| `Section (label, order, location, level, `Custom seq) ->
-				make_toc_entry label (section_conv location order) (write_super_seq seq)
+				make_toc_entry label (class_of_level level) (section_conv location order) (write_super_seq seq)
 			| `Section (label, order, location, level, `Bibliography) ->
-				make_toc_entry label (section_conv location order) [pcdata settings.names.bibliography_name]
+				make_toc_entry label (class_of_level level) (section_conv location order) [pcdata settings.names.bibliography_name]
 			| `Section (label, order, location, level, `Notes) ->
-				make_toc_entry label (section_conv location order) [pcdata settings.names.notes_name]
+				make_toc_entry label (class_of_level level) (section_conv location order) [pcdata settings.names.notes_name]
 			| `Section (label, order, location, level, `Toc) ->
-				make_toc_entry label (section_conv location order) [pcdata settings.names.toc_name]
+				make_toc_entry label (class_of_level level) (section_conv location order) [pcdata settings.names.toc_name]
 
 
 	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_super_frag doc.Valid.content)

@@ -68,6 +68,7 @@ type error_msg_t =
 	| Invalid_extra_bullet_parameter of tag_t option * string * string
 	| Invalid_extra_numbering_parameter of tag_t option * string * string
 	| Invalid_extra_alignment_parameter of tag_t option * string * string
+	| Invalid_extra_lang_parameter of tag_t option * string * string
 	| Invalid_extra_unknown_parameter of tag_t option * int * string
 
 	| Invalid_language of tag_t option * string

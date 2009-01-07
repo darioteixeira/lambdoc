@@ -38,13 +38,14 @@ end
 (********************************************************************************)
 
 type handle_t =
+	| Linenums_hnd
+	| Zebra_hnd
+	| Width_hnd
+	| Height_hnd
 	| Bullet_hnd
 	| Numbering_hnd
 	| Alignment_hnd
-	| Width_hnd
-	| Height_hnd
-	| Linenums_hnd
-	| Zebra_hnd
+	| Lang_hnd
 
 
 type property_kind_t =
@@ -53,6 +54,7 @@ type property_kind_t =
 	| Bullet_kind
 	| Numbering_kind
 	| Alignment_kind
+	| Lang_kind
 
 
 type property_id_t = string * property_kind_t
@@ -64,6 +66,7 @@ type property_data_t =
 	| Bullet_data of Bullet.t
 	| Numbering_data of Numbering.t
 	| Alignment_data of Alignment.t
+	| Lang_data of Code.lang_t
 
 
 type field_t =
@@ -97,13 +100,14 @@ exception Solution_found of property_data_t option array * bool array
 (**	Definition of the key and property kind associated with each handle.
 *)
 let id_of_handle = function
+	| Linenums_hnd	-> ("linenums", Boolean_kind)
+	| Zebra_hnd	-> ("zebra", Boolean_kind)
+	| Width_hnd	-> ("w", Numeric_kind)
+	| Height_hnd	-> ("h", Numeric_kind)
 	| Bullet_hnd	-> ("bul", Bullet_kind)
 	| Numbering_hnd	-> ("num", Numbering_kind)
 	| Alignment_hnd	-> ("align", Alignment_kind)
-	| Width_hnd	-> ("w", Numeric_kind)
-	| Height_hnd	-> ("h", Numeric_kind)
-	| Linenums_hnd	-> ("linenums", Boolean_kind)
-	| Zebra_hnd	-> ("zebra", Boolean_kind)
+	| Lang_hnd	-> ("lang", Lang_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -200,6 +204,15 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		(try Positive (Alignment_data (Alignment.of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_alignment_parameter (comm.comm_tag, key, v)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative)
+
+	| (key, Lang_kind, Unnamed_field v) ->
+		(try Undecided (Lang_data (Code.lang_of_string v)) with Invalid_argument _ -> Negative)
+	| (key, Lang_kind, Keyvalue_field (k, v)) when key = k ->
+		(try Positive (Lang_data (Code.lang_of_string v))
+		with Invalid_argument _ ->
+			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
@@ -309,22 +322,6 @@ let process errors comm handles =
 (**	{3 Wrappers}								*)
 (********************************************************************************)
 
-let get_linenums = function
-	| Some (Boolean_data x)		-> x
-	| _				-> true
-
-let get_zebra = function
-	| Some (Boolean_data x)		-> x
-	| _				-> true
-
-let get_bullet = function
-	| Some (Bullet_data x)		-> x
-	| _				-> Bullet.Default
-
-let get_numbering = function
-	| Some (Numbering_data x)	-> x
-	| _				-> Numbering.Default
-
 let get_alignment = function
 	| Some (Alignment_data x)	-> x
 	| _				-> Alignment.Center
@@ -340,12 +337,16 @@ let parse_floater errors comm =
 
 let parse_for_itemize errors comm =
 	let assigned = process errors comm [Bullet_hnd]
-	in get_bullet assigned.(0)
+	in match assigned.(0) with
+		| Some (Bullet_data x)		-> x
+		| _				-> Bullet.Default
 
 
 let parse_for_enumerate errors comm =
 	let assigned = process errors comm [Numbering_hnd]
-	in get_numbering assigned.(0)
+	in match assigned.(0) with
+		| Some (Numbering_data x)	-> x
+		| _				-> Numbering.Default
 
 let parse_for_quote = parse_floater
 
@@ -354,8 +355,19 @@ let parse_for_mathtex = parse_floater
 let parse_for_mathml = parse_floater
 
 let parse_for_code errors comm =
-	let assigned = process errors comm [Alignment_hnd; Linenums_hnd; Zebra_hnd]
-	in (get_alignment assigned.(0), get_linenums assigned.(1), get_zebra assigned.(2))
+	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd; Alignment_hnd] in
+	let lang = match assigned.(0) with
+		| Some (Lang_data x)		-> Some x
+		| _				-> None in
+	let linenums = match (lang, assigned.(1)) with
+		| (_, Some (Boolean_data x))	-> x
+		| (Some _, _)			-> true
+		| (None, _)			-> false in
+	let zebra = match (lang, assigned.(2)) with
+		| (_, Some (Boolean_data x))	-> x
+		| _				-> true in
+	let alignment = get_alignment assigned.(3)
+	in (alignment, linenums, zebra, lang)
 
 let parse_for_verbatim = parse_floater
 

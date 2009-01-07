@@ -609,9 +609,8 @@ let process_document feature_map document_ast =
 	and convert_code_block = function
 		| `AST_code (comm, txt) ->
 			let elem () =
-				let lang = get_language errors comm comm.comm_secondary in
+				let (alignment, linenums, zebra, lang) = Extra.parse_for_code errors comm in
 				let highlight = Code.from_string lang txt
-				and (alignment, linenums, zebra) = Extra.parse_for_code errors comm
 				in Some (Block.M.code alignment linenums zebra highlight)
 			in check_comm `Feature_code comm elem
 
