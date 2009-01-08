@@ -80,5 +80,5 @@ let make bullet numbering names =
 	names = names;
 	}
 
-let default = make Bullet.Default Numbering.Default english_names
+let default = make Bullet.Disc Numbering.Decimal english_names
 

@@ -20,7 +20,6 @@ TYPE_CONV_PATH "Document"
 (********************************************************************************)
 
 type t =
-	| Default
 	| Decimal
 	| Lower_roman
 	| Upper_roman
@@ -35,16 +34,15 @@ type t =
 (********************************************************************************)
 
 let of_string = function
-	| "0"		-> Decimal
-	| "i"		-> Lower_roman
-	| "I"		-> Upper_roman
-	| "a"		-> Lower_alpha
-	| "A"		-> Upper_alpha
-	| "none"	-> None
-	| other		-> invalid_arg "Unknown numbering"
+	| "decimal" | "0"	-> Decimal
+	| "lower-roman" | "i"	-> Lower_roman
+	| "upper-roman" | "I"	-> Upper_roman
+	| "lower-alpha" | "a"	-> Lower_alpha
+	| "upper-alpha" | "A"	-> Upper_alpha
+	| "none"		-> None
+	| other			-> invalid_arg "Unknown numbering"
 
 let to_string = function
-	| Default
 	| Decimal	-> "decimal"
 	| Lower_roman	-> "lower_roman"
 	| Upper_roman	-> "upper_roman"

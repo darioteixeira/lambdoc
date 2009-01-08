@@ -20,7 +20,6 @@ TYPE_CONV_PATH "Document"
 (********************************************************************************)
 
 type t =
-	| Default
 	| Disc
 	| Circle
 	| Square
@@ -33,7 +32,6 @@ type t =
 (********************************************************************************)
 
 let of_string = function
-	| "default"	-> Default
 	| "disc"	-> Disc
 	| "circle"	-> Circle
 	| "square"	-> Square
@@ -41,7 +39,6 @@ let of_string = function
 	| other		-> invalid_arg "Unknown bullet"
 
 let to_string = function
-	| Default	-> "default"
 	| Disc		-> "disc"
 	| Circle	-> "circle"
 	| Square	-> "square"

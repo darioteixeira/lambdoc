@@ -339,14 +339,14 @@ let parse_for_itemize errors comm =
 	let assigned = process errors comm [Bullet_hnd]
 	in match assigned.(0) with
 		| Some (Bullet_data x)		-> x
-		| _				-> Bullet.Default
+		| _				-> Bullet.Disc
 
 
 let parse_for_enumerate errors comm =
 	let assigned = process errors comm [Numbering_hnd]
 	in match assigned.(0) with
 		| Some (Numbering_data x)	-> x
-		| _				-> Numbering.Default
+		| _				-> Numbering.Decimal
 
 let parse_for_quote = parse_floater
 
