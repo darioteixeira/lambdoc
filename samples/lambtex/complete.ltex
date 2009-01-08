@@ -165,8 +165,6 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 
 \begin<right>{quote}
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 \end{quote}
 
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
@@ -191,8 +189,6 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 
 \begin<left>{quote}
-Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 \end{quote}
 
@@ -242,7 +238,7 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 
-\begin{code}{ocaml}
+\begin<ocaml>{code}
 type 'a tree =
 	| Leaf
 	| Node of 'a * 'a tree * 'a tree
@@ -733,7 +729,7 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 
 \begin{printout}
-\begin{code}{ocaml}
+\begin<ocaml>{code}
 type 'a tree =
 	| Leaf
 	| Node of 'a * 'a tree * 'a tree
@@ -769,7 +765,7 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 
 \begin{printout}
-\begin<left>{code}{ocaml}
+\begin<left,ocaml>{code}
 type t =
 	| Foo of int
 	| Bar of float
@@ -805,7 +801,7 @@ Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit am
 Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
 
 \begin{printout}
-\begin<right>{code}{ocaml}
+\begin<right,ocaml>{code}
 type t =
 	| Foo of int
 	| Bar of float

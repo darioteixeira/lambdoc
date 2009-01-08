@@ -21,7 +21,7 @@
 /* Inline text.									*/
 /********************************************************************************/
 
-.doc_mono	{font-family: monospace; color: #666;}
+.doc_mono	{font-family: monospace; color: #333;}
 .doc_caps	{font-variant: small-caps;}
 .doc_thru	{text-decoration: line-through;}
 sup		{vertical-align: 0.3em;}
@@ -313,17 +313,14 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 /* Tabular environments.		 					*/
 /********************************************************************************/
 
+.doc_tab.doc_align_center	{margin: 2em auto;}
+.doc_align_center > .doc_tab	{margin: 0 auto;}
+
 .doc_tab
 	{
 	border-top: 2px solid #999;
 	border-bottom: 2px solid #999;
 	font-size: 0.929em;		/* For a size of 13px */
-	}
-
-.doc_tab.doc_align_center,
-.doc_align_center > .doc_tab
-	{
-	margin: 2em auto;
 	}
 
 .doc_tab > thead,
@@ -372,11 +369,6 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	text-align: center;
 	}
 
-.doc_bitmap > img
-	{
-	border: 1px dashed #000;
-	}
-
 
 /********************************************************************************/
 /* Subpage environments.		 					*/
@@ -386,7 +378,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	{
 	padding: 0 1em;
 	border: 1px dashed #999;
-	background-color: #fee;
+	background-color: #f0f0f6;
 	}
 
 
