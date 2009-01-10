@@ -169,8 +169,8 @@ open Lambdoc_reader
 %type <Lambdoc_reader.Ast.M.tabular_block_t>		tabular_block
 %type <Lambdoc_reader.Ast.M.bitmap_block_t>		bitmap_block
 %type <Lambdoc_reader.Ast.M.subpage_block_t>		subpage_block
-%type <Lambdoc_reader.Ast.M.bib_title_block_t>		bib_title_block
 %type <Lambdoc_reader.Ast.M.bib_author_block_t>		bib_author_block
+%type <Lambdoc_reader.Ast.M.bib_title_block_t>		bib_title_block
 %type <Lambdoc_reader.Ast.M.bib_resource_block_t>	bib_resource_block
 
 %type <Lambdoc_reader.Ast.M.equation_block_t>		equation_block
@@ -243,7 +243,7 @@ nestable_block:
 	| BEGIN_PRINTOUT printout_block caption_block END_PRINTOUT		{`AST_printout ($1, $3, $2)}
 	| BEGIN_TABLE table_block caption_block END_TABLE			{`AST_table ($1, $3, $2)}
 	| BEGIN_FIGURE figure_block caption_block END_FIGURE			{`AST_figure ($1, $3, $2)}
-	| BEGIN_BIB bib_title_block bib_author_block bib_resource_block END_BIB	{`AST_bib ($1, $2, $3, $4)}
+	| BEGIN_BIB bib_author_block bib_title_block bib_resource_block END_BIB	{`AST_bib ($1, $2, $3, $4)}
 	| BEGIN_NOTE nestable_block+ END_NOTE					{`AST_note ($1, $2)}
 
 items:
@@ -267,8 +267,8 @@ verbatim_block:		| BEGIN_VERBATIM RAW END_VERBATIM			{`AST_verbatim ($1, $2)}
 tabular_block:		| BEGIN_TABULAR tabular END_TABULAR			{`AST_tabular ($1, $2)}
 bitmap_block:		| BITMAP BEGIN RAW END BEGIN RAW END			{`AST_bitmap ($1, $3, $6)}
 subpage_block:		| BEGIN_SUBPAGE super_block+ END_SUBPAGE		{`AST_subpage ($1, $2)}
-bib_title_block:	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 bib_author_block:	| BIB_AUTHOR BEGIN super_node+ END			{`AST_bib_author ($1, $3)}
+bib_title_block:	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 bib_resource_block:	| BIB_RESOURCE BEGIN super_node+ END			{`AST_bib_resource ($1, $3)}
 
 

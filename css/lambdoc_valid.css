@@ -84,7 +84,6 @@ h2.doc_title	{font-size: 1.286em; margin: 0.5em 0;}		/* For a size of 18px */
 	clear: both;
 	margin: 1.5em 0 0.5em;
 	padding: 0;
-	text-transform: capitalize;
 	}
 
 .doc_part > span + span, .doc_sec > span + span

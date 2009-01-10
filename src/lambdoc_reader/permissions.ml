@@ -182,8 +182,8 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_bib		-> ghost_class
 		| `Feature_note		-> ghost_class
 
-		| `Feature_bib_title	-> forbidden_class
 		| `Feature_bib_author	-> forbidden_class
+		| `Feature_bib_title	-> forbidden_class
 		| `Feature_bib_resource	-> forbidden_class
 
 		| `Feature_part		-> custom_heading_class (get_subpaged maybe_subpaged)

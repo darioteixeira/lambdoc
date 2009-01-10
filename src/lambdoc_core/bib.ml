@@ -9,7 +9,7 @@
 (********************************************************************************)
 
 (**	A bibliography entry is a record consisting of a label, an ordering,
-	the title, the author, and the resource.
+	an author, a title, and a resource.
 *)
 
 TYPE_CONV_PATH "Document"
@@ -23,8 +23,8 @@ type t =
 	{
 	label: Label.t;
 	order: Block.M.bib_order_t;
-	title: Node.M.super_seq_t;
 	author: Node.M.super_seq_t;
+	title: Node.M.super_seq_t;
 	resource: Node.M.super_seq_t;
 	} (*with sexp*)
 

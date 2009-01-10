@@ -111,8 +111,8 @@ sig
 	type tabular_block_t = [ `AST_tabular of command_t * tabular_t ]
 	type bitmap_block_t = [ `AST_bitmap of command_t * raw_t * raw_t ]
 	type subpage_block_t = [ `AST_subpage of command_t * super_frag_t ]
-	type bib_title_block_t = [ `AST_bib_title of command_t * super_seq_t ] 
 	type bib_author_block_t = [ `AST_bib_author of command_t * super_seq_t ] 
+	type bib_title_block_t = [ `AST_bib_title of command_t * super_seq_t ] 
 	type bib_resource_block_t = [ `AST_bib_resource of command_t * super_seq_t ] 
 
 	type equation_block_t =
@@ -148,7 +148,7 @@ sig
 		| `AST_printout of command_t * caption_block_t * printout_block_t
 		| `AST_table of command_t * caption_block_t * table_block_t
 		| `AST_figure of command_t * caption_block_t * figure_block_t
-		| `AST_bib of command_t * bib_title_block_t * bib_author_block_t * bib_resource_block_t
+		| `AST_bib of command_t * bib_author_block_t * bib_title_block_t * bib_resource_block_t
 		| `AST_note of command_t * nestable_frag_t
 		]
 

@@ -36,7 +36,7 @@ type non_reference_block_feature_t =
 type reference_block_feature_t =
 	[ `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_caption | `Feature_bib | `Feature_note
-	| `Feature_bib_title | `Feature_bib_author | `Feature_bib_resource
+	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
 	| `Feature_part | `Feature_appendix | `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
 	| `Feature_title1 | `Feature_title2 | `Feature_abstract | `Feature_rule
@@ -97,7 +97,7 @@ let reference_block_features =
 	[
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_caption; `Feature_bib; `Feature_note;
-	`Feature_bib_title; `Feature_bib_author; `Feature_bib_resource;
+	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
 	`Feature_part; `Feature_appendix; `Feature_section1; `Feature_section2; `Feature_section3;
 	`Feature_bibliography; `Feature_notes; `Feature_toc;
 	`Feature_title1; `Feature_title2; `Feature_abstract; `Feature_rule;
@@ -193,8 +193,8 @@ let describe_reference_block_feature = function
 	| `Feature_bib		-> "bibliography entry"
 	| `Feature_note		-> "note"
 
-	| `Feature_bib_title	-> "title of biliography entry"
 	| `Feature_bib_author	-> "author of bibliography entry"
+	| `Feature_bib_title	-> "title of biliography entry"
 	| `Feature_bib_resource	-> "resource of bibliography entry"
 
 	| `Feature_part		-> "document part"

@@ -522,21 +522,21 @@ let process_document feature_map document_ast =
 					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_figure comm elem
 
-		| `AST_bib (comm, title, author, resource) ->
+		| `AST_bib (comm, author, title, resource) ->
 			let elem () =
 				let order = Order.auto_ordinal bib_counter in
 				let label = make_label comm (Target.bib_target order)
-				and title = convert_bib_title_block title
 				and author = convert_bib_author_block author
+				and title = convert_bib_title_block title
 				and resource = convert_bib_resource_block resource
-				in match (title, author, resource) with
-					| (Some title, Some author, Some resource) ->
+				in match (author, title, resource) with
+					| (Some author, Some title, Some resource) ->
 						let bib =
 							{
 							Bib.label = label;
 							Bib.order = order;
-							Bib.title = title;
 							Bib.author = author;
+							Bib.title = title;
 							Bib.resource = resource;
 							}
 						in	DynArray.add bibs bib;
@@ -648,16 +648,16 @@ let process_document feature_map document_ast =
 			in check_comm `Feature_subpage comm elem
 
 
-	and convert_bib_title_block = function
-		| `AST_bib_title (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm `Feature_bib_title comm elem
-
-
 	and convert_bib_author_block = function
 		| `AST_bib_author (comm, seq) ->
 			let elem () = Some (convert_super_seq seq)
 			in check_comm `Feature_bib_author comm elem
+
+
+	and convert_bib_title_block = function
+		| `AST_bib_title (comm, seq) ->
+			let elem () = Some (convert_super_seq seq)
+			in check_comm `Feature_bib_title comm elem
 
 
 	and convert_bib_resource_block = function
