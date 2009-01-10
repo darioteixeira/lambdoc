@@ -40,8 +40,9 @@ end
 type handle_t =
 	| Linenums_hnd
 	| Zebra_hnd
+	| Linked_hnd
+	| Framed_hnd
 	| Width_hnd
-	| Height_hnd
 	| Bullet_hnd
 	| Numbering_hnd
 	| Alignment_hnd
@@ -102,8 +103,9 @@ exception Solution_found of property_data_t option array * bool array
 let id_of_handle = function
 	| Linenums_hnd	-> ("linenums", Boolean_kind)
 	| Zebra_hnd	-> ("zebra", Boolean_kind)
-	| Width_hnd	-> ("w", Numeric_kind)
-	| Height_hnd	-> ("h", Numeric_kind)
+	| Linked_hnd	-> ("linked", Boolean_kind)
+	| Framed_hnd	-> ("framed", Boolean_kind)
+	| Width_hnd	-> ("width", Numeric_kind)
 	| Bullet_hnd	-> ("bul", Bullet_kind)
 	| Numbering_hnd	-> ("num", Numbering_kind)
 	| Alignment_hnd	-> ("align", Alignment_kind)
@@ -326,9 +328,27 @@ let get_alignment = function
 	| Some (Alignment_data x)	-> x
 	| _				-> Alignment.Center
 
+
 let parse_floater errors comm =
 	let assigned = process errors comm [Alignment_hnd]
 	in get_alignment assigned.(0)
+
+
+let parse_for_image errors comm =
+	let assigned = process errors comm [Alignment_hnd; Linked_hnd; Framed_hnd; Width_hnd] in
+	let alignment = match assigned.(0) with
+		| Some (Alignment_data x)	-> x
+		| _				-> Alignment.Center
+	and linked = match assigned.(1) with
+		| Some (Boolean_data x)	-> x
+		| _			-> false
+	and framed = match assigned.(2) with
+		| Some (Boolean_data x)	-> x
+		| _			-> false
+	and width = match assigned.(3) with
+		| Some (Numeric_data w)	-> Some w
+		| _			-> None
+	in (alignment, linked, framed, width)
 
 
 (********************************************************************************)
@@ -373,7 +393,7 @@ let parse_for_verbatim = parse_floater
 
 let parse_for_tabular = parse_floater
 
-let parse_for_bitmap = parse_floater
+let parse_for_bitmap = parse_for_image
 
 let parse_for_subpage = parse_floater
 

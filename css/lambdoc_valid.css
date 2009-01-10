@@ -364,10 +364,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 /* Image environments.			 					*/
 /********************************************************************************/
 
-.doc_bitmap
-	{
-	text-align: center;
-	}
+.doc_bitmap		{text-align: center;}
+.doc_framed > img	{border: 1px dotted #333;}
 
 
 /********************************************************************************/
@@ -386,14 +384,14 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 /* CSS for wrapper captions.							*/
 /********************************************************************************/
 
-.doc_caption
+p.doc_caption
 	{
-	margin: 1em 0;
+	margin: 1em auto;
 	padding: 0 0.5em;
 	font-size: 0.929em;	/* For a size of 13px */
 	}
 
-.doc_caption > span:first-child
+p.doc_caption > span:first-child
 	{
 	font-weight: bold;
 	margin-right: 0.5em;

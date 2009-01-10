@@ -137,7 +137,7 @@ let convert_to_composition contents =
 	and convert_code_block (`Code (alignment, linenums, zebra, code))	= Block.M.code alignment linenums zebra code
 	and convert_verbatim_block (`Verbatim (alignment, txt))			= Block.M.verbatim alignment txt
 	and convert_tabular_block (`Tabular (alignment, tab))			= Block.M.tabular alignment (convert_tabular tab)
-	and convert_bitmap_block (`Bitmap (alignment, alias))			= Block.M.bitmap alignment alias
+	and convert_bitmap_block (`Bitmap (alignment, image))			= Block.M.bitmap alignment image
 	and convert_subpage_block (`Subpage (alignment, frag))			= Block.M.subpage alignment (convert_super_frag frag)
 
 	in convert_super_frag contents

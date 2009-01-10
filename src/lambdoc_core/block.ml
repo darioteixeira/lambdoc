@@ -38,6 +38,11 @@ sig
 	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
 
 
+	(**	Common definitions for image types (bitmap and vectorial pictures).
+	*)
+	type image_t = bool * bool * int option * alias_t * XHTML.M.text
+
+
 	(**	The various types of individual building blocks.
 	*)
 
@@ -48,7 +53,7 @@ sig
 	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
 	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] (*with sexp*) 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
-	type bitmap_block_t = [ `Bitmap of Alignment.t * alias_t ] (*with sexp*) 
+	type bitmap_block_t = [ `Bitmap of Alignment.t * image_t ] (*with sexp*) 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
 
@@ -175,8 +180,8 @@ sig
 		([> verbatim_block_t ], [> `Composition]) t
 	val tabular: Alignment.t -> Tabular.t ->
 		([> tabular_block_t ], [> `Manuscript]) t
-	val bitmap: Alignment.t -> alias_t ->
-		([> bitmap_block_t ], [> `Composition]) t
+	val bitmap: Alignment.t -> image_t ->
+		([> bitmap_block_t ], 'b) t
 	val subpage: Alignment.t -> ([< super_block_t ], 'b) t list ->
 		([> subpage_block_t ], 'b) t
 	val equation: wrapper_t -> (equation_block_t, _) t ->
@@ -198,6 +203,8 @@ struct
 	type super_frag_t = M.super_block_t list (*with sexp*)
 	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
 
+	type image_t = bool * bool * int option * alias_t * XHTML.M.text
+
 	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
 	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
 	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
@@ -205,7 +212,7 @@ struct
 	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
 	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] (*with sexp*) 
 	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
-	type bitmap_block_t = [ `Bitmap of Alignment.t * alias_t ] (*with sexp*) 
+	type bitmap_block_t = [ `Bitmap of Alignment.t * image_t ] (*with sexp*) 
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
 
@@ -284,7 +291,7 @@ struct
 	let code alignment linenums zebra txt = `Code (alignment, linenums, zebra, txt)
 	let verbatim alignment txt = `Verbatim (alignment, txt)
 	let tabular alignment tab = `Tabular (alignment, tab)
-	let bitmap alignment alias = `Bitmap (alignment, alias)
+	let bitmap alignment image = `Bitmap (alignment, image)
 	let subpage alignment frag = `Subpage (alignment, (frag :> super_block_t list))
 	let equation wrapper equation_blk = `Equation (wrapper, equation_blk)
 	let printout wrapper printout_blk = `Printout (wrapper, printout_blk)

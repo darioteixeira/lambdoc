@@ -470,9 +470,18 @@ let write_valid_document settings classname doc =
 
 
 	and write_bitmap_block ~wrapped = function
-		| `Bitmap (alignment, alias) ->
-			let style = if wrapped then [] else make_alignment alignment in
-			let bitmap = XHTML.M.img ~src:(uri_of_string alias) ~alt:alias ()
+		| `Bitmap (alignment, (linked, framed, width, alias, alt)) ->
+			let style_align = if wrapped then [] else make_alignment alignment
+			and style_framed = if framed then ["doc_framed"] else [] in
+			let style = style_align @ style_framed in
+			let attrs = match width with
+				| Some w	-> [a_width (`Percent w)]
+				| None		-> [] in
+			let uri = uri_of_string alias in
+			let bitmap =
+				if linked
+				then XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
+				else XHTML.M.img ~a:attrs ~src:uri ~alt ()
 			in XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]
 
 

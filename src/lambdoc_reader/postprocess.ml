@@ -632,10 +632,11 @@ let process_document feature_map document_ast =
 
 
 	and convert_bitmap_block = function
-		| `AST_bitmap (comm, alias) ->
+		| `AST_bitmap (comm, alias, alt) ->
 			let elem () =
-				let alignment = Extra.parse_for_bitmap errors comm
-				in Some (Block.M.bitmap alignment alias)
+				let (alignment, linked, framed, width) = Extra.parse_for_bitmap errors comm in
+				let image = (linked, framed, width, alias, alt)
+				in Some (Block.M.bitmap alignment image)
 			in check_comm `Feature_bitmap comm elem
 
 

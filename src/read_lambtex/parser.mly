@@ -265,7 +265,7 @@ mathml_block:		| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{`AST_mathml_blk ($1, $2)
 code_block:		| BEGIN_CODE RAW END_CODE				{`AST_code ($1, $2)}
 verbatim_block:		| BEGIN_VERBATIM RAW END_VERBATIM			{`AST_verbatim ($1, $2)}
 tabular_block:		| BEGIN_TABULAR tabular END_TABULAR			{`AST_tabular ($1, $2)}
-bitmap_block:		| BITMAP BEGIN RAW END					{`AST_bitmap ($1, $3)}
+bitmap_block:		| BITMAP BEGIN RAW END BEGIN RAW END			{`AST_bitmap ($1, $3, $6)}
 subpage_block:		| BEGIN_SUBPAGE super_block+ END_SUBPAGE		{`AST_subpage ($1, $2)}
 bib_title_block:	| BIB_TITLE BEGIN super_node+ END			{`AST_bib_title ($1, $3)}
 bib_author_block:	| BIB_AUTHOR BEGIN super_node+ END			{`AST_bib_author ($1, $3)}

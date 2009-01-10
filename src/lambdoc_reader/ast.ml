@@ -109,7 +109,7 @@ sig
 	type code_block_t = [ `AST_code of command_t * raw_t ]
 	type verbatim_block_t = [ `AST_verbatim of command_t * raw_t ]
 	type tabular_block_t = [ `AST_tabular of command_t * tabular_t ]
-	type bitmap_block_t = [ `AST_bitmap of command_t * raw_t ]
+	type bitmap_block_t = [ `AST_bitmap of command_t * raw_t * raw_t ]
 	type subpage_block_t = [ `AST_subpage of command_t * super_frag_t ]
 	type bib_title_block_t = [ `AST_bib_title of command_t * super_seq_t ] 
 	type bib_author_block_t = [ `AST_bib_author of command_t * super_seq_t ] 
