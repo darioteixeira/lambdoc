@@ -12,7 +12,7 @@
 	an HTML entity, or text modified by some sort of decoration.
 *)
 
-TYPE_CONV_PATH "Document"
+(*TYPE_CONV_PATH "Document"*)
 
 open Basic
 

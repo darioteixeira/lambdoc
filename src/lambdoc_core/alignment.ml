@@ -11,7 +11,7 @@
 (**	Definition of possible alignments for document floaters.
 *)
 
-TYPE_CONV_PATH "Document"
+(*TYPE_CONV_PATH "Document"*)
 
 
 (********************************************************************************)

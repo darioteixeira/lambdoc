@@ -11,7 +11,7 @@
 (**	Definition of document errors.
 *)
 
-TYPE_CONV_PATH "Document"
+(*TYPE_CONV_PATH "Document"*)
 
 open Basic
 

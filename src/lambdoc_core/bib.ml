@@ -12,7 +12,7 @@
 	an author, a title, and a resource.
 *)
 
-TYPE_CONV_PATH "Document"
+(*TYPE_CONV_PATH "Document"*)
 
 
 (********************************************************************************)

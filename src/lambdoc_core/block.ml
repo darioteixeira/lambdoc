@@ -12,7 +12,7 @@
 	found in a document.  They include paragraphs, figures, tables, etc.
 *)
 
-TYPE_CONV_PATH "Document"
+(*TYPE_CONV_PATH "Document"*)
 
 open Basic
 
@@ -62,9 +62,9 @@ sig
 		numbered containers around some kinds of basic blocks.
 	*)
 
-	type equation_block_t = [ math_block_t ] (*with sexp*)
-	type printout_block_t = [ code_block_t ] (*with sexp*)
-	type table_block_t = [ tabular_block_t ] (*with sexp*)
+	type equation_block_t = math_block_t (*with sexp*)
+	type printout_block_t = code_block_t (*with sexp*)
+	type table_block_t = tabular_block_t (*with sexp*)
 	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
 
@@ -216,9 +216,9 @@ struct
 	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
 	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
 
-	type equation_block_t = [ math_block_t ] (*with sexp*)
-	type printout_block_t = [ code_block_t ] (*with sexp*)
-	type table_block_t = [ tabular_block_t ] (*with sexp*)
+	type equation_block_t = math_block_t (*with sexp*)
+	type printout_block_t = code_block_t (*with sexp*)
+	type table_block_t = tabular_block_t (*with sexp*)
 	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
 
 	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t (*with sexp*)

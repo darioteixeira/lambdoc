@@ -12,7 +12,7 @@
 	inline text.
 *)
 
-TYPE_CONV_PATH "Document"
+(*TYPE_CONV_PATH "Document"*)
 
 
 (********************************************************************************)
