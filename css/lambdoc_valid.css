@@ -364,6 +364,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 /********************************************************************************/
 
 .doc_bitmap		{text-align: center;}
+.doc_bitmap > img	{max-width: 100%}
 .doc_framed > img	{border: 1px dotted #333;}
 
 

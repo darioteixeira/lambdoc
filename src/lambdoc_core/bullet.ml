@@ -12,7 +12,7 @@
 	Note that these map directly into their CSS counterparts.
 *)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -24,7 +24,7 @@ type t =
 	| Circle
 	| Square
 	| None
-	(*with sexp*)
+	with sexp
 
 
 (********************************************************************************)

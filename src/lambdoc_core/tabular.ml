@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 open Basic
 
@@ -29,18 +29,18 @@ type alignment_t =
 	| Left
 	| Right
 	| Justify
-	(*with sexp*)
+	with sexp
 
 type weight_t =
 	| Normal
 	| Strong
-	(*with sexp*)
+	with sexp
 
-type column_t = alignment_t * weight_t (*with sexp*)
+type column_t = alignment_t * weight_t with sexp
 
-type row_t = Node.M.super_seq_t plus_t (*with sexp*)
+type row_t = Node.M.super_seq_t plus_t with sexp
 
-type group_t = row_t plus_t (*with sexp*)
+type group_t = row_t plus_t with sexp
 
 type t =
 	{
@@ -48,7 +48,7 @@ type t =
 	thead: group_t option;
 	tfoot: group_t option;
 	tbodies: group_t plus_t;
-	} (*with sexp*)
+	} with sexp
 
 
 (********************************************************************************)

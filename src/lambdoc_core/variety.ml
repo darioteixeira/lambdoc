@@ -15,7 +15,7 @@
 	imply internal links, such as a table of contents, a bibliography, etc.
 *)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -25,5 +25,5 @@
 type t =
 	[ `Manuscript
 	| `Composition
-	] (*with sexp*)
+	] with sexp
 

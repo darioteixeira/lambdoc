@@ -12,7 +12,7 @@
 	found in a document.  They include paragraphs, figures, tables, etc.
 *)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 open Basic
 
@@ -21,57 +21,57 @@ module rec M:
 sig
 	(**	Definition of the ordering types for the various kinds of blocks.
 	*)
-	type part_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
-	type section_order_t = (Order.hierarchical_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
-	type wrapper_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
-	type bib_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
-	type note_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
+	type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+	type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+	type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
+	type bib_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
+	type note_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
 
 
 	(**	A super fragment is a list of super blocks.
 	*)
-	type super_frag_t = M.super_block_t list (*with sexp*)
+	type super_frag_t = M.super_block_t list with sexp
 
 
 	(**	A nestable fragment is a list of nestable blocks.
 	*)
-	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
+	type nestable_frag_t = M.nestable_block_t list with sexp
 
 
 	(**	Common definitions for image types (bitmap and vectorial pictures).
 	*)
-	type image_t = bool * bool * int option * alias_t * XHTML.M.text
+	type image_t = bool * bool * int option * alias_t * string with sexp
 
 
 	(**	The various types of individual building blocks.
 	*)
 
-	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
-	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
-	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
-	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
-	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] (*with sexp*) 
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
-	type bitmap_block_t = [ `Bitmap of Alignment.t * image_t ] (*with sexp*) 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
+	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] with sexp
+	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] with sexp
+	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
+	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] with sexp 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
+	type bitmap_block_t = [ `Bitmap of Alignment.t * image_t ] with sexp 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp
 
 
 	(**	The various types of wrapper blocks.  Wrappers are just
 		numbered containers around some kinds of basic blocks.
 	*)
 
-	type equation_block_t = math_block_t (*with sexp*)
-	type printout_block_t = code_block_t (*with sexp*)
-	type table_block_t = tabular_block_t (*with sexp*)
-	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
+	type equation_block_t = math_block_t with sexp
+	type printout_block_t = code_block_t with sexp
+	type table_block_t = tabular_block_t with sexp
+	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] with sexp
 
 
 	(**	The tuple of all common fields to wrappers.  The fields
 		are the wrapper's label, its order, and a caption.
 	*)
-	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t (*with sexp*)
+	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t with sexp
 
 
 	(**	Nestable blocks may be nested.
@@ -91,7 +91,7 @@ sig
 		| `Printout of wrapper_t * printout_block_t
 		| `Table of wrapper_t * table_block_t
 		| `Figure of wrapper_t * figure_block_t
-		] (*with sexp*)
+		] with sexp
 
 
 	(**	Part content.
@@ -99,7 +99,7 @@ sig
 	type part_content_t =
 		[ `Custom of Node.M.super_seq_t
 		| `Appendix
-		] (*with sexp*)
+		] with sexp
 
 
 	(**	Section content.
@@ -109,7 +109,7 @@ sig
 		| `Bibliography
 		| `Notes
 		| `Toc
-		] (*with sexp*)
+		] with sexp
 
 
 	(**	Section locations.
@@ -117,7 +117,7 @@ sig
 	type section_location_t =
 		[ `Mainbody
 		| `Appendixed
-		] (*with sexp*)
+		] with sexp
 
 
 	(**	Heading blocks.
@@ -125,7 +125,7 @@ sig
 	type heading_block_t =
 		[ `Part of Label.t * part_order_t * part_content_t
 		| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
-		] (*with sexp*)
+		] with sexp
 
 
 	(**	Top blocks are those that may not be nested, and therefore appear only
@@ -136,14 +136,14 @@ sig
 		| `Title of title_level_t * Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
-		] (*with sexp*)
+		] with sexp
 
 
 	(**	A super block is either a top block or a nestable block.
 	*)
-	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
+	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
 
-	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t ] (*with sexp*)
+	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t ] with sexp
 
 	val part: Label.t -> part_order_t -> ([< Node.M.super_node_t ], 'b) Node.M.t list ->
 		([> heading_block_t ], [> `Manuscript ]) t
@@ -194,34 +194,34 @@ sig
 		([> nestable_block_t ], [> `Manuscript]) t
 end =
 struct
-	type part_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
-	type section_order_t = (Order.hierarchical_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
-	type wrapper_order_t = (Order.ordinal_t as 'a, [ 'a Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
-	type bib_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
-	type note_order_t = (Order.ordinal_t as 'a, 'a Order.auto_given_t) Order.t (*with sexp*)
+	type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+	type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+	type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
+	type bib_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
+	type note_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
 
-	type super_frag_t = M.super_block_t list (*with sexp*)
-	type nestable_frag_t = M.nestable_block_t list (*with sexp*)
+	type super_frag_t = M.super_block_t list with sexp
+	type nestable_frag_t = M.nestable_block_t list with sexp
 
-	type image_t = bool * bool * int option * alias_t * XHTML.M.text
+	type image_t = bool * bool * int option * alias_t * string with sexp
 
-	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] (*with sexp*)
-	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] (*with sexp*)
-	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] (*with sexp*)
-	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] (*with sexp*)
-	type math_block_t = [ `Math of Alignment.t * Math.t ] (*with sexp*) 
-	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] (*with sexp*) 
-	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] (*with sexp*) 
-	type bitmap_block_t = [ `Bitmap of Alignment.t * image_t ] (*with sexp*) 
-	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] (*with sexp*) 
-	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] (*with sexp*)
+	type paragraph_block_t = [ `Paragraph of Node.M.super_seq_t ] with sexp
+	type itemize_block_t = [ `Itemize of Bullet.t * nestable_frag_t plus_t ] with sexp
+	type enumerate_block_t = [ `Enumerate of Numbering.t * nestable_frag_t plus_t ] with sexp
+	type quote_block_t = [ `Quote of Alignment.t * nestable_frag_t ] with sexp
+	type math_block_t = [ `Math of Alignment.t * Math.t ] with sexp 
+	type code_block_t = [ `Code of Alignment.t * bool * bool * Code.t ] with sexp 
+	type tabular_block_t = [ `Tabular of Alignment.t * Tabular.t ] with sexp 
+	type bitmap_block_t = [ `Bitmap of Alignment.t * image_t ] with sexp 
+	type verbatim_block_t = [ `Verbatim of Alignment.t * raw_t ] with sexp 
+	type subpage_block_t = [ `Subpage of Alignment.t * super_frag_t ] with sexp
 
-	type equation_block_t = math_block_t (*with sexp*)
-	type printout_block_t = code_block_t (*with sexp*)
-	type table_block_t = tabular_block_t (*with sexp*)
-	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] (*with sexp*)
+	type equation_block_t = math_block_t with sexp
+	type printout_block_t = code_block_t with sexp
+	type table_block_t = tabular_block_t with sexp
+	type figure_block_t = [ bitmap_block_t | verbatim_block_t | subpage_block_t ] with sexp
 
-	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t (*with sexp*)
+	type wrapper_t = Label.t * wrapper_order_t * Node.M.super_seq_t with sexp
 
 	type nestable_block_t =
 		[ paragraph_block_t
@@ -238,40 +238,40 @@ struct
 		| `Printout of wrapper_t * printout_block_t
 		| `Table of wrapper_t * table_block_t
 		| `Figure of wrapper_t * figure_block_t
-		] (*with sexp*)
+		] with sexp
 
 	type part_content_t =
 		[ `Custom of Node.M.super_seq_t
 		| `Appendix
-		] (*with sexp*)
+		] with sexp
 
 	type section_content_t =
 		[ `Custom of Node.M.super_seq_t
 		| `Bibliography
 		| `Notes
 		| `Toc
-		] (*with sexp*)
+		] with sexp
 
 	type section_location_t =
 		[ `Mainbody
 		| `Appendixed
-		] (*with sexp*)
+		] with sexp
 
 	type heading_block_t =
 		[ `Part of Label.t * part_order_t * part_content_t
 		| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
-		] (*with sexp*)
+		] with sexp
 
 	type top_block_t =
 		[ heading_block_t
 		| `Title of title_level_t * Node.M.super_seq_t
 		| `Abstract of paragraph_block_t list
 		| `Rule
-		] (*with sexp*)
+		] with sexp
 
-	type super_block_t = [ top_block_t | nestable_block_t ] (*with sexp*)
+	type super_block_t = [ top_block_t | nestable_block_t ] with sexp
 
-	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t ] (*with sexp*)
+	type (+'a, 'b) t = 'a constraint 'a = [< super_block_t ] with sexp
 
 	let part label order seq = `Part (label, order, `Custom (seq :> Node.M.super_seq_t))
 	let section label order location level seq = `Section (label, order, location, level, `Custom (seq :> Node.M.super_seq_t))

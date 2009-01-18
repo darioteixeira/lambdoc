@@ -11,7 +11,7 @@
 (**	Definition of possible alignments for document floaters.
 *)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -21,7 +21,7 @@
 type t =
 	| Center
 	| Left
-	| Right (*with sexp*)
+	| Right with sexp
 
 
 (********************************************************************************)

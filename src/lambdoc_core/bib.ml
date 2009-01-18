@@ -12,7 +12,7 @@
 	an author, a title, and a resource.
 *)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -26,5 +26,5 @@ type t =
 	author: Node.M.super_seq_t;
 	title: Node.M.super_seq_t;
 	resource: Node.M.super_seq_t;
-	} (*with sexp*)
+	} with sexp
 

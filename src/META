@@ -1,7 +1,7 @@
 name = "lambdoc"
 version = "0.5"
 description = "The Lambdoc library for document parsing/printing"
-requires = "threads, unix, extlib, ocsigen.xhtml, ocsigen, pcre, sexplib, blahcaml, camlhighlight"
+requires = "threads, unix, extlib, sexplib, ocsigen.xhtml, ocsigen, pcre, blahcaml, camlhighlight"
 archive(byte) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"
 archive(plugin,byte) = "lambdoc.cma"

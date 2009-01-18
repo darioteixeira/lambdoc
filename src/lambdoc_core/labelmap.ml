@@ -8,16 +8,16 @@
 *)
 (********************************************************************************)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type key_t = Label.t
-type value_t = Target.t
-type t = (key_t, value_t) Hashtbl.t
+type key_t = Label.t with sexp
+type value_t = Target.t with sexp
+type t = (key_t, value_t) Hashtbl.t with sexp
 
 
 (********************************************************************************)

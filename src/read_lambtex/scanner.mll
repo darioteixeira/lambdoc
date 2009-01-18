@@ -145,6 +145,11 @@ let end_mathml_inl = "$>"
 let column_sep = space* '|' space*
 let row_end = space* '$'
 
+let endash = "--"
+let emdash = "---"
+let quote_open = "``"
+let quote_close = "''"
+
 
 (********************************************************************************)
 (**	{2 Actual scanners}							*)
@@ -176,6 +181,10 @@ rule general_scanner = parse
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| endash		{`Tok_entity (lexbuf, "ndash")}
+	| emdash		{`Tok_entity (lexbuf, "mdash")}
+	| quote_open		{`Tok_entity (lexbuf, "ldquo")}
+	| quote_close		{`Tok_entity (lexbuf, "rdquo")}
 	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
@@ -198,6 +207,10 @@ and tabular_scanner = parse
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| endash		{`Tok_entity (lexbuf, "ndash")}
+	| emdash		{`Tok_entity (lexbuf, "mdash")}
+	| quote_open		{`Tok_entity (lexbuf, "ldquo")}
+	| quote_close		{`Tok_entity (lexbuf, "rdquo")}
 	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 

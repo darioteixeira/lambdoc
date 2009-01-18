@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -22,13 +22,13 @@ type valid_t =
 	notes: Note.t list;
 	toc: Block.M.heading_block_t list;
 	labelmap: Labelmap.t;
-	} (*with sexp*)
+	} with sexp
 
-type 'a t = valid_t (*with sexp*)
+type 'a t = valid_t with sexp
 
-type manuscript_t = [`Manuscript] t (*with sexp*)
+type manuscript_t = [`Manuscript] t with sexp
 
-type composition_t = [`Composition] t (*with sexp*)
+type composition_t = [`Composition] t with sexp
 
 
 (********************************************************************************)

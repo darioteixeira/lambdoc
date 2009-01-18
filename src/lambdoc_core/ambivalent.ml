@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -18,11 +18,11 @@
 type 'a t =
 	[ `Valid of 'a Valid.t
 	| `Invalid of 'a Invalid.t
-	] (*with sexp*)
+	] with sexp
 
-type manuscript_t = [`Manuscript] t (*with sexp*)
+type manuscript_t = [`Manuscript] t with sexp
 
-type composition_t = [`Composition] t (*with sexp*)
+type composition_t = [`Composition] t with sexp
 
 
 (********************************************************************************)

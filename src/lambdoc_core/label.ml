@@ -11,7 +11,7 @@
 (**	Definitions pertaining to document labels.
 *)
 
-(*TYPE_CONV_PATH "Document"*)
+TYPE_CONV_PATH "Document"
 
 
 (********************************************************************************)
@@ -25,7 +25,7 @@
 type t =
 	[ `Auto_label of Basic.ref_t
 	| `User_label of Basic.ref_t
-	] (*with sexp*)
+	] with sexp
 
 
 (**	So it satisfies the [Map.OrderedType] signature.
