@@ -20,11 +20,11 @@
 type 'a t =
 	[ `Valid of 'a Valid.t
 	| `Invalid of 'a Invalid.t
-	] with sexp
+	] (*with sexp*)
 
-type manuscript_t = [`Manuscript] t with sexp
+type manuscript_t = [`Manuscript] t (*with sexp*)
 
-type composition_t = [`Composition] t with sexp
+type composition_t = [`Composition] t (*with sexp*)
 
 
 (********************************************************************************)
@@ -32,15 +32,15 @@ type composition_t = [`Composition] t with sexp
 (********************************************************************************)
 
 val make_valid_manuscript:
-	([< Block.M.super_block_t], [< `Composition | `Manuscript]) Block.M.t list ->
+	([< `Composition | `Manuscript], _, _, _) Block.t list ->
 	Bib.t list ->
 	Note.t list ->
-	Block.M.heading_block_t list ->
+	Block.heading_block_t list ->
 	Labelmap.t ->
 	manuscript_t
 
 val make_valid_composition:
-	([< Block.M.super_block_t], [< `Composition]) Block.M.t list ->
+	([< `Composition], _, _, _) Block.t list ->
 	composition_t
 
 val make_invalid_manuscript:

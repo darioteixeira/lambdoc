@@ -22,9 +22,9 @@ TYPE_CONV_PATH "Document"
 type t =
 	{
 	label: Label.t;
-	order: Block.M.bib_order_t;
-	author: Node.M.super_seq_t;
-	title: Node.M.super_seq_t;
-	resource: Node.M.super_seq_t;
-	} with sexp
+	order: Block.bib_order_t;
+	author: Node.seq_t;
+	title: Node.seq_t;
+	resource: Node.seq_t;
+	} (*with sexp*)
 

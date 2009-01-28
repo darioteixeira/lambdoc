@@ -15,13 +15,13 @@ TYPE_CONV_PATH "Document"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type invalid_t = Error.t list with sexp
+type invalid_t = Error.t list (*with sexp*)
 
-type 'a t = invalid_t with sexp
+type 'a t = invalid_t (*with sexp*)
 
-type manuscript_t = [`Manuscript] t with sexp
+type manuscript_t = [`Manuscript] t (*with sexp*)
 
-type composition_t = [`Composition] t with sexp
+type composition_t = [`Composition] t (*with sexp*)
 
 
 (********************************************************************************)

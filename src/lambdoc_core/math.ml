@@ -27,7 +27,7 @@ type t =
 	{
 	mathtex: string option;
 	mathml: string;
-	} with sexp
+	} (*with sexp*)
 
 
 (********************************************************************************)

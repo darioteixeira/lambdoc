@@ -25,5 +25,5 @@ TYPE_CONV_PATH "Document"
 type t =
 	[ `Manuscript
 	| `Composition
-	] with sexp
+	] (*with sexp*)
 

@@ -19,9 +19,9 @@
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type key_t = Label.t with sexp
-type value_t = Target.t with sexp
-type t with sexp
+type key_t = Label.t (*with sexp*)
+type value_t = Target.t (*with sexp*)
+type t (*with sexp*)
 
 
 (********************************************************************************)

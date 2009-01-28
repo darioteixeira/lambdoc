@@ -12,110 +12,49 @@
 	an HTML entity, or text modified by some sort of decoration.
 *)
 
-TYPE_CONV_PATH "Document"
+TYPE_CONV_PATH "Node"
 
 open Basic
 
+type 'a node_t =
+	[ `Plain of plain_t
+	| `Entity of entity_t
+	| `Math of Math.t
+	| `Bold of 'a list
+	| `Emph of 'a list
+	| `Mono of 'a list
+	| `Caps of 'a list
+	| `Thru of 'a list
+	| `Sup of 'a list
+	| `Sub of 'a list
+	| `Mbox of 'a list
+	| `Link of link_t * 'a list
+	| `See of ref_t
+	| `Cite of ref_t
+	| `Ref of ref_t
+	| `Sref of ref_t
+	| `Mref of ref_t * 'a list
+	] (*with sexp*)
 
-module rec M:
-sig
-	type super_seq_t = M.super_node_t list with sexp
-	type nonlink_seq_t = M.nonlink_node_t list with sexp
+type seq_t = 'a node_t as 'a list
 
-	type nonlink_node_t =
-		[ `Plain of plain_t
-		| `Entity of entity_t
-		| `Math of Math.t
-		| `Bold of super_seq_t
-		| `Emph of super_seq_t
-		| `Mono of super_seq_t
-		| `Caps of super_seq_t
-		| `Thru of super_seq_t
-		| `Sup of super_seq_t
-		| `Sub of super_seq_t
-		| `Mbox of super_seq_t
-		] with sexp
+type (+'a, +'b) t = 'c node_t as 'c (*with sexp*)
 
-	type link_node_t =
-		[ `Link of link_t * nonlink_seq_t
-		| `See of ref_t
-		| `Cite of ref_t
-		| `Ref of ref_t
-		| `Sref of ref_t
-		| `Mref of ref_t * nonlink_seq_t
-		] with sexp
-
-	type super_node_t = [ nonlink_node_t | link_node_t ] with sexp
-
-	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] with sexp
-
-	val plain: plain_t -> ([> nonlink_node_t ], [> `Composition ]) t
-	val entity: entity_t -> ([> nonlink_node_t ], [> `Composition ]) t
-	val math: Math.t -> ([> nonlink_node_t ], [> `Composition ]) t
-	val bold: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val emph: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val mono: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val caps: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val thru: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val sup: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val sub: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-	val mbox: ([< super_node_t ], 'b) t list -> ([> nonlink_node_t ], 'b) t
-
-	val link: link_t -> ([< nonlink_node_t], 'b) t list -> ([> link_node_t ], 'b) t
-	val see: ref_t -> ([> link_node_t ], [> `Manuscript ]) t
-	val cite: ref_t -> ([> link_node_t ], [> `Manuscript ]) t
-	val ref: ref_t -> ([> link_node_t ], [> `Manuscript ]) t
-	val sref: ref_t -> ([> link_node_t ], [> `Manuscript ]) t
-	val mref: ref_t -> ([< nonlink_node_t], 'b) t list -> ([> link_node_t ], [> `Manuscript ]) t
-end =
-struct
-	type super_seq_t = M.super_node_t list with sexp
-	type nonlink_seq_t = M.nonlink_node_t list with sexp
-
-	type nonlink_node_t =
-		[ `Plain of plain_t
-		| `Entity of entity_t
-		| `Math of Math.t
-		| `Bold of super_seq_t
-		| `Emph of super_seq_t
-		| `Mono of super_seq_t
-		| `Caps of super_seq_t
-		| `Thru of super_seq_t
-		| `Sup of super_seq_t
-		| `Sub of super_seq_t
-		| `Mbox of super_seq_t
-		] with sexp
-
-	type link_node_t =
-		[ `Link of link_t * nonlink_seq_t
-		| `See of ref_t
-		| `Cite of ref_t
-		| `Ref of ref_t
-		| `Sref of ref_t
-		| `Mref of ref_t * nonlink_seq_t
-		] with sexp
-
-	type super_node_t = [ nonlink_node_t | link_node_t ] with sexp
-
-	type (+'a, 'b) t = 'a constraint 'a = [< super_node_t ] with sexp
-
-	let plain txt = `Plain txt
-	let entity txt = `Entity txt
-	let math math = `Math math
-	let bold seq = `Bold (seq :> (super_node_t, _) t list)
-	let emph seq = `Emph (seq :> (super_node_t, _) t list)
-	let mono seq = `Mono (seq :> (super_node_t, _) t list)
-	let caps seq = `Caps (seq :> (super_node_t, _) t list)
-	let thru seq = `Thru (seq :> (super_node_t, _) t list)
-	let sup seq = `Sup (seq :> (super_node_t, _) t list)
-	let sub seq = `Sub (seq :> (super_node_t, _) t list)
-	let mbox seq = `Mbox (seq :> (super_node_t, _) t list)
-
-	let link lnk seq = `Link (lnk, (seq :> (nonlink_node_t, _) t list))
-	let see ref = `See ref
-	let cite ref = `Cite ref
-	let ref ref = `Ref ref
-	let sref ref = `Sref ref
-	let mref ref seq = `Mref (ref, (seq :> (nonlink_node_t, _) t list))
-end
+let plain txt = `Plain txt
+let entity txt = `Entity txt
+let math math = `Math math
+let bold seq = `Bold seq
+let emph seq = `Emph seq
+let mono seq = `Mono seq
+let caps seq = `Caps seq
+let thru seq = `Thru seq
+let sup seq = `Sup seq
+let sub seq = `Sub seq
+let mbox seq = `Mbox seq
+let link lnk seq = `Link (lnk, seq)
+let see ref = `See ref
+let cite ref = `Cite ref
+let ref ref = `Ref ref
+let sref ref = `Sref ref
+let mref ref seq = `Mref (ref, seq)
 

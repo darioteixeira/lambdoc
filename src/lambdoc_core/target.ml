@@ -25,16 +25,16 @@ type wrapper_t =
 	| Equation_wrapper
 	| Figure_wrapper
 	| Table_wrapper
-	with sexp
+	(*with sexp*)
 
 
 (**	The various variations of visible targets.
 *)
 type visible_target_t =
-	| Section_target of Block.M.section_location_t * Block.M.section_order_t
-	| Part_target of Block.M.part_order_t
-	| Wrapper_target of wrapper_t * Block.M.wrapper_order_t
-	with sexp
+	| Section_target of Block.section_location_t * Block.section_order_t
+	| Part_target of Block.part_order_t
+	| Wrapper_target of wrapper_t * Block.wrapper_order_t
+	(*with sexp*)
 
 
 (**	At the highest level, a target can either be visible (if it can be
@@ -43,9 +43,9 @@ type visible_target_t =
 *)
 type t =
 	| Visible_target of visible_target_t
-	| Bib_target of Block.M.bib_order_t
-	| Note_target of Block.M.note_order_t
-	with sexp
+	| Bib_target of Block.bib_order_t
+	| Note_target of Block.note_order_t
+	(*with sexp*)
 
 
 (********************************************************************************)

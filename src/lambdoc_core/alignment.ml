@@ -21,7 +21,7 @@ TYPE_CONV_PATH "Document"
 type t =
 	| Center
 	| Left
-	| Right with sexp
+	| Right (*with sexp*)
 
 
 (********************************************************************************)

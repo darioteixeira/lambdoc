@@ -18,18 +18,18 @@
 
 type valid_t =
 	{
-	content: Block.M.super_frag_t;
+	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
-	toc: Block.M.heading_block_t list;
+	toc: Block.heading_block_t list;
 	labelmap: Labelmap.t;
-	} with sexp
+	} (*with sexp*)
 
-type 'a t = valid_t with sexp
+type 'a t = private valid_t (*with sexp*)
 
-type manuscript_t = [`Manuscript] t with sexp
+type manuscript_t = [`Manuscript] t (*with sexp*)
 
-type composition_t = [`Composition] t with sexp
+type composition_t = [`Composition] t (*with sexp*)
 
 
 (********************************************************************************)
@@ -37,14 +37,14 @@ type composition_t = [`Composition] t with sexp
 (********************************************************************************)
 
 val make_manuscript:
-	([< Block.M.super_block_t ], [< `Composition | `Manuscript]) Block.M.t list ->
+	([< `Composition | `Manuscript ], _, _, _) Block.t list ->
 	Bib.t list ->
 	Note.t list ->
-	Block.M.heading_block_t list ->
+	Block.heading_block_t list ->
 	Labelmap.t ->
 	manuscript_t
 
-val make_composition: ([< Block.M.super_block_t ], [< `Composition]) Block.M.t list -> composition_t
+val make_composition: ([< `Composition], _, _, _) Block.t list -> composition_t
 
 (*
 val serialize_manuscript: manuscript_t -> string

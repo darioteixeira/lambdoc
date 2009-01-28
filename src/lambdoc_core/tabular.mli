@@ -30,18 +30,18 @@ type alignment_t =
 	| Left
 	| Right
 	| Justify
-	with sexp
+	(*with sexp*)
 
 type weight_t =
 	| Normal
 	| Strong
-	with sexp
+	(*with sexp*)
 
-type column_t = alignment_t * weight_t with sexp
+type column_t = alignment_t * weight_t (*with sexp*)
 
-type row_t = Node.M.super_seq_t plus_t with sexp
+type row_t = Node.seq_t plus_t (*with sexp*)
 
-type group_t = row_t plus_t with sexp
+type group_t = row_t plus_t (*with sexp*)
 
 type t =
 	{
@@ -49,7 +49,7 @@ type t =
 	thead: group_t option;
 	tfoot: group_t option;
 	tbodies: group_t plus_t;
-	} with sexp
+	} (*with sexp*)
 
 
 (********************************************************************************)
@@ -60,7 +60,7 @@ val column_of_specifier: char -> column_t
 
 val alignment_to_string: alignment_t -> string
 
-val make_row: ([< Node.M.super_node_t ], 'b) Node.M.t list plus_t -> row_t
+val make_row: (_, _) Node.t list plus_t -> row_t
 
 val make: column_t array -> ?thead:group_t -> ?tfoot:group_t -> group_t plus_t -> t
 
