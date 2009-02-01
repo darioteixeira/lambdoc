@@ -275,6 +275,58 @@ type note_t =
 
 
 (********************************************************************************)
+(**	{2 Definitions concerning document targets}				*)
+(********************************************************************************)
+
+module Target =
+struct
+	(************************************************************************)
+	(**	{3 Type definitions}						*)
+	(************************************************************************)
+
+	type wrapper_kind_t =
+		| Printout_wrapper
+		| Equation_wrapper
+		| Figure_wrapper
+		| Table_wrapper
+		(*with sexp*)
+
+	type visible_target_t =
+		| Section_target of section_location_t * section_order_t
+		| Part_target of part_order_t
+		| Wrapper_target of wrapper_kind_t * wrapper_order_t
+		(*with sexp*)
+
+	type t =
+		| Visible_target of visible_target_t
+		| Bib_target of bib_order_t
+		| Note_target of note_order_t
+		(*with sexp*)
+
+
+	(********************************************************************************)
+	(**	{3 Functions and values}						*)
+	(********************************************************************************)
+
+	let section location order = Visible_target (Section_target (location, order))
+
+	let part order = Visible_target (Part_target order)
+
+	let printout order = Visible_target (Wrapper_target (Printout_wrapper, order))
+
+	let equation order = Visible_target (Wrapper_target (Equation_wrapper, order))
+
+	let figure order = Visible_target (Wrapper_target (Figure_wrapper, order))
+
+	let table order = Visible_target (Wrapper_target (Table_wrapper, order))
+
+	let bib order = Bib_target order
+
+	let note order = Note_target order
+end
+
+
+(********************************************************************************)
 (**	{2 Definitions concerning valid documents}				*)
 (********************************************************************************)
 

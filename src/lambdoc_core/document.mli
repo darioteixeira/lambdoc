@@ -323,6 +323,61 @@ type note_t =
 
 
 (********************************************************************************)
+(**	{2 Definitions concerning document targets}				*)
+(********************************************************************************)
+
+module Target:
+sig
+	(************************************************************************)
+	(**	{3 Type definitions}						*)
+	(************************************************************************)
+
+	(**	The various types of wrappers.
+	*)
+	type wrapper_kind_t =
+		| Printout_wrapper
+		| Equation_wrapper
+		| Figure_wrapper
+		| Table_wrapper
+		(*with sexp*)
+
+
+	(**	The various variations of visible targets.
+	*)
+	type visible_target_t =
+		| Section_target of section_location_t * section_order_t
+		| Part_target of part_order_t
+		| Wrapper_target of wrapper_kind_t * wrapper_order_t
+		(*with sexp*)
+
+
+	(**	At the highest level, a target can either be visible (if it can be
+		referenced by [\ref], [\sref], or [\mref]), a bibliography block
+		(referenced by [\cite]), or a note block (referenced by [\see]).
+	*)
+	type t =
+		| Visible_target of visible_target_t
+		| Bib_target of bib_order_t
+		| Note_target of note_order_t
+		(*with sexp*)
+
+
+	(************************************************************************)
+	(**	{3 Public functions and values}					*)
+	(************************************************************************)
+
+	val section: section_location_t -> section_order_t -> t
+	val part: part_order_t -> t
+	val printout: wrapper_order_t -> t
+	val equation: wrapper_order_t ->
+	val figure: wrapper_order_t ->
+	val table: wrapper_order_t ->
+	val bib: bib_order_t ->
+	val note: note_order_t ->
+end
+
+
+(********************************************************************************)
 (**	{2 Definitions concerning valid documents}				*)
 (********************************************************************************)
 
