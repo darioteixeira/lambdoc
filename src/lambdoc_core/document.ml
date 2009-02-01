@@ -365,7 +365,7 @@ struct
 	(**	{3 Type definitions}						*)
 	(************************************************************************)
 
-	type 'a valid_t = private
+	type 'a t =
 		{
 		content: frag_t;
 		bibs: bib_t list;
@@ -374,8 +374,8 @@ struct
 		labelmap: Labelmap.t;
 		} (*with sexp*)
 
-	type valid_manuscript_t = [`Manuscript] valid_t (*with sexp*)
-	type valid_composition_t = [`Composition] valid_t (*with sexp*)
+	type manuscript_t = [`Manuscript] t (*with sexp*)
+	type composition_t = [`Composition] t (*with sexp*)
 
 
 	(************************************************************************)
@@ -431,18 +431,18 @@ struct
 	(**	{3 Type definitions}						*)
 	(************************************************************************)
 
-	type 'a invalid_t = private Error.t list (*with sexp*)
+	type 'a t = Error.t list (*with sexp*)
 
-	type invalid_manuscript_t = [`Manuscript] invalid_t (*with sexp*)
-	type invalid_composition_t = [`Composition] invalid_t (*with sexp*)
+	type manuscript_t = [`Manuscript] t (*with sexp*)
+	type composition_t = [`Composition] t (*with sexp*)
 
 
 	(************************************************************************)
 	(**	{2 Public functions and values}					*)
 	(************************************************************************)
 
-	let make_invalid_manuscript errors = errors
-	let make_invalid_composition errors = errors
+	let make_manuscript errors = errors
+	let make_composition errors = errors
 end
 
 

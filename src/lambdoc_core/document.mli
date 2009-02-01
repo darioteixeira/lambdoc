@@ -369,11 +369,11 @@ sig
 	val section: section_location_t -> section_order_t -> t
 	val part: part_order_t -> t
 	val printout: wrapper_order_t -> t
-	val equation: wrapper_order_t ->
-	val figure: wrapper_order_t ->
-	val table: wrapper_order_t ->
-	val bib: bib_order_t ->
-	val note: note_order_t ->
+	val equation: wrapper_order_t -> t
+	val figure: wrapper_order_t -> t
+	val table: wrapper_order_t -> t
+	val bib: bib_order_t -> t
+	val note: note_order_t -> t
 end
 
 (********************************************************************************)
@@ -417,7 +417,7 @@ sig
 	(**	{3 Type definitions}						*)
 	(************************************************************************)
 
-	type 'a valid_t = private
+	type 'a t = private
 		{
 		content: frag_t;
 		bibs: bib_t list;
@@ -426,8 +426,8 @@ sig
 		labelmap: Labelmap.t;
 		} (*with sexp*)
 
-	type manuscript_t = [ `Manuscript ] valid_t (*with sexp*)
-	type composition_t = [ `Composition ] valid_t (*with sexp*)
+	type manuscript_t = [ `Manuscript ] t (*with sexp*)
+	type composition_t = [ `Composition ] t (*with sexp*)
 
 
 	(************************************************************************)
@@ -470,10 +470,10 @@ sig
 	(**	{3 Type definitions}						*)
 	(************************************************************************)
 
-	type 'a invalid_t = private Error.t list (*with sexp*)
+	type 'a t = private Error.t list (*with sexp*)
 
-	type manuscript_t = [ `Manuscript ] invalid_t (*with sexp*)
-	type composition_t = [ `Composition ] invalid_t (*with sexp*)
+	type manuscript_t = [ `Manuscript ] t (*with sexp*)
+	type composition_t = [ `Composition ] t (*with sexp*)
 
 
 	(************************************************************************)
