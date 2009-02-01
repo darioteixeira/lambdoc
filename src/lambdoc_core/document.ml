@@ -273,3 +273,150 @@ type note_t =
 	content: frag_t;
 	} (*with sexp*)
 
+
+(********************************************************************************)
+(**	{2 Definitions concerning valid documents}				*)
+(********************************************************************************)
+
+module Valid =
+struct
+	(************************************************************************)
+	(**	{3 Type definitions}						*)
+	(************************************************************************)
+
+	type 'a valid_t = private
+		{
+		content: frag_t;
+		bibs: bib_t list;
+		notes: note_t list;
+		toc: heading_block_t list;
+		labelmap: Labelmap.t;
+		} (*with sexp*)
+
+	type valid_manuscript_t = [`Manuscript] valid_t (*with sexp*)
+	type valid_composition_t = [`Composition] valid_t (*with sexp*)
+
+
+	(************************************************************************)
+	(**	{3 Public functions and values}					*)
+	(************************************************************************)
+
+	let make_manuscript content bibs notes toc labelmap =
+		{
+		content = content;
+		bibs = bibs;
+		notes = notes;
+		toc = toc;
+		labelmap = labelmap;
+		}
+
+	let make_composition content =
+		{
+		content = content;
+		bibs = [];
+		notes = [];
+		toc = [];
+		labelmap = Labelmap.create ();
+		}
+
+
+	(************************************************************************)
+	(**	{3 Serialisation facilities}					*)
+	(************************************************************************)
+
+	(*
+	let serialize_manuscript doc =
+		Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
+
+	let serialize_composition =
+		serialize_manuscript
+
+	let deserialize_manuscript str =
+		t_of_sexp Variety.t_of_sexp (Sexplib.Sexp.of_string str)
+
+	let deserialize_composition =
+		deserialize_manuscript
+	*)
+end
+
+
+(********************************************************************************)
+(**	{2 Definitions concerning invalid documents}				*)
+(********************************************************************************)
+
+module Invalid =
+struct
+	(************************************************************************)
+	(**	{3 Type definitions}						*)
+	(************************************************************************)
+
+	type 'a invalid_t = private Error.t list (*with sexp*)
+
+	type invalid_manuscript_t = [`Manuscript] invalid_t (*with sexp*)
+	type invalid_composition_t = [`Composition] invalid_t (*with sexp*)
+
+
+	(************************************************************************)
+	(**	{2 Public functions and values}					*)
+	(************************************************************************)
+
+	let make_invalid_manuscript errors = errors
+	let make_invalid_composition errors = errors
+end
+
+
+(********************************************************************************)
+(**	{2 Definitions concerning ambivalent documents}				*)
+(********************************************************************************)
+
+module Ambivalent =
+struct
+	(************************************************************************)
+	(**	{3 Type definitions}						*)
+	(************************************************************************)
+
+	type 'a t =
+		[ `Valid of 'a Valid.t
+		| `Invalid of 'a Invalid.t
+		] (*with sexp*)
+
+	type manuscript_t = [`Manuscript] t (*with sexp*)
+
+	type composition_t = [`Composition] t (*with sexp*)
+
+
+	(************************************************************************)
+	(**	{3 Functions and values}					*)
+	(************************************************************************)
+
+	let make_valid_manuscript content bibs notes toc labels =
+		`Valid (Valid.make_manuscript content bibs notes toc labels)
+
+	let make_valid_composition content =
+		`Valid (Valid.make_composition content)
+
+	let make_invalid_manuscript errors =
+		`Invalid (Invalid.make_manuscript errors)
+
+	let make_invalid_composition errors =
+		`Invalid (Invalid.make_composition errors)
+
+	(************************************************************************)
+	(**	{3 Serialisation facilities}					*)
+	(************************************************************************)
+
+	(*
+	let serialize_manuscript doc =
+		Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
+
+	let serialize_composition =
+		serialize_manuscript
+
+	let deserialize_manuscript str =
+		t_of_sexp Variety.t_of_sexp (Sexplib.Sexp.of_string str)
+
+	let deserialize_composition =
+		deserialize_manuscript
+	*)
+end
+
