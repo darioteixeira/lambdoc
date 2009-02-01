@@ -11,7 +11,7 @@
 (**	Definition of the basic data types used in documents.
 *)
 
-TYPE_CONV_PATH "Document"
+TYPE_CONV_PATH "Basic"
 
 
 (********************************************************************************)

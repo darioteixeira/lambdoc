@@ -22,7 +22,7 @@ open Basic
 type 'a raw_inline_t =
 	[ `Plain of plain_t
 	| `Entity of entity_t
-	| `Math of Math.t
+	| `Mathinl of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
 	| `Mono of 'a list
@@ -39,7 +39,7 @@ type 'a raw_inline_t =
 	| `Mref of ref_t * 'a list
 	] (*with sexp*)
 
-type seq_t = 'a raw_inline_t as 'a (*with sexp*)
+type seq_t = 'a raw_inline_t as 'a list (*with sexp*)
 
 type (+'a, +'b) inline_t = private [< 'c raw_inline_t ] as 'c (*with sexp*)
 
@@ -50,7 +50,7 @@ type (+'a, +'b) inline_t = private [< 'c raw_inline_t ] as 'c (*with sexp*)
 
 val plain: plain_t -> ([> `Composition ], [> `Nonlink ]) inline_t
 val entity: entity_t -> ([> `Composition ], [> `Nonlink ]) inline_t
-val math: Math.t -> ([> `Composition ], [> `Nonlink ]) inline_t
+val mathinl: Math.t -> ([> `Composition ], [> `Nonlink ]) inline_t
 val bold: ('a, 'b) inline_t list -> ('a, 'b) inline_t
 val emph: ('a, 'b) inline_t list -> ('a, 'b) inline_t
 val mono: ('a, 'b) inline_t list -> ('a, 'b) inline_t
@@ -189,7 +189,7 @@ type 'a raw_block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Quote of Alignment.t * 'a list
-	| `Math of Alignment.t * Math.t
+	| `Mathblk of Alignment.t * Math.t
 	| `Code of Alignment.t * bool * bool * Code.t
 	| `Tabular of Alignment.t * tabular_t
 	| `Bitmap of Alignment.t * image_t
@@ -226,7 +226,7 @@ val enumerate: Numbering.t -> ('a, 'b, [< `Nestable ], _) block_t list plus_t ->
 val quote: Alignment.t -> ('a, [< `Embeddable ], [< `Nestable ], _) block_t list ->
 	('a, [> `Embeddable ], [> `Nestable], [> `Quote_blk ]) block_t
 
-val math: Alignment.t -> Math.t ->
+val mathblk: Alignment.t -> Math.t ->
 	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Math_blk ]) block_t
 
 val code: Alignment.t -> bool -> bool -> Code.t ->

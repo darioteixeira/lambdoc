@@ -11,7 +11,7 @@
 (**	Definitions pertaining to document labels.
 *)
 
-TYPE_CONV_PATH "Document"
+TYPE_CONV_PATH "Label"
 
 
 (********************************************************************************)

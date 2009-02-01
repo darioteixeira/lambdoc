@@ -11,7 +11,7 @@
 (**	Definitions pertaining to internal document targets.
 *)
 
-TYPE_CONV_PATH "Document"
+TYPE_CONV_PATH "Target"
 
 
 (********************************************************************************)

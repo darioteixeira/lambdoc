@@ -8,7 +8,7 @@
 *)
 (********************************************************************************)
 
-TYPE_CONV_PATH "Document"
+TYPE_CONV_PATH "Order"
 
 open ExtString
 open Basic

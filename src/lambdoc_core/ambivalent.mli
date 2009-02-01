@@ -32,15 +32,15 @@ type composition_t = [`Composition] t (*with sexp*)
 (********************************************************************************)
 
 val make_valid_manuscript:
-	([< `Composition | `Manuscript], _, _, _) Block.t list ->
-	Bib.t list ->
-	Note.t list ->
-	Block.heading_block_t list ->
+	([< `Composition | `Manuscript], _, _, _) Elem.block_t list ->
+	Elem.bib_t list ->
+	Elem.note_t list ->
+	Elem.heading_block_t list ->
 	Labelmap.t ->
 	manuscript_t
 
 val make_valid_composition:
-	([< `Composition], _, _, _) Block.t list ->
+	([< `Composition], _, _, _) Elem.block_t list ->
 	composition_t
 
 val make_invalid_manuscript:

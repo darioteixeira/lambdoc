@@ -24,7 +24,7 @@ open Basic
 type 'a raw_inline_t =
 	[ `Plain of plain_t
 	| `Entity of entity_t
-	| `Math of Math.t
+	| `Mathinl of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
 	| `Mono of 'a list
@@ -41,9 +41,9 @@ type 'a raw_inline_t =
 	| `Mref of ref_t * 'a list
 	] (*with sexp*)
 
-type seq_t = 'a raw_inline_t as 'a (*with sexp*)
+type seq_t = 'a raw_inline_t as 'a list (*with sexp*)
 
-type (+'a, +'b) node_t = 'c raw_inline_t as 'c (*with sexp*)
+type (+'a, +'b) inline_t = 'c raw_inline_t as 'c (*with sexp*)
 
 
 (********************************************************************************)
@@ -52,7 +52,7 @@ type (+'a, +'b) node_t = 'c raw_inline_t as 'c (*with sexp*)
 
 let plain txt = `Plain txt
 let entity txt = `Entity txt
-let math math = `Math math
+let mathinl mth = `Mathinl mth
 let bold seq = `Bold seq
 let emph seq = `Emph seq
 let mono seq = `Mono seq
@@ -154,8 +154,6 @@ let make_tabular tcols ?thead ?tfoot tbodies =
 type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
 type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t (*with sexp*)
 type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
-type bib_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t (*with sexp*)
-type note_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t (*with sexp*)
 
 type image_t = bool * bool * int option * alias_t * string (*with sexp*)
 
@@ -188,9 +186,9 @@ type 'a raw_block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Quote of Alignment.t * 'a list
-	| `Math of Alignment.t * Math.t
+	| `Mathblk of Alignment.t * Math.t
 	| `Code of Alignment.t * bool * bool * Code.t
-	| `Tabular of Alignment.t * Tabular.t
+	| `Tabular of Alignment.t * tabular_t
 	| `Bitmap of Alignment.t * image_t
 	| `Verbatim of Alignment.t * raw_t
 	| `Subpage of Alignment.t * 'a list
@@ -199,20 +197,25 @@ type 'a raw_block_t =
 	| `Table of wrapper_t * 'a
 	| `Figure of wrapper_t * 'a
 	| `Heading of heading_block_t
-	| `Title of title_level_t * Node.seq_t
+	| `Title of title_level_t * seq_t
 	| `Abstract of 'a list
 	| `Rule
 	] (*with sexp*)
 
 type frag_t = 'a raw_block_t as 'a list (*with sexp*)
 
-type (+'a, +'b, +'c, +'d) t = 'e block_t as 'e (*with sexp*)
+type (+'a, +'b, +'c, +'d) block_t = 'e raw_block_t as 'e (*with sexp*)
+
+
+(********************************************************************************)
+(**	{3 Functions and values}						*)
+(********************************************************************************)
 
 let paragraph seq = `Paragraph seq
 let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_frags))
 let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
 let quote alignment frag = `Quote (alignment, frag)
-let math alignment mth = `Math (alignment, mth)
+let mathblk alignment mth = `Mathblk (alignment, mth)
 let code alignment linenums zebra txt = `Code (alignment, linenums, zebra, txt)
 let verbatim alignment txt = `Verbatim (alignment, txt)
 let tabular alignment tab = `Tabular (alignment, tab)
@@ -231,4 +234,42 @@ let toc label = `Heading (`Section (label, Order.none (), `Mainbody, `Level1, `T
 let title level seq = `Title (level, seq)
 let abstract frag = `Abstract frag
 let rule () = `Rule
+
+
+(********************************************************************************)
+(**	{2 Definitions concerning bibliographic entries}			*)
+(********************************************************************************)
+
+(********************************************************************************)
+(**	{3 Type definitions}							*)
+(********************************************************************************)
+
+type bib_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t (*with sexp*)
+
+type bib_t =
+	{
+	label: Label.t;
+	order: bib_order_t;
+	author: seq_t;
+	title: seq_t;
+	resource: seq_t;
+	} (*with sexp*)
+
+
+(********************************************************************************)
+(**	{2 Definitions concerning notes}					*)
+(********************************************************************************)
+
+(********************************************************************************)
+(**	{3 Type definitions}							*)
+(********************************************************************************)
+
+type note_order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t (*with sexp*)
+
+type note_t =
+	{
+	label: Label.t;
+	order: note_order_t;
+	content: frag_t;
+	} (*with sexp*)
 
