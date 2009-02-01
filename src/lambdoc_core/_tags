@@ -9,4 +9,3 @@
 <math.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <numbering.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <order.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
-<labelmap.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o

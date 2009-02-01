@@ -376,6 +376,36 @@ sig
 	val note: note_order_t ->
 end
 
+(********************************************************************************)
+(**	{2 Definitions concerning the label map}				*)
+(********************************************************************************)
+
+(**	The label map contains a mapping between the labels used in the document
+	and the ordering of the corresponding block.  Note that all labels share
+	the same namespace.  Users are therefore encouraged to use the informal
+	LaTeX convention of prefixing each label with [fig:], [tab:], [sec:], etc.
+*)
+module Labelmap:
+sig
+	(************************************************************************)
+	(**	{2 Type definitions}						*)
+	(************************************************************************)
+
+	type key_t = Label.t (*with sexp*)
+	type value_t = Target.t (*with sexp*)
+	type t (*with sexp*)
+
+
+	(************************************************************************)
+	(**	{2 Public functions and values}					*)
+	(************************************************************************)
+
+	val create: unit -> t
+	val add: t -> key_t -> value_t -> unit
+	val mem: t -> key_t -> bool
+	val find: t -> key_t -> value_t
+end
+
 
 (********************************************************************************)
 (**	{2 Definitions concerning valid documents}				*)
