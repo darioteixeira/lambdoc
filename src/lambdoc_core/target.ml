@@ -33,8 +33,8 @@ type visible_target_t =
 
 type t =
 	| Visible_target of visible_target_t
-	| Bib_target of bib_order_t
-	| Note_target of note_order_t
+	| Bib_target of Elem.bib_order_t
+	| Note_target of Elem.note_order_t
 	(*with sexp*)
 
 

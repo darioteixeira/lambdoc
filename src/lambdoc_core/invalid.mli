@@ -16,10 +16,8 @@
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type 'a t = private Error.t list (*with sexp*)
-
-type manuscript_t = [ `Manuscript ] t (*with sexp*)
-type composition_t = [ `Composition ] t (*with sexp*)
+type manuscript_t = private Error.t list (*with sexp*)
+type composition_t = private Error.t list (*with sexp*)
 
 
 (********************************************************************************)

@@ -15,14 +15,16 @@ TYPE_CONV_PATH "Ambivalent"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type 'a t =
-	[ `Valid of 'a Valid.t
-	| `Invalid of 'a Invalid.t
+type manuscript_t =
+	[ `Valid of Valid.manuscript_t
+	| `Invalid of Invalid.manuscript_t
 	] (*with sexp*)
 
-type manuscript_t = [`Manuscript] t (*with sexp*)
 
-type composition_t = [`Composition] t (*with sexp*)
+type composition_t =
+	[ `Valid of Valid.composition_t
+	| `Invalid of Invalid.composition_t
+	] (*with sexp*)
 
 
 (********************************************************************************)

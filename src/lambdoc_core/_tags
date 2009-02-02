@@ -1,11 +1,16 @@
 <*.cmx>: for-pack(Lambdoc_core)
 <alignment.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
+<ambivalent.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <basic.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <bullet.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <code.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
-<document.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
+<elem.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <error.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
+<invalid.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <label.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
+<labelmap.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <math.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <numbering.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
 <order.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
+<target.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
+<valid.*>: pkg_sexplib.syntax, pkg_bin_prot.syntax, syntax_camlp4o
