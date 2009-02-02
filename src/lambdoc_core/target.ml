@@ -26,15 +26,15 @@ type wrapper_kind_t =
 	(*with sexp*)
 
 type visible_target_t =
-	| Section_target of Elem.section_location_t * Elem.section_order_t
-	| Part_target of Elem.part_order_t
-	| Wrapper_target of wrapper_kind_t * Elem.wrapper_order_t
+	| Section_target of Block.section_location_t * Block.section_order_t
+	| Part_target of Block.part_order_t
+	| Wrapper_target of wrapper_kind_t * Block.wrapper_order_t
 	(*with sexp*)
 
 type t =
 	| Visible_target of visible_target_t
-	| Bib_target of Elem.bib_order_t
-	| Note_target of Elem.note_order_t
+	| Bib_target of Block.bib_order_t
+	| Note_target of Block.note_order_t
 	(*with sexp*)
 
 
