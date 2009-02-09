@@ -22,7 +22,7 @@ val check_feature:
 	?maybe_subpaged: bool option ->
 	?maybe_wrapped: bool option ->
 	(int * Error.error_msg_t) DynArray.t ->
-	Ast.M.command_t ->
+	Ast.command_t ->
 	Features.manuscript_feature_t ->
 	unit
 

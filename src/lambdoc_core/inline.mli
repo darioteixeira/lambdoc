@@ -21,7 +21,7 @@ open Basic
 type 'a inline_t =
 	[ `Plain of plain_t
 	| `Entity of entity_t
-	| `Mathinl of Math.t
+	| `Math of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
 	| `Mono of 'a list
@@ -38,7 +38,7 @@ type 'a inline_t =
 	| `Mref of ref_t * 'a list
 	] (*with sexp*)
 
-type seq_t = ('a inline_t as 'a) list (*with sexp*)
+type seq_t = 'a inline_t as 'a list (*with sexp*)
 
 type (+'a, +'b) t = private [< 'c inline_t ] as 'c (*with sexp*)
 
@@ -49,7 +49,7 @@ type (+'a, +'b) t = private [< 'c inline_t ] as 'c (*with sexp*)
 
 val plain: plain_t -> ([> `Composition ], [> `Nonlink ]) t
 val entity: entity_t -> ([> `Composition ], [> `Nonlink ]) t
-val mathinl: Math.t -> ([> `Composition ], [> `Nonlink ]) t
+val math: Math.t -> ([> `Composition ], [> `Nonlink ]) t
 val bold: ('a, 'b) t list -> ('a, 'b) t
 val emph: ('a, 'b) t list -> ('a, 'b) t
 val mono: ('a, 'b) t list -> ('a, 'b) t

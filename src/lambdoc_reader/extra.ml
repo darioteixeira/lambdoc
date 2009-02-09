@@ -13,7 +13,7 @@ open ExtList
 open ExtString
 open Lambdoc_core
 open Error
-open Ast.M
+open Ast
 
 
 (********************************************************************************)
@@ -40,8 +40,7 @@ end
 type handle_t =
 	| Linenums_hnd
 	| Zebra_hnd
-	| Linked_hnd
-	| Framed_hnd
+	| Shadow_hnd
 	| Width_hnd
 	| Bullet_hnd
 	| Numbering_hnd
@@ -103,8 +102,7 @@ exception Solution_found of property_data_t option array * bool array
 let id_of_handle = function
 	| Linenums_hnd	-> ("linenums", Boolean_kind)
 	| Zebra_hnd	-> ("zebra", Boolean_kind)
-	| Linked_hnd	-> ("linked", Boolean_kind)
-	| Framed_hnd	-> ("framed", Boolean_kind)
+	| Shadow_hnd	-> ("shadow", Boolean_kind)
 	| Width_hnd	-> ("width", Numeric_kind)
 	| Bullet_hnd	-> ("bul", Bullet_kind)
 	| Numbering_hnd	-> ("num", Numbering_kind)
@@ -335,20 +333,17 @@ let parse_floater errors comm =
 
 
 let parse_for_image errors comm =
-	let assigned = process errors comm [Alignment_hnd; Linked_hnd; Framed_hnd; Width_hnd] in
+	let assigned = process errors comm [Alignment_hnd; Shadow_hnd; Width_hnd] in
 	let alignment = match assigned.(0) with
 		| Some (Alignment_data x)	-> x
 		| _				-> Alignment.Center
-	and linked = match assigned.(1) with
+	and shadow = match assigned.(1) with
 		| Some (Boolean_data x)	-> x
 		| _			-> false
-	and framed = match assigned.(2) with
-		| Some (Boolean_data x)	-> x
-		| _			-> false
-	and width = match assigned.(3) with
+	and width = match assigned.(2) with
 		| Some (Numeric_data w)	-> Some w
 		| _			-> None
-	in (alignment, linked, framed, width)
+	in (alignment, shadow, width)
 
 
 (********************************************************************************)
@@ -370,6 +365,8 @@ let parse_for_enumerate errors comm =
 
 let parse_for_quote = parse_floater
 
+let parse_for_callout = parse_floater
+
 let parse_for_mathtex = parse_floater
 
 let parse_for_mathml = parse_floater
@@ -389,9 +386,9 @@ let parse_for_code errors comm =
 	let alignment = get_alignment assigned.(3)
 	in (alignment, linenums, zebra, lang)
 
-let parse_for_verbatim = parse_floater
-
 let parse_for_tabular = parse_floater
+
+let parse_for_verbatim = parse_floater
 
 let parse_for_bitmap = parse_for_image
 

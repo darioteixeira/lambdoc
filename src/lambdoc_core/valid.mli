@@ -15,17 +15,18 @@
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t = private
+type 'a document_t =
 	{
 	content: Block.frag_t;
-	bibs: Block.bib_t list;
-	notes: Block.note_t list;
-	toc: Block.heading_block_t list;
+	bibs: Bib.t list;
+	notes: Note.t list;
+	toc: Heading.t list;
 	labelmap: Labelmap.t;
 	} (*with sexp*)
 
 
-type composition_t = private Block.frag_t (*with sexp*)
+type manuscript_t = [ `Manuscript ] document_t (*with sexp*)
+type composition_t = [ `Composition ] document_t (*with sexp*)
 
 
 (********************************************************************************)
@@ -34,9 +35,9 @@ type composition_t = private Block.frag_t (*with sexp*)
 
 val make_manuscript:
 	([< `Composition | `Manuscript ], _, _, _) Block.t list ->
-	Block.bib_t list ->
-	Block.note_t list ->
-	Block.heading_block_t list ->
+	Bib.t list ->
+	Note.t list ->
+	Heading.t list ->
 	Labelmap.t ->
 	manuscript_t
 

@@ -47,10 +47,10 @@ type hierarchical_converter_t =
 	}
 
 
-type 'a auto_given_t = [ `Auto_given of 'a ] (*with sexp_poly*)
-type user_given_t = [ `User_given of string ] (*with sexp_poly*)
-type none_given_t = [ `None_given ] (*with sexp_poly*)
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] (*with sexp_poly*)
+type 'a auto_given_t = [ `Auto_given of 'a ] (*(*with sexp*)_poly*)
+type user_given_t = [ `User_given of string ] (*(*with sexp*)_poly*)
+type none_given_t = [ `None_given ] (*(*with sexp*)_poly*)
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] (*(*with sexp*)_poly*)
 
 
 (********************************************************************************)

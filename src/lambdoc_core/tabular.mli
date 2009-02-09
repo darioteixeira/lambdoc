@@ -73,3 +73,4 @@ val make_group: 'a row_t plus_t -> 'a group_t
 val make_tabular: column_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t plus_t -> 'a t
 
 val get_tabular: 'a t -> tabular_t
+

@@ -8,14 +8,15 @@
 *)
 (********************************************************************************)
 
-(**	Postprocessing on a document AST.  These functions convert
+(**	Postprocessing on a document Ast.  These functions convert
 	a document AST into a proper, final, ambivalent document.
 *)
 
 open ExtString
+open ExtList
 open Lambdoc_core
 open Basic
-open Ast.M
+open Ast
 
 
 (********************************************************************************)
@@ -125,8 +126,8 @@ let process_document feature_map document_ast =
 
 	(*	Adds a new TOC entry.
 	*)
-	and add_toc_entry blk =
-		DynArray.add toc blk in
+	and add_toc_entry heading =
+		DynArray.add toc heading in
 
 
 	(*	Checker for commands.
@@ -172,99 +173,79 @@ let process_document feature_map document_ast =
 	(* Postprocessing functions for inline context.				*)
 	(************************************************************************)
 
-	let rec convert_super_seq seq =
-		ExtList.List.filter_map convert_super_node seq
+	let rec convert_inline is_link inline = match (is_link, inline) with
 
-
-	and convert_nonlink_seq seq =
-		ExtList.List.filter_map convert_nonlink_node seq
-
-
-	and convert_super_node = function
-
-		| #Ast.M.nonlink_node_t as node ->
-			(convert_nonlink_node node :> (Node.M.super_node_t, _) Node.M.t option)
-
-		| #Ast.M.link_node_t as node ->
-			(convert_link_node node :> (Node.M.super_node_t, _) Node.M.t option)
-
-
-	and convert_nonlink_node = function
-
-		| `AST_plain (comm, txt) ->
-			let elem () = Some (Node.M.plain txt)
+		| (_, (comm, Ast.Plain txt)) ->
+			let elem () = Some (Inline.plain txt)
 			in check_comm `Feature_plain comm elem
 
-		| `AST_entity (comm, txt) ->
-			let elem () = Some (Node.M.entity txt)
+		| (_, (comm, Ast.Entity txt)) ->
+			let elem () = Some (Inline.entity txt)
 			in check_comm `Feature_entity comm elem
 
-		| `AST_mathtex_inl (comm, txt) ->
-			let elem () = convert_mathtex Node.M.math comm txt
+		| (_, (comm, Ast.Mathtex_inl txt)) ->
+			let elem () = convert_mathtex Inline.math comm txt
 			in check_comm `Feature_mathtex_inl comm elem
 
-		| `AST_mathml_inl (comm, txt) ->
-			let elem () = convert_mathml Node.M.math comm txt
+		| (_, (comm, Ast.Mathml_inl txt)) ->
+			let elem () = convert_mathml Inline.math comm txt
 			in check_comm `Feature_mathml_inl comm elem
 
-		| `AST_bold (comm, seq) ->
-			let elem () = Some (Node.M.bold (convert_super_seq seq))
+		| (x, (comm, Ast.Bold seq)) ->
+			let elem () = Some (Inline.bold (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_bold comm elem
 
-		| `AST_emph (comm, seq) ->
-			let elem () = Some (Node.M.emph (convert_super_seq seq))
+		| (x, (comm, Ast.Emph seq)) ->
+			let elem () = Some (Inline.emph (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_emph comm elem
 
-		| `AST_mono (comm, seq) ->
-			let elem () = Some (Node.M.mono (convert_super_seq seq))
+		| (x, (comm, Ast.Mono seq)) ->
+			let elem () = Some (Inline.mono (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_mono comm elem
 
-		| `AST_caps (comm, seq) ->
-			let elem () = Some (Node.M.caps (convert_super_seq seq))
+		| (x, (comm, Ast.Caps seq)) ->
+			let elem () = Some (Inline.caps (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_caps comm elem
 
-		| `AST_thru (comm, seq) ->
-			let elem () = Some (Node.M.thru (convert_super_seq seq))
+		| (x, (comm, Ast.Thru seq)) ->
+			let elem () = Some (Inline.thru (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_thru comm elem
 
-		| `AST_sup (comm, seq) ->
-			let elem () = Some (Node.M.sup (convert_super_seq seq))
+		| (x, (comm, Ast.Sup seq)) ->
+			let elem () = Some (Inline.sup (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_sup comm elem
 
-		| `AST_sub (comm, seq) ->
-			let elem () = Some (Node.M.sub (convert_super_seq seq))
+		| (x, (comm, Ast.Sub seq)) ->
+			let elem () = Some (Inline.sub (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_sub comm elem
 
-		| `AST_mbox (comm, seq) ->
-			let elem () = Some (Node.M.mbox (convert_super_seq seq))
+		| (x, (comm, Ast.Mbox seq)) ->
+			let elem () = Some (Inline.mbox (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_mbox comm elem
 
-
-	and convert_link_node = function
-
-		| `AST_link (comm, lnk, seq) ->
-			let elem () = Some (Node.M.link lnk (convert_nonlink_seq seq))
+		| (false, (comm, Ast.Link (lnk, seq))) ->
+			let elem () = Some (Inline.link lnk (Obj.magic (List.filter_map (convert_inline true) seq)))
 			in check_comm `Feature_link comm elem
 
-		| `AST_see (comm, label) ->
+		| (false, (comm, Ast.See label)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_note
 				in add_reference target_checker comm label;
-				Some (Node.M.see label)
+				Some (Inline.see label)
 			in check_comm `Feature_see comm elem
 
-		| `AST_cite (comm, label) ->
+		| (false, (comm, Ast.Cite label)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_bib
 				in add_reference target_checker comm label;
-				Some (Node.M.cite label)
+				Some (Inline.cite label)
 			in check_comm `Feature_cite comm elem
 
-		| `AST_ref (comm, label) ->
+		| (false, (comm, Ast.Ref label)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Part_target `None_given)	-> `Empty_target
@@ -272,10 +253,10 @@ let process_document feature_map document_ast =
 					| Target.Visible_target _					-> `Valid_target
 					| _								-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
-				Some (Node.M.ref label)
+				Some (Inline.ref label)
 			in check_comm `Feature_ref comm elem
 
-		| `AST_sref (comm, label) ->
+		| (false, (comm, Ast.Sref label)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Part_target `None_given)	-> `Empty_target
@@ -283,17 +264,26 @@ let process_document feature_map document_ast =
 					| Target.Visible_target _					-> `Valid_target
 					| _								-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
-				Some (Node.M.sref label)
+				Some (Inline.sref label)
 			in check_comm `Feature_sref comm elem
 
-		| `AST_mref (comm, label, seq) ->
+		| (false, (comm, Ast.Mref (label, seq))) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target _	-> `Valid_target
 					| _				-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
-				Some (Node.M.mref label (convert_nonlink_seq seq))
-			in check_comm `Feature_mref comm elem in
+				Some (Inline.mref label (Obj.magic (List.filter_map (convert_inline true) seq)))
+			in check_comm `Feature_mref comm elem
+
+		| (_, (comm, _)) ->
+			let msg = Error.Nested_link comm.comm_tag
+			in DynArray.add errors (comm.comm_linenum, msg);
+			None in
+
+
+	let convert_seq seq =
+		Obj.magic (List.filter_map (convert_inline false) seq) in
 
 
 	(************************************************************************)
@@ -313,7 +303,7 @@ let process_document feature_map document_ast =
 				in DynArray.add errors (comm.comm_linenum, msg));
 			match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"
-				| hd::tl	-> Tabular.make_row (fplus convert_super_seq hd tl) in
+				| hd::tl	-> Tabular.make_row (fplus convert_seq hd tl) in
 
 		let convert_group (maybe_comm, rows) =
 			let () = match maybe_comm with
@@ -321,7 +311,7 @@ let process_document feature_map document_ast =
 				| None		-> ()
 			in match rows with
 				| []		-> invalid_arg "Parser has given us an empty tabular group"
-				| hd::tl	-> fplus convert_row hd tl in
+				| hd::tl	-> Tabular.make_group (fplus convert_row hd tl) in
 
 		let thead = match tab.thead with
 			| Some grp	-> Some (convert_group grp)
@@ -333,75 +323,179 @@ let process_document feature_map document_ast =
 
 		in match tab.tbodies with
 			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make tcols ?thead ?tfoot (fplus convert_group hd tl) in
+			| hd::tl	-> Tabular.make_tabular tcols ?thead ?tfoot (fplus convert_group hd tl) in
 
 
 	(************************************************************************)
 	(* Postprocessing functions for document blocks.			*)
 	(************************************************************************)
 
-	let rec convert_super_frag ~subpaged frag =
-		ExtList.List.filter_map (convert_super_block ~subpaged) frag
+	let rec convert_block ~subpaged allow_nestable allow_top allowed_blk block = match (allow_nestable, allow_top, allowed_blk, block) with
 
+		| (_, _, `Paragraph_blk, (comm, Ast.Paragraph seq))
+		| (_, _, `Any_blk, (comm, Ast.Paragraph seq)) ->
+			let elem () = Some (Block.paragraph (convert_seq seq))
+			in check_comm `Feature_paragraph comm elem
 
-	and convert_nestable_frag ~subpaged frag =
-		ExtList.List.filter_map (convert_nestable_block ~subpaged) frag
+		| (x, _, `Any_blk, (comm, Ast.Itemize [])) ->
+			let msg = Error.Empty_listing comm.comm_tag
+			in DynArray.add errors (comm.comm_linenum, msg);
+			None
 
+		| (x, _, `Any_blk, (comm, Ast.Itemize frags)) ->
+			let elem () =
+				let bullet = Extra.parse_for_itemize errors comm
+				and new_frags = List.filter_map (convert_item_frag ~subpaged x) frags
+				in match new_frags with
+					| hd::tl	-> Some (Block.itemize bullet (hd, tl))
+					| []		-> None
+			in check_comm `Feature_itemize comm elem
 
-	and convert_paragraph_frag frag =
-		ExtList.List.filter_map convert_paragraph_block frag
+		| (x, _, `Any_blk, (comm, Ast.Enumerate [])) ->
+			let msg = Error.Empty_listing comm.comm_tag
+			in DynArray.add errors (comm.comm_linenum, msg);
+			None
 
+		| (x, _, `Any_blk, (comm, Ast.Enumerate frags)) ->
+			let elem () =
+				let numbering = Extra.parse_for_enumerate errors comm
+				and new_frags = List.filter_map (convert_item_frag ~subpaged x) frags
+				in match new_frags with
+					| hd::tl	-> Some (Block.enumerate numbering (hd, tl))
+					| []		-> None
+			in check_comm `Feature_enumerate comm elem
 
-	and convert_item_frag ~subpaged = function
-		| []		-> invalid_arg "Parser has given us an empty list!"
-		| hd::tl	-> fplus (convert_item_block ~subpaged) hd tl
+		| (x, _, `Any_blk, (comm, Ast.Description [])) ->
+			let msg = Error.Empty_listing comm.comm_tag
+			in DynArray.add errors (comm.comm_linenum, msg);
+			None
 
+		| (x, _, `Any_blk, (comm, Ast.Description frags)) ->
+			let elem () =
+				let new_frags = List.filter_map (convert_describe_frag ~subpaged x) frags
+				in match new_frags with
+					| hd::tl	-> Some (Block.description (hd, tl))
+					| []		-> None
+			in check_comm `Feature_description comm elem
 
-	and convert_super_block ~subpaged = function
+		| (_, _, `Any_blk, (comm, Ast.Quote frag)) ->
+			let elem () =
+				let alignment = Extra.parse_for_quote errors comm
+				and new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag
+				in Some (Block.quote alignment (Obj.magic new_frag))
+			in check_comm `Feature_quote comm elem
 
-		| #Ast.M.top_block_t as node ->
-			(convert_top_block ~subpaged node :> (Block.M.super_block_t, _) Block.M.t option)
+		| (_, _, `Any_blk, (comm, Ast.Callout (seq, frag))) ->
+			let elem () =
+				let alignment = Extra.parse_for_callout errors comm
+				and new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag
+				in Some (Block.callout alignment (convert_seq seq) (Obj.magic new_frag))
+			in check_comm `Feature_callout comm elem
 
-		| #Ast.M.nestable_block_t as node ->
-			(convert_nestable_block ~subpaged node :> (Block.M.super_block_t, _) Block.M.t option)
+		| (_, _, `Equation_blk, (comm, Ast.Mathtex_blk txt))
+		| (_, _, `Any_blk, (comm, Ast.Mathtex_blk txt)) ->
+			let elem () =
+				let alignment = Extra.parse_for_mathtex errors comm
+				in convert_mathtex (Block.math alignment) comm txt
+			in check_comm `Feature_mathtex_blk comm elem
 
+		| (_, _, `Equation_blk, (comm, Ast.Mathml_blk txt))
+		| (_, _, `Any_blk, (comm, Ast.Mathml_blk txt)) ->
+			let elem () =
+				let alignment = Extra.parse_for_mathml errors comm
+				in convert_mathml (Block.math alignment) comm txt
+			in check_comm `Feature_mathml_blk comm elem
 
-	and convert_top_block ~subpaged = function
+		| (_, _, `Printout_blk, (comm, Ast.Code txt))
+		| (_, _, `Any_blk, (comm, Ast.Code txt)) ->
+			let elem () =
+				let (alignment, linenums, zebra, lang) = Extra.parse_for_code errors comm in
+				let highlight = Code.from_string lang txt
+				in Some (Block.code alignment linenums zebra highlight)
+			in check_comm `Feature_code comm elem
 
-		| #Ast.M.heading_block_t as blk ->
-			(convert_heading_block ~subpaged blk :> (Block.M.top_block_t, _) Block.M.t option)
+		| (_, _, `Table_blk, (comm, Ast.Tabular tab))
+		| (_, _, `Any_blk, (comm, Ast.Tabular tab)) ->
+			let elem () =
+				let alignment = Extra.parse_for_tabular errors comm
+				in Some (Block.tabular alignment (convert_tabular comm tab))
+			in check_comm `Feature_tabular comm elem
 
-		| `AST_title (level, comm, seq) ->
-			let elem () = Some (Block.M.title level (convert_super_seq seq))
-			and feature = match level with
-				| `Level1 -> `Feature_title1
-				| `Level2 -> `Feature_title2
-			in check_comm feature comm elem
+		| (_, _, `Figure_blk, (comm, Ast.Verbatim txt))
+		| (_, _, `Any_blk, (comm, Ast.Verbatim txt)) ->
+			let elem () =
+				let alignment = Extra.parse_for_verbatim errors comm
+				in Some (Block.verbatim alignment txt)
+			in check_comm `Feature_verbatim comm elem
 
-		| `AST_abstract (comm, frag) ->
-			let elem () = Some (Block.M.abstract (convert_paragraph_frag frag))
-			in check_comm `Feature_abstract comm elem
+		| (_, _, `Figure_blk, (comm, Ast.Bitmap (alias, alt)))
+		| (_, _, `Any_blk, (comm, Ast.Bitmap (alias, alt))) ->
+			let elem () =
+				let (alignment, shadow, width) = Extra.parse_for_bitmap errors comm in
+				let image = (shadow, width, alias, alt)
+				in Some (Block.bitmap alignment image)
+			in check_comm `Feature_bitmap comm elem
 
-		| `AST_rule comm ->
-			let elem () = Some (Block.M.rule ())
-			in check_comm `Feature_rule comm elem
+		| (_, _, `Figure_blk, (comm, Ast.Subpage frag))
+		| (_, _, `Any_blk, (comm, Ast.Subpage frag)) ->
+			let elem () =
+				let alignment = Extra.parse_for_subpage errors comm
+				and new_frag = List.filter_map (convert_block ~subpaged:true true true `Any_blk) frag
+				in Some (Block.subpage alignment (Obj.magic new_frag))
+			in check_comm `Feature_subpage comm elem
 
+		| (true, _, `Any_blk, (comm, Ast.Equation (caption, blk))) ->
+			let elem () =
+				let maybe_wrapper = convert_wrapper comm equation_counter Target.equation caption subpaged
+				and maybe_equation = Obj.magic (convert_block ~subpaged true true `Equation_blk blk)
+				in match (maybe_wrapper, maybe_equation) with
+					| (Some wrapper, Some equation)	-> Some (Block.equation wrapper equation)
+					| (Some _, None)		-> failwith "oops1"
+					| (None, Some _)		-> failwith "oops2"
+					| (None, None)			-> failwith "oops3"
+			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_equation comm elem
 
-	and convert_heading_block ~subpaged = function
+		| (true, _, `Any_blk, (comm, Ast.Printout (caption, blk))) ->
+			let elem () =
+				let maybe_wrapper = convert_wrapper comm printout_counter Target.printout caption subpaged
+				and maybe_printout = Obj.magic (convert_block ~subpaged true true `Printout_blk blk)
+				in match (maybe_wrapper, maybe_printout) with
+					| (Some wrapper, Some printout)	-> Some (Block.printout wrapper printout)
+					| _				-> failwith "oops1"
+			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_printout comm elem
 
-		| `AST_part (comm, seq) ->
+		| (true, _, `Any_blk, (comm, Ast.Table (caption, blk))) ->
+			let elem () =
+				let maybe_wrapper = convert_wrapper comm table_counter Target.table caption subpaged
+				and maybe_table = Obj.magic (convert_block ~subpaged true true `Table_blk blk)
+				in match (maybe_wrapper, maybe_table) with
+					| (Some wrapper, Some table)	-> Some (Block.table wrapper table)
+					| _				-> failwith "oops1"
+			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_table comm elem
+
+		| (true, _, `Any_blk, (comm, Ast.Figure (caption, blk))) ->
+			let elem () =
+				let maybe_wrapper = convert_wrapper comm figure_counter Target.figure caption subpaged
+				and maybe_figure = Obj.magic (convert_block ~subpaged true true `Figure_blk blk)
+				in match (maybe_wrapper, maybe_figure) with
+					| (Some wrapper, Some figure)	-> Some (Block.figure wrapper figure)
+					| _				-> failwith "oops1"
+			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_figure comm elem
+
+		| (true, true, `Any_blk, (comm, Ast.Part seq)) ->
 			let elem () =
 				let order = match comm.comm_order with
 					| None		-> Order.auto_ordinal part_counter
 					| Some ""	-> Order.none ()
 					| Some other	-> Order.user_ordinal other in
-				let label = make_label comm (Target.part_target order) in
-				let block = Block.M.part label order (convert_super_seq seq) in
-				let () = if not subpaged then add_toc_entry block
+				let label = make_label comm (Target.part order) in
+				let heading = Heading.part label order (convert_seq seq) in
+				let block = Block.heading heading in
+				let () = if not subpaged then add_toc_entry heading
 				in Some block
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_part comm elem
 
-		| `AST_section (level, comm, seq) ->
+		| (true, true, `Any_blk, (comm, Ast.Section (level, seq))) ->
 			let elem () =
 				let (counter, location) =
 					if !appendixed
@@ -411,9 +505,10 @@ let process_document feature_map document_ast =
 					| None		-> Order.auto_hierarchical level counter
 					| Some ""	-> Order.none ()
 					| Some other	-> Order.user_hierarchical level other in
-				let label = make_label comm (Target.section_target location order) in
-				let block = Block.M.section label order location level (convert_super_seq seq) in
-				let () = if not subpaged then add_toc_entry block
+				let label = make_label comm (Target.section location order) in
+				let heading = Heading.section label order location level (convert_seq seq) in
+				let block = Block.heading heading in
+				let () = if not subpaged then add_toc_entry heading
 				in Some block
 			and feature = match level with
 				| `Level1 -> `Feature_section1
@@ -421,297 +516,120 @@ let process_document feature_map document_ast =
 				| `Level3 -> `Feature_section3
 			in check_comm ~maybe_subpaged:(Some subpaged) feature comm elem
 
-		| `AST_appendix comm ->
+		| (true, true, `Any_blk, (comm, Ast.Appendix)) ->
 			let elem () =
 				let order = Order.none () in
-				let label = make_label comm (Target.part_target order) in
-				let block = Block.M.appendix label in
-				let () = if not subpaged then add_toc_entry block in
+				let label = make_label comm (Target.part order) in
+				let heading = Heading.appendix label in
+				let block = Block.heading heading in
+				let () = if not subpaged then add_toc_entry heading in
 				let () = appendixed := true
 				in Some block
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_appendix comm elem
 
-		| `AST_bibliography comm ->
-			convert_preset_sectional ~tocable:true ~subpaged Block.M.bibliography `Feature_bibliography comm
+		| (true, true, `Any_blk, (comm, Ast.Bibliography)) ->
+			convert_preset_sectional ~tocable:true ~subpaged Heading.bibliography `Feature_bibliography comm
 
-		| `AST_notes comm ->
-			convert_preset_sectional ~tocable:true ~subpaged Block.M.notes `Feature_notes comm 
+		| (true, true, `Any_blk, (comm, Ast.Notes)) ->
+			convert_preset_sectional ~tocable:true ~subpaged Heading.notes `Feature_notes comm 
 
-		| `AST_toc comm ->
-			convert_preset_sectional ~tocable:false ~subpaged Block.M.toc `Feature_toc comm
+		| (true, true, `Any_blk, (comm, Ast.Toc)) ->
+			convert_preset_sectional ~tocable:false ~subpaged Heading.toc `Feature_toc comm
 
+		| (true, true, `Any_blk, (comm, Ast.Title (level, seq))) ->
+			let elem () = Some (Block.title level (convert_seq seq))
+			and feature = match level with
+				| `Level1 -> `Feature_title1
+				| `Level2 -> `Feature_title2
+			in check_comm feature comm elem
 
-	and convert_preset_sectional ~tocable ~subpaged cons feature comm = 
-		let elem () =
-			let order = Order.none () in
-			let label = make_label comm (Target.section_target `Mainbody order) in
-			let block = cons label in
-			let () = if tocable && not subpaged then add_toc_entry block
-			in Some block
-		in check_comm ~maybe_subpaged:(Some subpaged) `Feature_notes comm elem
-
-
-	and convert_nestable_block ~subpaged = function
-
-		| #Ast.M.paragraph_block_t as blk ->
-			(convert_paragraph_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.itemize_block_t as blk ->
-			(convert_itemize_block ~subpaged blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.enumerate_block_t as blk ->
-			(convert_enumerate_block ~subpaged blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.quote_block_t as blk ->
-			(convert_quote_block ~subpaged blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.mathtex_block_t as blk ->
-			(convert_mathtex_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.mathml_block_t as blk ->
-			(convert_mathml_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.code_block_t as blk ->
-			(convert_code_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.verbatim_block_t as blk ->
-			(convert_verbatim_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.tabular_block_t as blk ->
-			(convert_tabular_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.bitmap_block_t as blk ->
-			(convert_bitmap_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| #Ast.M.subpage_block_t as blk ->
-			(convert_subpage_block blk :> (Block.M.nestable_block_t, _) Block.M.t option)
-
-		| `AST_equation (comm, cap, blk) ->
+		| (true, true, `Any_blk, (comm, Ast.Abstract frag)) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm equation_counter Target.equation_target cap subpaged
-				and maybe_equation = convert_equation_block blk
-				in match (maybe_wrapper, maybe_equation) with
-					| (Some wrapper, Some equation)	-> Some (Block.M.equation wrapper equation)
-					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_equation comm elem
+				let new_frag = List.filter_map (convert_block true true `Paragraph_blk ~subpaged) frag
+				in Some (Block.abstract (Obj.magic new_frag))
+			in check_comm `Feature_abstract comm elem
 
-		| `AST_printout (comm, cap, blk) ->
-			let elem () =
-				let maybe_wrapper = convert_wrapper comm printout_counter Target.printout_target cap subpaged
-				and maybe_printout = convert_printout_block blk
-				in match (maybe_wrapper, maybe_printout) with
-					| (Some wrapper, Some printout)	-> Some (Block.M.printout wrapper printout)
-					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_printout comm elem
+		| (true, true, `Any_blk, (comm, Ast.Rule)) ->
+			let elem () = Some (Block.rule ())
+			in check_comm `Feature_rule comm elem
 
-		| `AST_table (comm, cap, blk) ->
-			let elem () =
-				let maybe_wrapper = convert_wrapper comm table_counter Target.table_target cap subpaged
-				and maybe_table = convert_table_block blk
-				in match (maybe_wrapper, maybe_table) with
-					| (Some wrapper, Some table)	-> Some (Block.M.table wrapper table)
-					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_table comm elem
-
-		| `AST_figure (comm, cap, blk) ->
-			let elem () =
-				let maybe_wrapper = convert_wrapper comm figure_counter Target.figure_target cap subpaged
-				and maybe_figure = convert_figure_block blk
-				in match (maybe_wrapper, maybe_figure) with
-					| (Some wrapper, Some figure)	-> Some (Block.M.figure wrapper figure)
-					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_figure comm elem
-
-		| `AST_bib (comm, author, title, resource) ->
+		| (_, _, `Any_blk, (comm, Ast.Bib ((author_comm, author_seq), (title_comm, title_seq), (resource_comm, resource_seq)))) ->
 			let elem () =
 				let order = Order.auto_ordinal bib_counter in
-				let label = make_label comm (Target.bib_target order)
-				and author = convert_bib_author_block author
-				and title = convert_bib_title_block title
-				and resource = convert_bib_resource_block resource
+				let label = make_label comm (Target.bib order)
+				and author =
+					let elem () = Some (convert_seq author_seq)
+					in check_comm `Feature_bib_author author_comm elem
+				and title =
+					let elem () = Some (convert_seq title_seq)
+					in check_comm `Feature_bib_title title_comm elem
+				and resource =
+					let elem () = Some (convert_seq resource_seq)
+					in check_comm `Feature_bib_resource resource_comm elem
 				in match (author, title, resource) with
 					| (Some author, Some title, Some resource) ->
-						let bib =
-							{
-							Bib.label = label;
-							Bib.order = order;
-							Bib.author = author;
-							Bib.title = title;
-							Bib.resource = resource;
-							}
+						let bib = Bib.bib label order author title resource
 						in	DynArray.add bibs bib;
 							None
 					| _ ->
 						None
 			in check_comm `Feature_bib comm elem
 
-		| `AST_note (comm, frag) ->
+		| (_, _, `Any_blk, (comm, Ast.Note frag)) ->
 			let elem () =
 				let order = Order.auto_ordinal note_counter in
-				let label = make_label comm (Target.note_target order) in
-				let note =
-					{
-					Note.label = label;
-					Note.order = order;
-					Note.content = convert_nestable_frag subpaged frag;
-					}
+				let label = make_label comm (Target.note order) in
+				let new_frag = List.filter_map (convert_block true false `Any_blk ~subpaged) frag in
+				let note = Note.note label order new_frag
 				in	DynArray.add notes note;
 					None
 			in check_comm `Feature_note comm elem
 
-
-	and convert_paragraph_block = function
-		| `AST_paragraph (comm, seq) ->
-			let elem () = Some (Block.M.paragraph (convert_super_seq seq))
-			in check_comm `Feature_paragraph comm elem
-
-
-	and convert_itemize_block ~subpaged = function
-		| `AST_itemize (comm, items) ->
-			let elem () =
-				let bullet = Extra.parse_for_itemize errors comm
-				in Some (Block.M.itemize bullet (convert_item_frag subpaged items))
-			in check_comm `Feature_itemize comm elem
+		| (_, _, x, (comm, _)) ->
+			let msg = Error.Unexpected_block (comm.comm_tag, x)
+			in DynArray.add errors (comm.comm_linenum, msg);
+			None
 
 
-	and convert_enumerate_block ~subpaged = function
-		| `AST_enumerate (comm, items) ->
-			let elem () =
-				let numbering = Extra.parse_for_enumerate errors comm
-				in Some (Block.M.enumerate numbering (convert_item_frag subpaged items))
-			in check_comm `Feature_enumerate comm elem
+	and convert_item_frag ~subpaged allow_nestable (comm, frag) =
+		let elem () = Some (List.filter_map (Obj.magic (convert_block ~subpaged allow_nestable false `Any_blk)) frag)
+		in check_comm `Feature_item comm elem
 
 
-	and convert_quote_block ~subpaged = function
-		| `AST_quote (comm, frag) ->
-			let elem () =
-				let alignment = Extra.parse_for_quote errors comm
-				in Some (Block.M.quote alignment (convert_nestable_frag subpaged frag))
-			in check_comm `Feature_quote comm elem
+	and convert_describe_frag ~subpaged allow_nestable (comm, seq, frag) =
+		let elem () =
+			let new_seq = convert_seq seq
+			and new_frag = List.filter_map (Obj.magic (convert_block ~subpaged allow_nestable false `Any_blk)) frag
+			in Some (new_seq, new_frag)
+		in check_comm `Feature_describe comm elem
 
 
-	and convert_mathtex_block = function
-		| `AST_mathtex_blk (comm, txt) ->
-			let elem () =
-				let alignment = Extra.parse_for_mathtex errors comm
-				in convert_mathtex (Block.M.math alignment) comm txt
-			in check_comm `Feature_mathtex_blk comm elem
+	and convert_preset_sectional ~tocable ~subpaged cons feature comm = 
+		let elem () =
+			let order = Order.none () in
+			let label = make_label comm (Target.section `Mainbody order) in
+			let heading = cons label in
+			let block = Block.heading heading in
+			let () = if tocable && not subpaged then add_toc_entry heading
+			in Some block
+		in check_comm ~maybe_subpaged:(Some subpaged) `Feature_notes comm elem
 
 
-	and convert_mathml_block = function
-		| `AST_mathml_blk (comm, txt) ->
-			let elem () =
-				let alignment = Extra.parse_for_mathml errors comm
-				in convert_mathml (Block.M.math alignment) comm txt
-			in check_comm `Feature_mathml_blk comm elem
-
-
-	and convert_code_block = function
-		| `AST_code (comm, txt) ->
-			let elem () =
-				let (alignment, linenums, zebra, lang) = Extra.parse_for_code errors comm in
-				let highlight = Code.from_string lang txt
-				in Some (Block.M.code alignment linenums zebra highlight)
-			in check_comm `Feature_code comm elem
-
-
-	and convert_verbatim_block = function
-		| `AST_verbatim (comm, txt) ->
-			let elem () =
-				let alignment = Extra.parse_for_verbatim errors comm
-				in Some (Block.M.verbatim alignment txt)
-			in check_comm `Feature_verbatim comm elem
-
-
-	and convert_tabular_block = function
-		| `AST_tabular (comm, tab) ->
-			let elem () =
-				let alignment = Extra.parse_for_tabular errors comm
-				in Some (Block.M.tabular alignment (convert_tabular comm tab))
-			in check_comm `Feature_tabular comm elem
-
-
-	and convert_bitmap_block = function
-		| `AST_bitmap (comm, alias, alt) ->
-			let elem () =
-				let (alignment, linked, framed, width) = Extra.parse_for_bitmap errors comm in
-				let image = (linked, framed, width, alias, alt)
-				in Some (Block.M.bitmap alignment image)
-			in check_comm `Feature_bitmap comm elem
-
-
-	and convert_subpage_block = function
-		| `AST_subpage (comm, subpage) ->
-			let elem () =
-				let alignment = Extra.parse_for_subpage errors comm
-				in Some (Block.M.subpage alignment (convert_super_frag true subpage))
-			in check_comm `Feature_subpage comm elem
-
-
-	and convert_bib_author_block = function
-		| `AST_bib_author (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm `Feature_bib_author comm elem
-
-
-	and convert_bib_title_block = function
-		| `AST_bib_title (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm `Feature_bib_title comm elem
-
-
-	and convert_bib_resource_block = function
-		| `AST_bib_resource (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm `Feature_bib_resource comm elem
-
-
-	and convert_equation_block = function
-		| #Ast.M.mathtex_block_t as blk ->
-			(convert_mathtex_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
-		| #Ast.M.mathml_block_t as blk ->
-			(convert_mathml_block blk :> (Block.M.equation_block_t, _) Block.M.t option)
-
-
-	and convert_printout_block = function
-		| #Ast.M.code_block_t as blk ->
-			(convert_code_block blk :> (Block.M.printout_block_t, _) Block.M.t option)
-
-
-	and convert_table_block = function
-		| #Ast.M.tabular_block_t as blk ->
-			(convert_tabular_block blk :> (Block.M.table_block_t, _) Block.M.t option)
-
-
-	and convert_figure_block = function
-		| #Ast.M.bitmap_block_t as blk ->
-			(convert_bitmap_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
-		| #Ast.M.verbatim_block_t as blk ->
-			(convert_verbatim_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
-		| #Ast.M.subpage_block_t as blk ->
-			(convert_subpage_block blk :> (Block.M.figure_block_t, _) Block.M.t option)
-
-
-	and convert_caption_block = function
-		| `AST_caption (comm, seq) ->
-			let elem () = Some (convert_super_seq seq)
-			in check_comm `Feature_caption comm elem
-
-
-	and convert_item_block ~subpaged = function
-		| `AST_item (comm, frag) ->
-			convert_nestable_frag subpaged frag
-
-
-	and convert_wrapper comm counter target_maker caption_block subpaged =
+	and convert_wrapper comm counter target_maker (caption_comm, caption_seq) subpaged =
 		let order = match comm.comm_order with
 			| None		-> Order.auto_ordinal counter
 			| Some thing	-> Order.user_ordinal thing in
 		let label = make_label comm (target_maker order) in
-		let maybe_caption = convert_caption_block caption_block
+		let maybe_caption = 
+			let elem () = Some (convert_seq caption_seq)
+			in check_comm `Feature_caption caption_comm elem
 		in match (label, order, maybe_caption) with
 			| (label, order, Some caption)	-> Some (label, order, caption)
 			| _				-> None in
+
+
+	let convert_frag frag =
+		List.filter_map (convert_block ~subpaged:false true true `Any_blk) frag in
 
 
 	(************************************************************************)
@@ -747,7 +665,7 @@ let process_document feature_map document_ast =
 	(* Wrap-up.								*)
 	(************************************************************************)
 
-	let contents = convert_super_frag false document_ast in
+	let contents = convert_frag document_ast in
 	let () = filter_references () in
 	let res_bibs = DynArray.to_list bibs
 	and res_notes = DynArray.to_list notes
@@ -811,8 +729,7 @@ let process_composition ?deny_list ?accept_list ?default source document_ast =
 	let (contents, _, _, _, _, errors) = process_document feature_map document_ast in
 	if List.length errors = 0
 	then
-		let composition = Convert.convert_to_composition contents
-		in Ambivalent.make_valid_composition composition
+		Ambivalent.make_valid_composition (Obj.magic contents)
 	else
 		let sorted_errors = sort_errors (collate_errors source errors)
 		in Ambivalent.make_invalid_composition sorted_errors

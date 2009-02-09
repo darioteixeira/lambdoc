@@ -28,9 +28,10 @@ type reference_inline_feature_t =
 	]
 
 type non_reference_block_feature_t =
-	[ `Feature_paragraph | `Feature_itemize | `Feature_enumerate
-	| `Feature_quote | `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_code
-	| `Feature_verbatim | `Feature_tabular | `Feature_bitmap | `Feature_subpage
+	[ `Feature_item | `Feature_describe
+	| `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
+	| `Feature_quote | `Feature_callout | `Feature_mathtex_blk | `Feature_mathml_blk
+	| `Feature_code | `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage
 	]
 
 type reference_block_feature_t =
@@ -88,9 +89,10 @@ let reference_inline_features =
 
 let non_reference_block_features =
 	[
-	`Feature_paragraph; `Feature_itemize; `Feature_enumerate;
-	`Feature_quote; `Feature_mathtex_blk; `Feature_mathml_blk; `Feature_code;
-	`Feature_verbatim; `Feature_tabular; `Feature_bitmap; `Feature_subpage;
+	`Feature_item; `Feature_describe;
+	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description;
+	`Feature_quote; `Feature_callout; `Feature_mathtex_blk; `Feature_mathml_blk;
+	`Feature_code; `Feature_tabular; `Feature_verbatim; `Feature_bitmap; `Feature_subpage;
 	]
 
 let reference_block_features =
@@ -170,15 +172,19 @@ let describe_reference_inline_feature = function
 
 
 let describe_non_reference_block_feature = function
+	| `Feature_item		-> "listing item"
+	| `Feature_describe	-> "description item"
 	| `Feature_paragraph	-> "paragraph block"
 	| `Feature_itemize	-> "itemize block"
 	| `Feature_enumerate	-> "enumerate block"
+	| `Feature_description	-> "description block"
 	| `Feature_quote	-> "quote block"
+	| `Feature_callout	-> "callout block"
 	| `Feature_mathtex_blk	-> "TeX math block"
 	| `Feature_mathml_blk	-> "MathML block"
 	| `Feature_code		-> "code block"
-	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_tabular	-> "tabular"
+	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_bitmap	-> "bitmap block"
 	| `Feature_subpage	-> "subpage block"
 

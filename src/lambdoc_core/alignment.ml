@@ -21,7 +21,8 @@ TYPE_CONV_PATH "Alignment"
 type t =
 	| Center
 	| Left
-	| Right (*with sexp*)
+	| Right
+	(*with sexp*)
 
 
 (********************************************************************************)

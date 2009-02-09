@@ -29,7 +29,7 @@ val process_manuscript:
 	?accept_list: Features.manuscript_feature_t list ->
 	?default: Features.default_t ->
 	string ->
-	Ast.M.t ->
+	Ast.t ->
 	Ambivalent.manuscript_t
 
 val process_composition:
@@ -37,6 +37,6 @@ val process_composition:
 	?accept_list: Features.composition_feature_t list ->
 	?default: Features.default_t ->
 	string ->
-	Ast.M.t ->
+	Ast.t ->
 	Ambivalent.composition_t
 

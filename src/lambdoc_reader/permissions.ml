@@ -10,7 +10,7 @@
 
 open Lambdoc_core
 open Basic
-open Ast.M
+open Ast
 
 
 (********************************************************************************)
@@ -160,15 +160,19 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_mref		-> forbidden_class
 
 	and non_reference_block_feature_set = function
+		| `Feature_item		-> forbidden_class
+		| `Feature_describe	-> forbidden_class
 		| `Feature_paragraph	-> forbidden_class
 		| `Feature_itemize	-> listing_class
 		| `Feature_enumerate	-> listing_class
+		| `Feature_description	-> forbidden_class
 		| `Feature_quote	-> floater_class
+		| `Feature_callout	-> floater_class
 		| `Feature_mathtex_blk	-> floater_class
 		| `Feature_mathml_blk	-> floater_class
 		| `Feature_code		-> code_class
-		| `Feature_verbatim	-> floater_class
 		| `Feature_tabular	-> tabular_class
+		| `Feature_verbatim	-> floater_class
 		| `Feature_bitmap	-> floater_class
 		| `Feature_subpage	-> floater_class
 

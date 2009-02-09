@@ -32,16 +32,16 @@ type composition_t =
 (********************************************************************************)
 
 val make_valid_manuscript:
-        ([< `Composition | `Manuscript ], _, _, _) Block.t list ->
-        Block.bib_t list ->
-        Block.note_t list ->
-        Block.heading_block_t list ->
-        Labelmap.t ->
-        manuscript_t
+	([< `Composition | `Manuscript ], _, _, _) Block.t list ->
+	Bib.t list ->
+	Note.t list ->
+	Heading.t list ->
+	Labelmap.t ->
+	manuscript_t
 
 val make_valid_composition:
-        ([< `Composition ], _, _, _) Block.t list ->
-        composition_t
+	([< `Composition ], _, _, _) Block.t list ->
+	composition_t
 
 val make_invalid_manuscript: Error.t list -> manuscript_t
 

@@ -52,6 +52,17 @@ type target_t =
 	(*with sexp*)
 
 
+type blk_category_t =
+	[ `Any_blk
+	| `Paragraph_blk
+	| `Equation_blk
+	| `Printout_blk
+	| `Table_blk
+	| `Figure_blk
+	]
+
+
+
 (**	The various types of error messages.
 *)
 type error_msg_t =
@@ -62,6 +73,10 @@ type error_msg_t =
 
 	| Unknown_env_command of tag_t
 	| Unknown_simple_command of tag_t
+
+	| Nested_link of tag_t option
+	| Empty_listing of tag_t option
+	| Unexpected_block of tag_t option * blk_category_t
 
 	| Invalid_extra_boolean_parameter of tag_t option * string * string
 	| Invalid_extra_numeric_parameter of tag_t option * string * string

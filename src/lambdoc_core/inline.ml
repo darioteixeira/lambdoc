@@ -20,7 +20,7 @@ open Basic
 type 'a inline_t =
 	[ `Plain of plain_t
 	| `Entity of entity_t
-	| `Mathinl of Math.t
+	| `Math of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
 	| `Mono of 'a list
@@ -37,7 +37,7 @@ type 'a inline_t =
 	| `Mref of ref_t * 'a list
 	] (*with sexp*)
 
-type seq_t = ('a inline_t as 'a) list (*with sexp*)
+type seq_t = 'a inline_t as 'a list (*with sexp*)
 
 type (+'a, +'b) t = 'c inline_t as 'c (*with sexp*)
 
@@ -48,7 +48,7 @@ type (+'a, +'b) t = 'c inline_t as 'c (*with sexp*)
 
 let plain txt = `Plain txt
 let entity txt = `Entity txt
-let mathinl mth = `Mathinl mth
+let math mth = `Math mth
 let bold seq = `Bold seq
 let emph seq = `Emph seq
 let mono seq = `Mono seq

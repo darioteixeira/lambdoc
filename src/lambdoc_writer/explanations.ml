@@ -63,6 +63,15 @@ let explain_error = function
 	| Error.Unknown_simple_command tag ->
 		sprintf "Unknown simple '%s'." tag
 
+	| Error.Nested_link tag ->
+		sprintf "Nested link in %s" (explain_tag tag)
+
+	| Error.Empty_listing tag ->
+		sprintf "Empty itemize list in %s" (explain_tag tag)
+
+	| Error.Unexpected_block (tag, blk) ->
+		sprintf "Unexpected block %s" (explain_tag tag)
+
 	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 

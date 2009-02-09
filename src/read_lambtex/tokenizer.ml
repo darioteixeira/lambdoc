@@ -19,7 +19,7 @@
 open Lexing
 open ExtString
 open Lambdoc_reader
-open Ast.M
+open Ast
 open Parser
 open Scanner
 
@@ -68,7 +68,7 @@ type context_t =
 		{li [Pop_con]: Pops a context from the context history, using it to set the current context;}
 		{li [Push_env]: Pushes a new environment into the environment history;}
 		{li [Pop_env]: Pops the last environment from the environment history;}
-		{li [Store]: Stores a list of future environment;}
+		{li [Store]: Stores a list of future environments;}
 		{li [Fetch]: Fetches the first environment from storage and pushes into the environment history.}}
 *)
 type action_t =
@@ -120,7 +120,8 @@ let get_simple_tag tag params =
 		| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
 		| "rule"		-> (RULE params,		Blk,	[])
 
-		| "item"		-> (NEW_ITEM params,		Blk,	[])
+		| "item"		-> (ITEM params,		Blk,	[])
+		| "describe"		-> (DESCRIBE params,		Blk,	[Store [Inline]])
 		| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 		| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 		| "head"		-> (HEAD params,		Blk,	[])
@@ -157,16 +158,18 @@ let get_env_tag tag params is_begin =
 		(* If not literal, then test the other environments. *)
 
 		else match tag with
-			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],			[])
 			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
 			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
+			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],			[])
 			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],			[])
+			| "callout"	-> (BEGIN_CALLOUT params,	END_CALLOUT params,		[Store [Inline]],	[])
 			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push_env Tabular],	[Pop_env])
 			| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],			[])
 			| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],			[])
 			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],			[])
 			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],			[])
 			| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],			[])
+			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],			[])
 			| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],			[])
 			| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],			[])
 			| other		-> raise (Unknown_env_command other)

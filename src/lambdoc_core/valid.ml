@@ -18,17 +18,18 @@ TYPE_CONV_PATH "Valid"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t =
+type 'a document_t =
 	{
 	content: Block.frag_t;
-	bibs: Block.bib_t list;
-	notes: Block.note_t list;
-	toc: Block.heading_block_t list;
+	bibs: Bib.t list;
+	notes: Note.t list;
+	toc: Heading.t list;
 	labelmap: Labelmap.t;
 	} (*with sexp*)
 
 
-type composition_t = Block.frag_t (*with sexp*)
+type manuscript_t = [ `Manuscript ] document_t (*with sexp*)
+type composition_t = [ `Composition ] document_t (*with sexp*)
 
 
 (********************************************************************************)
@@ -44,7 +45,14 @@ let make_manuscript content bibs notes toc labelmap =
 	labelmap = labelmap;
 	}
 
-let make_composition content = Block.get_frag content
+let make_composition content =
+	{
+	content = Block.get_frag content;
+	bibs = [];
+	notes = [];
+	toc = [];
+	labelmap = Labelmap.create ();
+	}
 
 
 (********************************************************************************)

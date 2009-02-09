@@ -16,169 +16,103 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 The actual module}							*)
+(**	{2 Parsing data associated with command tags}				*)
 (********************************************************************************)
 
-module rec M:
-sig
-
-	(************************************************************************)
-	(**	{3 Parsing data associated with command tags}			*)
-	(************************************************************************)
-
-	type command_t =
-		{
-		comm_tag: tag_t option;
-		comm_label: string option;
-		comm_order: string option;
-		comm_extra: string option;
-		comm_secondary: string option;
-		comm_linenum: int;
-		}
+type command_t =
+	{
+	comm_tag: tag_t option;
+	comm_label: string option;
+	comm_order: string option;
+	comm_extra: string option;
+	comm_secondary: string option;
+	comm_linenum: int;
+	}
 
 
-	(************************************************************************)
-	(**	{3 Data types for inline context}				*)
-	(************************************************************************)
+(********************************************************************************)
+(**	{2 Data types for inline context}					*)
+(********************************************************************************)
 
-	type super_seq_t = M.super_node_t list
-	type nonlink_seq_t = M.nonlink_node_t list
-
-	type nonlink_node_t =
-		[ `AST_plain of command_t * plain_t
-		| `AST_entity of command_t * entity_t
-		| `AST_mathtex_inl of command_t * raw_t
-		| `AST_mathml_inl of command_t * raw_t
-		| `AST_bold of command_t * super_seq_t
-		| `AST_emph of command_t * super_seq_t
-		| `AST_mono of command_t * super_seq_t
-		| `AST_caps of command_t * super_seq_t
-		| `AST_thru of command_t * super_seq_t
-		| `AST_sup of command_t * super_seq_t
-		| `AST_sub of command_t * super_seq_t
-		| `AST_mbox of command_t * super_seq_t
-		]
-
-	type link_node_t =
-		[ `AST_link of command_t * raw_t * nonlink_seq_t
-		| `AST_see of command_t * raw_t	
-		| `AST_cite of command_t * raw_t
-		| `AST_ref of command_t * raw_t
-		| `AST_sref of command_t * raw_t
-		| `AST_mref of command_t * raw_t * nonlink_seq_t
-		]
-
-	type super_node_t =
-		[ nonlink_node_t
-		| link_node_t
-		]
+type seq_t = inline_t list
+ and inline_t = command_t * raw_inline_t
+ and raw_inline_t =
+	| Plain of plain_t
+	| Entity of entity_t
+	| Mathtex_inl of raw_t
+	| Mathml_inl of raw_t
+	| Bold of seq_t
+	| Emph of seq_t
+	| Mono of seq_t
+	| Caps of seq_t
+	| Thru of seq_t
+	| Sup of seq_t
+	| Sub of seq_t
+	| Mbox of seq_t
+	| Link of raw_t * seq_t
+	| See of raw_t	
+	| Cite of raw_t
+	| Ref of raw_t
+	| Sref of raw_t
+	| Mref of raw_t * seq_t
 
 
-	(************************************************************************)
-	(**	{3 Data types for tabular environment}				*)
-	(************************************************************************)
+(********************************************************************************)
+(**	{2 Data types for tabular environment}					*)
+(********************************************************************************)
 
-	type tabular_row_t = command_t * super_seq_t list
+type tabular_row_t = command_t * seq_t list
 
-	type tabular_group_t = command_t option * tabular_row_t list
+type tabular_group_t = command_t option * tabular_row_t list
 
-	type tabular_t =
-		{
-		thead: tabular_group_t option;
-		tfoot: tabular_group_t option;
-		tbodies: tabular_group_t list;
-		}
-
-
-	(************************************************************************)
-	(**	{3 Data types for document blocks}				*)
-	(************************************************************************)
-
-	type super_frag_t = M.super_block_t list
-	type nestable_frag_t = M.nestable_block_t list
-	type item_frag_t = M.item_block_t list
-
-	type caption_block_t = [ `AST_caption of command_t * super_seq_t ]
-	type item_block_t = [ `AST_item of command_t * nestable_frag_t ] 
-	type paragraph_block_t = [ `AST_paragraph of command_t * super_seq_t ]
-	type itemize_block_t = [ `AST_itemize of command_t * item_frag_t ]
-	type enumerate_block_t = [ `AST_enumerate of command_t * item_frag_t ]
-	type quote_block_t = [ `AST_quote of command_t * nestable_frag_t ]
-	type mathtex_block_t = [ `AST_mathtex_blk of command_t * raw_t ]
-	type mathml_block_t = [ `AST_mathml_blk of command_t * raw_t ]
-	type code_block_t = [ `AST_code of command_t * raw_t ]
-	type verbatim_block_t = [ `AST_verbatim of command_t * raw_t ]
-	type tabular_block_t = [ `AST_tabular of command_t * tabular_t ]
-	type bitmap_block_t = [ `AST_bitmap of command_t * raw_t * raw_t ]
-	type subpage_block_t = [ `AST_subpage of command_t * super_frag_t ]
-	type bib_author_block_t = [ `AST_bib_author of command_t * super_seq_t ] 
-	type bib_title_block_t = [ `AST_bib_title of command_t * super_seq_t ] 
-	type bib_resource_block_t = [ `AST_bib_resource of command_t * super_seq_t ] 
-
-	type equation_block_t =
-		[ mathtex_block_t
-		| mathml_block_t
-		]
-
-	type printout_block_t =
-		code_block_t
-
-	type table_block_t =
-		tabular_block_t
-
-	type figure_block_t =
-		[ bitmap_block_t
-		| verbatim_block_t
-		| subpage_block_t
-		]
-
-	type nestable_block_t =
-		[ paragraph_block_t
-		| itemize_block_t
-		| enumerate_block_t
-		| quote_block_t
-		| mathtex_block_t
-		| mathml_block_t
-		| code_block_t
-		| verbatim_block_t
-		| tabular_block_t
-		| bitmap_block_t
-		| subpage_block_t
-		| `AST_equation of command_t * caption_block_t * equation_block_t
-		| `AST_printout of command_t * caption_block_t * printout_block_t
-		| `AST_table of command_t * caption_block_t * table_block_t
-		| `AST_figure of command_t * caption_block_t * figure_block_t
-		| `AST_bib of command_t * bib_author_block_t * bib_title_block_t * bib_resource_block_t
-		| `AST_note of command_t * nestable_frag_t
-		]
-
-	type heading_block_t =
-		[ `AST_part of command_t * super_seq_t
-		| `AST_appendix of command_t
-		| `AST_section of hierarchical_level_t * command_t * super_seq_t
-		| `AST_bibliography of command_t
-		| `AST_notes of command_t
-		| `AST_toc of command_t
-		]
-
-	type top_block_t =
-		[ heading_block_t
-		| `AST_title of title_level_t * command_t * super_seq_t
-		| `AST_abstract of command_t * paragraph_block_t list
-		| `AST_rule of command_t
-		]
-
-	type super_block_t =
-		[ top_block_t
-		| nestable_block_t
-		]
+type tabular_t =
+	{
+	thead: tabular_group_t option;
+	tfoot: tabular_group_t option;
+	tbodies: tabular_group_t list;
+	}
 
 
-	(************************************************************************)
-	(* 	{3 The type {!t} itself}					*)
-	(************************************************************************)
+(********************************************************************************)
+(**	{2 Data types for document blocks}					*)
+(********************************************************************************)
 
-	type t = super_frag_t
+type frag_t = block_t list
+ and block_t = command_t * raw_block_t
+ and raw_block_t =
+	| Paragraph of seq_t
+	| Itemize of (command_t * frag_t) list
+	| Enumerate of (command_t * frag_t) list
+	| Description of (command_t * seq_t * frag_t) list
+	| Quote of frag_t
+	| Callout of seq_t * frag_t
+	| Mathtex_blk of raw_t
+	| Mathml_blk of raw_t
+	| Code of raw_t
+	| Tabular of tabular_t
+	| Verbatim of raw_t
+	| Bitmap of raw_t * raw_t
+	| Subpage of frag_t
+	| Equation of (command_t * seq_t) * block_t
+	| Printout of (command_t * seq_t) * block_t
+	| Table of (command_t * seq_t) * block_t
+	| Figure of (command_t * seq_t) * block_t
+	| Part of seq_t
+	| Appendix
+	| Section of hierarchical_level_t * seq_t
+	| Bibliography
+	| Notes
+	| Toc
+	| Title of title_level_t * seq_t
+	| Abstract of frag_t
+	| Rule
+	| Bib of (command_t * seq_t) * (command_t * seq_t) * (command_t * seq_t)
+	| Note of frag_t
 
-end = M
+
+(********************************************************************************)
+(*	{2 The type {!t} itself}						*)
+(********************************************************************************)
+
+type t = frag_t
 

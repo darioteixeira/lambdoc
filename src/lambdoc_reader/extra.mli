@@ -18,14 +18,15 @@ open Lambdoc_core
 (**	{2 Definition of functions and values}					*)
 (********************************************************************************)
 
-val parse_for_itemize: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Bullet.t
-val parse_for_enumerate:	(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Numbering.t
-val parse_for_quote: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t
-val parse_for_mathtex: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t
-val parse_for_mathml: 		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t
-val parse_for_code:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t * bool * bool * Code.lang_t option
-val parse_for_verbatim:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t
-val parse_for_tabular:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t
-val parse_for_bitmap:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t * bool * bool * int option
-val parse_for_subpage:		(int * Error.error_msg_t) DynArray.t -> Ast.M.command_t -> Alignment.t
+val parse_for_itemize: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Bullet.t
+val parse_for_enumerate:	(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Numbering.t
+val parse_for_quote: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_callout: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_mathtex: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_mathml: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_code:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t * bool * bool * Code.lang_t option
+val parse_for_tabular:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_verbatim:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_bitmap:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t * bool * int option
+val parse_for_subpage:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
 

@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Interface file for Invalid module.
+(*	Implementation file for Note module.
 
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -8,22 +8,33 @@
 *)
 (********************************************************************************)
 
-(**	Definitions concerning invalid documents.
-*)
+TYPE_CONV_PATH "Note"
+
+open Basic
 
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t = Error.t list (*with sexp*)
-type composition_t = Error.t list (*with sexp*)
+type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t (*with sexp*)
+
+type t =
+	{
+	label: Label.t;
+	order: order_t;
+	content: Block.frag_t;
+	} (*with sexp*)
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{3 Functions and values}						*)
 (********************************************************************************)
 
-val make_manuscript: Error.t list -> manuscript_t
-val make_composition: Error.t list -> composition_t
+let note label order content =
+	{
+	label = label;
+	order = order;
+	content = Block.get_frag content;
+	}
 
