@@ -137,22 +137,19 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 
 /********************************************************************************/
-/* List environments (itemize and enumerate).					*/
+/* List environments (itemize, enumerate, and description).			*/
 /********************************************************************************/
 
-.doc_itemize
+.doc_itemize,
+.doc_enumerate,
+.doc_description
 	{
 	margin: 1em 0 1.5em;
 	padding: 0 0 0 2em;
-	list-style: disc outside;
 	}
 
-.doc_enumerate
-	{
-	margin: 1em 0 1.5em;
-	padding: 0 0 0 2em;
-	list-style: decimal outside;
-	}
+.doc_itemize	{list-style: disc outside;}
+.doc_enumerate	{list-style: decimal outside;}
 
 .doc_itemize > li, .doc_enumerate > li
 	{
@@ -174,6 +171,17 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_style_upper_roman	{list-style-type: upper-roman;}
 .doc_style_lower_alpha	{list-style-type: lower-alpha;}
 .doc_style_upper_alpha	{list-style-type: upper-alpha;}
+
+.doc_description > dt
+	{
+	margin: 0 0 0 -1.5em;
+	text-decoration: underline;
+	}
+
+.doc_description > dd
+	{
+	margin: 0;
+	}
 
 
 /********************************************************************************/
@@ -200,8 +208,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	{
 	clear: both;
 	padding: 0 0.5em 0 2em;
-	border-top: 1px solid #999;
-	border-bottom: 1px solid #999;
+	border-top: 2px solid #999;
+	border-bottom: 2px solid #999;
 	font-style: italic;
 	text-align: justify;
 	quotes: "\201c" "\201d";
@@ -217,8 +225,42 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	margin-left: -0.6em;
 	line-height: 1.2em;
 	height: 0;
+	
+
+}
+/********************************************************************************/
+/* Callout environments.							*/
+/********************************************************************************/
+
+.doc_callout
+	{
+	background: #666;
 	}
 
+.doc_callout > div
+	{
+	position: relative;
+	top: -2px;
+	left: -2px;
+	border: 1px solid #333;
+	background: #ffffaa;
+	}
+	
+.doc_callout > div > p
+	{
+	font-size: 1.071em;	/* For a size of 15px */
+	font-variant: small-caps;
+	font-weight: bold;
+	text-align: center;
+	margin: 0;
+	padding: 0.5em 0;
+	border-bottom: 1px solid #333;
+	}
+
+.doc_callout > div > div
+	{
+	padding: 0 1em;
+	}
 
 /********************************************************************************/
 /* Mathematics environments.							*/
@@ -236,7 +278,15 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 .doc_hl_main
 	{
-	border: 1px dashed #666;
+	background: #666;
+	}
+
+.doc_hl_main > div
+	{
+	position: relative;
+	top: -2px;
+	left: -2px;
+	border: 1px solid #333;
 	font-size: 0.857em;			/* For a size of 12px */
 	font-family: monospace;
 	color: #000000;
@@ -282,30 +332,6 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_hl_kwb		{color: #006;}
 .doc_hl_kwc		{color: #03c;}
 .doc_hl_kwd		{color: #090; font-weight: bold;}
-
-
-/********************************************************************************/
-/* Verbatim environments.							*/
-/********************************************************************************/
-
-.doc_verb
-	{
-	text-align: center;
-	}
-
-.doc_verb > pre
-	{
-	display: inline-block;
-	overflow: hidden;
-	white-space: pre;
-	margin: 0;
-	padding: 1em;
-	border: 1px dashed #999;
-	text-align: left;
-	font-family: monospace;
-	font-size: 0.857em;		/* For a size of 12px */
-	background-color: #fffcf0;
-	}
 
 
 /********************************************************************************/
@@ -360,12 +386,47 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 
 /********************************************************************************/
+/* Verbatim environments.							*/
+/********************************************************************************/
+
+.doc_verb
+	{
+	text-align: center;
+	}
+
+.doc_verb > div
+	{
+        display: inline-block;
+        background: #666;
+	}
+
+.doc_verb > div > pre
+	{
+        display: block;
+	position: relative;
+	top: -2px;
+	left: -2px;
+	overflow: hidden;
+	white-space: pre;
+	margin: 0;
+	padding: 1em;
+	border: 1px solid #333;
+	text-align: left;
+	font-family: monospace;
+	font-size: 0.857em;		/* For a size of 12px */
+        background: #fffcf0;
+	}
+
+
+/********************************************************************************/
 /* Image environments.			 					*/
 /********************************************************************************/
 
-.doc_bitmap		{text-align: center;}
-.doc_bitmap > img	{max-width: 100%}
-.doc_framed > img	{border: 1px dotted #333;}
+.doc_bitmap				{text-align: center;}
+.doc_bitmap > a				{display: inline-block;}
+.doc_bitmap > a > img			{display: block; border: none; max-width: 100%;}
+.doc_bitmap_shadow > a			{background: #666;}
+.doc_bitmap_shadow > a > img		{position: relative; top: -2px; left: -2px;}
 
 
 /********************************************************************************/
@@ -374,9 +435,17 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 .doc_subpage
 	{
-	padding: 0 1em;
-	border: 1px dashed #999;
-	background-color: #f0f0f6;
+        background: #666;
+	}
+
+.doc_subpage > div
+	{
+	position: relative;
+	top: -2px;
+	left: -2px;
+	padding: 0 1em 1em;
+	border: 1px solid #333;
+	background-color: #f6f6f9;
 	}
 
 
