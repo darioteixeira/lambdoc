@@ -64,3 +64,7 @@ type title_level_t =
 
 let fplus f elem elem_list = (f elem, List.map f elem_list)
 
+let maybe f = function
+	| Some x	-> Some (f x)
+	| None		-> None
+

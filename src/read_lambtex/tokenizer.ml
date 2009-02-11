@@ -158,20 +158,20 @@ let get_env_tag tag params is_begin =
 		(* If not literal, then test the other environments. *)
 
 		else match tag with
-			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],			[])
-			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],			[])
-			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],			[])
-			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],			[])
-			| "callout"	-> (BEGIN_CALLOUT params,	END_CALLOUT params,		[Store [Inline]],	[])
-			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Push_env Tabular],	[Pop_env])
-			| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],			[])
-			| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],			[])
-			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],			[])
-			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],			[])
-			| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],			[])
-			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],			[])
-			| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],			[])
-			| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],			[])
+			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],					[])
+			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],					[])
+			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],					[])
+			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],					[])
+			| "callout"	-> (BEGIN_CALLOUT params,	END_CALLOUT params,		[Store [Inline]],			[])
+			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Store [Raw]; Push_env Tabular],	[Pop_env])
+			| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],					[])
+			| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],					[])
+			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],					[])
+			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],					[])
+			| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],					[])
+			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],					[])
+			| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],					[])
+			| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],					[])
 			| other		-> raise (Unknown_env_command other)
 
 	in if is_begin
@@ -189,7 +189,6 @@ let get_env_tag tag params is_begin =
 let pat_env = "\\\\(?<env>(begin)|(end))"
 let pat_command = "\\\\(?<command>\\w+)"
 let pat_primary = "\\{(?<primary>\\w+[\\w\\d_]*)\\}"
-let pat_secondary = "(?<secondary>\\{\\w*\\})?"
 
 let pat_order = "(?<order>\\([\\w\\d\\.]*\\))"
 let pat_label = "(?<label>\\[[\\w\\d\\-:_]*\\])"
@@ -216,7 +215,6 @@ let build_command lexbuf tag rex subs =
 	comm_label = get_param rex "label" subs;
 	comm_order = get_param rex "order" subs;
 	comm_extra = get_param rex "extra" subs;
-	comm_secondary = get_param rex "secondary" subs;
 	comm_linenum = lexbuf.lex_curr_p.pos_lnum;
 	}
 
@@ -230,7 +228,6 @@ let build_op lexbuf =
 	comm_label = None;
 	comm_order = None;
 	comm_extra = None;
-	comm_secondary = None;
 	comm_linenum = lexbuf.lex_curr_p.pos_lnum;
 	}
 
@@ -238,7 +235,7 @@ let build_op lexbuf =
 (**	Issues an environment command.
 *)
 let issue_env_command =
-	let rex = Pcre.regexp ("^" ^ pat_env ^ pat_optional ^ pat_primary ^ pat_secondary ^ "$")
+	let rex = Pcre.regexp ("^" ^ pat_env ^ pat_optional ^ pat_primary ^ "$")
 	in fun lexbuf ->
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "env" subs

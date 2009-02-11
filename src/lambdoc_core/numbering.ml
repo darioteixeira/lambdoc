@@ -44,9 +44,9 @@ let of_string = function
 
 let to_string = function
 	| Decimal	-> "decimal"
-	| Lower_roman	-> "lower_roman"
-	| Upper_roman	-> "upper_roman"
-	| Lower_alpha	-> "lower_alpha"
-	| Upper_alpha	-> "upper_alpha"
+	| Lower_roman	-> "lower-roman"
+	| Upper_roman	-> "upper-roman"
+	| Lower_alpha	-> "lower-alpha"
+	| Upper_alpha	-> "upper-alpha"
 	| None		-> "none"
 

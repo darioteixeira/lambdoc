@@ -290,12 +290,10 @@ let process_document feature_map document_ast =
 	(* Postprocessing functions for tabular environment.			*)
 	(************************************************************************)
 
-	let convert_tabular comm tab =
-		let tcols = match comm.comm_secondary with
-			| None		-> [| |]
-			| Some thing	-> Array.map (get_column errors comm) (Array.of_list (String.explode thing)) in
+	let convert_tabular comm tcols tab =
+		let columns = Array.map (get_column errors comm) (Array.of_list (String.explode tcols)) in
 
-		let num_columns = Array.length tcols in
+		let num_columns = Array.length columns in
 
 		let convert_row (comm, row) =
 			(if List.length row <> num_columns
@@ -313,17 +311,13 @@ let process_document feature_map document_ast =
 				| []		-> invalid_arg "Parser has given us an empty tabular group"
 				| hd::tl	-> Tabular.make_group (fplus convert_row hd tl) in
 
-		let thead = match tab.thead with
-			| Some grp	-> Some (convert_group grp)
-			| None		-> None
+		let thead = maybe convert_group tab.thead
 
-		and tfoot = match tab.tfoot with
-			| Some grp	-> Some (convert_group grp)
-			| None		-> None
+		and tfoot = maybe convert_group tab.tfoot
 
 		in match tab.tbodies with
 			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make_tabular tcols ?thead ?tfoot (fplus convert_group hd tl) in
+			| hd::tl	-> Tabular.make_tabular columns ?thead ?tfoot (fplus convert_group hd tl) in
 
 
 	(************************************************************************)
@@ -385,11 +379,12 @@ let process_document feature_map document_ast =
 				in Some (Block.quote alignment (Obj.magic new_frag))
 			in check_comm `Feature_quote comm elem
 
-		| (_, _, `Any_blk, (comm, Ast.Callout (seq, frag))) ->
+		| (_, _, `Any_blk, (comm, Ast.Callout (maybe_seq, frag))) ->
 			let elem () =
 				let alignment = Extra.parse_for_callout errors comm
 				and new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag
-				in Some (Block.callout alignment (convert_seq seq) (Obj.magic new_frag))
+				and seq = maybe convert_seq maybe_seq
+				in Some (Block.callout alignment seq (Obj.magic new_frag))
 			in check_comm `Feature_callout comm elem
 
 		| (_, _, `Equation_blk, (comm, Ast.Mathtex_blk txt))
@@ -414,11 +409,11 @@ let process_document feature_map document_ast =
 				in Some (Block.code alignment linenums zebra highlight)
 			in check_comm `Feature_code comm elem
 
-		| (_, _, `Table_blk, (comm, Ast.Tabular tab))
-		| (_, _, `Any_blk, (comm, Ast.Tabular tab)) ->
+		| (_, _, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
+		| (_, _, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
 			let elem () =
 				let alignment = Extra.parse_for_tabular errors comm
-				in Some (Block.tabular alignment (convert_tabular comm tab))
+				in Some (Block.tabular alignment (convert_tabular comm tcols tab))
 			in check_comm `Feature_tabular comm elem
 
 		| (_, _, `Figure_blk, (comm, Ast.Verbatim txt))

@@ -33,42 +33,31 @@ type permission_t =
 (********************************************************************************)
 
 (**	The following values/functions encode the predefined permissions for
-	the various classes of commands.  Each permission class is a 4-tuple
-	stating the individual permissions for the label, ordering, extra, and
-	secondary parameters, respectively.  While most classes are constant,
-	some of them are context-sensitive and are therefore functions.
+	the various classes of commands.  Each permission class is a 3-tuple
+	stating the individual permissions for the label, ordering, and extra
+	parameters, respectively.  While most classes are constant, some of
+	them are context-sensitive and are therefore functions.
 *)
 
 let forbidden_class =
-	(Forbidden, Forbidden, Forbidden, Forbidden)
+	(Forbidden, Forbidden, Forbidden)
 
 let custom_heading_class subpaged =
-	let perm_order = if subpaged then Mandatory0 else Forbidden0
-	in (Optional, perm_order, Forbidden, Forbidden)
+	(Optional, (if subpaged then Mandatory0 else Forbidden0), Forbidden)
 
 let preset_heading_class =
-	(Optional, Forbidden, Forbidden, Forbidden)
+	(Optional, Forbidden, Forbidden)
 
 let listing_class =
-	(Forbidden, Forbidden, Optional, Forbidden)
-
-let quote_class =
-	(Forbidden, Forbidden, Optional, Forbidden)
+	(Forbidden, Forbidden, Optional)
 
 let floater_class =
-	(Forbidden, Forbidden, Optional, Forbidden)
-
-let code_class =
-	(Forbidden, Forbidden, Optional, Forbidden)
-	
-let tabular_class =
-	(Forbidden, Forbidden, Optional, Mandatory)
+	(Forbidden, Forbidden, Optional)
 
 let wrapper_class subpaged =
-	let perm_order = if subpaged then Mandatory else Forbidden
-	in (Optional, perm_order, Optional, Forbidden)
+	(Optional, (if subpaged then Mandatory else Forbidden), Optional)
 
-let ghost_class = (Optional, Forbidden, Forbidden, Forbidden)
+let ghost_class = (Optional, Forbidden, Forbidden)
 
 
 (*	This function checks whether a parameter is valid given its
@@ -98,35 +87,27 @@ let reason_why_invalid perm = function
 	each one individually for correctness.  Any errors found are
 	added to the [errors] [DynArray].
 *)
-let check_permission_set errors comm (perm_label, perm_order, perm_extra, perm_secondary) =
+let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 
-	(match reason_why_invalid perm_label comm.comm_label with
+	let () = match reason_why_invalid perm_label comm.comm_label with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Bad_label_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (comm.comm_linenum, msg));
-
-	(match reason_why_invalid perm_order comm.comm_order with
+			DynArray.add errors (comm.comm_linenum, msg)
+	and () = match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Bad_order_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (comm.comm_linenum, msg));
-
-	(match reason_why_invalid perm_extra comm.comm_extra with
+			DynArray.add errors (comm.comm_linenum, msg)
+	and () = match reason_why_invalid perm_extra comm.comm_extra with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Bad_extra_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (comm.comm_linenum, msg));
-
-	(match reason_why_invalid perm_secondary comm.comm_secondary with
-		| None ->
-			()
-		| Some reason ->
-			let msg = Error.Bad_secondary_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (comm.comm_linenum, msg))
+			DynArray.add errors (comm.comm_linenum, msg)
+	in ()
 
 
 (**	Checks a command feature.
@@ -170,8 +151,8 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_callout	-> floater_class
 		| `Feature_mathtex_blk	-> floater_class
 		| `Feature_mathml_blk	-> floater_class
-		| `Feature_code		-> code_class
-		| `Feature_tabular	-> tabular_class
+		| `Feature_code		-> floater_class
+		| `Feature_tabular	-> floater_class
 		| `Feature_verbatim	-> floater_class
 		| `Feature_bitmap	-> floater_class
 		| `Feature_subpage	-> floater_class

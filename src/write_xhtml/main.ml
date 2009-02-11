@@ -336,10 +336,11 @@ let write_valid_document settings classname doc =
 			let style = if wrapped then [] else make_alignment alignment
 			in (None, XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ style)] (write_frag frag))
 
-		| `Callout (alignment, seq, frag) ->
-			let style = if wrapped then [] else make_alignment alignment
+		| `Callout (alignment, maybe_seq, frag) ->
+			let style = if wrapped then [] else make_alignment alignment in
+			let title = match maybe_seq with None -> [] | Some seq -> [XHTML.M.p (write_seq seq)]
 			in (None, XHTML.M.div ~a:[a_class (["doc_callout"] @ style)]
-				[XHTML.M.div [XHTML.M.p (write_seq seq); XHTML.M.div (write_frag frag)]])
+				[XHTML.M.div (title @ [XHTML.M.div (write_frag frag)])])
 
 		| `Math (alignment, math) ->
 			let style = if wrapped then [] else make_alignment alignment

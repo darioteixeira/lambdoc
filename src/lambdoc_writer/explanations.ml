@@ -53,10 +53,6 @@ let explain_error = function
 		let exp_reason = explain_reason "an" "extra" reason
 		in sprintf "Invalid extra parameter for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Bad_secondary_parameter (tag, reason) ->
-		let exp_reason = explain_reason "a" "secondary" reason
-		in sprintf "Invalid secondary parameter for %s: %s." (explain_tag tag) exp_reason
-
 	| Error.Unknown_env_command tag ->
 		sprintf "Unknown environment command '%s'." tag
 

@@ -179,11 +179,11 @@ block:
 	| BEGIN_ENUMERATE item_frag END_ENUMERATE		{($1, Ast.Enumerate $2)}
 	| BEGIN_DESCRIPTION describe_frag END_DESCRIPTION	{($1, Ast.Description $2)}
 	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
-	| BEGIN_CALLOUT BEGIN inline+ END block+ END_CALLOUT	{($1, Ast.Callout ($3, $5))}
+	| BEGIN_CALLOUT BEGIN inline+ END block+ END_CALLOUT	{($1, Ast.Callout ((match $3 with [] -> None | x -> Some x), $5))}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
 	| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{($1, Ast.Mathml_blk $2)}
 	| BEGIN_CODE RAW END_CODE				{($1, Ast.Code $2)}
-	| BEGIN_TABULAR tabular END_TABULAR			{($1, Ast.Tabular $2)}
+	| BEGIN_TABULAR BEGIN RAW END tabular END_TABULAR	{($1, Ast.Tabular ($3, $5))}
 	| BEGIN_VERBATIM RAW END_VERBATIM			{($1, Ast.Verbatim $2)}
 	| BITMAP BEGIN RAW END BEGIN RAW END			{($1, Ast.Bitmap ($3, $6))}
 	| BEGIN_SUBPAGE block+ END_SUBPAGE			{($1, Ast.Subpage $2)}

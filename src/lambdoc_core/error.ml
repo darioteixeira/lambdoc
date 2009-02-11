@@ -69,7 +69,6 @@ type error_msg_t =
 	| Bad_label_parameter of tag_t option * invalid_parameter_reason_t
 	| Bad_order_parameter of tag_t option * invalid_parameter_reason_t
 	| Bad_extra_parameter of tag_t option * invalid_parameter_reason_t
-	| Bad_secondary_parameter of tag_t option * invalid_parameter_reason_t
 
 	| Unknown_env_command of tag_t
 	| Unknown_simple_command of tag_t
