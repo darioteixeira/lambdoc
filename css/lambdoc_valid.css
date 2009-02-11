@@ -443,9 +443,9 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	position: relative;
 	top: -2px;
 	left: -2px;
-	padding: 0 1em 1em;
+	padding: 1em;
 	border: 1px solid #333;
-	background-color: #f6f6f9;
+	background: #f6f6f9;
 	}
 
 
