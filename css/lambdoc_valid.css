@@ -240,8 +240,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_callout > div
 	{
 	position: relative;
-	top: -2px;
-	left: -2px;
+	top: -3px;
+	left: -3px;
 	border: 1px solid #333;
 	background: #ffffcc;
 	}
@@ -266,6 +266,9 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	{
 	padding: 0 1em;
 	}
+
+.doc_callout_warn > div	{background: #ffdd77;}
+.doc_callout_tip > div	{background: #ccffcc;}
 
 .doc_callout_warn > div > .doc_callout_head > h1	{padding-left: 28px; background: url('callout-warn.png') no-repeat left;}
 .doc_callout_tip > div > .doc_callout_head > h1		{padding-left: 28px; background: url('callout-tip.png') no-repeat left;}
@@ -293,8 +296,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_hl_main > div
 	{
 	position: relative;
-	top: -2px;
-	left: -2px;
+	top: -3px;
+	left: -3px;
 	border: 1px solid #333;
 	font-size: 0.857em;			/* For a size of 12px */
 	font-family: monospace;
@@ -413,8 +416,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	{
         display: block;
 	position: relative;
-	top: -2px;
-	left: -2px;
+	top: -3px;
+	left: -3px;
 	overflow: hidden;
 	white-space: pre;
 	margin: 0;
@@ -435,7 +438,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_bitmap > a				{display: inline-block;}
 .doc_bitmap > a > img			{display: block; border: none; max-width: 100%;}
 .doc_bitmap_shadow > a			{background: #666;}
-.doc_bitmap_shadow > a > img		{position: relative; top: -2px; left: -2px;}
+.doc_bitmap_shadow > a > img		{position: relative; top: -3px; left: -3px;}
 
 
 /********************************************************************************/
@@ -450,8 +453,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_subpage > div
 	{
 	position: relative;
-	top: -2px;
-	left: -2px;
+	top: -3px;
+	left: -3px;
 	padding: 1em;
 	border: 1px solid #333;
 	background: #f6f6f9;
