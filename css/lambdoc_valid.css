@@ -267,7 +267,8 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	padding: 0 1em;
 	}
 
-.doc_callout_warning > div > .doc_callout_head > h1 {padding-left: 28px; background: url('sign-warning.png') no-repeat left;}
+.doc_callout_warn > div > .doc_callout_head > h1	{padding-left: 28px; background: url('callout-warn.png') no-repeat left;}
+.doc_callout_tip > div > .doc_callout_head > h1		{padding-left: 28px; background: url('callout-tip.png') no-repeat left;}
 
 
 /********************************************************************************/
