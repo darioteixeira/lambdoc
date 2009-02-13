@@ -36,15 +36,17 @@ end
 module type S =
 sig
 	val ambivalent_manuscript_from_string:
-		?deny_list: Features.manuscript_feature_t list ->
+		?classnames: string list ->
 		?accept_list: Features.manuscript_feature_t list ->
+		?deny_list: Features.manuscript_feature_t list ->
 		?default: Features.default_t ->
 		string ->
 		Ambivalent.manuscript_t
 
 	val ambivalent_composition_from_string:
-		?deny_list: Features.composition_feature_t list ->
+		?classnames: string list ->
 		?accept_list: Features.composition_feature_t list ->
+		?deny_list: Features.composition_feature_t list ->
 		?default: Features.default_t ->
 		string ->
 		Ambivalent.composition_t
@@ -59,10 +61,10 @@ end
 *)
 module Make_reader (Reader: READER): S =
 struct
-	let ambivalent_document_from_string ?deny_list ?accept_list ?default valid_processor invalid_maker str =
+	let ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str =
 		try
 			let document_ast = Reader.ast_from_string str
-			in valid_processor ?deny_list ?accept_list ?default str document_ast
+			in valid_processor ?classnames ?accept_list ?deny_list ?default str document_ast
 		with
 			| Reader.Parsing_error line ->
 				let errors = Postprocess.collate_errors str [(line, Error.Syntax_error)]
@@ -74,14 +76,14 @@ struct
 				let errors = Postprocess.collate_errors str [(line, Error.Unknown_simple_command tag)]
 				in invalid_maker errors
 
-	let ambivalent_manuscript_from_string ?deny_list ?accept_list ?default str =
+	let ambivalent_manuscript_from_string ?classnames ?accept_list ?deny_list ?default str =
 		let valid_processor = Postprocess.process_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?deny_list ?accept_list ?default valid_processor invalid_maker str
+		in ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
 
-	let ambivalent_composition_from_string ?deny_list ?accept_list ?default str =
+	let ambivalent_composition_from_string ?classnames ?accept_list ?deny_list ?default str =
 		let valid_processor = Postprocess.process_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?deny_list ?accept_list ?default valid_processor invalid_maker str
+		in ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
 end
 

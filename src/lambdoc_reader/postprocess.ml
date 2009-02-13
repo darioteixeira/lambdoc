@@ -70,7 +70,7 @@ let get_column errors comm spec =
 	by the language, they make error messages far more comprehensible in
 	a context where polymorphic variants are heavily used.
 *)
-let process_document feature_map document_ast =
+let process_document classnames feature_map document_ast =
 
 
 	(************************************************************************)
@@ -381,10 +381,10 @@ let process_document feature_map document_ast =
 
 		| (_, _, `Any_blk, (comm, Ast.Callout (maybe_seq, frag))) ->
 			let elem () =
-				let alignment = Extra.parse_for_callout errors comm
+				let (alignment, maybe_classname) = Extra.parse_for_callout ~classnames errors comm
 				and new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag
 				and seq = maybe convert_seq maybe_seq
-				in Some (Block.callout alignment seq (Obj.magic new_frag))
+				in Some (Block.callout alignment maybe_classname seq (Obj.magic new_frag))
 			in check_comm `Feature_callout comm elem
 
 		| (_, _, `Equation_blk, (comm, Ast.Mathtex_blk txt))
@@ -708,9 +708,9 @@ let sort_errors errors =
 (**	{3 Top-level processing functions}					*)
 (********************************************************************************)
 
-let process_manuscript ?deny_list ?accept_list ?default source document_ast =
-	let feature_map = Features.load_manuscript_features ?deny_list ?accept_list ?default () in
-	let (contents, bibs, notes, toc, labelmap, errors) = process_document feature_map document_ast in
+let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
+	let feature_map = Features.load_manuscript_features ?accept_list ?deny_list ?default () in
+	let (contents, bibs, notes, toc, labelmap, errors) = process_document classnames feature_map document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap
@@ -719,9 +719,9 @@ let process_manuscript ?deny_list ?accept_list ?default source document_ast =
 		in Ambivalent.make_invalid_manuscript sorted_errors
 
 
-let process_composition ?deny_list ?accept_list ?default source document_ast =
-	let feature_map = Features.load_composition_features ?deny_list ?accept_list ?default () in
-	let (contents, _, _, _, _, errors) = process_document feature_map document_ast in
+let process_composition ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
+	let feature_map = Features.load_composition_features ?accept_list ?deny_list ?default () in
+	let (contents, _, _, _, _, errors) = process_document classnames feature_map document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_composition (Obj.magic contents)

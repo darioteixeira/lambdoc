@@ -117,7 +117,7 @@ let manuscript_features =
 	reference_block_features
 
 
-let load_features feature_set deny_list accept_list default =
+let load_features feature_set accept_list deny_list default =
 	let default_bool = default = `Accept in
 	let is_accepted feature =
 		if List.mem feature deny_list
@@ -132,15 +132,15 @@ let load_features feature_set deny_list accept_list default =
 	in List.fold_left load_feature Feature_map.empty manuscript_features
 
 
-let load_composition_features ?(deny_list = []) ?(accept_list = []) ?(default = `Accept) () =
+let load_composition_features ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
 	let composition_features = (composition_features :> manuscript_feature_t list)
-	and deny_list = (deny_list :> manuscript_feature_t list)
 	and accept_list = (accept_list :> manuscript_feature_t list)
-	in load_features composition_features deny_list accept_list default
+	and deny_list = (deny_list :> manuscript_feature_t list)
+	in load_features composition_features accept_list deny_list default
 
 
-let load_manuscript_features ?(deny_list = []) ?(accept_list = []) ?(default = `Accept) () =
-	load_features manuscript_features deny_list accept_list default
+let load_manuscript_features ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
+	load_features manuscript_features accept_list deny_list default
 
 
 let check_feature feature map =

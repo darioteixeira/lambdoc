@@ -46,6 +46,7 @@ type handle_t =
 	| Numbering_hnd
 	| Alignment_hnd
 	| Lang_hnd
+	| Classname_hnd
 
 
 type property_kind_t =
@@ -55,6 +56,7 @@ type property_kind_t =
 	| Numbering_kind
 	| Alignment_kind
 	| Lang_kind
+	| Classname_kind
 
 
 type property_id_t = string * property_kind_t
@@ -67,6 +69,7 @@ type property_data_t =
 	| Numbering_data of Numbering.t
 	| Alignment_data of Alignment.t
 	| Lang_data of Code.lang_t
+	| Classname_data of string
 
 
 type field_t =
@@ -108,6 +111,7 @@ let id_of_handle = function
 	| Numbering_hnd	-> ("num", Numbering_kind)
 	| Alignment_hnd	-> ("align", Alignment_kind)
 	| Lang_hnd	-> ("lang", Lang_kind)
+	| Classname_hnd	-> ("class", Classname_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -158,7 +162,7 @@ let fields_of_strings =
 	data wrapped inside a {!result_t}.  That way, other functions can tell
 	the degree of certainty associated with a matching.
 *)
-let matcher errors comm key kind field = match (key, kind, field) with
+let matcher ~classnames errors comm key kind field = match (key, kind, field) with
 
 	| (key, Boolean_kind, Boolean_field (Some k, v)) when key = k ->
 		Positive (Boolean_data v)
@@ -216,6 +220,18 @@ let matcher errors comm key kind field = match (key, kind, field) with
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
+	| (key, Classname_kind, Unnamed_field v) ->
+		if List.mem v classnames
+		then Undecided (Classname_data v)
+		else Negative
+	| (key, Classname_kind, Keyvalue_field (k, v)) when key = k ->
+		if List.mem v classnames
+		then Positive (Classname_data v)
+		else
+			let msg = Error.Invalid_extra_classname_parameter (comm.comm_tag, key, v)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative
+
 	| _ ->
 		Negative
 
@@ -223,11 +239,11 @@ let matcher errors comm key kind field = match (key, kind, field) with
 (**	Does the basic preprocessing on the raw data, preparing it for crunching
 	by the subsequent functions.
 *)
-let prepare errors comm strs handles =
+let prepare ~classnames errors comm strs handles =
 	let fields = fields_of_strings strs in
 	let result_from_handle hnd =
 		let (key, kind) = id_of_handle hnd
-		in Array.map (matcher errors comm key kind) fields
+		in Array.map (matcher ~classnames errors comm key kind) fields
 	in (fields, (List.map result_from_handle handles))
 
 
@@ -294,11 +310,11 @@ let solve assigned taken undecided =
 
 (**	High-level processing function.
 *)
-let process errors comm handles =
+let process ?(classnames = []) errors comm handles =
 	match comm.comm_extra with
 		| Some extra ->
 			let strs = Array.of_list (String.nsplit extra ",") in
-			let (fields, results) = prepare errors comm strs handles in
+			let (fields, results) = prepare ~classnames errors comm strs handles in
 			let (assigned, taken, undecided) = summarise (Array.length fields) results
 			in (match solve assigned taken undecided with
 				| Some (assigned, taken) ->
@@ -365,7 +381,13 @@ let parse_for_enumerate errors comm =
 
 let parse_for_quote = parse_floater
 
-let parse_for_callout = parse_floater
+let parse_for_callout ?classnames errors comm =
+	let assigned = process ?classnames errors comm [Alignment_hnd; Classname_hnd] in
+	let alignment = get_alignment assigned.(0)
+	and classname = match assigned.(1) with
+		| Some (Classname_data x)	-> Some x
+		| _				-> None
+	in (alignment, classname)
 
 let parse_for_mathtex = parse_floater
 

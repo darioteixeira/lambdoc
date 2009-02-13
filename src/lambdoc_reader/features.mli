@@ -74,14 +74,14 @@ type t
 (********************************************************************************)
 
 val load_composition_features:
-	?deny_list: composition_feature_t list ->
 	?accept_list: composition_feature_t list ->
+	?deny_list: composition_feature_t list ->
 	?default: default_t ->
 	unit -> t
 
 val load_manuscript_features:
-	?deny_list: manuscript_feature_t list ->
 	?accept_list: manuscript_feature_t list ->
+	?deny_list: manuscript_feature_t list ->
 	?default: default_t ->
 	unit -> t
 

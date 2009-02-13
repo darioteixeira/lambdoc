@@ -29,7 +29,7 @@ type 'a block_t =
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
 	| `Quote of Alignment.t * 'a list
-	| `Callout of Alignment.t * Inline.seq_t option * 'a list
+	| `Callout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Math of Alignment.t * Math.t
 	| `Code of Alignment.t * bool * bool * Code.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
@@ -60,7 +60,7 @@ let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_
 let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
 let description (hd, tl) = let conv (seq, frag) = (Inline.get_seq seq, frag) in `Description (conv hd, List.map conv tl)
 let quote alignment frag = `Quote (alignment, frag)
-let callout alignment maybe_seq frag = `Callout (alignment, (maybe Inline.get_seq maybe_seq), frag)
+let callout alignment maybe_classname maybe_seq frag = `Callout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
 let math alignment mth = `Math (alignment, mth)
 let code alignment linenums zebra txt = `Code (alignment, linenums, zebra, txt)
 let tabular alignment tab = `Tabular (alignment, Tabular.get_tabular tab)

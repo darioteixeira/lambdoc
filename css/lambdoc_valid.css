@@ -243,24 +243,32 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	top: -2px;
 	left: -2px;
 	border: 1px solid #333;
-	background: #ffffaa;
+	background: #ffffcc;
+	}
+
+.doc_callout_head
+	{
+	text-align: center;
+	border-bottom: 1px solid #333;
 	}
 	
-.doc_callout > div > p
+.doc_callout_head > h1
 	{
+	display: inline-block;
 	font-size: 1.071em;	/* For a size of 15px */
 	font-variant: small-caps;
 	font-weight: bold;
-	text-align: center;
 	margin: 0;
 	padding: 0.5em 0;
-	border-bottom: 1px solid #333;
 	}
 
-.doc_callout > div > div
+.doc_callout_body
 	{
 	padding: 0 1em;
 	}
+
+.doc_callout_warning > div > .doc_callout_head > h1 {padding-left: 28px; background: url('sign-warning.png') no-repeat left;}
+
 
 /********************************************************************************/
 /* Mathematics environments.							*/
