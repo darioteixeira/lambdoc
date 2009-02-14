@@ -234,7 +234,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 .doc_callout
 	{
-	background: #666;
+	background: #444;
 	}
 
 .doc_callout > div
@@ -290,7 +290,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 .doc_hl_main
 	{
-	background: #666;
+	background: #444;
 	}
 
 .doc_hl_main > div
@@ -355,37 +355,59 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 .doc_tab
 	{
-	border-top: 2px solid #999;
-	border-bottom: 2px solid #999;
-	font-size: 0.929em;		/* For a size of 13px */
+	text-align: center;
 	}
 
-.doc_tab > thead,
-.doc_tab > tfoot
+.doc_tab > div
+	{
+        display: inline-block;
+	background: #444;
+	}
+
+.doc_tab table
+	{
+	position: relative;
+	top: -3px;
+	left: -3px;
+	border: 1px solid #333;
+	font-size: 0.929em;		/* For a size of 13px */
+	border-collapse: collapse;
+	}
+
+.doc_tab thead,
+.doc_tab tfoot
 	{
 	vertical-align: bottom;
 	font-weight: bold;
-	background-color: #fafafa;
-	}
-
-.doc_tab > tbody > tr:first-child > th,
-.doc_tab > tbody > tr:first-child > td,
-.doc_tab > tfoot > tr:first-child > th,
-.doc_tab > tfoot > tr:first-child > td
-	{
-	border-top: 2px solid #999;
-	}
-
-.doc_tab > tbody:first-child > tr:first-child > th,
-.doc_tab > tbody:first-child > tr:first-child > td
-	{
-	border: none;
+	background: #ddd;
 	}
 
 .doc_tab th,
 .doc_tab td
 	{
 	padding: 0.5em 1em;
+	border-left: 1px solid #999;
+	border-top: 1px solid #999;
+	}
+
+.doc_tab th:first-child,
+.doc_tab td:first-child
+	{
+	border-left: none;
+	}
+
+.doc_tab tbody > tr:first-child > th,
+.doc_tab tbody > tr:first-child > td,
+.doc_tab tfoot > tr:first-child > th,
+.doc_tab tfoot > tr:first-child > td
+	{
+	border-top: 1px solid #333;
+	}
+
+.doc_tab thead > tr:first-child > th,
+.doc_tab thead > tr:first-child > td
+	{
+	border-top: 1px solid #333;
 	}
 
 .doc_tab .doc_col_left		{text-align: left;}
@@ -393,8 +415,9 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_tab .doc_col_center	{text-align: center;}
 .doc_tab .doc_col_justify	{text-align: justify;}
 
-.doc_tab > tbody .doc_row_odd	{background-color: #fafafa;}
-.doc_tab > tbody .doc_row_even	{background-color: #f0f0f0;}
+.doc_tab tbody > .doc_row_odd	{background-color: #fafafa;}
+.doc_tab tbody > .doc_row_even	{background-color: #f0f0f0;}
+
 
 
 /********************************************************************************/
@@ -409,7 +432,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_verb > div
 	{
         display: inline-block;
-        background: #666;
+        background: #444;
 	}
 
 .doc_verb > div > pre
@@ -437,7 +460,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_bitmap				{text-align: center;}
 .doc_bitmap > a				{display: inline-block;}
 .doc_bitmap > a > img			{display: block; border: none; max-width: 100%;}
-.doc_bitmap_shadow > a			{background: #666;}
+.doc_bitmap_shadow > a			{background: #444;}
 .doc_bitmap_shadow > a > img		{position: relative; top: -3px; left: -3px;}
 
 
@@ -447,7 +470,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 
 .doc_subpage
 	{
-        background: #666;
+        background: #444;
 	}
 
 .doc_subpage > div

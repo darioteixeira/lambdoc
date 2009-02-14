@@ -297,7 +297,7 @@ let write_valid_document settings classname doc =
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
-		in XHTML.M.tablex ~a:[a_class (["doc_tab"] @ style)] ?thead ?tfoot tbody_hd tbody_tl in
+		in XHTML.M.div ~a:[a_class (["doc_tab"] @ style)] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
 
 
 	(************************************************************************)
