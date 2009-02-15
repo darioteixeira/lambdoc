@@ -379,15 +379,14 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	{
 	vertical-align: bottom;
 	font-weight: bold;
-	background: #ddd;
 	}
 
 .doc_tab th,
 .doc_tab td
 	{
 	padding: 0.5em 1em;
-	border-left: 1px solid #999;
-	border-top: 1px solid #999;
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
 	}
 
 .doc_tab th:first-child,
@@ -410,14 +409,15 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	border-top: 1px solid #333;
 	}
 
-.doc_tab .doc_col_left		{text-align: left;}
-.doc_tab .doc_col_right		{text-align: right;}
-.doc_tab .doc_col_center	{text-align: center;}
-.doc_tab .doc_col_justify	{text-align: justify;}
+.doc_col_left		{text-align: left;}
+.doc_col_right		{text-align: right;}
+.doc_col_center		{text-align: center;}
+.doc_col_justify	{text-align: justify;}
 
-.doc_tab tbody > .doc_row_odd	{background-color: #fafafa;}
-.doc_tab tbody > .doc_row_even	{background-color: #f0f0f0;}
-
+thead > .doc_row_odd, tfoot > .doc_row_odd	{background-color: #eaeaea;}
+thead > .doc_row_even, tfoot > .doc_row_odd	{background-color: #e0e0e0;}
+tbody > .doc_row_odd				{background-color: #fafafa;}
+tbody > .doc_row_even				{background-color: #f0f0f0;}
 
 
 /********************************************************************************/
