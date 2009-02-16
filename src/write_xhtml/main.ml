@@ -241,7 +241,10 @@ let write_valid_document settings classname doc =
 				| Target.Visible_target (Target.Part_target order) ->
 					make_sref settings.names.part_name (part_conv order)
 				| Target.Visible_target (Target.Section_target (location, order)) ->
-					make_sref settings.names.section_name (section_conv location order)
+					let name = match location with
+						| `Mainbody	-> settings.names.section_name
+						| `Appendixed	-> settings.names.appendix_name
+					in make_sref name (section_conv location order)
 				| Target.Visible_target (Target.Wrapper_target (Target.Equation_wrapper, order)) ->
 					make_sref settings.names.equation_name (wrapper_conv order)
 				| Target.Visible_target (Target.Wrapper_target (Target.Printout_wrapper, order)) ->
