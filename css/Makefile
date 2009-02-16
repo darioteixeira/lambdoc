@@ -1,5 +1,7 @@
-all: callout-warn.png callout-tip.png
+all: callout-warn.png callout-tip.png rule.png
 
-%.png: %.svg
+callout-%.png: callout-%.svg
 	inkscape -D -f $< -e $@ -w 20
 
+rule.png: rule.svg
+	inkscape -D -f $< -e $@ -h 8
