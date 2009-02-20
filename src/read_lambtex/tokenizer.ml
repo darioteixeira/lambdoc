@@ -158,6 +158,7 @@ let get_env_tag tag params is_begin =
 		(* If not literal, then test the other environments. *)
 
 		else match tag with
+			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],					[])
 			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],					[])
 			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],					[])
 			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],					[])
@@ -169,7 +170,6 @@ let get_env_tag tag params is_begin =
 			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],					[])
 			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],					[])
 			| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],					[])
-			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],					[])
 			| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],					[])
 			| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],					[])
 			| other		-> raise (Unknown_env_command other)
