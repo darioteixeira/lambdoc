@@ -506,6 +506,7 @@ p.doc_caption > span:first-child
 /* CSS for rules.								*/
 /********************************************************************************/
 
+/*
 .doc hr
 	{
 	margin: 1em 0;
@@ -513,7 +514,7 @@ p.doc_caption > span:first-child
 	border: none;
 	background: url('rule.png') no-repeat center;
 	}
-
+*/
 
 /********************************************************************************/
 /* CSS for table of contents.							*/
