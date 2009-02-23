@@ -25,7 +25,7 @@ TYPE_CONV_PATH "Label"
 type t =
 	[ `Auto_label of Basic.ref_t
 	| `User_label of Basic.ref_t
-	] (*with sexp*)
+	] with sexp
 
 
 (**	So it satisfies the [Map.OrderedType] signature.

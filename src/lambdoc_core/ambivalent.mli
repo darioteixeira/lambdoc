@@ -18,13 +18,13 @@
 type manuscript_t =
 	[ `Valid of Valid.manuscript_t
 	| `Invalid of Invalid.manuscript_t
-	] (*with sexp*)
+	] with sexp
 
 
 type composition_t =
 	[ `Valid of Valid.composition_t
 	| `Invalid of Invalid.composition_t
-	] (*with sexp*)
+	] with sexp
 
 
 (********************************************************************************)

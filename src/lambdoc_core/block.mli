@@ -20,18 +20,18 @@ open Basic
 
 (**	Common definitions for image types (bitmap and vectorial pictures).
 *)
-type image_t = bool * int option * alias_t * string (*with sexp*)
+type image_t = bool * int option * alias_t * string with sexp
 
 
 (**	Definition of the ordering types for wrapper blocks.
 *)
-type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
+type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
 
 
 (**	The tuple of all common fields to wrappers.  The fields
 	are the wrapper's label, its order, and a caption.
 *)
-type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t (*with sexp*)
+type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp
 
 
 (**	The various types of individual building blocks.
@@ -57,12 +57,12 @@ type 'a block_t =
 	| `Title of title_level_t * Inline.seq_t
 	| `Abstract of 'a list
 	| `Rule
-	] (*with sexp*)
+	] with sexp
 
-type raw_block_t = raw_block_t block_t (*with sexp*)
-type frag_t = raw_block_t list (*with sexp*)
+type raw_block_t = raw_block_t block_t with sexp
+type frag_t = raw_block_t list with sexp
 
-type (+'a, +'b, +'c, +'d) t = private [< 'e block_t ] as 'e (*with sexp*)
+type (+'a, +'b, +'c, +'d) t = private [< ('a, 'b, 'c, 'd) t block_t ] with sexp
 
 
 (********************************************************************************)

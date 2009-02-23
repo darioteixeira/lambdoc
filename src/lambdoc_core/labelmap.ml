@@ -15,9 +15,9 @@ TYPE_CONV_PATH "Labelmap"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type key_t = Label.t (*with sexp*)
-type value_t = Target.t (*with sexp*)
-type t = (key_t, value_t) Hashtbl.t (*with sexp*)
+type key_t = Label.t with sexp
+type value_t = Target.t with sexp
+type t = (key_t, value_t) Hashtbl.t with sexp
 
 
 (********************************************************************************)

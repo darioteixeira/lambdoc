@@ -15,8 +15,8 @@ TYPE_CONV_PATH "Invalid"
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t = Error.t list (*with sexp*)
-type composition_t = Error.t list (*with sexp*)
+type manuscript_t = Error.t list with sexp
+type composition_t = Error.t list with sexp
 
 
 (********************************************************************************)

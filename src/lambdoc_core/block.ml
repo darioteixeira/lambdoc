@@ -17,11 +17,11 @@ open Basic
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type image_t = bool * int option * alias_t * string (*with sexp*)
+type image_t = bool * int option * alias_t * string with sexp
 
-type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t (*with sexp*)
+type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
 
-type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t (*with sexp*)
+type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp
 
 type 'a block_t =
 	[ `Paragraph of Inline.seq_t
@@ -44,12 +44,12 @@ type 'a block_t =
 	| `Title of title_level_t * Inline.seq_t
 	| `Abstract of 'a list
 	| `Rule
-	] (*with sexp*)
+	] with sexp
 
-type raw_block_t = raw_block_t block_t (*with sexp*)
-type frag_t = raw_block_t list (*with sexp*)
+type raw_block_t = raw_block_t block_t with sexp
+type frag_t = raw_block_t list with sexp
 
-type (+'a, +'b, +'c, +'d) t = 'e block_t as 'e (*with sexp*)
+type (+'a, +'b, +'c, +'d) t = ('a, 'b, 'c, 'd) t block_t with sexp
 
 
 (********************************************************************************)
