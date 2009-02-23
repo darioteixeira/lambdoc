@@ -46,7 +46,8 @@ type 'a block_t =
 	| `Rule
 	] (*with sexp*)
 
-type frag_t = ('a block_t as 'a) list (*with sexp*)
+type raw_block_t = raw_block_t block_t (*with sexp*)
+type frag_t = raw_block_t list (*with sexp*)
 
 type (+'a, +'b, +'c, +'d) t = 'e block_t as 'e (*with sexp*)
 

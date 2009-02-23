@@ -37,9 +37,10 @@ type 'a inline_t =
 	| `Mref of ref_t * 'a list
 	] (*with sexp*)
 
-type seq_t = 'a inline_t as 'a list (*with sexp*)
+type raw_inline_t = raw_inline_t inline_t (*with sexp*)
+type seq_t = raw_inline_t list (*with sexp*)
 
-type (+'a, +'b) t = 'c inline_t as 'c (*with sexp*)
+type (+'a, +'b) t = ('a, 'b) t inline_t (*with sexp*)
 
 
 (********************************************************************************)
