@@ -59,17 +59,15 @@ let make_composition content =
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-(*
 let serialize_manuscript doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_t Variety.sexp_of_t doc)
+	Sexplib.Sexp.to_string_mach (sexp_of_manuscript_t doc)
 
-let serialize_composition =
-	serialize_manuscript
+let serialize_composition doc =
+	Sexplib.Sexp.to_string_mach (sexp_of_composition_t doc)
 
 let deserialize_manuscript str =
-	t_of_sexp Variety.t_of_sexp (Sexplib.Sexp.of_string str)
+	manuscript_t_of_sexp (Sexplib.Sexp.of_string str)
 
-let deserialize_composition =
-	deserialize_manuscript
-*)
+let deserialize_composition str =
+	composition_t_of_sexp (Sexplib.Sexp.of_string str)
 

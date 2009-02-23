@@ -50,10 +50,8 @@ val make_composition:
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-(*
 val serialize_manuscript: manuscript_t -> string
 val serialize_composition: composition_t -> string
 val deserialize_manuscript: string -> manuscript_t
 val deserialize_composition: string -> composition_t
-*)
 

@@ -48,17 +48,15 @@ let make_invalid_composition errors =
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-(*
 let serialize_manuscript doc =
-	Sexplib.Sexp.to_string_mach sexp_of_manuscript_t doc
+	Sexplib.Sexp.to_string_mach (sexp_of_manuscript_t doc)
 
 let serialize_composition doc =
-	Sexplib.Sexp.to_string_mach sexp_of_composition_t doc
+	Sexplib.Sexp.to_string_mach (sexp_of_composition_t doc)
 
 let deserialize_manuscript str =
 	manuscript_t_of_sexp (Sexplib.Sexp.of_string str)
 
 let deserialize_composition str =
 	composition_t_of_sexp (Sexplib.Sexp.of_string str)
-*)
 
