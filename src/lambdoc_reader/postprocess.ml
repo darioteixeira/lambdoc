@@ -426,8 +426,8 @@ let process_document classnames feature_map document_ast =
 		| (_, _, `Figure_blk, (comm, Ast.Bitmap (alias, alt)))
 		| (_, _, `Any_blk, (comm, Ast.Bitmap (alias, alt))) ->
 			let elem () =
-				let (alignment, shadow, width) = Extra.parse_for_bitmap errors comm in
-				let image = (shadow, width, alias, alt)
+				let (alignment, frame, width) = Extra.parse_for_bitmap errors comm in
+				let image = (frame, width, alias, alt)
 				in Some (Block.bitmap alignment image)
 			in check_comm `Feature_bitmap comm elem
 

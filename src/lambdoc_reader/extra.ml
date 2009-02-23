@@ -40,7 +40,7 @@ end
 type handle_t =
 	| Linenums_hnd
 	| Zebra_hnd
-	| Shadow_hnd
+	| Frame_hnd
 	| Width_hnd
 	| Bullet_hnd
 	| Numbering_hnd
@@ -105,7 +105,7 @@ exception Solution_found of property_data_t option array * bool array
 let id_of_handle = function
 	| Linenums_hnd	-> ("linenums", Boolean_kind)
 	| Zebra_hnd	-> ("zebra", Boolean_kind)
-	| Shadow_hnd	-> ("shadow", Boolean_kind)
+	| Frame_hnd	-> ("frame", Boolean_kind)
 	| Width_hnd	-> ("width", Numeric_kind)
 	| Bullet_hnd	-> ("bul", Bullet_kind)
 	| Numbering_hnd	-> ("num", Numbering_kind)
@@ -349,17 +349,17 @@ let parse_floater errors comm =
 
 
 let parse_for_image errors comm =
-	let assigned = process errors comm [Alignment_hnd; Shadow_hnd; Width_hnd] in
+	let assigned = process errors comm [Alignment_hnd; Frame_hnd; Width_hnd] in
 	let alignment = match assigned.(0) with
 		| Some (Alignment_data x)	-> x
 		| _				-> Alignment.Center
-	and shadow = match assigned.(1) with
+	and frame = match assigned.(1) with
 		| Some (Boolean_data x)	-> x
 		| _			-> false
 	and width = match assigned.(2) with
 		| Some (Numeric_data w)	-> Some w
 		| _			-> None
-	in (alignment, shadow, width)
+	in (alignment, frame, width)
 
 
 (********************************************************************************)
