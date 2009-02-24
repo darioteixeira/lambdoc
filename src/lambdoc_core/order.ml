@@ -27,7 +27,7 @@ exception Invalid_number_of_levels of hierarchical_level_t * int
 
 (**	Ordinal ordering.
 *)
-type ordinal_t = int with sexp
+type ordinal_t = int with sexp, bin_io
 
 
 (**	Ordinal counter.
@@ -46,7 +46,7 @@ type hierarchical_t =
 	| Level1_order of int
 	| Level2_order of int * int
 	| Level3_order of int * int * int
-	with sexp
+	with sexp, bin_io
 
 
 (**	Hierarchical counter.
@@ -74,10 +74,10 @@ type hierarchical_converter_t =
 	of an ordering scheme when [`None_given] is used).
 *)
 
-type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
-type user_given_t = [ `User_given of string ] with sexp
-type none_given_t = [ `None_given ] with sexp
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] with sexp
+type 'a auto_given_t = [ `Auto_given of 'a ] with sexp, bin_io
+type user_given_t = [ `User_given of string ] with sexp, bin_io
+type none_given_t = [ `None_given ] with sexp, bin_io
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] with sexp, bin_io
 
 
 (********************************************************************************)

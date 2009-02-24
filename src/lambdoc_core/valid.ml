@@ -25,11 +25,11 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.t list;
 	labelmap: Labelmap.t;
-	} with sexp
+	} with sexp, bin_io
 
 
-type manuscript_t = [ `Manuscript ] document_t with sexp
-type composition_t = [ `Composition ] document_t with sexp
+type manuscript_t = [ `Manuscript ] document_t with sexp, bin_io
+type composition_t = [ `Composition ] document_t with sexp, bin_io
 
 
 (********************************************************************************)

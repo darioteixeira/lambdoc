@@ -35,12 +35,12 @@ type 'a inline_t =
 	| `Ref of ref_t
 	| `Sref of ref_t
 	| `Mref of ref_t * 'a list
-	] with sexp
+	] with sexp, bin_io
 
-type raw_inline_t = raw_inline_t inline_t with sexp
-type seq_t = raw_inline_t list with sexp
+type raw_inline_t = raw_inline_t inline_t with sexp, bin_io
+type seq_t = raw_inline_t list with sexp, bin_io
 
-type (+'a, +'b) t = ('a, 'b) t inline_t with sexp
+type (+'a, +'b) t = ('a, 'b) t inline_t with sexp, bin_io
 
 
 (********************************************************************************)

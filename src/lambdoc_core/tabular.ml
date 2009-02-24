@@ -29,20 +29,20 @@ type alignment_t =
 	| Left
 	| Right
 	| Justify
-	with sexp
+	with sexp, bin_io
 
 type weight_t =
 	| Normal
 	| Strong
-	with sexp
+	with sexp, bin_io
 
-type column_t = alignment_t * weight_t with sexp
+type column_t = alignment_t * weight_t with sexp, bin_io
 
-type raw_row_t = Inline.seq_t plus_t with sexp
+type raw_row_t = Inline.seq_t plus_t with sexp, bin_io
 
 type 'a row_t = raw_row_t
 
-type raw_group_t = raw_row_t plus_t with sexp
+type raw_group_t = raw_row_t plus_t with sexp, bin_io
 
 type 'a group_t = raw_group_t
 
@@ -52,7 +52,7 @@ type tabular_t =
 	thead: raw_group_t option;
 	tfoot: raw_group_t option;
 	tbodies: raw_group_t plus_t;
-	} with sexp
+	} with sexp, bin_io
 
 type 'a t = tabular_t
 
