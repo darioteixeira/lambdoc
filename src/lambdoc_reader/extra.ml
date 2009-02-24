@@ -85,11 +85,10 @@ type result_t =
 	| Negative
 
 
-(********************************************************************************)
-(**	{2 Exceptions}								*)
-(********************************************************************************)
-
-exception Solution_found of property_data_t option array * bool array
+type solution_t =
+	| No_solutions
+	| One_solution of property_data_t option array * bool array
+	| Multiple_solutions
 
 
 (********************************************************************************)
@@ -287,9 +286,18 @@ let summarise num_fields results =
 
 (**	This function tries to assign all the fields that are still undecided.
 	It is basically a poor-man's Prolog unification algorithm, complete
-	with backtracking.
+	with backtracking.  Note that all possible solutions are stored, so
+	we can be sure the solution is unique.
 *)
 let solve assigned taken undecided =
+	let solutions = DynArray.create () in
+	let last_solution = ref None in
+	let add_solution sol = match !last_solution with
+		| Some x when x = sol ->
+			()
+		| _ ->
+			last_solution := Some sol;
+			DynArray.add solutions sol in
 	let rec really_solve assigned taken undecided =
 		let assign (row, col) value = match (assigned.(row), taken.(col)) with
 			| (None, false) ->
@@ -300,24 +308,35 @@ let solve assigned taken undecided =
 					really_solve new_assigned new_taken (Undecided.clear_row row undecided)
 			| _ ->
 				()
-		in	if Undecided.is_empty undecided then raise (Solution_found (assigned, taken));
-			Undecided.iter assign undecided
-	in try
-		really_solve assigned taken undecided; None
-	with
-		Solution_found (assigned, taken) -> Some (assigned, taken)
+		in	if Undecided.is_empty undecided
+			then add_solution (assigned, taken)
+			else Undecided.iter assign undecided in
+	let () =
+		really_solve assigned taken undecided
+	in match DynArray.to_list solutions with
+		| [] ->
+			No_solutions
+		| [(x, y)] ->
+			One_solution (x, y)
+		| (x, y) :: tl ->
+			if List.exists not (List.map ((=) (x, y)) tl)
+			then Multiple_solutions
+			else One_solution (x, y)
 
 
 (**	High-level processing function.
 *)
 let process ?(classnames = []) errors comm handles =
-	match comm.comm_extra with
+	let dummy = Array.make (List.length handles) None
+	in match comm.comm_extra with
+		| None ->
+			dummy
 		| Some extra ->
 			let strs = Array.of_list (String.nsplit extra ",") in
 			let (fields, results) = prepare ~classnames errors comm strs handles in
 			let (assigned, taken, undecided) = summarise (Array.length fields) results
-			in (match solve assigned taken undecided with
-				| Some (assigned, taken) ->
+			in match solve assigned taken undecided with
+				| One_solution (assigned, taken) ->
 					let any_untaken = ref false in
 					let check col elem =
 						if elem
@@ -327,10 +346,14 @@ let process ?(classnames = []) errors comm handles =
 							in DynArray.add errors (comm.comm_linenum, msg))
 					in	Array.iteri check taken;
 						assigned
-				| None ->
-					failwith "Solution not found")
-		| None ->
-			Array.make (List.length handles) None
+				| No_solutions ->
+					let msg = Error.Invalid_extra_no_solutions (comm.comm_tag, extra)
+					in DynArray.add errors (comm.comm_linenum, msg);
+					dummy
+				| Multiple_solutions ->
+					let msg = Error.Invalid_extra_multiple_solutions (comm.comm_tag, extra)
+					in DynArray.add errors (comm.comm_linenum, msg);
+					dummy
 
 
 

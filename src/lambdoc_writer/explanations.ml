@@ -92,6 +92,12 @@ let explain_error = function
 	| Error.Invalid_extra_unknown_parameter (tag, col, field) ->
 		sprintf "In %s, the value '%s' assigned to field %d of the extra parameter cannot be interpreted." (explain_tag tag) field col
 
+	| Error.Invalid_extra_no_solutions (tag, extra) ->
+		sprintf "In %s, no conclusive assignment can be made for the extra parameter '%s'." (explain_tag tag) extra
+
+	| Error.Invalid_extra_multiple_solutions (tag, extra) ->
+		sprintf "In %s, the extra parameters '%s' cannot be interpreted unambiguously." (explain_tag tag) extra
+
 	| Error.Invalid_language (tag, lang) ->
 		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)
 

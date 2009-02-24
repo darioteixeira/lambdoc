@@ -85,6 +85,8 @@ type error_msg_t =
 	| Invalid_extra_lang_parameter of tag_t option * string * string
 	| Invalid_extra_classname_parameter of tag_t option * string * string
 	| Invalid_extra_unknown_parameter of tag_t option * int * string
+	| Invalid_extra_no_solutions of tag_t option * string
+	| Invalid_extra_multiple_solutions of tag_t option * string
 
 	| Invalid_language of tag_t option * string
 	| Invalid_mathtex of tag_t option * string
