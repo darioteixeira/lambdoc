@@ -1,22 +1,19 @@
 NAME=module
 
-all: $(NAME).cma $(NAME).cmxs
+all: $(NAME).native $(NAME).byte
 
-%.cma: %.cmo
-	ocamlc -a -o $@ $+
+%.native: %.cmx
+	ocamlfind ocamlopt -thread -package lambdoc -linkpkg -o $@ $<
 
-%.cmxa: %.cmx
-	ocamlopt -a -o $@ $+
-
-%.cmxs: %.cmxa
-	ocamlopt -shared -linkall -I `pwd` -o $@ $<
+%.byte: %.cmo
+	ocamlfind ocamlc -thread -package lambdoc -linkpkg -o $@ $<
 
 %.cmo: %.ml
-	ocamlfind ocamlc -thread -package lwt,ocsigen,lambdoc -c $<
+	ocamlfind ocamlc -thread -package lambdoc -c $<
 
 %.cmx: %.ml
-	ocamlfind ocamlopt -thread -package lwt,ocsigen,lambdoc -c $<
+	ocamlfind ocamlopt -thread -package lambdoc -c $<
 
 clean:
-	rm -f $(NAME).cm[ioa] $(NAME).cmxa $(NAME).cmxs $(NAME).[oa]
+	rm -f $(NAME).cm[ioa]
 
