@@ -14,6 +14,9 @@ open Lambdoc_proxy
 (********************************************************************************)
 (********************************************************************************)
 
+let () = Blahcaml.init_dtd ()
+
+
 class processor : Netplex_types.processor =
 
 	let empty_hooks = new Netplex_kit.empty_processor_hooks () in

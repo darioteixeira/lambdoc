@@ -22,8 +22,8 @@ let main () =
 		;;
 
 let () =
-	Netplex_log.debug_scheduling := false;
-	Netplex_log.debug_containers := false;
+	Netplex_log.debug_scheduling := true;
+	Netplex_log.debug_containers := true;
 	Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
 	main ()
 
