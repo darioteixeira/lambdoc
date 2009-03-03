@@ -3,7 +3,4 @@ Lambdoc_reader
 Lambdoc_writer
 Read_lambtex
 Write_xhtml
-Parserver_protocol
-Parserver_client
-Parserver_converter
-Parserver_server
+Lambdoc_proxy

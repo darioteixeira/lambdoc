@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Interface file for Protocol module.
+(*	Interface file for Client module.
 
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -9,14 +9,9 @@
 (********************************************************************************)
 
 (********************************************************************************)
-(*	{2 Type definitions}							*)
+(*	{2 Public functions and values}						*)
 (********************************************************************************)
 
-type request_t =
-	| Manuscript_from_lambtex of string
-	| Composition_from_lambtex of string
-
-type reply_t =
-	| Manuscript of Lambdoc_core.Ambivalent.manuscript_t
-	| Composition of Lambdoc_core.Ambivalent.composition_t
+val manuscript_from_lambtex: string -> Lambdoc_core.Ambivalent.manuscript_t Lwt.t
+val composition_from_lambtex: string -> Lambdoc_core.Ambivalent.composition_t Lwt.t
 
