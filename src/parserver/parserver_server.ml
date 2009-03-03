@@ -17,7 +17,7 @@ let main () =
 		parallelizer
 		Netplex_log.logger_factories
 		Netplex_workload.workload_manager_factories
-		[new Converter.processor_factory]
+		[new Parserver_converter.processor_factory]
 		cmdline_cfg
 		;;
 
