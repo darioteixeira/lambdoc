@@ -10,6 +10,8 @@
 
 open Lwt
 open Protocol
+open Lambdoc_core
+
 
 (********************************************************************************)
 (*	{2 Functions and values}						*)
@@ -31,14 +33,12 @@ let communicate request =
 
 let manuscript_from_lambtex str =
 	let request = Manuscript_from_lambtex str in
-	communicate request >>= function
-		| Manuscript manuscript -> Lwt.return manuscript
-		| _			-> failwith "oops"
+	communicate request >>= fun (reply : Ambivalent.manuscript_t) ->
+	Lwt.return reply
 
 
 let composition_from_lambtex str =
 	let request = Composition_from_lambtex str in
-	communicate request >>= function
-		| Composition composition -> Lwt.return composition
-		| _			  -> failwith "oops"
+	communicate request >>= fun (reply : Ambivalent.composition_t) ->
+	Lwt.return reply
 
