@@ -11,7 +11,11 @@ open Features
 (* -------------------------------------------------------------------- *)
 
 let coucou_handler sp () () =
-        let src = IO.read_all (IO.input_channel (open_in "sample.ltex")) in
+	let chan = open_in "sample.ltex" in
+	let inp = IO.input_channel chan in
+        let src = IO.read_all inp in
+	let () = IO.close_in inp in
+	let () = close_in chan in
         let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in
         Lambdoc_proxy.Client.ambivalent_manuscript_from_string `Lambtex src >>= fun doc ->
         let xhtml = Write_xhtml.Main.write_ambivalent_manuscript doc in
