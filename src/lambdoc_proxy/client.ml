@@ -14,7 +14,7 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(*	{2 Functions and values}						*)
+(*	{2 Private functions and values}					*)
 (********************************************************************************)
 
 let communicate request =
@@ -31,14 +31,38 @@ let communicate request =
         Lwt.return reply
 
 
-let manuscript_from_lambtex str =
-	let request = Manuscript_from_lambtex str in
-	communicate request >>= fun (reply : Ambivalent.manuscript_t) ->
+(********************************************************************************)
+(*	{2 Public functions and values}						*)
+(********************************************************************************)
+
+let ambivalent_manuscript_from_string ?classnames ?accept_list ?deny_list ?default markup source =
+	let payload =
+		{
+		m_classnames = classnames;
+		m_accept_list = accept_list;
+		m_deny_list = deny_list;
+		m_default = default;
+		m_source = source;
+		} in
+	let request = match markup with
+		| `Lambtex	-> Manuscript_from_lambtex payload
+		| `Lambxml	-> Manuscript_from_lambtex payload
+	in communicate request >>= fun (reply : Ambivalent.manuscript_t) ->
 	Lwt.return reply
 
 
-let composition_from_lambtex str =
-	let request = Composition_from_lambtex str in
-	communicate request >>= fun (reply : Ambivalent.composition_t) ->
+let ambivalent_composition_from_string ?classnames ?accept_list ?deny_list ?default markup source =
+	let payload =
+		{
+		c_classnames = classnames;
+		c_accept_list = accept_list;
+		c_deny_list = deny_list;
+		c_default = default;
+		c_source = source;
+		} in
+	let request = match markup with
+		| `Lambtex	-> Composition_from_lambtex payload
+		| `Lambxml	-> Composition_from_lambtex payload
+	in communicate request >>= fun (reply : Ambivalent.composition_t) ->
 	Lwt.return reply
 

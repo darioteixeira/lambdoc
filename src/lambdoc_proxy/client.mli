@@ -8,10 +8,29 @@
 *)
 (********************************************************************************)
 
+open Lambdoc_reader
+
+
 (********************************************************************************)
 (*	{2 Public functions and values}						*)
 (********************************************************************************)
 
-val manuscript_from_lambtex: string -> Lambdoc_core.Ambivalent.manuscript_t Lwt.t
-val composition_from_lambtex: string -> Lambdoc_core.Ambivalent.composition_t Lwt.t
+val ambivalent_manuscript_from_string:
+	?classnames: string list ->
+	?accept_list: Features.manuscript_feature_t list ->
+	?deny_list: Features.manuscript_feature_t list ->
+	?default: Features.default_t ->
+	Protocol.markup_t ->
+	string ->
+	Lambdoc_core.Ambivalent.manuscript_t Lwt.t
+
+
+val ambivalent_composition_from_string:
+	?classnames: string list ->
+	?accept_list: Features.composition_feature_t list ->
+	?deny_list: Features.composition_feature_t list ->
+	?default: Features.default_t ->
+	Protocol.markup_t ->
+	string ->
+	Lambdoc_core.Ambivalent.composition_t Lwt.t
 
