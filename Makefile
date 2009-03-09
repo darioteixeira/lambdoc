@@ -2,7 +2,6 @@
 # Configuration options.
 #
 
-LIB_NAME=lambdoc
 PKG_NAME=lambdoc
 
 SRC_DIR=src
