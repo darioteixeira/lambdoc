@@ -1,9 +1,75 @@
 name = "lambdoc"
 version = "0.5"
 description = "The Lambdoc library for document parsing/printing"
-requires = "threads, unix, extlib, sexplib, bin_prot, ocsigen.xhtml, ocsigen, pcre, blahcaml, camlhighlight"
+requires = "threads, unix, extlib, sexplib, bin_prot, pcre, ocsigen.xhtml, blahcaml, camlhighlight"
 archive(byte) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"
 archive(plugin,byte) = "lambdoc.cma"
 archive(plugin,native) = "lambdoc.cmxs"
+
+package "core"
+	(
+	name = "core"
+	version = "0.5"
+	requires = "threads, unix, extlib, sexplib, bin_prot, ocsigen.xhtml, blahcaml, camlhighlight"
+	archive(byte) = "lambdoc_core.cmo"
+	archive(native) = "lambdoc_core.cmx"
+	archive(plugin,byte) = "lambdoc_core.cmo"
+	archive(plugin,native) = "lambdoc_core.cmxs"
+	)
+
+package "reader"
+	(
+	name = "reader"
+	version = "0.5"
+	requires = "extlib, pcre, lambdoc.core"
+	archive(byte) = "lambdoc_reader.cmo"
+	archive(native) = "lambdoc_reader.cmx"
+	archive(plugin,byte) = "lambdoc_reader.cmo"
+	archive(plugin,native) = "lambdoc_reader.cmxs"
+	)
+
+package "writer"
+	(
+	name = "writer"
+	version = "0.5"
+	requires = "extlib, lambdoc.core"
+	archive(byte) = "lambdoc_writer.cmo"
+	archive(native) = "lambdoc_writer.cmx"
+	archive(plugin,byte) = "lambdoc_writer.cmo"
+	archive(plugin,native) = "lambdoc_writer.cmxs"
+	)
+
+package "read_lambtex"
+	(
+	name = "read_lambtex"
+	version = "0.5"
+	requires = "extlib, pcre, lambdoc.core, lambdoc.reader"
+	archive(byte) = "read_lambtex.cmo"
+	archive(native) = "read_lambtex.cmx"
+	archive(plugin,byte) = "read_lambtex.cmo"
+	archive(plugin,native) = "read_lambtex.cmxs"
+	)
+
+package "write_xhtml"
+	(
+	name = "write_xhtml"
+	version = "0.5"
+	requires = "extlib, ocsigen.xhtml, lambdoc.core, lambdoc.writer"
+	archive(byte) = "write_xhtml.cmo"
+	archive(native) = "write_xhtml.cmx"
+	archive(plugin,byte) = "write_xhtml.cmo"
+	archive(plugin,native) = "write_xhtml.cmxs"
+	)
+
+package "proxy"
+	(
+	name = "proxy"
+	version = "0.5"
+	requires = "unix, lwt, lambdoc.core, lambdoc.reader"
+	archive(byte) = "lambdoc_proxy.cmo"
+	archive(native) = "lambdoc_proxy.cmx"
+	archive(plugin,byte) = "lambdoc_proxy.cmo"
+	archive(plugin,native) = "lambdoc_proxy.cmxs"
+	)
 
