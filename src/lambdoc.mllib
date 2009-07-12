@@ -2,5 +2,6 @@ Lambdoc_core
 Lambdoc_reader
 Lambdoc_writer
 Read_lambtex
+Read_lambhtml
 Write_xhtml
 Lambdoc_proxy
