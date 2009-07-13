@@ -1,6 +1,6 @@
 NAME=test
 
-all: $(NAME).cma $(NAME).cmxs circle-small.png circle-big.png square-small.png square-big.png
+all: $(NAME).cma $(NAME).cmxs
 
 %.cma: %.cmo
 	ocamlc -a -o $@ $+
@@ -16,12 +16,6 @@ all: $(NAME).cma $(NAME).cmxs circle-small.png circle-big.png square-small.png s
 
 %.cmx: %.ml
 	ocamlfind ocamlopt -thread -package lwt,ocsigen,lambdoc -c $<
-
-%-small.png: %.svg
-	inkscape -D -f $< -e $@ -w 160
-
-%-big.png: %.svg
-	inkscape -D -f $< -e $@ -w 320
 
 clean:
 	rm -f $(NAME).cm[ioa] $(NAME).cmxa $(NAME).cmxs $(NAME).[oa]

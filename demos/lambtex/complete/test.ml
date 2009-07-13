@@ -2,12 +2,8 @@ open XHTML.M
 open Lambdoc_reader
 open Features
 
-(* --------------------------------------------------------------------	*)
-(* Service "coucou".							*)
-(* --------------------------------------------------------------------	*)
-
-let coucou_handler sp () () =
-	let src = IO.read_all (IO.input_channel (open_in "sample.ltex")) in
+let test_handler sp () () =
+	let src = IO.read_all (IO.input_channel (open_in "complete.ltex")) in
 	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in
 	let accept_list = [ ] in
 	let deny_list = [ ] in
@@ -24,9 +20,9 @@ let coucou_handler sp () () =
 				])
 			(body [xhtml]))
 
-let coucou_service =
+let test_service =
 	Eliom_predefmod.Xhtml.register_new_service 
 		~path: [""]
 		~get_params: Eliom_parameters.unit
-		coucou_handler
+		test_handler
 
