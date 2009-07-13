@@ -1,4 +1,0 @@
-directory = "."
-requires = "extlib, lambdoc"
-archive(plugin,byte) = "module.cma"
-archive(plugin,native) = "module.cmxs"

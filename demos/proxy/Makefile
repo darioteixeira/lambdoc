@@ -1,4 +1,4 @@
-NAME=module
+NAME=test
 
 all: $(NAME).cma $(NAME).cmxs
 
