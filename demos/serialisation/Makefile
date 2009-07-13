@@ -1,4 +1,4 @@
-NAME=module
+NAME=test
 
 all: $(NAME).native $(NAME).byte
 
@@ -15,5 +15,5 @@ all: $(NAME).native $(NAME).byte
 	ocamlfind ocamlopt -thread -package lambdoc -c $<
 
 clean:
-	rm -f $(NAME).cm[ioa]
+	rm -f $(NAME).cm[ioa] $(NAME).[ao] $(NAME).byte $(NAME).native
 

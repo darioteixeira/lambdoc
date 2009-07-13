@@ -1,6 +1,5 @@
 open Lambdoc_reader
 
-
 let doc =
 	let src = IO.read_all (IO.input_channel (open_in "sample.ltex")) in
 	let accept_list = [ ] in
