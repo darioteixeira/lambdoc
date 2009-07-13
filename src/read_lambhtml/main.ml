@@ -110,7 +110,7 @@ struct
 
 	let dtd =
 		let config = {Pxp_types.default_config with Pxp_types.encoding = `Enc_utf8} in
-		let source = Pxp_types.from_string (include_file "lambhtml.dtd")
+		let source = Pxp_types.from_string (include_file "/home/dario/projects/lambdoc/trunk/lambdoc/src/read_lambhtml/lambhtml.dtd")
 		in Pxp_dtd_parser.parse_dtd_entity config source
 
 	let ast_from_string str =
