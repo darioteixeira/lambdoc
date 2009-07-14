@@ -8,8 +8,6 @@
 *)
 (********************************************************************************)
 
-(**	Definition of document features.
-*)
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
@@ -66,26 +64,9 @@ type manuscript_feature_t =
 type default_t = [ `Accept | `Deny ]
 
 
-type t
-
-
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{2 Public values and functions}						*)
 (********************************************************************************)
 
-val load_composition_features:
-	?accept_list: composition_feature_t list ->
-	?deny_list: composition_feature_t list ->
-	?default: default_t ->
-	unit -> t
-
-val load_manuscript_features:
-	?accept_list: manuscript_feature_t list ->
-	?deny_list: manuscript_feature_t list ->
-	?default: default_t ->
-	unit -> t
-
-val check_feature: manuscript_feature_t -> t -> bool
-
-val describe_feature: manuscript_feature_t -> string
+val describe: manuscript_feature_t -> string
 

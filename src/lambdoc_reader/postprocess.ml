@@ -70,7 +70,7 @@ let get_column errors comm spec =
 	by the language, they make error messages far more comprehensible in
 	a context where polymorphic variants are heavily used.
 *)
-let process_document classnames feature_map document_ast =
+let process_document classnames idiosyncrasies document_ast =
 
 
 	(************************************************************************)
@@ -135,12 +135,12 @@ let process_document classnames feature_map document_ast =
 
 	let check_comm ?maybe_subpaged ?maybe_wrapped feature comm elem =
 		let super_feature = (feature :> Features.manuscript_feature_t) in
-		if Features.check_feature super_feature feature_map
+		if Idiosyncrasies.check_feature super_feature idiosyncrasies
 		then 
 			(Permissions.check_feature ?maybe_subpaged ?maybe_wrapped errors comm feature;
 			elem ())
 		else
-			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe_feature super_feature)
+			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe super_feature)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				None in
 
@@ -709,8 +709,8 @@ let sort_errors errors =
 (********************************************************************************)
 
 let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
-	let feature_map = Features.load_manuscript_features ?accept_list ?deny_list ?default () in
-	let (contents, bibs, notes, toc, labelmap, errors) = process_document classnames feature_map document_ast in
+	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ?accept_list ?deny_list ?default () in
+	let (contents, bibs, notes, toc, labelmap, errors) = process_document classnames idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap
@@ -720,8 +720,8 @@ let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default sourc
 
 
 let process_composition ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
-	let feature_map = Features.load_composition_features ?accept_list ?deny_list ?default () in
-	let (contents, _, _, _, _, errors) = process_document classnames feature_map document_ast in
+	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ?accept_list ?deny_list ?default () in
+	let (contents, _, _, _, _, errors) = process_document classnames idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_composition (Obj.magic contents)

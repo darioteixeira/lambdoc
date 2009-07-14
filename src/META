@@ -66,7 +66,7 @@ package "proxy"
 	(
 	name = "proxy"
 	version = "0.5"
-	requires = "unix, lwt, lambdoc.core, lambdoc.reader"
+	requires = "unix, lwt, lambdoc.core"
 	archive(byte) = "lambdoc_proxy.cmo"
 	archive(native) = "lambdoc_proxy.cmx"
 	archive(plugin,byte) = "lambdoc_proxy.cmo"

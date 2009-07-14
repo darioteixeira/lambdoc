@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Interface file for Client module.
+(*	Interface file for Idiosyncrasies module.
 
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 
@@ -12,25 +12,27 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(*	{2 Public functions and values}						*)
+(**	{2 Type definitions}							*)
 (********************************************************************************)
 
-val ambivalent_manuscript_from_string:
-	?classnames: string list ->
-	?accept_list: Features.manuscript_feature_t list ->
-	?deny_list: Features.manuscript_feature_t list ->
-	?default: Features.default_t ->
-	Protocol.markup_t ->
-	string ->
-	Lambdoc_core.Ambivalent.manuscript_t Lwt.t
+type t
 
 
-val ambivalent_composition_from_string:
-	?classnames: string list ->
+(********************************************************************************)
+(**	{2 Public functions and values}						*)
+(********************************************************************************)
+
+val make_composition_idiosyncrasies:
 	?accept_list: Features.composition_feature_t list ->
 	?deny_list: Features.composition_feature_t list ->
 	?default: Features.default_t ->
-	Protocol.markup_t ->
-	string ->
-	Lambdoc_core.Ambivalent.composition_t Lwt.t
+	unit -> t
+
+val make_manuscript_idiosyncrasies:
+	?accept_list: Features.manuscript_feature_t list ->
+	?deny_list: Features.manuscript_feature_t list ->
+	?default: Features.default_t ->
+	unit -> t
+
+val check_feature: Features.manuscript_feature_t -> t -> bool
 

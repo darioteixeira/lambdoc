@@ -64,88 +64,9 @@ type manuscript_feature_t =
 type default_t = [ `Accept | `Deny ]
 
 
-module Feature_map =
-	Map.Make (struct type t = manuscript_feature_t let compare = Pervasives.compare end)
-
-
-type t = bool Feature_map.t
-
-
 (********************************************************************************)
-(**	{2 Functions and values}						*)
+(**	{2 Private values and functions}					*)
 (********************************************************************************)
-
-let non_reference_inline_features =
-	[
-	`Feature_plain; `Feature_entity; `Feature_mathtex_inl; `Feature_mathml_inl;
-	`Feature_bold; `Feature_emph; `Feature_mono; `Feature_caps; `Feature_thru;
-	`Feature_sup; `Feature_sub; `Feature_mbox; `Feature_link;
-	]
-
-let reference_inline_features =
-	[
-	`Feature_see; `Feature_cite; `Feature_ref; `Feature_sref; `Feature_mref;
-	]
-
-let non_reference_block_features =
-	[
-	`Feature_item; `Feature_describe;
-	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description;
-	`Feature_quote; `Feature_callout; `Feature_mathtex_blk; `Feature_mathml_blk;
-	`Feature_code; `Feature_tabular; `Feature_verbatim; `Feature_bitmap; `Feature_subpage;
-	]
-
-let reference_block_features =
-	[
-	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
-	`Feature_caption; `Feature_bib; `Feature_note;
-	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
-	`Feature_part; `Feature_appendix; `Feature_section1; `Feature_section2; `Feature_section3;
-	`Feature_bibliography; `Feature_notes; `Feature_toc;
-	`Feature_title1; `Feature_title2; `Feature_abstract; `Feature_rule;
-	]
-
-
-let composition_features =
-	non_reference_inline_features @
-	non_reference_block_features
-
-
-let manuscript_features =
-	composition_features @
-	reference_inline_features @
-	reference_block_features
-
-
-let load_features feature_set accept_list deny_list default =
-	let default_bool = default = `Accept in
-	let is_accepted feature =
-		if List.mem feature deny_list
-		then false
-		else	 if List.mem feature accept_list
-			then true
-			else	if List.mem feature feature_set
-				then default_bool
-				else false in
-	let load_feature map feature =
-		Feature_map.add feature (is_accepted feature) map
-	in List.fold_left load_feature Feature_map.empty manuscript_features
-
-
-let load_composition_features ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
-	let composition_features = (composition_features :> manuscript_feature_t list)
-	and accept_list = (accept_list :> manuscript_feature_t list)
-	and deny_list = (deny_list :> manuscript_feature_t list)
-	in load_features composition_features accept_list deny_list default
-
-
-let load_manuscript_features ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
-	load_features manuscript_features accept_list deny_list default
-
-
-let check_feature feature map =
-	Feature_map.find feature map
-
 
 let describe_non_reference_inline_feature = function
 	| `Feature_plain	-> "plain text"
@@ -219,7 +140,11 @@ let describe_reference_block_feature = function
 	| `Feature_rule		-> "document rule"
 
 
-let describe_feature = function
+(********************************************************************************)
+(**	{2 Public values and functions}						*)
+(********************************************************************************)
+
+let describe = function
 	| #non_reference_inline_feature_t as x	-> describe_non_reference_inline_feature x
 	| #reference_inline_feature_t as x	-> describe_reference_inline_feature x
 	| #non_reference_block_feature_t as x	-> describe_non_reference_block_feature x
