@@ -66,5 +66,8 @@ type default_t = [ `Accept | `Deny ]
 (**	{2 Public values and functions}						*)
 (********************************************************************************)
 
+val available_composition_features: composition_feature_t list
+val available_manuscript_features: manuscript_feature_t list
+
 val describe: manuscript_feature_t -> string
 
