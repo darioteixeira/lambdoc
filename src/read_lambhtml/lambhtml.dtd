@@ -11,28 +11,30 @@
 <!ENTITY % Block
 	"p | itemize | ul | enumerate | ol | description | dl
 	| quote | callout 
-	| code | tabular | verbatim | bitmap | subpage
+	| code | tabular | verbatim | pre | bitmap | subpage
 	| equation | printout | table | figure
-	| part | appendix | section
+	| part | appendix | section | h1 | subsection | h2 | subsubsection | h3
 	| bibliography | notes | toc
-	| title | abstract | rule
+	| title | subtitle | abstract | rule
 	| bib | note">
 
 <!ENTITY % Node
 	"tex | math
-	| bold | strong | b | emph | em | i | mono | caps | thru
+	| bold | strong | b | emph | em | i | mono | tt | caps | thru
 	| sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref">
 
 <!ENTITY % Frag "(%Block;)+">
-
 <!ENTITY % Inline "(#PCDATA | %Node;)*">
-
 <!ENTITY % Flow "(#PCDATA | %Node; | %Block;)*">
 
-<!ENTITY % Atts "label ID #IMPLIED
-		order CDATA #IMPLIED
-		extra CDATA #IMPLIED">
+<!ENTITY % Forbidden "">
+<!ENTITY % Custom_heading "label ID #IMPLIED order CDATA #IMPLIED">
+<!ENTITY % Preset_heading "label ID #IMPLIED">
+<!ENTITY % Listing "extra CDATA #IMPLIED">
+<!ENTITY % Floater "extra CDATA #IMPLIED">
+<!ENTITY % Wrapper "label ID #IMPLIED order CDATA #IMPLIED extra CDATA #IMPLIED">
+<!ENTITY % Ghost "label ID #IMPLIED">
 
 <!-- Top-level element -->
 
@@ -40,182 +42,197 @@
 
 <!-- Block elements -->
 
-<!ELEMENT p %Inline;>
-<!ATTLIST p %Atts;>
-
-<!ELEMENT itemize (li)+>
-<!ATTLIST itemize %Atts;>
-
-<!ELEMENT ul (li)+>
-<!ATTLIST ul %Atts;>
-
-<!ELEMENT enumerate (li)+>
-<!ATTLIST enumerate %Atts;>
-
-<!ELEMENT ol (li)+>
-<!ATTLIST ol %Atts;>
-
-<!ELEMENT description (dt | dd)+>
-<!ATTLIST description %Atts;>
-
-<!ELEMENT dl (dt | dd)+>
-<!ATTLIST dl %Atts;>
-
-<!ELEMENT quote %Frag;>
-<!ATTLIST quote %Atts;>
-
-<!ELEMENT callout (message?, %Frag;)>
-<!ATTLIST callout %Atts;>
-
-<!ELEMENT code (#PCDATA)>
-<!ATTLIST code %Atts;>
-
-<!ELEMENT tabular EMPTY>
-<!ATTLIST tabular %Atts;>
-
-<!ELEMENT verbatim (#PCDATA)>
-<!ATTLIST verbatim %Atts;>
-
-<!ELEMENT bitmap EMPTY>
-<!ATTLIST bitmap %Atts; file CDATA #REQUIRED>
-
-<!ELEMENT subpage %Frag;>
-<!ATTLIST subpage %Atts;>
-
-<!ELEMENT equation ((%Block;), caption)>
-<!ATTLIST equation %Atts;>
-
-<!ELEMENT printout ((%Block;), caption)>
-<!ATTLIST printout %Atts;>
-
-<!ELEMENT table ((%Block;), caption)>
-<!ATTLIST table %Atts;>
-
-<!ELEMENT figure ((%Block;), caption)>
-<!ATTLIST figure %Atts;>
-
-<!ELEMENT part %Inline;>
-<!ATTLIST part %Atts;>
-
-<!ELEMENT appendix EMPTY>
-<!ATTLIST appendix %Atts;>
-
-<!ELEMENT section %Inline;>
-<!ATTLIST section %Atts;>
-
-<!ELEMENT subsection %Inline;>
-<!ATTLIST subsection %Atts;>
-
-<!ELEMENT subsubsection %Inline;>
-<!ATTLIST subsubsection %Atts;>
-
-<!ELEMENT bibliography EMPTY>
-<!ATTLIST bibliography %Atts;>
-
-<!ELEMENT notes EMPTY>
-<!ATTLIST notes %Atts;>
-
-<!ELEMENT toc EMPTY>
-<!ATTLIST toc %Atts;>
-
-<!ELEMENT title %Inline;>
-<!ATTLIST title %Atts;>
-
-<!ELEMENT subtitle %Inline;>
-<!ATTLIST subtitle %Atts;>
-
-<!ELEMENT abstract %Frag;>
-<!ATTLIST abstract %Atts;>
-
-<!ELEMENT rule EMPTY>
-<!ATTLIST rule %Atts;>
-
-<!ELEMENT bib (who, what, where)>
-<!ATTLIST bib %Atts;>
-
-<!ELEMENT note %Frag;>
-<!ATTLIST note %Atts;>
-
 <!ELEMENT li %Flow;>
-<!ATTLIST li %Atts;>
+<!ATTLIST li %Forbidden;>
 
 <!ELEMENT dt %Inline;>
-<!ATTLIST dt %Atts;>
+<!ATTLIST dt %Forbidden;>
 
 <!ELEMENT dd %Flow;>
-<!ATTLIST dd %Atts;>
+<!ATTLIST dd %Forbidden;>
+
+<!ELEMENT p %Inline;>
+<!ATTLIST p %Forbidden;>
+
+<!ELEMENT itemize (li)+>
+<!ATTLIST itemize %Listing;>
+
+<!ELEMENT ul (li)+>
+<!ATTLIST ul %Listing;>
+
+<!ELEMENT enumerate (li)+>
+<!ATTLIST enumerate %Listing;>
+
+<!ELEMENT ol (li)+>
+<!ATTLIST ol %Listing;>
+
+<!ELEMENT description (dt | dd)+>
+<!ATTLIST description %Forbidden;>
+
+<!ELEMENT dl (dt | dd)+>
+<!ATTLIST dl %Forbidden;>
+
+<!ELEMENT quote %Frag;>
+<!ATTLIST quote %Floater;>
+
+<!ELEMENT callout (message?, %Frag;)>
+<!ATTLIST callout %Floater;>
 
 <!ELEMENT message %Inline;>
-<!ATTLIST message %Atts;>
+<!ATTLIST message %Forbidden;>
+
+<!ELEMENT code (#PCDATA)>
+<!ATTLIST code %Floater;>
+
+<!ELEMENT tabular EMPTY>
+<!ATTLIST tabular %Floater;>
+
+<!ELEMENT verbatim (#PCDATA)>
+<!ATTLIST verbatim %Floater;>
+
+<!ELEMENT pre (#PCDATA)>
+<!ATTLIST pre %Floater;>
+
+<!ELEMENT bitmap EMPTY>
+<!ATTLIST bitmap %Floater; src CDATA #REQUIRED alt CDATA #REQUIRED>
+
+<!ELEMENT subpage %Frag;>
+<!ATTLIST subpage %Floater;>
+
+<!ELEMENT equation ((%Block;), caption)>
+<!ATTLIST equation %Wrapper;>
+
+<!ELEMENT printout ((%Block;), caption)>
+<!ATTLIST printout %Wrapper;>
+
+<!ELEMENT table ((%Block;), caption)>
+<!ATTLIST table %Wrapper;>
+
+<!ELEMENT figure ((%Block;), caption)>
+<!ATTLIST figure %Wrapper;>
 
 <!ELEMENT caption %Inline;>
-<!ATTLIST caption %Atts;>
+<!ATTLIST caption %Forbidden;>
+
+<!ELEMENT bib (who, what, where)>
+<!ATTLIST bib %Ghost;>
+
+<!ELEMENT note %Frag;>
+<!ATTLIST note %Ghost;>
 
 <!ELEMENT who %Inline;>
-<!ATTLIST who %Atts;>
+<!ATTLIST who %Forbidden;>
 
 <!ELEMENT what %Inline;>
-<!ATTLIST what %Atts;>
+<!ATTLIST what %Forbidden;>
 
 <!ELEMENT where %Inline;>
-<!ATTLIST where %Atts;>
+<!ATTLIST where %Forbidden;>
+
+<!ELEMENT part %Inline;>
+<!ATTLIST part %Custom_heading;>
+
+<!ELEMENT appendix EMPTY>
+<!ATTLIST appendix %Preset_heading;>
+
+<!ELEMENT section %Inline;>
+<!ATTLIST section %Custom_heading;>
+
+<!ELEMENT h1 %Inline;>
+<!ATTLIST h1 %Custom_heading;>
+
+<!ELEMENT subsection %Inline;>
+<!ATTLIST subsection %Custom_heading;>
+
+<!ELEMENT h2 %Inline;>
+<!ATTLIST h2 %Custom_heading;>
+
+<!ELEMENT subsubsection %Inline;>
+<!ATTLIST subsubsection %Custom_heading;>
+
+<!ELEMENT h3 %Inline;>
+<!ATTLIST h3 %Custom_heading;>
+
+<!ELEMENT bibliography EMPTY>
+<!ATTLIST bibliography %Preset_heading;>
+
+<!ELEMENT notes EMPTY>
+<!ATTLIST notes %Preset_heading;>
+
+<!ELEMENT toc EMPTY>
+<!ATTLIST toc %Preset_heading;>
+
+<!ELEMENT title %Inline;>
+<!ATTLIST title %Forbidden;>
+
+<!ELEMENT subtitle %Inline;>
+<!ATTLIST subtitle %Forbidden;>
+
+<!ELEMENT abstract %Frag;>
+<!ATTLIST abstract %Forbidden;>
+
+<!ELEMENT rule EMPTY>
+<!ATTLIST rule %Forbidden;>
 
 <!-- Inline elements -->
 
 <!ELEMENT bold %Inline;>
-<!ATTLIST bold %Atts;>
+<!ATTLIST bold %Forbidden;>
 
 <!ELEMENT strong %Inline;>
-<!ATTLIST strong %Atts;>
+<!ATTLIST strong %Forbidden;>
 
 <!ELEMENT b %Inline;>
-<!ATTLIST b %Atts;>
+<!ATTLIST b %Forbidden;>
 
 <!ELEMENT emph %Inline;>
-<!ATTLIST emph %Atts;>
+<!ATTLIST emph %Forbidden;>
 
 <!ELEMENT em %Inline;>
-<!ATTLIST em %Atts;>
+<!ATTLIST em %Forbidden;>
 
 <!ELEMENT i %Inline;>
-<!ATTLIST i %Atts;>
+<!ATTLIST i %Forbidden;>
 
 <!ELEMENT mono %Inline;>
-<!ATTLIST mono %Atts;>
+<!ATTLIST mono %Forbidden;>
+
+<!ELEMENT tt %Inline;>
+<!ATTLIST tt %Forbidden;>
 
 <!ELEMENT caps %Inline;>
-<!ATTLIST caps %Atts;>
+<!ATTLIST caps %Forbidden;>
 
 <!ELEMENT thru %Inline;>
-<!ATTLIST thru %Atts;>
+<!ATTLIST thru %Forbidden;>
 
 <!ELEMENT sup %Inline;>
-<!ATTLIST sup %Atts;>
+<!ATTLIST sup %Forbidden;>
 
 <!ELEMENT sub %Inline;>
-<!ATTLIST sub %Atts;>
+<!ATTLIST sub %Forbidden;>
 
 <!ELEMENT mbox %Inline;>
-<!ATTLIST mbox %Atts;>
+<!ATTLIST mbox %Forbidden;>
 
 <!ELEMENT link %Inline;>
-<!ATTLIST link %Atts; href CDATA #REQUIRED>
+<!ATTLIST link %Forbidden; href CDATA #REQUIRED>
 
 <!ELEMENT a %Inline;>
-<!ATTLIST a %Atts; href CDATA #REQUIRED>
+<!ATTLIST a %Forbidden; href CDATA #REQUIRED>
 
 <!ELEMENT see EMPTY>
-<!ATTLIST see %Atts; href IDREF #REQUIRED>
+<!ATTLIST see %Forbidden; href IDREF #REQUIRED>
 
 <!ELEMENT cite EMPTY>
-<!ATTLIST cite %Atts; href IDREF #REQUIRED>
+<!ATTLIST cite %Forbidden; href IDREF #REQUIRED>
 
 <!ELEMENT ref EMPTY>
-<!ATTLIST ref %Atts; href IDREF #REQUIRED>
+<!ATTLIST ref %Forbidden; href IDREF #REQUIRED>
 
 <!ELEMENT sref EMPTY>
-<!ATTLIST sref %Atts; href IDREF #REQUIRED>
+<!ATTLIST sref %Forbidden; href IDREF #REQUIRED>
 
 <!ELEMENT mref %Inline;>
-<!ATTLIST mref %Atts; href IDREF #REQUIRED>
+<!ATTLIST mref %Forbidden; href IDREF #REQUIRED>
 

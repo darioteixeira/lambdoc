@@ -42,15 +42,14 @@ struct
 		let comm = lazy (command_from_node node)
 		in match node#node_type with
 			| T_data			-> (!!comm, Ast.Plain node#data)
-			| T_element "tex"		-> (!!comm, Ast.Mathtex_inl node#data)
-			| T_element "math"		-> (!!comm, Ast.Mathml_inl node#data)
 			| T_element "bold"
 			| T_element "strong"
 			| T_element "b"			-> (!!comm, Ast.Bold (process_seq node#sub_nodes))
 			| T_element "emph"
 			| T_element "em"
 			| T_element "i"			-> (!!comm, Ast.Emph (process_seq node#sub_nodes))
-			| T_element "mono"		-> (!!comm, Ast.Mono (process_seq node#sub_nodes))
+			| T_element "mono"
+			| T_element "tt"		-> (!!comm, Ast.Mono (process_seq node#sub_nodes))
 			| T_element "caps"		-> (!!comm, Ast.Caps (process_seq node#sub_nodes))
 			| T_element "thru"		-> (!!comm, Ast.Thru (process_seq node#sub_nodes))
 			| T_element "sup"		-> (!!comm, Ast.Sup (process_seq node#sub_nodes))
@@ -78,34 +77,35 @@ struct
 			| T_element "ol"		-> (!!comm, Ast.Enumerate (List.map process_item node#sub_nodes))
 			| T_element "description"
 			| T_element "dl"		-> (!!comm, Ast.Description (process_definition_frag node#sub_nodes))
-			| T_element "quote"		-> (!!comm, Ast.Quote [])
-			| T_element "callout"		-> (!!comm, Ast.Callout (None, []))
-			| T_element "code"		-> (!!comm, Ast.Code "")
+			| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node#sub_nodes))
+			| T_element "callout"		-> let (msg, frag) = process_callout node in (!!comm, Ast.Callout (msg, frag))
+			| T_element "code"		-> (!!comm, Ast.Code node#data)
 			| T_element "tabular"		-> (!!comm, Ast.Tabular ("", {thead = None; tfoot = None; tbodies = []}))
-			| T_element "verbatim"		-> (!!comm, Ast.Verbatim "")
-			| T_element "bitmap"		-> (!!comm, Ast.Bitmap ("", ""))
-			| T_element "subpage"		-> (!!comm, Ast.Subpage [])
+			| T_element "verbatim"
+			| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)
+			| T_element "bitmap"		-> (!!comm, Ast.Bitmap (node#required_string_attribute "src", node#required_string_attribute "alt"))
+			| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node#sub_nodes))
 			| T_element "equation"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Equation (caption, block))
 			| T_element "printout"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Printout (caption, block))
 			| T_element "table"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Table (caption, block))
 			| T_element "figure"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Figure (caption, block))
-			| T_element "part"		-> (!!comm, Ast.Part [])
+			| T_element "part"		-> (!!comm, Ast.Part (process_seq node#sub_nodes))
 			| T_element "appendix"		-> (!!comm, Ast.Appendix)
 			| T_element "section"
-			| T_element "h1"		-> (!!comm, Ast.Section (`Level1, []))
+			| T_element "h1"		-> (!!comm, Ast.Section (`Level1, process_seq node#sub_nodes))
 			| T_element "subsection"
-			| T_element "h2"		-> (!!comm, Ast.Section (`Level2, []))
+			| T_element "h2"		-> (!!comm, Ast.Section (`Level2, process_seq node#sub_nodes))
 			| T_element "subsubsection"
-			| T_element "h3"		-> (!!comm, Ast.Section (`Level3, []))
+			| T_element "h3"		-> (!!comm, Ast.Section (`Level3, process_seq node#sub_nodes))
 			| T_element "bibliography"	-> (!!comm, Ast.Bibliography)
 			| T_element "notes"		-> (!!comm, Ast.Notes)
 			| T_element "toc"		-> (!!comm, Ast.Toc)
-			| T_element "title"		-> (!!comm, Ast.Title (`Level1, []))
-			| T_element "subtitle"		-> (!!comm, Ast.Title (`Level2, []))
+			| T_element "title"		-> (!!comm, Ast.Title (`Level1, process_seq node#sub_nodes))
+			| T_element "subtitle"		-> (!!comm, Ast.Title (`Level2, process_seq node#sub_nodes))
 			| T_element "abstract"		-> (!!comm, Ast.Abstract [])
 			| T_element "rule"		-> (!!comm, Ast.Rule)
 			| T_element "bib"		-> let (who, what, where) = process_bib node#sub_nodes in (!!comm, Ast.Bib (who, what, where))
-			| T_element "note"		-> (!!comm, Ast.Note [])
+			| T_element "note"		-> (!!comm, Ast.Note (process_frag node#sub_nodes))
 			| _				-> failwith "process_block_node"
 
 	and process_item node =
@@ -131,6 +131,12 @@ struct
 			in (!!comm, dt, dd)
 
 		in List.rev_map process_definition_nodes (pairify frag)
+
+	and process_callout node = match node#sub_nodes with
+		| msg_node :: frag when msg_node#node_type = T_element "message" ->
+			(Some (process_seq msg_node#sub_nodes), process_frag frag)
+		| frag ->
+			(None, process_frag frag)
 
 	and process_wrapper node = match node#sub_nodes with
 		| [block_node; caption_node] when caption_node#node_type = T_element "caption" ->
