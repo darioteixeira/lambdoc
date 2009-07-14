@@ -8,7 +8,7 @@
 
 let main () =
 	let (opt_list, cmdline_cfg) = Netplex_main.args () in
-	let () = Arg.parse opt_list (fun s -> raise (Arg.Bad ("Don't know what to do with: " ^ s))) "usage: netplex [options]";
+	let () = Arg.parse opt_list (fun s -> raise (Arg.Bad ("Don't know what to do with: " ^ s))) "usage: netplex [options]" in
 	let parallelizer = Netplex_mp.mp ()
 	in Netplex_main.startup
 		parallelizer
