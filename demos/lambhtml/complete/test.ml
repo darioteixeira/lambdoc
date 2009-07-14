@@ -1,13 +1,12 @@
 open XHTML.M
 open Lambdoc_reader
-open Features
 
 let test_handler sp () () =
 	let src = IO.read_all (IO.input_channel (open_in "complete.html")) in
 	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in
-	let accept_list = [ ] in
-	let deny_list = [ ] in
-	let default : default_t = `Accept in
+	let accept_list = [] in
+	let deny_list = [] in
+	let default = `Accept in
 	let doc = Read_lambhtml.Main.ambivalent_manuscript_from_string ~accept_list ~deny_list ~default src in
 	let xhtml = Write_xhtml.Main.write_ambivalent_manuscript doc in
 	Lwt.return
