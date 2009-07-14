@@ -20,11 +20,12 @@ open Ast
 
 module R : Reader.READER =
 struct
-	exception Parsing_error of int
-	exception Unknown_env_command of int * string
-	exception Unknown_simple_command of int * string
+	exception Parsing_error of int * string
+	exception Unknown_command of int * string
 
 	let (!!) = Lazy.force
+
+	let where_rex = Pcre.regexp "^In entity \\[toplevel\\] = PRIVATE, at line (?<line>\\d+), position \\d+:\\s*$"
 
 	let command_from_node node =
 		{
@@ -165,10 +166,25 @@ struct
 		in Pxp_dtd_parser.parse_dtd_entity config source
 
 	let ast_from_string str =
-		let config = {Pxp_types.default_config with Pxp_types.encoding = `Enc_utf8} in
+		let config =
+			{
+			Pxp_types.default_config with
+			Pxp_types.encoding = `Enc_utf8;
+			Pxp_types.idref_pass = false;
+			Pxp_types.enable_namespace_processing = None;
+			} in
 		let spec = Pxp_tree_parser.default_spec in
 		let source = Pxp_types.from_string ("<document>" ^ str ^ "</document>") in
-		let tree = Pxp_tree_parser.parse_content_entity config source dtd spec
+		let tree =
+			try
+				Pxp_tree_parser.parse_content_entity config source dtd spec
+			with
+				| Pxp_types.At (where, exc) ->
+					let subs = Pcre.exec ~rex:where_rex where in
+					let line = int_of_string (Pcre.get_named_substring where_rex "line" subs)
+					in raise (Parsing_error (line, Pxp_types.string_of_exn exc))
+				| exc ->
+					raise exc
 		in process_document tree#root
 end
 

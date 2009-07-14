@@ -68,9 +68,6 @@ type error_msg_t =
 	| Bad_order_parameter of tag_t option * invalid_parameter_reason_t
 	| Bad_extra_parameter of tag_t option * invalid_parameter_reason_t
 
-	| Unknown_env_command of tag_t
-	| Unknown_simple_command of tag_t
-
 	| Nested_link of tag_t option
 	| Empty_listing of tag_t option
 	| Unexpected_block of tag_t option * blk_category_t
@@ -98,7 +95,9 @@ type error_msg_t =
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
 	| Absent_target of tag_t option * ref_t
 
-	| Syntax_error
+	| Parsing_error of string
+	| Unknown_command of tag_t
+
 	with sexp, bin_io
 
 

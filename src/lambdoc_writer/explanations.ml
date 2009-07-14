@@ -51,12 +51,6 @@ let explain_error = function
 		let exp_reason = explain_reason "an" "extra" reason
 		in sprintf "Invalid extra parameter for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Unknown_env_command tag ->
-		sprintf "Unknown environment command '%s'." tag
-
-	| Error.Unknown_simple_command tag ->
-		sprintf "Unknown simple '%s'." tag
-
 	| Error.Nested_link tag ->
 		sprintf "Nested link in %s" (explain_tag tag)
 
@@ -134,6 +128,9 @@ let explain_error = function
 	| Error.Absent_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
-	| Error.Syntax_error ->
-		"Syntax error."
+	| Error.Parsing_error msg ->
+		sprintf "%s." msg
+
+	| Error.Unknown_command tag ->
+		sprintf "Unknown command '%s'." tag
 
