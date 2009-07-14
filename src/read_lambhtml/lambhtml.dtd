@@ -1,8 +1,16 @@
+<!--	Lambhtml.dtd
+        Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
+        This software is distributed nestable the terms of the GNU GPL version 2.
+        See LICENSE file for full license text.
+-->
+
+<!-- DTD for the Lambhtml language. -->
+
 <!-- Entities -->
 
-<!ENTITY % block
+<!ENTITY % Block
 	"p | itemize | ul | enumerate | ol | description | dl
-	| quote | callout | mathtex_blk | mathml_blk
+	| quote | callout 
 	| code | tabular | verbatim | bitmap | subpage
 	| equation | printout | table | figure
 	| part | appendix | section
@@ -10,134 +18,204 @@
 	| title | abstract | rule
 	| bib | note">
 
-<!ENTITY % inline
-	"#PCDATA | tex | math
+<!ENTITY % Node
+	"tex | math
 	| bold | strong | b | emph | em | i | mono | caps | thru
 	| sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref">
 
-<!ENTITY % atts "label ID #IMPLIED
+<!ENTITY % Frag "(%Block;)+">
+
+<!ENTITY % Inline "(#PCDATA | %Node;)*">
+
+<!ENTITY % Flow "(#PCDATA | %Node; | %Block;)*">
+
+<!ENTITY % Atts "label ID #IMPLIED
 		order CDATA #IMPLIED
 		extra CDATA #IMPLIED">
 
 <!-- Top-level element -->
 
-<!ELEMENT document (%block;)+>
+<!ELEMENT document (%Frag;)>
 
 <!-- Block elements -->
 
-<!ELEMENT p (%inline;)*>
-<!ATTLIST p %atts;>
-<!ELEMENT itemize EMPTY>
-<!ATTLIST itemize %atts;>
-<!ELEMENT ul EMPTY>
-<!ATTLIST ul %atts;>
-<!ELEMENT enumerate EMPTY>
-<!ATTLIST enumerate %atts;>
-<!ELEMENT ol EMPTY>
-<!ATTLIST ol %atts;>
-<!ELEMENT description EMPTY>
-<!ELEMENT dl EMPTY>
-<!ELEMENT quote (%block;)+>
-<!ATTLIST quote %atts;>
-<!ELEMENT callout (message?, (%block;)+)>
-<!ATTLIST callout %atts;>
-<!ELEMENT code (#PCDATA)>
-<!ATTLIST code %atts;>
-<!ELEMENT tabular EMPTY>
-<!ATTLIST tabular %atts;>
-<!ELEMENT verbatim (#PCDATA)>
-<!ATTLIST verbatim %atts;>
-<!ELEMENT bitmap EMPTY>
-<!ATTLIST bitmap %atts;>
-<!ELEMENT subpage (%block;)+>
-<!ATTLIST subpage %atts;>
-<!ELEMENT equation ((%block;), caption)>
-<!ATTLIST equation %atts;>
-<!ELEMENT printout ((%block;), caption)>
-<!ATTLIST printout %atts;>
-<!ELEMENT table ((%block;), caption)>
-<!ATTLIST table %atts;>
-<!ELEMENT figure ((%block;), caption)>
-<!ATTLIST figure %atts;>
-<!ELEMENT part (%inline;)*>
-<!ATTLIST part %atts;>
-<!ELEMENT appendix EMPTY>
-<!ATTLIST appendix %atts;>
-<!ELEMENT section (%inline;)*>
-<!ATTLIST section %atts;>
-<!ELEMENT subsection (%inline;)*>
-<!ATTLIST subsection %atts;>
-<!ELEMENT subsubsection (%inline;)*>
-<!ATTLIST subsubsection %atts;>
-<!ELEMENT bibliography EMPTY>
-<!ATTLIST bibliography %atts;>
-<!ELEMENT notes EMPTY>
-<!ATTLIST notes %atts;>
-<!ELEMENT toc EMPTY>
-<!ATTLIST toc %atts;>
-<!ELEMENT title (%inline;)*>
-<!ATTLIST title %atts;>
-<!ELEMENT subtitle (%inline;)*>
-<!ATTLIST subtitle %atts;>
-<!ELEMENT abstract (%block;)*>
-<!ATTLIST abstract %atts;>
-<!ELEMENT rule EMPTY>
-<!ATTLIST rule %atts;>
-<!ELEMENT bib (who, what, where)>
-<!ATTLIST bib %atts;>
-<!ELEMENT note (%block;)+>
-<!ATTLIST note %atts;>
+<!ELEMENT p %Inline;>
+<!ATTLIST p %Atts;>
 
-<!ELEMENT message (%inline;)*>
-<!ATTLIST message %atts;>
-<!ELEMENT caption (%inline;)*>
-<!ATTLIST caption %atts;>
-<!ELEMENT who (%inline;)*>
-<!ATTLIST who %atts;>
-<!ELEMENT what (%inline;)*>
-<!ATTLIST what %atts;>
-<!ELEMENT where (%inline;)*>
-<!ATTLIST where %atts;>
+<!ELEMENT itemize (li)+>
+<!ATTLIST itemize %Atts;>
+
+<!ELEMENT ul (li)+>
+<!ATTLIST ul %Atts;>
+
+<!ELEMENT enumerate (li)+>
+<!ATTLIST enumerate %Atts;>
+
+<!ELEMENT ol (li)+>
+<!ATTLIST ol %Atts;>
+
+<!ELEMENT description (dt | dd)+>
+<!ATTLIST description %Atts;>
+
+<!ELEMENT dl (dt | dd)+>
+<!ATTLIST dl %Atts;>
+
+<!ELEMENT quote %Frag;>
+<!ATTLIST quote %Atts;>
+
+<!ELEMENT callout (message?, %Frag;)>
+<!ATTLIST callout %Atts;>
+
+<!ELEMENT code (#PCDATA)>
+<!ATTLIST code %Atts;>
+
+<!ELEMENT tabular EMPTY>
+<!ATTLIST tabular %Atts;>
+
+<!ELEMENT verbatim (#PCDATA)>
+<!ATTLIST verbatim %Atts;>
+
+<!ELEMENT bitmap EMPTY>
+<!ATTLIST bitmap %Atts; file CDATA #REQUIRED>
+
+<!ELEMENT subpage %Frag;>
+<!ATTLIST subpage %Atts;>
+
+<!ELEMENT equation ((%Block;), caption)>
+<!ATTLIST equation %Atts;>
+
+<!ELEMENT printout ((%Block;), caption)>
+<!ATTLIST printout %Atts;>
+
+<!ELEMENT table ((%Block;), caption)>
+<!ATTLIST table %Atts;>
+
+<!ELEMENT figure ((%Block;), caption)>
+<!ATTLIST figure %Atts;>
+
+<!ELEMENT part %Inline;>
+<!ATTLIST part %Atts;>
+
+<!ELEMENT appendix EMPTY>
+<!ATTLIST appendix %Atts;>
+
+<!ELEMENT section %Inline;>
+<!ATTLIST section %Atts;>
+
+<!ELEMENT subsection %Inline;>
+<!ATTLIST subsection %Atts;>
+
+<!ELEMENT subsubsection %Inline;>
+<!ATTLIST subsubsection %Atts;>
+
+<!ELEMENT bibliography EMPTY>
+<!ATTLIST bibliography %Atts;>
+
+<!ELEMENT notes EMPTY>
+<!ATTLIST notes %Atts;>
+
+<!ELEMENT toc EMPTY>
+<!ATTLIST toc %Atts;>
+
+<!ELEMENT title %Inline;>
+<!ATTLIST title %Atts;>
+
+<!ELEMENT subtitle %Inline;>
+<!ATTLIST subtitle %Atts;>
+
+<!ELEMENT abstract %Frag;>
+<!ATTLIST abstract %Atts;>
+
+<!ELEMENT rule EMPTY>
+<!ATTLIST rule %Atts;>
+
+<!ELEMENT bib (who, what, where)>
+<!ATTLIST bib %Atts;>
+
+<!ELEMENT note %Frag;>
+<!ATTLIST note %Atts;>
+
+<!ELEMENT li %Flow;>
+<!ATTLIST li %Atts;>
+
+<!ELEMENT dt %Inline;>
+<!ATTLIST dt %Atts;>
+
+<!ELEMENT dd %Flow;>
+<!ATTLIST dd %Atts;>
+
+<!ELEMENT message %Inline;>
+<!ATTLIST message %Atts;>
+
+<!ELEMENT caption %Inline;>
+<!ATTLIST caption %Atts;>
+
+<!ELEMENT who %Inline;>
+<!ATTLIST who %Atts;>
+
+<!ELEMENT what %Inline;>
+<!ATTLIST what %Atts;>
+
+<!ELEMENT where %Inline;>
+<!ATTLIST where %Atts;>
 
 <!-- Inline elements -->
 
-<!ELEMENT bold (%inline;)*>
-<!ATTLIST bold %atts;>
-<!ELEMENT strong (%inline;)*>
-<!ATTLIST strong %atts;>
-<!ELEMENT b (%inline;)*>
-<!ATTLIST b %atts;>
-<!ELEMENT emph (%inline;)*>
-<!ATTLIST emph %atts;>
-<!ELEMENT em (%inline;)*>
-<!ATTLIST em %atts;>
-<!ELEMENT i (%inline;)*>
-<!ATTLIST i %atts;>
-<!ELEMENT mono (%inline;)*>
-<!ATTLIST mono %atts;>
-<!ELEMENT caps (%inline;)*>
-<!ATTLIST caps %atts;>
-<!ELEMENT thru (%inline;)*>
-<!ATTLIST thru %atts;>
-<!ELEMENT sup (%inline;)*>
-<!ATTLIST sup %atts;>
-<!ELEMENT sub (%inline;)*>
-<!ATTLIST sub %atts;>
-<!ELEMENT mbox (%inline;)*>
-<!ATTLIST mbox %atts;>
-<!ELEMENT link (%inline;)*>
-<!ATTLIST link %atts; href CDATA #REQUIRED>
-<!ELEMENT a (%inline;)*>
-<!ATTLIST a %atts; href CDATA #REQUIRED>
+<!ELEMENT bold %Inline;>
+<!ATTLIST bold %Atts;>
+
+<!ELEMENT strong %Inline;>
+<!ATTLIST strong %Atts;>
+
+<!ELEMENT b %Inline;>
+<!ATTLIST b %Atts;>
+
+<!ELEMENT emph %Inline;>
+<!ATTLIST emph %Atts;>
+
+<!ELEMENT em %Inline;>
+<!ATTLIST em %Atts;>
+
+<!ELEMENT i %Inline;>
+<!ATTLIST i %Atts;>
+
+<!ELEMENT mono %Inline;>
+<!ATTLIST mono %Atts;>
+
+<!ELEMENT caps %Inline;>
+<!ATTLIST caps %Atts;>
+
+<!ELEMENT thru %Inline;>
+<!ATTLIST thru %Atts;>
+
+<!ELEMENT sup %Inline;>
+<!ATTLIST sup %Atts;>
+
+<!ELEMENT sub %Inline;>
+<!ATTLIST sub %Atts;>
+
+<!ELEMENT mbox %Inline;>
+<!ATTLIST mbox %Atts;>
+
+<!ELEMENT link %Inline;>
+<!ATTLIST link %Atts; href CDATA #REQUIRED>
+
+<!ELEMENT a %Inline;>
+<!ATTLIST a %Atts; href CDATA #REQUIRED>
+
 <!ELEMENT see EMPTY>
-<!ATTLIST see %atts; href IDREF #REQUIRED>
+<!ATTLIST see %Atts; href IDREF #REQUIRED>
+
 <!ELEMENT cite EMPTY>
-<!ATTLIST cite %atts; href IDREF #REQUIRED>
+<!ATTLIST cite %Atts; href IDREF #REQUIRED>
+
 <!ELEMENT ref EMPTY>
-<!ATTLIST ref %atts; href IDREF #REQUIRED>
+<!ATTLIST ref %Atts; href IDREF #REQUIRED>
+
 <!ELEMENT sref EMPTY>
-<!ATTLIST sref %atts; href IDREF #REQUIRED>
-<!ELEMENT mref (%inline;)*>
-<!ATTLIST mref %atts; href IDREF #REQUIRED>
+<!ATTLIST sref %Atts; href IDREF #REQUIRED>
+
+<!ELEMENT mref %Inline;>
+<!ATTLIST mref %Atts; href IDREF #REQUIRED>
 
