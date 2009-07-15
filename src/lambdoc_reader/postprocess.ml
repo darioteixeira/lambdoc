@@ -546,8 +546,11 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () = Some (Block.rule ())
 			in check_comm `Feature_rule comm elem
 
-		| (_, _, `Any_blk, (comm, Ast.Bib ((author_comm, author_seq), (title_comm, title_seq), (resource_comm, resource_seq)))) ->
+		| (_, _, `Any_blk, (comm, Ast.Bib bib)) ->
 			let elem () =
+				let (author_comm, author_seq) = bib.author
+				and (title_comm, title_seq) = bib.title
+				and (resource_comm, resource_seq) = bib.resource in
 				let order = Order.auto_ordinal bib_counter in
 				let label = make_label comm (Target.bib order)
 				and author =

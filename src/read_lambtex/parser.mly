@@ -201,7 +201,7 @@ block:
 	| SUBTITLE BEGIN inline+ END				{($1, Ast.Title (`Level2, $3))}
 	| BEGIN_ABSTRACT block+ END_ABSTRACT			{($1, Ast.Abstract $2)}
 	| RULE							{($1, Ast.Rule)}
-	| BEGIN_BIB bib_author bib_title bib_resource END_BIB	{($1, Ast.Bib ($2, $3, $4))}
+	| BEGIN_BIB bib_author bib_title bib_resource END_BIB	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
 	| BEGIN_NOTE block+ END_NOTE				{($1, Ast.Note $2)}
 
 

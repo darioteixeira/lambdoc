@@ -71,6 +71,20 @@ type tabular_t =
 
 
 (********************************************************************************)
+(**	{2 Auxiliary types for document blocks}					*)
+(********************************************************************************)
+
+type caption_t = command_t * seq_t
+
+type bib_t =
+	{
+	author: command_t * seq_t;
+	title: command_t * seq_t;
+	resource: command_t * seq_t;
+	}
+
+
+(********************************************************************************)
 (**	{2 Data types for document blocks}					*)
 (********************************************************************************)
 
@@ -88,12 +102,12 @@ type frag_t = block_t list
 	| Code of raw_t
 	| Tabular of raw_t * tabular_t
 	| Verbatim of raw_t
-	| Bitmap of raw_t * raw_t
+	| Bitmap of raw_t * raw_t	(* (src, alt) *)
 	| Subpage of frag_t
-	| Equation of (command_t * seq_t) * block_t
-	| Printout of (command_t * seq_t) * block_t
-	| Table of (command_t * seq_t) * block_t
-	| Figure of (command_t * seq_t) * block_t
+	| Equation of caption_t * block_t
+	| Printout of caption_t * block_t
+	| Table of caption_t * block_t
+	| Figure of caption_t * block_t
 	| Part of seq_t
 	| Appendix
 	| Section of hierarchical_level_t * seq_t
@@ -103,7 +117,7 @@ type frag_t = block_t list
 	| Title of title_level_t * seq_t
 	| Abstract of frag_t
 	| Rule
-	| Bib of (command_t * seq_t) * (command_t * seq_t) * (command_t * seq_t)
+	| Bib of bib_t
 	| Note of frag_t
 
 

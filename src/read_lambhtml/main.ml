@@ -105,7 +105,7 @@ struct
 			| T_element "subtitle"		-> (!!comm, Ast.Title (`Level2, process_seq node#sub_nodes))
 			| T_element "abstract"		-> (!!comm, Ast.Abstract [])
 			| T_element "rule"		-> (!!comm, Ast.Rule)
-			| T_element "bib"		-> let (who, what, where) = process_bib node#sub_nodes in (!!comm, Ast.Bib (who, what, where))
+			| T_element "bib"		-> (!!comm, Ast.Bib (process_bib node#sub_nodes))
 			| T_element "note"		-> (!!comm, Ast.Note (process_frag node#sub_nodes))
 			| _				-> failwith "process_block_node"
 
@@ -171,7 +171,7 @@ struct
 			let who = (command_from_node who_node, process_seq who_node#sub_nodes)
 			and what = (command_from_node what_node, process_seq what_node#sub_nodes)
 			and where = (command_from_node where_node, process_seq where_node#sub_nodes)
-			in (who, what, where)
+			in {author = who; title = what; resource = where}
 		| _ ->
 			failwith "process_bib"
 
