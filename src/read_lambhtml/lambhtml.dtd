@@ -84,8 +84,8 @@
 <!ELEMENT code (#PCDATA)>
 <!ATTLIST code %Floater;>
 
-<!ELEMENT tabular EMPTY>
-<!ATTLIST tabular %Floater;>
+<!ELEMENT tabular (thead?, tbody+, tfoot?)>
+<!ATTLIST tabular %Floater; cols CDATA #REQUIRED>
 
 <!ELEMENT verbatim (#PCDATA)>
 <!ATTLIST verbatim %Floater;>
@@ -235,4 +235,24 @@
 
 <!ELEMENT mref %Inline;>
 <!ATTLIST mref %Forbidden; href IDREF #REQUIRED>
+
+<!-- Tabular elements -->
+
+<!ELEMENT thead (tr)+>
+<!ATTLIST thead %Forbidden;>
+
+<!ELEMENT tbody (tr)+>
+<!ATTLIST tbody %Forbidden;>
+
+<!ELEMENT tfoot (tr)+>
+<!ATTLIST tfoot %Forbidden;>
+
+<!ELEMENT tr (th | td)+>
+<!ATTLIST tr %Forbidden;>
+
+<!ELEMENT th %Inline;>
+<!ATTLIST th %Forbidden;>
+
+<!ELEMENT td %Inline;>
+<!ATTLIST td %Forbidden;>
 

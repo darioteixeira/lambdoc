@@ -81,7 +81,7 @@ struct
 			| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node#sub_nodes))
 			| T_element "callout"		-> let (msg, frag) = process_callout node in (!!comm, Ast.Callout (msg, frag))
 			| T_element "code"		-> (!!comm, Ast.Code node#data)
-			| T_element "tabular"		-> (!!comm, Ast.Tabular ("", {thead = None; tfoot = None; tbodies = []}))
+			| T_element "tabular"		-> let (cols, tabular) = process_tabular node in (!!comm, Ast.Tabular (cols, tabular))
 			| T_element "verbatim"
 			| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)
 			| T_element "bitmap"		-> (!!comm, Ast.Bitmap (node#required_string_attribute "src", node#required_string_attribute "alt"))
@@ -139,6 +139,25 @@ struct
 		| frag ->
 			(None, process_frag frag)
 
+	and process_tabular node =
+		let cols = node#required_string_attribute "cols"
+		and thead = ref None
+		and tfoot = ref None
+		and tbodies = ref [] in
+		let process_col node =
+			process_seq node#sub_nodes in
+		let process_row node =
+			(command_from_node node, List.map process_col node#sub_nodes) in
+		let process_group node =
+			let comm = lazy (command_from_node node)
+			in match node#node_type with
+				| T_element "thead"	-> thead := Some (Some !!comm, List.map process_row node#sub_nodes)
+				| T_element "tfoot"	-> tfoot := Some (Some !!comm, List.map process_row node#sub_nodes)
+				| T_element "tbody"	-> tbodies := (Some !!comm, List.map process_row node#sub_nodes) :: !tbodies
+				| _			-> failwith "process_group" in
+		let () = List.iter process_group node#sub_nodes
+		in (cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
+
 	and process_wrapper node = match node#sub_nodes with
 		| [block_node; caption_node] when caption_node#node_type = T_element "caption" ->
 			let block = process_block block_node
@@ -174,7 +193,7 @@ struct
 			Pxp_types.enable_namespace_processing = None;
 			} in
 		let spec = Pxp_tree_parser.default_spec in
-		let source = Pxp_types.from_string ("<document>" ^ str ^ "</document>") in
+		let source = Pxp_types.from_string ("<document>\n" ^ str ^ "\n</document>") in
 		let tree =
 			try
 				Pxp_tree_parser.parse_content_entity config source dtd spec
@@ -182,7 +201,7 @@ struct
 				| Pxp_types.At (where, exc) ->
 					let subs = Pcre.exec ~rex:where_rex where in
 					let line = int_of_string (Pcre.get_named_substring where_rex "line" subs)
-					in raise (Parsing_error (line, Pxp_types.string_of_exn exc))
+					in raise (Parsing_error (line-1, Pxp_types.string_of_exn exc))
 				| exc ->
 					raise exc
 		in process_document tree#root
