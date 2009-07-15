@@ -19,8 +19,7 @@ open Lambdoc_reader
 
 module R : Reader.READER =
 struct
-	exception Parsing_error of int * string
-	exception Unknown_command of int * string
+	exception Reading_error of int * string
 
 	let ast_from_string str =
 		let lexbuf = Lexing.from_string str in
@@ -29,11 +28,11 @@ struct
 			Parser.document tokenizer#consume lexbuf
 		with
 			| Parser.Error ->
-				raise (Parsing_error (lexbuf.lex_curr_p.pos_lnum, "parsing error"))
+				raise (Reading_error (lexbuf.lex_curr_p.pos_lnum, "Syntax error"))
 			| Tokenizer.Unknown_env_command tag ->
-				raise (Unknown_command (lexbuf.lex_curr_p.pos_lnum, tag))
+				raise (Reading_error (lexbuf.lex_curr_p.pos_lnum, Printf.sprintf "Unknown environment command '%s'" tag))
 			| Tokenizer.Unknown_simple_command tag ->
-				raise (Unknown_command (lexbuf.lex_curr_p.pos_lnum, "\\" ^ tag))
+				raise (Reading_error (lexbuf.lex_curr_p.pos_lnum, Printf.sprintf "Unknown simple command '\\%s'" tag))
 end
 
 module M = Reader.Make_reader (R)

@@ -128,9 +128,6 @@ let explain_error = function
 	| Error.Absent_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
-	| Error.Parsing_error msg ->
+	| Error.Reading_error msg ->
 		sprintf "%s." msg
-
-	| Error.Unknown_command tag ->
-		sprintf "Unknown command '%s'." tag
 

@@ -95,8 +95,7 @@ type error_msg_t =
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
 	| Absent_target of tag_t option * ref_t
 
-	| Parsing_error of string
-	| Unknown_command of tag_t
+	| Reading_error of string
 
 	with sexp, bin_io
 

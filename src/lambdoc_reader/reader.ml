@@ -21,8 +21,7 @@ open Basic
 *)
 module type READER =
 sig
-	exception Parsing_error of int * string
-	exception Unknown_command of int * tag_t
+	exception Reading_error of int * string
 
 	val ast_from_string: string -> Ast.t
 end
@@ -63,11 +62,8 @@ struct
 			let document_ast = Reader.ast_from_string str
 			in valid_processor ?classnames ?accept_list ?deny_list ?default str document_ast
 		with
-			| Reader.Parsing_error (line, msg) ->
-				let errors = Postprocess.collate_errors str [(line, Error.Parsing_error msg)]
-				in invalid_maker errors
-			| Reader.Unknown_command (line, tag) ->
-				let errors = Postprocess.collate_errors str [(line, Error.Unknown_command tag)]
+			| Reader.Reading_error (line, msg) ->
+				let errors = Postprocess.collate_errors str [(line, Error.Reading_error msg)]
 				in invalid_maker errors
 
 	let ambivalent_manuscript_from_string ?classnames ?accept_list ?deny_list ?default str =

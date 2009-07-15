@@ -20,8 +20,7 @@ open Ast
 
 module R : Reader.READER =
 struct
-	exception Parsing_error of int * string
-	exception Unknown_command of int * string
+	exception Reading_error of int * string
 
 	let (!!) = Lazy.force
 
@@ -201,7 +200,7 @@ struct
 				| Pxp_types.At (where, exc) ->
 					let subs = Pcre.exec ~rex:where_rex where in
 					let line = int_of_string (Pcre.get_named_substring where_rex "line" subs)
-					in raise (Parsing_error (line-1, Pxp_types.string_of_exn exc))
+					in raise (Reading_error (line-1, Pxp_types.string_of_exn exc))
 				| exc ->
 					raise exc
 		in process_document tree#root
