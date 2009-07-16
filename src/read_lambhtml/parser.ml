@@ -123,7 +123,7 @@ and process_definition_frag frag =
 	in List.rev_map process_definition_nodes (pairify frag)
 
 and process_callout node = match node#sub_nodes with
-	| msg_node :: frag when msg_node#node_type = T_element "message" ->
+	| msg_node :: frag when msg_node#node_type = T_element "msg" ->
 		(Some (process_seq msg_node#sub_nodes), process_frag frag)
 	| frag ->
 		(None, process_frag frag)
@@ -183,7 +183,7 @@ let parse str =
 		Pxp_types.enable_namespace_processing = None;
 		} in
 	let spec = Pxp_tree_parser.default_spec in
-	let source = Pxp_types.from_string ("<document>\n" ^ str ^ "\n</document>") in
+	let source = Pxp_types.from_string ("<document>\n" ^ str ^ "</document>") in
 	let tree = Pxp_tree_parser.parse_content_entity config source dtd spec
 	in process_document tree#root
 

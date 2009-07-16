@@ -75,11 +75,11 @@
 <!ELEMENT quote %Frag;>
 <!ATTLIST quote %Floater;>
 
-<!ELEMENT callout (message?, %Frag;)>
+<!ELEMENT callout (msg?, %Frag;)>
 <!ATTLIST callout %Floater;>
 
-<!ELEMENT message %Inline;>
-<!ATTLIST message %Forbidden;>
+<!ELEMENT msg %Inline;>
+<!ATTLIST msg %Forbidden;>
 
 <!ELEMENT code (#PCDATA)>
 <!ATTLIST code %Floater;>
