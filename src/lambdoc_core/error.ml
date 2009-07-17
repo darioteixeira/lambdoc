@@ -83,6 +83,7 @@ type error_msg_t =
 	| Invalid_extra_no_solutions of tag_t option * string
 	| Invalid_extra_multiple_solutions of tag_t option * string
 
+	| Invalid_entity of string
 	| Invalid_language of tag_t option * string
 	| Invalid_mathtex of tag_t option * string
 	| Invalid_mathml of tag_t option * string

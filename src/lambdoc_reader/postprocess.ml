@@ -178,7 +178,12 @@ let process_document classnames idiosyncrasies document_ast =
 			in check_comm `Feature_plain comm elem
 
 		| (_, (comm, Ast.Entity txt)) ->
-			let elem () = Some (Inline.entity txt)
+			let elem () =
+				if not (Lambdoc_lib.Entity.is_valid txt)
+				then    let msg = Error.Invalid_entity txt
+					in DynArray.add errors (comm.comm_linenum, msg);
+					None
+				else	Some (Inline.entity txt)
 			in check_comm `Feature_entity comm elem
 
 		| (_, (comm, Ast.Mathtex_inl txt)) ->
