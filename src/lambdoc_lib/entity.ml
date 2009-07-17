@@ -13,6 +13,8 @@
 (**	{2 Private functions and values}					*)
 (********************************************************************************)
 
+(* Note: the entities [amp, apos, gt, lt, quot] are predefined by PXP. *)
+
 let entity_list =
 	[
 	("Aacute", 193);
@@ -27,7 +29,6 @@ let entity_list =
 	("alefsym", 8501);
 	("Alpha", 913);
 	("alpha", 945);
-	("amp", 38);
 	("and", 8743);
 	("ang", 8736);
 	("Aring", 197);
@@ -94,7 +95,6 @@ let entity_list =
 	("Gamma", 915);
 	("gamma", 947);
 	("ge", 8805);
-	("gt", 62);
 	("harr", 8596);
 	("hArr", 8660);
 	("hearts", 9829);
@@ -132,7 +132,6 @@ let entity_list =
 	("lrm", 8206);
 	("lsaquo", 8249);
 	("lsquo", 8216);
-	("lt", 60);
 	("macr", 175);
 	("mdash", 8212);
 	("micro", 181);
@@ -193,7 +192,6 @@ let entity_list =
 	("prop", 8733);
 	("Psi", 936);
 	("psi", 968);
-	("quot", 34);
 	("radic", 8730);
 	("rang", 9002);
 	("raquo", 187);
