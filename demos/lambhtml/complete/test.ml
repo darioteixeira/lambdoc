@@ -2,7 +2,9 @@ open XHTML.M
 open Lambdoc_reader
 
 let test_handler sp () () =
-	let src = IO.read_all (IO.input_channel (open_in "complete.html")) in
+	let ch = open_in "complete.html" in
+	let src = Std.input_all ch in
+	let () = close_in ch in
 	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"] in
 	let accept_list = [] in
 	let deny_list = [] in
