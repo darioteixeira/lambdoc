@@ -54,7 +54,11 @@ and process_inline node =
 		| T_element "mref"		-> (!!comm, Ast.Mref (node#required_string_attribute "href", process_seq node#sub_nodes))
 		| _				-> failwith "process_inline_node"
 
-let rec process_frag frag =
+let rec process_frag ?(flow = false) frag =
+	if flow
+	then begin	(* In flow mode we must place loose inline elements into newly created paragraph blocks. *)
+	end
+	else ();
 	List.map process_block frag
 
 and process_block node =
@@ -101,7 +105,7 @@ and process_block node =
 and process_item node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
-		| T_element "li"		-> (!!comm, process_frag node#sub_nodes)
+		| T_element "li"		-> (!!comm, process_frag ~flow:true node#sub_nodes)
 		| _				-> failwith "process_item_node"
 
 and process_definition_frag frag =
@@ -116,7 +120,7 @@ and process_definition_frag frag =
 	let process_definition_nodes (dt_node, dd_node) =
 		let comm = lazy (command_from_node dt_node) in
 		let (dt, dd) = match (dt_node#node_type, dd_node#node_type) with
-			| (T_element "dt", T_element "dd")	-> (process_seq dt_node#sub_nodes, process_frag dd_node#sub_nodes)
+			| (T_element "dt", T_element "dd")	-> (process_seq dt_node#sub_nodes, process_frag ~flow:true dd_node#sub_nodes)
 			| _					-> failwith "process_definition_nodes"
 		in (!!comm, dt, dd)
 
@@ -168,12 +172,6 @@ let process_document node = match node#node_type with
 	| T_element "document" -> process_frag node#sub_nodes
 	| _			-> failwith "process_document"
 
-let dtd =
-	let config = {Pxp_types.default_config with Pxp_types.encoding = `Enc_utf8} in
-	let source = Pxp_types.from_string (include_file "/home/dario/projects/lambdoc/trunk/lambdoc/src/read_lambhtml/lambhtml.dtd")
-	in Pxp_dtd_parser.parse_dtd_entity config source
-
-
 let parse str =
 	let config =
 		{
@@ -184,6 +182,6 @@ let parse str =
 		} in
 	let spec = Pxp_tree_parser.default_spec in
 	let source = Pxp_types.from_string ("<document>\n" ^ str ^ "</document>") in
-	let tree = Pxp_tree_parser.parse_content_entity config source dtd spec
+	let tree = Pxp_tree_parser.parse_content_entity config source Dtd.lambhtml_dtd spec
 	in process_document tree#root
 
