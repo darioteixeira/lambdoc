@@ -11,7 +11,7 @@ SRC_DIR=src
 BUILD_DIR=$(SRC_DIR)/_build
 
 LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.a
-COMPONENTS=lambdoc_core lambdoc_reader lambdoc_writer read_lambtex read_lambhtml write_xhtml lambdoc_proxy
+COMPONENTS=lambdoc_core lambdoc_lib lambdoc_reader lambdoc_writer lambdoc_proxy read_lambtex read_lambhtml write_xhtml
 COMPONENTS_CMI=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmi)
 COMPONENTS_CMO=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmo)
 COMPONENTS_CMX=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmx)

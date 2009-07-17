@@ -13,7 +13,7 @@
 (**	{2 Private functions and values}					*)
 (********************************************************************************)
 
-let entities =
+let entity_list =
 	[
 	("Aacute", 193);
 	("aacute", 225);
