@@ -14,7 +14,7 @@ let test_handler sp () () =
 	Lwt.return
 		(html
 			(head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]
-				(title (pcdata "Lambtex Tutorial"))
+				(title (pcdata "Complete sample of Lambhtml"))
 				[
 				meta ~a: [a_http_equiv "content-type"] ~content: "text/html; charset=utf-8" ();
 				Eliom_predefmod.Xhtml.css_link ~a:[(a_media [`All]); (a_title "Default")] ~uri:css_uri ()
