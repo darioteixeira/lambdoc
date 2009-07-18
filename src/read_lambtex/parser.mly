@@ -30,7 +30,7 @@ open Lambdoc_reader
 
 %token <Lambdoc_core.Basic.raw_t> RAW
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.plain_t> PLAIN
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.entity_t> ENTITY
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
 
 
 /********************************************************************************/
@@ -257,7 +257,7 @@ columns:
 
 inline:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}
-	| ENTITY					{let (comm, txt) = $1 in (comm, Ast.Entity txt)}
+	| ENTITY					{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
 	| BEGIN_MATHTEX_INL RAW END_MATHTEX_INL		{($1, Ast.Mathtex_inl $2)}
 	| BEGIN_MATHML_INL RAW END_MATHML_INL		{($1, Ast.Mathml_inl $2)}
 	| BOLD BEGIN inline+ END			{($1, Ast.Bold $3)}

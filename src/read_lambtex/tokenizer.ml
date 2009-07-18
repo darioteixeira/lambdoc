@@ -347,7 +347,7 @@ object (self)
 			| `Tok_space buf when context = Inl	-> (Some (PLAIN (build_op buf, " ")),		[])
 			| `Tok_raw txt				-> (Some (RAW txt),				[])
 			| `Tok_plain (buf, txt)			-> (Some (PLAIN (build_op buf, txt)),		[Set_con Inl])
-			| `Tok_entity (buf, txt)		-> (Some (ENTITY (build_op buf, txt)),		[Set_con Inl])
+			| `Tok_entity (buf, ent)		-> (Some (ENTITY (build_op buf, ent)),		[Set_con Inl])
 			| _					-> failwith "Unexpected scanner token" in
 
 		let old_context = context in

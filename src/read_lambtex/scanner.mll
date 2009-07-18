@@ -17,6 +17,7 @@
 open Lexing
 open ExtString
 open Parser
+open Lambdoc_reader
 
 
 (**	The set of all tokens output by the various scanners.
@@ -38,7 +39,7 @@ type tok_break_t =		[ `Tok_break ]
 type tok_space_t =		[ `Tok_space ]
 type tok_raw_t =		[ `Tok_raw of string ]
 type tok_plain_t =		[ `Tok_plain of Lexing.lexbuf * string ]
-type tok_entity_t =		[ `Tok_entity of Lexing.lexbuf * string ]
+type tok_entity_t =		[ `Tok_entity of Lexing.lexbuf * Entity.t ]
 
 type general_token_t =
 	[ tok_simple_comm_t
@@ -113,6 +114,8 @@ let incr_linenum lexbuf =
 
 let alpha = ['a'-'z' 'A'-'Z']
 let deci = ['0'-'9']
+let hexa = ['0'-'9' 'a'-'f' 'A'-'F']
+
 let order_char = alpha | deci | '.'
 let label_char = alpha | deci | '-' | ':' | '_'
 let extra_char = alpha | deci | '=' | ',' | '!' 
@@ -127,7 +130,10 @@ let simple_comm = '\\' alpha+ optional
 let env_begin = "\\begin" optional primary
 let env_end = "\\end" primary
 
-let entity = '&' (alpha+ | ('#' deci+))  ';'
+let entity_name = '&' alpha+ ';'
+let entity_deci = "&#" deci+ ';'
+let entity_hexa = "&#x" hexa+ ';'
+
 let space = [' ' '\t']
 let escape = '\\'
 let eol = space* '\n' space*
@@ -177,11 +183,13 @@ rule general_scanner = parse
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
-	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| endash		{`Tok_entity (lexbuf, "ndash")}
-	| emdash		{`Tok_entity (lexbuf, "mdash")}
-	| quote_open		{`Tok_entity (lexbuf, "ldquo")}
-	| quote_close		{`Tok_entity (lexbuf, "rdquo")}
+	| entity_name		{`Tok_entity (lexbuf, Entity.Ent_name (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_deci		{`Tok_entity (lexbuf, Entity.Ent_deci (String.slice ~first:2 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_hexa		{`Tok_entity (lexbuf, Entity.Ent_hexa (String.slice ~first:3 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| endash		{`Tok_entity (lexbuf, Entity.Ent_name "ndash")}
+	| emdash		{`Tok_entity (lexbuf, Entity.Ent_name "mdash")}
+	| quote_open		{`Tok_entity (lexbuf, Entity.Ent_name "ldquo")}
+	| quote_close		{`Tok_entity (lexbuf, Entity.Ent_name "rdquo")}
 	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 
@@ -203,11 +211,13 @@ and tabular_scanner = parse
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
-	| entity		{`Tok_entity (lexbuf, (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| endash		{`Tok_entity (lexbuf, "ndash")}
-	| emdash		{`Tok_entity (lexbuf, "mdash")}
-	| quote_open		{`Tok_entity (lexbuf, "ldquo")}
-	| quote_close		{`Tok_entity (lexbuf, "rdquo")}
+	| entity_name		{`Tok_entity (lexbuf, Entity.Ent_name (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_deci		{`Tok_entity (lexbuf, Entity.Ent_deci (String.slice ~first:2 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_hexa		{`Tok_entity (lexbuf, Entity.Ent_hexa (String.slice ~first:3 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| endash		{`Tok_entity (lexbuf, Entity.Ent_name "ndash")}
+	| emdash		{`Tok_entity (lexbuf, Entity.Ent_name "mdash")}
+	| quote_open		{`Tok_entity (lexbuf, Entity.Ent_name "ldquo")}
+	| quote_close		{`Tok_entity (lexbuf, Entity.Ent_name "rdquo")}
 	| _			{`Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 0 1))}
 
 

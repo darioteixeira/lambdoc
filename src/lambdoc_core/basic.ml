@@ -20,7 +20,7 @@ type raw_t = string with sexp, bin_io			(** The type of raw text. *)
 
 type plain_t = string with sexp, bin_io			(** The type of undecorated text. *)
 
-type entity_t = string with sexp, bin_io		(** The type of XHTML entities. *)
+type entity_t = int with sexp, bin_io			(** Entities are represented as Unicode code points. *)
 
 type link_t = string with sexp, bin_io			(** The type of links. *)
 

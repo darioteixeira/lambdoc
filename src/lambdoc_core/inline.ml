@@ -46,7 +46,7 @@ type (+'a, +'b) t = ('a, 'b) t inline_t with sexp, bin_io
 (********************************************************************************)
 
 let plain txt = `Plain txt
-let entity txt = `Entity txt
+let entity ent = `Entity ent
 let math mth = `Math mth
 let bold seq = `Bold seq
 let emph seq = `Emph seq

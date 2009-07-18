@@ -11,6 +11,7 @@
 
 open Lambdoc_core
 open Basic
+open Entity
 
 
 (********************************************************************************)
@@ -35,7 +36,7 @@ type seq_t = inline_t list
  and inline_t = command_t * raw_inline_t
  and raw_inline_t =
 	| Plain of plain_t
-	| Entity of entity_t
+	| Entity of Entity.t
 	| Mathtex_inl of raw_t
 	| Mathml_inl of raw_t
 	| Bold of seq_t
@@ -55,7 +56,7 @@ type seq_t = inline_t list
 
 
 (********************************************************************************)
-(**	{2 Data types for tabular environment}					*)
+(**	{2 Data types for document blocks}					*)
 (********************************************************************************)
 
 type tabular_row_t = command_t * seq_t list
@@ -69,11 +70,6 @@ type tabular_t =
 	tbodies: tabular_group_t list;
 	}
 
-
-(********************************************************************************)
-(**	{2 Auxiliary types for document blocks}					*)
-(********************************************************************************)
-
 type caption_t = command_t * seq_t
 
 type bib_t =
@@ -82,11 +78,6 @@ type bib_t =
 	title: command_t * seq_t;
 	resource: command_t * seq_t;
 	}
-
-
-(********************************************************************************)
-(**	{2 Data types for document blocks}					*)
-(********************************************************************************)
 
 type frag_t = block_t list
  and block_t = command_t * raw_block_t

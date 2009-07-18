@@ -9,6 +9,24 @@
 (**	Utility functions for dealing with HTML entities.
 *)
 
+
+(********************************************************************************)
+(**	{2 Exceptions}								*)
+(********************************************************************************)
+
+exception Invalid_entity of string
+
+
+(********************************************************************************)
+(**	{2 Type definitions}							*)
+(********************************************************************************)
+
+type t =
+	| Ent_name of string
+	| Ent_deci of string
+	| Ent_hexa of string
+
+
 (********************************************************************************)
 (**	{2 Private functions and values}					*)
 (********************************************************************************)
@@ -277,10 +295,10 @@ let entity_map =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let code_point ent =
-	| Ent_name name -> (try Some (Hashtbl.find entity_map name) with Not_found -> None)
-	| Ent_deci deci -> (try Some (int_of_string deci) with Failure _ -> None)
-	| Ent_hexa hexa -> (try Some (int_of_string ("0x" ^ hexa)) with Failure _ -> None)
+let code_point = function
+	| Ent_name name -> (try Hashtbl.find entity_map name with Not_found -> raise (Invalid_entity name))
+	| Ent_deci deci -> (try int_of_string deci with Failure _ -> raise (Invalid_entity deci))
+	| Ent_hexa hexa -> (try int_of_string ("0x" ^ hexa) with Failure _ -> raise (Invalid_entity hexa))
 
 let iter f =
 	Hashtbl.iter f entity_map

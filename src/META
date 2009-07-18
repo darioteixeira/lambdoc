@@ -18,17 +18,6 @@ package "core"
 	archive(plugin,native) = "lambdoc_core.cmxs"
 	)
 
-package "lib"
-	(
-	name = "lib"
-	version = "0.7"
-	requires = ""
-	archive(byte) = "lambdoc_lib.cmo"
-	archive(native) = "lambdoc_lib.cmx"
-	archive(plugin,byte) = "lambdoc_lib.cmo"
-	archive(plugin,native) = "lambdoc_lib.cmxs"
-	)
-
 package "reader"
 	(
 	name = "reader"
@@ -77,7 +66,7 @@ package "read_lambhtml"
 	(
 	name = "read_lambhtml"
 	version = "0.7"
-	requires = "pcre, pxp-engine, pxp-ulex-utf8, lambdoc.core, lambdoc.lib, lambdoc.reader"
+	requires = "pcre, pxp-engine, pxp-ulex-utf8, lambdoc.core, lambdoc.reader"
 	archive(byte) = "read_lambhtml.cmo"
 	archive(native) = "read_lambhtml.cmx"
 	archive(plugin,byte) = "read_lambhtml.cmo"
