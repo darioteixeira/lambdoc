@@ -164,7 +164,7 @@ let write_valid_document settings classname doc =
 			else XHTML.M.pcdata txt
 
 		| `Entity num ->
-			XHTML.M.entity (string_of_int num)
+			XHTML.M.entity ("#" ^ (string_of_int num))
 
 		| `Math math ->
 			XHTML.M.span ~a:[a_class ["doc_math"]] [Math.to_inline_xhtml math]

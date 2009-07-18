@@ -9,12 +9,7 @@
 (**	Utility functions for dealing with HTML entities.
 *)
 
-
-(********************************************************************************)
-(**	{2 Exceptions}								*)
-(********************************************************************************)
-
-exception Invalid_entity of string
+open Lambdoc_core
 
 
 (********************************************************************************)
@@ -296,9 +291,9 @@ let entity_map =
 (********************************************************************************)
 
 let code_point = function
-	| Ent_name name -> (try Hashtbl.find entity_map name with Not_found -> raise (Invalid_entity name))
-	| Ent_deci deci -> (try int_of_string deci with Failure _ -> raise (Invalid_entity deci))
-	| Ent_hexa hexa -> (try int_of_string ("0x" ^ hexa) with Failure _ -> raise (Invalid_entity hexa))
+	| Ent_name name -> (try `Okay (Hashtbl.find entity_map name) with Not_found -> `Error (Error.Invalid_name_entity name))
+	| Ent_deci deci -> (try `Okay (int_of_string deci) with Failure _ -> `Error (Error.Invalid_deci_entity deci))
+	| Ent_hexa hexa -> (try `Okay (int_of_string ("0x" ^ hexa)) with Failure _ -> `Error (Error.Invalid_hexa_entity hexa))
 
 let iter f =
 	Hashtbl.iter f entity_map

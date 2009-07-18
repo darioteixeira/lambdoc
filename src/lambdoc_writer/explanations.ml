@@ -90,8 +90,14 @@ let explain_error = function
 	| Error.Invalid_extra_multiple_solutions (tag, extra) ->
 		sprintf "In %s, the extra parameters '%s' cannot be interpreted unambiguously." (explain_tag tag) extra
 
-	| Error.Invalid_entity ent ->
+	| Error.Invalid_name_entity ent ->
 		sprintf "Unknown entity '%s'." ent
+
+	| Error.Invalid_deci_entity ent ->
+		sprintf "Invalid Unicode decimal code point '%s'." ent
+
+	| Error.Invalid_hexa_entity ent ->
+		sprintf "Invalid Unicode hexadecimal code point '%s'." ent
 
 	| Error.Invalid_language (tag, lang) ->
 		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)

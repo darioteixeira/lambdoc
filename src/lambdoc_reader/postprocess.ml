@@ -178,14 +178,9 @@ let process_document classnames idiosyncrasies document_ast =
 			in check_comm `Feature_plain comm elem
 
 		| (_, (comm, Ast.Entity ent)) ->
-			let elem () =
-				try
-					Some (Inline.entity (Entity.code_point ent))
-				with
-					Entity.Invalid_entity str ->
-						let msg = Error.Invalid_entity str
-						in DynArray.add errors (comm.comm_linenum, msg);
-						None
+			let elem () = match Entity.code_point ent with
+				| `Okay num  -> Some (Inline.entity num)
+				| `Error msg -> DynArray.add errors (comm.comm_linenum, msg); None
 			in check_comm `Feature_entity comm elem
 
 		| (_, (comm, Ast.Mathtex_inl txt)) ->

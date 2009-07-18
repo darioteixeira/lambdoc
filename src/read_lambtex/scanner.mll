@@ -114,7 +114,6 @@ let incr_linenum lexbuf =
 
 let alpha = ['a'-'z' 'A'-'Z']
 let deci = ['0'-'9']
-let hexa = ['0'-'9' 'a'-'f' 'A'-'F']
 
 let order_char = alpha | deci | '.'
 let label_char = alpha | deci | '-' | ':' | '_'
@@ -130,9 +129,9 @@ let simple_comm = '\\' alpha+ optional
 let env_begin = "\\begin" optional primary
 let env_end = "\\end" primary
 
-let entity_name = '&' alpha+ ';'
-let entity_deci = "&#" deci+ ';'
-let entity_hexa = "&#x" hexa+ ';'
+let entity_hexa = "&#x" (alpha | deci)+ ';'
+let entity_deci = "&#" (alpha | deci)+ ';'
+let entity_name = '&' (alpha | deci)+ ';'
 
 let space = [' ' '\t']
 let escape = '\\'
@@ -183,9 +182,9 @@ rule general_scanner = parse
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
-	| entity_name		{`Tok_entity (lexbuf, Entity.Ent_name (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| entity_deci		{`Tok_entity (lexbuf, Entity.Ent_deci (String.slice ~first:2 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| entity_hexa		{`Tok_entity (lexbuf, Entity.Ent_hexa (String.slice ~first:3 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_deci		{`Tok_entity (lexbuf, Entity.Ent_deci (String.slice ~first:2 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_name		{`Tok_entity (lexbuf, Entity.Ent_name (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| endash		{`Tok_entity (lexbuf, Entity.Ent_name "ndash")}
 	| emdash		{`Tok_entity (lexbuf, Entity.Ent_name "mdash")}
 	| quote_open		{`Tok_entity (lexbuf, Entity.Ent_name "ldquo")}
@@ -211,9 +210,9 @@ and tabular_scanner = parse
 	| break			{incr_linenum lexbuf; `Tok_break}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
-	| entity_name		{`Tok_entity (lexbuf, Entity.Ent_name (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
-	| entity_deci		{`Tok_entity (lexbuf, Entity.Ent_deci (String.slice ~first:2 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| entity_hexa		{`Tok_entity (lexbuf, Entity.Ent_hexa (String.slice ~first:3 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_deci		{`Tok_entity (lexbuf, Entity.Ent_deci (String.slice ~first:2 ~last:(-1) (Lexing.lexeme lexbuf)))}
+	| entity_name		{`Tok_entity (lexbuf, Entity.Ent_name (String.slice ~first:1 ~last:(-1) (Lexing.lexeme lexbuf)))}
 	| endash		{`Tok_entity (lexbuf, Entity.Ent_name "ndash")}
 	| emdash		{`Tok_entity (lexbuf, Entity.Ent_name "mdash")}
 	| quote_open		{`Tok_entity (lexbuf, Entity.Ent_name "ldquo")}
