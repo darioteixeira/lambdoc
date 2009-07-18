@@ -9,11 +9,12 @@
 (**	Utility functions for dealing with HTML entities.
 *)
 
+open Lambdoc_core
+
 (********************************************************************************)
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-val is_valid: string -> bool
-val get_code_point: string -> int
+val code_point: string -> Basic.unicode_t option
 val iter: (string -> int -> unit) -> unit
 

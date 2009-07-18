@@ -277,11 +277,10 @@ let entity_map =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let is_valid key =
-	Hashtbl.mem entity_map key
-
-let get_code_point key =
-	Hashtbl.find entity_map key
+let code_point ent =
+	| Ent_name name -> (try Some (Hashtbl.find entity_map name) with Not_found -> None)
+	| Ent_deci deci -> (try Some (int_of_string deci) with Failure _ -> None)
+	| Ent_hexa hexa -> (try Some (int_of_string ("0x" ^ hexa)) with Failure _ -> None)
 
 let iter f =
 	Hashtbl.iter f entity_map
