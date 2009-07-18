@@ -32,6 +32,7 @@ and process_inline node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
 		| T_data			-> (!!comm, Ast.Plain node#data)
+		| T_element "br"		-> (!!comm, Ast.Break)
 		| T_element "bold"
 		| T_element "strong"
 		| T_element "b"			-> (!!comm, Ast.Bold (process_seq node#sub_nodes))

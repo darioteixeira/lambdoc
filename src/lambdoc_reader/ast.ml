@@ -37,6 +37,7 @@ type seq_t = inline_t list
  and raw_inline_t =
 	| Plain of plain_t
 	| Entity of Entity.t
+	| Break
 	| Mathtex_inl of raw_t
 	| Mathml_inl of raw_t
 	| Bold of seq_t

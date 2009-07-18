@@ -19,7 +19,7 @@
 	| bib | note">
 
 <!ENTITY % Node
-	"tex | math
+	" br 
 	| bold | strong | b | emph | em | i | mono | tt | caps | thru
 	| sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref">
@@ -175,6 +175,9 @@
 <!ATTLIST rule %Forbidden;>
 
 <!-- Inline elements -->
+
+<!ELEMENT br EMPTY>
+<!ATTLIST br %Forbidden;>
 
 <!ELEMENT bold %Inline;>
 <!ATTLIST bold %Forbidden;>

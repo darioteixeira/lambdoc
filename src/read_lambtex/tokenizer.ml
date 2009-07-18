@@ -90,6 +90,8 @@ type action_t =
 *)
 let get_simple_tag tag params =
 	let (token, context, actions) = match tag with
+
+		| "br"			-> (BREAK params,		Inl,	[Store [Inline]])
 		| "bold"		-> (BOLD params,		Inl,	[Store [Inline]])
 		| "emph"		-> (EMPH params,		Inl,	[Store [Inline]])
 		| "mono"		-> (MONO params,		Inl,	[Store [Inline]])
@@ -249,7 +251,7 @@ let issue_simple_command =
 	in fun lexbuf ->
 		let subs = Pcre.exec ~rex (Lexing.lexeme lexbuf) in
 		let command = Pcre.get_named_substring rex "command" subs in
-		let params = build_command lexbuf command rex subs in
+		let params = build_command lexbuf ("\\" ^ command) rex subs in
 		get_simple_tag command params
 
 

@@ -19,6 +19,7 @@ open Basic
 type 'a inline_t =
 	[ `Plain of plain_t
 	| `Entity of entity_t
+	| `Break
 	| `Math of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
@@ -48,6 +49,7 @@ type (+'a, +'b) t = private [< ('a, 'b) t inline_t ] with sexp, bin_io
 
 val plain: plain_t -> ([> `Composition ], [> `Nonlink ]) t
 val entity: entity_t -> ([> `Composition ], [> `Nonlink ]) t
+val break: unit -> ([> `Composition ], [> `Nonlink ]) t
 val math: Math.t -> ([> `Composition ], [> `Nonlink ]) t
 val bold: ('a, 'b) t list -> ('a, 'b) t
 val emph: ('a, 'b) t list -> ('a, 'b) t
