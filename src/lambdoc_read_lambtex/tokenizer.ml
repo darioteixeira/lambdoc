@@ -91,7 +91,7 @@ type action_t =
 let get_simple_tag tag params =
 	let (token, context, actions) = match tag with
 
-		| "br"			-> (BREAK params,		Inl,	[Store [Inline]])
+		| "br"			-> (LINEBREAK params,		Inl,	[])
 		| "bold"		-> (BOLD params,		Inl,	[Store [Inline]])
 		| "emph"		-> (EMPH params,		Inl,	[Store [Inline]])
 		| "mono"		-> (MONO params,		Inl,	[Store [Inline]])
@@ -345,7 +345,7 @@ object (self)
 			| `Tok_column_sep buf			-> (Some (COLUMN_SEP (build_op buf)),		[Set_con Blk])
 			| `Tok_row_end buf			-> (Some (ROW_END (build_op buf)),		[Set_con Blk])
 			| `Tok_eof				-> (Some EOF,					[])
-			| `Tok_break				-> (None,					[Set_con Blk])
+			| `Tok_parbreak				-> (None,					[Set_con Blk])
 			| `Tok_space buf when context = Blk	-> (None,					[])
 			| `Tok_space buf when context = Inl	-> (Some (PLAIN (build_op buf, " ")),		[])
 			| `Tok_raw txt				-> (Some (RAW txt),				[])

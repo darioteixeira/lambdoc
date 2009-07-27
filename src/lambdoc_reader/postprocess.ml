@@ -164,9 +164,9 @@ let process_document classnames idiosyncrasies document_ast =
 				| `Error msg -> DynArray.add errors (comm.comm_linenum, msg); None
 			in check_comm `Feature_entity comm elem
 
-		| (_, (comm, Ast.Break)) ->
-			let elem () = Some (Inline.break ())
-			in check_comm `Feature_break comm elem
+		| (_, (comm, Ast.Linebreak)) ->
+			let elem () = Some (Inline.linebreak ())
+			in check_comm `Feature_linebreak comm elem
 
 		| (_, (comm, Ast.Mathtex_inl txt)) ->
 			let elem () = convert_mathtex Inline.math comm txt

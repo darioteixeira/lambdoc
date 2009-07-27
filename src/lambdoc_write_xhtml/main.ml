@@ -168,7 +168,7 @@ let write_valid_document settings classname doc =
 		| `Entity num ->
 			XHTML.M.entity ("#" ^ (string_of_int num))
 
-		| `Break ->
+		| `Linebreak ->
 			XHTML.M.br ()
 
 		| `Math math ->

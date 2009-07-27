@@ -119,7 +119,7 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 	let non_reference_inline_feature_set = function
 		| `Feature_plain	-> forbidden_class
 		| `Feature_entity	-> forbidden_class
-		| `Feature_break	-> forbidden_class
+		| `Feature_linebreak	-> forbidden_class
 		| `Feature_mathtex_inl	-> forbidden_class
 		| `Feature_mathml_inl	-> forbidden_class
 		| `Feature_bold		-> forbidden_class

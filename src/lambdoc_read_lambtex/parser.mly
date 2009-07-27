@@ -112,7 +112,7 @@ open Lambdoc_reader
 /* Simple commands.								*/
 /********************************************************************************/
 
-%token <Lambdoc_reader.Ast.command_t> BREAK
+%token <Lambdoc_reader.Ast.command_t> LINEBREAK
 %token <Lambdoc_reader.Ast.command_t> BOLD
 %token <Lambdoc_reader.Ast.command_t> EMPH
 %token <Lambdoc_reader.Ast.command_t> MONO
@@ -263,7 +263,7 @@ columns:
 inline:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}
 	| ENTITY					{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
-	| BREAK						{($1, Ast.Break)}
+	| LINEBREAK					{($1, Ast.Linebreak)}
 	| BEGIN_MATHTEX_INL RAW END_MATHTEX_INL		{($1, Ast.Mathtex_inl $2)}
 	| BEGIN_MATHML_INL RAW END_MATHML_INL		{($1, Ast.Mathml_inl $2)}
 	| BOLD BEGIN inline+ END			{($1, Ast.Bold $3)}

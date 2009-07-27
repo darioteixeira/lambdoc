@@ -16,7 +16,7 @@
 (********************************************************************************)
 
 type non_reference_inline_feature_t =
-	[ `Feature_plain | `Feature_entity | `Feature_break
+	[ `Feature_plain | `Feature_entity | `Feature_linebreak
 	| `Feature_mathtex_inl | `Feature_mathml_inl
 	| `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru
 	| `Feature_sup | `Feature_sub | `Feature_mbox | `Feature_link
@@ -73,7 +73,7 @@ type default_t = [ `Accept | `Deny ]
 
 let non_reference_inline_features =
 	[
-	`Feature_plain; `Feature_entity; `Feature_break;
+	`Feature_plain; `Feature_entity; `Feature_linebreak;
 	`Feature_mathtex_inl; `Feature_mathml_inl;
 	`Feature_bold; `Feature_emph; `Feature_mono; `Feature_caps; `Feature_thru;
 	`Feature_sup; `Feature_sub; `Feature_mbox; `Feature_link;
@@ -110,7 +110,7 @@ let reference_block_features =
 let describe_non_reference_inline_feature = function
 	| `Feature_plain	-> "plain text"
 	| `Feature_entity	-> "HTML entities"
-	| `Feature_break	-> "line break"
+	| `Feature_linebreak	-> "line break"
 	| `Feature_mathtex_inl	-> "inline TeX math"
 	| `Feature_mathml_inl	-> "inline MathML math"
 	| `Feature_bold		-> "bold text"

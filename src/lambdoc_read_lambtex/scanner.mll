@@ -35,7 +35,7 @@ type tok_end_mathml_inl_t =	[ `Tok_end_mathml_inl of Lexing.lexbuf ]
 type tok_column_sep_t =		[ `Tok_column_sep of Lexing.lexbuf ]
 type tok_row_end_t =		[ `Tok_row_end of Lexing.lexbuf ]
 type tok_eof_t =		[ `Tok_eof ]
-type tok_break_t =		[ `Tok_break ]
+type tok_parbreak_t =		[ `Tok_parbreak ]
 type tok_space_t =		[ `Tok_space ]
 type tok_raw_t =		[ `Tok_raw of string ]
 type tok_plain_t =		[ `Tok_plain of Lexing.lexbuf * string ]
@@ -47,7 +47,7 @@ type general_token_t =
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
-	| tok_eof_t | tok_break_t
+	| tok_eof_t | tok_parbreak_t
 	| tok_space_t | tok_plain_t | tok_entity_t
 	]
 
@@ -58,7 +58,7 @@ type tabular_token_t =
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
 	| tok_column_sep_t | tok_row_end_t
-	| tok_eof_t | tok_break_t
+	| tok_eof_t | tok_parbreak_t
 	| tok_space_t | tok_plain_t | tok_entity_t
 	]
 
@@ -136,7 +136,7 @@ let entity_name = '&' (alpha | deci)+ ';'
 let space = [' ' '\t']
 let escape = '\\'
 let eol = space* '\n' space*
-let break = eol eol+
+let parbreak = eol eol+
 
 let begin_marker = '{'
 let end_marker = '}'
@@ -179,7 +179,7 @@ rule general_scanner = parse
 	| begin_mathtex_inl	{`Tok_begin_mathtex_inl lexbuf}
 	| begin_mathml_inl	{`Tok_begin_mathml_inl lexbuf}
 	| eof			{`Tok_eof}
-	| break			{incr_linenum lexbuf; `Tok_break}
+	| parbreak		{incr_linenum lexbuf; `Tok_parbreak}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity_hexa		{`Tok_entity (lexbuf, Entity.Ent_hexa (String.slice ~first:3 ~last:(-1) (Lexing.lexeme lexbuf)))}
@@ -207,7 +207,7 @@ and tabular_scanner = parse
 	| column_sep		{`Tok_column_sep lexbuf}
 	| row_end		{`Tok_row_end lexbuf}
 	| eof			{`Tok_eof}
-	| break			{incr_linenum lexbuf; `Tok_break}
+	| parbreak		{incr_linenum lexbuf; `Tok_parbreak}
 	| space+ | eol		{incr_linenum lexbuf; `Tok_space lexbuf}
 	| escape _		{incr_linenum lexbuf; `Tok_plain (lexbuf, (String.sub (Lexing.lexeme lexbuf) 1 1))}
 	| entity_hexa		{`Tok_entity (lexbuf, Entity.Ent_hexa (String.slice ~first:3 ~last:(-1) (Lexing.lexeme lexbuf)))}

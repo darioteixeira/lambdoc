@@ -16,7 +16,7 @@
 (********************************************************************************)
 
 type non_reference_inline_feature_t =
-	[ `Feature_plain | `Feature_entity | `Feature_break
+	[ `Feature_plain | `Feature_entity | `Feature_linebreak
 	| `Feature_mathtex_inl | `Feature_mathml_inl
 	| `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru
 	| `Feature_sup | `Feature_sub | `Feature_mbox | `Feature_link

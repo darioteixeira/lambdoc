@@ -18,7 +18,7 @@ open Basic
 type 'a inline_t =
 	[ `Plain of plain_t
 	| `Entity of entity_t
-	| `Break
+	| `Linebreak
 	| `Math of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
@@ -48,7 +48,7 @@ type (+'a, +'b) t = ('a, 'b) t inline_t with sexp
 
 let plain txt = `Plain txt
 let entity ent = `Entity ent
-let break () = `Break
+let linebreak () = `Linebreak
 let math mth = `Math mth
 let bold seq = `Bold seq
 let emph seq = `Emph seq
@@ -67,3 +67,4 @@ let mref ref seq = `Mref (ref, seq)
 
 let get_seq seq = seq
 let get_seqs (hd, tl) = (hd, tl)
+
