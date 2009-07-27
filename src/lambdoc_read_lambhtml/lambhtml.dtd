@@ -9,9 +9,8 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	"p | itemize | ul | enumerate | ol | description | dl
-	| quote | callout 
-	| code | tabular | verbatim | pre | bitmap | subpage
+	"p | itemize | ul | enumerate | ol | description | dl | quote
+	| pull | boxout | code | tabular | verbatim | pre | bitmap | subpage
 	| equation | printout | table | figure
 	| part | appendix | section | h1 | subsection | h2 | subsubsection | h3
 	| bibliography | notes | toc
@@ -73,10 +72,13 @@
 <!ATTLIST dl %Forbidden;>
 
 <!ELEMENT quote %Frag;>
-<!ATTLIST quote %Floater;>
+<!ATTLIST quote %Forbidden;>
 
-<!ELEMENT callout (msg?, %Frag;)>
-<!ATTLIST callout %Floater;>
+<!ELEMENT pullquote %Frag;>
+<!ATTLIST pullquote %Floater;>
+
+<!ELEMENT boxout (msg?, %Frag;)>
+<!ATTLIST boxout %Floater;>
 
 <!ELEMENT msg %Inline;>
 <!ATTLIST msg %Forbidden;>

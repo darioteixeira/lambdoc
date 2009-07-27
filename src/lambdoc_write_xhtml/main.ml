@@ -339,6 +339,9 @@ let write_valid_document settings classname doc =
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
 			in (None, XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl)
 
+		| `Quote frag ->
+			(None, XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag))
+
 		| `Pullquote (alignment, frag) ->
 			let style = if wrapped then [] else make_alignment alignment
 			in (None, XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag))

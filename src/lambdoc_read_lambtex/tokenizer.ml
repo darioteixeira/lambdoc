@@ -162,6 +162,7 @@ let get_env_tag tag params is_begin =
 			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],					[])
 			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],					[])
 			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],					[])
+			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],					[])
 			| "pull"	-> (BEGIN_PULLQUOTE params,	END_PULLQUOTE params,		[],					[])
 			| "boxout"	-> (BEGIN_BOXOUT params,	END_BOXOUT params,		[Store [Inline]],			[])
 			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Store [Raw]; Push_env Tabular],	[Pop_env])

@@ -357,6 +357,12 @@ let process_document classnames idiosyncrasies document_ast =
 					| []		-> None
 			in check_comm `Feature_description comm elem
 
+		| (_, _, `Any_blk, (comm, Ast.Quote frag)) ->
+			let elem () =
+				let new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag
+				in Some (Block.quote (Obj.magic new_frag))
+			in check_comm `Feature_quote comm elem
+
 		| (_, _, `Any_blk, (comm, Ast.Pullquote frag)) ->
 			let elem () =
 				let alignment = Extra.parse_for_pullquote errors comm

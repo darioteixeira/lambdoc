@@ -34,6 +34,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
+	| `Quote of 'a list
 	| `Pullquote of Alignment.t * 'a list
 	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Math of Alignment.t * Math.t
@@ -87,6 +88,9 @@ val enumerate: Numbering.t -> ('a, 'b, [< `Nestable ], _) t list plus_t ->
 
 val description: (('a, _) Inline.t list * ('a, 'b, [< `Nestable ], _) t list) plus_t ->
 	('a, 'b, [> `Nestable ], [> `Description_blk ]) t
+
+val quote: ('a, [< `Embeddable ], [< `Nestable ], _) t list ->
+	('a, [> `Embeddable ], [> `Nestable], [> `Quote_blk ]) t
 
 val pullquote: Alignment.t -> ('a, [< `Embeddable ], [< `Nestable ], _) t list ->
 	('a, [> `Embeddable ], [> `Nestable], [> `Pullquote_blk ]) t

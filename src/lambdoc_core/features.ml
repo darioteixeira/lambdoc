@@ -28,7 +28,7 @@ type reference_inline_feature_t =
 
 type non_reference_block_feature_t =
 	[ `Feature_item | `Feature_describe
-	| `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
+	| `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description | `Feature_quote
 	| `Feature_pullquote | `Feature_boxout | `Feature_mathtex_blk | `Feature_mathml_blk
 	| `Feature_code | `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage
 	]
@@ -87,7 +87,7 @@ let reference_inline_features =
 let non_reference_block_features =
 	[
 	`Feature_item; `Feature_describe;
-	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description;
+	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description; `Feature_quote;
 	`Feature_pullquote; `Feature_boxout; `Feature_mathtex_blk; `Feature_mathml_blk;
 	`Feature_code; `Feature_tabular; `Feature_verbatim; `Feature_bitmap; `Feature_subpage;
 	]
@@ -139,6 +139,7 @@ let describe_non_reference_block_feature = function
 	| `Feature_itemize	-> "itemize block"
 	| `Feature_enumerate	-> "enumerate block"
 	| `Feature_description	-> "description block"
+	| `Feature_quote	-> "quote block"
 	| `Feature_pullquote	-> "pull quote block"
 	| `Feature_boxout	-> "boxout block"
 	| `Feature_mathtex_blk	-> "TeX math block"
