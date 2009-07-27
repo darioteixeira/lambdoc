@@ -29,7 +29,7 @@ type reference_inline_feature_t =
 type non_reference_block_feature_t =
 	[ `Feature_item | `Feature_describe
 	| `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
-	| `Feature_quote | `Feature_callout | `Feature_mathtex_blk | `Feature_mathml_blk
+	| `Feature_pullquote | `Feature_boxout | `Feature_mathtex_blk | `Feature_mathml_blk
 	| `Feature_code | `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage
 	]
 

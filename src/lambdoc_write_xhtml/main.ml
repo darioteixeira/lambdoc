@@ -339,18 +339,18 @@ let write_valid_document settings classname doc =
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
 			in (None, XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl)
 
-		| `Quote (alignment, frag) ->
+		| `Pullquote (alignment, frag) ->
 			let style = if wrapped then [] else make_alignment alignment
-			in (None, XHTML.M.blockquote ~a:[a_class (["doc_quote"] @ style)] (write_frag frag))
+			in (None, XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag))
 
-		| `Callout (alignment, maybe_classname, maybe_seq, frag) ->
+		| `Boxout (alignment, maybe_classname, maybe_seq, frag) ->
 			let style_align = if wrapped then [] else make_alignment alignment
-			and style_class = match maybe_classname with Some classname -> ["doc_callout_" ^ classname] | None -> [] in
+			and style_class = match maybe_classname with Some classname -> ["doc_boxout_" ^ classname] | None -> [] in
 			let title = match maybe_seq with
 				| None -> []
-				| Some seq -> [XHTML.M.div ~a:[a_class ["doc_callout_head"]] [XHTML.M.h1 (write_seq seq)]]
-			in (None, XHTML.M.div ~a:[a_class (["doc_callout"] @ style_align @ style_class)]
-				[XHTML.M.div (title @ [XHTML.M.div ~a:[a_class ["doc_callout_body"]] (write_frag frag)])])
+				| Some seq -> [XHTML.M.div ~a:[a_class ["doc_boxout_head"]] [XHTML.M.h1 (write_seq seq)]]
+			in (None, XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_align @ style_class)]
+				[XHTML.M.div (title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])])
 
 		| `Math (alignment, math) ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)

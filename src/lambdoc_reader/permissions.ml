@@ -146,8 +146,8 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_itemize	-> listing_class
 		| `Feature_enumerate	-> listing_class
 		| `Feature_description	-> forbidden_class
-		| `Feature_quote	-> floater_class
-		| `Feature_callout	-> floater_class
+		| `Feature_pullquote	-> floater_class
+		| `Feature_boxout	-> floater_class
 		| `Feature_mathtex_blk	-> floater_class
 		| `Feature_mathml_blk	-> floater_class
 		| `Feature_code		-> floater_class

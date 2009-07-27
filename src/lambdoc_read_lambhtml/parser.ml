@@ -72,8 +72,8 @@ and process_block node =
 		| T_element "ol"		-> (!!comm, Ast.Enumerate (List.map process_item node#sub_nodes))
 		| T_element "description"
 		| T_element "dl"		-> (!!comm, Ast.Description (process_definition_frag node#sub_nodes))
-		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node#sub_nodes))
-		| T_element "callout"		-> let (msg, frag) = process_callout node in (!!comm, Ast.Callout (msg, frag))
+		| T_element "pull"		-> (!!comm, Ast.Pullquote (process_frag node#sub_nodes))
+		| T_element "boxout"		-> let (msg, frag) = process_callout node in (!!comm, Ast.Boxout (msg, frag))
 		| T_element "code"		-> (!!comm, Ast.Code node#data)
 		| T_element "tabular"		-> let (cols, tabular) = process_tabular node in (!!comm, Ast.Tabular (cols, tabular))
 		| T_element "verbatim"

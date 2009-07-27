@@ -59,11 +59,11 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_DESCRIPTION
 %token <Lambdoc_reader.Ast.command_t> END_DESCRIPTION
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_QUOTE
-%token <Lambdoc_reader.Ast.command_t> END_QUOTE
+%token <Lambdoc_reader.Ast.command_t> BEGIN_PULLQUOTE
+%token <Lambdoc_reader.Ast.command_t> END_PULLQUOTE
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_CALLOUT
-%token <Lambdoc_reader.Ast.command_t> END_CALLOUT
+%token <Lambdoc_reader.Ast.command_t> BEGIN_BOXOUT
+%token <Lambdoc_reader.Ast.command_t> END_BOXOUT
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_MATHTEX_BLK
 %token <Lambdoc_reader.Ast.command_t> END_MATHTEX_BLK
@@ -177,8 +177,8 @@ block:
 	| BEGIN_ITEMIZE item_frag END_ITEMIZE			{($1, Ast.Itemize $2)}
 	| BEGIN_ENUMERATE item_frag END_ENUMERATE		{($1, Ast.Enumerate $2)}
 	| BEGIN_DESCRIPTION describe_frag END_DESCRIPTION	{($1, Ast.Description $2)}
-	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
-	| BEGIN_CALLOUT BEGIN inline+ END block+ END_CALLOUT	{($1, Ast.Callout ((match $3 with [] -> None | x -> Some x), $5))}
+	| BEGIN_PULLQUOTE block+ END_PULLQUOTE			{($1, Ast.Pullquote $2)}
+	| BEGIN_BOXOUT BEGIN inline+ END block+ END_BOXOUT	{($1, Ast.Boxout ((match $3 with [] -> None | x -> Some x), $5))}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
 	| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{($1, Ast.Mathml_blk $2)}
 	| BEGIN_CODE RAW END_CODE				{($1, Ast.Code $2)}

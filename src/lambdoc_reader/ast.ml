@@ -87,8 +87,8 @@ type frag_t = block_t list
 	| Itemize of (command_t * frag_t) list
 	| Enumerate of (command_t * frag_t) list
 	| Description of (command_t * seq_t * frag_t) list
-	| Quote of frag_t
-	| Callout of seq_t option * frag_t
+	| Pullquote of frag_t
+	| Boxout of seq_t option * frag_t
 	| Mathtex_blk of raw_t
 	| Mathml_blk of raw_t
 	| Code of raw_t

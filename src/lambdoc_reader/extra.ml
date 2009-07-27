@@ -400,9 +400,9 @@ let parse_for_enumerate errors comm =
 		| Some (Numbering_data x)	-> x
 		| _				-> Numbering.Decimal
 
-let parse_for_quote = parse_floater
+let parse_for_pullquote = parse_floater
 
-let parse_for_callout ?classnames errors comm =
+let parse_for_boxout ?classnames errors comm =
 	let assigned = process ?classnames errors comm [Alignment_hnd; Classname_hnd] in
 	let alignment = get_alignment assigned.(0)
 	and classname = match assigned.(1) with
