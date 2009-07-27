@@ -20,11 +20,11 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.t list;
 	labelmap: Labelmap.t;
-	} with sexp, bin_io
+	} with sexp
 
 
-type manuscript_t = [ `Manuscript ] document_t with sexp, bin_io
-type composition_t = [ `Composition ] document_t with sexp, bin_io
+type manuscript_t = [ `Manuscript ] document_t with sexp
+type composition_t = [ `Composition ] document_t with sexp
 
 
 (********************************************************************************)
@@ -52,20 +52,9 @@ val make_composition:
 (**	{3 Serialisation via Sexplib}						*)
 (********************************************************************************)
 
-val serialize_manuscript_to_sexp: manuscript_t -> string
-val serialize_composition_to_sexp: composition_t -> string
+val serialize_manuscript: manuscript_t -> string
+val serialize_composition: composition_t -> string
 
-val deserialize_manuscript_from_sexp: string -> manuscript_t
-val deserialize_composition_from_sexp: string -> composition_t
-
-
-(********************************************************************************)
-(**	{3 Serialisation via Bin-prot}						*)
-(********************************************************************************)
-
-val serialize_manuscript_to_binprot: manuscript_t -> Bin_prot.Common.buf
-val serialize_composition_to_binprot: composition_t -> Bin_prot.Common.buf
-
-val deserialize_manuscript_from_binprot: Bin_prot.Common.buf -> manuscript_t
-val deserialize_composition_from_binprot: Bin_prot.Common.buf -> composition_t
+val deserialize_manuscript: string -> manuscript_t
+val deserialize_composition: string -> composition_t
 

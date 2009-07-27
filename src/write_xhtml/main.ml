@@ -19,6 +19,8 @@ open XHTML.M
 open Lambdoc_core
 open Lambdoc_writer
 open Basic
+open Code
+open Image
 open Valid
 open Settings
 
@@ -170,7 +172,8 @@ let write_valid_document settings classname doc =
 			XHTML.M.br ()
 
 		| `Math math ->
-			XHTML.M.span ~a:[a_class ["doc_math"]] [Math.to_inline_xhtml math]
+			let xhtml : [> `Span ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
+			in XHTML.M.span ~a:[a_class ["doc_math"]] [xhtml]
 
 		| `Bold seq ->
 			XHTML.M.b (write_seq ~nbspfy seq)
@@ -350,12 +353,14 @@ let write_valid_document settings classname doc =
 				[XHTML.M.div (title @ [XHTML.M.div ~a:[a_class ["doc_callout_body"]] (write_frag frag)])])
 
 		| `Math (alignment, math) ->
-			let style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [Math.to_block_xhtml math])
+			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
+			and style = if wrapped then [] else make_alignment alignment
+			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [xhtml])
 
-		| `Code (alignment, linenums, zebra, code) ->
-			let style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, Highlight.to_xhtml ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra code)
+		| `Code (alignment, code) ->
+			let (linenums, zebra, hilite) = (code.linenums, code.zebra, code.hilite)
+			and style = if wrapped then [] else make_alignment alignment
+			in (Some alignment, Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra hilite)
 
 		| `Tabular (alignment, tab) ->
 			let style = if wrapped then [] else make_alignment alignment
@@ -365,10 +370,11 @@ let write_valid_document settings classname doc =
 			let style = if wrapped then [] else make_alignment alignment
 			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]])
 
-		| `Bitmap (alignment, (shadow, width, alias, alt)) ->
+		| `Bitmap (alignment, img) ->
+			let (frame, width, alias, alt) = (img.frame, img.width, img.alias, img.alt) in
 			let style_align = if wrapped then [] else make_alignment alignment
-			and style_shadow = if shadow then ["doc_bitmap_shadow"] else [] in
-			let style = style_align @ style_shadow in
+			and style_frame = if frame then ["doc_bitmap_frame"] else [] in
+			let style = style_align @ style_frame in
 			let attrs = match width with
 				| Some w	-> [a_width (`Percent w)]
 				| None		-> [] in

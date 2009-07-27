@@ -23,7 +23,7 @@ exception Invalid_number_of_levels of hierarchical_level_t * int
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type ordinal_t = int with sexp, bin_io
+type ordinal_t = int with sexp
 
 type ordinal_counter_t
 
@@ -33,7 +33,7 @@ type hierarchical_t =
 	| Level1_order of int
 	| Level2_order of int * int
 	| Level3_order of int * int * int
-	with sexp, bin_io
+	with sexp
 
 type hierarchical_counter_t
 
@@ -45,10 +45,10 @@ type hierarchical_converter_t =
 	}
 
 
-type 'a auto_given_t = [ `Auto_given of 'a ] with sexp_poly, bin_io
-type user_given_t = [ `User_given of string ] with sexp_poly, bin_io
-type none_given_t = [ `None_given ] with sexp_poly, bin_io
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] with sexp_poly, bin_io
+type 'a auto_given_t = [ `Auto_given of 'a ] with sexp_poly
+type user_given_t = [ `User_given of string ] with sexp_poly
+type none_given_t = [ `None_given ] with sexp_poly
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] with sexp_poly
 
 
 (********************************************************************************)

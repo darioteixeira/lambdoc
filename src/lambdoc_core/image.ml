@@ -6,14 +6,40 @@
 *)
 (********************************************************************************)
 
+(**	Common definitions for image types (bitmap and vectorial pictures).
+*)
+
 TYPE_CONV_PATH "Image"
+
+open Basic
 
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-(**	Common definitions for image types (bitmap and vectorial pictures).
+(**	Definition of an image.
 *)
-type t = bool * int option * alias_t * string with sexp, bin_io
+type t =
+	{
+	frame: bool;
+	width: int option;
+	alias: alias_t;
+	alt: string;
+	} with sexp
+
+
+(********************************************************************************)
+(**	{2 Public values and functions}						*)
+(********************************************************************************)
+
+(**	Image constructor.
+*)
+let make frame width alias alt =
+	{
+	frame = frame;
+	width = width;
+	alias = alias;
+	alt = alt;
+	}
 

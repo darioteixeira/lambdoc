@@ -21,14 +21,14 @@ exception Mathml_undefined
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type mathtex_t = string with sexp, bin_io
-type mathml_t = string with sexp, bin_io
+type mathtex_t = string with sexp
+type mathml_t = string with sexp
 
 type t =
 	| Mathtex of mathtex_t
 	| Mathml of mathml_t
 	| Both of mathtex_t * mathml_t
-	with sexp, bin_io
+	with sexp
 
 
 (********************************************************************************)

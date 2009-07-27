@@ -16,13 +16,13 @@
 type manuscript_t =
 	[ `Valid of Valid.manuscript_t
 	| `Invalid of Invalid.manuscript_t
-	] with sexp, bin_io
+	] with sexp
 
 
 type composition_t =
 	[ `Valid of Valid.composition_t
 	| `Invalid of Invalid.composition_t
-	] with sexp, bin_io
+	] with sexp
 
 
 (********************************************************************************)
@@ -54,20 +54,9 @@ val make_invalid_composition: Error.t list -> composition_t
 (**	{3 Serialisation via Sexplib}						*)
 (********************************************************************************)
 
-val serialize_manuscript_to_sexp: manuscript_t -> string
-val serialize_composition_to_sexp: composition_t -> string
+val serialize_manuscript: manuscript_t -> string
+val serialize_composition: composition_t -> string
 
-val deserialize_manuscript_from_sexp: string -> manuscript_t
-val deserialize_composition_from_sexp: string -> composition_t
-
-
-(********************************************************************************)
-(**	{3 Serialisation via Bin-prot}						*)
-(********************************************************************************)
-
-val serialize_manuscript_to_binprot: manuscript_t -> Bin_prot.Common.buf
-val serialize_composition_to_binprot: composition_t -> Bin_prot.Common.buf
-
-val deserialize_manuscript_from_binprot: Bin_prot.Common.buf -> manuscript_t
-val deserialize_composition_from_binprot: Bin_prot.Common.buf -> composition_t
+val deserialize_manuscript: string -> manuscript_t
+val deserialize_composition: string -> composition_t
 

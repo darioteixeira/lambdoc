@@ -66,7 +66,7 @@ type property_data_t =
 	| Bullet_data of Bullet.t
 	| Numbering_data of Numbering.t
 	| Alignment_data of Alignment.t
-	| Lang_data of Code.lang_t
+	| Lang_data of Camlhighlight_core.lang_t
 	| Classname_data of string
 
 
@@ -209,9 +209,9 @@ let matcher ~classnames errors comm key kind field = match (key, kind, field) wi
 				Negative)
 
 	| (key, Lang_kind, Unnamed_field v) ->
-		(try Undecided (Lang_data (Code.lang_of_string v)) with Invalid_argument _ -> Negative)
+		(try Undecided (Lang_data (Camlhighlight_core.lang_of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Lang_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Lang_data (Code.lang_of_string v))
+		(try Positive (Lang_data (Camlhighlight_core.lang_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
@@ -427,7 +427,7 @@ let parse_for_code errors comm =
 		| (_, Some (Boolean_data x))	-> x
 		| _				-> true in
 	let alignment = get_alignment assigned.(3)
-	in (alignment, linenums, zebra, lang)
+	in (alignment, lang, linenums, zebra)
 
 let parse_for_tabular = parse_floater
 

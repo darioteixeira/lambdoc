@@ -15,7 +15,7 @@ open Basic
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp, bin_io
+type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
 
 type t =
 	{
@@ -24,7 +24,7 @@ type t =
 	author: Inline.seq_t;
 	title: Inline.seq_t;
 	resource: Inline.seq_t;
-	} with sexp, bin_io
+	} with sexp
 
 
 (********************************************************************************)

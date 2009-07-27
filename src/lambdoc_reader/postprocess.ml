@@ -25,25 +25,6 @@ open Ast
 (**	{3 Helper sub-functions}						*)
 (********************************************************************************)
 
-(**	This subfunction returns the language used for syntax highlighting.
-	It invokes the utility function from the Code module, and adds an
-	error if the language is unknown.
-*)
-let get_language errors comm = function
-	| None ->
-		None
-	| Some "" ->
-		None
-	| Some other ->
-		try
-			Some (Code.lang_of_string other)
-		with
-			Invalid_argument x ->
-				let msg = Error.Invalid_language (comm.comm_tag, x)
-				in	DynArray.add errors (comm.comm_linenum, msg);
-					None
-
-
 (**	This subfunction returns the column floater and weight associated
 	with a column specifier.
 *)
@@ -147,24 +128,24 @@ let process_document classnames idiosyncrasies document_ast =
 	(* Postprocessing functions for mathematics.				*)
 	(************************************************************************)
 
-	let convert_mathtex constructor comm txt =
+	let convert_mathtex constructor comm mathtex =
 		try
-			Some (constructor (Math.from_mathtex txt))
-		with
-			Math.Invalid_mathtex ->
-				let msg = Error.Invalid_mathtex (comm.comm_tag, txt) in
-				DynArray.add errors (comm.comm_linenum, msg);
-				None
+			let mathml = Blahcaml.safe_mathml_from_tex mathtex
+			in Some (constructor (Math.from_both mathtex mathml))
+		with _ ->
+			let msg = Error.Invalid_mathtex (comm.comm_tag, mathtex) in
+			DynArray.add errors (comm.comm_linenum, msg);
+			None
 
 
-	and convert_mathml constructor comm txt =
+	and convert_mathml constructor comm mathml =
 		try
-			Some (constructor (Math.from_mathml txt))
-		with
-			Math.Invalid_mathml ->
-				let msg = Error.Invalid_mathml (comm.comm_tag, txt) in
-				DynArray.add errors (comm.comm_linenum, msg);
-				None in
+			let mathml = Blahcaml.sanitize_mathml mathml
+			in Some (constructor (Math.from_mathml mathml))
+		with _ ->
+			let msg = Error.Invalid_mathml (comm.comm_tag, mathml) in
+			DynArray.add errors (comm.comm_linenum, msg);
+			None in
 
 
 	(************************************************************************)
@@ -408,9 +389,10 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, `Printout_blk, (comm, Ast.Code txt))
 		| (_, _, `Any_blk, (comm, Ast.Code txt)) ->
 			let elem () =
-				let (alignment, linenums, zebra, lang) = Extra.parse_for_code errors comm in
-				let highlight = Code.from_string lang txt
-				in Some (Block.code alignment linenums zebra highlight)
+				let (alignment, lang, linenums, zebra) = Extra.parse_for_code errors comm in
+				let hilite = Camlhighlight_parser.from_string lang txt in
+				let code = Code.make lang linenums zebra hilite
+				in Some (Block.code alignment code)
 			in check_comm `Feature_code comm elem
 
 		| (_, _, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
@@ -431,7 +413,7 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, `Any_blk, (comm, Ast.Bitmap (alias, alt))) ->
 			let elem () =
 				let (alignment, frame, width) = Extra.parse_for_bitmap errors comm in
-				let image = (frame, width, alias, alt)
+				let image = Image.make frame width alias alt
 				in Some (Block.bitmap alignment image)
 			in check_comm `Feature_bitmap comm elem
 

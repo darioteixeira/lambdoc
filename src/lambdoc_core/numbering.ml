@@ -24,7 +24,7 @@ type t =
 	| Lower_alpha
 	| Upper_alpha
 	| None
-	with sexp, bin_io
+	with sexp
 
 
 (********************************************************************************)

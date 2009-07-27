@@ -23,11 +23,11 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.t list;
 	labelmap: Labelmap.t;
-	} with sexp, bin_io
+	} with sexp
 
 
-type manuscript_t = [ `Manuscript ] document_t with sexp, bin_io
-type composition_t = [ `Composition ] document_t with sexp, bin_io
+type manuscript_t = [ `Manuscript ] document_t with sexp
+type composition_t = [ `Composition ] document_t with sexp
 
 
 (********************************************************************************)
@@ -61,36 +61,15 @@ let make_composition content =
 (**	{3 Serialisation via Sexplib}						*)
 (********************************************************************************)
 
-let serialize_manuscript_to_sexp doc =
+let serialize_manuscript doc =
 	Sexplib.Sexp.to_string_mach (sexp_of_manuscript_t doc)
 
-let serialize_composition_to_sexp doc =
+let serialize_composition doc =
 	Sexplib.Sexp.to_string_mach (sexp_of_composition_t doc)
 
-let deserialize_manuscript_from_sexp str =
+let deserialize_manuscript str =
 	manuscript_t_of_sexp (Sexplib.Sexp.of_string str)
 
-let deserialize_composition_from_sexp str =
+let deserialize_composition str =
 	composition_t_of_sexp (Sexplib.Sexp.of_string str)
-
-
-(********************************************************************************)
-(**	{3 Serialisation via Bin-prot}						*)
-(********************************************************************************)
-
-let serialize_manuscript_to_binprot doc =
-	let buf = Bin_prot.Utils.bin_dump ~header:true bin_writer_manuscript_t doc
-	in buf
-
-let serialize_composition_to_binprot doc =
-	let buf = Bin_prot.Utils.bin_dump ~header:true bin_writer_composition_t doc
-	in buf
-
-let deserialize_manuscript_from_binprot buf =
-	let r = ref 0
-	in bin_read_manuscript_t buf r
-
-let deserialize_composition_from_binprot buf =
-	let r = ref 0
-	in bin_read_composition_t buf r
 
