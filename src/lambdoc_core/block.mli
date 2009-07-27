@@ -62,6 +62,20 @@ type (+'a, +'b, +'c, +'d) t = private [< ('a, 'b, 'c, 'd) t block_t ] with sexp
 (**	{3 Public functions and values}						*)
 (********************************************************************************)
 
+(**	The functions in this module use phantom types to enforce some invariants
+	on block nesting.  The main type {!t} has four of these phantom types:
+	{ul	{li ['a] is either [`Composition] or [`Manuscript].  The former
+		does not allow for elements that may produce internal links in
+		the document, whereas the latter allows everything.}
+		{li ['b] is either [`Embeddable] or [`Non_embeddable].  A block
+		is termed embeddable if it can be a child of quotes, boxouts,
+		lists, etc.}
+		{li ['c] is either [`Nestable] or [`Non_nestable].  A block is
+		nestable if it is embeddable or if it is a wrapper (equation,
+		figure, etc).}
+		{li ['d] indicates the actual block type.}}
+*)
+
 val paragraph: ('a, _) Inline.t list ->
 	('a, [> `Embeddable ], [> `Nestable ], [> `Paragraph_blk ]) t
 
