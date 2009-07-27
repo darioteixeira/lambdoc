@@ -10,51 +10,47 @@ TYPE_CONV_PATH "Math"
 
 
 (********************************************************************************)
-(**	{Exceptions}								*)
+(**	{2 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_mathtex
-exception Invalid_mathml
+exception Mathtex_undefined
+exception Mathml_undefined
 
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
+type mathtex_t = string with sexp, bin_io
+type mathml_t = string with sexp, bin_io
+
 type t =
-	{
-	mathtex: string option;
-	mathml: string;
-	} with sexp, bin_io
+	| Mathtex of mathtex_t
+	| Mathml of mathml_t
+	| Both of mathtex_t * mathml_t
+	with sexp, bin_io
 
 
 (********************************************************************************)
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let from_mathtex txt =
-	try
-		{
-		mathtex = Some txt;
-		mathml = Blahcaml.safe_mathml_from_tex txt;
-		}
-	with
-		| Blahcaml.Blahtex_error _	-> raise Invalid_mathtex
-		| Blahcaml.Unicode_error 	-> raise Invalid_mathtex
-		| _				-> raise Invalid_mathtex
+let from_mathtex mathtex =
+	Mathtex mathtex
 
-let from_mathml txt =
-	try
-		{
-		mathtex = None;
-		mathml = Blahcaml.sanitize_mathml txt;
-		}
-	with
-		| _				-> raise Invalid_mathml
+let from_mathml mathml =
+	Mathml mathml
 
-let to_inline_xhtml math =
-	XHTML.M.unsafe_data math.mathml
+let from_both mathtex mathml =
+	Both (mathtex, mathml)
 
-let to_block_xhtml math =
-	XHTML.M.unsafe_data math.mathml
+let get_mathtex = function
+	| Mathtex str	-> str
+	| Mathml _	-> raise Mathtex_undefined
+	| Both (str, _)	-> str
+
+let get_mathml = function
+	| Mathtex _	-> raise Mathml_undefined
+	| Mathml str	-> str
+	| Both (_, str)	-> str
 

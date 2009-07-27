@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Definition of the module that handles document math.
+(**	Definition of the module that encodes document math.
 *)
 
 
@@ -14,13 +14,16 @@
 (**	{Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_mathtex
-exception Invalid_mathml
+exception Mathtex_undefined
+exception Mathml_undefined
 
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
+
+type mathtex_t = string with sexp, bin_io
+type mathml_t = string with sexp, bin_io
 
 type t with sexp, bin_io
 
@@ -29,8 +32,10 @@ type t with sexp, bin_io
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-val from_mathtex: string -> t
-val from_mathml: string -> t
-val to_inline_xhtml: t -> [> `Span ] XHTML.M.elt
-val to_block_xhtml: t -> [> `Div ] XHTML.M.elt
+val from_mathtex: mathtex_t -> t
+val from_mathml: mathml_t -> t
+val from_both: mathtex_t -> mathml_t -> t
+
+val get_mathtex: t -> mathtex_t
+val get_mathml: t -> mathml_t
 

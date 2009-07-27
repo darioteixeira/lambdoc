@@ -15,8 +15,6 @@ open Basic
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-type image_t = bool * int option * alias_t * string with sexp, bin_io
-
 type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp, bin_io
 
 type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp, bin_io
@@ -29,10 +27,10 @@ type 'a block_t =
 	| `Quote of Alignment.t * 'a list
 	| `Callout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Math of Alignment.t * Math.t
-	| `Code of Alignment.t * bool * bool * Code.t
+	| `Code of Alignment.t * Code.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
 	| `Verbatim of Alignment.t * raw_t
-	| `Bitmap of Alignment.t * image_t
+	| `Bitmap of Alignment.t * Image.t
 	| `Subpage of Alignment.t * 'a list
 	| `Equation of wrapper_t * 'a
 	| `Printout of wrapper_t * 'a
@@ -61,10 +59,10 @@ let description (hd, tl) = let conv (seq, frag) = (Inline.get_seq seq, frag) in 
 let quote alignment frag = `Quote (alignment, frag)
 let callout alignment maybe_classname maybe_seq frag = `Callout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
 let math alignment mth = `Math (alignment, mth)
-let code alignment linenums zebra txt = `Code (alignment, linenums, zebra, txt)
+let code alignment x = `Code (alignment, x)
 let tabular alignment tab = `Tabular (alignment, Tabular.get_tabular tab)
 let verbatim alignment txt = `Verbatim (alignment, txt)
-let bitmap alignment image = `Bitmap (alignment, image)
+let bitmap alignment img = `Bitmap (alignment, img)
 let subpage alignment frag = `Subpage (alignment, frag)
 let equation wrapper equation_blk = `Equation (wrapper, equation_blk)
 let printout wrapper printout_blk = `Printout (wrapper, printout_blk)

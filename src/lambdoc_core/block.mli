@@ -16,11 +16,6 @@ open Basic
 (**	{2 Type definitions}							*)
 (********************************************************************************)
 
-(**	Common definitions for image types (bitmap and vectorial pictures).
-*)
-type image_t = bool * int option * alias_t * string with sexp, bin_io
-
-
 (**	Definition of the ordering types for wrapper blocks.
 *)
 type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp, bin_io
@@ -42,10 +37,10 @@ type 'a block_t =
 	| `Quote of Alignment.t * 'a list
 	| `Callout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Math of Alignment.t * Math.t
-	| `Code of Alignment.t * bool * bool * Code.t
+	| `Code of Alignment.t * Code.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
 	| `Verbatim of Alignment.t * raw_t
-	| `Bitmap of Alignment.t * image_t
+	| `Bitmap of Alignment.t * Image.t
 	| `Subpage of Alignment.t * 'a list
 	| `Equation of wrapper_t * 'a
 	| `Printout of wrapper_t * 'a
@@ -88,7 +83,7 @@ val callout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a
 val math: Alignment.t -> Math.t ->
 	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Math_blk ]) t
 
-val code: Alignment.t -> bool -> bool -> Code.t ->
+val code: Alignment.t -> Code.t ->
 	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Code_blk ]) t
 
 val tabular: Alignment.t -> 'a Tabular.t ->
@@ -97,7 +92,7 @@ val tabular: Alignment.t -> 'a Tabular.t ->
 val verbatim: Alignment.t -> raw_t ->
 	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Verbatim_blk ]) t
 
-val bitmap: Alignment.t -> image_t ->
+val bitmap: Alignment.t -> Image.t ->
 	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Bitmap_blk ]) t
 
 val subpage: Alignment.t -> ('a, _, _, _) t list ->
