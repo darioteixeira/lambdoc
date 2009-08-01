@@ -208,8 +208,12 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () = Some (Inline.mbox (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_mbox comm elem
 
+		| (false, (comm, Ast.Link (lnk, []))) ->
+			let elem () = Some (Inline.link lnk None)
+			in check_comm `Feature_link comm elem
+
 		| (false, (comm, Ast.Link (lnk, seq))) ->
-			let elem () = Some (Inline.link lnk (Obj.magic (List.filter_map (convert_inline true) seq)))
+			let elem () = Some (Inline.link lnk (Some (Obj.magic (List.filter_map (convert_inline true) seq))))
 			in check_comm `Feature_link comm elem
 
 		| (false, (comm, Ast.See label)) ->

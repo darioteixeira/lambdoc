@@ -28,7 +28,7 @@ type 'a inline_t =
 	| `Sup of 'a list
 	| `Sub of 'a list
 	| `Mbox of 'a list
-	| `Link of link_t * 'a list
+	| `Link of link_t * 'a list option
 	| `See of ref_t
 	| `Cite of ref_t
 	| `Ref of ref_t
@@ -58,7 +58,7 @@ let thru seq = `Thru seq
 let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq
-let link lnk seq = `Link (lnk, seq)
+let link lnk maybe_seq = `Link (lnk, maybe_seq)
 let see ref = `See ref
 let cite ref = `Cite ref
 let ref ref = `Ref ref

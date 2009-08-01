@@ -199,7 +199,10 @@ let write_valid_document settings classname doc =
 		| `Mbox seq ->
 			XHTML.M.span (write_seq ~nbspfy:true seq)
 
-		| `Link (lnk, seq) ->
+		| `Link (lnk, None) ->
+			make_external_link lnk (Obj.magic (write_seq ~nbspfy [`Plain lnk]))
+
+		| `Link (lnk, Some seq) ->
 			make_external_link lnk (Obj.magic (write_seq ~nbspfy seq))
 
 		| `See ref ->

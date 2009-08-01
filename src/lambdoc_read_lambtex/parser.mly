@@ -286,7 +286,7 @@ inline:
 	| SUP BEGIN inline+ END				{($1, Ast.Sup $3)}
 	| SUB BEGIN inline+ END				{($1, Ast.Sub $3)}
 	| MBOX BEGIN inline+ END			{($1, Ast.Mbox $3)}
-	| LINK BEGIN RAW END BEGIN inline+ END		{($1, Ast.Link ($3, $6))}
+	| LINK BEGIN RAW END BEGIN inline* END		{($1, Ast.Link ($3, $6))}
 	| SEE BEGIN RAW END				{($1, Ast.See $3)}
 	| CITE BEGIN RAW END				{($1, Ast.Cite $3)}
 	| REF BEGIN RAW END				{($1, Ast.Ref $3)}
