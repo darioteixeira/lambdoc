@@ -114,6 +114,7 @@ let incr_linenum lexbuf =
 
 let alpha = ['a'-'z' 'A'-'Z']
 let deci = ['0'-'9']
+let ident = alpha ( alpha | deci | '_' )*
 
 let order_char = alpha | deci | '.'
 let label_char = alpha | deci | '-' | ':' | '_'
@@ -123,9 +124,9 @@ let order = '(' order_char* ')'
 let label = '[' label_char+ ']'
 let extra = '<' extra_char+ '>'
 let optional = ( order | label | extra )*
-let primary = '{' alpha+ ( alpha | deci | '_' )* '}'
+let primary = '{' ident '}'
 
-let simple_comm = '\\' alpha+ optional
+let simple_comm = '\\' ident optional
 let env_begin = "\\begin" optional primary
 let env_end = "\\end" primary
 

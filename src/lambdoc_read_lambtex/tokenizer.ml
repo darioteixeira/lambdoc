@@ -93,8 +93,14 @@ let get_simple_tag tag params =
 
 		| "br"			-> (LINEBREAK params,		Inl,	[])
 		| "bold"		-> (BOLD params,		Inl,	[Store [Inline]])
+		| "strong"		-> (BOLD params,		Inl,	[Store [Inline]])
+		| "b"			-> (BOLD params,		Inl,	[Store [Inline]])
 		| "emph"		-> (EMPH params,		Inl,	[Store [Inline]])
+		| "em"			-> (EMPH params,		Inl,	[Store [Inline]])
+		| "i"			-> (EMPH params,		Inl,	[Store [Inline]])
 		| "mono"		-> (MONO params,		Inl,	[Store [Inline]])
+		| "tt"			-> (MONO params,		Inl,	[Store [Inline]])
+		| "m"			-> (MONO params,		Inl,	[Store [Inline]])
 		| "caps"		-> (CAPS params,		Inl,	[Store [Inline]])
 		| "thru"		-> (THRU params,		Inl,	[Store [Inline]])
 		| "sup"			-> (SUP params,			Inl,	[Store [Inline]])
@@ -102,6 +108,7 @@ let get_simple_tag tag params =
 		| "mbox"		-> (MBOX params,		Inl,	[Store [Inline]])
 
 		| "link"		-> (LINK params,		Inl,	[Store [Raw; Inline]])
+		| "a"			-> (LINK params,		Inl,	[Store [Raw; Inline]])
 		| "see"			-> (SEE params,			Inl,	[Store [Raw]])
 		| "cite"		-> (CITE params,		Inl,	[Store [Raw]])
 		| "ref"			-> (REF params,			Inl,	[Store [Raw]])
@@ -111,16 +118,21 @@ let get_simple_tag tag params =
 		| "part"		-> (PART params, 		Blk,	[Store [Inline]])
 		| "appendix"		-> (APPENDIX params,		Blk,	[])
 		| "section"		-> (SECTION params,		Blk,	[Store [Inline]])
+		| "h1"			-> (SECTION params,		Blk,	[Store [Inline]])
 		| "subsection"		-> (SUBSECTION params,		Blk,	[Store [Inline]])
+		| "h2"			-> (SUBSECTION params,		Blk,	[Store [Inline]])
 		| "subsubsection"	-> (SUBSUBSECTION params,	Blk,	[Store [Inline]])
+		| "h3"			-> (SUBSUBSECTION params,	Blk,	[Store [Inline]])
 		| "bibliography"	-> (BIBLIOGRAPHY params,	Blk,	[])
 		| "notes"		-> (NOTES params,		Blk,	[])
 		| "toc"			-> (TOC params,			Blk,	[])
 		| "title"		-> (TITLE params, 		Blk,	[Store [Inline]])
 		| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
 		| "rule"		-> (RULE params,		Blk,	[])
+		| "hr"			-> (RULE params,		Blk,	[])
 
 		| "item"		-> (ITEM params,		Blk,	[])
+		| "li"			-> (ITEM params,		Blk,	[])
 		| "describe"		-> (DESCRIBE params,		Blk,	[Store [Inline]])
 		| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 		| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
@@ -160,8 +172,11 @@ let get_env_tag tag params is_begin =
 		else match tag with
 			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],					[])
 			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],					[])
+			| "ul"		-> (BEGIN_ITEMIZE_1 params,	END_ITEMIZE_1 params,		[],					[])
 			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],					[])
+			| "ol"		-> (BEGIN_ENUMERATE_1 params,	END_ENUMERATE_1 params,		[],					[])
 			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],					[])
+			| "dl"		-> (BEGIN_DESCRIPTION_1 params,	END_DESCRIPTION_1 params,	[],					[])
 			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],					[])
 			| "pull"	-> (BEGIN_PULLQUOTE params,	END_PULLQUOTE params,		[],					[])
 			| "boxout"	-> (BEGIN_BOXOUT params,	END_BOXOUT params,		[Store [Inline]],			[])
@@ -188,8 +203,8 @@ let get_env_tag tag params is_begin =
 *)
 
 let pat_env = "\\\\(?<env>(begin)|(end))"
-let pat_command = "\\\\(?<command>\\w+)"
-let pat_primary = "\\{(?<primary>\\w+[\\w\\d_]*)\\}"
+let pat_command = "\\\\(?<command>\\w[\\w\\d_]*)"
+let pat_primary = "\\{(?<primary>\\w[\\w\\d_]*)\\}"
 
 let pat_order = "(?<order>\\([\\w\\d\\.]*\\))"
 let pat_label = "(?<label>\\[[\\w\\d\\-:_]*\\])"
