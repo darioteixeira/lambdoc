@@ -134,6 +134,7 @@ let get_simple_tag tag params =
 		| "item"		-> (ITEM params,		Blk,	[])
 		| "li"			-> (ITEM params,		Blk,	[])
 		| "describe"		-> (DESCRIBE params,		Blk,	[Store [Inline]])
+		| "dt"			-> (DESCRIBE params,		Blk,	[Store [Inline]])
 		| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 		| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 		| "head"		-> (HEAD params,		Blk,	[])
