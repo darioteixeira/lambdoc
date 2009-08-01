@@ -9,8 +9,8 @@ let test_handler sp () () =
 	let accept_list = [] in
 	let deny_list = [] in
 	let default = `Accept in
-	let doc = Read_lambhtml.Main.ambivalent_manuscript_from_string ~accept_list ~deny_list ~default src in
-	let xhtml = Write_xhtml.Main.write_ambivalent_manuscript doc in
+	let doc = Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string ~accept_list ~deny_list ~default src in
+	let xhtml = Lambdoc_write_xhtml.Main.write_ambivalent_manuscript doc in
 	Lwt.return
 		(html
 			(head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]
