@@ -44,10 +44,8 @@ let get_column errors comm spec =
 
 (**	Processes an AST as provided by the parser, producing the corresponding
 	document.  In addition, a label dictionary, bibliography entries, notes,
-	and possible errors are also returned.  Note that many of the internal
-	functions have explicit type annotations.  While these are not required
-	by the language, they make error messages far more comprehensible in
-	a context where polymorphic variants are heavily used.
+	and possible errors are also returned.  Note that because Ocaml does not
+	yet support true GADTs, this function has to rely on Obj.magic.
 *)
 let process_document classnames idiosyncrasies document_ast =
 
@@ -441,9 +439,7 @@ let process_document classnames idiosyncrasies document_ast =
 				and maybe_equation = Obj.magic (convert_block ~subpaged true true `Equation_blk blk)
 				in match (maybe_wrapper, maybe_equation) with
 					| (Some wrapper, Some equation)	-> Some (Block.equation wrapper equation)
-					| (Some _, None)		-> failwith "oops1"
-					| (None, Some _)		-> failwith "oops2"
-					| (None, None)			-> failwith "oops3"
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_equation comm elem
 
 		| (true, _, `Any_blk, (comm, Ast.Printout (caption, blk))) ->
@@ -452,7 +448,7 @@ let process_document classnames idiosyncrasies document_ast =
 				and maybe_printout = Obj.magic (convert_block ~subpaged true true `Printout_blk blk)
 				in match (maybe_wrapper, maybe_printout) with
 					| (Some wrapper, Some printout)	-> Some (Block.printout wrapper printout)
-					| _				-> failwith "oops1"
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_printout comm elem
 
 		| (true, _, `Any_blk, (comm, Ast.Table (caption, blk))) ->
@@ -461,7 +457,7 @@ let process_document classnames idiosyncrasies document_ast =
 				and maybe_table = Obj.magic (convert_block ~subpaged true true `Table_blk blk)
 				in match (maybe_wrapper, maybe_table) with
 					| (Some wrapper, Some table)	-> Some (Block.table wrapper table)
-					| _				-> failwith "oops1"
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_table comm elem
 
 		| (true, _, `Any_blk, (comm, Ast.Figure (caption, blk))) ->
@@ -470,7 +466,7 @@ let process_document classnames idiosyncrasies document_ast =
 				and maybe_figure = Obj.magic (convert_block ~subpaged true true `Figure_blk blk)
 				in match (maybe_wrapper, maybe_figure) with
 					| (Some wrapper, Some figure)	-> Some (Block.figure wrapper figure)
-					| _				-> failwith "oops1"
+					| _				-> None
 			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_figure comm elem
 
 		| (true, true, `Any_blk, (comm, Ast.Part seq)) ->
