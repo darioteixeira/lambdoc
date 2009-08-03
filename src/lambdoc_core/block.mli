@@ -30,7 +30,7 @@ type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp
 (**	The various types of individual building blocks.
 *)
 type 'a block_t =
-	[ `Paragraph of Indentation.t * Inline.seq_t
+	[ `Paragraph of Inline.seq_t
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
@@ -77,7 +77,7 @@ type (+'a, +'b, +'c, +'d) t = private [< ('a, 'b, 'c, 'd) t block_t ] with sexp
 		{li ['d] indicates the actual block type.}}
 *)
 
-val paragraph: Indentation.t -> ('a, _) Inline.t list ->
+val paragraph: ('a, _) Inline.t list ->
 	('a, [> `Embeddable ], [> `Nestable ], [> `Paragraph_blk ]) t
 
 val itemize: Bullet.t -> ('a, 'b, [< `Nestable ], _) t list plus_t ->
