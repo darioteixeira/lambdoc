@@ -321,7 +321,7 @@ let write_valid_document settings classname doc =
 
 	and write_block ?(wrapped = false) = function
 
-		| `Paragraph seq ->
+		| `Paragraph (indent, seq) ->
 			(None, XHTML.M.p ~a:[a_class ["doc_par"]] (write_seq seq))
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->

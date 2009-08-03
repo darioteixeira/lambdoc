@@ -315,7 +315,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 		| (_, _, `Paragraph_blk, (comm, Ast.Paragraph seq))
 		| (_, _, `Any_blk, (comm, Ast.Paragraph seq)) ->
-			let elem () = Some (Block.paragraph (convert_seq seq))
+			let elem () = Some (Block.paragraph Indentation.Indent_default (convert_seq seq))
 			in check_comm `Feature_paragraph comm elem
 
 		| (x, _, `Any_blk, (comm, Ast.Itemize [])) ->

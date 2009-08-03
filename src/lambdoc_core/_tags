@@ -9,6 +9,7 @@
 <error.*>: pkg_sexplib.syntax, syntax_camlp4o
 <heading.*>: pkg_sexplib.syntax, syntax_camlp4o
 <image.*>: pkg_sexplib.syntax, syntax_camlp4o
+<indentation.*>: pkg_sexplib.syntax, syntax_camlp4o
 <inline.*>: pkg_sexplib.syntax, syntax_camlp4o
 <invalid.*>: pkg_sexplib.syntax, syntax_camlp4o
 <label.*>: pkg_sexplib.syntax, syntax_camlp4o
