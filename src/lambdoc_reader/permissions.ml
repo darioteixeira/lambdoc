@@ -53,7 +53,7 @@ let floater_class =
 	(Forbidden, Forbidden, Optional)
 
 let wrapper_class subpaged =
-	(Optional, (if subpaged then Mandatory else Forbidden), Optional)
+	(Optional, (if subpaged then Mandatory else Forbidden), Forbidden)
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 
