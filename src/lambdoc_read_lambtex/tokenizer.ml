@@ -178,6 +178,7 @@ let get_env_tag tag params is_begin =
 			| "ol"		-> (BEGIN_ENUMERATE_1 params,	END_ENUMERATE_1 params,		[],					[])
 			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],					[])
 			| "dl"		-> (BEGIN_DESCRIPTION_1 params,	END_DESCRIPTION_1 params,	[],					[])
+			| "verse"	-> (BEGIN_VERSE params,		END_VERSE params,		[],					[])
 			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],					[])
 			| "pull"	-> (BEGIN_PULLQUOTE params,	END_PULLQUOTE params,		[],					[])
 			| "boxout"	-> (BEGIN_BOXOUT params,	END_BOXOUT params,		[Store [Inline]],			[])

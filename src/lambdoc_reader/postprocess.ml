@@ -359,6 +359,12 @@ let process_document classnames idiosyncrasies document_ast =
 					| []		-> None
 			in check_comm `Feature_description comm elem
 
+		| (_, _, `Any_blk, (comm, Ast.Verse frag)) ->
+			let elem () =
+				let new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag
+				in Some (Block.verse (Obj.magic new_frag))
+			in check_comm `Feature_verse comm elem
+
 		| (_, _, `Any_blk, (comm, Ast.Quote frag)) ->
 			let elem () =
 				let new_frag = List.filter_map (convert_block ~subpaged false false `Any_blk) frag

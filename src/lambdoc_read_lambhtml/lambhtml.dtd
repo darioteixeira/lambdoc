@@ -9,7 +9,7 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	"p | itemize | ul | enumerate | ol | description | dl | quote
+	"p | itemize | ul | enumerate | ol | description | dl | verse | quote
 	| pull | boxout | code | tabular | verbatim | pre | bitmap | subpage
 	| equation | printout | table | figure
 	| part | appendix | section | h1 | subsection | h2 | subsubsection | h3
@@ -70,6 +70,9 @@
 
 <!ELEMENT dl (dt | dd)+>
 <!ATTLIST dl %Forbidden;>
+
+<!ELEMENT verse %Frag;>
+<!ATTLIST verse %Forbidden;>
 
 <!ELEMENT quote %Frag;>
 <!ATTLIST quote %Forbidden;>

@@ -342,6 +342,9 @@ let write_valid_document settings classname doc =
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
 			in (None, XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl)
 
+		| `Verse frag ->
+			(None, XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag))
+
 		| `Quote frag ->
 			(None, XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag))
 

@@ -24,6 +24,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
+	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Pullquote of Alignment.t * 'a list
 	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
@@ -57,6 +58,7 @@ let paragraph seq = `Paragraph (Inline.get_seq seq)
 let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_frags))
 let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
 let description (hd, tl) = let conv (seq, frag) = (Inline.get_seq seq, frag) in `Description (conv hd, List.map conv tl)
+let verse frag = `Verse frag
 let quote frag = `Quote frag
 let pullquote alignment frag = `Pullquote (alignment, frag)
 let boxout alignment maybe_classname maybe_seq frag = `Boxout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
