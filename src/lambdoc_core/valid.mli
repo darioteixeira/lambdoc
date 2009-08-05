@@ -32,7 +32,7 @@ type composition_t = [ `Composition ] document_t with sexp
 (********************************************************************************)
 
 val make_manuscript:
-	([< `Composition | `Manuscript ], _, _, _) Block.t list ->
+	([< `Composition | `Manuscript ], _, _, _, _) Block.t list ->
 	Bib.t list ->
 	Note.t list ->
 	Heading.t list ->
@@ -40,7 +40,7 @@ val make_manuscript:
 	manuscript_t
 
 val make_composition:
-	([< `Composition ], _, _, _) Block.t list ->
+	([< `Composition ], _, _, _, _) Block.t list ->
 	composition_t
 
 

@@ -31,5 +31,5 @@ type t =
 (**	{3 Public functions and values}						*)
 (********************************************************************************)
 
-val note: Label.t -> order_t -> (_, _, _, _) Block.t list -> t
+val note: Label.t -> order_t -> (_, _, _, _, _) Block.t list -> t
 

@@ -57,7 +57,7 @@ type 'a block_t =
 type raw_block_t = raw_block_t block_t with sexp
 type frag_t = raw_block_t list with sexp
 
-type (+'a, +'b, +'c, +'d) t = private [< ('a, 'b, 'c, 'd) t block_t ] with sexp
+type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] with sexp
 
 
 (********************************************************************************)
@@ -65,85 +65,90 @@ type (+'a, +'b, +'c, +'d) t = private [< ('a, 'b, 'c, 'd) t block_t ] with sexp
 (********************************************************************************)
 
 (**	The functions in this module use phantom types to enforce some invariants
-	on block nesting.  The main type {!t} has four of these phantom types:
+	on block nesting.  The main type {!t} has five of these phantom types:
 	{ul	{li ['a] is either [`Composition] or [`Manuscript].  The former
 		does not allow for elements that may produce internal links in
 		the document, whereas the latter allows everything.}
-		{li ['b] is either [`Embeddable] or [`Non_embeddable].  A block
-		is termed embeddable if it can be a child of quotes, boxouts,
-		lists, etc.}
-		{li ['c] is either [`Nestable] or [`Non_nestable].  A block is
-		nestable if it is embeddable or if it is a wrapper (equation,
-		figure, etc).}
-		{li ['d] indicates the actual block type.}}
+		{li ['b] is either [`Listable] or [`Non_listable].  A block is
+		listable if it is a wrapper (equation, printout, table, or figure),
+		a pullquote, a boxout, or embeddable.}
+		{li ['c] is either [`Embeddable] or [`Non_embeddable].  A block
+		is termed embeddable if it can be a child of quotes and boxouts.
+		All floaters except for pullquotes and boxouts are embeddable.
+		Note that all prose blocks are also embeddable.}
+		{li ['d] is either [`Prose] or [`Non_prose].  A block is defined
+		as prose if it generates only text or lists of text, but it is not
+		a verse block.  Therefore, the only prose blocks are paragraphs
+		and the three types of lists.}
+		{li ['e] indicates the actual block type.}}
 *)
 
 val paragraph: ('a, _) Inline.t list ->
-	('a, [> `Embeddable ], [> `Nestable ], [> `Paragraph_blk ]) t
+	('a, [> `Listable ], [> `Embeddable ], [> `Prose ], [> `Paragraph_blk ]) t
 
-val itemize: Bullet.t -> ('a, 'b, [< `Nestable ], _) t list plus_t ->
-	('a, 'b, [> `Nestable ], [> `Itemize_blk ]) t
+val itemize: Bullet.t -> ('a, [< `Listable ], 'c, _, _) t list plus_t ->
+	('a, [> `Listable ], 'c, [> `Prose ], [> `Itemize_blk ]) t
 
-val enumerate: Numbering.t -> ('a, 'b, [< `Nestable ], _) t list plus_t ->
-	('a, 'b, [> `Nestable ], [> `Itemize_blk ]) t
+val enumerate: Numbering.t -> ('a, [< `Listable ], 'c, _, _) t list plus_t ->
+	('a, [> `Listable ], 'c, [> `Prose ], [> `Enumerate_blk ]) t
 
-val description: (('a, _) Inline.t list * ('a, 'b, [< `Nestable ], _) t list) plus_t ->
-	('a, 'b, [> `Nestable ], [> `Description_blk ]) t
+val description: (('a, _) Inline.t list * ('a, [< `Listable ], 'c, _, _) t list) plus_t ->
+	('a, [> `Listable ], 'c, [> `Prose ], [> `Description_blk ]) t
 
-val verse: ('a, [< `Embeddable ], [< `Nestable ], _) t list ->
-	('a, [> `Embeddable ], [> `Nestable], [> `Verse_blk ]) t
+val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose], [> `Verse_blk ]) t
 
-val quote: ('a, [< `Embeddable ], [< `Nestable ], _) t list ->
-	('a, [> `Embeddable ], [> `Nestable], [> `Quote_blk ]) t
+val quote: ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
+	('a, [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Quote_blk ]) t
 
-val pullquote: Alignment.t -> ('a, [< `Embeddable ], [< `Nestable ], _) t list ->
-	('a, [> `Embeddable ], [> `Nestable], [> `Pullquote_blk ]) t
+val pullquote: Alignment.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
+	('a, [> `Listable ], [> `Non_embeddable], [> `Non_prose ], [> `Pullquote_blk ]) t
 
-val boxout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Embeddable ], [< `Nestable ], _) t list ->
-	('a, [> `Embeddable ], [> `Nestable], [> `Pullquote_blk ]) t
+val boxout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
+	('a, [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
 
 val math: Alignment.t -> Math.t ->
-	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Math_blk ]) t
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Math_blk ]) t
 
 val code: Alignment.t -> Code.t ->
-	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Code_blk ]) t
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Code_blk ]) t
 
 val tabular: Alignment.t -> 'a Tabular.t ->
-	('a, [> `Embeddable ], [> `Nestable], [> `Tabular_blk ]) t
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Tabular_blk ]) t
 
 val verbatim: Alignment.t -> raw_t ->
-	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Verbatim_blk ]) t
+	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Verbatim_blk ]) t
 
 val bitmap: Alignment.t -> Image.t ->
-	([> `Composition ], [> `Embeddable ], [> `Nestable], [> `Bitmap_blk ]) t
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Bitmap_blk ]) t
 
-val subpage: Alignment.t -> ('a, _, _, _) t list ->
-	('a, [> `Embeddable ], [> `Nestable], [> `Subpage_blk ]) t
+val subpage: Alignment.t -> ('a, _, _, _, _) t list ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Subpage_blk ]) t
 
-val equation: wrapper_t -> (_, _, _, [< `Math_blk ]) t ->
-	([> `Manuscript], [> `Non_embeddable ], [> `Nestable], [> `Equation_blk ]) t
+val equation: wrapper_t -> (_, _, _, _, [< `Math_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Equation_blk ]) t
 
-val printout: wrapper_t -> (_, _, _, [< `Code_blk ]) t ->
-	([> `Manuscript], [> `Non_embeddable ], [> `Nestable], [> `Printout_blk ]) t
+val printout: wrapper_t -> (_, _, _, _, [< `Code_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Printout_blk ]) t
 
-val table: wrapper_t -> (_, _, _, [< `Tabular_blk ]) t ->
-	([> `Manuscript], [> `Non_embeddable ], [> `Nestable], [> `Table_blk ]) t
+val table: wrapper_t -> (_, _, _, _, [< `Tabular_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Table_blk ]) t
 
-val figure: wrapper_t -> (_, _, _, [< `Verbatim_blk | `Bitmap_blk | `Subpage_blk ]) t ->
-	([> `Manuscript], [> `Non_embeddable ], [> `Nestable], [> `Figure_blk ]) t
+val figure: wrapper_t -> (_, _, _, _, [< `Verbatim_blk | `Bitmap_blk | `Subpage_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Figure_blk ]) t
 
 val heading: Heading.t ->
-	([> `Manuscript ], [> `Non_embeddable ], [> `Non_nestable], [> `Heading_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Heading_blk ]) t
 
 val title: title_level_t -> (_, _) Inline.t list ->
-	([> `Manuscript ], [> `Non_embeddable ], [> `Non_nestable], [> `Title_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Title_blk ]) t
 
-val abstract: (_, _, _, [< `Paragraph_blk ]) t list ->
-	([> `Manuscript ], [> `Non_embeddable ], [> `Non_nestable], [> `Abstract_blk ]) t
+val abstract: (_, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Abstract_blk ]) t
 
 val rule: unit ->
-	([> `Manuscript ], [> `Non_embeddable ], [> `Non_nestable], [> `Rule_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Rule_blk ]) t
 
-val get_frag: (_, _, _, _) t list ->
+val get_frag: (_, _, _, _, _) t list ->
 	frag_t
 

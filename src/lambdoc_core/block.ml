@@ -47,7 +47,7 @@ type 'a block_t =
 type raw_block_t = raw_block_t block_t with sexp
 type frag_t = raw_block_t list with sexp
 
-type (+'a, +'b, +'c, +'d) t = ('a, 'b, 'c, 'd) t block_t with sexp
+type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 
 
 (********************************************************************************)

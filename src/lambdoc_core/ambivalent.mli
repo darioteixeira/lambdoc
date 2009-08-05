@@ -30,7 +30,7 @@ type composition_t =
 (********************************************************************************)
 
 val make_valid_manuscript:
-	([< `Composition | `Manuscript ], _, _, _) Block.t list ->
+	([< `Composition | `Manuscript ], _, _, _, _) Block.t list ->
 	Bib.t list ->
 	Note.t list ->
 	Heading.t list ->
@@ -38,7 +38,7 @@ val make_valid_manuscript:
 	manuscript_t
 
 val make_valid_composition:
-	([< `Composition ], _, _, _) Block.t list ->
+	([< `Composition ], _, _, _, _) Block.t list ->
 	composition_t
 
 val make_invalid_manuscript: Error.t list -> manuscript_t
