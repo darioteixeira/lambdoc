@@ -26,14 +26,14 @@ type 'a block_t =
 	| `Description of (Inline.seq_t * 'a list) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
-	| `Pullquote of Alignment.t * 'a list
-	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Math of Alignment.t * Math.t
 	| `Code of Alignment.t * Code.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
 	| `Verbatim of Alignment.t * raw_t
 	| `Bitmap of Alignment.t * Image.t
 	| `Subpage of Alignment.t * 'a list
+	| `Pullquote of Alignment.t * 'a list
+	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Equation of wrapper_t * 'a
 	| `Printout of wrapper_t * 'a
 	| `Table of wrapper_t * 'a
@@ -60,14 +60,14 @@ let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_f
 let description (hd, tl) = let conv (seq, frag) = (Inline.get_seq seq, frag) in `Description (conv hd, List.map conv tl)
 let verse frag = `Verse frag
 let quote frag = `Quote frag
-let pullquote alignment frag = `Pullquote (alignment, frag)
-let boxout alignment maybe_classname maybe_seq frag = `Boxout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
 let math alignment mth = `Math (alignment, mth)
 let code alignment x = `Code (alignment, x)
 let tabular alignment tab = `Tabular (alignment, Tabular.get_tabular tab)
 let verbatim alignment txt = `Verbatim (alignment, txt)
 let bitmap alignment img = `Bitmap (alignment, img)
 let subpage alignment frag = `Subpage (alignment, frag)
+let pullquote alignment frag = `Pullquote (alignment, frag)
+let boxout alignment maybe_classname maybe_seq frag = `Boxout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
 let equation wrapper equation_blk = `Equation (wrapper, equation_blk)
 let printout wrapper printout_blk = `Printout (wrapper, printout_blk)
 let table wrapper table_blk = `Table (wrapper, table_blk)

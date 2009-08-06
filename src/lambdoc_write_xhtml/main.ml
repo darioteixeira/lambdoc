@@ -348,19 +348,6 @@ let write_valid_document settings classname doc =
 		| `Quote frag ->
 			(None, XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag))
 
-		| `Pullquote (alignment, frag) ->
-			let style = if wrapped then [] else make_alignment alignment
-			in (None, XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag))
-
-		| `Boxout (alignment, maybe_classname, maybe_seq, frag) ->
-			let style_align = if wrapped then [] else make_alignment alignment
-			and style_class = match maybe_classname with Some classname -> ["doc_boxout_" ^ classname] | None -> [] in
-			let title = match maybe_seq with
-				| None -> []
-				| Some seq -> [XHTML.M.div ~a:[a_class ["doc_boxout_head"]] [XHTML.M.h1 (write_seq seq)]]
-			in (None, XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_align @ style_class)]
-				[XHTML.M.div (title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])])
-
 		| `Math (alignment, math) ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
 			and style = if wrapped then [] else make_alignment alignment
@@ -394,6 +381,19 @@ let write_valid_document settings classname doc =
 		| `Subpage (alignment, frag) ->
 			let style = if wrapped then [] else make_alignment alignment
 			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] [XHTML.M.div (write_frag frag)])
+
+		| `Pullquote (alignment, frag) ->
+			let style = if wrapped then [] else make_alignment alignment
+			in (None, XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag))
+
+		| `Boxout (alignment, maybe_classname, maybe_seq, frag) ->
+			let style_align = if wrapped then [] else make_alignment alignment
+			and style_class = match maybe_classname with Some classname -> ["doc_boxout_" ^ classname] | None -> [] in
+			let title = match maybe_seq with
+				| None -> []
+				| Some seq -> [XHTML.M.div ~a:[a_class ["doc_boxout_head"]] [XHTML.M.h1 (write_seq seq)]]
+			in (None, XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_align @ style_class)]
+				[XHTML.M.div (title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])])
 
 		| `Equation (wrapper, equation) ->
 			let name = settings.names.equation_name

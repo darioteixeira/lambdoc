@@ -74,12 +74,6 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_QUOTE
 %token <Lambdoc_reader.Ast.command_t> END_QUOTE
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_PULLQUOTE
-%token <Lambdoc_reader.Ast.command_t> END_PULLQUOTE
-
-%token <Lambdoc_reader.Ast.command_t> BEGIN_BOXOUT
-%token <Lambdoc_reader.Ast.command_t> END_BOXOUT
-
 %token <Lambdoc_reader.Ast.command_t> BEGIN_MATHTEX_BLK
 %token <Lambdoc_reader.Ast.command_t> END_MATHTEX_BLK
 
@@ -97,6 +91,12 @@ open Lambdoc_reader
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_SUBPAGE
 %token <Lambdoc_reader.Ast.command_t> END_SUBPAGE
+
+%token <Lambdoc_reader.Ast.command_t> BEGIN_PULLQUOTE
+%token <Lambdoc_reader.Ast.command_t> END_PULLQUOTE
+
+%token <Lambdoc_reader.Ast.command_t> BEGIN_BOXOUT
+%token <Lambdoc_reader.Ast.command_t> END_BOXOUT
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_EQUATION
 %token <Lambdoc_reader.Ast.command_t> END_EQUATION
@@ -197,8 +197,6 @@ block:
 	| BEGIN_DESCRIPTION_1 describe_frag END_DESCRIPTION_1	{($1, Ast.Description $2)}
 	| BEGIN_VERSE block+ END_VERSE				{($1, Ast.Verse $2)}
 	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
-	| BEGIN_PULLQUOTE block+ END_PULLQUOTE			{($1, Ast.Pullquote $2)}
-	| BEGIN_BOXOUT BEGIN inline+ END block+ END_BOXOUT	{($1, Ast.Boxout ((match $3 with [] -> None | x -> Some x), $5))}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
 	| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{($1, Ast.Mathml_blk $2)}
 	| BEGIN_CODE RAW END_CODE				{($1, Ast.Code $2)}
@@ -206,6 +204,8 @@ block:
 	| BEGIN_VERBATIM RAW END_VERBATIM			{($1, Ast.Verbatim $2)}
 	| BITMAP BEGIN RAW END BEGIN RAW END			{($1, Ast.Bitmap ($3, $6))}
 	| BEGIN_SUBPAGE block+ END_SUBPAGE			{($1, Ast.Subpage $2)}
+	| BEGIN_PULLQUOTE block+ END_PULLQUOTE			{($1, Ast.Pullquote $2)}
+	| BEGIN_BOXOUT BEGIN inline+ END block+ END_BOXOUT	{($1, Ast.Boxout ((match $3 with [] -> None | x -> Some x), $5))}
 	| BEGIN_EQUATION block caption END_EQUATION		{($1, Ast.Equation ($3, $2))}
 	| BEGIN_PRINTOUT block caption END_PRINTOUT		{($1, Ast.Printout ($3, $2))}
 	| BEGIN_TABLE block caption END_TABLE			{($1, Ast.Table ($3, $2))}

@@ -89,8 +89,6 @@ type frag_t = block_t list
 	| Description of (command_t * seq_t * frag_t) list
 	| Verse of frag_t
 	| Quote of frag_t
-	| Pullquote of frag_t
-	| Boxout of seq_t option * frag_t
 	| Mathtex_blk of raw_t
 	| Mathml_blk of raw_t
 	| Code of raw_t
@@ -98,6 +96,8 @@ type frag_t = block_t list
 	| Verbatim of raw_t
 	| Bitmap of raw_t * raw_t	(* (src, alt) *)
 	| Subpage of frag_t
+	| Pullquote of frag_t
+	| Boxout of seq_t option * frag_t
 	| Equation of caption_t * block_t
 	| Printout of caption_t * block_t
 	| Table of caption_t * block_t

@@ -9,10 +9,13 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	"p | itemize | ul | enumerate | ol | description | dl | verse | quote
-	| pull | boxout | code | tabular | verbatim | pre | bitmap | subpage
+	"p | itemize | ul | enumerate | ol | description | dl
+	| verse | quote
+	| code | tabular | verbatim | pre | bitmap | subpage
+	| pull | boxout
 	| equation | printout | table | figure
-	| part | appendix | section | h1 | subsection | h2 | subsubsection | h3
+	| part | appendix
+	| section | h1 | subsection | h2 | subsubsection | h3
 	| bibliography | notes | toc
 	| title | subtitle | abstract | rule
 	| bib | note">
@@ -77,12 +80,6 @@
 <!ELEMENT quote %Frag;>
 <!ATTLIST quote %Forbidden;>
 
-<!ELEMENT pullquote %Frag;>
-<!ATTLIST pullquote %Floater;>
-
-<!ELEMENT boxout (msg?, %Frag;)>
-<!ATTLIST boxout %Floater;>
-
 <!ELEMENT msg %Inline;>
 <!ATTLIST msg %Forbidden;>
 
@@ -103,6 +100,12 @@
 
 <!ELEMENT subpage %Frag;>
 <!ATTLIST subpage %Floater;>
+
+<!ELEMENT pullquote %Frag;>
+<!ATTLIST pullquote %Floater;>
+
+<!ELEMENT boxout (msg?, %Frag;)>
+<!ATTLIST boxout %Floater;>
 
 <!ELEMENT equation ((%Block;), caption)>
 <!ATTLIST equation %Wrapper;>

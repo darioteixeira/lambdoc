@@ -116,7 +116,7 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| Some subpaged	-> subpaged
 		| None		-> invalid_arg "Feature requires that 'subpaged' be set but it is not!" in
 
-	let non_reference_inline_feature_set = function
+	let composition_inline_feature_set = function
 		| `Feature_plain	-> forbidden_class
 		| `Feature_entity	-> forbidden_class
 		| `Feature_linebreak	-> forbidden_class
@@ -132,14 +132,14 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_mbox		-> forbidden_class
 		| `Feature_link		-> forbidden_class
 
-	and reference_inline_feature_set = function
+	and manuscript_inline_feature_set = function
 		| `Feature_see		-> forbidden_class
 		| `Feature_cite		-> forbidden_class
 		| `Feature_ref		-> forbidden_class
 		| `Feature_sref		-> forbidden_class
 		| `Feature_mref		-> forbidden_class
 
-	and non_reference_block_feature_set = function
+	and composition_block_feature_set = function
 		| `Feature_item		-> forbidden_class
 		| `Feature_describe	-> forbidden_class
 		| `Feature_paragraph	-> forbidden_class
@@ -148,8 +148,6 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_description	-> forbidden_class
 		| `Feature_verse	-> forbidden_class
 		| `Feature_quote	-> forbidden_class
-		| `Feature_pullquote	-> floater_class
-		| `Feature_boxout	-> floater_class
 		| `Feature_mathtex_blk	-> floater_class
 		| `Feature_mathml_blk	-> floater_class
 		| `Feature_code		-> floater_class
@@ -158,7 +156,10 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_bitmap	-> floater_class
 		| `Feature_subpage	-> floater_class
 
-	and reference_block_feature_set = function
+	and manuscript_block_feature_set = function
+		| `Feature_pullquote	-> floater_class
+		| `Feature_boxout	-> floater_class
+
 		| `Feature_equation	-> wrapper_class (get_subpaged maybe_subpaged)
 		| `Feature_printout	-> wrapper_class (get_subpaged maybe_subpaged)
 		| `Feature_table	-> wrapper_class (get_subpaged maybe_subpaged)
@@ -174,6 +175,7 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 
 		| `Feature_part		-> custom_heading_class (get_subpaged maybe_subpaged)
 		| `Feature_appendix	-> preset_heading_class
+
 		| `Feature_section1	-> custom_heading_class (get_subpaged maybe_subpaged)
 		| `Feature_section2	-> custom_heading_class (get_subpaged maybe_subpaged)
 		| `Feature_section3	-> custom_heading_class (get_subpaged maybe_subpaged)
@@ -188,10 +190,10 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_rule		-> forbidden_class in
 
 	let permission_set = match feature with
-		| #Features.non_reference_inline_feature_t as x	-> non_reference_inline_feature_set x
-		| #Features.reference_inline_feature_t as x	-> reference_inline_feature_set x
-		| #Features.non_reference_block_feature_t as x	-> non_reference_block_feature_set x
-		| #Features.reference_block_feature_t as x	-> reference_block_feature_set x
+		| #Features.composition_inline_feature_t as x	-> composition_inline_feature_set x
+		| #Features.manuscript_inline_feature_t as x	-> manuscript_inline_feature_set x
+		| #Features.composition_block_feature_t as x	-> composition_block_feature_set x
+		| #Features.manuscript_block_feature_t as x	-> manuscript_block_feature_set x
 
 	in check_permission_set errors comm permission_set
 

@@ -36,14 +36,14 @@ type 'a block_t =
 	| `Description of (Inline.seq_t * 'a list) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
-	| `Pullquote of Alignment.t * 'a list
-	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Math of Alignment.t * Math.t
 	| `Code of Alignment.t * Code.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
 	| `Verbatim of Alignment.t * raw_t
 	| `Bitmap of Alignment.t * Image.t
 	| `Subpage of Alignment.t * 'a list
+	| `Pullquote of Alignment.t * 'a list
+	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
 	| `Equation of wrapper_t * 'a
 	| `Printout of wrapper_t * 'a
 	| `Table of wrapper_t * 'a
@@ -101,12 +101,6 @@ val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->
 val quote: ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 	('a, [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Quote_blk ]) t
 
-val pullquote: Alignment.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
-	('a, [> `Listable ], [> `Non_embeddable], [> `Non_prose ], [> `Pullquote_blk ]) t
-
-val boxout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
-	('a, [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
-
 val math: Alignment.t -> Math.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Math_blk ]) t
 
@@ -124,6 +118,12 @@ val bitmap: Alignment.t -> Image.t ->
 
 val subpage: Alignment.t -> ('a, _, _, _, _) t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Subpage_blk ]) t
+
+val pullquote: Alignment.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable], [> `Non_prose ], [> `Pullquote_blk ]) t
+
+val boxout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
 
 val equation: wrapper_t -> (_, _, _, _, [< `Math_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Equation_blk ]) t

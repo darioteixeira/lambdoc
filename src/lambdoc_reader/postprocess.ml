@@ -372,21 +372,6 @@ let process_document classnames idiosyncrasies document_ast =
 				in Some (Block.quote (Obj.magic new_frag))
 			in check_comm `Feature_quote comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
-			let elem () =
-				let alignment = Extra.parse_for_pullquote errors comm
-				and new_frag = List.filter_map (convert_block ~subpaged false false false `Any_blk) frag
-				in Some (Block.pullquote alignment (Obj.magic new_frag))
-			in check_comm `Feature_pullquote comm elem
-
-		| (_, true, true, `Any_blk, (comm, Ast.Boxout (maybe_seq, frag))) ->
-			let elem () =
-				let (alignment, maybe_classname) = Extra.parse_for_boxout ~classnames errors comm
-				and new_frag = List.filter_map (convert_block ~subpaged false false true `Any_blk) frag
-				and seq = maybe convert_seq maybe_seq
-				in Some (Block.boxout alignment maybe_classname seq (Obj.magic new_frag))
-			in check_comm `Feature_boxout comm elem
-
 		| (_, _, true, `Equation_blk, (comm, Ast.Mathtex_blk txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Mathtex_blk txt)) ->
 			let elem () =
@@ -439,6 +424,21 @@ let process_document classnames idiosyncrasies document_ast =
 				and new_frag = List.filter_map (convert_block ~subpaged:true true true true `Any_blk) frag
 				in Some (Block.subpage alignment (Obj.magic new_frag))
 			in check_comm `Feature_subpage comm elem
+
+		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
+			let elem () =
+				let alignment = Extra.parse_for_pullquote errors comm
+				and new_frag = List.filter_map (convert_block ~subpaged false false false `Any_blk) frag
+				in Some (Block.pullquote alignment (Obj.magic new_frag))
+			in check_comm `Feature_pullquote comm elem
+
+		| (_, true, true, `Any_blk, (comm, Ast.Boxout (maybe_seq, frag))) ->
+			let elem () =
+				let (alignment, maybe_classname) = Extra.parse_for_boxout ~classnames errors comm
+				and new_frag = List.filter_map (convert_block ~subpaged false false true `Any_blk) frag
+				and seq = maybe convert_seq maybe_seq
+				in Some (Block.boxout alignment maybe_classname seq (Obj.magic new_frag))
+			in check_comm `Feature_boxout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (caption, blk))) ->
 			let elem () =
