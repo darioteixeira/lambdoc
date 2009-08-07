@@ -21,7 +21,7 @@
 /* Inline text.									*/
 /********************************************************************************/
 
-.doc_mono	{font-family: monospace; color: #333;}
+.doc_mono	{font-family: monospace; font-weight: bold; color: #666;}
 .doc_caps	{font-variant: small-caps;}
 .doc_thru	{text-decoration: line-through;}
 sup		{vertical-align: 0.3em;}
@@ -207,6 +207,32 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 .doc_quote
 	{
 	clear: both;
+	padding: 0 0.5em 0 0.5em;
+	border-left: 2px solid #999;
+	text-align: justify;
+	quotes: "\201c" "\201d";
+	}
+
+.doc_quote:before
+	{
+	display: block;
+	font-family: "Georgia", serif;
+	font-size: 1.571em;		/* For a size of 22px */
+	color: #999;
+	content: open-quote;
+	margin-left: -0.6em;
+	line-height: 1.2em;
+	height: 0;
+	}
+
+
+/********************************************************************************/
+/* Pull-quote environments.							*/
+/********************************************************************************/
+
+.doc_pullquote
+	{
+	clear: both;
 	padding: 0 0.5em 0 2em;
 	border-top: 2px solid #999;
 	border-bottom: 2px solid #999;
@@ -215,7 +241,7 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	quotes: "\201c" "\201d";
 	}
 
-.doc_quote:before
+.doc_pullquote:before
 	{
 	display: block;
 	font-family: "Georgia", serif;
@@ -225,19 +251,19 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	margin-left: -0.6em;
 	line-height: 1.2em;
 	height: 0;
-	
+	}
 
-}
+
 /********************************************************************************/
-/* Callout environments.							*/
+/* Boxout environments.								*/
 /********************************************************************************/
 
-.doc_callout
+.doc_boxout
 	{
 	background: #444;
 	}
 
-.doc_callout > div
+.doc_boxout > div
 	{
 	position: relative;
 	top: -3px;
@@ -246,13 +272,13 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	background: #ffffcc;
 	}
 
-.doc_callout_head
+.doc_boxout_head
 	{
 	text-align: center;
 	border-bottom: 1px solid #333;
 	}
 	
-.doc_callout_head > h1
+.doc_boxout_head > h1
 	{
 	display: inline-block;
 	font-size: 1.071em;	/* For a size of 15px */
@@ -262,16 +288,16 @@ h3.doc_sec	{font-size: 1em;}				/* For a size of 14px */
 	padding: 0.5em 0;
 	}
 
-.doc_callout_body
+.doc_boxout_body
 	{
 	padding: 0 1em;
 	}
 
-.doc_callout_warn > div	{background: #ffdd77;}
-.doc_callout_tip > div	{background: #ccffcc;}
+.doc_boxout_warn > div	{background: #ffdd77;}
+.doc_boxout_tip > div	{background: #ccffcc;}
 
-.doc_callout_warn > div > .doc_callout_head > h1	{padding-left: 28px; background: url('callout-warn.png') no-repeat left;}
-.doc_callout_tip > div > .doc_callout_head > h1		{padding-left: 28px; background: url('callout-tip.png') no-repeat left;}
+.doc_boxout_warn > div > .doc_boxout_head > h1	{padding-left: 28px; background: url('boxout-warn.png') no-repeat left;}
+.doc_boxout_tip > div > .doc_boxout_head > h1	{padding-left: 28px; background: url('boxout-tip.png') no-repeat left;}
 
 
 /********************************************************************************/
