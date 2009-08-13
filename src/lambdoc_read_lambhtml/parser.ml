@@ -65,18 +65,15 @@ and process_inline node =
 
 (*	In flow mode we must place loose inline elements into newly created paragraph blocks.
 *)
-let coalesce_flow frag_root =
+let coalesce_flow : _ Pxp_document.node -> unit = fun frag_root ->
 	let current_paragraph = ref None in
 	let move_node node = match !current_paragraph with
 		| None ->
-			(*
-			let paragraph = node#create_element node#dtd (T_element "p") [] in
+			let paragraph = Pxp_document.create_element_node Pxp_tree_parser.default_spec node#dtd "p" [] in
 			frag_root#insert_nodes ~pos:node#node_position [paragraph];
 			current_paragraph := Some paragraph;
 			node#remove ();
 			paragraph#append_node node
-			*)
-			()
 		| Some paragraph ->
 			node#remove ();
 			paragraph#append_node node in
@@ -88,10 +85,8 @@ let coalesce_flow frag_root =
 	
 
 let rec process_frag ?(flow = false) frag_root =
-	let () = Printf.eprintf "Frag size before: %d\n" (List.length frag_root#sub_nodes) in
-	let () = if flow then coalesce_flow frag_root else () in
-	let () = Printf.eprintf "Frag size after:  %d\n" (List.length frag_root#sub_nodes)
-	in List.map process_block frag_root#sub_nodes
+	if flow then coalesce_flow frag_root;
+	List.map process_block frag_root#sub_nodes
 
 and process_block node =
 	let comm = lazy (command_from_node node)
