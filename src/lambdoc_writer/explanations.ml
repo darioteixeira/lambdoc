@@ -137,6 +137,9 @@ let explain_error = function
 	| Error.Absent_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
+	| Error.Malformed_code ->
+		sprintf "This line contains an invalid UTF-8 sequence (represented by the character '\xef\xbf\xbd')."
+
 	| Error.Reading_error msg ->
 		sprintf "%s." msg
 

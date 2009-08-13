@@ -99,6 +99,7 @@ type error_msg_t =
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
 	| Absent_target of tag_t option * ref_t
 
+	| Malformed_code
 	| Reading_error of string
 
 	with sexp

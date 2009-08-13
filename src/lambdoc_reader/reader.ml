@@ -59,9 +59,14 @@ module Make_reader (Reader: READER): S =
 struct
 	let ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str =
 		try
+			let () = Preprocess.validate_utf8 str in
 			let document_ast = Reader.ast_from_string str
 			in valid_processor ?classnames ?accept_list ?deny_list ?default str document_ast
 		with
+			| Preprocess.Malformed_source (sane_str, error_lines) ->
+				let msgs = List.map (fun line -> (line, Error.Malformed_code)) error_lines in
+				let errors = Postprocess.collate_errors sane_str msgs
+				in invalid_maker errors
 			| Reader.Reading_error (line, msg) ->
 				let errors = Postprocess.collate_errors str [(line, Error.Reading_error msg)]
 				in invalid_maker errors
