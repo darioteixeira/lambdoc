@@ -219,6 +219,8 @@ object (self)
 			then (BEGIN_MATHML_BLK params, END_MATHML_BLK params, [Push_env (Mathml_blk tag)], [Pop_env])
 			else if String.starts_with tag "verbatim"
 			then (BEGIN_VERBATIM params, END_VERBATIM params, [Push_env (Verbatim tag)], [Pop_env])
+			else if String.starts_with tag "pre"
+			then (BEGIN_VERBATIM_1 params, END_VERBATIM_1 params, [Push_env (Verbatim tag)], [Pop_env])
 			else if String.starts_with tag "code"
 			then (BEGIN_CODE params, END_CODE params, [Push_env (Code tag)], [Pop_env])
 

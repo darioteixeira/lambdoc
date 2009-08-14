@@ -89,6 +89,9 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_VERBATIM
 %token <Lambdoc_reader.Ast.command_t> END_VERBATIM
 
+%token <Lambdoc_reader.Ast.command_t> BEGIN_VERBATIM_1
+%token <Lambdoc_reader.Ast.command_t> END_VERBATIM_1
+
 %token <Lambdoc_reader.Ast.command_t> BEGIN_SUBPAGE
 %token <Lambdoc_reader.Ast.command_t> END_SUBPAGE
 
@@ -202,6 +205,7 @@ block:
 	| BEGIN_CODE RAW END_CODE				{($1, Ast.Code $2)}
 	| BEGIN_TABULAR BEGIN RAW END tabular END_TABULAR	{($1, Ast.Tabular ($3, $5))}
 	| BEGIN_VERBATIM RAW END_VERBATIM			{($1, Ast.Verbatim $2)}
+	| BEGIN_VERBATIM_1 RAW END_VERBATIM_1			{($1, Ast.Verbatim $2)}
 	| BITMAP BEGIN RAW END BEGIN RAW END			{($1, Ast.Bitmap ($3, $6))}
 	| BEGIN_SUBPAGE block+ END_SUBPAGE			{($1, Ast.Subpage $2)}
 	| BEGIN_PULLQUOTE block+ END_PULLQUOTE			{($1, Ast.Pullquote $2)}

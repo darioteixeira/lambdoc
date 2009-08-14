@@ -146,7 +146,7 @@ let sub_lexbuf ~pos ~len lexbuf =
 	Ulexing.utf8_sub_lexeme lexbuf pos len
 
 let rtrim_lexbuf ~first lexbuf =
-	Ulexing.utf8_sub_lexeme lexbuf first ((Ulexing.lexeme_length lexbuf) - first)
+	Ulexing.utf8_sub_lexeme lexbuf first ((Ulexing.lexeme_length lexbuf) - first - 1)
 
 
 (********************************************************************************)
@@ -253,11 +253,11 @@ let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token_t]) = lexe
 *)
 
 let literal_scanner terminator : (Ulexing.lexbuf -> int * [> literal_token_t]) = lexer
-	| env_end -> 
+	| env_end ->
 		let str = rtrim_lexbuf ~first:5 lexbuf
 		in if str = terminator
 		then (0, `Tok_env_end (whole_lexbuf lexbuf))
-		else (count_lines lexbuf, `Tok_raw (whole_lexbuf lexbuf))
+		else (0, `Tok_raw (whole_lexbuf lexbuf))
 	| eof ->
 		(0, `Tok_eof)
 	| _ ->
