@@ -22,7 +22,7 @@ exception Malformed_code
 	is replaced with the standard UTF-8 replacement character.  At the end,
 	an exception is raised if any errors have been found.
 *)
-let validate_utf8 s =
+let verify_utf8 s =
 	let line = ref 1 in
 	let error_lines = DynArray.create () in
 	let buf = Buffer.create (String.length s) in

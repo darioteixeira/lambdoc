@@ -36,6 +36,8 @@ struct
 			let lexbuf = Ulexing.from_utf8_string str
 			in menhir_with_ulex Parser.document tokenizer lexbuf
 		with
+			| Utf8.MalFormed ->
+				raise (Reading_error (tokenizer#position.pos_lnum, "Malformed UTF-8 sequence"))
 			| Parser.Error ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 			| Tokenizer.Unknown_env_command tag ->

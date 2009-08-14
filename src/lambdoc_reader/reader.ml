@@ -32,6 +32,7 @@ end
 module type S =
 sig
 	val ambivalent_manuscript_from_string:
+		?verify_utf8: bool ->
 		?classnames: string list ->
 		?accept_list: Features.manuscript_feature_t list ->
 		?deny_list: Features.manuscript_feature_t list ->
@@ -40,6 +41,7 @@ sig
 		Ambivalent.manuscript_t
 
 	val ambivalent_composition_from_string:
+		?verify_utf8: bool ->
 		?classnames: string list ->
 		?accept_list: Features.composition_feature_t list ->
 		?deny_list: Features.composition_feature_t list ->
@@ -57,9 +59,9 @@ end
 *)
 module Make_reader (Reader: READER): S =
 struct
-	let ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str =
+	let ambivalent_document_from_string ~verify_utf8 ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str =
 		try
-			let () = Preprocess.validate_utf8 str in
+			let () = if verify_utf8 then Preprocess.verify_utf8 str in
 			let document_ast = Reader.ast_from_string str
 			in valid_processor ?classnames ?accept_list ?deny_list ?default str document_ast
 		with
@@ -71,14 +73,14 @@ struct
 				let errors = Postprocess.collate_errors str [(line, Error.Reading_error msg)]
 				in invalid_maker errors
 
-	let ambivalent_manuscript_from_string ?classnames ?accept_list ?deny_list ?default str =
+	let ambivalent_manuscript_from_string ?(verify_utf8 = true) ?classnames ?accept_list ?deny_list ?default str =
 		let valid_processor = Postprocess.process_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
+		in ambivalent_document_from_string ~verify_utf8 ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
 
-	let ambivalent_composition_from_string ?classnames ?accept_list ?deny_list ?default str =
+	let ambivalent_composition_from_string ?(verify_utf8 = true) ?classnames ?accept_list ?deny_list ?default str =
 		let valid_processor = Postprocess.process_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
+		in ambivalent_document_from_string ~verify_utf8 ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
 end
 

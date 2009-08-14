@@ -20,5 +20,5 @@ exception Malformed_source of string * int list
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-val validate_utf8: string -> unit
+val verify_utf8: string -> unit
 
