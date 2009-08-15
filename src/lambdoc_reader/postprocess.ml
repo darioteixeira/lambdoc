@@ -360,6 +360,10 @@ let process_document classnames idiosyncrasies document_ast =
 					| []		-> None
 			in check_comm `Feature_description comm elem
 
+		| (_, _, true, `Any_blk, (comm, Ast.Parhead seq)) ->
+			let elem () = Some (Block.parhead (convert_seq seq))
+			in check_comm `Feature_parhead comm elem
+
 		| (_, _, true, `Any_blk, (comm, Ast.Verse frag)) ->
 			let elem () =
 				let new_frag = List.filter_map (convert_block ~subpaged false false false `Paragraph_blk) frag

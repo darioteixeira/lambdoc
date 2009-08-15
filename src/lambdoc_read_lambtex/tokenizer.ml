@@ -144,14 +144,14 @@ object (self)
 		let (token, context, actions) = match tag with
 
 			| "br"			-> (LINEBREAK params,		Inl,	[])
-			| "bold"		-> (BOLD params,		Inl,	[Store [Inline]])
-			| "strong"		-> (BOLD params,		Inl,	[Store [Inline]])
+			| "bold"
+			| "strong"
 			| "b"			-> (BOLD params,		Inl,	[Store [Inline]])
-			| "emph"		-> (EMPH params,		Inl,	[Store [Inline]])
-			| "em"			-> (EMPH params,		Inl,	[Store [Inline]])
+			| "emph"
+			| "em"
 			| "i"			-> (EMPH params,		Inl,	[Store [Inline]])
-			| "mono"		-> (MONO params,		Inl,	[Store [Inline]])
-			| "tt"			-> (MONO params,		Inl,	[Store [Inline]])
+			| "mono"
+			| "tt"
 			| "m"			-> (MONO params,		Inl,	[Store [Inline]])
 			| "caps"		-> (CAPS params,		Inl,	[Store [Inline]])
 			| "thru"		-> (THRU params,		Inl,	[Store [Inline]])
@@ -159,7 +159,7 @@ object (self)
 			| "sub"			-> (SUB params,			Inl,	[Store [Inline]])
 			| "mbox"		-> (MBOX params,		Inl,	[Store [Inline]])
 
-			| "link"		-> (LINK params,		Inl,	[Store [Raw; Inline]])
+			| "link"
 			| "a"			-> (LINK params,		Inl,	[Store [Raw; Inline]])
 			| "see"			-> (SEE params,			Inl,	[Store [Raw]])
 			| "cite"		-> (CITE params,		Inl,	[Store [Raw]])
@@ -169,24 +169,26 @@ object (self)
 
 			| "part"		-> (PART params, 		Blk,	[Store [Inline]])
 			| "appendix"		-> (APPENDIX params,		Blk,	[])
-			| "section"		-> (SECTION params,		Blk,	[Store [Inline]])
+			| "section"
 			| "h1"			-> (SECTION params,		Blk,	[Store [Inline]])
-			| "subsection"		-> (SUBSECTION params,		Blk,	[Store [Inline]])
+			| "subsection"
 			| "h2"			-> (SUBSECTION params,		Blk,	[Store [Inline]])
-			| "subsubsection"	-> (SUBSUBSECTION params,	Blk,	[Store [Inline]])
+			| "subsubsection"
 			| "h3"			-> (SUBSUBSECTION params,	Blk,	[Store [Inline]])
 			| "bibliography"	-> (BIBLIOGRAPHY params,	Blk,	[])
 			| "notes"		-> (NOTES params,		Blk,	[])
 			| "toc"			-> (TOC params,			Blk,	[])
 			| "title"		-> (TITLE params, 		Blk,	[Store [Inline]])
 			| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
-			| "rule"		-> (RULE params,		Blk,	[])
+			| "rule"
 			| "hr"			-> (RULE params,		Blk,	[])
 
-			| "item"		-> (ITEM params,		Blk,	[])
+			| "item"
 			| "li"			-> (ITEM params,		Blk,	[])
-			| "describe"		-> (DESCRIBE params,		Blk,	[Store [Inline]])
+			| "describe"
 			| "dt"			-> (DESCRIBE params,		Blk,	[Store [Inline]])
+			| "parhead"
+			| "h4"			-> (PARHEAD params,		Blk,	[Store [Inline]])
 			| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 			| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 			| "head"		-> (HEAD params,		Blk,	[])

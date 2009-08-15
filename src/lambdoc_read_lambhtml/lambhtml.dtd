@@ -10,7 +10,7 @@
 
 <!ENTITY % Block
 	"p | itemize | ul | enumerate | ol | description | dl
-	| verse | quote
+	| parhead | h4 | verse | quote
 	| code | tabular | verbatim | pre | bitmap | subpage
 	| pull | boxout
 	| equation | printout | table | figure
@@ -73,6 +73,12 @@
 
 <!ELEMENT dl (dt | dd)+>
 <!ATTLIST dl %Forbidden;>
+
+<!ELEMENT parhead %Inline;>
+<!ATTLIST parhead %Custom_heading;>
+
+<!ELEMENT h4 %Inline;>
+<!ATTLIST h4 %Custom_heading;>
 
 <!ELEMENT verse %Frag;>
 <!ATTLIST verse %Forbidden;>

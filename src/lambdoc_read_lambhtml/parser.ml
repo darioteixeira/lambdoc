@@ -98,6 +98,8 @@ and process_block node =
 		| T_element "ol"		-> (!!comm, Ast.Enumerate (List.map process_item node#sub_nodes))
 		| T_element "description"
 		| T_element "dl"		-> (!!comm, Ast.Description (process_definition_frag node))
+		| T_element "parhead"
+		| T_element "h4"		-> (!!comm, Ast.Parhead (process_seq node))
 		| T_element "verse"		-> (!!comm, Ast.Verse (process_frag node))
 		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node))
 		| T_element "code"		-> (!!comm, Ast.Code node#data)

@@ -34,6 +34,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
+	| `Parhead of Inline.seq_t
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Alignment.t * Math.t
@@ -94,6 +95,9 @@ val enumerate: Numbering.t -> ('a, [< `Listable ], 'c, _, _) t list plus_t ->
 
 val description: (('a, _) Inline.t list * ('a, [< `Listable ], 'c, _, _) t list) plus_t ->
 	('a, [> `Listable ], 'c, [> `Prose ], [> `Description_blk ]) t
+
+val parhead: ('a, _) Inline.t list ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Parhead_blk ]) t
 
 val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose], [> `Verse_blk ]) t
