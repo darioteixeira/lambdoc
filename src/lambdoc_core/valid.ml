@@ -21,7 +21,7 @@ type 'a document_t =
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
-	toc: Heading.t list;
+	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
 	} with sexp
 

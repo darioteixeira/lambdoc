@@ -50,25 +50,43 @@ type section_location_t =
 
 (**	Heading blocks.
 *)
-type t =
+type heading_t =
 	[ `Part of Label.t * part_order_t * part_content_t
 	| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
+	| `Parhead of Inline.seq_t
 	] with sexp
+
+
+(**	Phantom-type wrapper around {!heading_t}.
+*)
+type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
 
 
 (********************************************************************************)
 (**	{3 Public functions and values}						*)
 (********************************************************************************)
 
-val part: Label.t -> part_order_t -> (_, _) Inline.t list -> t
+val part: Label.t -> part_order_t -> (_, _) Inline.t list ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Part_blk ]) t
 
-val section: Label.t -> section_order_t -> section_location_t -> hierarchical_level_t -> (_, _) Inline.t list -> t
+val appendix: Label.t ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Part_blk ]) t
 
-val appendix: Label.t -> t
+val section: Label.t -> section_order_t -> section_location_t -> hierarchical_level_t -> (_, _) Inline.t list ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
 
-val bibliography: Label.t -> t
+val bibliography: Label.t ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
 
-val notes: Label.t -> t
+val notes: Label.t ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
 
-val toc: Label.t -> t
+val toc: Label.t ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
+
+val parhead: ('a, _) Inline.t list ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Parhead_blk ]) t
+
+val get_heading: (_, _, _, _, _) t ->
+	heading_t
 

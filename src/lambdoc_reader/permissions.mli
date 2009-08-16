@@ -17,7 +17,7 @@ open Lambdoc_core
 (********************************************************************************)
 
 val check_feature:
-	?maybe_subpaged: bool option ->
+	?maybe_minipaged: bool option ->
 	?maybe_wrapped: bool option ->
 	(int * Error.error_msg_t) DynArray.t ->
 	Ast.command_t ->

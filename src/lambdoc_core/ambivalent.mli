@@ -33,7 +33,7 @@ val make_valid_manuscript:
 	([< `Composition | `Manuscript ], _, _, _, _) Block.t list ->
 	Bib.t list ->
 	Note.t list ->
-	Heading.t list ->
+	Heading.heading_t list ->
 	Labelmap.t ->
 	manuscript_t
 

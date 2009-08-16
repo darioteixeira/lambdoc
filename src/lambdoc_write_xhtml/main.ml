@@ -91,6 +91,7 @@ let class_of_level = function
 	| `Level1 -> "level1"
 	| `Level2 -> "level2"
 	| `Level3 -> "level3"
+	| `Level4 -> "level4"
 
 
 let make_alignment alignment = ["doc_aligned"; "doc_align_" ^ (Alignment.to_string alignment)]
@@ -342,9 +343,6 @@ let write_valid_document settings classname doc =
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
 			in (None, XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl)
 
-		| `Parhead seq ->
-			(None, XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq))
-
 		| `Verse frag ->
 			(None, XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag))
 
@@ -461,10 +459,14 @@ let write_valid_document settings classname doc =
 		| `Section (label, order, location, level, `Toc) ->
 			let name = settings.names.toc_name in
 			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
-			let toc = match toc with
+			let entries = List.filter_map write_toc_entry toc in
+			let toc_xhtml = match entries with
 				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_toc_entry hd tl in [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
-			in XHTML.M.div (title @ toc)
+				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
+			in XHTML.M.div (title @ toc_xhtml)
+
+		| `Parhead seq ->
+			XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq)
 
 
 	and write_wrapper (label, order, seq) classname wrapper_name (maybe_alignment, wrapper_content) =
@@ -506,7 +508,7 @@ let write_valid_document settings classname doc =
 
 	and write_toc_entry sec =
 		let make_toc_entry label classname order_str content =
-		        XHTML.M.li ~a:[a_class [classname]] [make_internal_link label ((wrap_order order_str) @ [span content])]
+		        Some (XHTML.M.li ~a:[a_class [classname]] [make_internal_link label ((wrap_order order_str) @ [span content])])
 		in match sec with
 			| `Part (label, order, `Custom seq) ->
 				make_toc_entry label (class_of_level `Level0) (part_conv order) (write_seq seq)
@@ -520,6 +522,8 @@ let write_valid_document settings classname doc =
 				make_toc_entry label (class_of_level level) (section_conv location order) [pcdata settings.names.notes_name]
 			| `Section (label, order, location, level, `Toc) ->
 				make_toc_entry label (class_of_level level) (section_conv location order) [pcdata settings.names.toc_name]
+			| `Parhead seq ->
+				None
 
 
 	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_frag content)

@@ -18,7 +18,7 @@ type 'a document_t =
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
-	toc: Heading.t list;
+	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
 	} with sexp
 
@@ -35,7 +35,7 @@ val make_manuscript:
 	([< `Composition | `Manuscript ], _, _, _, _) Block.t list ->
 	Bib.t list ->
 	Note.t list ->
-	Heading.t list ->
+	Heading.heading_t list ->
 	Labelmap.t ->
 	manuscript_t
 

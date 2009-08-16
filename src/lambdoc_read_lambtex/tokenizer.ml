@@ -178,6 +178,8 @@ object (self)
 			| "bibliography"	-> (BIBLIOGRAPHY params,	Blk,	[])
 			| "notes"		-> (NOTES params,		Blk,	[])
 			| "toc"			-> (TOC params,			Blk,	[])
+			| "parhead"
+			| "h4"			-> (PARHEAD params,		Blk,	[Store [Inline]])
 			| "title"		-> (TITLE params, 		Blk,	[Store [Inline]])
 			| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
 			| "rule"
@@ -187,8 +189,6 @@ object (self)
 			| "li"			-> (ITEM params,		Blk,	[])
 			| "describe"
 			| "dt"			-> (DESCRIBE params,		Blk,	[Store [Inline]])
-			| "parhead"
-			| "h4"			-> (PARHEAD params,		Blk,	[Store [Inline]])
 			| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 			| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 			| "head"		-> (HEAD params,		Blk,	[])

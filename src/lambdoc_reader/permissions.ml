@@ -40,8 +40,8 @@ type permission_t =
 let forbidden_class =
 	(Forbidden, Forbidden, Forbidden)
 
-let custom_heading_class subpaged =
-	(Optional, (if subpaged then Mandatory0 else Forbidden0), Forbidden)
+let custom_heading_class minipaged =
+	(Optional, (if minipaged then Mandatory0 else Forbidden0), Forbidden)
 
 let preset_heading_class =
 	(Optional, Forbidden, Forbidden)
@@ -52,8 +52,8 @@ let listing_class =
 let floater_class =
 	(Forbidden, Forbidden, Optional)
 
-let wrapper_class subpaged =
-	(Optional, (if subpaged then Mandatory else Forbidden), Forbidden)
+let wrapper_class minipaged =
+	(Optional, (if minipaged then Mandatory else Forbidden), Forbidden)
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 
@@ -110,11 +110,11 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 
 (**	Checks a command feature.
 *)
-let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm feature =
+let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feature =
 
-	let get_subpaged = function
-		| Some subpaged	-> subpaged
-		| None		-> invalid_arg "Feature requires that 'subpaged' be set but it is not!" in
+	let get_minipaged = function
+		| Some minipaged	-> minipaged
+		| None			-> invalid_arg "Feature requires that 'minipaged' be set but it is not!" in
 
 	let composition_inline_feature_set = function
 		| `Feature_plain	-> forbidden_class
@@ -161,10 +161,10 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_pullquote	-> floater_class
 		| `Feature_boxout	-> floater_class
 
-		| `Feature_equation	-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_printout	-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_table	-> wrapper_class (get_subpaged maybe_subpaged)
-		| `Feature_figure	-> wrapper_class (get_subpaged maybe_subpaged)
+		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_table	-> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_figure	-> wrapper_class (get_minipaged maybe_minipaged)
 
 		| `Feature_caption	-> forbidden_class
 		| `Feature_bib		-> ghost_class
@@ -174,12 +174,12 @@ let check_feature ?(maybe_subpaged=None) ?(maybe_wrapped=None) errors comm featu
 		| `Feature_bib_title	-> forbidden_class
 		| `Feature_bib_resource	-> forbidden_class
 
-		| `Feature_part		-> custom_heading_class (get_subpaged maybe_subpaged)
+		| `Feature_part		-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_appendix	-> preset_heading_class
 
-		| `Feature_section1	-> custom_heading_class (get_subpaged maybe_subpaged)
-		| `Feature_section2	-> custom_heading_class (get_subpaged maybe_subpaged)
-		| `Feature_section3	-> custom_heading_class (get_subpaged maybe_subpaged)
+		| `Feature_section1	-> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section2	-> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section3	-> custom_heading_class (get_minipaged maybe_minipaged)
 
 		| `Feature_bibliography	-> preset_heading_class
 		| `Feature_notes	-> preset_heading_class

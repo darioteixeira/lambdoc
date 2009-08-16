@@ -10,13 +10,14 @@
 
 <!ENTITY % Block
 	"p | itemize | ul | enumerate | ol | description | dl
-	| parhead | h4 | verse | quote
+	| verse | quote
 	| code | tabular | verbatim | pre | bitmap | subpage
 	| pull | boxout
 	| equation | printout | table | figure
 	| part | appendix
 	| section | h1 | subsection | h2 | subsubsection | h3
 	| bibliography | notes | toc
+	| parhead | h4
 	| title | subtitle | abstract | rule
 	| bib | note">
 
@@ -73,12 +74,6 @@
 
 <!ELEMENT dl (dt | dd)+>
 <!ATTLIST dl %Forbidden;>
-
-<!ELEMENT parhead %Inline;>
-<!ATTLIST parhead %Custom_heading;>
-
-<!ELEMENT h4 %Inline;>
-<!ATTLIST h4 %Custom_heading;>
 
 <!ELEMENT verse %Frag;>
 <!ATTLIST verse %Forbidden;>
@@ -175,6 +170,12 @@
 
 <!ELEMENT toc EMPTY>
 <!ATTLIST toc %Preset_heading;>
+
+<!ELEMENT parhead %Inline;>
+<!ATTLIST parhead %Custom_heading;>
+
+<!ELEMENT h4 %Inline;>
+<!ATTLIST h4 %Custom_heading;>
 
 <!ELEMENT title %Inline;>
 <!ATTLIST title %Forbidden;>

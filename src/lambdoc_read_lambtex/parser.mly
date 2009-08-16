@@ -151,13 +151,13 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BIBLIOGRAPHY
 %token <Lambdoc_reader.Ast.command_t> NOTES
 %token <Lambdoc_reader.Ast.command_t> TOC
+%token <Lambdoc_reader.Ast.command_t> PARHEAD
 %token <Lambdoc_reader.Ast.command_t> TITLE
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
 
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> DESCRIBE
-%token <Lambdoc_reader.Ast.command_t> PARHEAD
 %token <Lambdoc_reader.Ast.command_t> BITMAP
 %token <Lambdoc_reader.Ast.command_t> CAPTION
 %token <Lambdoc_reader.Ast.command_t> HEAD
@@ -199,7 +199,6 @@ block:
 	| BEGIN_ENUMERATE_1 item_frag END_ENUMERATE_1		{($1, Ast.Enumerate $2)}
 	| BEGIN_DESCRIPTION describe_frag END_DESCRIPTION	{($1, Ast.Description $2)}
 	| BEGIN_DESCRIPTION_1 describe_frag END_DESCRIPTION_1	{($1, Ast.Description $2)}
-	| PARHEAD BEGIN inline+ END				{($1, Ast.Parhead $3)}
 	| BEGIN_VERSE block+ END_VERSE				{($1, Ast.Verse $2)}
 	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
@@ -224,6 +223,7 @@ block:
 	| BIBLIOGRAPHY						{($1, Ast.Bibliography)}
 	| NOTES							{($1, Ast.Notes)}
 	| TOC							{($1, Ast.Toc)} 
+	| PARHEAD BEGIN inline+ END				{($1, Ast.Parhead $3)}
 	| TITLE BEGIN inline+ END				{($1, Ast.Title (`Level1, $3))}
 	| SUBTITLE BEGIN inline+ END				{($1, Ast.Title (`Level2, $3))}
 	| BEGIN_ABSTRACT block+ END_ABSTRACT			{($1, Ast.Abstract $2)}

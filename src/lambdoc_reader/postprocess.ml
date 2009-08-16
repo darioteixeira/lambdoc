@@ -104,17 +104,17 @@ let process_document classnames idiosyncrasies document_ast =
 	(*	Adds a new TOC entry.
 	*)
 	and add_toc_entry heading =
-		DynArray.add toc heading in
+		DynArray.add toc (Heading.get_heading heading) in
 
 
 	(*	Checker for commands.
 	*)
 
-	let check_comm ?maybe_subpaged ?maybe_wrapped feature comm elem =
+	let check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
 		let super_feature = (feature :> Features.manuscript_feature_t) in
 		if Idiosyncrasies.check_feature super_feature idiosyncrasies
 		then 
-			(Permissions.check_feature ?maybe_subpaged ?maybe_wrapped errors comm feature;
+			(Permissions.check_feature ?maybe_minipaged ?maybe_wrapped errors comm feature;
 			elem ())
 		else
 			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe super_feature)
@@ -311,7 +311,7 @@ let process_document classnames idiosyncrasies document_ast =
 	(* Postprocessing functions for document blocks.			*)
 	(************************************************************************)
 
-	let rec convert_block ~subpaged allow_above_listable allow_above_embeddable allow_above_prose allowed_blk block =
+	let rec convert_block ~minipaged allow_above_listable allow_above_embeddable allow_above_prose allowed_blk block =
 		match (allow_above_listable, allow_above_embeddable, allow_above_prose, allowed_blk, block) with
 
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph seq))
@@ -327,7 +327,7 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize frags)) ->
 			let elem () =
 				let bullet = Extra.parse_for_itemize errors comm
-				and new_frags = List.filter_map (convert_item_frag ~subpaged x1 x2) frags
+				and new_frags = List.filter_map (convert_item_frag ~minipaged x1 x2) frags
 				in match new_frags with
 					| hd::tl	-> Some (Block.itemize bullet (hd, tl))
 					| []		-> None
@@ -341,7 +341,7 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate frags)) ->
 			let elem () =
 				let numbering = Extra.parse_for_enumerate errors comm
-				and new_frags = List.filter_map (convert_item_frag ~subpaged x1 x2) frags
+				and new_frags = List.filter_map (convert_item_frag ~minipaged x1 x2) frags
 				in match new_frags with
 					| hd::tl	-> Some (Block.enumerate numbering (hd, tl))
 					| []		-> None
@@ -354,25 +354,21 @@ let process_document classnames idiosyncrasies document_ast =
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Description frags)) ->
 			let elem () =
-				let new_frags = List.filter_map (convert_describe_frag ~subpaged x1 x2) frags
+				let new_frags = List.filter_map (convert_describe_frag ~minipaged x1 x2) frags
 				in match new_frags with
 					| hd::tl	-> Some (Block.description (hd, tl))
 					| []		-> None
 			in check_comm `Feature_description comm elem
 
-		| (_, _, true, `Any_blk, (comm, Ast.Parhead seq)) ->
-			let elem () = Some (Block.parhead (convert_seq seq))
-			in check_comm `Feature_parhead comm elem
-
 		| (_, _, true, `Any_blk, (comm, Ast.Verse frag)) ->
 			let elem () =
-				let new_frag = List.filter_map (convert_block ~subpaged false false false `Paragraph_blk) frag
+				let new_frag = List.filter_map (convert_block ~minipaged false false false `Paragraph_blk) frag
 				in Some (Block.verse (Obj.magic new_frag))
 			in check_comm `Feature_verse comm elem
 
 		| (_, _, true, `Any_blk, (comm, Ast.Quote frag)) ->
 			let elem () =
-				let new_frag = List.filter_map (convert_block ~subpaged false false true `Any_blk) frag
+				let new_frag = List.filter_map (convert_block ~minipaged:true false false true `Any_blk) frag
 				in Some (Block.quote (Obj.magic new_frag))
 			in check_comm `Feature_quote comm elem
 
@@ -425,60 +421,60 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, true, `Any_blk, (comm, Ast.Subpage frag)) ->
 			let elem () =
 				let alignment = Extra.parse_for_subpage errors comm
-				and new_frag = List.filter_map (convert_block ~subpaged:true true true true `Any_blk) frag
+				and new_frag = List.filter_map (convert_block ~minipaged:true true true true `Any_blk) frag
 				in Some (Block.subpage alignment (Obj.magic new_frag))
 			in check_comm `Feature_subpage comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
 			let elem () =
 				let alignment = Extra.parse_for_pullquote errors comm
-				and new_frag = List.filter_map (convert_block ~subpaged false false false `Any_blk) frag
+				and new_frag = List.filter_map (convert_block ~minipaged:true false false false `Any_blk) frag
 				in Some (Block.pullquote alignment (Obj.magic new_frag))
 			in check_comm `Feature_pullquote comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Boxout (maybe_seq, frag))) ->
 			let elem () =
 				let (alignment, maybe_classname) = Extra.parse_for_boxout ~classnames errors comm
-				and new_frag = List.filter_map (convert_block ~subpaged false false true `Any_blk) frag
+				and new_frag = List.filter_map (convert_block ~minipaged:true false false true `Any_blk) frag
 				and seq = maybe convert_seq maybe_seq
 				in Some (Block.boxout alignment maybe_classname seq (Obj.magic new_frag))
 			in check_comm `Feature_boxout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (caption, blk))) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm equation_counter Target.equation caption subpaged
-				and maybe_equation = Obj.magic (convert_block ~subpaged false false true `Equation_blk blk)
+				let maybe_wrapper = convert_wrapper comm equation_counter Target.equation caption minipaged
+				and maybe_equation = Obj.magic (convert_block ~minipaged false false true `Equation_blk blk)
 				in match (maybe_wrapper, maybe_equation) with
 					| (Some wrapper, Some equation)	-> Some (Block.equation wrapper equation)
 					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_equation comm elem
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (caption, blk))) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm printout_counter Target.printout caption subpaged
-				and maybe_printout = Obj.magic (convert_block ~subpaged false false true `Printout_blk blk)
+				let maybe_wrapper = convert_wrapper comm printout_counter Target.printout caption minipaged
+				and maybe_printout = Obj.magic (convert_block ~minipaged false false true `Printout_blk blk)
 				in match (maybe_wrapper, maybe_printout) with
 					| (Some wrapper, Some printout)	-> Some (Block.printout wrapper printout)
 					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_printout comm elem
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (caption, blk))) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm table_counter Target.table caption subpaged
-				and maybe_table = Obj.magic (convert_block ~subpaged false false true `Table_blk blk)
+				let maybe_wrapper = convert_wrapper comm table_counter Target.table caption minipaged
+				and maybe_table = Obj.magic (convert_block ~minipaged false false true `Table_blk blk)
 				in match (maybe_wrapper, maybe_table) with
 					| (Some wrapper, Some table)	-> Some (Block.table wrapper table)
 					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_table comm elem
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (caption, blk))) ->
 			let elem () =
-				let maybe_wrapper = convert_wrapper comm figure_counter Target.figure caption subpaged
-				and maybe_figure = Obj.magic (convert_block ~subpaged false false true `Figure_blk blk)
+				let maybe_wrapper = convert_wrapper comm figure_counter Target.figure caption minipaged
+				and maybe_figure = Obj.magic (convert_block ~minipaged false false true `Figure_blk blk)
 				in match (maybe_wrapper, maybe_figure) with
 					| (Some wrapper, Some figure)	-> Some (Block.figure wrapper figure)
 					| _				-> None
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_figure comm elem
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Part seq)) ->
 			let elem () =
@@ -489,9 +485,20 @@ let process_document classnames idiosyncrasies document_ast =
 				let label = make_label comm (Target.part order) in
 				let heading = Heading.part label order (convert_seq seq) in
 				let block = Block.heading heading in
-				let () = if not subpaged then add_toc_entry heading
+				let () = if not minipaged then add_toc_entry heading
 				in Some block
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_part comm elem
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_part comm elem
+
+		| (true, true, true, `Any_blk, (comm, Ast.Appendix)) ->
+			let elem () =
+				let order = Order.none () in
+				let label = make_label comm (Target.part order) in
+				let heading = Heading.appendix label in
+				let block = Block.heading heading in
+				let () = if not minipaged then add_toc_entry heading in
+				let () = appendixed := true
+				in Some block
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_appendix comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Section (level, seq))) ->
 			let elem () =
@@ -506,33 +513,29 @@ let process_document classnames idiosyncrasies document_ast =
 				let label = make_label comm (Target.section location order) in
 				let heading = Heading.section label order location level (convert_seq seq) in
 				let block = Block.heading heading in
-				let () = if not subpaged then add_toc_entry heading
+				let () = if not minipaged then add_toc_entry heading
 				in Some block
 			and feature = match level with
 				| `Level1 -> `Feature_section1
 				| `Level2 -> `Feature_section2
 				| `Level3 -> `Feature_section3
-			in check_comm ~maybe_subpaged:(Some subpaged) feature comm elem
-
-		| (true, true, true, `Any_blk, (comm, Ast.Appendix)) ->
-			let elem () =
-				let order = Order.none () in
-				let label = make_label comm (Target.part order) in
-				let heading = Heading.appendix label in
-				let block = Block.heading heading in
-				let () = if not subpaged then add_toc_entry heading in
-				let () = appendixed := true
-				in Some block
-			in check_comm ~maybe_subpaged:(Some subpaged) `Feature_appendix comm elem
+			in check_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Bibliography)) ->
-			convert_preset_sectional ~tocable:true ~subpaged Heading.bibliography `Feature_bibliography comm
+			convert_preset_sectional ~tocable:true ~minipaged Heading.bibliography `Feature_bibliography comm
 
 		| (true, true, true, `Any_blk, (comm, Ast.Notes)) ->
-			convert_preset_sectional ~tocable:true ~subpaged Heading.notes `Feature_notes comm 
+			convert_preset_sectional ~tocable:true ~minipaged Heading.notes `Feature_notes comm 
 
 		| (true, true, true, `Any_blk, (comm, Ast.Toc)) ->
-			convert_preset_sectional ~tocable:false ~subpaged Heading.toc `Feature_toc comm
+			convert_preset_sectional ~tocable:false ~minipaged Heading.toc `Feature_toc comm
+
+		| (_, _, true, `Any_blk, (comm, Ast.Parhead seq)) ->
+			let elem () =
+				let heading = Heading.parhead (convert_seq seq) in
+				let block = Block.heading heading
+				in Some block
+			in check_comm `Feature_parhead comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Title (level, seq))) ->
 			let elem () = Some (Block.title level (convert_seq seq))
@@ -543,7 +546,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 		| (true, true, true, `Any_blk, (comm, Ast.Abstract frag)) ->
 			let elem () =
-				let new_frag = List.filter_map (convert_block false false false `Any_blk ~subpaged) frag
+				let new_frag = List.filter_map (convert_block ~minipaged:true false false false `Any_blk) frag
 				in Some (Block.abstract (Obj.magic new_frag))
 			in check_comm `Feature_abstract comm elem
 
@@ -580,7 +583,7 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () =
 				let order = Order.auto_ordinal note_counter in
 				let label = make_label comm (Target.note order) in
-				let new_frag = List.filter_map (convert_block false true true `Any_blk ~subpaged) frag in
+				let new_frag = List.filter_map (convert_block ~minipaged:true false true true `Any_blk) frag in
 				let note = Note.note label order new_frag
 				in	DynArray.add notes note;
 					None
@@ -592,31 +595,31 @@ let process_document classnames idiosyncrasies document_ast =
 			None
 
 
-	and convert_item_frag ~subpaged allow_above_embeddable allow_above_prose (comm, frag) =
-		let elem () = Some (List.filter_map (Obj.magic (convert_block ~subpaged false allow_above_embeddable allow_above_prose `Any_blk)) frag)
+	and convert_item_frag ~minipaged allow_above_embeddable allow_above_prose (comm, frag) =
+		let elem () = Some (List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable allow_above_prose `Any_blk)) frag)
 		in check_comm `Feature_item comm elem
 
 
-	and convert_describe_frag ~subpaged allow_above_embeddable allow_above_prose (comm, seq, frag) =
+	and convert_describe_frag ~minipaged allow_above_embeddable allow_above_prose (comm, seq, frag) =
 		let elem () =
 			let new_seq = convert_seq seq
-			and new_frag = List.filter_map (Obj.magic (convert_block ~subpaged false allow_above_embeddable allow_above_prose `Any_blk)) frag
+			and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable allow_above_prose `Any_blk)) frag
 			in Some (new_seq, new_frag)
 		in check_comm `Feature_describe comm elem
 
 
-	and convert_preset_sectional ~tocable ~subpaged cons feature comm = 
+	and convert_preset_sectional ~tocable ~minipaged cons feature comm = 
 		let elem () =
 			let order = Order.none () in
 			let label = make_label comm (Target.section `Mainbody order) in
 			let heading = cons label in
 			let block = Block.heading heading in
-			let () = if tocable && not subpaged then add_toc_entry heading
+			let () = if tocable && not minipaged then add_toc_entry heading
 			in Some block
-		in check_comm ~maybe_subpaged:(Some subpaged) `Feature_notes comm elem
+		in check_comm ~maybe_minipaged:(Some minipaged) `Feature_notes comm elem
 
 
-	and convert_wrapper comm counter target_maker (caption_comm, caption_seq) subpaged =
+	and convert_wrapper comm counter target_maker (caption_comm, caption_seq) minipaged =
 		let order = match comm.comm_order with
 			| None		-> Order.auto_ordinal counter
 			| Some thing	-> Order.user_ordinal thing in
@@ -630,7 +633,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 
 	let convert_frag frag =
-		List.filter_map (convert_block ~subpaged:false true true true `Any_blk) frag in
+		List.filter_map (convert_block ~minipaged:false true true true `Any_blk) frag in
 
 
 	(************************************************************************)
