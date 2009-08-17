@@ -1,0 +1,2 @@
+<scanner.ml>: pkg_mikmatch_pcre.syntax, syntax_camlp4o
+<*.cmx>: for-pack(Lambdoc_read_lamblite)

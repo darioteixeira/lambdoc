@@ -1,3 +1,3 @@
-true: use_menhir, pkg_menhirLib, pkg_threads, pkg_unix, pkg_extlib, pkg_lwt, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, pkg_pxp-engine, pkg_pxp-ulex-utf8, pkg_blahcaml, pkg_camlhighlight, pkg_netplex
+true: use_menhir, pkg_menhirLib, pkg_threads, pkg_unix, pkg_extlib, pkg_lwt, pkg_ocsigen.xhtml, pkg_pcre, pkg_sexplib, pkg_pxp-engine, pkg_pxp-ulex-utf8, pkg_mikmatch_pcre, pkg_blahcaml, pkg_camlhighlight, pkg_netplex
 
 <parserver>: include

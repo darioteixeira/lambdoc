@@ -1,7 +1,7 @@
 name = "lambdoc"
 version = "0.7"
 description = "The Lambdoc library for document parsing/printing"
-requires = "threads, menhirLib, unix, extlib, sexplib, pcre, pxp-engine, pxp-ulex-utf8, ocsigen.xhtml, blahcaml, camlhighlight"
+requires = "threads, menhirLib, unix, extlib, sexplib, pcre, pxp-engine, pxp-ulex-utf8, mikmatch_pcre, ocsigen.xhtml, blahcaml, camlhighlight"
 archive(byte) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"
 archive(plugin,byte) = "lambdoc.cma"
@@ -51,17 +51,6 @@ package "proxy"
 	archive(plugin,native) = "lambdoc_proxy.cmxs"
 	)
 
-package "read_lambtex"
-	(
-	name = "read_lambtex"
-	version = "0.7"
-	requires = "menhirLib, extlib, pcre, lambdoc.core, lambdoc.reader"
-	archive(byte) = "lambdoc_read_lambtex.cmo"
-	archive(native) = "lambdoc_read_lambtex.cmx"
-	archive(plugin,byte) = "lambdoc_read_lambtex.cmo"
-	archive(plugin,native) = "lambdoc_read_lambtex.cmxs"
-	)
-
 package "read_lambhtml"
 	(
 	name = "read_lambhtml"
@@ -71,6 +60,28 @@ package "read_lambhtml"
 	archive(native) = "lambdoc_read_lambhtml.cmx"
 	archive(plugin,byte) = "lambdoc_read_lambhtml.cmo"
 	archive(plugin,native) = "lambdoc_read_lambhtml.cmxs"
+	)
+
+package "read_lamblite"
+	(
+	name = "read_lamblite"
+	version = "0.7"
+	requires = "menhirLib, mikmatch_pcre, lambdoc.core, lambdoc.reader"
+	archive(byte) = "lambdoc_read_lamblite.cmo"
+	archive(native) = "lambdoc_read_lamblite.cmx"
+	archive(plugin,byte) = "lambdoc_read_lamblite.cmo"
+	archive(plugin,native) = "lambdoc_read_lamblite.cmxs"
+	)
+
+package "read_lambtex"
+	(
+	name = "read_lambtex"
+	version = "0.7"
+	requires = "menhirLib, extlib, pcre, lambdoc.core, lambdoc.reader"
+	archive(byte) = "lambdoc_read_lambtex.cmo"
+	archive(native) = "lambdoc_read_lambtex.cmx"
+	archive(plugin,byte) = "lambdoc_read_lambtex.cmo"
+	archive(plugin,native) = "lambdoc_read_lambtex.cmxs"
 	)
 
 package "write_xhtml"
