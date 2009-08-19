@@ -132,7 +132,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> EMPH
 %token <Lambdoc_reader.Ast.command_t> CODE
 %token <Lambdoc_reader.Ast.command_t> CAPS
-%token <Lambdoc_reader.Ast.command_t> THRU
+%token <Lambdoc_reader.Ast.command_t> INS
+%token <Lambdoc_reader.Ast.command_t> DEL
 %token <Lambdoc_reader.Ast.command_t> SUP
 %token <Lambdoc_reader.Ast.command_t> SUB
 %token <Lambdoc_reader.Ast.command_t> MBOX
@@ -292,7 +293,8 @@ inline:
 	| EMPH BEGIN inline+ END			{($1, Ast.Emph $3)}
 	| CODE BEGIN inline+ END			{($1, Ast.Code $3)}
 	| CAPS BEGIN inline+ END			{($1, Ast.Caps $3)}
-	| THRU BEGIN inline+ END			{($1, Ast.Thru $3)}
+	| INS BEGIN inline+ END				{($1, Ast.Ins $3)}
+	| DEL BEGIN inline+ END				{($1, Ast.Del $3)}
 	| SUP BEGIN inline+ END				{($1, Ast.Sup $3)}
 	| SUB BEGIN inline+ END				{($1, Ast.Sub $3)}
 	| MBOX BEGIN inline+ END			{($1, Ast.Mbox $3)}

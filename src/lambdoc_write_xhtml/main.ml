@@ -188,8 +188,11 @@ let write_valid_document settings classname doc =
 		| `Caps seq ->
 			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_seq ~nbspfy seq)
 
-		| `Thru seq ->
-			XHTML.M.span ~a:[a_class ["doc_thru"]] (write_seq ~nbspfy seq)
+		| `Ins seq ->
+			XHTML.M.ins (write_seq ~nbspfy seq)
+
+		| `Del seq ->
+			XHTML.M.del (write_seq ~nbspfy seq)
 
 		| `Sup seq ->
 			XHTML.M.sup (write_seq ~nbspfy seq)

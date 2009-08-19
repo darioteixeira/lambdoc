@@ -24,7 +24,8 @@ type 'a inline_t =
 	| `Emph of 'a list
 	| `Code of 'a list
 	| `Caps of 'a list
-	| `Thru of 'a list
+	| `Ins of 'a list
+	| `Del of 'a list
 	| `Sup of 'a list
 	| `Sub of 'a list
 	| `Mbox of 'a list
@@ -54,7 +55,8 @@ let bold seq = `Bold seq
 let emph seq = `Emph seq
 let code seq = `Code seq
 let caps seq = `Caps seq
-let thru seq = `Thru seq
+let ins seq = `Ins seq
+let del seq = `Del seq
 let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq

@@ -18,9 +18,9 @@ let (!!) = Lazy.force
 
 let inline_elems =
 	[
-	"br"; "bold"; "strong"; "b"; "emph"; "em"; "i";
-	"code"; "tt"; "caps"; "thru"; "sup"; "sub"; "mbox";
-	"link"; "a"; "see"; "cite"; "ref"; "sref"; "mref"
+	"br"; "bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
+	"ins"; "del"; "sup"; "sub"; "mbox"; "link"; "a";
+	"see"; "cite"; "ref"; "sref"; "mref"
 	]
 
 let command_from_node node =
@@ -49,7 +49,8 @@ and process_inline node =
 		| T_element "code"
 		| T_element "tt"		-> (!!comm, Ast.Code (process_seq node))
 		| T_element "caps"		-> (!!comm, Ast.Caps (process_seq node))
-		| T_element "thru"		-> (!!comm, Ast.Thru (process_seq node))
+		| T_element "ins"		-> (!!comm, Ast.Ins (process_seq node))
+		| T_element "del"		-> (!!comm, Ast.Del (process_seq node))
 		| T_element "sup"		-> (!!comm, Ast.Sup (process_seq node))
 		| T_element "sub"		-> (!!comm, Ast.Sub (process_seq node))
 		| T_element "mbox"		-> (!!comm, Ast.Mbox (process_seq node))

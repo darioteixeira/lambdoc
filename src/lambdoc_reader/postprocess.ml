@@ -190,9 +190,13 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () = Some (Inline.caps (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_caps comm elem
 
-		| (x, (comm, Ast.Thru seq)) ->
-			let elem () = Some (Inline.thru (List.filter_map (convert_inline x) seq))
-			in check_comm `Feature_thru comm elem
+		| (x, (comm, Ast.Ins seq)) ->
+			let elem () = Some (Inline.ins (List.filter_map (convert_inline x) seq))
+			in check_comm `Feature_ins comm elem
+
+		| (x, (comm, Ast.Del seq)) ->
+			let elem () = Some (Inline.del (List.filter_map (convert_inline x) seq))
+			in check_comm `Feature_del comm elem
 
 		| (x, (comm, Ast.Sup seq)) ->
 			let elem () = Some (Inline.sup (List.filter_map (convert_inline x) seq))

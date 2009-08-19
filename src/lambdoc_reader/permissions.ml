@@ -126,7 +126,8 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_emph		-> forbidden_class
 		| `Feature_code		-> forbidden_class
 		| `Feature_caps		-> forbidden_class
-		| `Feature_thru		-> forbidden_class
+		| `Feature_ins		-> forbidden_class
+		| `Feature_del		-> forbidden_class
 		| `Feature_sup		-> forbidden_class
 		| `Feature_sub		-> forbidden_class
 		| `Feature_mbox		-> forbidden_class

@@ -23,8 +23,8 @@
 
 <!ENTITY % Node
 	" br 
-	| bold | strong | b | emph | em | i | code | tt | caps | thru
-	| sup | sub | mbox | link | a
+	| bold | strong | b | emph | em | i | code | tt | caps
+	| ins | del | sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref">
 
 <!ENTITY % Frag "(%Block;)+">
@@ -221,8 +221,11 @@
 <!ELEMENT caps %Inline;>
 <!ATTLIST caps %Forbidden;>
 
-<!ELEMENT thru %Inline;>
-<!ATTLIST thru %Forbidden;>
+<!ELEMENT ins %Inline;>
+<!ATTLIST ins %Forbidden;>
+
+<!ELEMENT del %Inline;>
+<!ATTLIST del %Forbidden;>
 
 <!ELEMENT sup %Inline;>
 <!ATTLIST sup %Forbidden;>

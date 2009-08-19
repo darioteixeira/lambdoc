@@ -44,7 +44,8 @@ type seq_t = inline_t list
 	| Emph of seq_t
 	| Code of seq_t
 	| Caps of seq_t
-	| Thru of seq_t
+	| Ins of seq_t
+	| Del of seq_t
 	| Sup of seq_t
 	| Sub of seq_t
 	| Mbox of seq_t

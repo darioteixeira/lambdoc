@@ -25,7 +25,8 @@ type 'a inline_t =
 	| `Emph of 'a list
 	| `Code of 'a list
 	| `Caps of 'a list
-	| `Thru of 'a list
+	| `Ins of 'a list
+	| `Del of 'a list
 	| `Sup of 'a list
 	| `Sub of 'a list
 	| `Mbox of 'a list
@@ -55,7 +56,8 @@ val bold: ('a, 'b) t list -> ('a, 'b) t
 val emph: ('a, 'b) t list -> ('a, 'b) t
 val code: ('a, 'b) t list -> ('a, 'b) t
 val caps: ('a, 'b) t list -> ('a, 'b) t
-val thru: ('a, 'b) t list -> ('a, 'b) t
+val ins: ('a, 'b) t list -> ('a, 'b) t
+val del: ('a, 'b) t list -> ('a, 'b) t
 val sup: ('a, 'b) t list -> ('a, 'b) t
 val sub: ('a, 'b) t list -> ('a, 'b) t
 val mbox: ('a, 'b) t list -> ('a, 'b) t

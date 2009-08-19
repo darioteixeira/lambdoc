@@ -18,8 +18,9 @@
 type composition_inline_feature_t =
 	[ `Feature_plain | `Feature_entity | `Feature_linebreak
 	| `Feature_mathtex_inl | `Feature_mathml_inl
-	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps | `Feature_thru
-	| `Feature_sup | `Feature_sub | `Feature_mbox | `Feature_link
+	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
+	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
+	| `Feature_mbox | `Feature_link
 	]
 
 type manuscript_inline_feature_t =
@@ -78,8 +79,9 @@ let composition_inline_features =
 	[
 	`Feature_plain; `Feature_entity; `Feature_linebreak;
 	`Feature_mathtex_inl; `Feature_mathml_inl;
-	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps; `Feature_thru;
-	`Feature_sup; `Feature_sub; `Feature_mbox; `Feature_link;
+	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
+	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
+	`Feature_mbox; `Feature_link;
 	]
 
 let manuscript_inline_features =
@@ -123,10 +125,11 @@ let describe_composition_inline_feature = function
 	| `Feature_emph		-> "emphasised text"
 	| `Feature_code		-> "monospaced text"
 	| `Feature_caps		-> "small caps text"
-	| `Feature_thru		-> "strike-through text"
+	| `Feature_ins		-> "corrected text"
+	| `Feature_del		-> "deleted text"
 	| `Feature_sup		-> "superscript text"
 	| `Feature_sub		-> "subscript text"
-	| `Feature_mbox		-> "boxed text"
+	| `Feature_mbox		-> "non-breakable text"
 	| `Feature_link		-> "external link"
 
 
