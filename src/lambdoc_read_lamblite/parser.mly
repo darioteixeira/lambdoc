@@ -12,6 +12,7 @@ open Lambdoc_reader
 
 
 /********************************************************************************/
+/* Tokens.									*/
 /********************************************************************************/
 
 %token EOF
@@ -22,6 +23,10 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BOLD_MARK
 %token <Lambdoc_reader.Ast.command_t> EMPH_MARK
 %token <Lambdoc_reader.Ast.command_t> MONO_MARK
+
+%token <Lambdoc_reader.Ast.command_t> BEGIN_LINK
+%token <Lambdoc_reader.Ast.command_t> END_LINK
+%token <Lambdoc_reader.Ast.command_t> LINK_SEP
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_PAR
 %token <Lambdoc_reader.Ast.command_t> END_PAR
@@ -41,16 +46,21 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_VERBATIM
 %token <Lambdoc_reader.Ast.command_t> END_VERBATIM
 
-%token <Lambdoc_reader.Ast.command_t> PARHEAD
+%token <Lambdoc_reader.Ast.command_t> BEGIN_PARHEAD
+%token <Lambdoc_reader.Ast.command_t> END_PARHEAD
+
+%token <Lambdoc_reader.Ast.command_t> ITEM
 
 
 /********************************************************************************/
+/* Type declarations.								*/
 /********************************************************************************/
 
 %type <Lambdoc_reader.Ast.t> document
 
 
 /********************************************************************************/
+/* Begin grammar specification and declare rules.				*/
 /********************************************************************************/
 
 %start document
@@ -58,7 +68,7 @@ open Lambdoc_reader
 %%
 
 document:
-	| block* EOF	{$1}
+	| block* EOF					{$1}
 
 block:
 	| BEGIN_PAR inline+ END_PAR			{($1, Ast.Paragraph $2)}
@@ -67,14 +77,22 @@ block:
 	| BEGIN_QUOTE block+ END_QUOTE			{($1, Ast.Quote $2)}
 	| BEGIN_CODE RAW END_CODE			{($1, Ast.Code $2)}
 	| BEGIN_VERBATIM RAW END_VERBATIM		{($1, Ast.Verbatim $2)}
-	| PARHEAD inline+				{($1, Ast.Parhead $2)}
+	| BEGIN_PARHEAD inline+ END_PARHEAD		{($1, Ast.Parhead $2)}
 
 item:
-	| BEGIN_PAR inline+ END_PAR			{($1, [($1, Ast.Paragraph $2)])}
+	| ITEM block+					{($1, $2)}
 
 inline:
+	| plain						{$1}
+	| BEGIN_LINK raw END_LINK			{($1, Ast.Link ($2, []))}
+	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, [$4]))}
+	| BOLD_MARK plain BOLD_MARK			{($1, Ast.Bold [$2])}
+	| EMPH_MARK plain EMPH_MARK			{($1, Ast.Emph [$2])}
+	| MONO_MARK plain MONO_MARK			{($1, Ast.Mono [$2])}
+
+plain:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}
-	| BOLD_MARK inline+ BOLD_MARK			{($1, Ast.Bold $2)}
-	| EMPH_MARK inline+ EMPH_MARK			{($1, Ast.Emph $2)}
-	| MONO_MARK inline+ MONO_MARK			{($1, Ast.Mono $2)}
+
+raw:
+	| PLAIN						{let (comm, txt) = $1 in txt}
 

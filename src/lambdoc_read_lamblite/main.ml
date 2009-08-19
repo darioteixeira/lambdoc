@@ -31,11 +31,12 @@ struct
 		in revised_parser lexer_maker
 
 	let ast_from_string str =
-		Printf.eprintf "ast_from_string\n";
 		let tokenizer = new Tokenizer.tokenizer str
 		in try
 			menhir_with_ulex Parser.document tokenizer
 		with
+			| Scanner.Lone_terminator ->
+				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 			| Parser.Error ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 end
