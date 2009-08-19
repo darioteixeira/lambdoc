@@ -37,7 +37,7 @@ type 'a block_t =
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Alignment.t * Math.t
-	| `Code of Alignment.t * Code.t
+	| `Program of Alignment.t * Program.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
 	| `Verbatim of Alignment.t * raw_t
 	| `Bitmap of Alignment.t * Image.t
@@ -104,8 +104,8 @@ val quote: ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 val math: Alignment.t -> Math.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Math_blk ]) t
 
-val code: Alignment.t -> Code.t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Code_blk ]) t
+val program: Alignment.t -> Program.t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Program_blk ]) t
 
 val tabular: Alignment.t -> 'a Tabular.t ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Tabular_blk ]) t
@@ -128,7 +128,7 @@ val boxout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a,
 val equation: wrapper_t -> (_, _, _, _, [< `Math_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Equation_blk ]) t
 
-val printout: wrapper_t -> (_, _, _, _, [< `Code_blk ]) t ->
+val printout: wrapper_t -> (_, _, _, _, [< `Program_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Printout_blk ]) t
 
 val table: wrapper_t -> (_, _, _, _, [< `Tabular_blk ]) t ->

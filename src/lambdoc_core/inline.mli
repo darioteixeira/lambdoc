@@ -23,7 +23,7 @@ type 'a inline_t =
 	| `Math of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
-	| `Mono of 'a list
+	| `Code of 'a list
 	| `Caps of 'a list
 	| `Thru of 'a list
 	| `Sup of 'a list
@@ -53,7 +53,7 @@ val linebreak: unit -> ([> `Composition ], [> `Nonlink ]) t
 val math: Math.t -> ([> `Composition ], [> `Nonlink ]) t
 val bold: ('a, 'b) t list -> ('a, 'b) t
 val emph: ('a, 'b) t list -> ('a, 'b) t
-val mono: ('a, 'b) t list -> ('a, 'b) t
+val code: ('a, 'b) t list -> ('a, 'b) t
 val caps: ('a, 'b) t list -> ('a, 'b) t
 val thru: ('a, 'b) t list -> ('a, 'b) t
 val sup: ('a, 'b) t list -> ('a, 'b) t

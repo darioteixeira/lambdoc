@@ -66,7 +66,7 @@ struct
 			in valid_processor ?classnames ?accept_list ?deny_list ?default str document_ast
 		with
 			| Preprocess.Malformed_source (sane_str, error_lines) ->
-				let msgs = List.map (fun line -> (line, Error.Malformed_code)) error_lines in
+				let msgs = List.map (fun line -> (line, Error.Malformed_code_point)) error_lines in
 				let errors = Postprocess.collate_errors sane_str msgs
 				in invalid_maker errors
 			| Reader.Reading_error (line, msg) ->

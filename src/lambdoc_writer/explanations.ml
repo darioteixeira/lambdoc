@@ -137,8 +137,8 @@ let explain_error = function
 	| Error.Absent_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
-	| Error.Malformed_code ->
-		sprintf "This line contains a malformed UTF-8 sequence (represented by the character '\xef\xbf\xbd')."
+	| Error.Malformed_code_point ->
+		sprintf "This line contains a malformed UTF-8 code point (represented by the character '\xef\xbf\xbd')."
 
 	| Error.Reading_error msg ->
 		sprintf "%s." msg

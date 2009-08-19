@@ -22,7 +22,7 @@ type 'a inline_t =
 	| `Math of Math.t
 	| `Bold of 'a list
 	| `Emph of 'a list
-	| `Mono of 'a list
+	| `Code of 'a list
 	| `Caps of 'a list
 	| `Thru of 'a list
 	| `Sup of 'a list
@@ -52,7 +52,7 @@ let linebreak () = `Linebreak
 let math mth = `Math mth
 let bold seq = `Bold seq
 let emph seq = `Emph seq
-let mono seq = `Mono seq
+let code seq = `Code seq
 let caps seq = `Caps seq
 let thru seq = `Thru seq
 let sup seq = `Sup seq

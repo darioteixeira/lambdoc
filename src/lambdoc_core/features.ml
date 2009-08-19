@@ -18,7 +18,7 @@
 type composition_inline_feature_t =
 	[ `Feature_plain | `Feature_entity | `Feature_linebreak
 	| `Feature_mathtex_inl | `Feature_mathml_inl
-	| `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps | `Feature_thru
+	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps | `Feature_thru
 	| `Feature_sup | `Feature_sub | `Feature_mbox | `Feature_link
 	]
 
@@ -30,7 +30,7 @@ type composition_block_feature_t =
 	[ `Feature_item | `Feature_describe | `Feature_paragraph
 	| `Feature_itemize | `Feature_enumerate | `Feature_description
 	| `Feature_parhead | `Feature_verse | `Feature_quote
-	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_code
+	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_program
 	| `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage
 	]
 
@@ -78,7 +78,7 @@ let composition_inline_features =
 	[
 	`Feature_plain; `Feature_entity; `Feature_linebreak;
 	`Feature_mathtex_inl; `Feature_mathml_inl;
-	`Feature_bold; `Feature_emph; `Feature_mono; `Feature_caps; `Feature_thru;
+	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps; `Feature_thru;
 	`Feature_sup; `Feature_sub; `Feature_mbox; `Feature_link;
 	]
 
@@ -92,7 +92,7 @@ let composition_block_features =
 	`Feature_item; `Feature_describe; `Feature_paragraph;
 	`Feature_itemize; `Feature_enumerate; `Feature_description;
 	`Feature_parhead; `Feature_verse; `Feature_quote;
-	`Feature_mathtex_blk; `Feature_mathml_blk; `Feature_code;
+	`Feature_mathtex_blk; `Feature_mathml_blk; `Feature_program;
 	`Feature_tabular; `Feature_verbatim; `Feature_bitmap; `Feature_subpage;
 	]
 
@@ -121,7 +121,7 @@ let describe_composition_inline_feature = function
 	| `Feature_mathml_inl	-> "inline MathML math"
 	| `Feature_bold		-> "bold text"
 	| `Feature_emph		-> "emphasised text"
-	| `Feature_mono		-> "monospaced text"
+	| `Feature_code		-> "monospaced text"
 	| `Feature_caps		-> "small caps text"
 	| `Feature_thru		-> "strike-through text"
 	| `Feature_sup		-> "superscript text"
@@ -150,7 +150,7 @@ let describe_composition_block_feature = function
 	| `Feature_quote	-> "quote block"
 	| `Feature_mathtex_blk	-> "TeX math block"
 	| `Feature_mathml_blk	-> "MathML block"
-	| `Feature_code		-> "code block"
+	| `Feature_program	-> "source code block"
 	| `Feature_tabular	-> "tabular"
 	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_bitmap	-> "bitmap block"

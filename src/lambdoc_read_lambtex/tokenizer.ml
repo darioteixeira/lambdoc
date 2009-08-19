@@ -48,7 +48,7 @@ type environment_t =
 	| Mathtex_blk of string
 	| Mathml_blk of string
 	| Verbatim of string
-	| Code of string
+	| Program of string
 
 
 (**	Declaration of the two scanning contexts.  A [Blk] (block) context
@@ -150,9 +150,8 @@ object (self)
 			| "emph"
 			| "em"
 			| "i"			-> (EMPH params,		Inl,	[Store [Inline]])
-			| "mono"
-			| "tt"
-			| "m"			-> (MONO params,		Inl,	[Store [Inline]])
+			| "code"
+			| "tt"			-> (CODE params,		Inl,	[Store [Inline]])
 			| "caps"		-> (CAPS params,		Inl,	[Store [Inline]])
 			| "thru"		-> (THRU params,		Inl,	[Store [Inline]])
 			| "sup"			-> (SUP params,			Inl,	[Store [Inline]])
@@ -223,8 +222,8 @@ object (self)
 			then (BEGIN_VERBATIM params, END_VERBATIM params, [Push_env (Verbatim tag)], [Pop_env])
 			else if String.starts_with tag "pre"
 			then (BEGIN_VERBATIM_1 params, END_VERBATIM_1 params, [Push_env (Verbatim tag)], [Pop_env])
-			else if String.starts_with tag "code"
-			then (BEGIN_CODE params, END_CODE params, [Push_env (Code tag)], [Pop_env])
+			else if String.starts_with tag "prog"
+			then (BEGIN_PROGRAM params, END_PROGRAM params, [Push_env (Program tag)], [Pop_env])
 
 			(* If not literal, then test the other environments. *)
 
@@ -349,7 +348,7 @@ object (self)
 			| Some Inline		-> Scanner.general_scanner
 			| Some Tabular		-> Scanner.tabular_scanner
 			| Some Verbatim term	-> Scanner.literal_scanner term
-			| Some Code term	-> Scanner.literal_scanner term
+			| Some Program term	-> Scanner.literal_scanner term
 			| Some Raw		-> Scanner.raw_scanner
 			| Some Mathtex_inl	-> Scanner.mathtex_inl_scanner
 			| Some Mathml_inl	-> Scanner.mathml_inl_scanner

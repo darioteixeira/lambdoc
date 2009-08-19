@@ -22,7 +22,7 @@ open Parser
 
 type context_t =
 	| General
-	| Code
+	| Program
 	| Verbatim
 
 
@@ -75,7 +75,7 @@ in object (self)
 			| Plain x	-> PLAIN (self#op, x)
 			| Bold_mark	-> BOLD_MARK self#op
 			| Emph_mark	-> EMPH_MARK self#op
-			| Mono_mark	-> MONO_MARK self#op
+			| Code_mark	-> CODE_MARK self#op
 			| Begin_link	-> BEGIN_LINK self#op
 			| End_link	-> END_LINK self#op
 			| Link_sep	-> LINK_SEP self#op
@@ -175,18 +175,18 @@ in object (self)
 			else
 				let scanner = match context with
 					| General	-> Scanner.general_scanner
-					| Code		-> Scanner.literal_scanner End_code
+					| Program	-> Scanner.literal_scanner End_program
 					| Verbatim	-> Scanner.literal_scanner End_verbatim in
 				let lexbuf = Ulexing.from_utf8_string lines.(line_counter) in
 				let tok = scanner lexbuf
 				in match tok with
-					| Begin_code lang ->
-						context <- Code;
+					| Begin_program lang ->
+						context <- Program;
 						let extra = if String.length lang = 0 then None else Some ("lang=" ^ lang)
-						in self#store (BEGIN_CODE (self#comm ~tag:(Some "{{#") ~extra ()))
-					| End_code ->
+						in self#store (BEGIN_PROGRAM (self#comm ~tag:(Some "{{#") ~extra ()))
+					| End_program ->
 						context <- General;
-						self#store (END_CODE self#op)
+						self#store (END_PROGRAM self#op)
 					| Begin_verbatim ->
 						context <- Verbatim;
 						self#store (BEGIN_VERBATIM self#op)

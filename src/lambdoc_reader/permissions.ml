@@ -124,7 +124,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_mathml_inl	-> forbidden_class
 		| `Feature_bold		-> forbidden_class
 		| `Feature_emph		-> forbidden_class
-		| `Feature_mono		-> forbidden_class
+		| `Feature_code		-> forbidden_class
 		| `Feature_caps		-> forbidden_class
 		| `Feature_thru		-> forbidden_class
 		| `Feature_sup		-> forbidden_class
@@ -151,7 +151,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_quote	-> forbidden_class
 		| `Feature_mathtex_blk	-> floater_class
 		| `Feature_mathml_blk	-> floater_class
-		| `Feature_code		-> floater_class
+		| `Feature_program	-> floater_class
 		| `Feature_tabular	-> floater_class
 		| `Feature_verbatim	-> floater_class
 		| `Feature_bitmap	-> floater_class

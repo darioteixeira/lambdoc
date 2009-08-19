@@ -11,7 +11,7 @@
 <!ENTITY % Block
 	"p | itemize | ul | enumerate | ol | description | dl
 	| verse | quote
-	| code | tabular | verbatim | pre | bitmap | subpage
+	| prog | tabular | verbatim | pre | bitmap | subpage
 	| pull | boxout
 	| equation | printout | table | figure
 	| part | appendix
@@ -23,7 +23,7 @@
 
 <!ENTITY % Node
 	" br 
-	| bold | strong | b | emph | em | i | mono | tt | caps | thru
+	| bold | strong | b | emph | em | i | code | tt | caps | thru
 	| sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref">
 
@@ -84,8 +84,8 @@
 <!ELEMENT msg %Inline;>
 <!ATTLIST msg %Forbidden;>
 
-<!ELEMENT code (#PCDATA)>
-<!ATTLIST code %Floater;>
+<!ELEMENT prog (#PCDATA)>
+<!ATTLIST prog %Floater;>
 
 <!ELEMENT tabular (thead?, tbody+, tfoot?)>
 <!ATTLIST tabular %Floater; cols CDATA #REQUIRED>
@@ -212,8 +212,8 @@
 <!ELEMENT i %Inline;>
 <!ATTLIST i %Forbidden;>
 
-<!ELEMENT mono %Inline;>
-<!ATTLIST mono %Forbidden;>
+<!ELEMENT code %Inline;>
+<!ATTLIST code %Forbidden;>
 
 <!ELEMENT tt %Inline;>
 <!ATTLIST tt %Forbidden;>

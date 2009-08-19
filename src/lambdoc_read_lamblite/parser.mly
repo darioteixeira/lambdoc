@@ -22,7 +22,7 @@ open Lambdoc_reader
 
 %token <Lambdoc_reader.Ast.command_t> BOLD_MARK
 %token <Lambdoc_reader.Ast.command_t> EMPH_MARK
-%token <Lambdoc_reader.Ast.command_t> MONO_MARK
+%token <Lambdoc_reader.Ast.command_t> CODE_MARK
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_LINK
 %token <Lambdoc_reader.Ast.command_t> END_LINK
@@ -40,8 +40,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_QUOTE
 %token <Lambdoc_reader.Ast.command_t> END_QUOTE
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_CODE
-%token <Lambdoc_reader.Ast.command_t> END_CODE
+%token <Lambdoc_reader.Ast.command_t> BEGIN_PROGRAM
+%token <Lambdoc_reader.Ast.command_t> END_PROGRAM
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_VERBATIM
 %token <Lambdoc_reader.Ast.command_t> END_VERBATIM
@@ -75,7 +75,7 @@ block:
 	| BEGIN_ITEMIZE item+ END_ITEMIZE		{($1, Ast.Itemize $2)}
 	| BEGIN_ENUMERATE item+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
 	| BEGIN_QUOTE block+ END_QUOTE			{($1, Ast.Quote $2)}
-	| BEGIN_CODE RAW END_CODE			{($1, Ast.Code $2)}
+	| BEGIN_PROGRAM RAW END_PROGRAM			{($1, Ast.Program $2)}
 	| BEGIN_VERBATIM RAW END_VERBATIM		{($1, Ast.Verbatim $2)}
 	| BEGIN_PARHEAD inline+ END_PARHEAD		{($1, Ast.Parhead $2)}
 
@@ -88,7 +88,7 @@ inline:
 	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, [$4]))}
 	| BOLD_MARK plain BOLD_MARK			{($1, Ast.Bold [$2])}
 	| EMPH_MARK plain EMPH_MARK			{($1, Ast.Emph [$2])}
-	| MONO_MARK plain MONO_MARK			{($1, Ast.Mono [$2])}
+	| CODE_MARK plain CODE_MARK			{($1, Ast.Code [$2])}
 
 plain:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}

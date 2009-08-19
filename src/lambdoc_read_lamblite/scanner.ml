@@ -31,14 +31,14 @@ type text_t =
 	| Plain of string
 	| Bold_mark
 	| Emph_mark
-	| Mono_mark
+	| Code_mark
 	| Begin_link
 	| End_link
 	| Link_sep
 
 type line_t =
-	| Begin_code of string
-	| End_code
+	| Begin_program of string
+	| End_program
 	| Begin_verbatim
 	| End_verbatim
 	| Raw of string
@@ -78,7 +78,7 @@ let text_scanner lexbuf =
 		| '\\' _ -> main_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
 		| "**"	 -> main_scanner (Bold_mark :: accum) lexbuf
 		| "//"	 -> main_scanner (Emph_mark :: accum) lexbuf
-		| "__"	 -> main_scanner (Mono_mark :: accum) lexbuf
+		| "__"	 -> main_scanner (Code_mark :: accum) lexbuf
 		| "[["	 -> link_scanner (Begin_link :: accum) lexbuf
 		| "]]"	 -> main_scanner (End_link :: accum) lexbuf
 		| "||"	 -> main_scanner (Link_sep :: accum) lexbuf
@@ -99,7 +99,7 @@ let literal_scanner term_token = lexer
 
 let general_scanner = lexer
 	| "{{#" alpha* blank* eof ->
-		Begin_code (String.slice ~first:3 (String.strip (Ulexing.latin1_lexeme lexbuf)))
+		Begin_program (String.slice ~first:3 (String.strip (Ulexing.latin1_lexeme lexbuf)))
 	| "{{" blank* eof ->
 		Begin_verbatim
 	| "}}" blank* eof ->

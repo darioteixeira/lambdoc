@@ -19,7 +19,7 @@ open XHTML.M
 open Lambdoc_core
 open Lambdoc_writer
 open Basic
-open Code
+open Program
 open Image
 open Valid
 open Settings
@@ -182,8 +182,8 @@ let write_valid_document settings classname doc =
 		| `Emph seq ->
 			XHTML.M.i (write_seq ~nbspfy seq)
 
-		| `Mono seq ->
-			XHTML.M.span ~a:[a_class ["doc_mono"]] (write_seq ~nbspfy seq)
+		| `Code seq ->
+			XHTML.M.tt (write_seq ~nbspfy seq)
 
 		| `Caps seq ->
 			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_seq ~nbspfy seq)
@@ -354,8 +354,8 @@ let write_valid_document settings classname doc =
 			and style = if wrapped then [] else make_alignment alignment
 			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [xhtml])
 
-		| `Code (alignment, code) ->
-			let (linenums, zebra, hilite) = (code.linenums, code.zebra, code.hilite)
+		| `Program (alignment, prog) ->
+			let (linenums, zebra, hilite) = (prog.linenums, prog.zebra, prog.hilite)
 			and style = if wrapped then [] else make_alignment alignment
 			in (Some alignment, Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra hilite)
 

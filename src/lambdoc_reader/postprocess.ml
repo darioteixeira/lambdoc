@@ -182,9 +182,9 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () = Some (Inline.emph (List.filter_map (convert_inline x) seq))
 			in check_comm `Feature_emph comm elem
 
-		| (x, (comm, Ast.Mono seq)) ->
-			let elem () = Some (Inline.mono (List.filter_map (convert_inline x) seq))
-			in check_comm `Feature_mono comm elem
+		| (x, (comm, Ast.Code seq)) ->
+			let elem () = Some (Inline.code (List.filter_map (convert_inline x) seq))
+			in check_comm `Feature_code comm elem
 
 		| (x, (comm, Ast.Caps seq)) ->
 			let elem () = Some (Inline.caps (List.filter_map (convert_inline x) seq))
@@ -386,14 +386,14 @@ let process_document classnames idiosyncrasies document_ast =
 				in convert_mathml (Block.math alignment) comm txt
 			in check_comm `Feature_mathml_blk comm elem
 
-		| (_, _, true, `Printout_blk, (comm, Ast.Code txt))
-		| (_, _, true, `Any_blk, (comm, Ast.Code txt)) ->
+		| (_, _, true, `Printout_blk, (comm, Ast.Program txt))
+		| (_, _, true, `Any_blk, (comm, Ast.Program txt)) ->
 			let elem () =
-				let (alignment, lang, linenums, zebra) = Extra.parse_for_code errors comm in
+				let (alignment, lang, linenums, zebra) = Extra.parse_for_program errors comm in
 				let hilite = Camlhighlight_parser.from_string lang txt in
-				let code = Code.make lang linenums zebra hilite
-				in Some (Block.code alignment code)
-			in check_comm `Feature_code comm elem
+				let prog = Program.make lang linenums zebra hilite
+				in Some (Block.program alignment prog)
+			in check_comm `Feature_program comm elem
 
 		| (_, _, true, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
 		| (_, _, true, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->

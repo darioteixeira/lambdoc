@@ -19,7 +19,7 @@ let (!!) = Lazy.force
 let inline_elems =
 	[
 	"br"; "bold"; "strong"; "b"; "emph"; "em"; "i";
-	"mono"; "tt"; "caps"; "thru"; "sup"; "sub"; "mbox";
+	"code"; "tt"; "caps"; "thru"; "sup"; "sub"; "mbox";
 	"link"; "a"; "see"; "cite"; "ref"; "sref"; "mref"
 	]
 
@@ -46,8 +46,8 @@ and process_inline node =
 		| T_element "emph"
 		| T_element "em"
 		| T_element "i"			-> (!!comm, Ast.Emph (process_seq node))
-		| T_element "mono"
-		| T_element "tt"		-> (!!comm, Ast.Mono (process_seq node))
+		| T_element "code"
+		| T_element "tt"		-> (!!comm, Ast.Code (process_seq node))
 		| T_element "caps"		-> (!!comm, Ast.Caps (process_seq node))
 		| T_element "thru"		-> (!!comm, Ast.Thru (process_seq node))
 		| T_element "sup"		-> (!!comm, Ast.Sup (process_seq node))
@@ -100,7 +100,7 @@ and process_block node =
 		| T_element "dl"		-> (!!comm, Ast.Description (process_definition_frag node))
 		| T_element "verse"		-> (!!comm, Ast.Verse (process_frag node))
 		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node))
-		| T_element "code"		-> (!!comm, Ast.Code node#data)
+		| T_element "prog"		-> (!!comm, Ast.Program node#data)
 		| T_element "tabular"		-> let (cols, tabular) = process_tabular node in (!!comm, Ast.Tabular (cols, tabular))
 		| T_element "verbatim"
 		| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)

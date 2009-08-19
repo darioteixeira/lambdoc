@@ -249,7 +249,7 @@ let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token_t]) = lexe
 
 (**	Special parametrised scanner for verbatim-like environments.  The parameter
 	indicates the termination token for the environment.  The actual Lambtex
-	environments using it are "verbatim", "code", "mathtex", and "mathml".
+	environments using it are "verbatim", "prog", "mathtex", and "mathml".
 *)
 
 let literal_scanner terminator : (Ulexing.lexbuf -> int * [> literal_token_t]) = lexer

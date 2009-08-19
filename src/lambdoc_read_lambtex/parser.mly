@@ -80,8 +80,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_MATHML_BLK
 %token <Lambdoc_reader.Ast.command_t> END_MATHML_BLK
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_CODE
-%token <Lambdoc_reader.Ast.command_t> END_CODE
+%token <Lambdoc_reader.Ast.command_t> BEGIN_PROGRAM
+%token <Lambdoc_reader.Ast.command_t> END_PROGRAM
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_TABULAR
 %token <Lambdoc_reader.Ast.command_t> END_TABULAR
@@ -130,7 +130,7 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> LINEBREAK
 %token <Lambdoc_reader.Ast.command_t> BOLD
 %token <Lambdoc_reader.Ast.command_t> EMPH
-%token <Lambdoc_reader.Ast.command_t> MONO
+%token <Lambdoc_reader.Ast.command_t> CODE
 %token <Lambdoc_reader.Ast.command_t> CAPS
 %token <Lambdoc_reader.Ast.command_t> THRU
 %token <Lambdoc_reader.Ast.command_t> SUP
@@ -203,7 +203,7 @@ block:
 	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
 	| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{($1, Ast.Mathml_blk $2)}
-	| BEGIN_CODE RAW END_CODE				{($1, Ast.Code $2)}
+	| BEGIN_PROGRAM RAW END_PROGRAM				{($1, Ast.Program $2)}
 	| BEGIN_TABULAR BEGIN RAW END tabular END_TABULAR	{($1, Ast.Tabular ($3, $5))}
 	| BEGIN_VERBATIM RAW END_VERBATIM			{($1, Ast.Verbatim $2)}
 	| BEGIN_VERBATIM_1 RAW END_VERBATIM_1			{($1, Ast.Verbatim $2)}
@@ -290,7 +290,7 @@ inline:
 	| BEGIN_MATHML_INL RAW END_MATHML_INL		{($1, Ast.Mathml_inl $2)}
 	| BOLD BEGIN inline+ END			{($1, Ast.Bold $3)}
 	| EMPH BEGIN inline+ END			{($1, Ast.Emph $3)}
-	| MONO BEGIN inline+ END			{($1, Ast.Mono $3)}
+	| CODE BEGIN inline+ END			{($1, Ast.Code $3)}
 	| CAPS BEGIN inline+ END			{($1, Ast.Caps $3)}
 	| THRU BEGIN inline+ END			{($1, Ast.Thru $3)}
 	| SUP BEGIN inline+ END				{($1, Ast.Sup $3)}

@@ -42,7 +42,7 @@ type seq_t = inline_t list
 	| Mathml_inl of raw_t
 	| Bold of seq_t
 	| Emph of seq_t
-	| Mono of seq_t
+	| Code of seq_t
 	| Caps of seq_t
 	| Thru of seq_t
 	| Sup of seq_t
@@ -91,7 +91,7 @@ type frag_t = block_t list
 	| Quote of frag_t
 	| Mathtex_blk of raw_t
 	| Mathml_blk of raw_t
-	| Code of raw_t
+	| Program of raw_t
 	| Tabular of raw_t * tabular_t
 	| Verbatim of raw_t
 	| Bitmap of raw_t * raw_t	(* (src, alt) *)

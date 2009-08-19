@@ -414,7 +414,7 @@ let parse_for_mathtex = parse_floater
 
 let parse_for_mathml = parse_floater
 
-let parse_for_code errors comm =
+let parse_for_program errors comm =
 	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd; Alignment_hnd] in
 	let lang = match assigned.(0) with
 		| Some (Lang_data x)		-> Some x

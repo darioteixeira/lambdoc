@@ -27,7 +27,7 @@ type 'a block_t =
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Alignment.t * Math.t
-	| `Code of Alignment.t * Code.t
+	| `Program of Alignment.t * Program.t
 	| `Tabular of Alignment.t * Tabular.tabular_t
 	| `Verbatim of Alignment.t * raw_t
 	| `Bitmap of Alignment.t * Image.t
@@ -61,7 +61,7 @@ let description (hd, tl) = let conv (seq, frag) = (Inline.get_seq seq, frag) in 
 let verse frag = `Verse frag
 let quote frag = `Quote frag
 let math alignment mth = `Math (alignment, mth)
-let code alignment x = `Code (alignment, x)
+let program alignment prog = `Program (alignment, prog)
 let tabular alignment tab = `Tabular (alignment, Tabular.get_tabular tab)
 let verbatim alignment txt = `Verbatim (alignment, txt)
 let bitmap alignment img = `Bitmap (alignment, img)
