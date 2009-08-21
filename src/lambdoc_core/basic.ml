@@ -60,7 +60,11 @@ type title_level_t =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let fplus f elem elem_list = (f elem, List.map f elem_list)
+let fplus f hd tl =
+	let new_hd = f hd in
+	let new_tl = List.map f tl
+	in (new_hd, new_tl)
+
 
 let maybe f = function
 	| Some x	-> Some (f x)

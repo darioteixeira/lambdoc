@@ -141,12 +141,11 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_mref		-> forbidden_class
 
 	and composition_block_feature_set = function
-		| `Feature_item		-> forbidden_class
-		| `Feature_describe	-> forbidden_class
 		| `Feature_paragraph	-> forbidden_class
 		| `Feature_itemize	-> listing_class
 		| `Feature_enumerate	-> listing_class
 		| `Feature_description	-> forbidden_class
+		| `Feature_qanda	-> forbidden_class
 		| `Feature_parhead	-> forbidden_class
 		| `Feature_verse	-> forbidden_class
 		| `Feature_quote	-> forbidden_class
@@ -167,13 +166,8 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_table	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_figure	-> wrapper_class (get_minipaged maybe_minipaged)
 
-		| `Feature_caption	-> forbidden_class
 		| `Feature_bib		-> ghost_class
 		| `Feature_note		-> ghost_class
-
-		| `Feature_bib_author	-> forbidden_class
-		| `Feature_bib_title	-> forbidden_class
-		| `Feature_bib_resource	-> forbidden_class
 
 		| `Feature_part		-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_appendix	-> preset_heading_class
@@ -189,13 +183,27 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_title1	-> forbidden_class
 		| `Feature_title2	-> forbidden_class
 		| `Feature_abstract	-> forbidden_class
-		| `Feature_rule		-> forbidden_class in
+		| `Feature_rule		-> forbidden_class
+
+	and internal_feature_set = function
+		| `Feature_item		-> forbidden_class
+		| `Feature_describe	-> forbidden_class
+		| `Feature_question	-> forbidden_class
+		| `Feature_answer	-> forbidden_class
+		| `Feature_bib_author	-> forbidden_class
+		| `Feature_bib_title	-> forbidden_class
+		| `Feature_bib_resource	-> forbidden_class
+		| `Feature_head		-> forbidden_class
+		| `Feature_body		-> forbidden_class
+		| `Feature_foot		-> forbidden_class
+		| `Feature_caption	-> forbidden_class in
 
 	let permission_set = match feature with
 		| #Features.composition_inline_feature_t as x	-> composition_inline_feature_set x
 		| #Features.manuscript_inline_feature_t as x	-> manuscript_inline_feature_set x
 		| #Features.composition_block_feature_t as x	-> composition_block_feature_set x
 		| #Features.manuscript_block_feature_t as x	-> manuscript_block_feature_set x
+		| #Features.internal_feature_t as x		-> internal_feature_set x
 
 	in check_permission_set errors comm permission_set
 

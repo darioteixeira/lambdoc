@@ -21,6 +21,6 @@ val check_feature:
 	?maybe_wrapped: bool option ->
 	(int * Error.error_msg_t) DynArray.t ->
 	Ast.command_t ->
-	Features.manuscript_feature_t ->
+	Features.feature_t ->
 	unit
 

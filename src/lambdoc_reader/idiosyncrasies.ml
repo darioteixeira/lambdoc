@@ -14,7 +14,7 @@ open Lambdoc_core
 (********************************************************************************)
 
 module Feature_map =
-	Map.Make (struct type t = Features.manuscript_feature_t let compare = Pervasives.compare end)
+	Map.Make (struct type t = Features.feature_t let compare = Pervasives.compare end)
 
 
 type t = bool Feature_map.t
@@ -25,7 +25,12 @@ type t = bool Feature_map.t
 (********************************************************************************)
 
 let make_idiosyncrasies feature_set accept_list deny_list default =
-	let default_bool = default = `Accept in
+	let base_map =
+		let features = (Features.available_internal_features :> Features.feature_t list) in
+		let adder m x = Feature_map.add x true m
+		in List.fold_left adder Feature_map.empty features in
+	let default_bool =
+		(default = `Accept) in
 	let is_accepted feature =
 		if List.mem feature deny_list
 		then false
@@ -36,18 +41,21 @@ let make_idiosyncrasies feature_set accept_list deny_list default =
 				else false in
 	let make_feature map feature =
 		Feature_map.add feature (is_accepted feature) map
-	in List.fold_left make_feature Feature_map.empty Features.available_manuscript_features
+	in List.fold_left make_feature base_map (Features.available_manuscript_features :> Features.feature_t list)
 
 
 let make_composition_idiosyncrasies ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
-	let composition_features = (Features.available_composition_features :> Features.manuscript_feature_t list)
-	and accept_list = (accept_list :> Features.manuscript_feature_t list)
-	and deny_list = (deny_list :> Features.manuscript_feature_t list)
+	let composition_features = (Features.available_composition_features :> Features.feature_t list)
+	and accept_list = (accept_list :> Features.feature_t list)
+	and deny_list = (deny_list :> Features.feature_t list)
 	in make_idiosyncrasies composition_features accept_list deny_list default
 
 
 let make_manuscript_idiosyncrasies ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
-	make_idiosyncrasies Features.available_manuscript_features accept_list deny_list default
+	let manuscript_features = (Features.available_manuscript_features :> Features.feature_t list)
+	and accept_list = (accept_list :> Features.feature_t list)
+	and deny_list = (deny_list :> Features.feature_t list)
+	in make_idiosyncrasies manuscript_features accept_list deny_list default
 
 
 let check_feature feature map =

@@ -14,7 +14,20 @@ open Lambdoc_reader
 open Ast
 
 
+(********************************************************************************)
+(*	{2 Private functions and values}					*)
+(********************************************************************************)
+
+let pairify lst =
+	let rec pairify_aux accum = function
+		| one::two::tl	-> let new_accum = (one, two) :: accum in pairify_aux new_accum tl
+		| []		-> accum
+		| _		-> invalid_arg "pairify"
+	in pairify_aux [] lst
+
+
 let (!!) = Lazy.force
+
 
 let inline_elems =
 	[
@@ -22,6 +35,7 @@ let inline_elems =
 	"ins"; "del"; "sup"; "sub"; "mbox"; "link"; "a";
 	"see"; "cite"; "ref"; "sref"; "mref"
 	]
+
 
 let command_from_node node =
 	{
@@ -32,8 +46,10 @@ let command_from_node node =
 	comm_linenum = let (_, line, _) = node#position in line - 1;
 	}
 
+
 let rec process_seq seq_root =
 	List.map process_inline seq_root#sub_nodes
+
 
 and process_inline node =
 	let comm = lazy (command_from_node node)
@@ -89,6 +105,7 @@ let rec process_frag ?(flow = false) frag_root =
 	if flow then coalesce_flow frag_root;
 	List.map process_block frag_root#sub_nodes
 
+
 and process_block node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
@@ -98,7 +115,8 @@ and process_block node =
 		| T_element "enumerate"
 		| T_element "ol"		-> (!!comm, Ast.Enumerate (List.map process_item node#sub_nodes))
 		| T_element "description"
-		| T_element "dl"		-> (!!comm, Ast.Description (process_definition_frag node))
+		| T_element "dl"		-> (!!comm, Ast.Description (process_description_frag node))
+		| T_element "qanda"		-> (!!comm, Ast.Qanda (process_qanda_frag node))
 		| T_element "verse"		-> (!!comm, Ast.Verse (process_frag node))
 		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node))
 		| T_element "prog"		-> (!!comm, Ast.Program node#data)
@@ -134,29 +152,35 @@ and process_block node =
 		| T_element "note"		-> (!!comm, Ast.Note (process_frag node))
 		| _				-> failwith "process_block_node"
 
+
 and process_item node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
 		| T_element "li"		-> (!!comm, process_frag ~flow:true node)
 		| _				-> failwith "process_item_node"
 
-and process_definition_frag frag_root =
 
-	let pairify frag =
-		let rec pairify_aux accum = function
-			| dt::dd::tl	-> let new_accum = (dt, dd) :: accum in pairify_aux new_accum tl
-			| []		-> accum
-			| _		-> failwith "pairify"
-		in pairify_aux [] frag in
+and process_definition_nodes (dt_node, dd_node) =
+	let comm = lazy (command_from_node dt_node) in
+	let (dt, dd) = match (dt_node#node_type, dd_node#node_type) with
+		| (T_element "dt", T_element "dd")	-> (process_seq dt_node, process_frag ~flow:true dd_node)
+		| _					-> failwith "process_definition_nodes"
+	in (!!comm, dt, dd)
 
-	let process_definition_nodes (dt_node, dd_node) =
-		let comm = lazy (command_from_node dt_node) in
-		let (dt, dd) = match (dt_node#node_type, dd_node#node_type) with
-			| (T_element "dt", T_element "dd")	-> (process_seq dt_node, process_frag ~flow:true dd_node)
-			| _					-> failwith "process_definition_nodes"
-		in (!!comm, dt, dd)
 
-	in List.rev_map process_definition_nodes (pairify frag_root#sub_nodes)
+and process_description_frag frag_root =
+	List.rev_map process_definition_nodes (pairify frag_root#sub_nodes)
+
+
+and process_qanda_frag frag_root =
+	let process_qora node = match node#sub_nodes with
+		| [dt; dd] -> process_definition_nodes (dt, dd)
+		| _	   -> failwith "process_qora" in
+	let process_group (question, answer) = match (question#node_type, answer#node_type) with
+		| (T_element "question", T_element "answer") -> (process_qora question, process_qora answer)
+		| _					     -> failwith "process_qanda"
+	in List.rev_map process_group (pairify frag_root#sub_nodes)
+
 
 and process_callout node = match node#sub_nodes with
 	| msg_node :: _ when msg_node#node_type = T_element "msg" ->
@@ -164,6 +188,7 @@ and process_callout node = match node#sub_nodes with
 		(Some (process_seq msg_node), process_frag node)
 	| _ ->
 		(None, process_frag node)
+
 
 and process_tabular node =
 	let cols = node#required_string_attribute "cols"
@@ -184,6 +209,7 @@ and process_tabular node =
 	let () = List.iter process_group node#sub_nodes
 	in (cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
 
+
 and process_wrapper node = match node#sub_nodes with
 	| [block_node; caption_node] when caption_node#node_type = T_element "caption" ->
 		let block = process_block block_node
@@ -191,6 +217,7 @@ and process_wrapper node = match node#sub_nodes with
 		in (block, caption)
 	| _ ->
 		failwith "process_wrapper"
+
 
 and process_bib node = match node#sub_nodes with
 	| [who_node; what_node; where_node] ->
@@ -201,9 +228,15 @@ and process_bib node = match node#sub_nodes with
 	| _ ->
 		failwith "process_bib"
 
+
 let process_document node = match node#node_type with
 	| T_element "document" -> process_frag node
 	| _			-> failwith "process_document"
+
+
+(********************************************************************************)
+(*	{2 Public functions and values}						*)
+(********************************************************************************)
 
 let parse str =
 	let config =

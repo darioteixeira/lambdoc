@@ -10,7 +10,7 @@
 
 <!ENTITY % Block
 	"p | itemize | ul | enumerate | ol | description | dl
-	| verse | quote
+	| qanda | verse | quote
 	| prog | tabular | verbatim | pre | bitmap | subpage
 	| pull | boxout
 	| equation | printout | table | figure
@@ -54,6 +54,12 @@
 <!ELEMENT dd %Flow;>
 <!ATTLIST dd %Forbidden;>
 
+<!ELEMENT question (dt, dd)>
+<!ATTLIST question %Forbidden;>
+
+<!ELEMENT answer (dt, dd)>
+<!ATTLIST answer %Forbidden;>
+
 <!ELEMENT p %Inline;>
 <!ATTLIST p %Forbidden;>
 
@@ -69,11 +75,14 @@
 <!ELEMENT ol (li)+>
 <!ATTLIST ol %Listing;>
 
-<!ELEMENT description (dt | dd)+>
+<!ELEMENT description (dt, dd)+>
 <!ATTLIST description %Forbidden;>
 
-<!ELEMENT dl (dt | dd)+>
+<!ELEMENT dl (dt, dd)+>
 <!ATTLIST dl %Forbidden;>
+
+<!ELEMENT qanda (question, answer)+>
+<!ATTLIST qanda %Forbidden;>
 
 <!ELEMENT verse %Frag;>
 <!ATTLIST verse %Forbidden;>

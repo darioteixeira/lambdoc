@@ -34,6 +34,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
+	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Alignment.t * Math.t
@@ -86,14 +87,17 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] w
 val paragraph: ('a, _) Inline.t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Prose ], [> `Paragraph_blk ]) t
 
-val itemize: Bullet.t -> ('a, [< `Listable ], 'c, _, _) t list plus_t ->
-	('a, [> `Listable ], 'c, [> `Prose ], [> `Itemize_blk ]) t
+val itemize: Bullet.t -> ('a, [< `Listable ], 'c, 'd, _) t list plus_t ->
+	('a, [> `Listable ], 'c, 'd, [> `Itemize_blk ]) t
 
-val enumerate: Numbering.t -> ('a, [< `Listable ], 'c, _, _) t list plus_t ->
-	('a, [> `Listable ], 'c, [> `Prose ], [> `Enumerate_blk ]) t
+val enumerate: Numbering.t -> ('a, [< `Listable ], 'c, 'd, _) t list plus_t ->
+	('a, [> `Listable ], 'c, 'd, [> `Enumerate_blk ]) t
 
-val description: (('a, _) Inline.t list * ('a, [< `Listable ], 'c, _, _) t list) plus_t ->
-	('a, [> `Listable ], 'c, [> `Prose ], [> `Description_blk ]) t
+val description: (('a, _) Inline.t list * ('a, [< `Listable ], 'c, 'd, _) t list) plus_t ->
+	('a, [> `Listable ], 'c, 'd, [> `Description_blk ]) t
+
+val qanda: ((('a, _) Inline.t list option * ('a, [< `Listable ], 'c, _, _) t list) * (('a, _) Inline.t list option * ('a, [< `Listable ], 'c, _, _) t list)) plus_t ->
+	('a, [> `Listable ], 'c, [> `Non_prose ], [> `Description_blk ]) t
 
 val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose], [> `Verse_blk ]) t

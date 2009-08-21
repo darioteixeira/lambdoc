@@ -111,13 +111,12 @@ let process_document classnames idiosyncrasies document_ast =
 	*)
 
 	let check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
-		let super_feature = (feature :> Features.manuscript_feature_t) in
-		if Idiosyncrasies.check_feature super_feature idiosyncrasies
-		then 
-			(Permissions.check_feature ?maybe_minipaged ?maybe_wrapped errors comm feature;
-			elem ())
-		else
-			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe super_feature)
+		if Idiosyncrasies.check_feature feature idiosyncrasies
+		then begin
+			Permissions.check_feature ?maybe_minipaged ?maybe_wrapped errors comm feature;
+			elem ()
+		end else
+			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe feature)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				None in
 
@@ -323,46 +322,63 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () = Some (Block.paragraph (convert_seq seq))
 			in check_comm `Feature_paragraph comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Itemize [])) ->
-			let msg = Error.Empty_listing comm.comm_tag
-			in DynArray.add errors (comm.comm_linenum, msg);
-			None
-
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize frags)) ->
 			let elem () =
 				let bullet = Extra.parse_for_itemize errors comm
 				and new_frags = List.filter_map (convert_item_frag ~minipaged x1 x2) frags
-				in match new_frags with
-					| hd::tl	-> Some (Block.itemize bullet (hd, tl))
-					| []		-> None
+				in match (frags, new_frags) with
+					| [], _ ->
+						let msg = Error.Empty_listing comm.comm_tag
+						in DynArray.add errors (comm.comm_linenum, msg);
+						None
+					| _, hd::tl ->
+						Some (Block.itemize bullet (hd, tl))
+					| _, [] ->
+						None
 			in check_comm `Feature_itemize comm elem
-
-		| (_, _, _, `Any_blk, (comm, Ast.Enumerate [])) ->
-			let msg = Error.Empty_listing comm.comm_tag
-			in DynArray.add errors (comm.comm_linenum, msg);
-			None
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate frags)) ->
 			let elem () =
 				let numbering = Extra.parse_for_enumerate errors comm
 				and new_frags = List.filter_map (convert_item_frag ~minipaged x1 x2) frags
-				in match new_frags with
-					| hd::tl	-> Some (Block.enumerate numbering (hd, tl))
-					| []		-> None
+				in match (frags, new_frags) with
+					| [], _ ->
+						let msg = Error.Empty_listing comm.comm_tag
+						in DynArray.add errors (comm.comm_linenum, msg);
+						None
+					| _, hd::tl ->
+						Some (Block.enumerate numbering (hd, tl))
+					| _, [] ->
+						None
 			in check_comm `Feature_enumerate comm elem
-
-		| (_, _, _, `Any_blk, (comm, Ast.Description [])) ->
-			let msg = Error.Empty_listing comm.comm_tag
-			in DynArray.add errors (comm.comm_linenum, msg);
-			None
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Description frags)) ->
 			let elem () =
 				let new_frags = List.filter_map (convert_describe_frag ~minipaged x1 x2) frags
-				in match new_frags with
-					| hd::tl	-> Some (Block.description (hd, tl))
-					| []		-> None
+				in match (frags, new_frags) with
+					| [], _ ->
+						let msg = Error.Empty_listing comm.comm_tag
+						in DynArray.add errors (comm.comm_linenum, msg);
+						None
+					| _, hd::tl ->
+						Some (Block.description (hd, tl))
+					| _, [] ->
+						None
 			in check_comm `Feature_description comm elem
+
+		| (_, x, true, `Any_blk, (comm, Ast.Qanda frags)) ->
+			let elem () =
+				let new_frags = List.filter_map (convert_qanda_frag ~minipaged x) frags
+				in match (frags, new_frags) with
+					| [], _ ->
+						let msg = Error.Empty_listing comm.comm_tag
+						in DynArray.add errors (comm.comm_linenum, msg);
+						None
+					| _, hd::tl ->
+						Some (Block.qanda (hd, tl))
+					| _, [] ->
+						None
+			in check_comm `Feature_qanda comm elem
 
 		| (_, _, true, `Any_blk, (comm, Ast.Verse frag)) ->
 			let elem () =
@@ -610,6 +626,28 @@ let process_document classnames idiosyncrasies document_ast =
 			and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable allow_above_prose `Any_blk)) frag
 			in Some (new_seq, new_frag)
 		in check_comm `Feature_describe comm elem
+
+
+	and convert_qanda_frag ~minipaged allow_above_embeddable ((q_comm, q_seq, q_frag), (a_comm, a_seq, a_frag)) =
+		let question = 
+			let elem () =
+				let new_seq = match q_seq with
+					| []  -> None
+					| seq -> Some (convert_seq seq)
+				and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) q_frag
+				in Some (new_seq, new_frag)
+			in check_comm `Feature_question q_comm elem
+		and answer = 
+			let elem () =
+				let new_seq = match a_seq with
+					| []  -> None
+					| seq -> Some (convert_seq seq)
+				and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) a_frag
+				in Some (new_seq, new_frag)
+			in check_comm `Feature_answer a_comm elem
+		in match (question, answer) with
+			| (Some q, Some a) -> Some (q, a)
+			| _		   -> None
 
 
 	and convert_preset_sectional ~tocable ~minipaged cons feature comm = 

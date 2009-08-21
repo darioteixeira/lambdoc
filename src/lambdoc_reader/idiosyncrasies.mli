@@ -32,5 +32,5 @@ val make_manuscript_idiosyncrasies:
 	?default: Features.default_t ->
 	unit -> t
 
-val check_feature: Features.manuscript_feature_t -> t -> bool
+val check_feature: Features.feature_t -> t -> bool
 

@@ -135,10 +135,18 @@ let note_conv order = Order.string_of_ordinal Printers.arabic order
 let write_valid_document settings classname doc =
 
 	(************************************************************************)
+	(* Predefined sequences with last question and answer.			*)
+	(************************************************************************)
+
+	let last_question_seq = ref [`Plain "Q:"]
+	and last_answer_seq = ref [`Plain "A:"]
+
+
+	(************************************************************************)
 	(* Fetch fields from doc record.					*)
 	(************************************************************************)
 
-	let content = doc.Valid.content
+	and content = doc.Valid.content
 	and bibs = doc.Valid.bibs
 	and notes = doc.Valid.notes
 	and toc = doc.Valid.toc
@@ -339,12 +347,30 @@ let write_valid_document settings classname doc =
 			in (None, XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl)
 
 		| `Description (hd_frag, tl_frags) ->
-			let write_describe_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
-			let (hd, tl) = fplus write_describe_frag hd_frag tl_frags in
+			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
+			let (hd, tl) = fplus write_frag hd_frag tl_frags in
 			let (new_hd, new_tl) =
 				let (first, second) = hd
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
 			in (None, XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl)
+
+		| `Qanda (hd_pair, tl_pairs) ->
+			let write_frag ~qora (maybe_seq, frag) =
+				let qora_class = match qora with
+					| `Question -> "doc_question"
+					| `Answer   -> "doc_answer" in
+				let seq = match (maybe_seq, qora) with
+					| (Some seq, `Question)	-> Printf.eprintf "#1\n"; last_question_seq := seq; seq
+					| (Some seq, `Answer)	-> Printf.eprintf "#2\n"; last_answer_seq := seq; seq
+					| (None, `Question)	-> Printf.eprintf "#3\n"; !last_question_seq
+					| (None, `Answer)	-> Printf.eprintf "#4\n"; !last_answer_seq
+				in (XHTML.M.dt ~a:[a_class [qora_class]] (write_seq seq), XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
+			let write_pair (q, a) = (write_frag ~qora:`Question q, write_frag ~qora:`Answer a) in
+			let (hd, tl) = fplus write_pair hd_pair tl_pairs in
+			let (new_hd, new_tl) =
+				let ((first, second), (third, fourth)) = hd
+				in (first, second :: third :: fourth :: (List.flatten (List.map (fun ((q1, q2), (a1, a2)) -> [q1; q2; a1; a2]) tl)))
+			in (None, XHTML.M.dl ~a:[a_class ["doc_qanda"]] new_hd new_tl)
 
 		| `Verse frag ->
 			(None, XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag))

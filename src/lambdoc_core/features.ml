@@ -20,31 +20,28 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_link
-	]
+	| `Feature_mbox | `Feature_link ]
+
 
 type manuscript_inline_feature_t =
-	[ `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref | `Feature_mref
-	]
+	[ `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref | `Feature_mref ]
+
 
 type composition_block_feature_t =
-	[ `Feature_item | `Feature_describe | `Feature_paragraph
-	| `Feature_itemize | `Feature_enumerate | `Feature_description
-	| `Feature_parhead | `Feature_verse | `Feature_quote
+	[ `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
+	| `Feature_qanda | `Feature_parhead | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_program
-	| `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage
-	]
+	| `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage ]
+
 
 type manuscript_block_feature_t =
 	[ `Feature_pullquote | `Feature_boxout
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
-	| `Feature_caption | `Feature_bib | `Feature_note
-	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
+	| `Feature_bib | `Feature_note
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
-	| `Feature_title1 | `Feature_title2 | `Feature_abstract | `Feature_rule
-	]
+	| `Feature_title1 | `Feature_title2 | `Feature_abstract | `Feature_rule ]
 
 
 (********************************************************************************)
@@ -53,15 +50,25 @@ type manuscript_block_feature_t =
 
 type composition_feature_t =
 	[ composition_inline_feature_t 
-	| composition_block_feature_t 
-	]
+	| composition_block_feature_t ]
 
 
 type manuscript_feature_t =
 	[ composition_feature_t 
 	| manuscript_inline_feature_t 
-	| manuscript_block_feature_t 
-	]
+	| manuscript_block_feature_t ]
+
+
+type internal_feature_t =
+	[ `Feature_item | `Feature_describe | `Feature_question | `Feature_answer
+	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
+	| `Feature_head | `Feature_body | `Feature_foot
+	| `Feature_caption ]
+
+
+type feature_t =
+	[ manuscript_feature_t
+	| internal_feature_t ]
 
 
 type default_t = [ `Accept | `Deny ]
@@ -84,30 +91,40 @@ let composition_inline_features =
 	`Feature_mbox; `Feature_link;
 	]
 
+
 let manuscript_inline_features =
 	[
 	`Feature_see; `Feature_cite; `Feature_ref; `Feature_sref; `Feature_mref;
 	]
 
+
 let composition_block_features =
 	[
-	`Feature_item; `Feature_describe; `Feature_paragraph;
-	`Feature_itemize; `Feature_enumerate; `Feature_description;
-	`Feature_parhead; `Feature_verse; `Feature_quote;
+	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description;
+	`Feature_qanda; `Feature_parhead; `Feature_verse; `Feature_quote;
 	`Feature_mathtex_blk; `Feature_mathml_blk; `Feature_program;
 	`Feature_tabular; `Feature_verbatim; `Feature_bitmap; `Feature_subpage;
 	]
+
 
 let manuscript_block_features =
 	[
 	`Feature_pullquote; `Feature_boxout;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
-	`Feature_caption; `Feature_bib; `Feature_note;
-	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
+	`Feature_bib; `Feature_note;
 	`Feature_part; `Feature_appendix;
 	`Feature_section1; `Feature_section2; `Feature_section3;
 	`Feature_bibliography; `Feature_notes; `Feature_toc;
 	`Feature_title1; `Feature_title2; `Feature_abstract; `Feature_rule;
+	]
+
+
+let internal_features =
+	[
+	`Feature_item; `Feature_describe; `Feature_question; `Feature_answer;
+	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
+	`Feature_head; `Feature_body; `Feature_foot;
+	`Feature_caption;
 	]
 
 
@@ -116,14 +133,14 @@ let manuscript_block_features =
 (********************************************************************************)
 
 let describe_composition_inline_feature = function
-	| `Feature_plain	-> "plain text"
+	| `Feature_plain	-> "plain undecorated text"
 	| `Feature_entity	-> "HTML entities"
-	| `Feature_linebreak	-> "line break"
+	| `Feature_linebreak	-> "line break without terminating paragraph"
 	| `Feature_mathtex_inl	-> "inline TeX math"
 	| `Feature_mathml_inl	-> "inline MathML math"
 	| `Feature_bold		-> "bold text"
 	| `Feature_emph		-> "emphasised text"
-	| `Feature_code		-> "monospaced text"
+	| `Feature_code		-> "code (monospaced) text"
 	| `Feature_caps		-> "small caps text"
 	| `Feature_ins		-> "corrected text"
 	| `Feature_del		-> "deleted text"
@@ -134,20 +151,19 @@ let describe_composition_inline_feature = function
 
 
 let describe_manuscript_inline_feature = function
-	| `Feature_see		-> "manuscript to note"
+	| `Feature_see		-> "link to note"
 	| `Feature_cite		-> "bibliography citation"
-	| `Feature_ref		-> "internal manuscript"
-	| `Feature_sref		-> "smart manuscript"
-	| `Feature_mref		-> "manual manuscript"
+	| `Feature_ref		-> "internal link"
+	| `Feature_sref		-> "smart internal link"
+	| `Feature_mref		-> "internal link with custom text"
 
 
 let describe_composition_block_feature = function
-	| `Feature_item		-> "listing item"
-	| `Feature_describe	-> "description item"
 	| `Feature_paragraph	-> "paragraph block"
 	| `Feature_itemize	-> "itemize block"
 	| `Feature_enumerate	-> "enumerate block"
 	| `Feature_description	-> "description block"
+	| `Feature_qanda	-> "Q&A block"
 	| `Feature_parhead	-> "paragraph head"
 	| `Feature_verse	-> "verse block"
 	| `Feature_quote	-> "quote block"
@@ -169,13 +185,8 @@ let describe_manuscript_block_feature = function
 	| `Feature_table	-> "table wrapper"
 	| `Feature_figure	-> "figure wrapper"
 
-	| `Feature_caption	-> "wrapper caption"
 	| `Feature_bib		-> "bibliography entry"
 	| `Feature_note		-> "note"
-
-	| `Feature_bib_author	-> "author of bibliography entry"
-	| `Feature_bib_title	-> "title of biliography entry"
-	| `Feature_bib_resource	-> "resource of bibliography entry"
 
 	| `Feature_part		-> "document part"
 	| `Feature_appendix	-> "appendix"
@@ -194,6 +205,20 @@ let describe_manuscript_block_feature = function
 	| `Feature_rule		-> "document rule"
 
 
+let describe_internal_feature = function
+        | `Feature_item		-> "item separator for itemize/enumerate lists"
+	| `Feature_describe	-> "item separator for description lists"
+	| `Feature_question	-> "question in a Q&A block"
+	| `Feature_answer	-> "answer in a Q&A block"
+        | `Feature_bib_author	-> "author of a bibliography entry"
+	| `Feature_bib_title	-> "title of a bibliography entry"
+	| `Feature_bib_resource	-> "location of a bibliography entry"
+        | `Feature_head		-> "start of a header group in a tabular block"
+	| `Feature_body		-> "start of a block group in a tabular block"
+	| `Feature_foot		-> "start of a footer group in a tabular block"
+        | `Feature_caption	-> "caption for a wrapper (equation, printout, table, figure) block"
+
+
 (********************************************************************************)
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
@@ -209,9 +234,14 @@ let available_manuscript_features =
 	manuscript_block_features
 
 
+let available_internal_features =
+	internal_features
+
+
 let describe = function
 	| #composition_inline_feature_t as x	-> describe_composition_inline_feature x
 	| #manuscript_inline_feature_t as x	-> describe_manuscript_inline_feature x
 	| #composition_block_feature_t as x	-> describe_composition_block_feature x
 	| #manuscript_block_feature_t as x	-> describe_manuscript_block_feature x
+	| #internal_feature_t as x		-> describe_internal_feature x
 

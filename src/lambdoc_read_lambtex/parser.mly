@@ -68,6 +68,9 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_DESCRIPTION_1
 %token <Lambdoc_reader.Ast.command_t> END_DESCRIPTION_1
 
+%token <Lambdoc_reader.Ast.command_t> BEGIN_QANDA
+%token <Lambdoc_reader.Ast.command_t> END_QANDA
+
 %token <Lambdoc_reader.Ast.command_t> BEGIN_VERSE
 %token <Lambdoc_reader.Ast.command_t> END_VERSE
 
@@ -159,6 +162,9 @@ open Lambdoc_reader
 
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> DESCRIBE
+%token <Lambdoc_reader.Ast.command_t> QUESTION
+%token <Lambdoc_reader.Ast.command_t> ANSWER
+
 %token <Lambdoc_reader.Ast.command_t> BITMAP
 %token <Lambdoc_reader.Ast.command_t> CAPTION
 %token <Lambdoc_reader.Ast.command_t> HEAD
@@ -194,12 +200,13 @@ document:
 
 block:
 	| NEW_PAR inline+					{($1, Ast.Paragraph $2)}
-	| BEGIN_ITEMIZE item_frag END_ITEMIZE			{($1, Ast.Itemize $2)}
-	| BEGIN_ITEMIZE_1 item_frag END_ITEMIZE_1		{($1, Ast.Itemize $2)}
-	| BEGIN_ENUMERATE item_frag END_ENUMERATE		{($1, Ast.Enumerate $2)}
-	| BEGIN_ENUMERATE_1 item_frag END_ENUMERATE_1		{($1, Ast.Enumerate $2)}
-	| BEGIN_DESCRIPTION describe_frag END_DESCRIPTION	{($1, Ast.Description $2)}
-	| BEGIN_DESCRIPTION_1 describe_frag END_DESCRIPTION_1	{($1, Ast.Description $2)}
+	| BEGIN_ITEMIZE item_frag+ END_ITEMIZE			{($1, Ast.Itemize $2)}
+	| BEGIN_ITEMIZE_1 item_frag+ END_ITEMIZE_1		{($1, Ast.Itemize $2)}
+	| BEGIN_ENUMERATE item_frag+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
+	| BEGIN_ENUMERATE_1 item_frag+ END_ENUMERATE_1		{($1, Ast.Enumerate $2)}
+	| BEGIN_DESCRIPTION describe_frag+ END_DESCRIPTION	{($1, Ast.Description $2)}
+	| BEGIN_DESCRIPTION_1 describe_frag+ END_DESCRIPTION_1	{($1, Ast.Description $2)}
+	| BEGIN_QANDA qanda_frag+ END_QANDA			{($1, Ast.Qanda $2)}
 	| BEGIN_VERSE block+ END_VERSE				{($1, Ast.Verse $2)}
 	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
@@ -234,13 +241,19 @@ block:
 
 
 item_frag:
-	| ITEM block+						{[($1, $2)]}
-	| item_frag ITEM block+					{List.append $1 [($2, $3)]}
-
+	| ITEM block+						{($1, $2)}
 
 describe_frag:
-	| DESCRIBE BEGIN inline+ END block+			{[($1, $3, $5)]}
-	| describe_frag DESCRIBE BEGIN inline+ END block+	{List.append $1 [($2, $4, $6)]}
+	| DESCRIBE BEGIN inline+ END block+			{($1, $3, $5)}
+
+qanda_frag:
+	| question answer					{($1, $2)}
+
+question:
+	| QUESTION BEGIN inline* END block+			{($1, $3, $5)}
+
+answer:
+	| ANSWER BEGIN inline* END block+			{($1, $3, $5)}
 
 
 caption:	CAPTION BEGIN inline+ END			{($1, $3)}

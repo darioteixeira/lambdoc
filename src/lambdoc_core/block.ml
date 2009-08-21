@@ -24,6 +24,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
+	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Alignment.t * Math.t
@@ -54,27 +55,77 @@ type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 (**	{3 Functions and values}						*)
 (********************************************************************************)
 
-let paragraph seq = `Paragraph (Inline.get_seq seq)
-let itemize bullet (head_frag, tail_frags) = `Itemize (bullet, (head_frag, tail_frags))
-let enumerate numbering (head_frag, tail_frags) = `Enumerate (numbering, (head_frag, tail_frags))
-let description (hd, tl) = let conv (seq, frag) = (Inline.get_seq seq, frag) in `Description (conv hd, List.map conv tl)
-let verse frag = `Verse frag
-let quote frag = `Quote frag
-let math alignment mth = `Math (alignment, mth)
-let program alignment prog = `Program (alignment, prog)
-let tabular alignment tab = `Tabular (alignment, Tabular.get_tabular tab)
-let verbatim alignment txt = `Verbatim (alignment, txt)
-let bitmap alignment img = `Bitmap (alignment, img)
-let subpage alignment frag = `Subpage (alignment, frag)
-let pullquote alignment frag = `Pullquote (alignment, frag)
-let boxout alignment maybe_classname maybe_seq frag = `Boxout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
-let equation wrapper equation_blk = `Equation (wrapper, equation_blk)
-let printout wrapper printout_blk = `Printout (wrapper, printout_blk)
-let table wrapper table_blk = `Table (wrapper, table_blk)
-let figure wrapper figure_blk = `Figure (wrapper, figure_blk)
-let heading head = `Heading (Heading.get_heading head)
-let title level seq = `Title (level, Inline.get_seq seq)
-let abstract frag = `Abstract frag
-let rule () = `Rule
-let get_frag frag = frag
+let paragraph seq =
+	`Paragraph (Inline.get_seq seq)
+
+let itemize bullet (head_frag, tail_frags) =
+	`Itemize (bullet, (head_frag, tail_frags))
+
+let enumerate numbering (head_frag, tail_frags) =
+	`Enumerate (numbering, (head_frag, tail_frags))
+
+let description (hd, tl) =
+	let conv (seq, frag) = (Inline.get_seq seq, frag)
+	in `Description (fplus conv hd tl)
+
+let qanda (hd, tl) =
+	let conv ((q_seq, q_frag), (a_seq, a_frag)) = ((maybe Inline.get_seq q_seq, q_frag), (maybe Inline.get_seq a_seq, a_frag))
+	in `Qanda (fplus conv hd tl)
+
+let verse frag =
+	`Verse frag
+
+let quote frag =
+	`Quote frag
+
+let math alignment mth =
+	`Math (alignment, mth)
+
+let program alignment prog =
+	`Program (alignment, prog)
+
+let tabular alignment tab =
+	`Tabular (alignment, Tabular.get_tabular tab)
+
+let verbatim alignment txt =
+	`Verbatim (alignment, txt)
+
+let bitmap alignment img =
+	`Bitmap (alignment, img)
+
+let subpage alignment frag =
+	`Subpage (alignment, frag)
+
+let pullquote alignment frag =
+	`Pullquote (alignment, frag)
+
+let boxout alignment maybe_classname maybe_seq frag =
+	`Boxout (alignment, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
+
+let equation wrapper equation_blk =
+	`Equation (wrapper, equation_blk)
+
+let printout wrapper printout_blk =
+	`Printout (wrapper, printout_blk)
+
+let table wrapper table_blk =
+	`Table (wrapper, table_blk)
+
+let figure wrapper figure_blk =
+	`Figure (wrapper, figure_blk)
+
+let heading head =
+	`Heading (Heading.get_heading head)
+
+let title level seq =
+	`Title (level, Inline.get_seq seq)
+
+let abstract frag =
+	`Abstract frag
+
+let rule () =
+	`Rule
+
+let get_frag frag =
+	frag
 

@@ -58,6 +58,7 @@ type heading_t =
 
 
 (**	Phantom-type wrapper around {!heading_t}.
+	(See {!Block} documentation for explanation).
 *)
 type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
 
