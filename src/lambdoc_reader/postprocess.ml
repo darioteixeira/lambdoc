@@ -22,23 +22,6 @@ open Ast
 (********************************************************************************)
 
 (********************************************************************************)
-(**	{3 Helper sub-functions}						*)
-(********************************************************************************)
-
-(**	This subfunction returns the column floater and weight associated
-	with a column specifier.
-*)
-let get_column errors comm spec =
-	try
-		Tabular.column_of_specifier spec
-	with
-		Tabular.Invalid_column_specifier spec ->
-			let msg = Error.Invalid_column_specifier (comm.comm_tag, spec)
-			in	DynArray.add errors (comm.comm_linenum, msg);
-				(Tabular.Center, Tabular.Normal)
-
-
-(********************************************************************************)
 (**	{3 Low-level processing functions}					*)
 (********************************************************************************)
 
@@ -281,33 +264,45 @@ let process_document classnames idiosyncrasies document_ast =
 	(************************************************************************)
 
 	let convert_tabular comm tcols tab =
-		let columns = Array.map (get_column errors comm) (Array.of_list (String.explode tcols)) in
+
+		let get_column comm spec =
+			try
+				Tabular.column_of_specifier spec
+			with
+				Tabular.Invalid_column_specifier spec ->
+					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec)
+					in	DynArray.add errors (comm.comm_linenum, msg);
+						(Tabular.Center, Tabular.Normal) in
+
+		let columns = Array.map (get_column comm) (Array.of_list (String.explode tcols)) in
 
 		let num_columns = Array.length columns in
 
 		let convert_row (comm, row) =
-			(if List.length row <> num_columns
-			then	let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, List.length row, num_columns)
-				in DynArray.add errors (comm.comm_linenum, msg));
+			if List.length row <> num_columns
+			then begin
+				let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, List.length row, num_columns)
+				in DynArray.add errors (comm.comm_linenum, msg)
+			end;
 			match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"
 				| hd::tl	-> Tabular.make_row (fplus convert_seq hd tl) in
 
-		let convert_group (maybe_comm, rows) =
+		let convert_group feature (maybe_comm, rows) =
 			let () = match maybe_comm with
-				| Some comm	-> ()
+				| Some comm	-> ignore (check_comm feature comm (fun () -> None))
 				| None		-> ()
 			in match rows with
 				| []		-> invalid_arg "Parser has given us an empty tabular group"
 				| hd::tl	-> Tabular.make_group (fplus convert_row hd tl) in
 
-		let thead = maybe convert_group tab.thead
+		let thead = maybe (convert_group `Feature_thead) tab.thead
 
-		and tfoot = maybe convert_group tab.tfoot
+		and tfoot = maybe (convert_group `Feature_tfoot) tab.tfoot
 
 		in match tab.tbodies with
 			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make_tabular columns ?thead ?tfoot (fplus convert_group hd tl) in
+			| hd::tl	-> Tabular.make_tabular columns ?thead ?tfoot (fplus (convert_group `Feature_tbody) hd tl) in
 
 
 	(************************************************************************)

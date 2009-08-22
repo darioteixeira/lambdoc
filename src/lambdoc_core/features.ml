@@ -62,7 +62,7 @@ type manuscript_feature_t =
 type internal_feature_t =
 	[ `Feature_item | `Feature_describe | `Feature_question | `Feature_answer
 	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
-	| `Feature_head | `Feature_body | `Feature_foot
+	| `Feature_thead | `Feature_tbody | `Feature_tfoot
 	| `Feature_caption ]
 
 
@@ -123,7 +123,7 @@ let internal_features =
 	[
 	`Feature_item; `Feature_describe; `Feature_question; `Feature_answer;
 	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
-	`Feature_head; `Feature_body; `Feature_foot;
+	`Feature_thead; `Feature_tbody; `Feature_tfoot;
 	`Feature_caption;
 	]
 
@@ -213,9 +213,9 @@ let describe_internal_feature = function
         | `Feature_bib_author	-> "author of a bibliography entry"
 	| `Feature_bib_title	-> "title of a bibliography entry"
 	| `Feature_bib_resource	-> "location of a bibliography entry"
-        | `Feature_head		-> "start of a header group in a tabular block"
-	| `Feature_body		-> "start of a block group in a tabular block"
-	| `Feature_foot		-> "start of a footer group in a tabular block"
+        | `Feature_thead	-> "start of a header group in a tabular block"
+	| `Feature_tbody	-> "start of a block group in a tabular block"
+	| `Feature_tfoot	-> "start of a footer group in a tabular block"
         | `Feature_caption	-> "caption for a wrapper (equation, printout, table, figure) block"
 
 

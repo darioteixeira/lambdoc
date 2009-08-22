@@ -62,7 +62,7 @@ type manuscript_feature_t =
 type internal_feature_t =
 	[ `Feature_item | `Feature_describe | `Feature_question | `Feature_answer
 	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
-	| `Feature_head | `Feature_body | `Feature_foot
+	| `Feature_thead | `Feature_tbody | `Feature_tfoot
 	| `Feature_caption ]
 
 

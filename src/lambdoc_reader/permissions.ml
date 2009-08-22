@@ -193,9 +193,9 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_bib_author	-> forbidden_class
 		| `Feature_bib_title	-> forbidden_class
 		| `Feature_bib_resource	-> forbidden_class
-		| `Feature_head		-> forbidden_class
-		| `Feature_body		-> forbidden_class
-		| `Feature_foot		-> forbidden_class
+		| `Feature_thead	-> forbidden_class
+		| `Feature_tbody	-> forbidden_class
+		| `Feature_tfoot	-> forbidden_class
 		| `Feature_caption	-> forbidden_class in
 
 	let permission_set = match feature with
