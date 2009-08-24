@@ -57,6 +57,8 @@ let wrapper_class minipaged =
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 
+let macrodef_class = (Mandatory, Forbidden, Optional)
+
 
 (*	This function checks whether a parameter is valid given its
 	associated permission.  It returns an optional value stating
@@ -93,12 +95,14 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 		| Some reason ->
 			let msg = Error.Bad_label_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
+
 	and () = match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Bad_order_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
+
 	and () = match reason_why_invalid perm_extra comm.comm_extra with
 		| None ->
 			()
@@ -158,6 +162,8 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_subpage	-> floater_class
 
 	and manuscript_block_feature_set = function
+		| `Feature_macrodef	-> macrodef_class
+
 		| `Feature_pullquote	-> floater_class
 		| `Feature_boxout	-> floater_class
 
@@ -186,6 +192,8 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_rule		-> forbidden_class
 
 	and internal_feature_set = function
+		| `Feature_macrocall	-> forbidden_class
+		| `Feature_macroarg	-> forbidden_class
 		| `Feature_item		-> forbidden_class
 		| `Feature_describe	-> forbidden_class
 		| `Feature_question	-> forbidden_class

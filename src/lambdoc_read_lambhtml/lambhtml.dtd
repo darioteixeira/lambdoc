@@ -54,10 +54,10 @@
 <!ELEMENT dd %Flow;>
 <!ATTLIST dd %Forbidden;>
 
-<!ELEMENT question (dt, dd)>
+<!ELEMENT question (dt?, dd)>
 <!ATTLIST question %Forbidden;>
 
-<!ELEMENT answer (dt, dd)>
+<!ELEMENT answer (dt?, dd)>
 <!ATTLIST answer %Forbidden;>
 
 <!ELEMENT p %Inline;>

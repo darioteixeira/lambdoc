@@ -41,7 +41,9 @@ type manuscript_block_feature_t =
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
-	| `Feature_title1 | `Feature_title2 | `Feature_abstract | `Feature_rule ]
+	| `Feature_title1 | `Feature_title2
+	| `Feature_abstract | `Feature_rule
+	| `Feature_macrodef ]
 
 
 (********************************************************************************)
@@ -60,7 +62,8 @@ type manuscript_feature_t =
 
 
 type internal_feature_t =
-	[ `Feature_item | `Feature_describe | `Feature_question | `Feature_answer
+	[ `Feature_macrocall | `Feature_macroarg
+	| `Feature_item | `Feature_question | `Feature_answer
 	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
 	| `Feature_thead | `Feature_tbody | `Feature_tfoot
 	| `Feature_caption ]
@@ -109,19 +112,22 @@ let composition_block_features =
 
 let manuscript_block_features =
 	[
+	`Feature_macrodef;
 	`Feature_pullquote; `Feature_boxout;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_bib; `Feature_note;
 	`Feature_part; `Feature_appendix;
 	`Feature_section1; `Feature_section2; `Feature_section3;
 	`Feature_bibliography; `Feature_notes; `Feature_toc;
-	`Feature_title1; `Feature_title2; `Feature_abstract; `Feature_rule;
+	`Feature_title1; `Feature_title2;
+	`Feature_abstract; `Feature_rule;
 	]
 
 
 let internal_features =
 	[
-	`Feature_item; `Feature_describe; `Feature_question; `Feature_answer;
+	`Feature_macrocall; `Feature_macroarg;
+	`Feature_item; `Feature_question; `Feature_answer;
 	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
 	`Feature_thead; `Feature_tbody; `Feature_tfoot;
 	`Feature_caption;
@@ -177,6 +183,8 @@ let describe_composition_block_feature = function
 
 
 let describe_manuscript_block_feature = function
+	| `Feature_macrodef	-> "definition of macro"
+
 	| `Feature_pullquote	-> "pull quote block"
 	| `Feature_boxout	-> "boxout block"
 
@@ -201,13 +209,15 @@ let describe_manuscript_block_feature = function
 
 	| `Feature_title1	-> "document title1"
 	| `Feature_title2	-> "document title2"
+
 	| `Feature_abstract	-> "document abstract"
 	| `Feature_rule		-> "document rule"
 
 
 let describe_internal_feature = function
-        | `Feature_item		-> "item separator for itemize/enumerate lists"
-	| `Feature_describe	-> "item separator for description lists"
+	| `Feature_macrocall	-> "invocation of macro"
+	| `Feature_macroarg	-> "reference to the argument of macro"
+        | `Feature_item		-> "item separator for lists"
 	| `Feature_question	-> "question in a Q&A block"
 	| `Feature_answer	-> "answer in a Q&A block"
         | `Feature_bib_author	-> "author of a bibliography entry"

@@ -31,8 +31,10 @@ let (!!) = Lazy.force
 
 let inline_elems =
 	[
-	"br"; "bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
-	"ins"; "del"; "sup"; "sub"; "mbox"; "link"; "a";
+	"br";
+	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
+	"ins"; "del"; "sup"; "sub";
+	"mbox"; "link"; "a";
 	"see"; "cite"; "ref"; "sref"; "mref"
 	]
 
@@ -49,6 +51,11 @@ let command_from_node node =
 
 let rec process_seq seq_root =
 	List.map process_inline seq_root#sub_nodes
+
+
+and process_maybe_seq seq_root = match seq_root#sub_nodes with
+	| []	-> None
+	| _	-> Some (process_seq seq_root)
 
 
 and process_inline node =
@@ -71,7 +78,7 @@ and process_inline node =
 		| T_element "sub"		-> (!!comm, Ast.Sub (process_seq node))
 		| T_element "mbox"		-> (!!comm, Ast.Mbox (process_seq node))
 		| T_element "link"
-		| T_element "a"			-> (!!comm, Ast.Link (node#required_string_attribute "href", process_seq node))
+		| T_element "a"			-> (!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq node))
 		| T_element "see"		-> (!!comm, Ast.See (node#required_string_attribute "href"))
 		| T_element "cite"		-> (!!comm, Ast.Cite (node#required_string_attribute "href"))
 		| T_element "ref"		-> (!!comm, Ast.Ref (node#required_string_attribute "href"))
@@ -111,11 +118,11 @@ and process_block node =
 	in match node#node_type with
 		| T_element "p"			-> (!!comm, Ast.Paragraph (process_seq node))
 		| T_element "itemize"
-		| T_element "ul"		-> (!!comm, Ast.Itemize (List.map process_item node#sub_nodes))
+		| T_element "ul"		-> (!!comm, Ast.Itemize (process_anon_item_frag node))
 		| T_element "enumerate"
-		| T_element "ol"		-> (!!comm, Ast.Enumerate (List.map process_item node#sub_nodes))
+		| T_element "ol"		-> (!!comm, Ast.Enumerate (process_anon_item_frag node))
 		| T_element "description"
-		| T_element "dl"		-> (!!comm, Ast.Description (process_description_frag node))
+		| T_element "dl"		-> (!!comm, Ast.Description (process_desc_item_frag node))
 		| T_element "qanda"		-> (!!comm, Ast.Qanda (process_qanda_frag node))
 		| T_element "verse"		-> (!!comm, Ast.Verse (process_frag node))
 		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node))
@@ -153,32 +160,35 @@ and process_block node =
 		| _				-> failwith "process_block_node"
 
 
-and process_item node =
-	let comm = lazy (command_from_node node)
-	in match node#node_type with
-		| T_element "li"		-> (!!comm, process_frag ~flow:true node)
-		| _				-> failwith "process_item_node"
+and process_anon_item_frag frag_root=
+	let process_node node =
+		let comm = lazy (command_from_node node)
+		in match node#node_type with
+			| T_element "li"		-> (!!comm, process_frag ~flow:true node)
+			| _				-> failwith "process_anon_item_frag"
+	in List.map process_node frag_root#sub_nodes
 
 
-and process_definition_nodes (dt_node, dd_node) =
-	let comm = lazy (command_from_node dt_node) in
-	let (dt, dd) = match (dt_node#node_type, dd_node#node_type) with
-		| (T_element "dt", T_element "dd")	-> (process_seq dt_node, process_frag ~flow:true dd_node)
-		| _					-> failwith "process_definition_nodes"
-	in (!!comm, dt, dd)
-
-
-and process_description_frag frag_root =
-	List.rev_map process_definition_nodes (pairify frag_root#sub_nodes)
+and process_desc_item_frag frag_root =
+	let process_nodes (dt_node, dd_node) =
+		let comm = lazy (command_from_node dt_node) in
+		let (dt, dd) = match (dt_node#node_type, dd_node#node_type) with
+			| (T_element "dt", T_element "dd")	-> (process_seq dt_node, process_frag ~flow:true dd_node)
+			| _					-> failwith "process_desc_item_frag"
+		in (!!comm, dt, dd)
+	in List.rev_map process_nodes (pairify frag_root#sub_nodes)
 
 
 and process_qanda_frag frag_root =
-	let process_qora node = match node#sub_nodes with
-		| [dt; dd] -> process_definition_nodes (dt, dd)
-		| _	   -> failwith "process_qora" in
+	let process_qora node =
+		let comm = lazy (command_from_node node)
+		in match node#sub_nodes with
+			| [dt; dd] -> (!!comm, Some (process_seq dt), process_frag ~flow:true dd)
+			| [dd]	   -> (!!comm, None, process_frag ~flow:true dd)
+			| _	   -> failwith "process_qora" in
 	let process_group (question, answer) = match (question#node_type, answer#node_type) with
 		| (T_element "question", T_element "answer") -> (process_qora question, process_qora answer)
-		| _					     -> failwith "process_qanda"
+		| _					     -> failwith "process_qanda_frag"
 	in List.rev_map process_group (pairify frag_root#sub_nodes)
 
 

@@ -32,6 +32,17 @@ open Ast
 *)
 let process_document classnames idiosyncrasies document_ast =
 
+	(************************************************************************)
+	(* Declaration of some constant values used in the function.		*)
+	(************************************************************************)
+
+	(**	Is the usage of macros authorised for this document?  If not,
+		we can save time by skipping the whole macro expansion phase.
+		We determine whether macros are allowed or not by checking the
+		idiosyncrasies of this particular document.
+	*)
+	let macros_authorised = Idiosyncrasies.check_feature `Feature_macrodef idiosyncrasies in
+
 
 	(************************************************************************)
 	(* Declaration of the mutable values used in the function.		*)
@@ -43,6 +54,7 @@ let process_document classnames idiosyncrasies document_ast =
 	and references = DynArray.create ()
 	and toc = DynArray.create ()
         and labelmap = Labelmap.create ()
+	and macromap = Macromap.create ()
 	and part_counter = Order.make_ordinal_counter ()
 	and section_counter = Order.make_hierarchy_counter ()
 	and appendix_counter = Order.make_hierarchy_counter ()
@@ -61,18 +73,19 @@ let process_document classnames idiosyncrasies document_ast =
 	(************************************************************************)
 
 	(*	This subfunction creates a new label.  It checks whether the user explicitly
-		provide a label (in which case we use the `User_label variant), or if no
+		provided a label (in which case we use the [`User_label] variant), or if no
 		label was defined (in which case we automatically assign a label using the
-		`Auto_label variant).
+		[`Auto_label] variant).
 	*)
 	let make_label comm target =
 		match comm.comm_label with
 		| Some thing ->
 			let new_label = `User_label thing in
-			(if Labelmap.mem labelmap new_label
-			then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, thing)))
-			else Labelmap.add labelmap new_label target);
-			new_label
+			let () =
+				if Labelmap.mem labelmap new_label || Macromap.mem macromap thing
+				then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, thing)))
+				else Labelmap.add labelmap new_label target
+			in new_label
 		| None ->
 			incr auto_label_counter;
 			`Auto_label (string_of_int !auto_label_counter)
@@ -92,7 +105,6 @@ let process_document classnames idiosyncrasies document_ast =
 
 	(*	Checker for commands.
 	*)
-
 	let check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
 		if Idiosyncrasies.check_feature feature idiosyncrasies
 		then begin
@@ -102,6 +114,127 @@ let process_document classnames idiosyncrasies document_ast =
 			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe feature)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				None in
+
+
+	(************************************************************************)
+	(* Macro expansion.							*)
+	(************************************************************************)
+
+	let rec expand_inline_macros args inline = match inline with
+		| (_, Ast.Plain _) ->
+			[inline]
+
+		| (_, Ast.Entity _) ->
+			[inline]
+
+		| (_, Ast.Linebreak) ->
+			[inline]
+
+		| (_, Ast.Mathtex_inl _) ->
+			[inline]
+
+		| (_, Ast.Mathml_inl _) ->
+			[inline]
+
+		| (comm, Ast.Bold seq) ->
+			[(comm, Ast.Bold (expand_seq_macros args seq))]
+
+		| (comm, Ast.Emph seq) ->
+			[(comm, Ast.Emph (expand_seq_macros args seq))]
+
+		| (comm, Ast.Code seq) ->
+			[(comm, Ast.Code (expand_seq_macros args seq))]
+
+		| (comm, Ast.Caps seq) ->
+			[(comm, Ast.Caps (expand_seq_macros args seq))]
+
+		| (comm, Ast.Ins seq) ->
+			[(comm, Ast.Ins (expand_seq_macros args seq))]
+
+		| (comm, Ast.Del seq) ->
+			[(comm, Ast.Del (expand_seq_macros args seq))]
+
+		| (comm, Ast.Sup seq) ->
+			[(comm, Ast.Sup (expand_seq_macros args seq))]
+
+		| (comm, Ast.Sub seq) ->
+			[(comm, Ast.Sub (expand_seq_macros args seq))]
+
+		| (comm, Ast.Mbox seq) ->
+			[(comm, Ast.Mbox (expand_seq_macros args seq))]
+
+		| (comm, Ast.Link (lnk, maybe_seq)) ->
+			[(comm, Ast.Link (lnk, maybe (expand_seq_macros args) maybe_seq))]
+
+		| (_, Ast.See _) ->
+			[inline]
+
+		| (_, Ast.Cite _) ->
+			[inline]
+
+		| (_, Ast.Ref _) ->
+			[inline]
+
+		| (_, Ast.Sref _) ->
+			[inline]
+
+		| (comm, Ast.Mref (label, seq)) ->
+			[(comm, Ast.Mref (label, expand_seq_macros args seq))]
+
+		| (comm, Ast.Macroarg raw_num) ->
+			let elem () =
+				match args with 
+					| None ->
+						let msg = Error.Invalid_macro_argument_context comm.comm_tag in
+						DynArray.add errors (comm.comm_linenum, msg);
+						None
+					| Some x ->
+						try
+							let num = int_of_string raw_num
+							in Some (expand_seq_macros args (List.nth x num))
+						with
+							| Failure _
+							| List.Invalid_index _ ->
+								let msg = Error.Invalid_macro_argument_number (comm.comm_tag, raw_num, List.length x) in
+								DynArray.add errors (comm.comm_linenum, msg);
+								None
+			in (match check_comm `Feature_macroarg comm elem with
+				| Some seq -> seq
+				| None	   -> [])
+
+		| (comm, Ast.Macrocall (label, args)) ->
+			let elem () =
+				try
+					let (macro_nargs, macro_seq) = Macromap.find macromap label
+					in if macro_nargs <> List.length args
+					then
+						let msg = Error.Invalid_macro_call (comm.comm_tag, label, List.length args, macro_nargs) in
+						DynArray.add errors (comm.comm_linenum, msg);
+						None
+					else
+						Some (expand_seq_macros (Some args) macro_seq)
+				with
+					| Not_found ->
+						let msg = Error.Absent_target (comm.comm_tag, label) in
+						DynArray.add errors (comm.comm_linenum, msg);
+						None
+			in match check_comm `Feature_macrocall comm elem with
+				| Some seq -> seq
+				| None	   -> []
+
+
+	and expand_seq_macros args seq =
+		let coalesce_plain seq =
+			let rec coalesce_plain_aux accum = function
+				| (comm1, Plain txt1) :: (comm2, Plain txt2) :: tl ->
+					let agg = (comm2, Plain (txt2 ^ txt1))
+					in coalesce_plain_aux accum (agg :: tl)
+				| hd :: tl ->
+					coalesce_plain_aux (hd :: accum) tl
+				| [] ->
+					accum
+			in coalesce_plain_aux [] seq
+		in coalesce_plain (List.flatten (List.rev_map (expand_inline_macros args) seq)) in
 
 
 	(************************************************************************)
@@ -157,47 +290,45 @@ let process_document classnames idiosyncrasies document_ast =
 			in check_comm `Feature_mathml_inl comm elem
 
 		| (x, (comm, Ast.Bold seq)) ->
-			let elem () = Some (Inline.bold (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.bold (convert_seq_aux x seq))
 			in check_comm `Feature_bold comm elem
 
 		| (x, (comm, Ast.Emph seq)) ->
-			let elem () = Some (Inline.emph (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.emph (convert_seq_aux x seq))
 			in check_comm `Feature_emph comm elem
 
 		| (x, (comm, Ast.Code seq)) ->
-			let elem () = Some (Inline.code (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.code (convert_seq_aux x seq))
 			in check_comm `Feature_code comm elem
 
 		| (x, (comm, Ast.Caps seq)) ->
-			let elem () = Some (Inline.caps (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.caps (convert_seq_aux x seq))
 			in check_comm `Feature_caps comm elem
 
 		| (x, (comm, Ast.Ins seq)) ->
-			let elem () = Some (Inline.ins (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.ins (convert_seq_aux x seq))
 			in check_comm `Feature_ins comm elem
 
 		| (x, (comm, Ast.Del seq)) ->
-			let elem () = Some (Inline.del (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.del (convert_seq_aux x seq))
 			in check_comm `Feature_del comm elem
 
 		| (x, (comm, Ast.Sup seq)) ->
-			let elem () = Some (Inline.sup (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.sup (convert_seq_aux x seq))
 			in check_comm `Feature_sup comm elem
 
 		| (x, (comm, Ast.Sub seq)) ->
-			let elem () = Some (Inline.sub (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.sub (convert_seq_aux x seq))
 			in check_comm `Feature_sub comm elem
 
 		| (x, (comm, Ast.Mbox seq)) ->
-			let elem () = Some (Inline.mbox (List.filter_map (convert_inline x) seq))
+			let elem () = Some (Inline.mbox (convert_seq_aux x seq))
 			in check_comm `Feature_mbox comm elem
 
-		| (false, (comm, Ast.Link (lnk, []))) ->
-			let elem () = Some (Inline.link lnk None)
-			in check_comm `Feature_link comm elem
-
-		| (false, (comm, Ast.Link (lnk, seq))) ->
-			let elem () = Some (Inline.link lnk (Some (Obj.magic (List.filter_map (convert_inline true) seq))))
+		| (false, (comm, Ast.Link (lnk, maybe_seq))) ->
+			let elem () =
+				let new_maybe_seq = maybe (fun seq -> Obj.magic (convert_seq_aux true seq)) maybe_seq
+				in Some (Inline.link lnk new_maybe_seq)
 			in check_comm `Feature_link comm elem
 
 		| (false, (comm, Ast.See label)) ->
@@ -246,17 +377,42 @@ let process_document classnames idiosyncrasies document_ast =
 					| Target.Visible_target _	-> `Valid_target
 					| _				-> `Wrong_target Error.Target_label
 				in add_reference target_checker comm label;
-				Some (Inline.mref label (Obj.magic (List.filter_map (convert_inline true) seq)))
+				Some (Inline.mref label (Obj.magic (convert_seq_aux true seq)))
 			in check_comm `Feature_mref comm elem
+
+		| (x, (comm, Ast.Macroarg num)) ->
+
+			(*	Note that if macros are indeed allowed, then this case should have been filtered out
+				by the macro expansion phase.  Finding it means the user tried to use macro features
+				in a document whose idiosyncrasies forbid it.
+			*)
+
+			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe `Feature_macroarg) in
+			DynArray.add errors (comm.comm_linenum, msg);
+			None
+
+		| (x, (comm, Ast.Macrocall (label, args))) ->
+
+			(*	Note that if macros are indeed allowed, then this case should have been filtered out
+				by the macro expansion phase.  Finding it means the user tried to use macro features
+				in a document whose idiosyncrasies forbid it.
+			*)
+
+			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe `Feature_macrocall) in
+			DynArray.add errors (comm.comm_linenum, msg);
+			None
 
 		| (_, (comm, _)) ->
 			let msg = Error.Nested_link comm.comm_tag
 			in DynArray.add errors (comm.comm_linenum, msg);
-			None in
+			None
 
+	and convert_seq_aux is_link seq =
+		let new_seq = if macros_authorised then expand_seq_macros None seq else seq
+		in List.filter_map (convert_inline is_link) new_seq in
 
 	let convert_seq seq =
-		Obj.magic (List.filter_map (convert_inline false) seq) in
+		Obj.magic (convert_seq_aux false seq) in
 
 
 	(************************************************************************)
@@ -320,7 +476,7 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize frags)) ->
 			let elem () =
 				let bullet = Extra.parse_for_itemize errors comm
-				and new_frags = List.filter_map (convert_item_frag ~minipaged x1 x2) frags
+				and new_frags = List.filter_map (convert_anon_item_frag ~minipaged x1 x2) frags
 				in match (frags, new_frags) with
 					| [], _ ->
 						let msg = Error.Empty_listing comm.comm_tag
@@ -335,7 +491,7 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate frags)) ->
 			let elem () =
 				let numbering = Extra.parse_for_enumerate errors comm
-				and new_frags = List.filter_map (convert_item_frag ~minipaged x1 x2) frags
+				and new_frags = List.filter_map (convert_anon_item_frag ~minipaged x1 x2) frags
 				in match (frags, new_frags) with
 					| [], _ ->
 						let msg = Error.Empty_listing comm.comm_tag
@@ -349,7 +505,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Description frags)) ->
 			let elem () =
-				let new_frags = List.filter_map (convert_describe_frag ~minipaged x1 x2) frags
+				let new_frags = List.filter_map (convert_desc_item_frag ~minipaged x1 x2) frags
 				in match (frags, new_frags) with
 					| [], _ ->
 						let msg = Error.Empty_listing comm.comm_tag
@@ -604,39 +760,47 @@ let process_document classnames idiosyncrasies document_ast =
 					None
 			in check_comm `Feature_note comm elem
 
+		| (_, _, _, `Any_blk, (comm, Ast.Macrodef seq)) ->
+			let elem () = match comm.comm_label with
+				| Some label ->
+					let num_args = Extra.parse_for_macrodef errors comm in
+					let () =
+						if Labelmap.mem labelmap (`User_label label) || Macromap.mem macromap label
+						then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, label)))
+						else Macromap.add macromap label (num_args, seq)
+					in None
+				| None -> None
+			in check_comm `Feature_macrodef comm elem
+
 		| (_, _, _, x, (comm, _)) ->
 			let msg = Error.Unexpected_block (comm.comm_tag, x)
 			in DynArray.add errors (comm.comm_linenum, msg);
 			None
 
 
-	and convert_item_frag ~minipaged allow_above_embeddable allow_above_prose (comm, frag) =
+	and convert_anon_item_frag ~minipaged allow_above_embeddable allow_above_prose (comm, frag) =
 		let elem () = Some (List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable allow_above_prose `Any_blk)) frag)
 		in check_comm `Feature_item comm elem
 
 
-	and convert_describe_frag ~minipaged allow_above_embeddable allow_above_prose (comm, seq, frag) =
+	and convert_desc_item_frag ~minipaged allow_above_embeddable allow_above_prose (comm, seq, frag) =
 		let elem () =
 			let new_seq = convert_seq seq
 			and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable allow_above_prose `Any_blk)) frag
 			in Some (new_seq, new_frag)
-		in check_comm `Feature_describe comm elem
+		in check_comm `Feature_item comm elem
 
 
 	and convert_qanda_frag ~minipaged allow_above_embeddable ((q_comm, q_seq, q_frag), (a_comm, a_seq, a_frag)) =
 		let question = 
 			let elem () =
-				let new_seq = match q_seq with
-					| []  -> None
-					| seq -> Some (convert_seq seq)
+				let new_seq = maybe convert_seq q_seq
 				and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) q_frag
 				in Some (new_seq, new_frag)
 			in check_comm `Feature_question q_comm elem
 		and answer = 
 			let elem () =
-				let new_seq = match a_seq with
-					| []  -> None
-					| seq -> Some (convert_seq seq)
+				let new_seq = maybe convert_seq a_seq
 				and new_frag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) a_frag
 				in Some (new_seq, new_frag)
 			in check_comm `Feature_answer a_comm elem

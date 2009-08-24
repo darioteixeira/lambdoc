@@ -49,12 +49,14 @@ type seq_t = inline_t list
 	| Sup of seq_t
 	| Sub of seq_t
 	| Mbox of seq_t
-	| Link of raw_t * seq_t
+	| Link of raw_t * seq_t option
 	| See of raw_t	
 	| Cite of raw_t
 	| Ref of raw_t
 	| Sref of raw_t
 	| Mref of raw_t * seq_t
+	| Macroarg of raw_t
+	| Macrocall of raw_t * seq_t list
 
 
 (********************************************************************************)
@@ -88,7 +90,7 @@ type frag_t = block_t list
 	| Itemize of (command_t * frag_t) list
 	| Enumerate of (command_t * frag_t) list
 	| Description of (command_t * seq_t * frag_t) list
-	| Qanda of ((command_t * seq_t * frag_t) * (command_t * seq_t * frag_t)) list
+	| Qanda of ((command_t * seq_t option * frag_t) * (command_t * seq_t option * frag_t)) list
 	| Verse of frag_t
 	| Quote of frag_t
 	| Mathtex_blk of raw_t
@@ -96,7 +98,7 @@ type frag_t = block_t list
 	| Program of raw_t
 	| Tabular of raw_t * tabular_t
 	| Verbatim of raw_t
-	| Bitmap of raw_t * raw_t	(* (src, alt) *)
+	| Bitmap of raw_t * raw_t  (* (src, alt) *)
 	| Subpage of frag_t
 	| Pullquote of frag_t
 	| Boxout of seq_t option * frag_t
@@ -116,6 +118,7 @@ type frag_t = block_t list
 	| Rule
 	| Bib of bib_t
 	| Note of frag_t
+	| Macrodef of seq_t
 
 
 (********************************************************************************)

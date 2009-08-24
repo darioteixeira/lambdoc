@@ -87,6 +87,10 @@ type error_msg_t =
 	| Invalid_deci_entity of string
 	| Invalid_hexa_entity of string
 
+	| Invalid_macro_argument_context of tag_t option
+	| Invalid_macro_argument_number of tag_t option * string * int
+	| Invalid_macro_call of tag_t option * ref_t * int * int
+
 	| Invalid_language of tag_t option * string
 	| Invalid_mathtex of tag_t option * string
 	| Invalid_mathml of tag_t option * string

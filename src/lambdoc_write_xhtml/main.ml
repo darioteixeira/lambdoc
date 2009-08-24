@@ -360,10 +360,10 @@ let write_valid_document settings classname doc =
 					| `Question -> "doc_question"
 					| `Answer   -> "doc_answer" in
 				let seq = match (maybe_seq, qora) with
-					| (Some seq, `Question)	-> Printf.eprintf "#1\n"; last_question_seq := seq; seq
-					| (Some seq, `Answer)	-> Printf.eprintf "#2\n"; last_answer_seq := seq; seq
-					| (None, `Question)	-> Printf.eprintf "#3\n"; !last_question_seq
-					| (None, `Answer)	-> Printf.eprintf "#4\n"; !last_answer_seq
+					| (Some seq, `Question)	-> last_question_seq := seq; seq
+					| (Some seq, `Answer)	-> last_answer_seq := seq; seq
+					| (None, `Question)	-> !last_question_seq
+					| (None, `Answer)	-> !last_answer_seq
 				in (XHTML.M.dt ~a:[a_class [qora_class]] (write_seq seq), XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
 			let write_pair (q, a) = (write_frag ~qora:`Question q, write_frag ~qora:`Answer a) in
 			let (hd, tl) = fplus write_pair hd_pair tl_pairs in

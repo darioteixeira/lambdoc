@@ -99,6 +99,19 @@ let explain_error = function
 	| Error.Invalid_hexa_entity ent ->
 		sprintf "Invalid Unicode hexadecimal code point '%s'." ent
 
+	| Error.Invalid_macro_argument_context tag ->
+		sprintf "Invalid context for usage of %s.  It may only be used inside a macro definition." (explain_tag tag)
+
+	| Error.Invalid_macro_argument_number (tag, found, expected) ->
+		let correct = match expected with
+			| 0 -> "This macro takes no arguments"
+			| 1 -> "This macro takes one argument referenced by the integer 0"
+			| x -> "This macro's arguments must be referenced by an integer ranging from 0 to " ^ (string_of_int (x - 1))
+		in sprintf "Invalid macro argument '%s' in %s.  %s." found (explain_tag tag) correct
+
+	| Error.Invalid_macro_call (tag, label, found, expected) ->
+		sprintf "Invalid macro invocation in %s.  Macro '%s' expects %d argument(s) but found %d instead." (explain_tag tag) label expected found
+
 	| Error.Invalid_language (tag, lang) ->
 		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)
 

@@ -45,6 +45,7 @@ type handle_t =
 	| Alignment_hnd
 	| Lang_hnd
 	| Classname_hnd
+	| Args_hnd
 
 
 type property_kind_t =
@@ -109,6 +110,7 @@ let id_of_handle = function
 	| Alignment_hnd	-> ("align", Alignment_kind)
 	| Lang_hnd	-> ("lang", Lang_kind)
 	| Classname_hnd	-> ("class", Classname_kind)
+	| Args_hnd	-> ("args", Numeric_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -436,4 +438,10 @@ let parse_for_verbatim = parse_floater
 let parse_for_bitmap = parse_for_image
 
 let parse_for_subpage = parse_floater
+
+let parse_for_macrodef errors comm =
+	let assigned = process errors comm [Args_hnd]
+	in match assigned.(0) with
+		| Some (Numeric_data x)	-> x
+		| _			-> 0
 

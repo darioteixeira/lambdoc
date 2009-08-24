@@ -27,4 +27,5 @@ val parse_for_tabular:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t ->
 val parse_for_verbatim:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
 val parse_for_bitmap:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t * bool * int option
 val parse_for_subpage:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Alignment.t
+val parse_for_macrodef:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> int
 

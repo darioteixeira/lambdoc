@@ -104,11 +104,13 @@ let simple_rex = Pcre.regexp ("^" ^ pat_command ^ pat_optional ^ "$")
 class tokenizer =
 object (self)
 
-	(**	The state of the tokenizer: it consists of the current context,
-		the context history, the environment history, the storage for
-		future environments, and the production queue.
+	(**	The state of the tokenizer: it consists of a boolean indicating
+		whether unexpected inline bundles should be allowed, the production
+		queue, the current context, the context history, the environment
+		history, and the storage for future environments.
 	*)
 
+	val mutable allow_surprise_bundle = false
 	val mutable productions = []
 	val mutable context = Blk
 	val context_history = Stack.create ()
@@ -138,6 +140,9 @@ object (self)
 		the supplied simple tag.  A simple tag is one whose begin is signaled by its
 		own escaped name.  In similarity to {!get_env_tag}, this method returns a
 		pair consisting of the parser token and a list of actions for the automaton.
+		Note that some [Store] actions may take a variable number of environments,
+		which always happen to be [Inline].  These are represented by a commented
+		[Inline] environment.
 	*)
 	method private get_simple_tag tag params =
 
@@ -160,12 +165,15 @@ object (self)
 			| "mbox"		-> (MBOX params,		Inl,	[Store [Inline]])
 
 			| "link"
-			| "a"			-> (LINK params,		Inl,	[Store [Raw; Inline]])
+			| "a"			-> (LINK params,		Inl,	[Store [Raw; (* Inline *)]])
 			| "see"			-> (SEE params,			Inl,	[Store [Raw]])
 			| "cite"		-> (CITE params,		Inl,	[Store [Raw]])
 			| "ref"			-> (REF params,			Inl,	[Store [Raw]])
 			| "sref"		-> (SREF params,		Inl,	[Store [Raw]])
 			| "mref"		-> (MREF params,		Inl,	[Store [Raw; Inline]])
+			| "arg"			-> (MACROARG params,		Inl,	[Store [Raw]])
+			| "call"
+			| "m"			-> (MACROCALL params,		Inl,	[Store [Raw; (* Inline; Inline; ... *)]])
 
 			| "part"		-> (PART params, 		Blk,	[Store [Inline]])
 			| "appendix"		-> (APPENDIX params,		Blk,	[])
@@ -184,19 +192,18 @@ object (self)
 			| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
 			| "rule"
 			| "hr"			-> (RULE params,		Blk,	[])
+			| "macrodef"		-> (MACRODEF params,		Blk,	[Store [Inline]])
 
 			| "item"
-			| "li"			-> (ITEM params,		Blk,	[])
-			| "describe"
-			| "dt"			-> (DESCRIBE params,		Blk,	[Store [Inline]])
-			| "question"		-> (QUESTION params,		Blk,	[Store [Inline]])
-			| "answer"		-> (ANSWER params,		Blk,	[Store [Inline]])
+			| "li"			-> (ITEM params,		Blk,	[(* Store [Inline] *)])
+			| "question"		-> (QUESTION params,		Blk,	[(* Store [Inline] *)])
+			| "answer"		-> (ANSWER params,		Blk,	[(* Store [Inline] *)])
 
 			| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 			| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
-			| "head"		-> (HEAD params,		Blk,	[])
-			| "foot"		-> (FOOT params,		Blk,	[])
-			| "body"		-> (BODY params,		Blk,	[])
+			| "head"		-> (THEAD params,		Blk,	[])
+			| "foot"		-> (TFOOT params,		Blk,	[])
+			| "body"		-> (TBODY params,		Blk,	[])
 			| "who"			-> (BIB_AUTHOR params,		Blk,	[Store [Inline]])
 			| "what"		-> (BIB_TITLE params,		Blk,	[Store [Inline]])
 			| "where"		-> (BIB_RESOURCE params,	Blk,	[Store [Inline]])
@@ -245,7 +252,7 @@ object (self)
 			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Store [Raw]; Push_env Tabular],	[Pop_env])
 			| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],					[])
 			| "pull"	-> (BEGIN_PULLQUOTE params,	END_PULLQUOTE params,		[],					[])
-			| "boxout"	-> (BEGIN_BOXOUT params,	END_BOXOUT params,		[Store [Inline]],			[])
+			| "boxout"	-> (BEGIN_BOXOUT params,	END_BOXOUT params,		[(* Store [Inline] *)],			[])
 			| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],					[])
 			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],					[])
 			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],					[])
@@ -324,15 +331,31 @@ object (self)
 
 
 	(**	Performs the given {!action_t}, changing the state of the automaton.
+		Note that if the action is [Fetch], the [env_storage] queue is empty,
+		*and* the flag [allow_surprise_bundle] is active, then that means we
+		are dealing with a command that takes a variable number of arguments.
+		In all these cases we can simply push an [Inline] environment as default.  
 	*)
 	method private perform_action = function
-		| Set_con con		-> context <- con
-		| Push_con		-> Stack.push context context_history
-		| Pop_con		-> context <- (try Stack.pop context_history with Stack.Empty -> context)
-		| Push_env env		-> Stack.push env env_history
-		| Pop_env		-> (try ignore (Stack.pop env_history) with Stack.Empty -> ())
-		| Store envs		-> List.iter (fun x -> Queue.add x env_storage) envs
-		| Fetch			-> try Stack.push (Queue.take env_storage) env_history with Queue.Empty -> ()
+		| Set_con con ->
+			context <- con
+		| Push_con ->
+			Stack.push context context_history
+		| Pop_con ->
+			context <- (try Stack.pop context_history with Stack.Empty -> context)
+		| Push_env env ->
+			Stack.push env env_history
+		| Pop_env ->
+			(try ignore (Stack.pop env_history) with Stack.Empty -> ())
+		| Store envs ->
+			List.iter (fun x -> Queue.add x env_storage) envs
+		| Fetch ->
+			let env =
+				try Some (Queue.take env_storage)
+				with Queue.Empty -> if allow_surprise_bundle then Some Inline else None
+			in match env with
+				| Some e -> Stack.push e env_history
+				| None	 -> ()
 
 
 	(**	Stores a new token into the production queue.
@@ -383,6 +406,13 @@ object (self)
 			| `Tok_plain txt		-> (Some (PLAIN (self#build_op, txt)),		[Set_con Inl])
 			| `Tok_entity ent		-> (Some (ENTITY (self#build_op, ent)),		[Set_con Inl])
 			| _				-> failwith "Unexpected scanner token" in
+
+		let () = match token with
+			| `Tok_simple_comm _
+			| `Tok_env_begin _
+			| `Tok_end			-> allow_surprise_bundle <- true
+			| `Tok_begin			-> ()
+			| _				-> allow_surprise_bundle <- false in
 
 		let old_context = context in
 

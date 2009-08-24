@@ -25,12 +25,10 @@ open Lambdoc_reader
 
 
 /********************************************************************************/
-/* Basic elements.								*/
+/* Raw text.									*/
 /********************************************************************************/
 
 %token <Lambdoc_core.Basic.raw_t> RAW
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.plain_t> PLAIN
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
 
 
 /********************************************************************************/
@@ -130,6 +128,9 @@ open Lambdoc_reader
 /* Simple commands.								*/
 /********************************************************************************/
 
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.plain_t> PLAIN
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
+
 %token <Lambdoc_reader.Ast.command_t> LINEBREAK
 %token <Lambdoc_reader.Ast.command_t> BOLD
 %token <Lambdoc_reader.Ast.command_t> EMPH
@@ -141,12 +142,14 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> SUB
 %token <Lambdoc_reader.Ast.command_t> MBOX
 %token <Lambdoc_reader.Ast.command_t> LINK
+
 %token <Lambdoc_reader.Ast.command_t> SEE
 %token <Lambdoc_reader.Ast.command_t> CITE
 %token <Lambdoc_reader.Ast.command_t> REF
 %token <Lambdoc_reader.Ast.command_t> SREF
 %token <Lambdoc_reader.Ast.command_t> MREF
 
+%token <Lambdoc_reader.Ast.command_t> BITMAP
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
 %token <Lambdoc_reader.Ast.command_t> SECTION
@@ -160,19 +163,21 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
 
+%token <Lambdoc_reader.Ast.command_t> MACRODEF
+%token <Lambdoc_reader.Ast.command_t> MACROARG
+%token <Lambdoc_reader.Ast.command_t> MACROCALL
+
 %token <Lambdoc_reader.Ast.command_t> ITEM
-%token <Lambdoc_reader.Ast.command_t> DESCRIBE
 %token <Lambdoc_reader.Ast.command_t> QUESTION
 %token <Lambdoc_reader.Ast.command_t> ANSWER
 
-%token <Lambdoc_reader.Ast.command_t> BITMAP
-%token <Lambdoc_reader.Ast.command_t> CAPTION
-%token <Lambdoc_reader.Ast.command_t> HEAD
-%token <Lambdoc_reader.Ast.command_t> FOOT
-%token <Lambdoc_reader.Ast.command_t> BODY
+%token <Lambdoc_reader.Ast.command_t> THEAD
+%token <Lambdoc_reader.Ast.command_t> TFOOT
+%token <Lambdoc_reader.Ast.command_t> TBODY
 %token <Lambdoc_reader.Ast.command_t> BIB_AUTHOR
 %token <Lambdoc_reader.Ast.command_t> BIB_TITLE
 %token <Lambdoc_reader.Ast.command_t> BIB_RESOURCE
+%token <Lambdoc_reader.Ast.command_t> CAPTION
 
 
 /********************************************************************************/
@@ -200,66 +205,56 @@ document:
 
 block:
 	| NEW_PAR inline+					{($1, Ast.Paragraph $2)}
-	| BEGIN_ITEMIZE item_frag+ END_ITEMIZE			{($1, Ast.Itemize $2)}
-	| BEGIN_ITEMIZE_1 item_frag+ END_ITEMIZE_1		{($1, Ast.Itemize $2)}
-	| BEGIN_ENUMERATE item_frag+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
-	| BEGIN_ENUMERATE_1 item_frag+ END_ENUMERATE_1		{($1, Ast.Enumerate $2)}
-	| BEGIN_DESCRIPTION describe_frag+ END_DESCRIPTION	{($1, Ast.Description $2)}
-	| BEGIN_DESCRIPTION_1 describe_frag+ END_DESCRIPTION_1	{($1, Ast.Description $2)}
+	| BEGIN_ITEMIZE anon_item_frag+ END_ITEMIZE		{($1, Ast.Itemize $2)}
+	| BEGIN_ITEMIZE_1 anon_item_frag+ END_ITEMIZE_1		{($1, Ast.Itemize $2)}
+	| BEGIN_ENUMERATE anon_item_frag+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
+	| BEGIN_ENUMERATE_1 anon_item_frag+ END_ENUMERATE_1	{($1, Ast.Enumerate $2)}
+	| BEGIN_DESCRIPTION desc_item_frag+ END_DESCRIPTION	{($1, Ast.Description $2)}
+	| BEGIN_DESCRIPTION_1 desc_item_frag+ END_DESCRIPTION_1	{($1, Ast.Description $2)}
 	| BEGIN_QANDA qanda_frag+ END_QANDA			{($1, Ast.Qanda $2)}
 	| BEGIN_VERSE block+ END_VERSE				{($1, Ast.Verse $2)}
 	| BEGIN_QUOTE block+ END_QUOTE				{($1, Ast.Quote $2)}
 	| BEGIN_MATHTEX_BLK RAW END_MATHTEX_BLK			{($1, Ast.Mathtex_blk $2)}
 	| BEGIN_MATHML_BLK RAW END_MATHML_BLK			{($1, Ast.Mathml_blk $2)}
 	| BEGIN_PROGRAM RAW END_PROGRAM				{($1, Ast.Program $2)}
-	| BEGIN_TABULAR BEGIN RAW END tabular END_TABULAR	{($1, Ast.Tabular ($3, $5))}
+	| BEGIN_TABULAR raw_bundle tabular END_TABULAR		{($1, Ast.Tabular ($2, $3))}
 	| BEGIN_VERBATIM RAW END_VERBATIM			{($1, Ast.Verbatim $2)}
 	| BEGIN_VERBATIM_1 RAW END_VERBATIM_1			{($1, Ast.Verbatim $2)}
-	| BITMAP BEGIN RAW END BEGIN RAW END			{($1, Ast.Bitmap ($3, $6))}
+	| BITMAP raw_bundle raw_bundle				{($1, Ast.Bitmap ($2, $3))}
 	| BEGIN_SUBPAGE block+ END_SUBPAGE			{($1, Ast.Subpage $2)}
 	| BEGIN_PULLQUOTE block+ END_PULLQUOTE			{($1, Ast.Pullquote $2)}
-	| BEGIN_BOXOUT BEGIN inline+ END block+ END_BOXOUT	{($1, Ast.Boxout ((match $3 with [] -> None | x -> Some x), $5))}
+	| BEGIN_BOXOUT inline_bundle? block+ END_BOXOUT		{($1, Ast.Boxout ($2, $3))}
 	| BEGIN_EQUATION block caption END_EQUATION		{($1, Ast.Equation ($3, $2))}
 	| BEGIN_PRINTOUT block caption END_PRINTOUT		{($1, Ast.Printout ($3, $2))}
 	| BEGIN_TABLE block caption END_TABLE			{($1, Ast.Table ($3, $2))}
 	| BEGIN_FIGURE block caption END_FIGURE			{($1, Ast.Figure ($3, $2))}
-	| PART BEGIN inline+ END				{($1, Ast.Part $3)}
+	| PART inline_bundle					{($1, Ast.Part $2)}
 	| APPENDIX						{($1, Ast.Appendix)}
-	| SECTION BEGIN inline+ END				{($1, Ast.Section (`Level1, $3))}
-	| SUBSECTION BEGIN inline+ END				{($1, Ast.Section (`Level2, $3))}
-	| SUBSUBSECTION BEGIN inline+ END			{($1, Ast.Section (`Level3, $3))}
+	| SECTION inline_bundle					{($1, Ast.Section (`Level1, $2))}
+	| SUBSECTION inline_bundle				{($1, Ast.Section (`Level2, $2))}
+	| SUBSUBSECTION inline_bundle				{($1, Ast.Section (`Level3, $2))}
 	| BIBLIOGRAPHY						{($1, Ast.Bibliography)}
 	| NOTES							{($1, Ast.Notes)}
 	| TOC							{($1, Ast.Toc)} 
-	| PARHEAD BEGIN inline+ END				{($1, Ast.Parhead $3)}
-	| TITLE BEGIN inline+ END				{($1, Ast.Title (`Level1, $3))}
-	| SUBTITLE BEGIN inline+ END				{($1, Ast.Title (`Level2, $3))}
+	| PARHEAD inline_bundle					{($1, Ast.Parhead $2)}
+	| TITLE inline_bundle					{($1, Ast.Title (`Level1, $2))}
+	| SUBTITLE inline_bundle				{($1, Ast.Title (`Level2, $2))}
 	| BEGIN_ABSTRACT block+ END_ABSTRACT			{($1, Ast.Abstract $2)}
 	| RULE							{($1, Ast.Rule)}
 	| BEGIN_BIB bib_author bib_title bib_resource END_BIB	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
 	| BEGIN_NOTE block+ END_NOTE				{($1, Ast.Note $2)}
+	| MACRODEF inline_bundle				{($1, Ast.Macrodef $2)}
 
 
-item_frag:
-	| ITEM block+						{($1, $2)}
-
-describe_frag:
-	| DESCRIBE BEGIN inline+ END block+			{($1, $3, $5)}
-
-qanda_frag:
-	| question answer					{($1, $2)}
-
-question:
-	| QUESTION BEGIN inline* END block+			{($1, $3, $5)}
-
-answer:
-	| ANSWER BEGIN inline* END block+			{($1, $3, $5)}
-
-
-caption:	CAPTION BEGIN inline+ END			{($1, $3)}
-bib_author:	BIB_AUTHOR BEGIN inline+ END			{($1, $3)}
-bib_title:	BIB_TITLE BEGIN inline+ END			{($1, $3)}
-bib_resource:	BIB_RESOURCE BEGIN inline+ END			{($1, $3)}
+anon_item_frag:	ITEM block+					{($1, $2)}
+desc_item_frag:	ITEM inline_bundle block+			{($1, $2, $3)}
+qanda_frag:	question answer					{($1, $2)}
+question:	QUESTION inline_bundle? block+			{($1, $2, $3)}
+answer:		ANSWER inline_bundle? block+			{($1, $2, $3)}
+caption:	CAPTION inline_bundle				{($1, $2)}
+bib_author:	BIB_AUTHOR inline_bundle			{($1, $2)}
+bib_title:	BIB_TITLE inline_bundle				{($1, $2)}
+bib_resource:	BIB_RESOURCE inline_bundle			{($1, $2)}
 
 
 /********************************************************************************/
@@ -272,15 +267,15 @@ tabular:
 
 
 head:
-	| HEAD row+					{(Some $1, $2)}
+	| THEAD row+					{(Some $1, $2)}
 
 
 foot:
-	| FOOT row+					{(Some $1, $2)}
+	| TFOOT row+					{(Some $1, $2)}
 
 
 body:
-	| BODY row+					{(Some $1, $2)}
+	| TBODY row+					{(Some $1, $2)}
 
 
 row:
@@ -302,19 +297,32 @@ inline:
 	| LINEBREAK					{($1, Ast.Linebreak)}
 	| BEGIN_MATHTEX_INL RAW END_MATHTEX_INL		{($1, Ast.Mathtex_inl $2)}
 	| BEGIN_MATHML_INL RAW END_MATHML_INL		{($1, Ast.Mathml_inl $2)}
-	| BOLD BEGIN inline+ END			{($1, Ast.Bold $3)}
-	| EMPH BEGIN inline+ END			{($1, Ast.Emph $3)}
-	| CODE BEGIN inline+ END			{($1, Ast.Code $3)}
-	| CAPS BEGIN inline+ END			{($1, Ast.Caps $3)}
-	| INS BEGIN inline+ END				{($1, Ast.Ins $3)}
-	| DEL BEGIN inline+ END				{($1, Ast.Del $3)}
-	| SUP BEGIN inline+ END				{($1, Ast.Sup $3)}
-	| SUB BEGIN inline+ END				{($1, Ast.Sub $3)}
-	| MBOX BEGIN inline+ END			{($1, Ast.Mbox $3)}
-	| LINK BEGIN RAW END BEGIN inline* END		{($1, Ast.Link ($3, $6))}
-	| SEE BEGIN RAW END				{($1, Ast.See $3)}
-	| CITE BEGIN RAW END				{($1, Ast.Cite $3)}
-	| REF BEGIN RAW END				{($1, Ast.Ref $3)}
-	| SREF BEGIN RAW END				{($1, Ast.Sref $3)}
-	| MREF BEGIN RAW END BEGIN inline+ END		{($1, Ast.Mref ($3, $6))}
+	| BOLD inline_bundle				{($1, Ast.Bold $2)}
+	| EMPH inline_bundle				{($1, Ast.Emph $2)}
+	| CODE inline_bundle				{($1, Ast.Code $2)}
+	| CAPS inline_bundle				{($1, Ast.Caps $2)}
+	| INS inline_bundle				{($1, Ast.Ins $2)}
+	| DEL inline_bundle				{($1, Ast.Del $2)}
+	| SUP inline_bundle				{($1, Ast.Sup $2)}
+	| SUB inline_bundle				{($1, Ast.Sub $2)}
+	| MBOX inline_bundle				{($1, Ast.Mbox $2)}
+	| LINK raw_bundle inline_bundle?		{($1, Ast.Link ($2, $3))}
+	| SEE raw_bundle				{($1, Ast.See $2)}
+	| CITE raw_bundle				{($1, Ast.Cite $2)}
+	| REF raw_bundle				{($1, Ast.Ref $2)}
+	| SREF raw_bundle				{($1, Ast.Sref $2)}
+	| MREF raw_bundle inline_bundle			{($1, Ast.Mref ($2, $3))}
+	| MACROARG raw_bundle				{($1, Ast.Macroarg $2)}
+	| MACROCALL raw_bundle inline_bundle*		{($1, Ast.Macrocall ($2, $3))}
+
+
+/********************************************************************************/
+/* Bundles.									*/
+/********************************************************************************/
+
+inline_bundle:
+	| BEGIN inline+ END				{$2}
+
+raw_bundle:
+	| BEGIN RAW END					{$2}
 

@@ -84,8 +84,8 @@ item:
 
 inline:
 	| plain						{$1}
-	| BEGIN_LINK raw END_LINK			{($1, Ast.Link ($2, []))}
-	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, [$4]))}
+	| BEGIN_LINK raw END_LINK			{($1, Ast.Link ($2, None))}
+	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, Some [$4]))}
 	| BOLD_MARK plain BOLD_MARK			{($1, Ast.Bold [$2])}
 	| EMPH_MARK plain EMPH_MARK			{($1, Ast.Emph [$2])}
 	| CODE_MARK plain CODE_MARK			{($1, Ast.Code [$2])}
