@@ -172,6 +172,9 @@ object (self)
 			| "sref"		-> (SREF params,		Inl,	[Store [Raw]])
 			| "mref"		-> (MREF params,		Inl,	[Store [Raw; Inline]])
 
+			| "paragraph"
+			| "p"			-> (PARAGRAPH params, 		Blk,	[Store [Inline]])
+			| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
 			| "part"		-> (PART params, 		Blk,	[Store [Inline]])
 			| "appendix"		-> (APPENDIX params,		Blk,	[])
 			| "section"
@@ -196,14 +199,13 @@ object (self)
 			| "question"		-> (QUESTION params,		Blk,	[(* Store [Inline] *)])
 			| "answer"		-> (ANSWER params,		Blk,	[(* Store [Inline] *)])
 
-			| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
-			| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 			| "head"		-> (THEAD params,		Blk,	[])
 			| "foot"		-> (TFOOT params,		Blk,	[])
 			| "body"		-> (TBODY params,		Blk,	[])
 			| "who"			-> (BIB_AUTHOR params,		Blk,	[Store [Inline]])
 			| "what"		-> (BIB_TITLE params,		Blk,	[Store [Inline]])
 			| "where"		-> (BIB_RESOURCE params,	Blk,	[Store [Inline]])
+			| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
 			| x			-> raise (Unknown_simple_command x)
 
 		in (Some token, (Set_con context) :: actions)

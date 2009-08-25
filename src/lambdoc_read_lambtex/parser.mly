@@ -152,6 +152,7 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.raw_t> MACROARG
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.raw_t> MACROCALL
 
+%token <Lambdoc_reader.Ast.command_t> PARAGRAPH
 %token <Lambdoc_reader.Ast.command_t> BITMAP
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
@@ -166,9 +167,11 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
 %token <Lambdoc_reader.Ast.command_t> MACRODEF
+
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> QUESTION
 %token <Lambdoc_reader.Ast.command_t> ANSWER
+
 %token <Lambdoc_reader.Ast.command_t> THEAD
 %token <Lambdoc_reader.Ast.command_t> TFOOT
 %token <Lambdoc_reader.Ast.command_t> TBODY
@@ -203,6 +206,7 @@ document:
 
 block:
 	| NEW_PAR inline+					{($1, Ast.Paragraph $2)}
+	| PARAGRAPH inline_bundle				{($1, Ast.Paragraph $2)}
 	| BEGIN_ITEMIZE anon_item_frag+ END_ITEMIZE		{($1, Ast.Itemize $2)}
 	| BEGIN_ITEMIZE_1 anon_item_frag+ END_ITEMIZE_1		{($1, Ast.Itemize $2)}
 	| BEGIN_ENUMERATE anon_item_frag+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
