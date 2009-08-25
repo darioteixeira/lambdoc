@@ -121,6 +121,7 @@ let process_document classnames idiosyncrasies document_ast =
 	(************************************************************************)
 
 	let rec expand_inline_macros args inline = match inline with
+
 		| (_, Ast.Plain _) ->
 			[inline]
 
@@ -191,7 +192,7 @@ let process_document classnames idiosyncrasies document_ast =
 					| Some x ->
 						try
 							let num = int_of_string raw_num
-							in Some (expand_seq_macros args (List.nth x num))
+							in Some (List.nth x num)
 						with
 							| Failure _
 							| List.Invalid_index _ ->
@@ -202,17 +203,18 @@ let process_document classnames idiosyncrasies document_ast =
 				| Some seq -> seq
 				| None	   -> [])
 
-		| (comm, Ast.Macrocall (label, args)) ->
+		| (comm, Ast.Macrocall (label, arglist)) ->
 			let elem () =
 				try
 					let (macro_nargs, macro_seq) = Macromap.find macromap label
-					in if macro_nargs <> List.length args
+					in if macro_nargs <> List.length arglist
 					then
-						let msg = Error.Invalid_macro_call (comm.comm_tag, label, List.length args, macro_nargs) in
+						let msg = Error.Invalid_macro_call (comm.comm_tag, label, List.length arglist, macro_nargs) in
 						DynArray.add errors (comm.comm_linenum, msg);
 						None
 					else
-						Some (expand_seq_macros (Some args) macro_seq)
+						let new_arglist = List.map (expand_seq_macros args) arglist
+						in Some (expand_seq_macros (Some new_arglist) macro_seq)
 				with
 					| Not_found ->
 						let msg = Error.Absent_target (comm.comm_tag, label) in
@@ -227,14 +229,14 @@ let process_document classnames idiosyncrasies document_ast =
 		let coalesce_plain seq =
 			let rec coalesce_plain_aux accum = function
 				| (comm1, Plain txt1) :: (comm2, Plain txt2) :: tl ->
-					let agg = (comm2, Plain (txt2 ^ txt1))
+					let agg = (comm1, Plain (txt1 ^ txt2))
 					in coalesce_plain_aux accum (agg :: tl)
 				| hd :: tl ->
 					coalesce_plain_aux (hd :: accum) tl
 				| [] ->
 					accum
-			in coalesce_plain_aux [] seq
-		in coalesce_plain (List.flatten (List.rev_map (expand_inline_macros args) seq)) in
+			in List.rev (coalesce_plain_aux [] seq)
+		in coalesce_plain (List.flatten (List.map (expand_inline_macros args) seq)) in
 
 
 	(************************************************************************)
