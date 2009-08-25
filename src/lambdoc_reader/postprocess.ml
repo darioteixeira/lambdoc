@@ -185,18 +185,18 @@ let process_document classnames idiosyncrasies document_ast =
 		| (comm, Ast.Macroarg raw_num) ->
 			let elem () =
 				match args with 
-					| None ->
-						let msg = Error.Invalid_macro_argument_context comm.comm_tag in
+					| [] ->
+						let msg = Error.Invalid_macro_argument_context in
 						DynArray.add errors (comm.comm_linenum, msg);
 						None
-					| Some x ->
+					| _ ->
 						try
-							let num = int_of_string raw_num
-							in Some (List.nth x num)
+							let num = (int_of_string raw_num) - 1
+							in Some (List.nth args num)
 						with
 							| Failure _
 							| List.Invalid_index _ ->
-								let msg = Error.Invalid_macro_argument_number (comm.comm_tag, raw_num, List.length x) in
+								let msg = Error.Invalid_macro_argument_number (raw_num, List.length args) in
 								DynArray.add errors (comm.comm_linenum, msg);
 								None
 			in (match check_comm `Feature_macroarg comm elem with
@@ -209,15 +209,15 @@ let process_document classnames idiosyncrasies document_ast =
 					let (macro_nargs, macro_seq) = Macromap.find macromap label
 					in if macro_nargs <> List.length arglist
 					then
-						let msg = Error.Invalid_macro_call (comm.comm_tag, label, List.length arglist, macro_nargs) in
+						let msg = Error.Invalid_macro_call (label, List.length arglist, macro_nargs) in
 						DynArray.add errors (comm.comm_linenum, msg);
 						None
 					else
 						let new_arglist = List.map (expand_seq_macros args) arglist
-						in Some (expand_seq_macros (Some new_arglist) macro_seq)
+						in Some (expand_seq_macros new_arglist macro_seq)
 				with
 					| Not_found ->
-						let msg = Error.Absent_target (comm.comm_tag, label) in
+						let msg = Error.Invalid_macro_reference label in
 						DynArray.add errors (comm.comm_linenum, msg);
 						None
 			in match check_comm `Feature_macrocall comm elem with
@@ -410,7 +410,7 @@ let process_document classnames idiosyncrasies document_ast =
 			None
 
 	and convert_seq_aux is_link seq =
-		let new_seq = if macros_authorised then expand_seq_macros None seq else seq
+		let new_seq = if macros_authorised then expand_seq_macros [] seq else seq
 		in List.filter_map (convert_inline is_link) new_seq in
 
 	let convert_seq seq =
@@ -767,9 +767,15 @@ let process_document classnames idiosyncrasies document_ast =
 				| Some label ->
 					let num_args = Extra.parse_for_macrodef errors comm in
 					let () =
+						let errors_before = DynArray.length errors in
+						let _ = expand_seq_macros (List.make num_args [(comm, Ast.Linebreak)]) seq in
+						let errors_after = DynArray.length errors in
 						if Labelmap.mem labelmap (`User_label label) || Macromap.mem macromap label
-						then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, label)))
-						else Macromap.add macromap label (num_args, seq)
+						then
+							DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, label)))
+						else
+							let new_seq = if errors_after = errors_before then seq else []
+							in Macromap.add macromap label (num_args, new_seq)
 					in None
 				| None -> None
 			in check_comm `Feature_macrodef comm elem

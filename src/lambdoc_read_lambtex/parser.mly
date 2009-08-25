@@ -149,6 +149,9 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> SREF
 %token <Lambdoc_reader.Ast.command_t> MREF
 
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.raw_t> MACROARG
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.raw_t> MACROCALL
+
 %token <Lambdoc_reader.Ast.command_t> BITMAP
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
@@ -162,15 +165,10 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> TITLE
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
-
 %token <Lambdoc_reader.Ast.command_t> MACRODEF
-%token <Lambdoc_reader.Ast.command_t> MACROARG
-%token <Lambdoc_reader.Ast.command_t> MACROCALL
-
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> QUESTION
 %token <Lambdoc_reader.Ast.command_t> ANSWER
-
 %token <Lambdoc_reader.Ast.command_t> THEAD
 %token <Lambdoc_reader.Ast.command_t> TFOOT
 %token <Lambdoc_reader.Ast.command_t> TBODY
@@ -312,8 +310,8 @@ inline:
 	| REF raw_bundle				{($1, Ast.Ref $2)}
 	| SREF raw_bundle				{($1, Ast.Sref $2)}
 	| MREF raw_bundle inline_bundle			{($1, Ast.Mref ($2, $3))}
-	| MACROARG raw_bundle				{($1, Ast.Macroarg $2)}
-	| MACROCALL raw_bundle inline_bundle*		{($1, Ast.Macrocall ($2, $3))}
+	| MACROARG					{let (comm, txt) = $1 in (comm, Ast.Macroarg txt)}
+	| MACROCALL inline_bundle*			{let (comm, txt) = $1 in (comm, Ast.Macrocall (txt, $2))}
 
 
 /********************************************************************************/

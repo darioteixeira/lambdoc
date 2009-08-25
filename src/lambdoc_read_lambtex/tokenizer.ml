@@ -171,9 +171,6 @@ object (self)
 			| "ref"			-> (REF params,			Inl,	[Store [Raw]])
 			| "sref"		-> (SREF params,		Inl,	[Store [Raw]])
 			| "mref"		-> (MREF params,		Inl,	[Store [Raw; Inline]])
-			| "arg"			-> (MACROARG params,		Inl,	[Store [Raw]])
-			| "call"
-			| "m"			-> (MACROCALL params,		Inl,	[Store [Raw; (* Inline; Inline; ... *)]])
 
 			| "part"		-> (PART params, 		Blk,	[Store [Inline]])
 			| "appendix"		-> (APPENDIX params,		Blk,	[])
@@ -390,6 +387,8 @@ object (self)
 			| `Tok_simple_comm comm		-> self#issue_simple_command comm
 			| `Tok_env_begin comm		-> self#issue_env_command comm
 			| `Tok_env_end comm		-> self#issue_env_command comm
+			| `Tok_macroarg arg		-> (Some (MACROARG (self#build_op, arg)),	[Set_con Inl])
+			| `Tok_macrocall label		-> (Some (MACROCALL (self#build_op, label)),	[Set_con Inl])
 			| `Tok_begin			-> (Some BEGIN,					[Fetch; Push_con])
 			| `Tok_end			-> (Some END,					[Pop_env; Pop_con])
 			| `Tok_begin_mathtex_inl	-> (Some (BEGIN_MATHTEX_INL self#build_op),	[Set_con Inl; Push_con; Push_env Mathtex_inl])
@@ -410,7 +409,8 @@ object (self)
 		let () = match token with
 			| `Tok_simple_comm _
 			| `Tok_env_begin _
-			| `Tok_end			-> allow_surprise_bundle <- true
+			| `Tok_end
+			| `Tok_macrocall _		-> allow_surprise_bundle <- true
 			| `Tok_begin			-> ()
 			| _				-> allow_surprise_bundle <- false in
 

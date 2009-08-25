@@ -23,6 +23,8 @@ open Lambdoc_reader
 type tok_simple_comm_t =	[ `Tok_simple_comm of string ]
 type tok_env_begin_t =		[ `Tok_env_begin of string ]
 type tok_env_end_t =		[ `Tok_env_end of string ]
+type tok_macroarg_t =		[ `Tok_macroarg of string ]
+type tok_macrocall_t =		[ `Tok_macrocall of string ]
 type tok_begin_t =		[ `Tok_begin ]
 type tok_end_t =		[ `Tok_end ]
 type tok_begin_mathtex_inl_t =	[ `Tok_begin_mathtex_inl ]
@@ -41,6 +43,7 @@ type tok_entity_t =		[ `Tok_entity of Entity.t ]
 type general_token_t =
 	[ tok_simple_comm_t
 	| tok_env_begin_t | tok_env_end_t
+	| tok_macroarg_t | tok_macrocall_t
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
@@ -51,6 +54,7 @@ type general_token_t =
 type tabular_token_t =
 	[ tok_simple_comm_t
 	| tok_env_begin_t | tok_env_end_t
+	| tok_macroarg_t | tok_macrocall_t
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
@@ -105,6 +109,8 @@ let regexp primary = '{' ident '}'
 let regexp simple_comm = '\\' ident optional
 let regexp env_begin = "\\begin" optional primary
 let regexp env_end = "\\end" primary
+let regexp macroarg = '@' '{' deci+ '}'
+let regexp macrocall = '@' '{' ident '}'
 
 let regexp entity_hexa = "&#x" (alpha | deci)+ ';'
 let regexp entity_deci = "&#" (alpha | deci)+ ';'
@@ -169,6 +175,8 @@ let general_scanner : (Ulexing.lexbuf -> int * [> general_token_t]) = lexer
 	| simple_comm		-> (0, `Tok_simple_comm (whole_lexbuf lexbuf))
 	| env_begin		-> (0, `Tok_env_begin (whole_lexbuf lexbuf))
 	| env_end		-> (0, `Tok_env_end (whole_lexbuf lexbuf))
+	| macroarg		-> (0, `Tok_macroarg (rtrim_lexbuf ~first:2 lexbuf))
+	| macrocall		-> (0, `Tok_macrocall (rtrim_lexbuf ~first:2 lexbuf))
 	| begin_marker		-> (0, `Tok_begin)
 	| end_marker		-> (0, `Tok_end)
 	| begin_mathtex_inl	-> (0, `Tok_begin_mathtex_inl)
@@ -195,6 +203,8 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
 	| simple_comm		-> (0, `Tok_simple_comm (whole_lexbuf lexbuf))
 	| env_begin		-> (0, `Tok_env_begin (whole_lexbuf lexbuf))
 	| env_end		-> (0, `Tok_env_end (whole_lexbuf lexbuf))
+	| macroarg		-> (0, `Tok_macroarg (rtrim_lexbuf ~first:2 lexbuf))
+	| macrocall		-> (0, `Tok_macrocall (rtrim_lexbuf ~first:2 lexbuf))
 	| begin_marker		-> (0, `Tok_begin)
 	| end_marker		-> (0, `Tok_end)
 	| begin_mathtex_inl	-> (0, `Tok_begin_mathtex_inl)
