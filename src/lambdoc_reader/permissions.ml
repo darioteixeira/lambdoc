@@ -46,6 +46,9 @@ let custom_heading_class minipaged =
 let preset_heading_class =
 	(Optional, Forbidden, Forbidden)
 
+let paragraph_class =
+	(Forbidden, Forbidden, Optional)
+
 let listing_class =
 	(Forbidden, Forbidden, Optional)
 
@@ -145,7 +148,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_mref		-> forbidden_class
 
 	and composition_block_feature_set = function
-		| `Feature_paragraph	-> forbidden_class
+		| `Feature_paragraph	-> paragraph_class
 		| `Feature_itemize	-> listing_class
 		| `Feature_enumerate	-> listing_class
 		| `Feature_description	-> forbidden_class

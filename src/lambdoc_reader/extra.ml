@@ -36,6 +36,7 @@ end
 (********************************************************************************)
 
 type handle_t =
+	| Dropcap_hnd
 	| Linenums_hnd
 	| Zebra_hnd
 	| Frame_hnd
@@ -101,6 +102,7 @@ type solution_t =
 (**	Definition of the key and property kind associated with each handle.
 *)
 let id_of_handle = function
+	| Dropcap_hnd	-> ("dropcap", Boolean_kind)
 	| Linenums_hnd	-> ("linenums", Boolean_kind)
 	| Zebra_hnd	-> ("zebra", Boolean_kind)
 	| Frame_hnd	-> ("frame", Boolean_kind)
@@ -388,6 +390,13 @@ let parse_for_image errors comm =
 (********************************************************************************)
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
+
+let parse_for_paragraph errors comm =
+	let assigned = process errors comm [Dropcap_hnd]
+	in match assigned.(0) with
+		| Some (Boolean_data x)		-> x
+		| _				-> false
+
 
 let parse_for_itemize errors comm =
 	let assigned = process errors comm [Bullet_hnd]

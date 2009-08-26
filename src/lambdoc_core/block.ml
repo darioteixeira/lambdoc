@@ -20,7 +20,7 @@ type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | 
 type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp
 
 type 'a block_t =
-	[ `Paragraph of Inline.seq_t
+	[ `Paragraph of bool * Inline.seq_t
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
@@ -55,8 +55,8 @@ type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 (**	{3 Functions and values}						*)
 (********************************************************************************)
 
-let paragraph seq =
-	`Paragraph (Inline.get_seq seq)
+let paragraph dropcap seq =
+	`Paragraph (dropcap, Inline.get_seq seq)
 
 let itemize bullet (head_frag, tail_frags) =
 	`Itemize (bullet, (head_frag, tail_frags))

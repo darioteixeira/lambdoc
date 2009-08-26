@@ -333,8 +333,9 @@ let write_valid_document settings classname doc =
 
 	and write_block ?(wrapped = false) = function
 
-		| `Paragraph seq ->
-			(None, XHTML.M.p ~a:[a_class ["doc_par"]] (write_seq seq))
+		| `Paragraph (dropcap, seq) ->
+			let style = if dropcap then ["doc_dropcap"] else []
+			in (None, XHTML.M.p ~a:[a_class (["doc_par"] @ style)] (write_seq seq))
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->
 			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
