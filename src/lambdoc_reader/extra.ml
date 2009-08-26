@@ -121,7 +121,7 @@ let id_of_handle = function
 	ways that users can use to express a property.
 *)
 let fields_of_strings =
-	let truth_rex = Pcre.regexp "^((?<key>[a-z]+)=)?((?<true>(true)|(yes))|(?<false>(false)|(no)))$"
+	let truth_rex = Pcre.regexp "^((?<key>[a-z]+)=)?((?<true>(true)|(yes)|(on))|(?<false>(false)|(no)|(off)))$"
 	and negated_rex = Pcre.regexp "^!(?<negated>[a-z]+)$"
 	and unnamed_rex = Pcre.regexp "^(?<unnamed>[a-z0-9]+)$"
 	and keyvalue_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>[a-z0-9]+)$"
