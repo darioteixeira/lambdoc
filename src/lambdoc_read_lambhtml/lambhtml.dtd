@@ -9,7 +9,7 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	"p | itemize | ul | enumerate | ol | description | dl
+	"paragraph | p | itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
 	| prog | tabular | verbatim | pre | bitmap | subpage
 	| pull | boxout

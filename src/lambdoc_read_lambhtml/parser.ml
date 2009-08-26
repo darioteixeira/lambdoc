@@ -116,6 +116,7 @@ let rec process_frag ?(flow = false) frag_root =
 and process_block node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
+		| T_element "paragraph"
 		| T_element "p"			-> (!!comm, Ast.Paragraph (process_seq node))
 		| T_element "itemize"
 		| T_element "ul"		-> (!!comm, Ast.Itemize (process_anon_item_frag node))
