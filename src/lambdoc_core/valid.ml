@@ -11,6 +11,8 @@
 
 TYPE_CONV_PATH "Valid"
 
+open Basic
+
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
@@ -23,6 +25,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
+	bitmaps: alias_t list;
 	} with sexp
 
 
@@ -34,22 +37,25 @@ type composition_t = [ `Composition ] document_t with sexp
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let make_manuscript content bibs notes toc labelmap =
+let make_manuscript content bibs notes toc labelmap bitmaps =
 	{
 	content = Block.get_frag content;
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
 	labelmap = labelmap;
+	bitmaps = bitmaps;
 	}
 
-let make_composition content =
+
+let make_composition content bitmaps =
 	{
 	content = Block.get_frag content;
 	bibs = [];
 	notes = [];
 	toc = [];
 	labelmap = Labelmap.create ();
+	bitmaps = bitmaps;
 	}
 
 

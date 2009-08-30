@@ -48,12 +48,13 @@ let process_document classnames idiosyncrasies document_ast =
 	(* Declaration of the mutable values used in the function.		*)
 	(************************************************************************)
 
-	let errors = DynArray.create ()
+	let references = DynArray.create ()
 	and bibs = DynArray.create ()
 	and notes = DynArray.create ()
-	and references = DynArray.create ()
 	and toc = DynArray.create ()
         and labelmap = Labelmap.create ()
+	and bitmaps = DynArray.create ()
+	and errors = DynArray.create ()
 	and macromap = Macromap.create ()
 	and part_counter = Order.make_ordinal_counter ()
 	and section_counter = Order.make_hierarchy_counter ()
@@ -588,7 +589,8 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, true, `Any_blk, (comm, Ast.Bitmap (alias, alt))) ->
 			let elem () =
 				let (alignment, frame, width) = Extra.parse_for_bitmap errors comm in
-				let image = Image.make frame width alias alt
+				let image = Image.make frame width alias alt in
+				let () = DynArray.add bitmaps alias
 				in Some (Block.bitmap alignment image)
 			in check_comm `Feature_bitmap comm elem
 
@@ -881,12 +883,8 @@ let process_document classnames idiosyncrasies document_ast =
 	(************************************************************************)
 
 	let contents = convert_frag document_ast in
-	let () = filter_references () in
-	let res_bibs = DynArray.to_list bibs
-	and res_notes = DynArray.to_list notes
-	and res_toc = DynArray.to_list toc
-	and res_errors = DynArray.to_list errors
-	in (contents, res_bibs, res_notes, res_toc, labelmap, res_errors)
+	let () = filter_references ()
+	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, labelmap, DynArray.to_list bitmaps, DynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -930,10 +928,10 @@ let sort_errors errors =
 
 let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ?accept_list ?deny_list ?default () in
-	let (contents, bibs, notes, toc, labelmap, errors) = process_document classnames idiosyncrasies document_ast in
+	let (contents, bibs, notes, toc, labelmap, bitmaps, errors) = process_document classnames idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
-		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap
+		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap bitmaps
 	else
 		let sorted_errors = sort_errors (collate_errors source errors)
 		in Ambivalent.make_invalid_manuscript sorted_errors
@@ -941,10 +939,10 @@ let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default sourc
 
 let process_composition ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ?accept_list ?deny_list ?default () in
-	let (contents, _, _, _, _, errors) = process_document classnames idiosyncrasies document_ast in
+	let (contents, _, _, _, _, bitmaps, errors) = process_document classnames idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
-		Ambivalent.make_valid_composition (Obj.magic contents)
+		Ambivalent.make_valid_composition (Obj.magic contents) bitmaps
 	else
 		let sorted_errors = sort_errors (collate_errors source errors)
 		in Ambivalent.make_invalid_composition sorted_errors

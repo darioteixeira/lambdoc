@@ -8,6 +8,8 @@
 
 TYPE_CONV_PATH "Ambivalent"
 
+open Basic
+
 
 (********************************************************************************)
 (**	{2 Type definitions}							*)
@@ -29,11 +31,11 @@ type composition_t =
 (**	{2 Functions and values}						*)
 (********************************************************************************)
 
-let make_valid_manuscript content bibs notes toc labels =
-	`Valid (Valid.make_manuscript content bibs notes toc labels)
+let make_valid_manuscript content bibs notes toc labels bitmaps =
+	`Valid (Valid.make_manuscript content bibs notes toc labels bitmaps)
 
-let make_valid_composition content =
-	`Valid (Valid.make_composition content)
+let make_valid_composition content bitmaps =
+	`Valid (Valid.make_composition content bitmaps)
 
 let make_invalid_manuscript errors =
 	`Invalid (Invalid.make_manuscript errors)

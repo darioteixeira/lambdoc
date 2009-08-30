@@ -327,7 +327,6 @@ let write_valid_document settings classname doc =
 	(************************************************************************)
 
 	let rec write_frag frag =
-		(*List.map (fun (_, blk) -> blk) (List.map (write_block ~wrapped:false) frag)*)
 		List.map (fun blk -> let (_, res) = write_block ~wrapped:false blk in res) frag
 
 

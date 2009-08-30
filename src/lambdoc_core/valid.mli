@@ -9,6 +9,9 @@
 (**	Definitions concerning valid documents.
 *)
 
+open Basic
+
+
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
@@ -20,6 +23,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
+	bitmaps: alias_t list;
 	} with sexp
 
 
@@ -37,10 +41,12 @@ val make_manuscript:
 	Note.t list ->
 	Heading.heading_t list ->
 	Labelmap.t ->
+	alias_t list ->
 	manuscript_t
 
 val make_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
+	alias_t list ->
 	composition_t
 
 

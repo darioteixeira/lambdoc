@@ -9,6 +9,9 @@
 (**	Definitions concerning ambivalent documents.
 *)
 
+open Basic
+
+
 (********************************************************************************)
 (**	{2 Type definitions}							*)
 (********************************************************************************)
@@ -35,10 +38,12 @@ val make_valid_manuscript:
 	Note.t list ->
 	Heading.heading_t list ->
 	Labelmap.t ->
+	alias_t list ->
 	manuscript_t
 
 val make_valid_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
+	alias_t list ->
 	composition_t
 
 val make_invalid_manuscript: Error.t list -> manuscript_t
