@@ -404,7 +404,7 @@ let write_valid_document settings classname doc =
 			let attrs = match width with
 				| Some w	-> [a_width (`Percent w)]
 				| None		-> [] in
-			let uri = uri_of_string alias in
+			let uri = settings.bitmap_lookup alias in
 			let bitmap = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap])
 

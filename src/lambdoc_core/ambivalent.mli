@@ -38,12 +38,12 @@ val make_valid_manuscript:
 	Note.t list ->
 	Heading.heading_t list ->
 	Labelmap.t ->
-	alias_t list ->
+	Resource.t ->
 	manuscript_t
 
 val make_valid_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
-	alias_t list ->
+	Resource.t ->
 	composition_t
 
 val make_invalid_manuscript: Error.t list -> manuscript_t
@@ -52,11 +52,7 @@ val make_invalid_composition: Error.t list -> composition_t
 
 
 (********************************************************************************)
-(**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-(********************************************************************************)
-(**	{3 Serialisation via Sexplib}						*)
+(**	{3 Serialisation facilities}						*)
 (********************************************************************************)
 
 val serialize_manuscript: manuscript_t -> string

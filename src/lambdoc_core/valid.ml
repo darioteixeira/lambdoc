@@ -25,7 +25,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
-	bitmaps: alias_t list;
+	bitmaps: Resource.t;
 	} with sexp
 
 
@@ -61,10 +61,6 @@ let make_composition content bitmaps =
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-(********************************************************************************)
-(**	{3 Serialisation via Sexplib}						*)
 (********************************************************************************)
 
 let serialize_manuscript doc =

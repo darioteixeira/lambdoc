@@ -23,7 +23,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
-	bitmaps: alias_t list;
+	bitmaps: Resource.t;
 	} with sexp
 
 
@@ -41,21 +41,17 @@ val make_manuscript:
 	Note.t list ->
 	Heading.heading_t list ->
 	Labelmap.t ->
-	alias_t list ->
+	Resource.t ->
 	manuscript_t
 
 val make_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
-	alias_t list ->
+	Resource.t ->
 	composition_t
 
 
 (********************************************************************************)
-(**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-(********************************************************************************)
-(**	{3 Serialisation via Sexplib}						*)
+(**	{3 Serialisation facilities}						*)
 (********************************************************************************)
 
 val serialize_manuscript: manuscript_t -> string

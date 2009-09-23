@@ -53,7 +53,7 @@ let process_document classnames idiosyncrasies document_ast =
 	and notes = DynArray.create ()
 	and toc = DynArray.create ()
         and labelmap = Labelmap.create ()
-	and bitmaps = DynArray.create ()
+	and bitmaps = ref Resource.empty
 	and errors = DynArray.create ()
 	and macromap = Macromap.create ()
 	and part_counter = Order.make_ordinal_counter ()
@@ -590,7 +590,7 @@ let process_document classnames idiosyncrasies document_ast =
 			let elem () =
 				let (alignment, frame, width) = Extra.parse_for_bitmap errors comm in
 				let image = Image.make frame width alias alt in
-				let () = DynArray.add bitmaps alias
+				let () = bitmaps := Resource.add alias !bitmaps
 				in Some (Block.bitmap alignment image)
 			in check_comm `Feature_bitmap comm elem
 
@@ -884,7 +884,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 	let contents = convert_frag document_ast in
 	let () = filter_references ()
-	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, labelmap, DynArray.to_list bitmaps, DynArray.to_list errors)
+	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, labelmap, !bitmaps, DynArray.to_list errors)
 
 
 (********************************************************************************)
