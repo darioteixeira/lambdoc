@@ -22,8 +22,8 @@ type t
 (********************************************************************************)
 
 val empty: t
-val is_empty: t -> bool
 val add: elt -> t -> t
+val elements: t -> elt list
 
 val t_of_sexp: Sexp.t -> t
 val sexp_of_t: t -> Sexp.t
