@@ -22,10 +22,15 @@ module M = Set.Make (struct type t = string let compare = Pervasives.compare end
 
 include M
 
-let t_of_sexp = function
-	| Sexp.List l -> empty
-	| Sexp.Atom _ as sexp -> Conv.of_sexp_error "Resource.t_of_sexp: list needed" sexp
+let t_of_sexp sexp = match sexp with
+	| Sexp.List l ->
+		let adder res = function
+			| Sexp.List _ -> Conv.of_sexp_error "Resource.t_of_sexp: atom needed" sexp
+			| Sexp.Atom a -> add a res
+		in List.fold_left adder empty l
+	| Sexp.Atom _ ->
+		Conv.of_sexp_error "Resource.t_of_sexp: list needed" sexp
 
-let sexp_of_t set =
-	Sexp.List []
+let sexp_of_t res =
+	Sexp.List (List.map (fun x -> Sexp.Atom x) (elements res))
 
