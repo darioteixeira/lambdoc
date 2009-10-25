@@ -54,6 +54,9 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_ITEMIZE_1
 %token <Lambdoc_reader.Ast.command_t> END_ITEMIZE_1
 
+%token <Lambdoc_reader.Ast.command_t> BEGIN_ITEMIZE_2
+%token <Lambdoc_reader.Ast.command_t> END_ITEMIZE_2
+
 %token <Lambdoc_reader.Ast.command_t> BEGIN_ENUMERATE
 %token <Lambdoc_reader.Ast.command_t> END_ENUMERATE
 
@@ -209,6 +212,7 @@ block:
 	| PARAGRAPH inline_bundle				{($1, Ast.Paragraph $2)}
 	| BEGIN_ITEMIZE anon_item_frag+ END_ITEMIZE		{($1, Ast.Itemize $2)}
 	| BEGIN_ITEMIZE_1 anon_item_frag+ END_ITEMIZE_1		{($1, Ast.Itemize $2)}
+	| BEGIN_ITEMIZE_2 anon_item_frag+ END_ITEMIZE_2		{($1, Ast.Itemize $2)}
 	| BEGIN_ENUMERATE anon_item_frag+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
 	| BEGIN_ENUMERATE_1 anon_item_frag+ END_ENUMERATE_1	{($1, Ast.Enumerate $2)}
 	| BEGIN_DESCRIPTION desc_item_frag+ END_DESCRIPTION	{($1, Ast.Description $2)}
