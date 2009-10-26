@@ -9,6 +9,7 @@
 PKG_NAME=lambdoc
 SRC_DIR=src
 BUILD_DIR=$(SRC_DIR)/_build
+OCAMLBUILD_OPTS=
 
 LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.a
 COMPONENTS=lambdoc_core lambdoc_reader lambdoc_writer lambdoc_proxy lambdoc_read_lambhtml lambdoc_read_lamblite lambdoc_read_lambtex lambdoc_write_xhtml
@@ -20,32 +21,24 @@ COMPONENTS_OBJ=$(foreach ELEM, $(COMPONENTS), $(ELEM).o)
 TARGETS=$(LIBFILES) $(COMPONENTS_CMI) $(COMPONENTS_CMO) $(COMPONENTS_CMX) $(COMPONENTS_OBJ)
 FQTARGETS=$(foreach TARGET, $(TARGETS), $(BUILD_DIR)/$(TARGET))
 
-PARSERVER_TARGETS=parserver.byte parserver.native
-
-OCAMLBUILD_OPTS=
 
 #
 # Rules.
 #
 
-all: lib parserver
-
-lib:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) $(TARGETS)
-
-parserver:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) $(PARSERVER_TARGETS)
+all:
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
 
 apidoc:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
-install: lib
+install: all
 	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
 
 uninstall:
 	ocamlfind remove $(PKG_NAME)
 
-reinstall: lib
+reinstall: all
 	ocamlfind remove $(PKG_NAME)
 	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
 

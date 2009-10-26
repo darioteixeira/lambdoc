@@ -25,7 +25,7 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 
 \section[sec:foobar]{Text paragraphs}
 
-\p{@{lorem}}
+\p<dropcap>{@{lorem}}
 \p{@{lorem}}
 
 \section{Top level section}

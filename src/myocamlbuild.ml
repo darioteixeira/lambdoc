@@ -61,11 +61,11 @@ let _ = dispatch begin function
 
 	| After_rules ->
 
-		(* Add the lambdoc library *)
-		ocaml_lib "lib/Lambdoc";
-
 		(* Add dependency to lambhtml.dtd *)
 		dep ["ocamldep"; "file:lib/lambdoc_read_lambhtml/dtd.ml"] ["lib/lambdoc_read_lambhtml/lambhtml.dtd"];
+
+		(* Add 'lib' to include directories when building pack *)
+		flag ["ocaml"; "pack"] (S[A"-I"; A"lib"]);
 
 		(* Flag Menhir options. *)
 		flag ["menhir"] menhir_opts;

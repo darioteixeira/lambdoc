@@ -1,0 +1,7 @@
+lib/lambdoc.cma
+lib/lambdoc.cmxa
+lib/lambdoc.a
+parserver/parserver.byte
+parserver/parserver.native
+lambcmd/lambcmd.byte
+lambcmd/lambcmd.native
