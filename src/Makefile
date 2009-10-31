@@ -7,8 +7,7 @@
 #
 
 PKG_NAME=lambdoc
-SRC_DIR=src
-LIB_DIR=$(SRC_DIR)/_build/lib
+LIB_DIR=_build/lib
 OCAMLBUILD_OPTS=
 
 LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.a
@@ -27,21 +26,21 @@ FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
 #
 
 all:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
+	ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
 
 apidoc:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
+	ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
 install: all
-	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
+	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
 
 uninstall:
 	ocamlfind remove $(PKG_NAME)
 
 reinstall: all
 	ocamlfind remove $(PKG_NAME)
-	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
+	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
 
 clean:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) -clean
+	ocamlbuild $(OCAMLBUILD_OPTS) -clean
 
