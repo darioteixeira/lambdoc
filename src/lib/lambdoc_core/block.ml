@@ -55,8 +55,8 @@ type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 (**	{3 Functions and values}						*)
 (********************************************************************************)
 
-let paragraph dropcap seq =
-	`Paragraph (dropcap, Inline.get_seq seq)
+let paragraph initial seq =
+	`Paragraph (initial, Inline.get_seq seq)
 
 let itemize bullet (head_frag, tail_frags) =
 	`Itemize (bullet, (head_frag, tail_frags))

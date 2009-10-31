@@ -474,8 +474,8 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph seq))
 		| (_, _, _, `Any_blk, (comm, Ast.Paragraph seq)) ->
 			let elem () =
-				let dropcap = Extra.parse_for_paragraph errors comm
-				in Some (Block.paragraph dropcap (convert_seq seq))
+				let initial = Extra.parse_for_paragraph errors comm
+				in Some (Block.paragraph initial (convert_seq seq))
 			in check_comm `Feature_paragraph comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize frags)) ->

@@ -332,8 +332,8 @@ let write_valid_document settings classname doc =
 
 	and write_block ?(wrapped = false) = function
 
-		| `Paragraph (dropcap, seq) ->
-			let style = if dropcap then ["doc_dropcap"] else []
+		| `Paragraph (initial, seq) ->
+			let style = if initial then ["doc_initial"] else []
 			in (None, XHTML.M.p ~a:[a_class (["doc_par"] @ style)] (write_seq seq))
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->
