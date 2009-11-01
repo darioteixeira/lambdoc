@@ -255,8 +255,8 @@ block:
 anon_item_frag:	ITEM block+					{($1, $2)}
 desc_item_frag:	ITEM inline_bundle block+			{($1, $2, $3)}
 qanda_frag:	question answer					{($1, $2)}
-question:	QUESTION inline_bundle? block+			{($1, $2, $3)}
-answer:		ANSWER inline_bundle? block+			{($1, $2, $3)}
+question:	QUESTION inline_bundle0? block+			{($1, $2, $3)}
+answer:		ANSWER inline_bundle0? block+			{($1, $2, $3)}
 caption:	CAPTION inline_bundle				{($1, $2)}
 bib_author:	BIB_AUTHOR inline_bundle			{($1, $2)}
 bib_title:	BIB_TITLE inline_bundle				{($1, $2)}
@@ -328,6 +328,9 @@ inline:
 
 inline_bundle:
 	| BEGIN inline+ END				{$2}
+
+inline_bundle0:
+	| BEGIN inline* END				{$2}
 
 raw_bundle:
 	| BEGIN RAW END					{$2}
