@@ -1,0 +1,628 @@
+/********************************************************************************/
+/* Lambdoc_valid CSS. 								*/
+/********************************************************************************/
+
+/********************************************************************************/
+/* Inline text.									*/
+/********************************************************************************/
+
+/*
+ * Important note: we explicitly give each inline element its own class for the
+ * sole purpose of CSS identification.  The alternative -- referrencing ".doc b",
+ * for example -- while not requiring explicit classes and thus producing shorter
+ * markup, has the disadvantage of requiring descendant selectors in CSS, which
+ * have terrible performance in current browsers.
+ */
+
+.doc_bold {font-weight: bold;}
+.doc_emph {font-style: italic;}
+.doc_code {font-family: Family_mono; font-weight: bold; color: Colour_code;}
+.doc_caps {font-variant: small-caps;}
+.doc_ins {text-decoration: underline; color: Colour_ins;}
+.doc_del {text-decoration: line-through; color: Colour_del;}
+.doc_sup {vertical-align: 0.3em;}
+.doc_sub {vertical-align: -0.1em;}
+
+
+/********************************************************************************/
+/* Hyperlinks.									*/
+/********************************************************************************/
+
+.doc_lnk
+	{
+	text-decoration: underline;
+	color: Colour_lnk;
+	}
+
+.doc_see
+	{
+	margin-left: 0.3em;
+	vertical-align: 0.3em;
+	font-size: Size_note;
+	color: Colour_lnk;
+	}
+
+.doc_cite
+	{
+	margin-left: 0.3em;
+	color: Colour_lnk;
+	}
+
+
+/********************************************************************************/
+/* Paragraphs.									*/
+/********************************************************************************/
+
+.doc_par
+	{
+	text-align: justify;
+	font-size: Size_normal;
+	}
+
+.doc_initial:first-letter
+	{
+	color: Colour_heading;
+	font-weight: bold;
+	font-size: Size_initial;
+	}
+
+.doc_par:not(:first-child) {margin-top: 0.5em;}
+.doc_par:not(:last-child) {margin-bottom: 0.5em;}
+
+.doc_par + .doc_par {text-indent: 1em;}
+
+
+/********************************************************************************/
+/* List environments (itemize, enumerate, and description).			*/
+/********************************************************************************/
+
+.doc_itemize,
+.doc_enumerate,
+.doc_description {padding: 0 0 0 2em;}
+
+.doc_itemize {list-style: disc outside;}
+.doc_enumerate {list-style: decimal outside;}
+
+.doc_itemize > li,
+.doc_enumerate > li,
+.doc_description > dt {margin: 0.5em 0;}
+
+.doc_style_none		{list-style-type: none;}
+.doc_style_disc		{list-style-type: disc;}
+.doc_style_circle	{list-style-type: circle;}
+.doc_style_square	{list-style-type: square;}
+.doc_style_decimal	{list-style-type: decimal;}
+.doc_style_lower_roman	{list-style-type: lower-roman;}
+.doc_style_upper_roman	{list-style-type: upper-roman;}
+.doc_style_lower_alpha	{list-style-type: lower-alpha;}
+.doc_style_upper_alpha	{list-style-type: upper-alpha;}
+
+.doc_description > dt
+	{
+	margin-left: -1.5em;
+	font-size: Size_normal;
+	text-decoration: underline;
+	}
+
+.doc_itemize:not(:first-child),
+.doc_enumerate:not(:first-child),
+.doc_description:not(:first-child) {margin-top: 1em;}
+
+.doc_itemize:not(:last-child),
+.doc_enumerate:not(:last-child),
+.doc_description:not(:last-child) {margin-bottom: 1.5em;}
+
+
+/********************************************************************************/
+/* Q&A environments.								*/
+/********************************************************************************/
+
+.doc_qanda > dt
+	{
+	display: block;
+	float: left;
+	padding: 0 0.5em 0 0;
+	font-size: Size_normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	}
+
+.doc_qanda > .doc_question {color: Colour_question;}
+.doc_qanda > .doc_answer {color: Colour_answer;}
+
+.doc_qanda > dd.doc_question {margin: 0.5em 0;} 
+.doc_qanda > dt.doc_answer {margin: 0 0 0 1em;}
+.doc_qanda > dd.doc_answer {margin: 0.5em 0 1em 1em;}
+
+.doc_qanda:not(:first-child) {margin-top: 1em;}
+.doc_qanda:not(:last-child) {margin-bottom: 1.5em;}
+
+
+/********************************************************************************/
+/* Verse environments.								*/
+/********************************************************************************/
+
+.doc_verse
+	{
+	margin: 0 1em;
+	font-style: italic;
+	}
+
+.doc_verse > .doc_par
+	{
+	text-indent: 0;
+	}
+
+.doc_verse:not(:first-child) {margin-top: 1em;}
+.doc_verse:not(:last-child) {margin-bottom: 1.5em;}
+
+
+/********************************************************************************/
+/* Quote environments.								*/
+/********************************************************************************/
+
+.doc_quote
+	{
+	clear: both;
+	margin: 0 1.5em 0 2em;
+	border-left: 2px solid Colour_ghostly;
+	padding-left: 0.5em;
+	quotes: "\201c" "\201d";
+	color: Colour_ghostly;
+	}
+
+.doc_quote:before
+	{
+	display: block;
+	font-family: "Georgia", serif;
+	font-size: 5em;
+	color: Colour_ghostly;
+	content: open-quote;
+	margin: 0 0 0 -0.7em;
+	line-height: 1.2em;
+	height: 0;
+	}
+
+.doc_quote:not(:first-child) {margin-top: 1em;}
+.doc_quote:not(:last-child) {margin-bottom: 1.5em;}
+
+
+/********************************************************************************/
+/* CSS common to all floater blocks.						*/
+/********************************************************************************/
+
+.doc_align_center {clear: both; margin: 0 1em;}
+.doc_align_right {clear: both; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
+.doc_align_left {clear: both; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
+
+.doc_align_center:not(:first-child) {margin-top: 2em;}
+.doc_align_center:not(:last-child) {margin-bottom: 2em;}
+
+.doc_wrapper.doc_align_center:not(:first-child) {margin-top: 2.5em;}
+.doc_wrapper.doc_align_center:not(:last-child) {margin-bottom: 2.5em;}
+
+
+/********************************************************************************/
+/* Mathematics environments.							*/
+/********************************************************************************/
+
+.doc_math {text-align: center;}
+
+
+/********************************************************************************/
+/* Code environments.								*/
+/********************************************************************************/
+
+.doc_hl_main
+	{
+	font-size: Size_pre;
+	font-family: Family_mono;
+	color: #000000;
+	background: #f9f9f9;
+	border: Box_border;
+	-moz-box-shadow: Box_shadow;
+	-moz-border-radius: Box_radius;
+	}
+
+.doc_hl_nums
+	{
+	float: left;
+	margin: 0 1em 0 0;
+	border-right: 1px solid #999;
+	font-weight: bold;
+	color: #000;
+	}
+
+.doc_hl_code
+	{
+	margin: 0;
+	padding: 0;
+	}
+
+.doc_hl_line,
+.doc_hl_even,
+.doc_hl_odd
+	{
+	display: block;
+	padding: 0.1em 1em;
+	}
+
+.doc_hl_even	{background: #f9f9f9;}
+.doc_hl_odd	{background: #f3f6fc;}
+.doc_hl_dummy	{line-height: 0.5em;}
+
+.doc_hl_num	{color: #606; font-weight: bold;}
+.doc_hl_esc	{color: #f06; font-weight: bold;}
+.doc_hl_str	{color: #c33;}
+.doc_hl_dstr	{color: #0ff;}
+.doc_hl_slc	{color: #669; font-style: italic;}
+.doc_hl_com	{color: #669; font-style: italic;}
+.doc_hl_dir	{color: #600;}
+.doc_hl_sym	{color: #060;}
+.doc_hl_kwa	{color: #960; font-weight: bold;}
+.doc_hl_kwb	{color: #006;}
+.doc_hl_kwc	{color: #03c;}
+.doc_hl_kwd	{color: #090; font-weight: bold;}
+
+
+/********************************************************************************/
+/* Tabular environments.		 					*/
+/********************************************************************************/
+
+.doc_tab.doc_align_center	{margin: 0 auto;}
+.doc_align_center > .doc_tab	{margin: 0 auto;}
+
+.doc_tab {text-align: center;}
+
+.doc_tab > div {display: inline-block;}
+
+.doc_tab table
+	{
+	font-size: Size_small;
+	border-collapse: collapse;
+	background: #444;
+	border: Box_border;
+	-moz-box-shadow: Box_shadow;
+	}
+
+.doc_tab thead,
+.doc_tab tfoot
+	{
+	vertical-align: bottom;
+	font-weight: bold;
+	}
+
+.doc_tab th,
+.doc_tab td
+	{
+	padding: 0.5em 1em;
+	border-left: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	}
+
+.doc_tab th:first-child,
+.doc_tab td:first-child
+	{
+	border-left: none;
+	}
+
+.doc_tab tbody > tr:first-child > th,
+.doc_tab tbody > tr:first-child > td,
+.doc_tab tfoot > tr:first-child > th,
+.doc_tab tfoot > tr:first-child > td
+	{
+	border-top: Box_border;
+	}
+
+.doc_tab thead > tr:first-child > th,
+.doc_tab thead > tr:first-child > td
+	{
+	border-top: Box_border;
+	}
+
+.doc_col_left		{text-align: left;}
+.doc_col_right		{text-align: right;}
+.doc_col_center		{text-align: center;}
+.doc_col_justify	{text-align: justify;}
+
+thead > .doc_row_odd, tfoot > .doc_row_odd	{background-color: #eaeaea;}
+thead > .doc_row_even, tfoot > .doc_row_odd	{background-color: #e0e0e0;}
+tbody > .doc_row_odd				{background-color: #fafafa;}
+tbody > .doc_row_even				{background-color: #f0f0f0;}
+
+
+.doc_tab.doc_align_center:not(:first-child) {margin-top: 2em;}
+.doc_tab.doc_align_center:not(:last-child) {margin-bottom: 2em;}
+
+
+/********************************************************************************/
+/* Verbatim environments.							*/
+/********************************************************************************/
+
+.doc_verb {text-align: center;}
+
+.doc_verb > div {display: inline-block;}
+
+.doc_verb > div > pre
+	{
+        display: block;
+	overflow: hidden;
+	white-space: pre;
+	padding: 1em;
+	text-align: left;
+	font-family: Family_mono;
+	font-size: Size_pre;
+        background: #fffcf0;
+	border: Box_border;
+	-moz-box-shadow: Box_shadow;
+	-moz-border-radius: Box_radius;
+	}
+
+
+/********************************************************************************/
+/* Image environments.			 					*/
+/********************************************************************************/
+
+.doc_bitmap			{text-align: center;}
+.doc_bitmap > a			{display: inline-block;}
+.doc_bitmap > a > img		{display: block; border: none; max-width: 100%;}
+.doc_bitmap_shadow > a		{background: #444;}
+.doc_bitmap_shadow > a > img	{-moz-box-shadow: Box_shadow;}
+
+
+/********************************************************************************/
+/* Subpage environments.		 					*/
+/********************************************************************************/
+
+.doc_subpage
+	{
+	padding: 1em;
+	background: #f6f6f9;
+	border: Box_border;
+	-moz-box-shadow: Box_shadow;
+	-moz-border-radius: Box_radius;
+	}
+
+
+/********************************************************************************/
+/* Pull-quote environments.							*/
+/********************************************************************************/
+
+.doc_pullquote
+	{
+	clear: both;
+	padding: 0.5em;
+	border-top: 2px solid #999;
+	border-bottom: 2px solid #999;
+	font-style: italic;
+	}
+
+
+/********************************************************************************/
+/* Boxout environments.								*/
+/********************************************************************************/
+
+.doc_boxout
+	{
+	padding: 0.5em;
+	background: #ffffcc;
+	border: Box_border;
+	-moz-box-shadow: Box_shadow;
+	-moz-border-radius: Box_radius;
+	}
+
+.doc_boxout_head
+	{
+	padding: 0 0.5em 0.5em;
+	text-align: center;
+	border-bottom: Box_border;
+	}
+	
+.doc_boxout_head > h1
+	{
+	display: inline-block;
+	font-family: Family_heading;
+	font-size: Size_large;
+	font-variant: small-caps;
+	font-weight: bold;
+	}
+
+.doc_boxout_body
+	{
+	padding: 0.5em;
+	}
+
+.doc_boxout_warn > div	{background: #ffdd77;}
+.doc_boxout_tip > div	{background: #ccffcc;}
+
+.doc_boxout_warn > div > .doc_boxout_head > h1 {padding-left: 28px; background: url('boxout-warn.png') no-repeat left;}
+.doc_boxout_tip > div > .doc_boxout_head > h1 {padding-left: 28px; background: url('boxout-tip.png') no-repeat left;}
+
+
+/********************************************************************************/
+/* CSS for wrapper captions.							*/
+/********************************************************************************/
+
+.doc_caption
+	{
+	margin: 1em auto 0;
+	padding: 0 0.5em;
+	font-size: Size_normal;
+	}
+
+.doc_caption > span:first-child
+	{
+	font-weight: bold;
+	margin-right: 0.5em;
+	}
+
+
+/********************************************************************************/
+/* Document titles and headings.						*/
+/********************************************************************************/
+
+.doc_title
+	{
+	clear: both;
+	font-family: Family_heading;
+	font-weight: bold;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	text-align: center;
+	color: Colour_heading;
+	}
+
+h1.doc_title {font-size: Size_title1;}
+h2.doc_title {font-size: Size_title2;}
+
+.doc_part
+	{
+	clear: both;
+	padding: 0.25em 0;
+	border-top: 1px solid Colour_heading;
+	border-bottom: 1px solid Colour_heading;
+	font-family: Family_heading;
+	font-weight: bold;
+	font-size: Size_part;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	text-align: center;
+	color: Colour_heading;
+	}
+
+.doc_sec
+	{
+	clear: both;
+	font-family: Family_heading;
+	font-weight: bold;
+	color: Colour_heading;
+	}
+
+.doc_parhead
+	{
+	clear: both;
+	font-family: Family_heading;
+	font-weight: bold;
+	font-size: Size_h4;
+	color: Colour_heading;
+	}
+
+.doc_part > span + span, .doc_sec > span + span {margin-left: 0.75em;}
+
+h1.doc_sec {font-size: Size_h1;}
+h2.doc_sec {font-size: Size_h2;}
+h3.doc_sec {font-size: Size_h3;}
+
+.doc_title:not(:first-child) {margin-top: 2em;}
+.doc_part:not(:first-child) {margin-top: 2em;}
+.doc_sec:not(:first-child) {margin-top: 1.5em;}
+.doc_parhead:not(:first-child) {margin-top: 1.5em;}
+
+.doc_title:not(:last-child) {margin-bottom: 1.5em;}
+.doc_part:not(:last-child) {margin-bottom: 1.5em;}
+.doc_sec:not(:last-child) {margin-bottom: 0.25em;}
+.doc_parhead:not(:last-child) {margin-bottom: 0.25em;}
+
+h2.doc_title + h2.doc_title {margin-top: -1em;}
+
+
+/********************************************************************************/
+/* Abstract.									*/
+/********************************************************************************/
+
+.doc_abs {margin: 2em 1em;}
+
+.doc_abs > .doc_sec {text-align: center;}
+
+
+/********************************************************************************/
+/* Rules.									*/
+/********************************************************************************/
+
+.doc_rule {margin: 0 1em;}
+
+.doc_rule:not(:first-child) {margin-top: 1.5em;}
+.doc_rule:not(:last-child) {margin-bottom: 1.5em;}
+
+
+/********************************************************************************/
+/* CSS for table of contents.							*/
+/********************************************************************************/
+
+.doc_toc
+	{
+	list-style-type: none;
+	padding-left: 0;
+	font-size: Size_normal;
+	}
+
+.doc_toc > li {margin-left: 0.5em;}
+
+.doc_toc > li.level0
+	{
+	text-decoration: underline;
+	margin: 0.25em 0;
+	}
+
+.doc_toc > li > a > span + span {margin-left: 0.5em;}
+
+
+/********************************************************************************/
+/* CSS for story bibliography.		 					*/
+/********************************************************************************/
+
+.doc_bibs
+	{
+	margin-top: 1em;
+	padding: 0;
+	list-style-type: none;
+	}
+
+.doc_bibs > li {margin-top: 0.75em;}
+
+.doc_bibs > li > span
+	{
+	width: 2.5em;
+	float: left;
+	font-weight: bold;
+	text-align: right;
+	}
+
+.doc_bibs > li > p {margin-left: 3em;}
+
+.doc_bib_author {margin-right: 0.5em;}
+
+.doc_bib_author:after {content: ':';}
+
+.doc_bib_title {font-style: italic;} 
+
+.doc_bib_resource
+	{
+	display: block;
+	margin-top: 0.25em;
+	}
+
+
+/********************************************************************************/
+/* CSS for story notes.			 					*/
+/********************************************************************************/
+
+.doc_notes
+	{
+	margin-top: 1em;
+	padding: 0;
+	list-style-type: none;
+	}
+
+.doc_notes > li {margin-top: 0.75em;}
+
+.doc_notes > li > span
+	{
+	width: 2.5em;
+	float: left;
+	font-weight: bold;
+	text-align: right;
+	}
+
+.doc_notes > li > div {margin-left: 3em;}
+

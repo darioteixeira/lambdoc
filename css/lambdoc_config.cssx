@@ -1,0 +1,77 @@
+/********************************************************************************/
+/* General stylesheet configuration.						*/
+/********************************************************************************/
+
+/********************************************************************************/
+/* Colours.									*/
+/********************************************************************************/
+
+#define Colour_body	#000
+#define Colour_code	#333
+#define Colour_ins	#090
+#define Colour_del	#900
+#define Colour_lnk	#009
+#define Colour_heading	#501
+#define Colour_ghostly	#555
+#define Colour_question	Colour_heading
+#define Colour_answer	Colour_body
+
+
+/********************************************************************************/
+/* Box configuration.								*/
+/********************************************************************************/
+
+#define Box_border	1px solid #333
+#define Box_radius	4px
+#define Box_shadow	3px 3px 3px #666
+
+
+/********************************************************************************/
+/* Font stacks.									*/
+/********************************************************************************/
+
+/* Narrow stack: */
+
+/*
+#define Font_stack_serif "Times New Roman", "Times", "Liberation Serif", serif
+#define Font_stack_sans "Arial", "Helvetica", "Liberation Sans", sans-serif
+#define Font_stack_mono "Courier New", "Courier", "Liberation Mono", monospace
+*/
+
+/* Wide stack: */
+
+#define Font_stack_serif "Georgia", "DejaVu Serif", serif
+#define Font_stack_sans "Verdana", "Geneva", "DejaVu Sans", sans-serif
+#define Font_stack_mono "Courier New", "Courier", "DejaVu Mono", monospace
+
+
+/********************************************************************************/
+/* Font families.								*/
+/********************************************************************************/
+
+#define Family_body	Font_stack_serif
+#define Family_heading	Font_stack_serif
+#define Family_mono	Font_stack_mono
+
+
+/********************************************************************************/
+/* Font sizes.									*/
+/********************************************************************************/
+
+#define Size_pre	1.2em
+#define Size_script	1.3em
+#define Size_small	1.3em
+#define Size_note	0.857em		/* Relative to Size_normal: 14 * 0.857 = 12px */
+#define Size_normal	1.4em
+#define Size_large	1.5em
+
+#define Size_title1	2.2em
+#define Size_title2	1.8em
+#define Size_part	1.8em
+#define Size_h1		1.6em
+#define Size_h2		1.5em
+#define Size_h3		1.4em
+#define Size_h4		1.4em
+
+#define Size_initial	1.429em		/* Relative to Size_normal: 14 * 1.429 = 20px */
+

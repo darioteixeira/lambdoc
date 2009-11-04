@@ -1,12 +1,23 @@
 /********************************************************************************/
-/* Lambdoc CSS. 								*/
+/* Lambdoc_common CSS. 								*/
 /********************************************************************************/
 
 /********************************************************************************/
-/* Import definitions.								*/
+/* High-level document CSS.							*/
 /********************************************************************************/
 
-@import "lambdoc_common.less";
-@import "lambdoc_valid.less";
-@import "lambdoc_invalid.less";
+body
+	{
+	font-size: 16px;		/* The default for most browsers is 16px. */
+	}
+
+.doc
+	{
+	margin: 1em auto;
+	width: 46em;
+	font-family: Family_body;
+	font-size: 0.625em;		/* For default of 16 * 0.625 = 10px */
+	line-height: 1.3em;
+	color: Colour_body;
+	}
 

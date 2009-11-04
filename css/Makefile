@@ -2,10 +2,10 @@ IMAGES=callout-warn.png callout-tip.png rule.png
 
 all: lambdoc.css $(IMAGES)
 
-lambdoc.css: *.less
-	lessc lambdoc.less tmp.css
-	csstidy tmp.css $@ --silent=true
-	rm tmp.css
+lambdoc.css: lambdoc.cssx lambdoc_*.cssx
+	cpp -P $< $@
+	#csstidy tmp.css $@ --silent=true
+	#rm tmp.css
 
 callout-%.png: callout-%.svg
 	inkscape -D -f $< -e $@ -w 20

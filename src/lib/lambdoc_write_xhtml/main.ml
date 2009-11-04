@@ -62,10 +62,8 @@ let make_label = function
 
 
 let make_link ?classname lnk content =
-	let class_attr = match classname with
-		| None		-> []
-		| Some thing	-> [a_class [thing]] in
-	let attr = [a_href (uri_of_string lnk)] @ class_attr
+	let class_attr = a_class ("doc_lnk" :: match classname with None -> [] | Some x -> [x]) in
+	let attr = class_attr :: [a_href (uri_of_string lnk)]
 	in XHTML.M.a ~a:attr content
 
 
@@ -94,7 +92,7 @@ let class_of_level = function
 	| `Level4 -> "level4"
 
 
-let make_alignment alignment = ["doc_aligned"; "doc_align_" ^ (Alignment.to_string alignment)]
+let make_alignment alignment = ["doc_align_" ^ (Alignment.to_string alignment)]
 	
 
 let make_heading cons label order_str classname content =
@@ -185,28 +183,28 @@ let write_valid_document settings classname doc =
 			in XHTML.M.span ~a:[a_class ["doc_math"]] [xhtml]
 
 		| `Bold seq ->
-			XHTML.M.b (write_seq ~nbspfy seq)
+			XHTML.M.b ~a:[a_class ["doc_bold"]] (write_seq ~nbspfy seq)
 
 		| `Emph seq ->
-			XHTML.M.i (write_seq ~nbspfy seq)
+			XHTML.M.i ~a:[a_class ["doc_emph"]] (write_seq ~nbspfy seq)
 
 		| `Code seq ->
-			XHTML.M.tt (write_seq ~nbspfy seq)
+			XHTML.M.tt ~a:[a_class ["doc_code"]] (write_seq ~nbspfy seq)
 
 		| `Caps seq ->
 			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_seq ~nbspfy seq)
 
 		| `Ins seq ->
-			XHTML.M.ins (write_seq ~nbspfy seq)
+			XHTML.M.ins ~a:[a_class ["doc_ins"]] (write_seq ~nbspfy seq)
 
 		| `Del seq ->
-			XHTML.M.del (write_seq ~nbspfy seq)
+			XHTML.M.del ~a:[a_class ["doc_del"]] (write_seq ~nbspfy seq)
 
 		| `Sup seq ->
-			XHTML.M.sup (write_seq ~nbspfy seq)
+			XHTML.M.sup ~a:[a_class ["doc_sup"]] (write_seq ~nbspfy seq)
 
 		| `Sub seq ->
-			XHTML.M.sub (write_seq ~nbspfy seq)
+			XHTML.M.sub ~a:[a_class ["doc_sub"]] (write_seq ~nbspfy seq)
 
 		| `Mbox seq ->
 			XHTML.M.span (write_seq ~nbspfy:true seq)
@@ -327,24 +325,24 @@ let write_valid_document settings classname doc =
 	(************************************************************************)
 
 	let rec write_frag frag =
-		List.map (fun blk -> let (_, res) = write_block ~wrapped:false blk in res) frag
+		List.flatten (List.map (fun blk -> let (_, res) = write_block ~wrapped:false blk in res) frag)
 
 
 	and write_block ?(wrapped = false) = function
 
 		| `Paragraph (initial, seq) ->
 			let style = if initial then ["doc_initial"] else []
-			in (None, XHTML.M.p ~a:[a_class (["doc_par"] @ style)] (write_seq seq))
+			in None, [XHTML.M.p ~a:[a_class (["doc_par"] @ style)] (write_seq seq)]
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->
 			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
 			and style = "doc_style_" ^ (Bullet.to_string bul)
-			in (None, XHTML.M.ul ~a:[a_class ["doc_itemize"; style]] hd tl)
+			in None, [XHTML.M.ul ~a:[a_class ["doc_itemize"; style]] hd tl]
 
 		| `Enumerate (num, (hd_frag, tl_frags)) ->
 			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
 			and style = "doc_style_" ^ (Numbering.to_string num)
-			in (None, XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl)
+			in None, [XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl]
 
 		| `Description (hd_frag, tl_frags) ->
 			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
@@ -352,7 +350,7 @@ let write_valid_document settings classname doc =
 			let (new_hd, new_tl) =
 				let (first, second) = hd
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
-			in (None, XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl)
+			in None, [XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl]
 
 		| `Qanda (hd_pair, tl_pairs) ->
 			let write_frag ~qora (maybe_seq, frag) =
@@ -373,31 +371,31 @@ let write_valid_document settings classname doc =
 			let (new_hd, new_tl) =
 				let ((first, second), (third, fourth)) = hd
 				in (first, second :: third :: fourth :: (List.flatten (List.map (fun ((q1, q2), (a1, a2)) -> [q1; q2; a1; a2]) tl)))
-			in (None, XHTML.M.dl ~a:[a_class ["doc_qanda"]] new_hd new_tl)
+			in None, [XHTML.M.dl ~a:[a_class ["doc_qanda"]] new_hd new_tl]
 
 		| `Verse frag ->
-			(None, XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag))
+			None, [XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag)]
 
 		| `Quote frag ->
-			(None, XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag))
+			None, [XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag)]
 
 		| `Math (alignment, math) ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
 			and style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [xhtml])
+			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [xhtml]]
 
 		| `Program (alignment, prog) ->
 			let (linenums, zebra, hilite) = (prog.linenums, prog.zebra, prog.hilite)
 			and style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra hilite)
+			in Some alignment, [Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra hilite]
 
 		| `Tabular (alignment, tab) ->
 			let style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, write_tabular style tab)
+			in Some alignment, [write_tabular style tab]
 
 		| `Verbatim (alignment, txt) ->
 			let style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]])
+			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
 
 		| `Bitmap (alignment, img) ->
 			let (frame, width, alias, alt) = (img.frame, img.width, img.alias, img.alt) in
@@ -409,15 +407,15 @@ let write_valid_document settings classname doc =
 				| None		-> [] in
 			let uri = settings.bitmap_lookup alias in
 			let bitmap = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
-			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap])
+			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]]
 
 		| `Subpage (alignment, frag) ->
 			let style = if wrapped then [] else make_alignment alignment
-			in (Some alignment, XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] [XHTML.M.div (write_frag frag)])
+			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_frag frag)]
 
 		| `Pullquote (alignment, frag) ->
 			let style = if wrapped then [] else make_alignment alignment
-			in (None, XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag))
+			in None, [XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag)]
 
 		| `Boxout (alignment, maybe_classname, maybe_seq, frag) ->
 			let style_align = if wrapped then [] else make_alignment alignment
@@ -425,83 +423,86 @@ let write_valid_document settings classname doc =
 			let title = match maybe_seq with
 				| None -> []
 				| Some seq -> [XHTML.M.div ~a:[a_class ["doc_boxout_head"]] [XHTML.M.h1 (write_seq seq)]]
-			in (None, XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_align @ style_class)]
-				[XHTML.M.div (title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])])
+			in None, [XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_align @ style_class)]
+				(title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])]
 
 		| `Equation (wrapper, equation) ->
 			let name = settings.names.equation_name
 			and content = write_block ~wrapped:true equation
-			in (None, write_wrapper wrapper "doc_eq" name content)
+			in None, [write_wrapper wrapper "doc_eq" name content]
 
 		| `Printout (wrapper, printout) ->
 			let name = settings.names.printout_name
 			and content = write_block ~wrapped:true printout
-			in (None, write_wrapper wrapper "doc_prt" name content)
+			in None, [write_wrapper wrapper "doc_prt" name content]
 
 		| `Table (wrapper, table) ->
 			let name = settings.names.table_name
 			and content = write_block ~wrapped:true table
-			in (None, write_wrapper wrapper "doc_table" name content)
+			in None, [write_wrapper wrapper "doc_table" name content]
 
 		| `Figure (wrapper, figure) ->
 			let name = settings.names.figure_name
 			and content = write_block ~wrapped:true figure
-			in (None, write_wrapper wrapper "doc_fig" name content)
+			in None, [write_wrapper wrapper "doc_fig" name content]
 
 		| `Heading heading ->
-			(None, write_heading_block heading)
+			None, write_heading_block heading
 
 		| `Title (level, seq) ->
-			(None, (cons_of_level level) ~a:[a_class ["doc_title"]] (write_seq seq))
+			None, [(cons_of_level level) ~a:[a_class ["doc_title"]] (write_seq seq)]
 
 		| `Abstract frag ->
-			(None, XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 [pcdata "Abstract"]) :: (write_frag frag)))
+			None, [XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h3 ~a:[a_class ["doc_sec"]] [pcdata "Abstract"]) :: (write_frag frag))]
 
 		| `Rule ->
-			(None, XHTML.M.hr ())
+			None, [XHTML.M.hr ~a:[a_class ["doc_rule"]] ()]
 
 
 	and write_heading_block = function
 
 		| `Part (label, order, `Custom seq) ->
-			make_heading XHTML.M.h1 label (part_conv order) "doc_part" (write_seq seq)
+			[make_heading XHTML.M.h1 label (part_conv order) "doc_part" (write_seq seq)]
 
 		| `Part (label, order, `Appendix) ->
-			make_heading XHTML.M.h1 label (part_conv order) "doc_part" [XHTML.M.pcdata settings.names.appendix_name]
+			[make_heading XHTML.M.h1 label (part_conv order) "doc_part" [XHTML.M.pcdata settings.names.appendix_name]]
 
 		| `Section (label, order, location, level, `Custom seq) ->
-			make_sectional level label (section_conv location order) (write_seq seq)
+			[make_sectional level label (section_conv location order) (write_seq seq)]
 
 		| `Section (label, order, location, level, `Bibliography) ->
 			let name = settings.names.bibliography_name in
-			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
+			let title = make_sectional level label (section_conv location order) [XHTML.M.pcdata name] in
 			let bibs = match bibs with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
-			in XHTML.M.div (title @ bibs)
+			in title::bibs
 
 		| `Section (label, order, location, level, `Notes) ->
 			let name = settings.names.notes_name in
-			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
+			let title = make_sectional level label (section_conv location order) [XHTML.M.pcdata name] in
 			let notes = match notes with
 				| []	 -> []
 				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
-			in XHTML.M.div (title @ notes)
+			in title::notes
 
 		| `Section (label, order, location, level, `Toc) ->
 			let name = settings.names.toc_name in
-			let title = [make_sectional level label (section_conv location order) [XHTML.M.pcdata name]] in
+			let title = make_sectional level label (section_conv location order) [XHTML.M.pcdata name] in
 			let entries = List.filter_map write_toc_entry toc in
 			let toc_xhtml = match entries with
 				| []	 -> []
 				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
-			in XHTML.M.div (title @ toc_xhtml)
+			in title::toc_xhtml
 
 		| `Parhead seq ->
-			XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq)
+			[XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq)]
 
 
-	and write_wrapper (label, order, seq) classname wrapper_name (maybe_alignment, wrapper_content) =
+	and write_wrapper (label, order, seq) classname wrapper_name (maybe_alignment, blocks) =
+		let wrapper_content = match blocks with
+			| [b] -> b
+			| _   -> failwith "write_wrapper" in
 		let alignment = match maybe_alignment with
 			| Some alignment -> alignment
 			| None		 -> failwith "write_wrapper" in

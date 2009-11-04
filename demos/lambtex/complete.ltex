@@ -1,3 +1,5 @@
+\macrodef[loremshort]{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
+
 \macrodef[lorem]{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.}
 
 \macrodef[fox]{The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.}
@@ -10,6 +12,10 @@
 \subtitle{Dario Teixeira}
 \subtitle{August 2009}
 
+\begin{abstract}
+\p{@{lorem}}
+\end{abstract}
+
 \toc
 
 \part(){Inline elements}
@@ -21,11 +27,15 @@ or smartly, \sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that sam
 section}.  The bibliography is at the end \cite{bib1}\cite{bib2}\cite{bib3}.  There is
 also\see{note1} a list\see{note2} of notes\see{note3}.
 
+\p{@{lorem}}
+
 \part(){Block elements}
 
 \section[sec:foobar]{Text paragraphs}
 
-\p<dropcap>{@{lorem}}
+\p<initial>{@{lorem}}
+\p{@{lorem}}
+\p{@{lorem}}
 \p{@{lorem}}
 
 \section{Top level section}
@@ -42,6 +52,14 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 
 \parhead{Paragraph head}
 
+\p{@{lorem}}
+
+\parhead{Another paragraph head}
+
+\p{@{lorem}}
+\p{@{lorem}}
+\rule
+\p{@{lorem}}
 \p{@{lorem}}
 
 \section{Unordered lists}
@@ -78,12 +96,24 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 
 \p{@{lorem}}
 \begin{qanda}
-\question{Q:} \p{@{lorem}}
-\answer{A:} \p{@{lorem}}
-\question \p{@{lorem}}
-\answer \p{@{lorem}}
-\question \p{@{lorem}}
-\answer \p{@{lorem}}
+\question{Question:}
+	\p{@{loremshort}}
+\answer{Answer:}
+	\p{@{lorem}}
+\question{Q:}
+	\p{@{loremshort}}
+\answer{A:}
+	\p{@{lorem}}
+	\p{@{lorem}}
+\question{}
+	\p{@{lorem}}
+\answer{}
+	\p{@{lorem}}
+\question{}
+	\p{@{lorem}}
+\answer{}
+	\p{@{lorem}}
+	\p{@{lorem}}
 \end{qanda}
 \p{@{lorem}}
 
@@ -91,14 +121,20 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 
 \p{@{lorem}}
 \begin{verse}
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet, \br
-Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet
+
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet
+
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet \br
+Lorem ipsum dolor sit amet
 \end{verse}
 \p{@{lorem}}
 
