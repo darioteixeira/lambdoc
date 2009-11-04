@@ -1,18 +1,10 @@
 /********************************************************************************/
-/* Lambdoc_valid CSS. 								*/
+/* Lambdoc_valid.cssx 								*/
 /********************************************************************************/
 
 /********************************************************************************/
 /* Inline text.									*/
 /********************************************************************************/
-
-/*
- * Important note: we explicitly give each inline element its own class for the
- * sole purpose of CSS identification.  The alternative -- referrencing ".doc b",
- * for example -- while not requiring explicit classes and thus producing shorter
- * markup, has the disadvantage of requiring descendant selectors in CSS, which
- * have terrible performance in current browsers.
- */
 
 .doc_bold {font-weight: bold;}
 .doc_emph {font-style: italic;}
@@ -110,7 +102,7 @@
 
 .doc_itemize:not(:last-child),
 .doc_enumerate:not(:last-child),
-.doc_description:not(:last-child) {margin-bottom: 1.5em;}
+.doc_description:not(:last-child) {margin-bottom: 1em;}
 
 
 /********************************************************************************/
@@ -135,7 +127,7 @@
 .doc_qanda > dd.doc_answer {margin: 0.5em 0 1em 1em;}
 
 .doc_qanda:not(:first-child) {margin-top: 1em;}
-.doc_qanda:not(:last-child) {margin-bottom: 1.5em;}
+.doc_qanda:not(:last-child) {margin-bottom: 1em;}
 
 
 /********************************************************************************/
@@ -154,7 +146,7 @@
 	}
 
 .doc_verse:not(:first-child) {margin-top: 1em;}
-.doc_verse:not(:last-child) {margin-bottom: 1.5em;}
+.doc_verse:not(:last-child) {margin-bottom: 1em;}
 
 
 /********************************************************************************/
@@ -184,7 +176,7 @@
 	}
 
 .doc_quote:not(:first-child) {margin-top: 1em;}
-.doc_quote:not(:last-child) {margin-bottom: 1.5em;}
+.doc_quote:not(:last-child) {margin-bottom: 1em;}
 
 
 /********************************************************************************/
@@ -541,8 +533,8 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 
 .doc_rule {margin: 0 1em;}
 
-.doc_rule:not(:first-child) {margin-top: 1.5em;}
-.doc_rule:not(:last-child) {margin-bottom: 1.5em;}
+.doc_rule:not(:first-child) {margin-top: 1em;}
+.doc_rule:not(:last-child) {margin-bottom: 1em;}
 
 
 /********************************************************************************/
@@ -552,6 +544,7 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 .doc_toc
 	{
 	list-style-type: none;
+	margin-top: 0.75em;
 	padding-left: 0;
 	font-size: Size_normal;
 	}

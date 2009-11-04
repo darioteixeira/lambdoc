@@ -453,7 +453,7 @@ let write_valid_document settings classname doc =
 			None, [(cons_of_level level) ~a:[a_class ["doc_title"]] (write_seq seq)]
 
 		| `Abstract frag ->
-			None, [XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h3 ~a:[a_class ["doc_sec"]] [pcdata "Abstract"]) :: (write_frag frag))]
+			None, [XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 ~a:[a_class ["doc_sec"]] [pcdata "Abstract"]) :: (write_frag frag))]
 
 		| `Rule ->
 			None, [XHTML.M.hr ~a:[a_class ["doc_rule"]] ()]
