@@ -156,9 +156,7 @@ body
 .doc_quote
  {
  clear: both;
- margin: 0 1.5em 0 2em;
- border-left: 2px solid #555;
- padding-left: 0.5em;
+ margin: 0 1.5em 0 2.5em;
  quotes: "\201c" "\201d";
  color: #555;
  }
@@ -170,9 +168,9 @@ body
  font-size: 5em;
  color: #555;
  content: open-quote;
- margin: 0 0 0 -0.7em;
- line-height: 1.2em;
+ margin-left: -0.6em;
  height: 0;
+ line-height: 1em;
  }
 
 .doc_quote:not(:first-child) {margin-top: 1em;}
