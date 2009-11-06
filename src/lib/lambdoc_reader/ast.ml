@@ -63,7 +63,7 @@ type seq_t = inline_t list
 (**	{2 Data types for document blocks}					*)
 (********************************************************************************)
 
-type tabular_row_t = command_t * seq_t list
+type tabular_row_t = command_t * (command_t * string * seq_t) list
 
 type tabular_group_t = command_t option * tabular_row_t list
 

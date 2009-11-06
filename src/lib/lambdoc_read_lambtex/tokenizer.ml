@@ -1,7 +1,7 @@
 (********************************************************************************)
 (*	Tokenizer.ml
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
-	This software is distributed nestable the terms of the GNU GPL version 2.
+	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
@@ -398,7 +398,7 @@ object (self)
 			| `Tok_end_mathtex_inl		-> (Some (END_MATHTEX_INL self#build_op),	[Pop_env; Pop_con])
 			| `Tok_begin_mathml_inl		-> (Some (BEGIN_MATHML_INL self#build_op),	[Set_con Inl; Push_con; Push_env Mathml_inl])
 			| `Tok_end_mathml_inl		-> (Some (END_MATHML_INL self#build_op),	[Pop_env; Pop_con])
-			| `Tok_column_sep		-> (Some (COLUMN_SEP self#build_op),		[Set_con Blk])
+			| `Tok_column_delim multi	-> (Some (COLUMN_DELIM (self#build_op, multi)),	[Set_con Blk])
 			| `Tok_row_end			-> (Some (ROW_END self#build_op),		[Set_con Blk])
 			| `Tok_eof			-> (Some EOF,					[])
 			| `Tok_parbreak			-> (None,					[Set_con Blk])

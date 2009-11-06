@@ -60,7 +60,7 @@ type 'a t = private tabular_t
 (**	{3 Public functions and values}						*)
 (********************************************************************************)
 
-val column_of_specifier: char -> column_t
+val colspec_of_char: char -> column_t
 
 val alignment_to_string: alignment_t -> string
 

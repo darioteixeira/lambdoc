@@ -207,7 +207,8 @@ and process_tabular node =
 	and tfoot = ref None
 	and tbodies = ref [] in
 	let process_col node =
-		process_seq node in
+		let comm = lazy (command_from_node node)
+		in (!!comm, "", process_seq node) in
 	let process_row node =
 		(command_from_node node, List.map process_col node#sub_nodes) in
 	let process_group node =

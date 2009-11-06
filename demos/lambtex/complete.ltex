@@ -273,33 +273,33 @@ let is_foo = function
 \p{@{lorem}}
 \begin{tabular}{rll}
 \head
-Common name	| Scientific name	| Class $
+| Common name	| Scientific name	| Class		|
 \body
-Wolf		| \emph{Canis lupus}	| Mammal $
-Cat		| \emph{Felis catus}	| Mammal $
-Chicken		| \emph{Gallus gallus}	| Bird $
+| Wolf		| \emph{Canis lupus}	| Mammal	|
+| Cat		| \emph{Felis catus}	| Mammal	|
+| Chicken	| \emph{Gallus gallus}	| Bird		|
 \end{tabular}
 \p{@{lorem}}
 \p{@{lorem}}
 
 \begin<left>{tabular}{rl}
 \head
-Common name	| Scientific name $
+| Common name	| Scientific name	|
 \body
-Wolf		| \emph{Canis lupus} $
-Cat		| \emph{Felis catus} $
-Chicken		| \emph{Gallus gallus} $
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
 \p{@{lorem}}
 \p{@{lorem}}
 
 \begin<right>{tabular}{rl}
 \head
-Common name	| Scientific name $
+| Common name	| Scientific name	|
 \body
-Wolf		| \emph{Canis lupus} $
-Cat		| \emph{Felis catus} $
-Chicken		| \emph{Gallus gallus} $
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
 \p{@{lorem}}
 \p{@{lorem}}
@@ -497,11 +497,11 @@ let is_foo = function
 \begin{table}
 \begin{tabular}{rll}
 \head
-Common name	| Scientific name	| Class $
+| Common name	| Scientific name	| Class		|
 \body
-Wolf		| \emph{Canis lupus}	| Mammal $
-Cat		| \emph{Felis catus}	| Mammal $
-Chicken		| \emph{Gallus gallus}	| Bird $
+| Wolf		| \emph{Canis lupus}	| Mammal	|
+| Cat		| \emph{Felis catus}	| Mammal	|
+| Chicken	| \emph{Gallus gallus}	| Bird		|
 \end{tabular}
 \caption{@{fox}}
 \end{table}
@@ -511,11 +511,11 @@ Chicken		| \emph{Gallus gallus}	| Bird $
 \begin{table}
 \begin<left>{tabular}{rl}
 \head
-Common name	| Scientific name $
+| Common name	| Scientific name	|
 \body
-Wolf		| \emph{Canis lupus} $
-Cat		| \emph{Felis catus} $
-Chicken		| \emph{Gallus gallus} $
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
 \caption{@{fox}}
 \end{table}
@@ -525,11 +525,11 @@ Chicken		| \emph{Gallus gallus} $
 \begin{table}
 \begin<right>{tabular}{rl}
 \head
-Common name	| Scientific name $
+| Common name	| Scientific name	|
 \body
-Wolf		| \emph{Canis lupus} $
-Cat		| \emph{Felis catus} $
-Chicken		| \emph{Gallus gallus} $
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
 \caption{@{fox}}
 \end{table}

@@ -59,7 +59,7 @@ type 'a t = tabular_t
 (**	{3 Functions and values}						*)
 (********************************************************************************)
 
-let column_of_specifier = function
+let colspec_of_char = function
 	| 'c' -> (Center, Normal)
 	| 'C' -> (Center, Strong)
 	| 'l' -> (Left, Normal)
@@ -89,3 +89,4 @@ let make_tabular tcols ?thead ?tfoot tbodies =
 	}
 
 let get_tabular tab = tab
+

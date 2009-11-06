@@ -9,6 +9,7 @@
 (**	Scanner for the Lambtex reader.
 *)
 
+open ExtString
 open Parser
 open Lambdoc_reader
 
@@ -31,7 +32,7 @@ type tok_begin_mathtex_inl_t =	[ `Tok_begin_mathtex_inl ]
 type tok_end_mathtex_inl_t =	[ `Tok_end_mathtex_inl ]
 type tok_begin_mathml_inl_t =	[ `Tok_begin_mathml_inl ]
 type tok_end_mathml_inl_t =	[ `Tok_end_mathml_inl ]
-type tok_column_sep_t =		[ `Tok_column_sep ]
+type tok_column_delim_t =	[ `Tok_column_delim of string ]
 type tok_row_end_t =		[ `Tok_row_end ]
 type tok_eof_t =		[ `Tok_eof ]
 type tok_parbreak_t =		[ `Tok_parbreak ]
@@ -58,7 +59,7 @@ type tabular_token_t =
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
-	| tok_column_sep_t | tok_row_end_t
+	| tok_column_delim_t | tok_row_end_t
 	| tok_eof_t | tok_parbreak_t
 	| tok_space_t | tok_plain_t | tok_entity_t
 	]
@@ -127,8 +128,9 @@ let regexp begin_mathtex_inl = "[$"
 let regexp end_mathtex_inl = "$]"
 let regexp begin_mathml_inl = "<$"
 let regexp end_mathml_inl = "$>"
-let regexp column_sep = space* '|' space*
-let regexp row_end = space* '$'
+let regexp column_multi = begin_marker ( alpha | deci )* end_marker
+let regexp column_delim = space* '|' column_multi? space*
+let regexp row_end = space* '|' space* '\n'
 
 let regexp endash = "--"
 let regexp emdash = "---"
@@ -153,6 +155,9 @@ let sub_lexbuf ~pos ~len lexbuf =
 
 let rtrim_lexbuf ~first lexbuf =
 	Ulexing.utf8_sub_lexeme lexbuf first ((Ulexing.lexeme_length lexbuf) - first - 1)
+
+let strip_lexbuf lexbuf =
+	String.slice ~first:2 ~last:(-1) (String.strip ~chars:" \t" (Ulexing.utf8_lexeme lexbuf))
 
 
 (********************************************************************************)
@@ -209,8 +214,8 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
 	| end_marker		-> (0, `Tok_end)
 	| begin_mathtex_inl	-> (0, `Tok_begin_mathtex_inl)
 	| begin_mathml_inl	-> (0, `Tok_begin_mathml_inl)
-	| column_sep		-> (0, `Tok_column_sep)			(* new compared to general *)
-	| row_end		-> (0, `Tok_row_end)			(* new compared to general *)
+	| column_delim		-> (0, `Tok_column_delim (strip_lexbuf lexbuf))	(* new compared to general *)
+	| row_end		-> (0, `Tok_row_end)				(* new compared to general *)
 	| eof			-> (0, `Tok_eof)
 	| parbreak		-> (count_lines lexbuf, `Tok_parbreak)
 	| space+ | eol		-> (count_lines lexbuf, `Tok_space)

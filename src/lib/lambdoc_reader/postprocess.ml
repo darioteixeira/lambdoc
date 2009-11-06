@@ -424,28 +424,38 @@ let process_document classnames idiosyncrasies document_ast =
 
 	let convert_tabular comm tcols tab =
 
-		let get_column comm spec =
+		let get_colspec comm spec =
 			try
-				Tabular.column_of_specifier spec
+				Tabular.colspec_of_char spec
 			with
 				Tabular.Invalid_column_specifier spec ->
 					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec)
 					in	DynArray.add errors (comm.comm_linenum, msg);
 						(Tabular.Center, Tabular.Normal) in
 
-		let columns = Array.map (get_column comm) (Array.of_list (String.explode tcols)) in
+		let specs = Array.map (get_colspec comm) (Array.of_list (String.explode tcols)) in
 
-		let num_columns = Array.length columns in
+		let num_columns = Array.length specs in
+
+		let convert_column (comm, meta, seq) =
+			(1, convert_seq seq) in
 
 		let convert_row (comm, row) =
-			if List.length row <> num_columns
+			let row_length = ref 0 in
+			let converter col =
+				let (num_cols, seq) = convert_column col in
+				let () = row_length := !row_length + num_cols
+				in seq in
+			let tab_row = match row with
+				| []		-> invalid_arg "Parser has given us an empty tabular row"
+				| hd::tl	-> Tabular.make_row  (fplus converter hd tl)
+			in if !row_length <> num_columns
 			then begin
 				let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, List.length row, num_columns)
-				in DynArray.add errors (comm.comm_linenum, msg)
-			end;
-			match row with
-				| []		-> invalid_arg "Parser has given us an empty tabular row"
-				| hd::tl	-> Tabular.make_row (fplus convert_seq hd tl) in
+				in DynArray.add errors (comm.comm_linenum, msg);
+				tab_row
+			end else
+				tab_row in
 
 		let convert_group feature (maybe_comm, rows) =
 			let () = match maybe_comm with
@@ -461,7 +471,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 		in match tab.tbodies with
 			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make_tabular columns ?thead ?tfoot (fplus (convert_group `Feature_tbody) hd tl) in
+			| hd::tl	-> Tabular.make_tabular specs ?thead ?tfoot (fplus (convert_group `Feature_tbody) hd tl) in
 
 
 	(************************************************************************)

@@ -1,7 +1,7 @@
 /********************************************************************************/
 /*	Parser.mly
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
-	This software is distributed nestable the terms of the GNU GPL version 2.
+	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 */
 /********************************************************************************/
@@ -20,8 +20,8 @@ open Lambdoc_reader
 %token END
 
 %token <Lambdoc_reader.Ast.command_t> NEW_PAR
-%token <Lambdoc_reader.Ast.command_t> COLUMN_SEP
 %token <Lambdoc_reader.Ast.command_t> ROW_END
+%token <Lambdoc_reader.Ast.command_t * string> COLUMN_DELIM
 
 
 /********************************************************************************/
@@ -33,7 +33,7 @@ open Lambdoc_reader
 
 /********************************************************************************/
 /* Environment operators.  These are used in an inline context.			*/
-/* Presently, the only existing environment operators are [$ $] and <$ $>.	*/
+/* Presently the only existing environment operators are [$ $] and <$ $>.	*/
 /********************************************************************************/
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_MATHTEX_INL
@@ -272,25 +272,11 @@ tabular:
 	| row+ body* foot?				{{Ast.thead = None; Ast.tfoot = $3; Ast.tbodies = (None, $1) :: $2;}}
 
 
-head:
-	| THEAD row+					{(Some $1, $2)}
-
-
-foot:
-	| TFOOT row+					{(Some $1, $2)}
-
-
-body:
-	| TBODY row+					{(Some $1, $2)}
-
-
-row:
-	| columns ROW_END				{($2, $1)}
-
-
-columns:
-	| inline+					{[$1]}
-	| columns COLUMN_SEP inline+			{List.append $1 [$3]}
+head:	THEAD row+					{(Some $1, $2)}
+foot:	TFOOT row+					{(Some $1, $2)}
+body:	TBODY row+					{(Some $1, $2)}
+row:	column+ ROW_END					{($2, $1)}
+column:	COLUMN_DELIM inline+				{let (comm, str) = $1 in (comm, str, $2)}
 
 
 /********************************************************************************/
