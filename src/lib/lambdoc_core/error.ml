@@ -15,7 +15,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 (**	Definition of the error context.  The context includes any number
@@ -50,6 +50,8 @@ type target_t =
 	with sexp
 
 
+(**	Block categories.
+*)
 type blk_category_t =
 	[ `Any_blk
 	| `Paragraph_blk
@@ -58,7 +60,6 @@ type blk_category_t =
 	| `Table_blk
 	| `Figure_blk
 	] with sexp
-
 
 
 (**	The various types of error messages.
@@ -96,7 +97,8 @@ type error_msg_t =
 	| Invalid_mathtex of tag_t option * string
 	| Invalid_mathml of tag_t option * string
 	| Invalid_column_number of tag_t option * int * int * int
-	| Invalid_column_specifier of tag_t option * char
+	| Invalid_column_specifier of tag_t option * string
+	| Invalid_cell_specifier of tag_t option * string
 	| Invalid_feature of tag_t option * string
 
 	| Duplicate_label of tag_t option * ref_t

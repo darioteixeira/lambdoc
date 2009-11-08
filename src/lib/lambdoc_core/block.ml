@@ -12,7 +12,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
@@ -52,7 +52,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 
 
 (********************************************************************************)
-(**	{3 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 let paragraph initial seq =

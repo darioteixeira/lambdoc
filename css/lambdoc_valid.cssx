@@ -310,16 +310,15 @@
 	border-top: Box_border;
 	}
 
-.doc_col_left		{text-align: left;}
-.doc_col_right		{text-align: right;}
-.doc_col_center		{text-align: center;}
-.doc_col_justify	{text-align: justify;}
+.doc_coll {text-align: left;}
+.doc_colr {text-align: right;}
+.doc_colc {text-align: center;}
+.doc_colj {text-align: justify;}
 
 thead > .doc_row_odd, tfoot > .doc_row_odd	{background-color: #eaeaea;}
 thead > .doc_row_even, tfoot > .doc_row_odd	{background-color: #e0e0e0;}
 tbody > .doc_row_odd				{background-color: #fafafa;}
 tbody > .doc_row_even				{background-color: #f0f0f0;}
-
 
 .doc_tab.doc_align_center:not(:first-child) {margin-top: 2em;}
 .doc_tab.doc_align_center:not(:last-child) {margin-bottom: 2em;}

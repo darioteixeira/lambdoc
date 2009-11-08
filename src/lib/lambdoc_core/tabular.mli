@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Elem.mli
+(*	Tabular.mli
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
@@ -13,14 +13,14 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Exceptions}								*)
+(**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_column_specifier of char
+exception Invalid_column_specifier of string
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type alignment_t =
@@ -35,9 +35,15 @@ type weight_t =
 	| Strong
 	with sexp
 
-type column_t = alignment_t * weight_t with sexp
+type colspec_t = alignment_t * weight_t with sexp
 
-type raw_row_t = Inline.seq_t plus_t with sexp
+type cellspec_t = colspec_t * int with sexp
+
+type raw_cell_t = cellspec_t option * Inline.seq_t with sexp
+
+type 'a cell_t = private raw_cell_t
+
+type raw_row_t = raw_cell_t plus_t with sexp
 
 type 'a row_t = private raw_row_t
 
@@ -47,7 +53,7 @@ type 'a group_t = private raw_group_t
 
 type tabular_t =
 	{
-	tcols: column_t array;
+	tcols: colspec_t array;
 	thead: raw_group_t option;
 	tfoot: raw_group_t option;
 	tbodies: raw_group_t plus_t;
@@ -57,18 +63,20 @@ type 'a t = private tabular_t
 
 
 (********************************************************************************)
-(**	{3 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val colspec_of_char: char -> column_t
+val colspec_of_string: string -> colspec_t
 
-val alignment_to_string: alignment_t -> string
+val string_of_alignment: alignment_t -> string
 
-val make_row: ('a, _) Inline.t list plus_t -> 'a row_t
+val make_cell: cellspec_t option -> ('a, _) Inline.t list -> 'a cell_t
+
+val make_row: 'a cell_t plus_t -> 'a row_t
 
 val make_group: 'a row_t plus_t -> 'a group_t
 
-val make_tabular: column_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t plus_t -> 'a t
+val make_tabular: colspec_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t plus_t -> 'a t
 
 val get_tabular: 'a t -> tabular_t
 

@@ -13,7 +13,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type 'a document_t =
@@ -26,13 +26,12 @@ type 'a document_t =
 	bitmaps: Resource.t;
 	} with sexp
 
-
 type manuscript_t = [ `Manuscript ] document_t with sexp
 type composition_t = [ `Composition ] document_t with sexp
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val make_manuscript:
@@ -51,7 +50,7 @@ val make_composition:
 
 
 (********************************************************************************)
-(**	{3 Serialisation facilities}						*)
+(**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
 val serialize_manuscript: manuscript_t -> string

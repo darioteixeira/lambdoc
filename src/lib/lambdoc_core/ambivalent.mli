@@ -13,7 +13,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type manuscript_t =
@@ -29,7 +29,7 @@ type composition_t =
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val make_valid_manuscript:
@@ -52,7 +52,7 @@ val make_invalid_composition: Error.t list -> composition_t
 
 
 (********************************************************************************)
-(**	{3 Serialisation facilities}						*)
+(**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
 val serialize_manuscript: manuscript_t -> string

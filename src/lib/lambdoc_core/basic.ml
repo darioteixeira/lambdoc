@@ -13,7 +13,7 @@ TYPE_CONV_PATH "Basic"
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type raw_t = string with sexp			(** The type of raw text. *)
@@ -57,14 +57,13 @@ type title_level_t =
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 let fplus f hd tl =
 	let new_hd = f hd in
 	let new_tl = List.map f tl
 	in (new_hd, new_tl)
-
 
 let maybe f = function
 	| Some x	-> Some (f x)

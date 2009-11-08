@@ -128,7 +128,10 @@ let explain_error = function
 		sprintf "Wrong number of columns for a row belonging to the %s started in line %d: found %d but expected %d columns." (explain_tag tag) linenum found expected
 
 	| Error.Invalid_column_specifier (tag, spec) ->
-		sprintf "Unknown column specifier '%c' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec (explain_tag tag)
+		sprintf "Unknown column specifier '%s' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec (explain_tag tag)
+
+	| Error.Invalid_cell_specifier (tag, spec) ->
+		sprintf "Invalid cell specifier '%s' in %s.  Cell specifiers should consist of an integer indicating the span followed by a single character (either 'l', 'c', or 'r') indicating the alignment." spec (explain_tag tag)
 
 	| Error.Invalid_feature (tag, description) ->
 		sprintf "The feature '%s' requested by %s has been flagged as invalid for this document." description (explain_tag tag)

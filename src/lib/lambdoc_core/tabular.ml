@@ -12,14 +12,14 @@ open Basic
 
 
 (********************************************************************************)
-(**	{3 Exceptions}								*)
+(**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_column_specifier of char
+exception Invalid_column_specifier of string
 
 
 (********************************************************************************)
-(**	{3 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type alignment_t =
@@ -34,9 +34,15 @@ type weight_t =
 	| Strong
 	with sexp
 
-type column_t = alignment_t * weight_t with sexp
+type colspec_t = alignment_t * weight_t with sexp
 
-type raw_row_t = Inline.seq_t plus_t with sexp
+type cellspec_t = colspec_t * int with sexp
+
+type raw_cell_t = cellspec_t option * Inline.seq_t with sexp
+
+type 'a cell_t = raw_cell_t
+
+type raw_row_t = raw_cell_t plus_t with sexp
 
 type 'a row_t = raw_row_t
 
@@ -46,7 +52,7 @@ type 'a group_t = raw_group_t
 
 type tabular_t =
 	{
-	tcols: column_t array;
+	tcols: colspec_t array;
 	thead: raw_group_t option;
 	tfoot: raw_group_t option;
 	tbodies: raw_group_t plus_t;
@@ -56,27 +62,29 @@ type 'a t = tabular_t
 
 
 (********************************************************************************)
-(**	{3 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let colspec_of_char = function
-	| 'c' -> (Center, Normal)
-	| 'C' -> (Center, Strong)
-	| 'l' -> (Left, Normal)
-	| 'L' -> (Left, Strong)
-	| 'r' -> (Right, Normal)
-	| 'R' -> (Right, Strong)
-	| 'j' -> (Justify, Normal)
-	| 'J' -> (Justify, Strong)
+let colspec_of_string = function
+	| "c" -> (Center, Normal)
+	| "C" -> (Center, Strong)
+	| "l" -> (Left, Normal)
+	| "L" -> (Left, Strong)
+	| "r" -> (Right, Normal)
+	| "R" -> (Right, Strong)
+	| "j" -> (Justify, Normal)
+	| "J" -> (Justify, Strong)
 	| x   -> raise (Invalid_column_specifier x)
 
-let alignment_to_string = function
-	| Center	-> "center"
-	| Left		-> "left"
-	| Right		-> "right"
-	| Justify	-> "justify"
+let string_of_alignment = function
+	| Center	-> "c"
+	| Left		-> "l"
+	| Right		-> "r"
+	| Justify	-> "j"
 
-let make_row seqs = Inline.get_seqs seqs
+let make_cell cellspec seq = (cellspec, Inline.get_seq seq)
+
+let make_row (hd, tl) = (hd, tl)
 
 let make_group (hd, tl) = (hd, tl)
 

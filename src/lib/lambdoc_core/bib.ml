@@ -12,7 +12,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
@@ -28,7 +28,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{3 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 let bib label order author title resource =

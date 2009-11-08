@@ -285,12 +285,15 @@ let write_valid_document settings classname doc =
 
 		let ord = ref (-1) in
 
-		let write_cell ord seq =
-			let (alignment, weight) = Array.get tab.Tabular.tcols (ord+1) in
-			let col_class = "doc_col_" ^ Tabular.alignment_to_string alignment
+		let write_cell ord (maybe_cellspec, seq) =
+			let ((alignment, weight), colspan) = match maybe_cellspec with
+				| Some (spec, span) -> (spec, Some span)
+				| None		    -> (Array.get tab.Tabular.tcols (ord+1), None) in
+			let a_hd = a_class ["doc_col" ^ Tabular.string_of_alignment alignment]
+			and a_tl = match colspan with Some n -> [a_colspan n] | None -> []
 			in match weight with
-				| Tabular.Normal -> XHTML.M.td ~a:[a_class [col_class]] (write_seq seq)
-				| Tabular.Strong -> XHTML.M.th ~a:[a_class [col_class]] (write_seq seq) in
+				| Tabular.Normal -> XHTML.M.td ~a:(a_hd :: a_tl) (write_seq seq)
+				| Tabular.Strong -> XHTML.M.th ~a:(a_hd :: a_tl) (write_seq seq) in
 
 		let write_row (hd, tl) =
 			incr ord;

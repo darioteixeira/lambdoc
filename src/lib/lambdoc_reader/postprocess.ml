@@ -25,6 +25,9 @@ open Ast
 (**	{3 Low-level processing functions}					*)
 (********************************************************************************)
 
+let column_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)$"
+
+
 (**	Processes an AST as provided by the parser, producing the corresponding
 	document.  In addition, a label dictionary, bibliography entries, notes,
 	and possible errors are also returned.  Note that because Ocaml does not
@@ -426,32 +429,46 @@ let process_document classnames idiosyncrasies document_ast =
 
 		let get_colspec comm spec =
 			try
-				Tabular.colspec_of_char spec
+				Tabular.colspec_of_string spec
 			with
 				Tabular.Invalid_column_specifier spec ->
 					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec)
 					in	DynArray.add errors (comm.comm_linenum, msg);
 						(Tabular.Center, Tabular.Normal) in
 
-		let specs = Array.map (get_colspec comm) (Array.of_list (String.explode tcols)) in
+		let specs = Array.map (get_colspec comm) (Array.of_list (List.map String.of_char (String.explode tcols))) in
 
 		let num_columns = Array.length specs in
 
-		let convert_column (comm, meta, seq) =
-			(1, convert_seq seq) in
+		let convert_cell (comm, raw_cellspec, seq) =
+			let (colspan, cellspec) =
+				if raw_cellspec <> ""
+				then
+					try
+						let subs = Pcre.exec ~rex:column_rex raw_cellspec in
+						let colspan = int_of_string (Pcre.get_named_substring column_rex "colspan" subs)
+						and colspec = Tabular.colspec_of_string (Pcre.get_named_substring column_rex "colspec" subs)
+						in (colspan, Some (colspec, colspan))
+					with _ ->
+						let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw_cellspec)
+						in DynArray.add errors (comm.comm_linenum, msg);
+						(1, None)
+				else
+					(1, None)
+			in (colspan, Tabular.make_cell cellspec (convert_seq seq)) in
 
 		let convert_row (comm, row) =
-			let row_length = ref 0 in
-			let converter col =
-				let (num_cols, seq) = convert_column col in
-				let () = row_length := !row_length + num_cols
-				in seq in
+			let rowspan = ref 0 in
+			let converter raw_cell =
+				let (colspan, cell) = convert_cell raw_cell in
+				let () = rowspan := !rowspan + colspan
+				in cell in
 			let tab_row = match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"
 				| hd::tl	-> Tabular.make_row  (fplus converter hd tl)
-			in if !row_length <> num_columns
+			in if !rowspan <> num_columns
 			then begin
-				let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, List.length row, num_columns)
+				let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, !rowspan, num_columns)
 				in DynArray.add errors (comm.comm_linenum, msg);
 				tab_row
 			end else

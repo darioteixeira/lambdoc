@@ -13,14 +13,14 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Exceptions}								*)
+(**	{1 Exceptions}								*)
 (********************************************************************************)
 
 exception Invalid_number_of_levels of hierarchical_level_t * int
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type ordinal_t = int with sexp
@@ -44,7 +44,6 @@ type hierarchical_converter_t =
 	level3: (int -> string);
 	}
 
-
 type 'a auto_given_t = [ `Auto_given of 'a ] with sexp_poly
 type user_given_t = [ `User_given of string ] with sexp_poly
 type none_given_t = [ `None_given ] with sexp_poly
@@ -52,11 +51,11 @@ type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_gi
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 (********************************************************************************)
-(**	{3 Creation of counters}						*)
+(**	{2 Creation of counters}						*)
 (********************************************************************************)
 
 val make_ordinal_counter: unit -> ordinal_counter_t ref
@@ -64,7 +63,7 @@ val make_hierarchy_counter: unit -> hierarchical_counter_t ref
 
 
 (********************************************************************************)
-(**	{3 Constructors}							*)
+(**	{2 Constructors}							*)
 (********************************************************************************)
 
 val auto_ordinal: ordinal_counter_t ref -> [> `Auto_given of ordinal_t ]
@@ -75,7 +74,7 @@ val none: unit -> [> `None_given ]
 
 
 (********************************************************************************)
-(**	{3 Printers}								*)
+(**	{2 Printers}								*)
 (********************************************************************************)
 
 val string_of_ordinal: ordinal_converter_t -> (ordinal_t, 'b) t -> string

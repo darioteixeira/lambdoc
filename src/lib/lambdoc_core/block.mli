@@ -13,7 +13,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 (**	Definition of the ordering types for wrapper blocks.
@@ -62,7 +62,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] w
 
 
 (********************************************************************************)
-(**	{3 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 (**	The functions in this module use phantom types to enforce some invariants

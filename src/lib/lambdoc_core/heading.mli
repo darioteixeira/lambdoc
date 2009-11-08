@@ -13,11 +13,12 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 (**	Definition of the ordering types for the various kinds of headings
 *)
+
 type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
@@ -64,7 +65,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
 
 
 (********************************************************************************)
-(**	{3 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val part: Label.t -> part_order_t -> (_, _) Inline.t list ->

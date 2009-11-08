@@ -12,7 +12,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type manuscript_t =
@@ -28,7 +28,7 @@ type composition_t =
 
 
 (********************************************************************************)
-(**	{2 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 let make_valid_manuscript content bibs notes toc labels bitmaps =
@@ -45,7 +45,7 @@ let make_invalid_composition errors =
 
 
 (********************************************************************************)
-(**	{3 Serialisation facilities}						*)
+(**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
 let serialize_manuscript doc =

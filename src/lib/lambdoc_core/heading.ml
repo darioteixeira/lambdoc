@@ -12,7 +12,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
@@ -45,7 +45,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = heading_t with sexp
 
 
 (********************************************************************************)
-(**	{3 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 let part label order seq = `Part (label, order, `Custom (Inline.get_seq seq))

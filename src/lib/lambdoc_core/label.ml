@@ -13,7 +13,7 @@ TYPE_CONV_PATH "Label"
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 (**	Label identifiers can either be [`Auto_label] (when they're automatically
@@ -25,6 +25,10 @@ type t =
 	| `User_label of Basic.ref_t
 	] with sexp
 
+
+(********************************************************************************)
+(**	{1 Functions and values}						*)
+(********************************************************************************)
 
 (**	So it satisfies the [Map.OrderedType] signature.
 *)

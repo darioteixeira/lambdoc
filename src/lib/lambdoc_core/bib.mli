@@ -13,7 +13,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
@@ -29,7 +29,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{3 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val bib: Label.t -> order_t -> (_, _) Inline.t list -> (_, _) Inline.t list -> (_, _) Inline.t list -> t
