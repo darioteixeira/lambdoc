@@ -110,8 +110,8 @@ let regexp primary = '{' ident '}'
 let regexp simple_comm = '\\' ident optional
 let regexp env_begin = "\\begin" optional primary
 let regexp env_end = "\\end" primary
-let regexp macroarg = '@' '{' deci+ '}'
-let regexp macrocall = '@' '{' ident '}'
+let regexp macroarg = '$' '{' deci+ '}'
+let regexp macrocall = '$' '{' ident '}'
 
 let regexp entity_hexa = "&#x" (alpha | deci)+ ';'
 let regexp entity_deci = "&#" (alpha | deci)+ ';'
