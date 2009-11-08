@@ -181,15 +181,15 @@
 /* CSS common to all floater blocks.						*/
 /********************************************************************************/
 
-.doc_align_center {clear: both; margin: 0 1em;}
-.doc_align_right {clear: both; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
-.doc_align_left {clear: both; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
+.doc_float_center {clear: both; margin: 0 1em;}
+.doc_float_right {clear: both; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
+.doc_float_left {clear: both; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
 
-.doc_align_center:not(:first-child) {margin-top: 2em;}
-.doc_align_center:not(:last-child) {margin-bottom: 2em;}
+.doc_float_center:not(:first-child) {margin-top: 2em;}
+.doc_float_center:not(:last-child) {margin-bottom: 2em;}
 
-.doc_wrapper.doc_align_center:not(:first-child) {margin-top: 2.5em;}
-.doc_wrapper.doc_align_center:not(:last-child) {margin-bottom: 2.5em;}
+.doc_wrapper.doc_float_center:not(:first-child) {margin-top: 2.5em;}
+.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: 2.5em;}
 
 
 /********************************************************************************/
@@ -259,8 +259,8 @@
 /* Tabular environments.		 					*/
 /********************************************************************************/
 
-.doc_tab.doc_align_center	{margin: 0 auto;}
-.doc_align_center > .doc_tab	{margin: 0 auto;}
+.doc_tab.doc_float_center	{margin: 0 auto;}
+.doc_float_center > .doc_tab	{margin: 0 auto;}
 
 .doc_tab {text-align: center;}
 
@@ -320,8 +320,8 @@ thead > .doc_row_even, tfoot > .doc_row_odd	{background-color: #e0e0e0;}
 tbody > .doc_row_odd				{background-color: #fafafa;}
 tbody > .doc_row_even				{background-color: #f0f0f0;}
 
-.doc_tab.doc_align_center:not(:first-child) {margin-top: 2em;}
-.doc_tab.doc_align_center:not(:last-child) {margin-bottom: 2em;}
+.doc_tab.doc_float_center:not(:first-child) {margin-top: 2em;}
+.doc_tab.doc_float_center:not(:last-child) {margin-bottom: 2em;}
 
 
 /********************************************************************************/

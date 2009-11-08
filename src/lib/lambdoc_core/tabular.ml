@@ -12,13 +12,6 @@ open Basic
 
 
 (********************************************************************************)
-(**	{1 Exceptions}								*)
-(********************************************************************************)
-
-exception Invalid_column_specifier of string
-
-
-(********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
@@ -74,7 +67,7 @@ let colspec_of_string = function
 	| "R" -> (Right, Strong)
 	| "j" -> (Justify, Normal)
 	| "J" -> (Justify, Strong)
-	| x   -> raise (Invalid_column_specifier x)
+	| x   -> invalid_arg "Tabular.colspec_of_string"
 
 let string_of_alignment = function
 	| Center	-> "c"

@@ -431,7 +431,7 @@ let process_document classnames idiosyncrasies document_ast =
 			try
 				Tabular.colspec_of_string spec
 			with
-				Tabular.Invalid_column_specifier spec ->
+				Invalid_argument _ ->
 					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec)
 					in	DynArray.add errors (comm.comm_linenum, msg);
 						(Tabular.Center, Tabular.Normal) in
@@ -578,70 +578,70 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, true, `Equation_blk, (comm, Ast.Mathtex_blk txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Mathtex_blk txt)) ->
 			let elem () =
-				let alignment = Extra.parse_for_mathtex errors comm
-				in convert_mathtex (Block.math alignment) comm txt
+				let floatation = Extra.parse_for_mathtex errors comm
+				in convert_mathtex (Block.math floatation) comm txt
 			in check_comm `Feature_mathtex_blk comm elem
 
 		| (_, _, true, `Equation_blk, (comm, Ast.Mathml_blk txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Mathml_blk txt)) ->
 			let elem () =
-				let alignment = Extra.parse_for_mathml errors comm
-				in convert_mathml (Block.math alignment) comm txt
+				let floatation = Extra.parse_for_mathml errors comm
+				in convert_mathml (Block.math floatation) comm txt
 			in check_comm `Feature_mathml_blk comm elem
 
 		| (_, _, true, `Printout_blk, (comm, Ast.Program txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Program txt)) ->
 			let elem () =
-				let (alignment, lang, linenums, zebra) = Extra.parse_for_program errors comm in
+				let (floatation, lang, linenums, zebra) = Extra.parse_for_program errors comm in
 				let hilite = Camlhighlight_parser.from_string lang txt in
 				let prog = Program.make lang linenums zebra hilite
-				in Some (Block.program alignment prog)
+				in Some (Block.program floatation prog)
 			in check_comm `Feature_program comm elem
 
 		| (_, _, true, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
 		| (_, _, true, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
 			let elem () =
-				let alignment = Extra.parse_for_tabular errors comm
-				in Some (Block.tabular alignment (convert_tabular comm tcols tab))
+				let floatation = Extra.parse_for_tabular errors comm
+				in Some (Block.tabular floatation (convert_tabular comm tcols tab))
 			in check_comm `Feature_tabular comm elem
 
 		| (_, _, true, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Verbatim txt)) ->
 			let elem () =
-				let alignment = Extra.parse_for_verbatim errors comm
-				in Some (Block.verbatim alignment txt)
+				let floatation = Extra.parse_for_verbatim errors comm
+				in Some (Block.verbatim floatation txt)
 			in check_comm `Feature_verbatim comm elem
 
 		| (_, _, true, `Figure_blk, (comm, Ast.Bitmap (alias, alt)))
 		| (_, _, true, `Any_blk, (comm, Ast.Bitmap (alias, alt))) ->
 			let elem () =
-				let (alignment, frame, width) = Extra.parse_for_bitmap errors comm in
+				let (floatation, frame, width) = Extra.parse_for_bitmap errors comm in
 				let image = Image.make frame width alias alt in
 				let () = bitmaps := Resource.add alias !bitmaps
-				in Some (Block.bitmap alignment image)
+				in Some (Block.bitmap floatation image)
 			in check_comm `Feature_bitmap comm elem
 
 		| (_, _, true, `Figure_blk, (comm, Ast.Subpage frag))
 		| (_, _, true, `Any_blk, (comm, Ast.Subpage frag)) ->
 			let elem () =
-				let alignment = Extra.parse_for_subpage errors comm
+				let floatation = Extra.parse_for_subpage errors comm
 				and new_frag = List.filter_map (convert_block ~minipaged:true true true true `Any_blk) frag
-				in Some (Block.subpage alignment (Obj.magic new_frag))
+				in Some (Block.subpage floatation (Obj.magic new_frag))
 			in check_comm `Feature_subpage comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
 			let elem () =
-				let alignment = Extra.parse_for_pullquote errors comm
+				let floatation = Extra.parse_for_pullquote errors comm
 				and new_frag = List.filter_map (convert_block ~minipaged:true false false false `Any_blk) frag
-				in Some (Block.pullquote alignment (Obj.magic new_frag))
+				in Some (Block.pullquote floatation (Obj.magic new_frag))
 			in check_comm `Feature_pullquote comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Boxout (maybe_seq, frag))) ->
 			let elem () =
-				let (alignment, maybe_classname) = Extra.parse_for_boxout ~classnames errors comm
+				let (floatation, maybe_classname) = Extra.parse_for_boxout ~classnames errors comm
 				and new_frag = List.filter_map (convert_block ~minipaged:true false false true `Any_blk) frag
 				and seq = maybe convert_seq maybe_seq
-				in Some (Block.boxout alignment maybe_classname seq (Obj.magic new_frag))
+				in Some (Block.boxout floatation maybe_classname seq (Obj.magic new_frag))
 			in check_comm `Feature_boxout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (caption, blk))) ->

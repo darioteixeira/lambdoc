@@ -92,7 +92,7 @@ let class_of_level = function
 	| `Level4 -> "level4"
 
 
-let make_alignment alignment = ["doc_align_" ^ (Alignment.to_string alignment)]
+let make_floatation floatation = ["doc_float_" ^ (Floatation.to_string floatation)]
 	
 
 let make_heading cons label order_str classname content =
@@ -382,51 +382,51 @@ let write_valid_document settings classname doc =
 		| `Quote frag ->
 			None, [XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag)]
 
-		| `Math (alignment, math) ->
+		| `Math (floatation, math) ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
-			and style = if wrapped then [] else make_alignment alignment
-			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [xhtml]]
+			and style = if wrapped then [] else make_floatation floatation
+			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_math"] @ style)] [xhtml]]
 
-		| `Program (alignment, prog) ->
+		| `Program (floatation, prog) ->
 			let (linenums, zebra, hilite) = (prog.linenums, prog.zebra, prog.hilite)
-			and style = if wrapped then [] else make_alignment alignment
-			in Some alignment, [Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra hilite]
+			and style = if wrapped then [] else make_floatation floatation
+			in Some floatation, [Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~extra_classes:style ~linenums ~zebra hilite]
 
-		| `Tabular (alignment, tab) ->
-			let style = if wrapped then [] else make_alignment alignment
-			in Some alignment, [write_tabular style tab]
+		| `Tabular (floatation, tab) ->
+			let style = if wrapped then [] else make_floatation floatation
+			in Some floatation, [write_tabular style tab]
 
-		| `Verbatim (alignment, txt) ->
-			let style = if wrapped then [] else make_alignment alignment
-			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
+		| `Verbatim (floatation, txt) ->
+			let style = if wrapped then [] else make_floatation floatation
+			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
 
-		| `Bitmap (alignment, img) ->
+		| `Bitmap (floatation, img) ->
 			let (frame, width, alias, alt) = (img.frame, img.width, img.alias, img.alt) in
-			let style_align = if wrapped then [] else make_alignment alignment
+			let style_float = if wrapped then [] else make_floatation floatation
 			and style_frame = if frame then ["doc_bitmap_frame"] else [] in
-			let style = style_align @ style_frame in
+			let style = style_float @ style_frame in
 			let attrs = match width with
 				| Some w	-> [a_width (`Percent w)]
 				| None		-> [] in
 			let uri = settings.bitmap_lookup alias in
 			let bitmap = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
-			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]]
+			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]]
 
-		| `Subpage (alignment, frag) ->
-			let style = if wrapped then [] else make_alignment alignment
-			in Some alignment, [XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_frag frag)]
+		| `Subpage (floatation, frag) ->
+			let style = if wrapped then [] else make_floatation floatation
+			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_subpage"] @ style)] (write_frag frag)]
 
-		| `Pullquote (alignment, frag) ->
-			let style = if wrapped then [] else make_alignment alignment
+		| `Pullquote (floatation, frag) ->
+			let style = if wrapped then [] else make_floatation floatation
 			in None, [XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag)]
 
-		| `Boxout (alignment, maybe_classname, maybe_seq, frag) ->
-			let style_align = if wrapped then [] else make_alignment alignment
+		| `Boxout (floatation, maybe_classname, maybe_seq, frag) ->
+			let style_float = if wrapped then [] else make_floatation floatation
 			and style_class = match maybe_classname with Some classname -> ["doc_boxout_" ^ classname] | None -> [] in
 			let title = match maybe_seq with
 				| None -> []
 				| Some seq -> [XHTML.M.div ~a:[a_class ["doc_boxout_head"]] [XHTML.M.h1 (write_seq seq)]]
-			in None, [XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_align @ style_class)]
+			in None, [XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_float @ style_class)]
 				(title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])]
 
 		| `Equation (wrapper, equation) ->
@@ -502,18 +502,18 @@ let write_valid_document settings classname doc =
 			[XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq)]
 
 
-	and write_wrapper (label, order, seq) classname wrapper_name (maybe_alignment, blocks) =
+	and write_wrapper (label, order, seq) classname wrapper_name (maybe_floatation, blocks) =
 		let wrapper_content = match blocks with
 			| [b] -> b
 			| _   -> failwith "write_wrapper" in
-		let alignment = match maybe_alignment with
-			| Some alignment -> alignment
+		let floatation = match maybe_floatation with
+			| Some floatation -> floatation
 			| None		 -> failwith "write_wrapper" in
 		let caption_content =
 			let caption_head = XHTML.M.span [pcdata wrapper_name; entity "thinsp"; pcdata ((wrapper_conv order) ^ ":")]
 			and caption_body = XHTML.M.span (write_seq seq)
 			in XHTML.M.p ~a:[a_class ["doc_caption"]] [caption_head; caption_body] in
-		let classnames = ["doc_wrapper"; classname] @ (make_alignment alignment)
+		let classnames = ["doc_wrapper"; classname] @ (make_floatation floatation)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 
 

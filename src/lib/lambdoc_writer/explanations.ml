@@ -72,8 +72,8 @@ let explain_error = function
 	| Error.Invalid_extra_numbering_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a numbering specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
-	| Error.Invalid_extra_alignment_parameter (tag, key, value) ->
-		sprintf "In %s, the key '%s' expects a alignment specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
+	| Error.Invalid_extra_floatation_parameter (tag, key, value) ->
+		sprintf "In %s, the key '%s' expects a floatation specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
 	| Error.Invalid_extra_lang_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a language specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
@@ -131,7 +131,7 @@ let explain_error = function
 		sprintf "Unknown column specifier '%s' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec (explain_tag tag)
 
 	| Error.Invalid_cell_specifier (tag, spec) ->
-		sprintf "Invalid cell specifier '%s' in %s.  Cell specifiers should consist of an integer indicating the span followed by a single character (either 'l', 'c', or 'r') indicating the alignment." spec (explain_tag tag)
+		sprintf "Invalid cell specifier '%s' in %s.  Cell specifiers should consist of an integer indicating the span followed by a single character (either c/C, l/L, r/R, j/J) indicating the alignment." spec (explain_tag tag)
 
 	| Error.Invalid_feature (tag, description) ->
 		sprintf "The feature '%s' requested by %s has been flagged as invalid for this document." description (explain_tag tag)

@@ -43,7 +43,7 @@ type handle_t =
 	| Width_hnd
 	| Bullet_hnd
 	| Numbering_hnd
-	| Alignment_hnd
+	| Floatation_hnd
 	| Lang_hnd
 	| Classname_hnd
 	| Args_hnd
@@ -54,7 +54,7 @@ type property_kind_t =
 	| Numeric_kind
 	| Bullet_kind
 	| Numbering_kind
-	| Alignment_kind
+	| Floatation_kind
 	| Lang_kind
 	| Classname_kind
 
@@ -67,7 +67,7 @@ type property_data_t =
 	| Numeric_data of int 
 	| Bullet_data of Bullet.t
 	| Numbering_data of Numbering.t
-	| Alignment_data of Alignment.t
+	| Floatation_data of Floatation.t
 	| Lang_data of Camlhighlight_core.lang_t
 	| Classname_data of string
 
@@ -102,17 +102,17 @@ type solution_t =
 (**	Definition of the key and property kind associated with each handle.
 *)
 let id_of_handle = function
-	| Initial_hnd	-> ("initial", Boolean_kind)
-	| Linenums_hnd	-> ("linenums", Boolean_kind)
-	| Zebra_hnd	-> ("zebra", Boolean_kind)
-	| Frame_hnd	-> ("frame", Boolean_kind)
-	| Width_hnd	-> ("width", Numeric_kind)
-	| Bullet_hnd	-> ("bul", Bullet_kind)
-	| Numbering_hnd	-> ("num", Numbering_kind)
-	| Alignment_hnd	-> ("align", Alignment_kind)
-	| Lang_hnd	-> ("lang", Lang_kind)
-	| Classname_hnd	-> ("class", Classname_kind)
-	| Args_hnd	-> ("args", Numeric_kind)
+	| Initial_hnd	 -> ("initial", Boolean_kind)
+	| Linenums_hnd	 -> ("linenums", Boolean_kind)
+	| Zebra_hnd	 -> ("zebra", Boolean_kind)
+	| Frame_hnd	 -> ("frame", Boolean_kind)
+	| Width_hnd	 -> ("width", Numeric_kind)
+	| Bullet_hnd	 -> ("bul", Bullet_kind)
+	| Numbering_hnd	 -> ("num", Numbering_kind)
+	| Floatation_hnd -> ("float", Floatation_kind)
+	| Lang_hnd	 -> ("lang", Lang_kind)
+	| Classname_hnd	 -> ("class", Classname_kind)
+	| Args_hnd	 -> ("args", Numeric_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -203,12 +203,12 @@ let matcher ~classnames errors comm key kind field = match (key, kind, field) wi
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
-	| (key, Alignment_kind, Unnamed_field v) ->
-		(try Undecided (Alignment_data (Alignment.of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Alignment_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Alignment_data (Alignment.of_string v))
+	| (key, Floatation_kind, Unnamed_field v) ->
+		(try Undecided (Floatation_data (Floatation.of_string v)) with Invalid_argument _ -> Negative)
+	| (key, Floatation_kind, Keyvalue_field (k, v)) when key = k ->
+		(try Positive (Floatation_data (Floatation.of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_alignment_parameter (comm.comm_tag, key, v)
+			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
@@ -363,28 +363,28 @@ let process ?(classnames = []) errors comm handles =
 (**	{3 Wrappers}								*)
 (********************************************************************************)
 
-let get_alignment = function
-	| Some (Alignment_data x)	-> x
-	| _				-> Alignment.Center
+let get_floatation = function
+	| Some (Floatation_data x) -> x
+	| _			   -> Floatation.Center
 
 
 let parse_floater errors comm =
-	let assigned = process errors comm [Alignment_hnd]
-	in get_alignment assigned.(0)
+	let assigned = process errors comm [Floatation_hnd]
+	in get_floatation assigned.(0)
 
 
 let parse_for_image errors comm =
-	let assigned = process errors comm [Alignment_hnd; Frame_hnd; Width_hnd] in
-	let alignment = match assigned.(0) with
-		| Some (Alignment_data x)	-> x
-		| _				-> Alignment.Center
+	let assigned = process errors comm [Floatation_hnd; Frame_hnd; Width_hnd] in
+	let floatation = match assigned.(0) with
+		| Some (Floatation_data x) -> x
+		| _			   -> Floatation.Center
 	and frame = match assigned.(1) with
 		| Some (Boolean_data x)	-> x
 		| _			-> false
 	and width = match assigned.(2) with
 		| Some (Numeric_data w)	-> Some w
 		| _			-> None
-	in (alignment, frame, width)
+	in (floatation, frame, width)
 
 
 (********************************************************************************)
@@ -394,51 +394,51 @@ let parse_for_image errors comm =
 let parse_for_paragraph errors comm =
 	let assigned = process errors comm [Initial_hnd]
 	in match assigned.(0) with
-		| Some (Boolean_data x)		-> x
-		| _				-> false
+		| Some (Boolean_data x) -> x
+		| _			-> false
 
 
 let parse_for_itemize errors comm =
 	let assigned = process errors comm [Bullet_hnd]
 	in match assigned.(0) with
-		| Some (Bullet_data x)		-> x
-		| _				-> Bullet.Disc
+		| Some (Bullet_data x) -> x
+		| _		       -> Bullet.Disc
 
 
 let parse_for_enumerate errors comm =
 	let assigned = process errors comm [Numbering_hnd]
 	in match assigned.(0) with
-		| Some (Numbering_data x)	-> x
-		| _				-> Numbering.Decimal
+		| Some (Numbering_data x) -> x
+		| _			  -> Numbering.Decimal
 
 let parse_for_pullquote = parse_floater
 
 let parse_for_boxout ?classnames errors comm =
-	let assigned = process ?classnames errors comm [Alignment_hnd; Classname_hnd] in
-	let alignment = get_alignment assigned.(0)
+	let assigned = process ?classnames errors comm [Floatation_hnd; Classname_hnd] in
+	let floatation = get_floatation assigned.(0)
 	and classname = match assigned.(1) with
-		| Some (Classname_data x)	-> Some x
-		| _				-> None
-	in (alignment, classname)
+		| Some (Classname_data x) -> Some x
+		| _			  -> None
+	in (floatation, classname)
 
 let parse_for_mathtex = parse_floater
 
 let parse_for_mathml = parse_floater
 
 let parse_for_program errors comm =
-	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd; Alignment_hnd] in
+	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd; Floatation_hnd] in
 	let lang = match assigned.(0) with
-		| Some (Lang_data x)		-> Some x
-		| _				-> None in
+		| Some (Lang_data x) -> Some x
+		| _		     -> None in
 	let linenums = match (lang, assigned.(1)) with
-		| (_, Some (Boolean_data x))	-> x
-		| (Some _, _)			-> true
-		| (None, _)			-> false in
+		| (_, Some (Boolean_data x)) -> x
+		| (Some _, _)		     -> true
+		| (None, _)		     -> false in
 	let zebra = match (lang, assigned.(2)) with
-		| (_, Some (Boolean_data x))	-> x
-		| _				-> true in
-	let alignment = get_alignment assigned.(3)
-	in (alignment, lang, linenums, zebra)
+		| (_, Some (Boolean_data x)) -> x
+		| _			     -> true in
+	let floatation = get_floatation assigned.(3)
+	in (floatation, lang, linenums, zebra)
 
 let parse_for_tabular = parse_floater
 

@@ -37,14 +37,14 @@ type 'a block_t =
 	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
-	| `Math of Alignment.t * Math.t
-	| `Program of Alignment.t * Program.t
-	| `Tabular of Alignment.t * Tabular.tabular_t
-	| `Verbatim of Alignment.t * raw_t
-	| `Bitmap of Alignment.t * Image.t
-	| `Subpage of Alignment.t * 'a list
-	| `Pullquote of Alignment.t * 'a list
-	| `Boxout of Alignment.t * string option * Inline.seq_t option * 'a list
+	| `Math of Floatation.t * Math.t
+	| `Program of Floatation.t * Program.t
+	| `Tabular of Floatation.t * Tabular.tabular_t
+	| `Verbatim of Floatation.t * raw_t
+	| `Bitmap of Floatation.t * Image.t
+	| `Subpage of Floatation.t * 'a list
+	| `Pullquote of Floatation.t * 'a list
+	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
 	| `Equation of wrapper_t * 'a
 	| `Printout of wrapper_t * 'a
 	| `Table of wrapper_t * 'a
@@ -105,28 +105,28 @@ val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->
 val quote: ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 	('a, [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Quote_blk ]) t
 
-val math: Alignment.t -> Math.t ->
+val math: Floatation.t -> Math.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Math_blk ]) t
 
-val program: Alignment.t -> Program.t ->
+val program: Floatation.t -> Program.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Program_blk ]) t
 
-val tabular: Alignment.t -> 'a Tabular.t ->
+val tabular: Floatation.t -> 'a Tabular.t ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Tabular_blk ]) t
 
-val verbatim: Alignment.t -> raw_t ->
+val verbatim: Floatation.t -> raw_t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Verbatim_blk ]) t
 
-val bitmap: Alignment.t -> Image.t ->
+val bitmap: Floatation.t -> Image.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Bitmap_blk ]) t
 
-val subpage: Alignment.t -> ('a, _, _, _, _) t list ->
+val subpage: Floatation.t -> ('a, _, _, _, _) t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Subpage_blk ]) t
 
-val pullquote: Alignment.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
+val pullquote: Floatation.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable], [> `Non_prose ], [> `Pullquote_blk ]) t
 
-val boxout: Alignment.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
+val boxout: Floatation.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
 
 val equation: wrapper_t -> (_, _, _, _, [< `Math_blk ]) t ->
