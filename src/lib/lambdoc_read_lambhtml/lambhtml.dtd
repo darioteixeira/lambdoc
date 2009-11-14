@@ -281,8 +281,8 @@
 <!ATTLIST tr %Forbidden;>
 
 <!ELEMENT th %Inline;>
-<!ATTLIST th %Forbidden;>
+<!ATTLIST th %Forbidden; cell CDATA #IMPLIED>
 
 <!ELEMENT td %Inline;>
-<!ATTLIST td %Forbidden;>
+<!ATTLIST td %Forbidden; cell CDATA #IMPLIED>
 

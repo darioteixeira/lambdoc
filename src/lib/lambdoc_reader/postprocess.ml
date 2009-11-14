@@ -25,7 +25,7 @@ open Ast
 (**	{3 Low-level processing functions}					*)
 (********************************************************************************)
 
-let column_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)$"
+let cell_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)$"
 
 
 (**	Processes an AST as provided by the parser, producing the corresponding
@@ -442,22 +442,23 @@ let process_document classnames idiosyncrasies document_ast =
 		let num_columns = Array.length specs in
 
 		let convert_cell (comm, raw_cellspec, seq) =
-			let (colspan, cellspec) = match raw_cellspec with
+			let (colspan, cellspec, hline) = match raw_cellspec with
 				| Some raw ->
 					begin
 						try
-							let subs = Pcre.exec ~rex:column_rex raw in
-							let colspan = int_of_string (Pcre.get_named_substring column_rex "colspan" subs)
-							and colspec = Tabular.colspec_of_string (Pcre.get_named_substring column_rex "colspec" subs)
-							in (colspan, Some (colspec, colspan))
+							let subs = Pcre.exec ~rex:cell_rex raw in
+							let colspan = int_of_string (Pcre.get_named_substring cell_rex "colspan" subs)
+							and colspec = Tabular.colspec_of_string (Pcre.get_named_substring cell_rex "colspec" subs)
+							and hline = (Pcre.get_named_substring cell_rex "hline" subs) = "_"
+							in (colspan, Some (colspec, colspan), hline)
 						with _ ->
 							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw)
 							in DynArray.add errors (comm.comm_linenum, msg);
-							(1, None)
+							(1, None, false)
 					end
 				| None ->
-					(1, None)
-			in (colspan, Tabular.make_cell cellspec (convert_seq seq)) in
+					(1, None, false)
+			in (colspan, Tabular.make_cell cellspec hline (convert_seq seq)) in
 
 		let convert_row (comm, row) =
 			let rowspan = ref 0 in

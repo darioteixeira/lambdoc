@@ -285,11 +285,11 @@ let write_valid_document settings classname doc =
 
 		let ord = ref (-1) in
 
-		let write_cell ord (maybe_cellspec, seq) =
+		let write_cell ord (maybe_cellspec, hline, seq) =
 			let ((alignment, weight), colspan) = match maybe_cellspec with
 				| Some (spec, span) -> (spec, Some span)
 				| None		    -> (Array.get tab.Tabular.tcols (ord+1), None) in
-			let a_hd = a_class ["doc_col" ^ Tabular.string_of_alignment alignment]
+			let a_hd = a_class (("doc_col" ^ Tabular.string_of_alignment alignment) :: (if hline then ["doc_colh"] else []))
 			and a_tl = match colspan with Some n -> [a_colspan n] | None -> []
 			in match weight with
 				| Tabular.Normal -> XHTML.M.td ~a:(a_hd :: a_tl) (write_seq seq)
