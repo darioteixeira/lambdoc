@@ -206,11 +206,11 @@ and process_tabular node =
 	and thead = ref None
 	and tfoot = ref None
 	and tbodies = ref [] in
-	let process_col node =
+	let process_cell node =
 		let comm = lazy (command_from_node node)
-		in (!!comm, "", process_seq node) in
+		in (!!comm, None, process_seq node) in
 	let process_row node =
-		(command_from_node node, List.map process_col node#sub_nodes) in
+		(command_from_node node, List.map process_cell node#sub_nodes) in
 	let process_group node =
 		let comm = lazy (command_from_node node)
 		in match node#node_type with

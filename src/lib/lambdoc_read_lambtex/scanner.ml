@@ -15,7 +15,7 @@ open Lambdoc_reader
 
 
 (********************************************************************************)
-(**	{2 Auxiliary types}							*)
+(**	{1 Auxiliary types}							*)
 (********************************************************************************)
 
 (**	The set of all tokens output by the various scanners.
@@ -32,7 +32,7 @@ type tok_begin_mathtex_inl_t =	[ `Tok_begin_mathtex_inl ]
 type tok_end_mathtex_inl_t =	[ `Tok_end_mathtex_inl ]
 type tok_begin_mathml_inl_t =	[ `Tok_begin_mathml_inl ]
 type tok_end_mathml_inl_t =	[ `Tok_end_mathml_inl ]
-type tok_column_delim_t =	[ `Tok_column_delim of string ]
+type tok_cell_mark_t =		[ `Tok_cell_mark ]
 type tok_row_end_t =		[ `Tok_row_end ]
 type tok_eof_t =		[ `Tok_eof ]
 type tok_parbreak_t =		[ `Tok_parbreak ]
@@ -59,7 +59,7 @@ type tabular_token_t =
 	| tok_begin_t | tok_end_t
 	| tok_begin_mathtex_inl_t
 	| tok_begin_mathml_inl_t
-	| tok_column_delim_t | tok_row_end_t
+	| tok_cell_mark_t | tok_row_end_t
 	| tok_eof_t | tok_parbreak_t
 	| tok_space_t | tok_plain_t | tok_entity_t
 	]
@@ -90,20 +90,20 @@ type literal_token_t =
 
 
 (********************************************************************************)
-(**	{2 List of regular expressions used in the scanners}			*)
+(**	{1 List of regular expressions used in the scanners}			*)
 (********************************************************************************)
 
 let regexp alpha = ['a'-'z' 'A'-'Z']
 let regexp deci = ['0'-'9']
-let regexp ident = alpha ( alpha | deci | '_' )*
+let regexp ident = alpha (alpha | deci | '_')*
 
-let regexp order_char = alpha | deci | '.'
-let regexp label_char = alpha | deci | '-' | ':' | '_'
-let regexp extra_char = alpha | deci | '=' | ',' | '!' 
+let regexp order_seq = (alpha | deci | '.')+
+let regexp label_seq = alpha (alpha | deci | '-' | ':' | '_')*
+let regexp extra_seq = (alpha | deci | '=' | ',' | '!')+
 
-let regexp order = '(' order_char* ')'
-let regexp label = '[' label_char+ ']'
-let regexp extra = '<' extra_char+ '>'
+let regexp order = '(' order_seq? ')'
+let regexp label = '[' label_seq ']'
+let regexp extra = '<' extra_seq '>'
 let regexp optional = ( order | label | extra )*
 let regexp primary = '{' ident '}'
 
@@ -111,7 +111,7 @@ let regexp simple_comm = '\\' ident optional
 let regexp env_begin = "\\begin" optional primary
 let regexp env_end = "\\end" primary
 let regexp macroarg = '$' '{' deci+ '}'
-let regexp macrocall = '$' '{' ident '}'
+let regexp macrocall = '$' '{' label_seq '}'
 
 let regexp entity_hexa = "&#x" (alpha | deci)+ ';'
 let regexp entity_deci = "&#" (alpha | deci)+ ';'
@@ -128,8 +128,8 @@ let regexp begin_mathtex_inl = "[$"
 let regexp end_mathtex_inl = "$]"
 let regexp begin_mathml_inl = "<$"
 let regexp end_mathml_inl = "$>"
-let regexp column_multi = begin_marker ( alpha | deci )* end_marker
-let regexp column_delim = space* '|' column_multi? space*
+
+let regexp cell_mark = space* '|' space*
 let regexp row_end = space* '|' space* '\n'
 
 let regexp endash = "--"
@@ -139,7 +139,7 @@ let regexp quote_close = "''"
 
 
 (********************************************************************************)
-(**	{2 Auxiliary functions}							*)
+(**	{1 Auxiliary functions}							*)
 (********************************************************************************)
 
 let count_lines lexbuf =
@@ -156,12 +156,9 @@ let sub_lexbuf ~pos ~len lexbuf =
 let rtrim_lexbuf ~first lexbuf =
 	Ulexing.utf8_sub_lexeme lexbuf first ((Ulexing.lexeme_length lexbuf) - first - 1)
 
-let strip_lexbuf lexbuf =
-	String.slice ~first:2 ~last:(-1) (String.strip ~chars:" \t" (Ulexing.utf8_lexeme lexbuf))
-
 
 (********************************************************************************)
-(**	{2 Actual scanners}							*)
+(**	{1 Actual scanners}							*)
 (********************************************************************************)
 
 (**	There are seven possible scanning environments in a Lambtex document,
@@ -179,7 +176,7 @@ let strip_lexbuf lexbuf =
 let general_scanner : (Ulexing.lexbuf -> int * [> general_token_t]) = lexer
 	| simple_comm		-> (0, `Tok_simple_comm (whole_lexbuf lexbuf))
 	| env_begin		-> (0, `Tok_env_begin (whole_lexbuf lexbuf))
-	| env_end		-> (0, `Tok_env_end (whole_lexbuf lexbuf))
+	| env_end		-> (0, `Tok_env_end (rtrim_lexbuf ~first:5 lexbuf))
 	| macroarg		-> (0, `Tok_macroarg (rtrim_lexbuf ~first:2 lexbuf))
 	| macrocall		-> (0, `Tok_macrocall (rtrim_lexbuf ~first:2 lexbuf))
 	| begin_marker		-> (0, `Tok_begin)
@@ -207,15 +204,15 @@ let general_scanner : (Ulexing.lexbuf -> int * [> general_token_t]) = lexer
 let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
 	| simple_comm		-> (0, `Tok_simple_comm (whole_lexbuf lexbuf))
 	| env_begin		-> (0, `Tok_env_begin (whole_lexbuf lexbuf))
-	| env_end		-> (0, `Tok_env_end (whole_lexbuf lexbuf))
+	| env_end		-> (0, `Tok_env_end (rtrim_lexbuf ~first:5 lexbuf))
 	| macroarg		-> (0, `Tok_macroarg (rtrim_lexbuf ~first:2 lexbuf))
 	| macrocall		-> (0, `Tok_macrocall (rtrim_lexbuf ~first:2 lexbuf))
 	| begin_marker		-> (0, `Tok_begin)
 	| end_marker		-> (0, `Tok_end)
 	| begin_mathtex_inl	-> (0, `Tok_begin_mathtex_inl)
 	| begin_mathml_inl	-> (0, `Tok_begin_mathml_inl)
-	| column_delim		-> (0, `Tok_column_delim (strip_lexbuf lexbuf))	(* new compared to general *)
-	| row_end		-> (0, `Tok_row_end)				(* new compared to general *)
+	| cell_mark		-> (0, `Tok_cell_mark)			(* new compared to general *)
+	| row_end		-> (count_lines lexbuf, `Tok_row_end)	(* new compared to general *)
 	| eof			-> (0, `Tok_eof)
 	| parbreak		-> (count_lines lexbuf, `Tok_parbreak)
 	| space+ | eol		-> (count_lines lexbuf, `Tok_space)
@@ -228,7 +225,6 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
 	| quote_open		-> (0, `Tok_entity (Entity.Ent_name "ldquo"))
 	| quote_close		-> (0, `Tok_entity (Entity.Ent_name "rdquo"))
 	| _			-> (0, `Tok_plain (whole_lexbuf lexbuf))
-
 
 
 (**	Special scanner for raw environments.  Pretty much every character is
@@ -266,12 +262,11 @@ let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token_t]) = lexe
 	indicates the termination token for the environment.  The actual Lambtex
 	environments using it are "verbatim", "prog", "mathtex", and "mathml".
 *)
-
 let literal_scanner terminator : (Ulexing.lexbuf -> int * [> literal_token_t]) = lexer
 	| env_end ->
 		let str = rtrim_lexbuf ~first:5 lexbuf
 		in if str = terminator
-		then (0, `Tok_env_end (whole_lexbuf lexbuf))
+		then (0, `Tok_env_end (rtrim_lexbuf ~first:5 lexbuf))
 		else (0, `Tok_raw (whole_lexbuf lexbuf))
 	| eof ->
 		(0, `Tok_eof)

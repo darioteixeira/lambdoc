@@ -6,12 +6,13 @@
 *)
 (********************************************************************************)
 
-(**	Tokenizer for the Lambtex reader.  Because the implementation of the
-	Lambtex reader relies on different scanners to be invoked in accordance
-	to the current context, instead of the usual parser/lexer combination
-	we actually use a parser/tokenizer/scanner architecture.  The tokenizer
-	sits between the parser proper and the various scanners, keeping a
-	partial view of the current parsing environment so it can choose the
+(**	Tokenizer for the Lambtex reader.  Because the implementation of the Lambtex
+	reader relies on different scanners to be invoked in accordance to the current
+	environment, and because the significance of spaces depends on whether we find
+	ourselves in a block or inline context, instead of the usual parser/lexer
+	combination we actually use a parser/tokenizer/scanner architecture.  The
+	tokenizer sits between the parser proper and the various scanners, keeping
+	a partial view of the current parsing environment so it can choose the
 	appropriate scanner to invoke.
 *)
 
@@ -19,12 +20,13 @@ open ExtString
 open Lexing
 open Lambdoc_reader
 open Ast
+open Globalenv
 open Parser
 open Scanner
 
 
 (********************************************************************************)
-(**	{2 Exceptions}								*)
+(**	{1 Exceptions}								*)
 (********************************************************************************)
 
 exception Unknown_env_command of string
@@ -32,90 +34,194 @@ exception Unknown_simple_command of string
 
 
 (********************************************************************************)
-(**	{2 Type declarations}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Declaration of the various kinds of scanning environments.  Most of
-	these are triggered by begin/end commands, except for the inline math
-	environments and inline simple commands.
-*)
-type environment_t =
-	| Inline
-	| Tabular
-	| Raw
-	| Mathtex_inl
-	| Mathml_inl
-	| Mathtex_blk of string
-	| Mathml_blk of string
-	| Verbatim of string
-	| Program of string
+type context_t = Blk | Inl | Tab
 
-
-(**	Declaration of the two scanning contexts.  A [Blk] (block) context
-	means that whitespace is ignored, while in an [Inl] (inline) context
-	whitespace is relevant.
-*)
-type context_t =
-	| Blk
-	| Inl
-
-
-(**	Actions for the automaton that changes the tokenizer state.  The
-	actions are as follows:
-	{ul	{li [Set_con]: Changes the current context;}
-		{li [Push_con]: Pushes the current context into the context history;}
-		{li [Pop_con]: Pops a context from the context history, using it to set the current context;}
-		{li [Push_env]: Pushes a new environment into the environment history;}
-		{li [Pop_env]: Pops the last environment from the environment history;}
-		{li [Store]: Stores a list of future environments;}
-		{li [Fetch]: Fetches the first environment from storage and pushes into the environment history.}}
-*)
 type action_t =
-	| Set_con of context_t
-	| Push_con
-	| Pop_con
-	| Push_env of environment_t
-	| Pop_env
-	| Store of environment_t list
-	| Fetch
+	| Hold
+	| Set of context_t
+	| Push of context_t
+	| Pop
 
 
 (********************************************************************************)
-(*	{2 Auxiliary regular expressions}					*)
+(*	{1 Auxiliary regular expressions}					*)
 (********************************************************************************)
 
-let pat_env = "\\\\(?<env>(begin)|(end))"
-let pat_command = "\\\\(?<command>[a-z][a-z0-9_]*)"
-let pat_primary = "\\{(?<primary>[a-z][a-z0-9_]*)\\}"
+let pat_begin = "\\\\begin"
+let pat_simple = "\\\\(?<simple>[a-zA-Z][a-zA-Z0-9_]*)"
+let pat_primary = "\\{(?<primary>[a-zA-Z][a-zA-Z0-9_]*)\\}"
 
-let pat_order = "(?<order>\\([a-z0-9\\.]*\\))"
-let pat_label = "(?<label>\\[[a-z0-9\\-:_]*\\])"
-let pat_extra = "(?<extra><[a-z0-9=,!]*>)"
+let pat_order = "(?<order>\\([a-zA-Z0-9\\.]*\\))"
+let pat_label = "(?<label>\\[[a-zA-Z0-9\\-:_]*\\])"
+let pat_extra = "(?<extra><[a-zA-Z0-9=,!]*>)"
 let pat_optional = "(" ^ pat_order ^ "|" ^ pat_extra ^ "|" ^ pat_label ^")*"
 
-let env_rex = Pcre.regexp ("^" ^ pat_env ^ pat_optional ^ pat_primary ^ "$")
-let simple_rex = Pcre.regexp ("^" ^ pat_command ^ pat_optional ^ "$")
+let begin_rex = Pcre.regexp ("^" ^ pat_begin ^ pat_optional ^ pat_primary ^ "$")
+let simple_rex = Pcre.regexp ("^" ^ pat_simple ^ pat_optional ^ "$")
 
 
 (********************************************************************************)
-(**	{2 Tokenizer class}							*)
+(*	{1 Auxiliary functions}							*)
+(********************************************************************************)
+
+(**	Processes raw parameters.  Basically it determines whether the parameter
+	actually exists, and if so, removes the leading and trailing marker.
+*)
+let get_param rex name subs =
+	try
+		let res = Pcre.get_named_substring rex name subs
+		in Some (String.slice ~first:1 ~last:(-1) res)	(* safe because 'res' is Latin1 *)
+	with
+		_ -> None
+
+
+(**	Builds a fully-featured {!Lambdoc_reader.Ast.command_t}.
+*)
+let build_command tag rex subs position =
+	{
+	comm_tag = Some tag;
+	comm_label = get_param rex "label" subs;
+	comm_order = get_param rex "order" subs;
+	comm_extra = get_param rex "extra" subs;
+	comm_linenum = position.pos_lnum;
+	}
+
+
+(**	Builds a {!Lambdoc_reader.Ast.command_t} from an operator.
+	Only the line number field is actually set.
+*)
+let build_op position =
+	{
+	comm_tag = None;
+	comm_label = None;
+	comm_order = None;
+	comm_extra = None;
+	comm_linenum = position.pos_lnum;
+	}
+
+
+(**	Issues the begin tag of an environment command.
+*)
+let issue_begin_command raw_comm position =
+	let subs = Pcre.exec ~rex:begin_rex raw_comm in
+	let primary = Pcre.get_named_substring begin_rex "primary" subs in
+	let command = build_command primary begin_rex subs position in
+	let first_token =
+		if String.starts_with primary "mathtex"
+		then BEGIN_MATHTEX_BLK primary
+		else if String.starts_with primary "mathml"
+		then BEGIN_MATHML_BLK primary
+		else if String.starts_with primary "verbatim"
+		then BEGIN_VERBATIM primary
+		else if String.starts_with primary "pre"
+		then BEGIN_VERBATIM primary
+		else if String.starts_with primary "prog"
+		then BEGIN_PROGRAM primary
+		else match primary with
+			| "abstract"	-> BEGIN_ABSTRACT primary
+			| "itemize"
+			| "itemise"
+			| "ul"		-> BEGIN_ITEMIZE primary
+			| "enumerate"
+			| "ol"		-> BEGIN_ENUMERATE primary
+			| "description"
+			| "dl"		-> BEGIN_DESCRIPTION primary
+			| "qanda"	-> BEGIN_QANDA primary
+			| "verse"	-> BEGIN_VERSE primary
+			| "quote"	-> BEGIN_QUOTE primary
+			| "tabular"	-> BEGIN_TABULAR primary
+			| "subpage"	-> BEGIN_SUBPAGE primary
+			| "pull"	-> BEGIN_PULLQUOTE primary
+			| "boxout"	-> BEGIN_BOXOUT primary
+			| "equation"	-> BEGIN_EQUATION primary
+			| "printout"	-> BEGIN_PRINTOUT primary
+			| "table"	-> BEGIN_TABLE primary
+			| "figure"	-> BEGIN_FIGURE primary
+			| "bib"		-> BEGIN_BIB primary
+			| "note"	-> BEGIN_NOTE primary
+			| x		-> raise (Unknown_env_command x)
+	and second_token = BEGIN_DUMMY command
+	in (Set Blk, [first_token; second_token])
+
+
+(**	Issues a simple command.
+*)
+let issue_simple_command raw_comm position =
+	let subs = Pcre.exec ~rex:simple_rex raw_comm in
+	let simple = Pcre.get_named_substring simple_rex "simple" subs in
+	let command = build_command ("\\" ^ simple) simple_rex subs position in
+	let (context, token) = match simple with
+		| "br"			-> (Inl, LINEBREAK command)
+		| "bold"
+		| "strong"
+		| "b"			-> (Inl, BOLD command)
+		| "emph"
+		| "em"
+		| "i"			-> (Inl, EMPH command)
+		| "code"
+		| "tt"			-> (Inl, CODE command)
+		| "caps"		-> (Inl, CAPS command)
+		| "ins"			-> (Inl, INS command)
+		| "del"			-> (Inl, DEL command)
+		| "sup"			-> (Inl, SUP command)
+		| "sub"			-> (Inl, SUB command)
+		| "mbox"		-> (Inl, MBOX command)
+		| "link"
+		| "a"			-> (Inl, LINK command)
+		| "see"			-> (Inl, SEE command)
+		| "cite"		-> (Inl, CITE command)
+		| "ref"			-> (Inl, REF command)
+		| "sref"		-> (Inl, SREF command)
+		| "mref"		-> (Inl, MREF command)
+		| "paragraph"
+		| "p"			-> (Blk, PARAGRAPH command)
+		| "bitmap"		-> (Blk, BITMAP command)
+		| "part"		-> (Blk, PART command)
+		| "appendix"		-> (Blk, APPENDIX command)
+		| "section"
+		| "h1"			-> (Blk, SECTION command)
+		| "subsection"
+		| "h2"			-> (Blk, SUBSECTION command)
+		| "subsubsection"
+		| "h3"			-> (Blk, SUBSUBSECTION command)
+		| "bibliography"	-> (Blk, BIBLIOGRAPHY command)
+		| "notes"		-> (Blk, NOTES command)
+		| "toc"			-> (Blk, TOC command)
+		| "parhead"
+		| "h4"			-> (Blk, PARHEAD command)
+		| "title"		-> (Blk, TITLE command)
+		| "subtitle"		-> (Blk, SUBTITLE command)
+		| "rule"
+		| "hr"			-> (Blk, RULE command)
+		| "macrodef"		-> (Blk, MACRODEF command)
+		| "item"
+		| "li"			-> (Blk, ITEM command)
+		| "question"		-> (Blk, QUESTION command)
+		| "answer"		-> (Blk, ANSWER command)
+		| "head"		-> (Blk, THEAD command)
+		| "foot"		-> (Blk, TFOOT command)
+		| "body"		-> (Blk, TBODY command)
+		| "who"			-> (Blk, BIB_AUTHOR command)
+		| "what"		-> (Blk, BIB_TITLE command)
+		| "where"		-> (Blk, BIB_RESOURCE command)
+		| "caption"		-> (Blk, CAPTION command)
+		| x			-> raise (Unknown_simple_command x)
+	in (Set context, [token])
+
+
+(********************************************************************************)
+(**	{1 Tokenizer class}							*)
 (********************************************************************************)
 
 class tokenizer =
 object (self)
 
-	(**	The state of the tokenizer: it consists of a boolean indicating
-		whether unexpected inline bundles should be allowed, the production
-		queue, the current context, the context history, the environment
-		history, and the storage for future environments.
-	*)
-
-	val mutable allow_surprise_bundle = false
-	val mutable productions = []
 	val mutable context = Blk
-	val context_history = Stack.create ()
-	val env_history = Stack.create ()
-	val env_storage = Queue.create ()
+	val mutable history = []
+	val mutable productions = []
 
 
 	(**	The current position of the scanner.  This is a value
@@ -136,226 +242,17 @@ object (self)
 		position <- {position with pos_lnum = position.pos_lnum + num_newlines}
 
 
-	(**	This method returns the tag information corresponding to the string form of
-		the supplied simple tag.  A simple tag is one whose begin is signaled by its
-		own escaped name.  In similarity to {!get_env_tag}, this method returns a
-		pair consisting of the parser token and a list of actions for the automaton.
-		Note that some [Store] actions may take a variable number of environments,
-		which always happen to be [Inline].  These are represented by a commented
-		[Inline] environment.
+	(**	Updates the current context according to the context action.
 	*)
-	method private get_simple_tag tag params =
-
-		let (token, context, actions) = match tag with
-
-			| "br"			-> (LINEBREAK params,		Inl,	[])
-			| "bold"
-			| "strong"
-			| "b"			-> (BOLD params,		Inl,	[Store [Inline]])
-			| "emph"
-			| "em"
-			| "i"			-> (EMPH params,		Inl,	[Store [Inline]])
-			| "code"
-			| "tt"			-> (CODE params,		Inl,	[Store [Inline]])
-			| "caps"		-> (CAPS params,		Inl,	[Store [Inline]])
-			| "ins"			-> (INS params,			Inl,	[Store [Inline]])
-			| "del"			-> (DEL params,			Inl,	[Store [Inline]])
-			| "sup"			-> (SUP params,			Inl,	[Store [Inline]])
-			| "sub"			-> (SUB params,			Inl,	[Store [Inline]])
-			| "mbox"		-> (MBOX params,		Inl,	[Store [Inline]])
-
-			| "link"
-			| "a"			-> (LINK params,		Inl,	[Store [Raw; (* Inline *)]])
-			| "see"			-> (SEE params,			Inl,	[Store [Raw]])
-			| "cite"		-> (CITE params,		Inl,	[Store [Raw]])
-			| "ref"			-> (REF params,			Inl,	[Store [Raw]])
-			| "sref"		-> (SREF params,		Inl,	[Store [Raw]])
-			| "mref"		-> (MREF params,		Inl,	[Store [Raw; Inline]])
-
-			| "paragraph"
-			| "p"			-> (PARAGRAPH params, 		Blk,	[Store [Inline]])
-			| "bitmap"		-> (BITMAP params,		Blk,	[Store [Raw; Raw]])
-			| "part"		-> (PART params, 		Blk,	[Store [Inline]])
-			| "appendix"		-> (APPENDIX params,		Blk,	[])
-			| "section"
-			| "h1"			-> (SECTION params,		Blk,	[Store [Inline]])
-			| "subsection"
-			| "h2"			-> (SUBSECTION params,		Blk,	[Store [Inline]])
-			| "subsubsection"
-			| "h3"			-> (SUBSUBSECTION params,	Blk,	[Store [Inline]])
-			| "bibliography"	-> (BIBLIOGRAPHY params,	Blk,	[])
-			| "notes"		-> (NOTES params,		Blk,	[])
-			| "toc"			-> (TOC params,			Blk,	[])
-			| "parhead"
-			| "h4"			-> (PARHEAD params,		Blk,	[Store [Inline]])
-			| "title"		-> (TITLE params, 		Blk,	[Store [Inline]])
-			| "subtitle"		-> (SUBTITLE params, 		Blk,	[Store [Inline]])
-			| "rule"
-			| "hr"			-> (RULE params,		Blk,	[])
-			| "macrodef"		-> (MACRODEF params,		Blk,	[Store [Inline]])
-
-			| "item"
-			| "li"			-> (ITEM params,		Blk,	[(* Store [Inline] *)])
-			| "question"		-> (QUESTION params,		Blk,	[(* Store [Inline] *)])
-			| "answer"		-> (ANSWER params,		Blk,	[(* Store [Inline] *)])
-
-			| "head"		-> (THEAD params,		Blk,	[])
-			| "foot"		-> (TFOOT params,		Blk,	[])
-			| "body"		-> (TBODY params,		Blk,	[])
-			| "who"			-> (BIB_AUTHOR params,		Blk,	[Store [Inline]])
-			| "what"		-> (BIB_TITLE params,		Blk,	[Store [Inline]])
-			| "where"		-> (BIB_RESOURCE params,	Blk,	[Store [Inline]])
-			| "caption"		-> (CAPTION params,		Blk,	[Store [Inline]])
-			| x			-> raise (Unknown_simple_command x)
-
-		in (Some token, (Set_con context) :: actions)
-
-
-	(**	This method returns the tag information corresponding to the string
-		form of the supplied environment tag.  An environment tag is one that
-		begins with a \begin declaration and ends with a corresponding \end.
-		The information returned is a pair consisting of the parser token,
-		and a list of actions for the automaton.
-
-	*)
-	method private get_env_tag tag params is_begin =
-
-		let (token_begin, token_end, actions_begin, actions_end) =
-
-			(* First check if it matches any of the literal environment prefixes. *)
-
-			if String.starts_with tag "mathtex"
-			then (BEGIN_MATHTEX_BLK params, END_MATHTEX_BLK params, [Push_env (Mathtex_blk tag)], [Pop_env])
-			else if String.starts_with tag "mathml"
-			then (BEGIN_MATHML_BLK params, END_MATHML_BLK params, [Push_env (Mathml_blk tag)], [Pop_env])
-			else if String.starts_with tag "verbatim"
-			then (BEGIN_VERBATIM params, END_VERBATIM params, [Push_env (Verbatim tag)], [Pop_env])
-			else if String.starts_with tag "pre"
-			then (BEGIN_VERBATIM_1 params, END_VERBATIM_1 params, [Push_env (Verbatim tag)], [Pop_env])
-			else if String.starts_with tag "prog"
-			then (BEGIN_PROGRAM params, END_PROGRAM params, [Push_env (Program tag)], [Pop_env])
-
-			(* If not literal, then test the other environments. *)
-
-			else match tag with
-			| "abstract"	-> (BEGIN_ABSTRACT params,	END_ABSTRACT params,		[],					[])
-			| "itemize"	-> (BEGIN_ITEMIZE params,	END_ITEMIZE params,		[],					[])
-			| "itemise"	-> (BEGIN_ITEMIZE_1 params,	END_ITEMIZE_1 params,		[],					[])
-			| "ul"		-> (BEGIN_ITEMIZE_2 params,	END_ITEMIZE_2 params,		[],					[])
-			| "enumerate"	-> (BEGIN_ENUMERATE params,	END_ENUMERATE params,		[],					[])
-			| "ol"		-> (BEGIN_ENUMERATE_1 params,	END_ENUMERATE_1 params,		[],					[])
-			| "description"	-> (BEGIN_DESCRIPTION params,	END_DESCRIPTION params,		[],					[])
-			| "dl"		-> (BEGIN_DESCRIPTION_1 params,	END_DESCRIPTION_1 params,	[],					[])
-			| "qanda"	-> (BEGIN_QANDA params,		END_QANDA params,		[],					[])
-			| "verse"	-> (BEGIN_VERSE params,		END_VERSE params,		[],					[])
-			| "quote"	-> (BEGIN_QUOTE params,		END_QUOTE params,		[],					[])
-			| "tabular"	-> (BEGIN_TABULAR params,	END_TABULAR params,		[Store [Raw]; Push_env Tabular],	[Pop_env])
-			| "subpage"	-> (BEGIN_SUBPAGE params,	END_SUBPAGE params,		[],					[])
-			| "pull"	-> (BEGIN_PULLQUOTE params,	END_PULLQUOTE params,		[],					[])
-			| "boxout"	-> (BEGIN_BOXOUT params,	END_BOXOUT params,		[(* Store [Inline] *)],			[])
-			| "equation"	-> (BEGIN_EQUATION params,	END_EQUATION params,		[],					[])
-			| "printout"	-> (BEGIN_PRINTOUT params,	END_PRINTOUT params,		[],					[])
-			| "table"	-> (BEGIN_TABLE params,		END_TABLE params,		[],					[])
-			| "figure"	-> (BEGIN_FIGURE params,	END_FIGURE params,		[],					[])
-			| "bib"		-> (BEGIN_BIB params,		END_BIB params,			[],					[])
-			| "note"	-> (BEGIN_NOTE params,		END_NOTE params,		[],					[])
-			| x		-> raise (Unknown_env_command x)
-
-		in if is_begin
-		then (Some (token_begin), (Set_con Blk) :: actions_begin)
-		else (Some (token_end), (Set_con Blk) :: actions_end)
-
-
-	(**	Processes raw parameters.  Basically it determines whether the parameter
-		actually exists, and if so, removes the leading and trailing marker.
-	*)
-	method private get_param rex name subs =
-		try
-			let res = Pcre.get_named_substring rex name subs
-			in Some (String.slice ~first:1 ~last:(-1) res)	(* safe because 'res' is Latin1 *)
-		with
-			_ -> None
-
-
-	(**	Builds a fully-featured {!Lambdoc_reader.Ast.command_t}.
-	*)
-	method private build_command tag rex subs =
-		{
-		comm_tag = Some tag;
-		comm_label = self#get_param rex "label" subs;
-		comm_order = self#get_param rex "order" subs;
-		comm_extra = self#get_param rex "extra" subs;
-		comm_linenum = position.pos_lnum;
-		}
-
-
-	(**	Builds a {!Lambdoc_reader.Ast.command_t} from an operator.
-		Only the line number field is actually set.
-	*)
-	method private build_op =
-		{
-		comm_tag = None;
-		comm_label = None;
-		comm_order = None;
-		comm_extra = None;
-		comm_linenum = position.pos_lnum;
-		}
-
-
-	(**	Issues an environment command.
-	*)
-	method private issue_env_command raw_comm =
-		let subs = Pcre.exec ~rex:env_rex raw_comm in
-		let command = Pcre.get_named_substring env_rex "env" subs
-		and primary = Pcre.get_named_substring env_rex "primary" subs in
-		let params = self#build_command primary env_rex subs
-		in self#get_env_tag primary params (command = "begin")
-
-
-	(**	Issues a simple command.
-	*)
-	method private issue_simple_command raw_comm =
-		let subs = Pcre.exec ~rex:simple_rex raw_comm in
-		let command = Pcre.get_named_substring simple_rex "command" subs in
-		let params = self#build_command ("\\" ^ command) simple_rex subs
-		in self#get_simple_tag command params
-
-
-	(**	Returns the element at the top of the environment history.
-	*)
-	method private get_env () =
-		try
-			Some (Stack.top env_history)
-		with
-			Stack.Empty -> None
-
-
-	(**	Performs the given {!action_t}, changing the state of the automaton.
-		Note that if the action is [Fetch], the [env_storage] queue is empty,
-		*and* the flag [allow_surprise_bundle] is active, then that means we
-		are dealing with a command that takes a variable number of arguments.
-		In all these cases we can simply push an [Inline] environment as default.  
-	*)
-	method private perform_action = function
-		| Set_con con ->
-			context <- con
-		| Push_con ->
-			Stack.push context context_history
-		| Pop_con ->
-			context <- (try Stack.pop context_history with Stack.Empty -> context)
-		| Push_env env ->
-			Stack.push env env_history
-		| Pop_env ->
-			(try ignore (Stack.pop env_history) with Stack.Empty -> ())
-		| Store envs ->
-			List.iter (fun x -> Queue.add x env_storage) envs
-		| Fetch ->
-			let env =
-				try Some (Queue.take env_storage)
-				with Queue.Empty -> if allow_surprise_bundle then Some Inline else None
-			in match env with
-				| Some e -> Stack.push e env_history
-				| None	 -> ()
+	method private update_context action =
+		let (new_context, new_history) = match action with
+			| Hold	   -> (context, history)
+			| Set ctx  -> (ctx, history)
+			| Push ctx -> (ctx, context :: history)
+			| Pop	   -> match history with hd::tl -> (hd, tl) | [] -> (context, history)
+		in
+			context <- new_context;
+			history <- new_history
 
 
 	(**	Stores a new token into the production queue.
@@ -367,73 +264,49 @@ object (self)
 			| _						-> productions @ [token]
 
 
-	(**	Private method that actually does all the work of invoking the
-		scanner to produce a new token.
+	(**	Produce new tokens.
 	*)
 	method private produce lexbuf =
-
-		let scanner = match self#get_env () with
-			| Some Inline		-> Scanner.general_scanner
-			| Some Tabular		-> Scanner.tabular_scanner
-			| Some Verbatim term	-> Scanner.literal_scanner term
-			| Some Program term	-> Scanner.literal_scanner term
-			| Some Raw		-> Scanner.raw_scanner
-			| Some Mathtex_inl	-> Scanner.mathtex_inl_scanner
-			| Some Mathml_inl	-> Scanner.mathml_inl_scanner
-			| Some Mathtex_blk term	-> Scanner.literal_scanner term
-			| Some Mathml_blk term	-> Scanner.literal_scanner term
-			| None			-> Scanner.general_scanner in
-
-
-		let (num_newlines, token) = scanner lexbuf in
-		let (maybe_token, actions) = match token with
-			| `Tok_simple_comm comm		-> self#issue_simple_command comm
-			| `Tok_env_begin comm		-> self#issue_env_command comm
-			| `Tok_env_end comm		-> self#issue_env_command comm
-			| `Tok_macroarg arg		-> (Some (MACROARG (self#build_op, arg)),	[Set_con Inl])
-			| `Tok_macrocall label		-> (Some (MACROCALL (self#build_op, label)),	[Set_con Inl])
-			| `Tok_begin			-> (Some BEGIN,					[Fetch; Push_con])
-			| `Tok_end			-> (Some END,					[Pop_env; Pop_con])
-			| `Tok_begin_mathtex_inl	-> (Some (BEGIN_MATHTEX_INL self#build_op),	[Set_con Inl; Push_con; Push_env Mathtex_inl])
-			| `Tok_end_mathtex_inl		-> (Some (END_MATHTEX_INL self#build_op),	[Pop_env; Pop_con])
-			| `Tok_begin_mathml_inl		-> (Some (BEGIN_MATHML_INL self#build_op),	[Set_con Inl; Push_con; Push_env Mathml_inl])
-			| `Tok_end_mathml_inl		-> (Some (END_MATHML_INL self#build_op),	[Pop_env; Pop_con])
-			| `Tok_column_delim multi	-> (Some (COLUMN_DELIM (self#build_op, multi)),	[Set_con Blk])
-			| `Tok_row_end			-> (Some (ROW_END self#build_op),		[Set_con Blk])
-			| `Tok_eof			-> (Some EOF,					[])
-			| `Tok_parbreak			-> (None,					[Set_con Blk])
-			| `Tok_space when context = Blk	-> (None,					[])
-			| `Tok_space when context = Inl	-> (Some (PLAIN (self#build_op, " ")),		[])
-			| `Tok_raw txt			-> (Some (RAW txt),				[])
-			| `Tok_plain txt		-> (Some (PLAIN (self#build_op, txt)),		[Set_con Inl])
-			| `Tok_entity ent		-> (Some (ENTITY (self#build_op, ent)),		[Set_con Inl])
-			| _				-> failwith "Unexpected scanner token" in
-
-		let () = match token with
-			| `Tok_simple_comm _
-			| `Tok_env_begin _
-			| `Tok_end
-			| `Tok_macrocall _		-> allow_surprise_bundle <- true
-			| `Tok_begin			-> ()
-			| _				-> allow_surprise_bundle <- false in
-
-		let old_context = context in
-
-		let () =
-			List.iter self#perform_action actions;
-			match (old_context, context, self#get_env ()) with
-				| (Blk, Inl, None)	-> self#store (NEW_PAR self#build_op)
-				| _			-> () in
-
-		let () = match maybe_token with
-			| Some token	-> self#store token
-			| None		-> ()
-
-		in self#update_position num_newlines
+		let scanner = match Globalenv.get_scanner () with
+			| General	-> Scanner.general_scanner
+			| Raw		-> Scanner.raw_scanner
+			| Mathtex_inl	-> Scanner.mathtex_inl_scanner
+			| Mathml_inl	-> Scanner.mathml_inl_scanner
+			| Tabular	-> Scanner.tabular_scanner
+			| Literal term	-> Scanner.literal_scanner term in
+		let (num_newlines, raw_token) = scanner lexbuf in
+		let op = build_op self#position in
+		let (action, tokens) = match raw_token with
+			| `Tok_simple_comm comm		-> issue_simple_command comm self#position
+			| `Tok_env_begin comm		-> issue_begin_command comm self#position
+			| `Tok_env_end comm		-> (Set Blk, [END_DUMMY comm; END_BLOCK])
+			| `Tok_macroarg arg		-> (Set Inl, [MACROARG (op, arg)])
+			| `Tok_macrocall label		-> (Set Inl, [MACROCALL (op, label)])
+			| `Tok_begin			-> (Push Inl, [BEGIN; OPEN_DUMMY])
+			| `Tok_end			-> (Pop, [CLOSE_DUMMY; END])
+			| `Tok_begin_mathtex_inl	-> (Set Inl, [BEGIN_MATHTEX_INL op; OPEN_DUMMY])
+			| `Tok_end_mathtex_inl		-> (Hold, [CLOSE_DUMMY; END_MATHTEX_INL op])
+			| `Tok_begin_mathml_inl		-> (Set Inl, [BEGIN_MATHML_INL op; OPEN_DUMMY])
+			| `Tok_end_mathml_inl		-> (Hold, [CLOSE_DUMMY; END_MATHML_INL op])
+			| `Tok_cell_mark		-> (Set Tab, [CELL_MARK op])
+			| `Tok_row_end			-> (Set Tab, [ROW_END op])
+			| `Tok_eof			-> (Hold, [EOF])
+			| `Tok_parbreak			-> (Set Blk, [])
+			| `Tok_space when context = Inl	-> (Hold, [PLAIN (op, " ")])
+			| `Tok_space			-> (Hold, [])
+			| `Tok_raw txt			-> (Hold, [RAW txt])
+			| `Tok_plain txt		-> (Set Inl, [PLAIN (op, txt)])
+			| `Tok_entity ent		-> (Set Inl, [ENTITY (op, ent)]) in
+		let tokens = match (context, action) with
+			| (Blk, Set Inl) -> (NEW_PAR op) :: tokens
+			| _		 -> tokens
+		in
+			self#update_position num_newlines;
+			self#update_context action;
+			List.iter self#store tokens
 
 
-	(**	Consumer method.  Given a [lexbuf], consumes a token from the
-		lexer stream and returns it to the caller.
+	(**	Returns a new token.
 	*)
 	method consume lexbuf = match productions with
 		| []

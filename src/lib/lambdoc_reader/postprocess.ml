@@ -208,6 +208,7 @@ let process_document classnames idiosyncrasies document_ast =
 				| None	   -> [])
 
 		| (comm, Ast.Macrocall (label, arglist)) ->
+			
 			let elem () =
 				try
 					let (macro_nargs, macro_seq) = Macromap.find macromap label
@@ -441,19 +442,20 @@ let process_document classnames idiosyncrasies document_ast =
 		let num_columns = Array.length specs in
 
 		let convert_cell (comm, raw_cellspec, seq) =
-			let (colspan, cellspec) =
-				if raw_cellspec <> ""
-				then
-					try
-						let subs = Pcre.exec ~rex:column_rex raw_cellspec in
-						let colspan = int_of_string (Pcre.get_named_substring column_rex "colspan" subs)
-						and colspec = Tabular.colspec_of_string (Pcre.get_named_substring column_rex "colspec" subs)
-						in (colspan, Some (colspec, colspan))
-					with _ ->
-						let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw_cellspec)
-						in DynArray.add errors (comm.comm_linenum, msg);
-						(1, None)
-				else
+			let (colspan, cellspec) = match raw_cellspec with
+				| Some raw ->
+					begin
+						try
+							let subs = Pcre.exec ~rex:column_rex raw in
+							let colspan = int_of_string (Pcre.get_named_substring column_rex "colspan" subs)
+							and colspec = Tabular.colspec_of_string (Pcre.get_named_substring column_rex "colspec" subs)
+							in (colspan, Some (colspec, colspan))
+						with _ ->
+							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw)
+							in DynArray.add errors (comm.comm_linenum, msg);
+							(1, None)
+					end
+				| None ->
 					(1, None)
 			in (colspan, Tabular.make_cell cellspec (convert_seq seq)) in
 

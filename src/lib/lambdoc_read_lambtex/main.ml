@@ -38,6 +38,8 @@ struct
 		with
 			| Utf8.MalFormed ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Malformed UTF-8 sequence"))
+			| Globalenv.Pop_mismatch (found, expected) ->
+				raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected))
 			| Parser.Error ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 			| Tokenizer.Unknown_env_command tag ->

@@ -15,6 +15,10 @@ open Entity
 
 
 (********************************************************************************)
+(**	{1 Type definitions}							*)
+(********************************************************************************)
+
+(********************************************************************************)
 (**	{2 Parsing data associated with command tags}				*)
 (********************************************************************************)
 
@@ -63,7 +67,9 @@ type seq_t = inline_t list
 (**	{2 Data types for document blocks}					*)
 (********************************************************************************)
 
-type tabular_row_t = command_t * (command_t * string * seq_t) list
+type tabular_cell_t = command_t * raw_t option * seq_t
+
+type tabular_row_t = command_t * tabular_cell_t list
 
 type tabular_group_t = command_t option * tabular_row_t list
 
@@ -122,7 +128,7 @@ type frag_t = block_t list
 
 
 (********************************************************************************)
-(*	{2 The type {!t} itself}						*)
+(*	{2 The main type {!t} itself}						*)
 (********************************************************************************)
 
 type t = frag_t
