@@ -76,8 +76,8 @@
 .doc_enumerate {list-style: decimal outside;}
 
 .doc_itemize > li,
-.doc_enumerate > li,
-.doc_description > dt {margin: 0.5em 0;}
+.doc_enumerate > li {margin: 0.5em 0;}
+.doc_description > dt {margin: 0.5em 0 0.25em;}
 
 .doc_style_none		{list-style-type: none;}
 .doc_style_disc		{list-style-type: disc;}
@@ -93,7 +93,8 @@
 	{
 	margin-left: -1.5em;
 	font-size: Size_normal;
-	text-decoration: underline;
+	font-weight: bold;
+	color: Colour_heading;
 	}
 
 .doc_itemize:not(:first-child),
@@ -208,7 +209,7 @@
 	font-size: Size_pre;
 	font-family: Family_mono;
 	color: #000000;
-	background: #f9f9f9;
+	background: Background_prog;
 	border: Box_border;
 	-moz-box-shadow: Box_shadow;
 	-moz-border-radius: Box_radius;
@@ -237,8 +238,8 @@
 	padding: 0.1em 1em;
 	}
 
-.doc_hl_even	{background: #f9f9f9;}
-.doc_hl_odd	{background: #f3f6fc;}
+.doc_hl_odd	{background: Background_prog_odd;}
+.doc_hl_even	{background: Background_prog_even;}
 .doc_hl_dummy	{line-height: 0.5em;}
 
 .doc_hl_num	{color: #606; font-weight: bold;}
@@ -266,59 +267,50 @@
 
 .doc_tab > div {display: inline-block;}
 
-.doc_tab table
+.doc_tab > div > table
 	{
 	font-size: Size_small;
 	border-collapse: collapse;
-	background: #444;
-	border: Box_border;
-	-moz-box-shadow: Box_shadow;
+	border-top: 2px solid Border_tabular;
+	border-bottom: 2px solid Border_tabular;
 	}
 
-.doc_tab thead,
-.doc_tab tfoot
+.doc_tab > div > table > thead
 	{
 	vertical-align: bottom;
 	font-weight: bold;
+	border-bottom: 1px solid Border_tabular;
 	}
 
-.doc_tab th,
-.doc_tab td
+.doc_tab > div > table > tbody
 	{
-	padding: 0.5em 1em;
-	border-left: 1px solid #ccc;
-	border-top: 1px solid #ccc;
+	margin-bottom: 2em;
+	padding-top: 2em;
 	}
 
-.doc_tab th:first-child,
-.doc_tab td:first-child
+.doc_tab > div > table > tfoot
 	{
-	border-left: none;
+	vertical-align: bottom;
+	font-weight: bold;
+	border-top: 1px solid Border_tabular;
 	}
 
-.doc_tab tbody > tr:first-child > th,
-.doc_tab tbody > tr:first-child > td,
-.doc_tab tfoot > tr:first-child > th,
-.doc_tab tfoot > tr:first-child > td
-	{
-	border-top: Box_border;
-	}
+.doc_row > th {padding: 0.4em 1em; font-weight: bold;}
+.doc_row > td {padding: 0.4em 1em; font-weight: bold;}
+tbody > .doc_row > th {padding: 0.1em 1em;}
+tbody > .doc_row > td {padding: 0.1em 1em; font-weight: normal;}
 
-.doc_tab thead > tr:first-child > th,
-.doc_tab thead > tr:first-child > td
-	{
-	border-top: Box_border;
-	}
+tbody:first-of-type > .doc_row:first-child > th {padding-top: 0.4em;}
+tbody:first-of-type > .doc_row:first-child > td {padding-top: 0.4em;}
+tbody > .doc_row:last-child > th {padding-bottom: 0.4em;}
+tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 
-.doc_coll {text-align: left;}
-.doc_colr {text-align: right;}
-.doc_colc {text-align: center;}
-.doc_colj {text-align: justify;}
+.doc_cell_l {text-align: left;}
+.doc_cell_r {text-align: right;}
+.doc_cell_c {text-align: center;}
+.doc_cell_j {text-align: justify;}
 
-thead > .doc_row_odd, tfoot > .doc_row_odd	{background-color: #eaeaea;}
-thead > .doc_row_even, tfoot > .doc_row_odd	{background-color: #e0e0e0;}
-tbody > .doc_row_odd				{background-color: #fafafa;}
-tbody > .doc_row_even				{background-color: #f0f0f0;}
+.doc_hline {border-bottom: 1px solid #000;}
 
 .doc_tab.doc_float_center:not(:first-child) {margin-top: 2em;}
 .doc_tab.doc_float_center:not(:last-child) {margin-bottom: 2em;}
@@ -381,9 +373,10 @@ tbody > .doc_row_even				{background-color: #f0f0f0;}
 	{
 	clear: both;
 	padding: 0.5em;
-	border-top: 2px solid #999;
-	border-bottom: 2px solid #999;
+	border-top: 2px solid Colour_heading;
+	border-bottom: 2px solid Colour_heading;
 	font-style: italic;
+	color: Colour_heading;
 	}
 
 
@@ -441,8 +434,9 @@ tbody > .doc_row_even				{background-color: #f0f0f0;}
 
 .doc_caption > span:first-child
 	{
-	font-weight: bold;
 	margin-right: 0.5em;
+	font-weight: bold;
+	color: Colour_heading;
 	}
 
 
@@ -528,7 +522,11 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 /* Rules.									*/
 /********************************************************************************/
 
-.doc_rule {margin: 0 1em;}
+.doc_rule
+	{
+	border: 1px dotted Colour_heading;
+	margin: 0 1em;
+	}
 
 .doc_rule:not(:first-child) {margin-top: 1em;}
 .doc_rule:not(:last-child) {margin-bottom: 1em;}

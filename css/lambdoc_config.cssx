@@ -7,7 +7,7 @@
 /********************************************************************************/
 
 #define Colour_body	#000
-#define Colour_code	#333
+#define Colour_code	#666
 #define Colour_ins	#090
 #define Colour_del	#900
 #define Colour_lnk	#009
@@ -15,6 +15,12 @@
 #define Colour_ghostly	#555
 #define Colour_question	Colour_heading
 #define Colour_answer	Colour_body
+
+#define Background_prog			#f9f9f9
+#define Background_prog_odd		#f3f6fc
+#define Background_prog_even		#f9f9f9
+
+#define Border_tabular			#333
 
 
 /********************************************************************************/
@@ -29,6 +35,14 @@
 /********************************************************************************/
 /* Font stacks.									*/
 /********************************************************************************/
+
+/* Linux Libertine stack: */
+
+/*
+#define Font_stack_serif "Linux Libertine O", serif
+#define Font_stack_sans "Linux Biolinum O", sans-serif
+#define Font_stack_mono "Courier New", "Courier", "DejaVu Mono", monospace
+*/
 
 /* Narrow stack: */
 
@@ -74,4 +88,12 @@
 #define Size_h4		1.4em
 
 #define Size_initial	1.429em		/* Relative to Size_normal: 14 * 1.429 = 20px */
+
+
+/********************************************************************************/
+/* Globals.									*/
+/********************************************************************************/
+
+#define Body_width	46em
+#define Line_height	1.5em
 

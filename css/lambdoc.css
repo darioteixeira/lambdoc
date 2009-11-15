@@ -48,12 +48,12 @@ body
  width: 46em;
  font-family: "Georgia", "DejaVu Serif", serif;
  font-size: 0.625em;
- line-height: 1.3em;
+ line-height: 1.5em;
  color: #000;
  }
 .doc_bold {font-weight: bold;}
 .doc_emph {font-style: italic;}
-.doc_code {font-family: "Courier New", "Courier", "DejaVu Mono", monospace; font-weight: bold; color: #333;}
+.doc_code {font-family: "Courier New", "Courier", "DejaVu Mono", monospace; font-weight: bold; color: #666;}
 .doc_caps {font-variant: small-caps;}
 .doc_ins {text-decoration: underline; color: #090;}
 .doc_del {text-decoration: line-through; color: #900;}
@@ -96,8 +96,8 @@ body
 .doc_itemize {list-style: disc outside;}
 .doc_enumerate {list-style: decimal outside;}
 .doc_itemize > li,
-.doc_enumerate > li,
-.doc_description > dt {margin: 0.5em 0;}
+.doc_enumerate > li {margin: 0.5em 0;}
+.doc_description > dt {margin: 0.5em 0 0.25em;}
 .doc_style_none {list-style-type: none;}
 .doc_style_disc {list-style-type: disc;}
 .doc_style_circle {list-style-type: circle;}
@@ -111,7 +111,8 @@ body
  {
  margin-left: -1.5em;
  font-size: 1.4em;
- text-decoration: underline;
+ font-weight: bold;
+ color: #501;
  }
 .doc_itemize:not(:first-child),
 .doc_enumerate:not(:first-child),
@@ -237,8 +238,8 @@ body
  padding: 0.1em 1em;
  }
 
-.doc_hl_even {background: #f9f9f9;}
 .doc_hl_odd {background: #f3f6fc;}
+.doc_hl_even {background: #f9f9f9;}
 .doc_hl_dummy {line-height: 0.5em;}
 
 .doc_hl_num {color: #606; font-weight: bold;}
@@ -266,59 +267,50 @@ body
 
 .doc_tab > div {display: inline-block;}
 
-.doc_tab table
+.doc_tab > div > table
  {
  font-size: 1.3em;
  border-collapse: collapse;
- background: #444;
- border: 1px solid #333;
- -moz-box-shadow: 3px 3px 3px #666;
+ border-top: 2px solid #333;
+ border-bottom: 2px solid #333;
  }
 
-.doc_tab thead,
-.doc_tab tfoot
+.doc_tab > div > table > thead
  {
  vertical-align: bottom;
  font-weight: bold;
+ border-bottom: 1px solid #333;
  }
 
-.doc_tab th,
-.doc_tab td
+.doc_tab > div > table > tbody
  {
- padding: 0.5em 1em;
- border-left: 1px solid #ccc;
- border-top: 1px solid #ccc;
+ margin-bottom: 2em;
+ padding-top: 2em;
  }
 
-.doc_tab th:first-child,
-.doc_tab td:first-child
+.doc_tab > div > table > tfoot
  {
- border-left: none;
- }
-
-.doc_tab tbody > tr:first-child > th,
-.doc_tab tbody > tr:first-child > td,
-.doc_tab tfoot > tr:first-child > th,
-.doc_tab tfoot > tr:first-child > td
- {
+ vertical-align: bottom;
+ font-weight: bold;
  border-top: 1px solid #333;
  }
 
-.doc_tab thead > tr:first-child > th,
-.doc_tab thead > tr:first-child > td
- {
- border-top: 1px solid #333;
- }
+.doc_row > th {padding: 0.4em 1em; font-weight: bold;}
+.doc_row > td {padding: 0.4em 1em; font-weight: bold;}
+tbody > .doc_row > th {padding: 0.1em 1em;}
+tbody > .doc_row > td {padding: 0.1em 1em; font-weight: normal;}
 
-.doc_coll {text-align: left;}
-.doc_colr {text-align: right;}
-.doc_colc {text-align: center;}
-.doc_colj {text-align: justify;}
+tbody:first-of-type > .doc_row:first-child > th {padding-top: 0.4em;}
+tbody:first-of-type > .doc_row:first-child > td {padding-top: 0.4em;}
+tbody > .doc_row:last-child > th {padding-bottom: 0.4em;}
+tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 
-thead > .doc_row_odd, tfoot > .doc_row_odd {background-color: #eaeaea;}
-thead > .doc_row_even, tfoot > .doc_row_odd {background-color: #e0e0e0;}
-tbody > .doc_row_odd {background-color: #fafafa;}
-tbody > .doc_row_even {background-color: #f0f0f0;}
+.doc_cell_l {text-align: left;}
+.doc_cell_r {text-align: right;}
+.doc_cell_c {text-align: center;}
+.doc_cell_j {text-align: justify;}
+
+.doc_hline {border-bottom: 1px solid #000;}
 
 .doc_tab.doc_float_center:not(:first-child) {margin-top: 2em;}
 .doc_tab.doc_float_center:not(:last-child) {margin-bottom: 2em;}
@@ -381,9 +373,10 @@ tbody > .doc_row_even {background-color: #f0f0f0;}
  {
  clear: both;
  padding: 0.5em;
- border-top: 2px solid #999;
- border-bottom: 2px solid #999;
+ border-top: 2px solid #501;
+ border-bottom: 2px solid #501;
  font-style: italic;
+ color: #501;
  }
 
 
@@ -441,8 +434,9 @@ tbody > .doc_row_even {background-color: #f0f0f0;}
 
 .doc_caption > span:first-child
  {
- font-weight: bold;
  margin-right: 0.5em;
+ font-weight: bold;
+ color: #501;
  }
 
 
@@ -528,7 +522,11 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 
 
 
-.doc_rule {margin: 0 1em;}
+.doc_rule
+ {
+ border: 1px dotted #501;
+ margin: 0 1em;
+ }
 
 .doc_rule:not(:first-child) {margin-top: 1em;}
 .doc_rule:not(:last-child) {margin-bottom: 1em;}

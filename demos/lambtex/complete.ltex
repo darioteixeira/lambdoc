@@ -273,12 +273,18 @@ let is_foo = function
 \p{${lorem}}
 \begin{tabular}{rll}
 \head
-|		|{2c_} Taxonomy				|
-| Common name	| Genus			| Species	|
+|		|{2c_} Scientific name				|
+| Common name	| Genus			| Species		|
 \body
-| Wolf		| \emph{Canis}		| \emph{lupus}	|
-| Cat		| \emph{Felis}		| \emph{catus}	|
-| Chicken	| \emph{Gallus}		| \emph{gallus}	|
+| Wolf		| \emph{Canis}		| \emph{lupus}		|
+| Cat		| \emph{Felis}		| \emph{catus}		|
+| Chicken	| \emph{Gallus}		| \emph{gallus}		|
+| Lion		| \emph{Panthera}	| \emph{leo}		|
+| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+| English oak	| \emph{Quercus}	| \emph{robur}		|
+\foot
+| Common name	|{1c_} Genus		|{1c_} Species		|
+|		|{2c} Scientific name				|
 \end{tabular}
 \p{${lorem}}
 \p{${lorem}}
@@ -492,12 +498,18 @@ let is_foo = function
 \begin{table}
 \begin{tabular}{rll}
 \head
-|		|{2c_} Taxonomy				|
-| Common name	| Genus			| Species	|
+|		|{2c_} Scientific name				|
+| Common name	| Genus			| Species		|
 \body
-| Wolf		| \emph{Canis}		| \emph{lupus}	|
-| Cat		| \emph{Felis}		| \emph{catus}	|
-| Chicken	| \emph{Gallus}		| \emph{gallus}	|
+| Wolf		| \emph{Canis}		| \emph{lupus}		|
+| Cat		| \emph{Felis}		| \emph{catus}		|
+| Chicken	| \emph{Gallus}		| \emph{gallus}		|
+| Lion		| \emph{Panthera}	| \emph{leo}		|
+| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+| English oak	| \emph{Quercus}	| \emph{robur}		|
+\foot
+| Common name	|{1c_} Genus		|{1c_} Species		|
+|		|{2c} Scientific name				|
 \end{tabular}
 \caption{${fox}}
 \end{table}

@@ -14,10 +14,10 @@ body
 .doc
 	{
 	margin: 1em auto;
-	width: 46em;
+	width: Body_width;
 	font-family: Family_body;
 	font-size: 0.625em;		/* For default of 16 * 0.625 = 10px */
-	line-height: 1.3em;
+	line-height: Line_height;
 	color: Colour_body;
 	}
 
