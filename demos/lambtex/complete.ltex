@@ -2,7 +2,7 @@
 
 \macrodef[lorem]{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.}
 
-\macrodef[fox]{The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.}
+\macrodef[fox]{The quick brown fox jumps over the lazy dog.}
 
 \macrodef[who]{John McAuthor}
 \macrodef[what]{Title of the article}
@@ -13,7 +13,7 @@
 \subtitle{November 2009}
 
 \begin{abstract}
-\p{@{lorem}}
+\p{${lorem}}
 \end{abstract}
 
 \toc
@@ -27,99 +27,99 @@ or smartly, \sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that sam
 section}.  The bibliography is at the end \cite{bib1}\cite{bib2}\cite{bib3}.  There is
 also\see{note1} a list\see{note2} of notes\see{note3}.
 
-\p{@{lorem}}
+\p{${lorem}}
 
 \part(){Block elements}
 
 \section[sec:foobar]{Text paragraphs}
 
-\p<initial>{@{lorem}}
-\p{@{lorem}}
-\p{@{lorem}}
-\p{@{lorem}}
+\p<initial>{${lorem}}
+\p{${lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Top level section}
 
-\p{@{lorem}}
+\p{${lorem}}
 
 \subsection{Mid level section}
 
-\p{@{lorem}}
+\p{${lorem}}
 
 \subsubsection{Low level section}
 
-\p{@{lorem}}
+\p{${lorem}}
 
 \parhead{Paragraph head}
 
-\p{@{lorem}}
+\p{${lorem}}
 
 \parhead{Another paragraph head}
 
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 \rule
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Unordered lists}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{itemize}
-\item @{lorem}
-\item @{lorem}
-\item @{lorem}
+\item ${lorem}
+\item ${lorem}
+\item ${lorem}
 \end{itemize}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Ordered lists}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{enumerate}
-\item \p{@{lorem}}
-\item \p{@{lorem}}
-\item \p{@{lorem}}
+\item \p{${lorem}}
+\item \p{${lorem}}
+\item \p{${lorem}}
 \end{enumerate}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Description lists}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{description}
-\item{alpha} \p{@{lorem}}
-\item{beta} \p{@{lorem}}
-\item{gamma} \p{@{lorem}}
+\item{alpha} \p{${lorem}}
+\item{beta} \p{${lorem}}
+\item{gamma} \p{${lorem}}
 \end{description}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Q&A environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{qanda}
 \question{Question:}
-	\p{@{loremshort}}
+	\p{${loremshort}}
 \answer{Answer:}
-	\p{@{lorem}}
+	\p{${lorem}}
 \question{Q:}
-	\p{@{loremshort}}
+	\p{${loremshort}}
 \answer{A:}
-	\p{@{lorem}}
-	\p{@{lorem}}
+	\p{${lorem}}
+	\p{${lorem}}
 \question{}
-	\p{@{lorem}}
+	\p{${lorem}}
 \answer{}
-	\p{@{lorem}}
+	\p{${lorem}}
 \question{}
-	\p{@{lorem}}
+	\p{${lorem}}
 \answer{}
-	\p{@{lorem}}
-	\p{@{lorem}}
+	\p{${lorem}}
+	\p{${lorem}}
 \end{qanda}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Verse environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{verse}
 Lorem ipsum dolor sit amet \br
 Lorem ipsum dolor sit amet \br
@@ -136,39 +136,39 @@ Lorem ipsum dolor sit amet \br
 Lorem ipsum dolor sit amet \br
 Lorem ipsum dolor sit amet
 \end{verse}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Quote environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{quote}
-\p{@{lorem}}
+\p{${lorem}}
 \end{quote}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Mathtex blocks}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<left>{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<right>{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Program environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<ocaml>{prog}
 type 'a tree =
 	| Leaf
@@ -178,9 +178,9 @@ let rec count = function
 	| Leaf				-> 0
 	| Node (node, left, right)	-> 1 + (count left) + (count right);;
 \end{prog}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<left,!linenums,ocaml>{prog}
 type t =
     | Foo of int
@@ -190,9 +190,9 @@ let is_foo = function
     | Foo _ -> true
     | Bar _ -> false
 \end{prog}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<right,!linenums,ocaml>{prog}
 type t =
     | Foo of int
@@ -202,12 +202,12 @@ let is_foo = function
     | Foo _ -> true
     | Bar _ -> false
 \end{prog}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Verbatim environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{verbatim}
        -------
        |  A  |
@@ -225,9 +225,9 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<left>{verbatim}
        -------
        |  A  |
@@ -245,9 +245,9 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<right>{verbatim}
        -------
        |  A  |
@@ -265,22 +265,23 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Tabular environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{tabular}{rll}
 \head
-| Common name	| Scientific name	| Class		|
+|		|{2c_} Taxonomy				|
+| Common name	| Genus			| Species	|
 \body
-| Wolf		| \emph{Canis lupus}	| Mammal	|
-| Cat		| \emph{Felis catus}	| Mammal	|
-| Chicken	| \emph{Gallus gallus}	| Bird		|
+| Wolf		| \emph{Canis}		| \emph{lupus}	|
+| Cat		| \emph{Felis}		| \emph{catus}	|
+| Chicken	| \emph{Gallus}		| \emph{gallus}	|
 \end{tabular}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin<left>{tabular}{rl}
 \head
@@ -290,8 +291,8 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin<right>{tabular}{rl}
 \head
@@ -301,148 +302,142 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Bitmap images}
 
-\p{@{lorem}}
+\p{${lorem}}
 \bitmap{circle-big.png}{Big Circle}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \bitmap<frame>{square-big.png}{Big Square}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \bitmap<left>{circle-small.png}{Small Circle}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \bitmap<right>{circle-small.png}{Small Circle}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \bitmap<left,frame>{square-small.png}{Small Square}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \bitmap<right,frame>{square-small.png}{Small Square}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Subpage environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{subpage}
 \section(){Introduction}
-\p{@{lorem}}
+\p{${lorem}}
 \end{subpage}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin<left>{subpage}
 \section(){Introduction}
-\p{@{lorem}}
+\p{${lorem}}
 \end{subpage}
-\p{@{lorem}}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin<right>{subpage}
 \section(){Introduction}
-\p{@{lorem}}
+\p{${lorem}}
 \end{subpage}
-\p{@{lorem}}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Pull-quote environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{pull}
-@{fox}
-@{fox}
-@{fox}
+${fox}
 \end{pull}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<right>{pull}
-@{fox}
-@{fox}
-@{fox}
+${fox}
 \end{pull}
-\p{@{lorem}}
+\p{${lorem}}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin<left>{pull}
-@{fox}
-@{fox}
-@{fox}
+${fox}
 \end{pull}
-\p{@{lorem}}
+\p{${lorem}}
 
 \section{Boxout environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{boxout}{This is a boxout}
-@{fox}
-@{fox}
-@{fox}
-@{fox}
+${fox}
+${fox}
+${fox}
+${fox}
 \end{boxout}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin<right>{boxout}{This is a boxout}
-@{fox}
-@{fox}
-@{fox}
-@{fox}
+${fox}
+${fox}
+${fox}
+${fox}
 \end{boxout}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin<left>{boxout}{This is a boxout}
-@{fox}
-@{fox}
-@{fox}
-@{fox}
+${fox}
+${fox}
+${fox}
+${fox}
 \end{boxout}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Equation environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{@{fox}}
+\caption{${fox}}
 \end{equation}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{equation}
 \begin<left>{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{@{fox}}
+\caption{${fox}}
 \end{equation}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{equation}
 \begin<right>{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{@{fox}}
+\caption{${fox}}
 \end{equation}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Printout environments}
 
@@ -456,10 +451,10 @@ let rec count = function
 	| Leaf				-> 0
 	| Node (node, left, right)	-> 1 + (count left) + (count right);;
 \end{prog}
-\caption{@{fox}}
+\caption{${fox}}
 \end{printout}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{printout}
 \begin<left,ocaml>{prog}
@@ -471,10 +466,10 @@ let is_foo = function
 	| Foo _ -> true
 	| Bar _ -> false
 \end{prog}
-\caption{@{fox}}
+\caption{${fox}}
 \end{printout}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{printout}
 \begin<right,ocaml>{prog}
@@ -486,27 +481,28 @@ let is_foo = function
 	| Foo _ -> true
 	| Bar _ -> false
 \end{prog}
-\caption{@{fox}}
+\caption{${fox}}
 \end{printout}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Table environments}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{table}
 \begin{tabular}{rll}
 \head
-| Common name	| Scientific name	| Class		|
+|		|{2c_} Taxonomy				|
+| Common name	| Genus			| Species	|
 \body
-| Wolf		| \emph{Canis lupus}	| Mammal	|
-| Cat		| \emph{Felis catus}	| Mammal	|
-| Chicken	| \emph{Gallus gallus}	| Bird		|
+| Wolf		| \emph{Canis}		| \emph{lupus}	|
+| Cat		| \emph{Felis}		| \emph{catus}	|
+| Chicken	| \emph{Gallus}		| \emph{gallus}	|
 \end{tabular}
-\caption{@{fox}}
+\caption{${fox}}
 \end{table}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{table}
 \begin<left>{tabular}{rl}
@@ -517,10 +513,10 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\caption{@{fox}}
+\caption{${fox}}
 \end{table}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{table}
 \begin<right>{tabular}{rl}
@@ -531,14 +527,14 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\caption{@{fox}}
+\caption{${fox}}
 \end{table}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Figure environments around verbatim blocks}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{figure}
 \begin{verbatim}
        -------
@@ -557,10 +553,10 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{figure}
 \begin<left>{verbatim}
@@ -580,10 +576,10 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{figure}
 \begin<right>{verbatim}
@@ -603,174 +599,174 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \section{Figure environments around images}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{figure}
 \bitmap{circle-big.png}{Big Circle}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{figure}
 \bitmap<left>{circle-small.png}{Small Circle}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{figure}
 \bitmap<right>{circle-small.png}{Small Circle}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 
 \section{Figure environments around subpages}
 
-\p{@{lorem}}
+\p{${lorem}}
 \begin{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{@{lorem}}
+\p{${lorem}}
 \end{subpage}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{figure}
 \begin<left>{subpage}
 \section(){Introduction}
-\p{@{lorem}}
+\p{${lorem}}
 \end{subpage}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \begin{figure}
 \begin<right>{subpage}
 \section(){Introduction}
-\p{@{lorem}}
+\p{${lorem}}
 \end{subpage}
-\caption{@{fox}}
+\caption{${fox}}
 \end{figure}
-\p{@{lorem}}
-\p{@{lorem}}
-\p{@{lorem}}
+\p{${lorem}}
+\p{${lorem}}
+\p{${lorem}}
 
 \part(){Backmatter}
 
 \bibliography
 
 \begin[bib1]{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin[bib2]{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin[bib3]{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \begin{bib}
-\who{@{who}}
-\what{@{what}}
-\where{@{where}}
+\who{${who}}
+\what{${what}}
+\where{${where}}
 \end{bib}
 
 \notes
 
 \begin[note1]{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin[note2]{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin[note3]{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
 \begin{note}
-\p{@{lorem}}
+\p{${lorem}}
 \end{note}
 
