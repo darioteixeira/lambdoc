@@ -14,7 +14,7 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val collate_errors:
@@ -23,7 +23,8 @@ val collate_errors:
 	Error.t list
 
 val process_manuscript:
-	?classnames: string list ->
+	max_depth: int option ->
+	classnames: string list ->
 	?accept_list: Features.manuscript_feature_t list ->
 	?deny_list: Features.manuscript_feature_t list ->
 	?default: Features.default_t ->
@@ -32,7 +33,8 @@ val process_manuscript:
 	Ambivalent.manuscript_t
 
 val process_composition:
-	?classnames: string list ->
+	max_depth: int option ->
+	classnames: string list ->
 	?accept_list: Features.composition_feature_t list ->
 	?deny_list: Features.composition_feature_t list ->
 	?default: Features.default_t ->

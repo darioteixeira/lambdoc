@@ -16,13 +16,15 @@ open Lambdoc_core
 open Basic
 open Ast
 
+(********************************************************************************)
+(**	{1 Exceptions}								*)
+(********************************************************************************)
+
+exception Invalid_macro_depth of int
+
 
 (********************************************************************************)
-(**	{2 Functions and values}						*)
-(********************************************************************************)
-
-(********************************************************************************)
-(**	{3 Low-level processing functions}					*)
+(**	{1 Low-level processing functions}					*)
 (********************************************************************************)
 
 let cell_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)$"
@@ -33,7 +35,7 @@ let cell_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)
 	and possible errors are also returned.  Note that because Ocaml does not
 	yet support true GADTs, this function has to rely on Obj.magic.
 *)
-let process_document classnames idiosyncrasies document_ast =
+let process_document ~max_depth ~classnames ~idiosyncrasies document_ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -124,7 +126,7 @@ let process_document classnames idiosyncrasies document_ast =
 	(* Macro expansion.							*)
 	(************************************************************************)
 
-	let rec expand_inline_macros args inline = match inline with
+	let rec expand_inline_macros depth args inline = match inline with
 
 		| (_, Ast.Plain _) ->
 			[inline]
@@ -142,34 +144,34 @@ let process_document classnames idiosyncrasies document_ast =
 			[inline]
 
 		| (comm, Ast.Bold seq) ->
-			[(comm, Ast.Bold (expand_seq_macros args seq))]
+			[(comm, Ast.Bold (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Emph seq) ->
-			[(comm, Ast.Emph (expand_seq_macros args seq))]
+			[(comm, Ast.Emph (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Code seq) ->
-			[(comm, Ast.Code (expand_seq_macros args seq))]
+			[(comm, Ast.Code (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Caps seq) ->
-			[(comm, Ast.Caps (expand_seq_macros args seq))]
+			[(comm, Ast.Caps (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Ins seq) ->
-			[(comm, Ast.Ins (expand_seq_macros args seq))]
+			[(comm, Ast.Ins (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Del seq) ->
-			[(comm, Ast.Del (expand_seq_macros args seq))]
+			[(comm, Ast.Del (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Sup seq) ->
-			[(comm, Ast.Sup (expand_seq_macros args seq))]
+			[(comm, Ast.Sup (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Sub seq) ->
-			[(comm, Ast.Sub (expand_seq_macros args seq))]
+			[(comm, Ast.Sub (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Mbox seq) ->
-			[(comm, Ast.Mbox (expand_seq_macros args seq))]
+			[(comm, Ast.Mbox (expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Link (lnk, maybe_seq)) ->
-			[(comm, Ast.Link (lnk, maybe (expand_seq_macros args) maybe_seq))]
+			[(comm, Ast.Link (lnk, maybe (expand_seq_macros depth args) maybe_seq))]
 
 		| (_, Ast.See _) ->
 			[inline]
@@ -184,7 +186,7 @@ let process_document classnames idiosyncrasies document_ast =
 			[inline]
 
 		| (comm, Ast.Mref (label, seq)) ->
-			[(comm, Ast.Mref (label, expand_seq_macros args seq))]
+			[(comm, Ast.Mref (label, expand_seq_macros depth args seq))]
 
 		| (comm, Ast.Macroarg raw_num) ->
 			let elem () =
@@ -218,8 +220,8 @@ let process_document classnames idiosyncrasies document_ast =
 						DynArray.add errors (comm.comm_linenum, msg);
 						None
 					else
-						let new_arglist = List.map (expand_seq_macros args) arglist
-						in Some (expand_seq_macros (Some new_arglist) macro_seq)
+						let new_arglist = List.map (expand_seq_macros depth args) arglist
+						in Some (expand_seq_macros (depth+1) (Some new_arglist) macro_seq)
 				with
 					| Not_found ->
 						let msg = Error.Invalid_macro_reference label in
@@ -230,18 +232,31 @@ let process_document classnames idiosyncrasies document_ast =
 				| None	   -> []
 
 
-	and expand_seq_macros args seq =
-		let coalesce_plain seq =
-			let rec coalesce_plain_aux accum = function
-				| (comm1, Plain txt1) :: (comm2, Plain txt2) :: tl ->
-					let agg = (comm1, Plain (txt1 ^ txt2))
-					in coalesce_plain_aux accum (agg :: tl)
-				| hd :: tl ->
-					coalesce_plain_aux (hd :: accum) tl
-				| [] ->
-					accum
-			in List.rev (coalesce_plain_aux [] seq)
-		in coalesce_plain (List.flatten (List.map (expand_inline_macros args) seq)) in
+	and expand_seq_macros depth args seq =
+
+		let debug_inline = function
+			| (_, Ast.Plain x)			-> Printf.sprintf "(PLAIN '%s'); " x
+			| (_, Ast.Macrocall (label, arglist))	-> Printf.sprintf "(MACROCALL '%s' with %d params); " label (List.length arglist)
+			| (_, Ast.Macroarg raw_num)		-> Printf.sprintf "(MACROARG %s); " raw_num
+			| _					-> Printf.sprintf "(ETC); " in
+		let debug_seq seq = List.fold_left (^) "" (List.map debug_inline seq) in
+		Printf.eprintf "Calling expand_seq_macros with depth %d for sequence %s\n%!" depth (debug_seq seq);
+
+		match max_depth with
+			| Some limit when depth > limit ->
+				raise (Invalid_macro_depth limit)
+			| _ ->
+				let coalesce_plain seq =
+					let rec coalesce_plain_aux accum = function
+						| (comm1, Plain txt1) :: (comm2, Plain txt2) :: tl ->
+							let agg = (comm1, Plain (txt1 ^ txt2))
+							in coalesce_plain_aux accum (agg :: tl)
+						| hd :: tl ->
+							coalesce_plain_aux (hd :: accum) tl
+						| [] ->
+							accum
+					in List.rev (coalesce_plain_aux [] seq)
+				in coalesce_plain (List.flatten (List.map (expand_inline_macros depth args) seq)) in
 
 
 	(************************************************************************)
@@ -417,9 +432,12 @@ let process_document classnames idiosyncrasies document_ast =
 	and convert_seq_aux is_link seq =
 		List.filter_map (convert_inline is_link) seq in
 
-	let convert_seq seq =
-		let new_seq = if macros_authorised then expand_seq_macros None seq else seq
-		in Obj.magic (convert_seq_aux false new_seq) in
+	let convert_seq =
+		let expander =
+			if macros_authorised
+			then fun seq -> expand_seq_macros 0 None seq
+			else fun seq -> seq
+		in fun seq -> Obj.magic (convert_seq_aux false (expander seq)) in
 
 
 	(************************************************************************)
@@ -799,18 +817,25 @@ let process_document classnames idiosyncrasies document_ast =
 		| (_, _, _, `Any_blk, (comm, Ast.Macrodef seq)) ->
 			let elem () = match comm.comm_label with
 				| Some label ->
-					let num_args = Extra.parse_for_macrodef errors comm in
-					let () =
-						let errors_before = DynArray.length errors in
-						let _ = expand_seq_macros (Some (List.make num_args [(comm, Ast.Linebreak)])) seq in
-						let errors_after = DynArray.length errors in
-						if Labelmap.mem labelmap (`User_label label) || Macromap.mem macromap label
-						then
-							DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, label)))
-						else
-							let new_seq = if errors_after = errors_before then seq else []
-							in Macromap.add macromap label (num_args, new_seq)
-					in None
+					begin
+						try
+							let num_args = Extra.parse_for_macrodef errors comm in
+							let errors_before = DynArray.length errors in
+							let _ = expand_seq_macros 0 (Some (List.make num_args [(comm, Ast.Linebreak)])) seq in
+							let errors_after = DynArray.length errors in
+							(if Labelmap.mem labelmap (`User_label label) || Macromap.mem macromap label
+							then
+								let msg = Error.Duplicate_label (comm.comm_tag, label)
+								in DynArray.add errors (comm.comm_linenum, msg)
+							else
+								let new_seq = if errors_after = errors_before then seq else []
+								in Macromap.add macromap label (num_args, new_seq));
+							None
+						with Invalid_macro_depth num ->
+							let msg = Error.Invalid_macro_depth (label, num)
+							in DynArray.add errors (comm.comm_linenum, msg);
+							None
+					end
 				| None -> None
 			in check_comm `Feature_macrodef comm elem
 
@@ -918,7 +943,7 @@ let process_document classnames idiosyncrasies document_ast =
 
 
 (********************************************************************************)
-(**	{3 Error postprocessing functions}					*)
+(**	{1 Error postprocessing functions}					*)
 (********************************************************************************)
 
 (**	Error collation function.  It takes a list of errors containing each an
@@ -953,12 +978,12 @@ let sort_errors errors =
 
 
 (********************************************************************************)
-(**	{3 Top-level processing functions}					*)
+(**	{1 Top-level processing functions}					*)
 (********************************************************************************)
 
-let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
+let process_manuscript ~max_depth ~classnames ?accept_list ?deny_list ?default source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ?accept_list ?deny_list ?default () in
-	let (contents, bibs, notes, toc, labelmap, bitmaps, errors) = process_document classnames idiosyncrasies document_ast in
+	let (contents, bibs, notes, toc, labelmap, bitmaps, errors) = process_document ~max_depth ~classnames ~idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap bitmaps
@@ -967,9 +992,9 @@ let process_manuscript ?(classnames = []) ?accept_list ?deny_list ?default sourc
 		in Ambivalent.make_invalid_manuscript sorted_errors
 
 
-let process_composition ?(classnames = []) ?accept_list ?deny_list ?default source document_ast =
+let process_composition ~max_depth ~classnames ?accept_list ?deny_list ?default source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ?accept_list ?deny_list ?default () in
-	let (contents, _, _, _, _, bitmaps, errors) = process_document classnames idiosyncrasies document_ast in
+	let (contents, _, _, _, _, bitmaps, errors) = process_document ~max_depth ~classnames ~idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_composition (Obj.magic contents) bitmaps

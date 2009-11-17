@@ -92,6 +92,7 @@ type error_msg_t =
 	| Invalid_macro_argument_number of string * int
 	| Invalid_macro_call of ref_t * int * int
 	| Invalid_macro_reference of ref_t
+	| Invalid_macro_depth of ref_t * int
 
 	| Invalid_language of tag_t option * string
 	| Invalid_mathtex of tag_t option * string

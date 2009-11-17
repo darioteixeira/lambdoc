@@ -12,7 +12,7 @@ open Ast
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 (**	The type encoding the various kinds of available permissions.
@@ -27,7 +27,7 @@ type permission_t =
 
 
 (********************************************************************************)
-(**	{2 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 (**	The following values/functions encode the predefined permissions for

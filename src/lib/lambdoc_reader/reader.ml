@@ -14,7 +14,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 (**	The module type that all wannabe document readers must export.
@@ -33,6 +33,7 @@ module type S =
 sig
 	val ambivalent_manuscript_from_string:
 		?verify_utf8: bool ->
+		?max_depth: int option ->
 		?classnames: string list ->
 		?accept_list: Features.manuscript_feature_t list ->
 		?deny_list: Features.manuscript_feature_t list ->
@@ -42,6 +43,7 @@ sig
 
 	val ambivalent_composition_from_string:
 		?verify_utf8: bool ->
+		?max_depth: int option ->
 		?classnames: string list ->
 		?accept_list: Features.composition_feature_t list ->
 		?deny_list: Features.composition_feature_t list ->
@@ -52,35 +54,44 @@ end
 
 
 (********************************************************************************)
-(**	{2 Modules and functors}						*)
+(**	{1 Modules and functors}						*)
 (********************************************************************************)
 
 (**	The functor that creates a document reader.
 *)
 module Make_reader (Reader: READER): S =
 struct
-	let ambivalent_document_from_string ~verify_utf8 ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str =
-		try
-			let () = if verify_utf8 then Preprocess.verify_utf8 str in
-			let document_ast = Reader.ast_from_string str
-			in valid_processor ?classnames ?accept_list ?deny_list ?default str document_ast
-		with
-			| Preprocess.Malformed_source (sane_str, error_lines) ->
-				let msgs = List.map (fun line -> (line, Error.Malformed_code_point)) error_lines in
-				let errors = Postprocess.collate_errors sane_str msgs
-				in invalid_maker errors
-			| Reader.Reading_error (line, msg) ->
-				let errors = Postprocess.collate_errors str [(line, Error.Reading_error msg)]
-				in invalid_maker errors
+	let ambivalent_document_from_string
+		?(verify_utf8 = true)
+		?(max_depth = Some 0)
+		?(classnames = [])
+		?accept_list
+		?deny_list
+		?default
+		valid_processor
+		invalid_maker
+		str =
+			try
+				let () = if verify_utf8 then Preprocess.verify_utf8 str in
+				let document_ast = Reader.ast_from_string str
+				in valid_processor ~max_depth ~classnames ?accept_list ?deny_list ?default str document_ast
+			with
+				| Preprocess.Malformed_source (sane_str, error_lines) ->
+					let msgs = List.map (fun line -> (line, Error.Malformed_code_point)) error_lines in
+					let errors = Postprocess.collate_errors sane_str msgs
+					in invalid_maker errors
+				| Reader.Reading_error (line, msg) ->
+					let errors = Postprocess.collate_errors str [(line, Error.Reading_error msg)]
+					in invalid_maker errors
 
-	let ambivalent_manuscript_from_string ?(verify_utf8 = true) ?classnames ?accept_list ?deny_list ?default str =
+	let ambivalent_manuscript_from_string ?verify_utf8 ?max_depth ?classnames ?accept_list ?deny_list ?default str =
 		let valid_processor = Postprocess.process_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ~verify_utf8 ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
+		in ambivalent_document_from_string ?verify_utf8 ?max_depth ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
 
-	let ambivalent_composition_from_string ?(verify_utf8 = true) ?classnames ?accept_list ?deny_list ?default str =
+	let ambivalent_composition_from_string ?verify_utf8 ?max_depth ?classnames ?accept_list ?deny_list ?default str =
 		let valid_processor = Postprocess.process_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ~verify_utf8 ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
+		in ambivalent_document_from_string ?verify_utf8 ?max_depth ?classnames ?accept_list ?deny_list ?default valid_processor invalid_maker str
 end
 

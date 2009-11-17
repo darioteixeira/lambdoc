@@ -13,7 +13,7 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{2 Definition of functions and values}					*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val parse_for_paragraph: 	(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> bool
