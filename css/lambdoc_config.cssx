@@ -6,28 +6,42 @@
 /* Colours.									*/
 /********************************************************************************/
 
-#define Colour_body	#000
-#define Colour_code	#666
-#define Colour_ins	#090
-#define Colour_del	#900
-#define Colour_lnk	#009
-#define Colour_heading	#501
-#define Colour_ghostly	#555
-#define Colour_question	Colour_heading
-#define Colour_answer	Colour_body
+#define Colour_body		#000
+#define Colour_code		#444
+#define Colour_ins		#090
+#define Colour_del		#900
+#define Colour_lnk		#009
+#define Colour_heading		#501
+#define Colour_ghostly		#444
+#define Colour_question		Colour_heading
+#define Colour_answer		Colour_body
+#define Colour_pullquote	Colour_heading
 
-#define Background_prog			#f9f9f9
-#define Background_prog_odd		#f3f6fc
-#define Background_prog_even		#f9f9f9
+#define Background_verbatim	#fffcf0
+#define Background_prog		#f9f9f9
+#define Background_prog_odd	#f3f6fc
+#define Background_prog_even	#f9f9f9
+#define Background_subpage	#f9f9f9
+#define Background_boxout	#ffffcc
+#define Background_pullquote	#f3f3f3
 
-#define Border_tabular			#333
+
+/********************************************************************************/
+/* Configuration of various borders.						*/
+/********************************************************************************/
+
+#define Border_tabular_outter	2px solid #666
+#define Border_tabular_inner	1px solid #666
+//#define Border_pullquote	1px solid Colour_pullquote
+#define Border_box		1px solid #333
+#define Border_rule		1px dotted Colour_heading
+#define Border_hline		1px solid #000;
 
 
 /********************************************************************************/
 /* Box configuration.								*/
 /********************************************************************************/
 
-#define Box_border	1px solid #333
 #define Box_radius	4px
 #define Box_shadow	3px 3px 3px #666
 
@@ -74,26 +88,63 @@
 
 #define Size_pre	1.2em
 #define Size_script	1.3em
-#define Size_small	1.3em
 #define Size_note	0.857em		/* Relative to Size_normal: 14 * 0.857 = 12px */
+
+#define Size_small	1.3em
 #define Size_normal	1.4em
 #define Size_large	1.5em
 
 #define Size_title1	2.2em
 #define Size_title2	1.8em
 #define Size_part	1.8em
-#define Size_h1		1.6em
-#define Size_h2		1.5em
-#define Size_h3		1.4em
+#define Size_h1		1.7em
+#define Size_h2		1.6em
+#define Size_h3		1.5em
 #define Size_h4		1.4em
 
 #define Size_initial	1.429em		/* Relative to Size_normal: 14 * 1.429 = 20px */
+#define Size_pullquote	1.071em		/* Relative to Size_normal: 14 * 1.071 = 15px */
+
+
+/********************************************************************************/
+/* Spacing.									*/
+/********************************************************************************/
+
+#define Heading_word_spacing	0.1em
+#define Heading_letter_spacing	0.01em
+
+#define Vmargin_short		0.25em
+#define Vmargin_par		0.5em
+#define Vmargin_block		1em
+#define Vmargin_floater		2em
+#define Vmargin_wrapper		2.5em
+#define Vmargin_caption		0.5em
+
+#define Hmargin_list		2em
+#define Hmargin_dt		-1.5em	/* -1 * (Hmargin_list - 0.5em) */
+#define Hmargin_inset		1em
+#define Hmargin_quote		3em
+#define Hmargin_floater		1em
+#define Hmargin_caption		1em
+#define Hmargin_inline_small	0.25em
+#define Hmargin_inline_large	0.5em
+#define Hmargin_indent		1em
+
+
+#define Padding_box	1em
+#define Padding_boxhalf	0.5em		/* Padding_box / 2 */
+#define Padding_semibox	0.5em
+
+#define Padding_htab	1em
+#define Padding_vtabin	0.1em
+#define Padding_vtabout	0.4em
 
 
 /********************************************************************************/
 /* Globals.									*/
 /********************************************************************************/
 
-#define Body_width	46em
-#define Line_height	1.5em
+#define Body_width		46em
+#define Line_height_body	1.6em
+#define Line_height_pre		1em
 

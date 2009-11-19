@@ -506,9 +506,9 @@ let write_valid_document settings classname doc =
 			| Some floatation -> floatation
 			| None		 -> failwith "write_wrapper" in
 		let caption_content =
-			let caption_head = XHTML.M.span [pcdata wrapper_name; entity "thinsp"; pcdata ((wrapper_conv order) ^ ":")]
-			and caption_body = XHTML.M.span (write_seq seq)
-			in XHTML.M.p ~a:[a_class ["doc_caption"]] [caption_head; caption_body] in
+			let caption_head = XHTML.M.h1 [pcdata wrapper_name; entity "thinsp"; pcdata ((wrapper_conv order) ^ ":")]
+			and caption_body = XHTML.M.p (write_seq seq)
+			in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body] in
 		let classnames = ["doc_wrapper"; classname] @ (make_floatation floatation)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
 

@@ -205,6 +205,51 @@ let is_foo = function
 \p{${lorem}}
 \p{${lorem}}
 
+
+\section{Tabular environments}
+
+\p{${lorem}}
+\begin{tabular}{rll}
+\head
+|		|{2c_} Scientific name				|
+| Common name	| Genus			| Species		|
+\body
+| Wolf		| \emph{Canis}		| \emph{lupus}		|
+| Cat		| \emph{Felis}		| \emph{catus}		|
+| Chicken	| \emph{Gallus}		| \emph{gallus}		|
+| Lion		| \emph{Panthera}	| \emph{leo}		|
+| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+| English oak	| \emph{Quercus}	| \emph{robur}		|
+\foot
+| Common name	|{1c_} Genus		|{1c_} Species		|
+|		|{2c} Scientific name				|
+\end{tabular}
+\p{${lorem}}
+\p{${lorem}}
+
+\begin<left>{tabular}{rl}
+\head
+| Common name	| Scientific name	|
+\body
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
+\end{tabular}
+\p{${lorem}}
+\p{${lorem}}
+
+\begin<right>{tabular}{rl}
+\head
+| Common name	| Scientific name	|
+\body
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
+\end{tabular}
+\p{${lorem}}
+\p{${lorem}}
+
+
 \section{Verbatim environments}
 
 \p{${lorem}}
@@ -268,48 +313,6 @@ let is_foo = function
 \p{${lorem}}
 \p{${lorem}}
 
-\section{Tabular environments}
-
-\p{${lorem}}
-\begin{tabular}{rll}
-\head
-|		|{2c_} Scientific name				|
-| Common name	| Genus			| Species		|
-\body
-| Wolf		| \emph{Canis}		| \emph{lupus}		|
-| Cat		| \emph{Felis}		| \emph{catus}		|
-| Chicken	| \emph{Gallus}		| \emph{gallus}		|
-| Lion		| \emph{Panthera}	| \emph{leo}		|
-| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
-| English oak	| \emph{Quercus}	| \emph{robur}		|
-\foot
-| Common name	|{1c_} Genus		|{1c_} Species		|
-|		|{2c} Scientific name				|
-\end{tabular}
-\p{${lorem}}
-\p{${lorem}}
-
-\begin<left>{tabular}{rl}
-\head
-| Common name	| Scientific name	|
-\body
-| Wolf		| \emph{Canis lupus}	|
-| Cat		| \emph{Felis catus}	|
-| Chicken	| \emph{Gallus gallus}	|
-\end{tabular}
-\p{${lorem}}
-\p{${lorem}}
-
-\begin<right>{tabular}{rl}
-\head
-| Common name	| Scientific name	|
-\body
-| Wolf		| \emph{Canis lupus}	|
-| Cat		| \emph{Felis catus}	|
-| Chicken	| \emph{Gallus gallus}	|
-\end{tabular}
-\p{${lorem}}
-\p{${lorem}}
 
 \section{Bitmap images}
 
