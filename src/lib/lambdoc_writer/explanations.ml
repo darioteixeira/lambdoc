@@ -115,9 +115,6 @@ let explain_error = function
 	| Error.Invalid_macro_reference label ->
 		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." label
 
-	| Error.Invalid_macro_depth (label, limit) ->
-		sprintf "The definition of macro '%s' causes the depth of macro invocation to exceed the limit of %d." label limit
-
 	| Error.Invalid_language (tag, lang) ->
 		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)
 

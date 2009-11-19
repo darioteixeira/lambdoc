@@ -44,14 +44,14 @@ let make_idiosyncrasies feature_set accept_list deny_list default =
 	in List.fold_left make_feature base_map (Features.available_manuscript_features :> Features.feature_t list)
 
 
-let make_composition_idiosyncrasies ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
+let make_composition_idiosyncrasies ~accept_list ~deny_list ~default =
 	let composition_features = (Features.available_composition_features :> Features.feature_t list)
 	and accept_list = (accept_list :> Features.feature_t list)
 	and deny_list = (deny_list :> Features.feature_t list)
 	in make_idiosyncrasies composition_features accept_list deny_list default
 
 
-let make_manuscript_idiosyncrasies ?(accept_list = []) ?(deny_list = []) ?(default = `Accept) () =
+let make_manuscript_idiosyncrasies ~accept_list ~deny_list ~default =
 	let manuscript_features = (Features.available_manuscript_features :> Features.feature_t list)
 	and accept_list = (accept_list :> Features.feature_t list)
 	and deny_list = (deny_list :> Features.feature_t list)

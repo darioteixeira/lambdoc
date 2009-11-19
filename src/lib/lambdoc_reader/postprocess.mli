@@ -23,22 +23,20 @@ val collate_errors:
 	Error.t list
 
 val process_manuscript:
-	max_depth: int option ->
 	classnames: string list ->
-	?accept_list: Features.manuscript_feature_t list ->
-	?deny_list: Features.manuscript_feature_t list ->
-	?default: Features.default_t ->
-	string ->
+	accept_list: Features.manuscript_feature_t list ->
+	deny_list: Features.manuscript_feature_t list ->
+	default: Features.default_t ->
+	source: string ->
 	Ast.t ->
 	Ambivalent.manuscript_t
 
 val process_composition:
-	max_depth: int option ->
 	classnames: string list ->
-	?accept_list: Features.composition_feature_t list ->
-	?deny_list: Features.composition_feature_t list ->
-	?default: Features.default_t ->
-	string ->
+	accept_list: Features.composition_feature_t list ->
+	deny_list: Features.composition_feature_t list ->
+	default: Features.default_t ->
+	source: string ->
 	Ast.t ->
 	Ambivalent.composition_t
 
