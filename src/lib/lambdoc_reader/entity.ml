@@ -26,9 +26,20 @@ type t =
 (**	{1 Private functions and values}					*)
 (********************************************************************************)
 
-(* Note: the entities [amp, apos, gt, lt, quot] are predefined by PXP. *)
+(*	Note: the entities [amp, apos, gt, lt, quot] are predefined by PXP.
+	They cannot be included in the entity translation for PXP.
+*)
 
-let entity_list =
+let non_pxp_entity_list =
+	[
+	("amp", 38);
+	("apos", 39);
+	("gt", 62);
+	("lt", 60);
+	("quot", 34);
+	]
+
+let pxp_entity_list =
 	[
 	("Aacute", 193);
 	("aacute", 225);
@@ -280,10 +291,16 @@ let entity_list =
 	("zwnj", 8204);
 	]
 
-let entity_map =
-	let map = Hashtbl.create (List.length entity_list)
-	in List.iter (fun (key, value) -> Hashtbl.add map key value) entity_list;
+
+let pxp_entity_map =
+	let map = Hashtbl.create (List.length pxp_entity_list)
+	in List.iter (fun (key, value) -> Hashtbl.add map key value) pxp_entity_list;
 	map
+
+
+let codepoint_of_name name =
+	try List.assoc name non_pxp_entity_list
+	with Not_found -> Hashtbl.find pxp_entity_map name
 
 
 (********************************************************************************)
@@ -291,10 +308,10 @@ let entity_map =
 (********************************************************************************)
 
 let code_point = function
-	| Ent_name name -> (try `Okay (Hashtbl.find entity_map name) with Not_found -> `Error (Error.Invalid_name_entity name))
+	| Ent_name name -> (try `Okay (codepoint_of_name name) with Not_found -> `Error (Error.Invalid_name_entity name))
 	| Ent_deci deci -> (try `Okay (int_of_string deci) with Failure _ -> `Error (Error.Invalid_deci_entity deci))
 	| Ent_hexa hexa -> (try `Okay (int_of_string ("0x" ^ hexa)) with Failure _ -> `Error (Error.Invalid_hexa_entity hexa))
 
-let iter f =
-	Hashtbl.iter f entity_map
+let pxp_iter f =
+	Hashtbl.iter f pxp_entity_map
 

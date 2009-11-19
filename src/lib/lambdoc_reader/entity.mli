@@ -27,5 +27,5 @@ type t =
 (********************************************************************************)
 
 val code_point: t -> [ `Okay of Basic.entity_t | `Error of Error.error_msg_t ]
-val iter: (string -> int -> unit) -> unit
+val pxp_iter: (string -> int -> unit) -> unit
 
