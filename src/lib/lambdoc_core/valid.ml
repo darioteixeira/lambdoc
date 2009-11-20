@@ -25,7 +25,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
-	bitmaps: Resource.t;
+	images: Resource.t;
 	} with sexp
 
 type manuscript_t = [ `Manuscript ] document_t with sexp
@@ -36,24 +36,24 @@ type composition_t = [ `Composition ] document_t with sexp
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let make_manuscript content bibs notes toc labelmap bitmaps =
+let make_manuscript content bibs notes toc labelmap images =
 	{
 	content = Block.get_frag content;
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
 	labelmap = labelmap;
-	bitmaps = bitmaps;
+	images = images;
 	}
 
-let make_composition content bitmaps =
+let make_composition content images =
 	{
 	content = Block.get_frag content;
 	bibs = [];
 	notes = [];
 	toc = [];
 	labelmap = Labelmap.create ();
-	bitmaps = bitmaps;
+	images = images;
 	}
 
 

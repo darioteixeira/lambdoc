@@ -31,7 +31,7 @@ type composition_block_feature_t =
 	[ `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
 	| `Feature_qanda | `Feature_parhead | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_program
-	| `Feature_tabular | `Feature_verbatim | `Feature_bitmap | `Feature_subpage ]
+	| `Feature_tabular | `Feature_verbatim | `Feature_image | `Feature_subpage ]
 
 
 type manuscript_block_feature_t =

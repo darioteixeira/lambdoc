@@ -161,7 +161,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_program	-> floater_class
 		| `Feature_tabular	-> floater_class
 		| `Feature_verbatim	-> floater_class
-		| `Feature_bitmap	-> floater_class
+		| `Feature_image	-> floater_class
 		| `Feature_subpage	-> floater_class
 
 	and manuscript_block_feature_set = function

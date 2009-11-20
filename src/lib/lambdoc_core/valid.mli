@@ -23,7 +23,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	labelmap: Labelmap.t;
-	bitmaps: Resource.t;
+	images: Resource.t;
 	} with sexp
 
 type manuscript_t = [ `Manuscript ] document_t with sexp

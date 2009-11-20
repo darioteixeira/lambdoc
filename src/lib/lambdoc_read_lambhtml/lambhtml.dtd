@@ -11,7 +11,7 @@
 <!ENTITY % Block
 	"paragraph | p | itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
-	| prog | tabular | verbatim | pre | bitmap | subpage
+	| prog | tabular | verbatim | pre | image | subpage
 	| pull | boxout
 	| equation | printout | table | figure
 	| part | appendix
@@ -105,8 +105,8 @@
 <!ELEMENT pre (#PCDATA)>
 <!ATTLIST pre %Floater;>
 
-<!ELEMENT bitmap EMPTY>
-<!ATTLIST bitmap %Floater; src CDATA #REQUIRED alt CDATA #REQUIRED>
+<!ELEMENT image EMPTY>
+<!ATTLIST image %Floater; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
 <!ELEMENT subpage %Frag;>
 <!ATTLIST subpage %Floater;>

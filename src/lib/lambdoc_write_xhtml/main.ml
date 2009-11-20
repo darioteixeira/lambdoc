@@ -396,17 +396,17 @@ let write_valid_document settings classname doc =
 			let style = if wrapped then [] else make_floatation floatation
 			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_verb"] @ style)] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
 
-		| `Bitmap (floatation, img) ->
+		| `Image (floatation, img) ->
 			let (frame, width, alias, alt) = (img.frame, img.width, img.alias, img.alt) in
 			let style_float = if wrapped then [] else make_floatation floatation
-			and style_frame = if frame then ["doc_bitmap_frame"] else [] in
+			and style_frame = if frame then ["doc_image_frame"] else [] in
 			let style = style_float @ style_frame in
 			let attrs = match width with
 				| Some w	-> [a_width (`Percent w)]
 				| None		-> [] in
-			let uri = settings.bitmap_lookup alias in
-			let bitmap = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
-			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_bitmap"] @ style)] [bitmap]]
+			let uri = settings.image_lookup alias in
+			let image = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
+			in Some floatation, [XHTML.M.div ~a:[a_class (["doc_image"] @ style)] [image]]
 
 		| `Subpage (floatation, frag) ->
 			let style = if wrapped then [] else make_floatation floatation

@@ -41,7 +41,7 @@ type 'a block_t =
 	| `Program of Floatation.t * Program.t
 	| `Tabular of Floatation.t * Tabular.tabular_t
 	| `Verbatim of Floatation.t * raw_t
-	| `Bitmap of Floatation.t * Image.t
+	| `Image of Floatation.t * Image.t
 	| `Subpage of Floatation.t * 'a list
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
@@ -117,8 +117,8 @@ val tabular: Floatation.t -> 'a Tabular.t ->
 val verbatim: Floatation.t -> raw_t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Verbatim_blk ]) t
 
-val bitmap: Floatation.t -> Image.t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Bitmap_blk ]) t
+val image: Floatation.t -> Image.t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Image_blk ]) t
 
 val subpage: Floatation.t -> ('a, _, _, _, _) t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Subpage_blk ]) t
@@ -138,7 +138,7 @@ val printout: wrapper_t -> (_, _, _, _, [< `Program_blk ]) t ->
 val table: wrapper_t -> (_, _, _, _, [< `Tabular_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Table_blk ]) t
 
-val figure: wrapper_t -> (_, _, _, _, [< `Verbatim_blk | `Bitmap_blk | `Subpage_blk ]) t ->
+val figure: wrapper_t -> (_, _, _, _, [< `Verbatim_blk | `Image_blk | `Subpage_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Figure_blk ]) t
 
 val heading: ('a, 'b, 'c, 'd, 'e) Heading.t ->

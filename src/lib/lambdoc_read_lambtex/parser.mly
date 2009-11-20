@@ -98,7 +98,7 @@ open Globalenv
 %token <Lambdoc_reader.Ast.command_t> MREF
 
 %token <Lambdoc_reader.Ast.command_t> PARAGRAPH
-%token <Lambdoc_reader.Ast.command_t> BITMAP
+%token <Lambdoc_reader.Ast.command_t> IMAGE
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
 %token <Lambdoc_reader.Ast.command_t> SECTION
@@ -173,7 +173,7 @@ block:
 	| begin_block(blk_program) RAW end_block				{($1, Ast.Program $2)}
 	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
 	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
-	| BITMAP raw_bundle raw_bundle						{($1, Ast.Bitmap ($2, $3))}
+	| IMAGE raw_bundle raw_bundle						{($1, Ast.Image ($2, $3))}
 	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_pullquote) block+ end_block				{($1, Ast.Pullquote $2)}
 	| begin_block(blk_boxout) inline_bundle? block+ end_block		{($1, Ast.Boxout ($2, $3))}

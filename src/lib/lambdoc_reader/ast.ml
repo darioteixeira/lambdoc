@@ -104,7 +104,7 @@ type frag_t = block_t list
 	| Program of raw_t
 	| Tabular of raw_t * tabular_t
 	| Verbatim of raw_t
-	| Bitmap of raw_t * raw_t  (* (src, alt) *)
+	| Image of raw_t * raw_t  (* (src, alt) *)
 	| Subpage of frag_t
 	| Pullquote of frag_t
 	| Boxout of seq_t option * frag_t

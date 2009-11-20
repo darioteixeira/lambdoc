@@ -31,7 +31,7 @@ type 'a block_t =
 	| `Program of Floatation.t * Program.t
 	| `Tabular of Floatation.t * Tabular.tabular_t
 	| `Verbatim of Floatation.t * raw_t
-	| `Bitmap of Floatation.t * Image.t
+	| `Image of Floatation.t * Image.t
 	| `Subpage of Floatation.t * 'a list
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
@@ -90,8 +90,8 @@ let tabular floatation tab =
 let verbatim floatation txt =
 	`Verbatim (floatation, txt)
 
-let bitmap floatation img =
-	`Bitmap (floatation, img)
+let image floatation img =
+	`Image (floatation, img)
 
 let subpage floatation frag =
 	`Subpage (floatation, frag)

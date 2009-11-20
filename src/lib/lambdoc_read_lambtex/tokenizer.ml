@@ -178,7 +178,7 @@ let issue_simple_command raw_comm position =
 		| "mref"		-> (Inl, MREF command)
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
-		| "bitmap"		-> (Blk, BITMAP command)
+		| "image"		-> (Blk, IMAGE command)
 		| "part"		-> (Blk, PART command)
 		| "appendix"		-> (Blk, APPENDIX command)
 		| "section"

@@ -340,10 +340,10 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 /* Image environments.			 					*/
 /********************************************************************************/
 
-.doc_bitmap			{text-align: center;}
-.doc_bitmap > a			{display: inline-block;}
-.doc_bitmap > a > img		{display: block; border: none; max-width: 100%;}
-.doc_bitmap_shadow > a > img	{-moz-box-shadow: Box_shadow;}
+.doc_image			{text-align: center;}
+.doc_image > a			{display: inline-block;}
+.doc_image > a > img		{display: block; border: none; max-width: 100%;}
+.doc_image_shadow > a > img	{-moz-box-shadow: Box_shadow;}
 
 
 /********************************************************************************/

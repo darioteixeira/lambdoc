@@ -36,7 +36,7 @@ type t =
 	default_bullet: Bullet.t;
 	default_numbering: Numbering.t;
 	names: names_t;
-	bitmap_lookup: Resource.elt -> XHTML.M.uri;
+	image_lookup: Resource.elt -> XHTML.M.uri;
 	}
 
 
@@ -72,12 +72,12 @@ let portuguese_names =
 	figure_name = "Fig.";
 	}
 
-let make bullet numbering names bitmap_lookup =
+let make bullet numbering names image_lookup =
 	{
 	default_bullet = bullet;
 	default_numbering = numbering;
 	names = names;
-	bitmap_lookup = bitmap_lookup;
+	image_lookup = image_lookup;
 	}
 
 let default = make Bullet.Disc Numbering.Decimal english_names XHTML.M.uri_of_string

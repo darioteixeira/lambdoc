@@ -373,20 +373,6 @@ let parse_floater errors comm =
 	in get_floatation assigned.(0)
 
 
-let parse_for_image errors comm =
-	let assigned = process errors comm [Floatation_hnd; Frame_hnd; Width_hnd] in
-	let floatation = match assigned.(0) with
-		| Some (Floatation_data x) -> x
-		| _			   -> Floatation.Center
-	and frame = match assigned.(1) with
-		| Some (Boolean_data x)	-> x
-		| _			-> false
-	and width = match assigned.(2) with
-		| Some (Numeric_data w)	-> Some w
-		| _			-> None
-	in (floatation, frame, width)
-
-
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
@@ -411,7 +397,9 @@ let parse_for_enumerate errors comm =
 		| Some (Numbering_data x) -> x
 		| _			  -> Numbering.Decimal
 
+
 let parse_for_pullquote = parse_floater
+
 
 let parse_for_boxout ?classnames errors comm =
 	let assigned = process ?classnames errors comm [Floatation_hnd; Classname_hnd] in
@@ -421,9 +409,12 @@ let parse_for_boxout ?classnames errors comm =
 		| _			  -> None
 	in (floatation, classname)
 
+
 let parse_for_mathtex = parse_floater
 
+
 let parse_for_mathml = parse_floater
+
 
 let parse_for_program errors comm =
 	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd; Floatation_hnd] in
@@ -440,13 +431,29 @@ let parse_for_program errors comm =
 	let floatation = get_floatation assigned.(3)
 	in (floatation, lang, linenums, zebra)
 
+
 let parse_for_tabular = parse_floater
+
 
 let parse_for_verbatim = parse_floater
 
-let parse_for_bitmap = parse_for_image
+
+let parse_for_image errors comm =
+	let assigned = process errors comm [Floatation_hnd; Frame_hnd; Width_hnd] in
+	let floatation = match assigned.(0) with
+		| Some (Floatation_data x) -> x
+		| _			   -> Floatation.Center
+	and frame = match assigned.(1) with
+		| Some (Boolean_data x)	-> x
+		| _			-> false
+	and width = match assigned.(2) with
+		| Some (Numeric_data w)	-> Some w
+		| _			-> None
+	in (floatation, frame, width)
+
 
 let parse_for_subpage = parse_floater
+
 
 let parse_for_macrodef errors comm =
 	let assigned = process errors comm [Args_hnd]

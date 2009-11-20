@@ -131,7 +131,7 @@ and process_block node =
 		| T_element "tabular"		-> let (cols, tabular) = process_tabular node in (!!comm, Ast.Tabular (cols, tabular))
 		| T_element "verbatim"
 		| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)
-		| T_element "bitmap"		-> (!!comm, Ast.Bitmap (node#required_string_attribute "src", node#required_string_attribute "alt"))
+		| T_element "image"		-> (!!comm, Ast.Image (node#required_string_attribute "src", node#required_string_attribute "alt"))
 		| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node))
 		| T_element "pull"		-> (!!comm, Ast.Pullquote (process_frag node))
 		| T_element "boxout"		-> let (msg, frag) = process_callout node in (!!comm, Ast.Boxout (msg, frag))
