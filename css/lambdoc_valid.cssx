@@ -208,6 +208,7 @@
 	{
 	font-size: Size_pre;
 	font-family: Family_mono;
+	line-height: Line_height_prog;
 	color: #000000;
 	background: Background_prog;
 	border: Border_box;
@@ -324,7 +325,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	overflow: hidden;
 	white-space: pre;
 	padding: Padding_box;
-	line-height: Line_height_pre;
+	line-height: Line_height_verb;
 	text-align: left;
 	font-family: Family_mono;
 	font-size: Size_pre;

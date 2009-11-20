@@ -102,7 +102,7 @@
 #define Size_h3		1.5em
 #define Size_h4		1.4em
 
-#define Size_initial	1.429em		/* Relative to Size_normal: 14 * 1.429 = 20px */
+#define Size_initial	1.714em		/* Relative to Size_normal: 14 * 1.714 = 24px */
 #define Size_pullquote	1.071em		/* Relative to Size_normal: 14 * 1.071 = 15px */
 
 
@@ -130,7 +130,6 @@
 #define Hmargin_inline_large	0.5em
 #define Hmargin_indent		1em
 
-
 #define Padding_box	1em
 #define Padding_boxhalf	0.5em		/* Padding_box / 2 */
 #define Padding_semibox	0.5em
@@ -139,12 +138,14 @@
 #define Padding_vtabin	0.1em
 #define Padding_vtabout	0.4em
 
+#define Line_height_body	1.6em
+#define Line_height_prog	1.3em
+#define Line_height_verb	1em
+
 
 /********************************************************************************/
 /* Globals.									*/
 /********************************************************************************/
 
 #define Body_width		46em
-#define Line_height_body	1.6em
-#define Line_height_pre		1em
 

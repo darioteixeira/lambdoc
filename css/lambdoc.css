@@ -85,7 +85,7 @@ body
  {
  color: #501;
  font-weight: bold;
- font-size: 1.429em;
+ font-size: 1.714em;
  }
 .doc_par:not(:first-child) {margin-top: 0.5em;}
 .doc_par:not(:last-child) {margin-bottom: 0.5em;}
@@ -208,6 +208,7 @@ body
  {
  font-size: 1.2em;
  font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+ line-height: 1.3em;
  color: #000000;
  background: #f9f9f9;
  border: 1px solid #333;
