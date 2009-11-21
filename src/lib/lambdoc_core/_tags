@@ -20,3 +20,4 @@
 <tabular.*>: pkg_sexplib.syntax, syntax_camlp4o
 <target.*>: pkg_sexplib.syntax, syntax_camlp4o
 <valid.*>: pkg_sexplib.syntax, syntax_camlp4o
+<wrapper.*>: pkg_sexplib.syntax, syntax_camlp4o

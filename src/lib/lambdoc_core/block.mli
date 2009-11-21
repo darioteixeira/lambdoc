@@ -16,17 +16,6 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Definition of the ordering types for wrapper blocks.
-*)
-type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
-
-
-(**	The tuple of all common fields to wrappers.  The fields
-	are the wrapper's label, its order, and a caption.
-*)
-type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp
-
-
 (**	The various types of individual building blocks.
 *)
 type 'a block_t =
@@ -45,10 +34,10 @@ type 'a block_t =
 	| `Subpage of Floatation.t * 'a list
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
-	| `Equation of wrapper_t * 'a
-	| `Printout of wrapper_t * 'a
-	| `Table of wrapper_t * 'a
-	| `Figure of wrapper_t * 'a
+	| `Equation of Wrapper.t * 'a
+	| `Printout of Wrapper.t * 'a
+	| `Table of Wrapper.t * 'a
+	| `Figure of Wrapper.t * 'a
 	| `Heading of Heading.heading_t
 	| `Title of title_level_t * Inline.seq_t
 	| `Abstract of 'a list
@@ -129,16 +118,16 @@ val pullquote: Floatation.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose 
 val boxout: Floatation.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
 
-val equation: wrapper_t -> (_, _, _, _, [< `Math_blk ]) t ->
+val equation: Wrapper.t -> (_, _, _, _, [< `Math_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Equation_blk ]) t
 
-val printout: wrapper_t -> (_, _, _, _, [< `Program_blk ]) t ->
+val printout: Wrapper.t -> (_, _, _, _, [< `Program_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Printout_blk ]) t
 
-val table: wrapper_t -> (_, _, _, _, [< `Tabular_blk ]) t ->
+val table: Wrapper.t -> (_, _, _, _, [< `Tabular_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Table_blk ]) t
 
-val figure: wrapper_t -> (_, _, _, _, [< `Verbatim_blk | `Image_blk | `Subpage_blk ]) t ->
+val figure: Wrapper.t -> (_, _, _, _, [< `Verbatim_blk | `Image_blk | `Subpage_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Figure_blk ]) t
 
 val heading: ('a, 'b, 'c, 'd, 'e) Heading.t ->

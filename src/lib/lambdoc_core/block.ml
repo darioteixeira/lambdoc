@@ -15,10 +15,6 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
-
-type wrapper_t = Label.t * wrapper_order_t * Inline.seq_t with sexp
-
 type 'a block_t =
 	[ `Paragraph of bool * Inline.seq_t
 	| `Itemize of Bullet.t * 'a list plus_t
@@ -35,10 +31,10 @@ type 'a block_t =
 	| `Subpage of Floatation.t * 'a list
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
-	| `Equation of wrapper_t * 'a
-	| `Printout of wrapper_t * 'a
-	| `Table of wrapper_t * 'a
-	| `Figure of wrapper_t * 'a
+	| `Equation of Wrapper.t * 'a
+	| `Printout of Wrapper.t * 'a
+	| `Table of Wrapper.t * 'a
+	| `Figure of Wrapper.t * 'a
 	| `Heading of Heading.heading_t
 	| `Title of title_level_t * Inline.seq_t
 	| `Abstract of 'a list

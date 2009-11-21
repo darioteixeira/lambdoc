@@ -26,7 +26,7 @@ type wrapper_kind_t =
 type visible_target_t =
 	| Section_target of Heading.section_location_t * Heading.section_order_t
 	| Part_target of Heading.part_order_t
-	| Wrapper_target of wrapper_kind_t * Block.wrapper_order_t
+	| Wrapper_target of wrapper_kind_t * Wrapper.wrapper_order_t
 	with sexp
 
 type t =
