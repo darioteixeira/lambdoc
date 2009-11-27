@@ -30,7 +30,8 @@ type 'a block_t =
 	| `Image of Floatation.t * Image.t
 	| `Subpage of Floatation.t * 'a list
 	| `Pullquote of Floatation.t * 'a list
-	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
+	| `Boxout of Floatation.t * class_t option * Inline.seq_t option * 'a list
+	| `Custom of Floatation.t * Custom.t * Inline.seq_t option * 'a list
 	| `Equation of Wrapper.t * 'a
 	| `Printout of Wrapper.t * 'a
 	| `Table of Wrapper.t * 'a
@@ -97,6 +98,9 @@ let pullquote floatation frag =
 
 let boxout floatation maybe_classname maybe_seq frag =
 	`Boxout (floatation, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
+
+let custom floatation custom maybe_seq frag =
+	`Custom (floatation, custom, (maybe Inline.get_seq maybe_seq), frag)
 
 let equation wrapper equation_blk =
 	`Equation (wrapper, equation_blk)

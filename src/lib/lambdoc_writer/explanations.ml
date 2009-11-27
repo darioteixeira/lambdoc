@@ -81,6 +81,9 @@ let explain_error = function
 	| Error.Invalid_extra_classname_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a classname specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
+	| Error.Invalid_extra_design_parameter (tag, key, value) ->
+		sprintf "In %s, the key '%s' expects a design specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
+
 	| Error.Invalid_extra_unknown_parameter (tag, col, field) ->
 		sprintf "In %s, the value '%s' assigned to field %d of the extra parameter cannot be interpreted." (explain_tag tag) field col
 
@@ -114,6 +117,12 @@ let explain_error = function
 
 	| Error.Invalid_macro_reference label ->
 		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." label
+
+	| Error.Duplicate_custom (tag, env) ->
+		sprintf "The definition of custom environment '%s' in '%s' duplicates a previously defined environment." env (explain_tag tag)
+
+	| Error.Undefined_custom (tag, env) ->
+		sprintf "The environment '%s' used in '%s' has not been defined yet." env (explain_tag tag)
 
 	| Error.Invalid_language (tag, lang) ->
 		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)
@@ -153,7 +162,7 @@ let explain_error = function
 			| Error.Target_label  -> "'\\ref', '\\sref', or '\\mref'"
 		in sprintf ("Wrong target '%s' for %s: this command should only be used to reference %s.  Considering your target, perhaps you mean to use command %s instead?") label (explain_tag tag) str_expected str_suggested
 
-	| Error.Absent_target (tag, label) ->
+	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
 	| Error.Malformed_code_point ->

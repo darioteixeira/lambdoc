@@ -15,7 +15,14 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type wrapper_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
+type kind_t =
+	| Printout
+	| Equation
+	| Figure
+	| Table
+	with sexp
 
-type t = Label.t * wrapper_order_t * Inline.seq_t with sexp
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
+
+type t = Label.t * order_t * Inline.seq_t with sexp
 

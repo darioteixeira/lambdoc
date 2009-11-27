@@ -9,6 +9,10 @@
 %{
 open Lambdoc_reader
 open Globalenv
+
+let the comm = match comm.Ast.comm_tag with
+	| Some x -> x
+	| None	 -> invalid_arg "the"
 %}
 
 
@@ -65,6 +69,7 @@ open Globalenv
 %token <string> BEGIN_SUBPAGE
 %token <string> BEGIN_PULLQUOTE
 %token <string> BEGIN_BOXOUT
+%token <string> BEGIN_CUSTOM
 %token <string> BEGIN_EQUATION
 %token <string> BEGIN_PRINTOUT 
 %token <string> BEGIN_TABLE
@@ -112,6 +117,7 @@ open Globalenv
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
 %token <Lambdoc_reader.Ast.command_t> MACRODEF
+%token <Lambdoc_reader.Ast.command_t> CUSTOMDEF
 
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> QUESTION
@@ -177,6 +183,7 @@ block:
 	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_pullquote) block+ end_block				{($1, Ast.Pullquote $2)}
 	| begin_block(blk_boxout) inline_bundle? block+ end_block		{($1, Ast.Boxout ($2, $3))}
+	| begin_block(blk_custom) inline_bundle? block+ end_block		{($1, Ast.Custom (the $1, $2, $3))}
 	| begin_block(blk_equation) block caption end_block			{($1, Ast.Equation ($3, $2))}
 	| begin_block(blk_printout) block caption end_block			{($1, Ast.Printout ($3, $2))}
 	| begin_block(blk_table) block caption end_block			{($1, Ast.Table ($3, $2))}
@@ -197,6 +204,7 @@ block:
 	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
 	| begin_block(blk_note) block+ end_block				{($1, Ast.Note $2)}
 	| MACRODEF inline_bundle						{($1, Ast.Macrodef $2)}
+	| CUSTOMDEF raw_bundle raw_bundle					{($1, Ast.Customdef ($2, $3))}
 
 
 anon_item_frag:
@@ -317,6 +325,7 @@ blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Literal $1)}
 blk_subpage:		BEGIN_SUBPAGE						{(Some $1, General)}
 blk_pullquote:		BEGIN_PULLQUOTE						{(Some $1, General)}
 blk_boxout:		BEGIN_BOXOUT						{(Some $1, General)}
+blk_custom:		BEGIN_CUSTOM						{(Some $1, General)}
 blk_equation:		BEGIN_EQUATION						{(Some $1, General)}
 blk_printout:		BEGIN_PRINTOUT 						{(Some $1, General)}
 blk_table:		BEGIN_TABLE						{(Some $1, General)}

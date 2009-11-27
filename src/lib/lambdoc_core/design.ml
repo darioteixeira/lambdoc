@@ -1,32 +1,40 @@
 (********************************************************************************)
-(*	Labelmap.ml
+(*	Design.ml
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-TYPE_CONV_PATH "Labelmap"
+(**	The various sorts of designs accepted for custom environments.
+*)
+
+TYPE_CONV_PATH "Design"
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type key_t = Label.t with sexp
-type value_t = Target.t with sexp
-type t = (key_t, value_t) Hashtbl.t with sexp
+type t =
+	| Inside
+	| Box
+	| Hline
+	with sexp
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let create () = Hashtbl.create 10
+let of_string = function
+	| "inside" -> Inside
+	| "box"	   -> Box
+	| "hline"  -> Hline
+	| _	-> invalid_arg "Unknown design"
 
-let add = Hashtbl.add
-
-let mem = Hashtbl.mem
-
-let find = Hashtbl.find
+let to_string = function
+	| Inside -> "inside"
+	| Box	 -> "box"
+	| Hline  -> "hline"
 

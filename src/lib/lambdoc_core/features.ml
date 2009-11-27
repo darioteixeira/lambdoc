@@ -37,13 +37,13 @@ type composition_block_feature_t =
 type manuscript_block_feature_t =
 	[ `Feature_pullquote | `Feature_boxout
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
-	| `Feature_bib | `Feature_note
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
 	| `Feature_title1 | `Feature_title2
 	| `Feature_abstract | `Feature_rule
-	| `Feature_macrodef ]
+	| `Feature_bib | `Feature_note
+	| `Feature_macrodef | `Feature_customdef ]
 
 
 (********************************************************************************)
@@ -66,7 +66,7 @@ type internal_feature_t =
 	| `Feature_item | `Feature_question | `Feature_answer
 	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
 	| `Feature_thead | `Feature_tbody | `Feature_tfoot
-	| `Feature_caption ]
+	| `Feature_caption | `Feature_custom ]
 
 
 type feature_t =
@@ -112,15 +112,15 @@ let composition_block_features =
 
 let manuscript_block_features =
 	[
-	`Feature_macrodef;
 	`Feature_pullquote; `Feature_boxout;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
-	`Feature_bib; `Feature_note;
 	`Feature_part; `Feature_appendix;
 	`Feature_section1; `Feature_section2; `Feature_section3;
 	`Feature_bibliography; `Feature_notes; `Feature_toc;
 	`Feature_title1; `Feature_title2;
 	`Feature_abstract; `Feature_rule;
+	`Feature_bib; `Feature_note;
+	`Feature_macrodef; `Feature_customdef;
 	]
 
 
@@ -130,7 +130,7 @@ let internal_features =
 	`Feature_item; `Feature_question; `Feature_answer;
 	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
 	`Feature_thead; `Feature_tbody; `Feature_tfoot;
-	`Feature_caption;
+	`Feature_caption; `Feature_custom;
 	]
 
 
@@ -183,8 +183,6 @@ let describe_composition_block_feature = function
 
 
 let describe_manuscript_block_feature = function
-	| `Feature_macrodef	-> "definition of macro"
-
 	| `Feature_pullquote	-> "pull quote block"
 	| `Feature_boxout	-> "boxout block"
 
@@ -192,9 +190,6 @@ let describe_manuscript_block_feature = function
 	| `Feature_printout	-> "printout wrapper"
 	| `Feature_table	-> "table wrapper"
 	| `Feature_figure	-> "figure wrapper"
-
-	| `Feature_bib		-> "bibliography entry"
-	| `Feature_note		-> "note"
 
 	| `Feature_part		-> "document part"
 	| `Feature_appendix	-> "appendix"
@@ -213,6 +208,12 @@ let describe_manuscript_block_feature = function
 	| `Feature_abstract	-> "document abstract"
 	| `Feature_rule		-> "document rule"
 
+	| `Feature_bib		-> "bibliography entry"
+	| `Feature_note		-> "note"
+
+	| `Feature_macrodef	-> "definition of macro"
+	| `Feature_customdef	-> "definition of custom environment"
+
 
 let describe_internal_feature = function
 	| `Feature_macrocall	-> "invocation of macro"
@@ -227,6 +228,7 @@ let describe_internal_feature = function
 	| `Feature_tbody	-> "start of a block group in a tabular block"
 	| `Feature_tfoot	-> "start of a footer group in a tabular block"
         | `Feature_caption	-> "caption for a wrapper (equation, printout, table, figure) block"
+        | `Feature_custom	-> "custom environment"
 
 
 (********************************************************************************)

@@ -51,10 +51,11 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 	and bibs = DynArray.create ()
 	and notes = DynArray.create ()
 	and toc = DynArray.create ()
-        and labelmap = Labelmap.create ()
-	and images = ref Resource.empty
+	and images = DynArray.create ()
+        and labels = Hashtbl.create 10
+	and customisations = Hashtbl.create 10
+	and macros = Hashtbl.create 10
 	and errors = DynArray.create ()
-	and macromap = Macromap.create ()
 	and part_counter = Order.make_ordinal_counter ()
 	and section_counter = Order.make_hierarchy_counter ()
 	and appendix_counter = Order.make_hierarchy_counter ()
@@ -64,6 +65,7 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 	and table_counter = Order.make_ordinal_counter ()
 	and bib_counter = Order.make_ordinal_counter ()
 	and note_counter = Order.make_ordinal_counter ()
+	and custom_counters = Hashtbl.create 10
         and auto_label_counter = ref 0
 	and appendixed = ref false in
 
@@ -82,9 +84,9 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 		| Some thing ->
 			let new_label = `User_label thing in
 			let () =
-				if Labelmap.mem labelmap new_label || Macromap.mem macromap thing
+				if Hashtbl.mem labels new_label || Hashtbl.mem macros thing
 				then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_label (comm.comm_tag, thing)))
-				else Labelmap.add labelmap new_label target
+				else Hashtbl.add labels new_label target
 			in new_label
 		| None ->
 			incr auto_label_counter;
@@ -207,7 +209,7 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 			
 			let elem () =
 				try
-					let (macro_nargs, macro_seq) = Macromap.find macromap label
+					let (macro_nargs, macro_seq) = Hashtbl.find macros label
 					in if macro_nargs <> List.length arglist
 					then
 						let msg = Error.Invalid_macro_call (label, List.length arglist, macro_nargs) in
@@ -355,6 +357,7 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 		| (false, (comm, Ast.Ref label)) ->
 			let elem () =
 				let target_checker = function
+					| Target.Visible_target (Target.Custom_target (_, `None_given))	-> `Empty_target
 					| Target.Visible_target (Target.Part_target `None_given)	-> `Empty_target
 					| Target.Visible_target (Target.Section_target (_, `None_given))-> `Empty_target
 					| Target.Visible_target _					-> `Valid_target
@@ -366,6 +369,7 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 		| (false, (comm, Ast.Sref label)) ->
 			let elem () =
 				let target_checker = function
+					| Target.Visible_target (Target.Custom_target (_, `None_given))	-> `Empty_target
 					| Target.Visible_target (Target.Part_target `None_given)	-> `Empty_target
 					| Target.Visible_target (Target.Section_target (_, `None_given))-> `Empty_target
 					| Target.Visible_target _					-> `Valid_target
@@ -619,8 +623,8 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 			let elem () =
 				let (floatation, frame, width) = Extra.parse_for_image errors comm in
 				let image = Image.make frame width alias alt in
-				let () = images := Resource.add alias !images
-				in Some (Block.image floatation image)
+				DynArray.add images alias;
+				Some (Block.image floatation image)
 			in check_comm `Feature_image comm elem
 
 		| (_, _, true, `Figure_blk, (comm, Ast.Subpage frag))
@@ -645,6 +649,28 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 				and seq = maybe convert_seq maybe_seq
 				in Some (Block.boxout floatation maybe_classname seq (Obj.magic new_frag))
 			in check_comm `Feature_boxout comm elem
+
+		| (_, true, true, `Any_blk, (comm, Ast.Custom (env, maybe_seq, frag))) ->
+			let elem () =
+				try
+					let (counter_name, used, data) = Hashtbl.find customisations env in
+					let counter = Hashtbl.find custom_counters counter_name in
+					let () = if not used then Hashtbl.replace customisations env (counter_name, true, data) in
+					let order = match comm.comm_order with
+						| None		-> Order.auto_ordinal counter
+						| Some ""	-> Order.none ()
+						| Some other	-> Order.user_ordinal other in
+					let label = make_label comm (Target.custom env order) in
+					let floatation = Extra.parse_for_custom errors comm
+					and custom = (env, label, order)
+					and new_frag = List.filter_map (convert_block ~minipaged:true false false true `Any_blk) frag
+					and new_seq = maybe convert_seq maybe_seq
+					in Some (Block.custom floatation custom new_seq (Obj.magic new_frag))
+				with Not_found ->
+					let msg = Error.Undefined_custom (comm.comm_tag, env)
+					in DynArray.add errors (comm.comm_linenum, msg);
+					None
+			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (caption, blk))) ->
 			let elem () =
@@ -802,17 +828,33 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 					let errors_before = DynArray.length errors in
 					let _ = expand_seq_macros (Some (List.make num_args [(comm, Ast.Linebreak)])) seq in
 					let errors_after = DynArray.length errors in
-					(if Labelmap.mem labelmap (`User_label label) || Macromap.mem macromap label
+					(if Hashtbl.mem labels (`User_label label) || Hashtbl.mem macros label
 					then
 						let msg = Error.Duplicate_label (comm.comm_tag, label)
 						in DynArray.add errors (comm.comm_linenum, msg)
 					else
 						let new_seq = if errors_after = errors_before then seq else []
-						in Macromap.add macromap label (num_args, new_seq));
+						in Hashtbl.add macros label (num_args, new_seq));
 					None
 				| None ->
 					None
 			in check_comm `Feature_macrodef comm elem
+
+		| (_, _, _, `Any_blk, (comm, Ast.Customdef (env, raw))) ->
+			let elem () =
+				let (counter, design) = Extra.parse_for_customdef ~env errors comm in
+				if Hashtbl.mem customisations env
+				then begin
+					let msg = Error.Duplicate_custom (comm.comm_tag, env)
+					in DynArray.add errors (comm.comm_linenum, msg)
+				end
+				else begin
+					Hashtbl.add customisations env (counter, false, (design, raw));
+					if not (Hashtbl.mem custom_counters counter)
+					then Hashtbl.add custom_counters counter (Order.make_ordinal_counter ())
+				end;
+				None
+			in check_comm `Feature_customdef comm elem
 
 		| (_, _, _, x, (comm, _)) ->
 			let msg = Error.Unexpected_block (comm.comm_tag, x)
@@ -880,13 +922,13 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
-	(* Function for filtering references.					*)
+	(* Filtering of references.						*)
 	(************************************************************************)
 
 	let filter_references () =
 		let filter_reference (target_checker, comm, label) =
 			try
-				let target = Labelmap.find labelmap (`User_label label) in
+				let target = Hashtbl.find labels (`User_label label) in
 				match target_checker target with
 				| `Valid_target ->
 					()
@@ -902,10 +944,21 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 					in DynArray.add errors (comm.comm_linenum, msg)
 			with
 				Not_found ->
-					let msg = Error.Absent_target (comm.comm_tag, label) in
+					let msg = Error.Undefined_target (comm.comm_tag, label) in
 					DynArray.add errors (comm.comm_linenum, msg)
 		in
 		DynArray.iter filter_reference references in
+
+
+	(************************************************************************)
+	(* Filtering of customisations: we only save those actually used.	*)
+	(************************************************************************)
+
+	let filter_customisations () =
+		let fresh = Hashtbl.create (Hashtbl.length customisations) in
+		let adder key (_, used, value) = if used then Hashtbl.add fresh key value in
+		Hashtbl.iter adder customisations;
+		fresh in
 
 
 	(************************************************************************)
@@ -913,8 +966,9 @@ let process_document ~classnames ~idiosyncrasies document_ast =
 	(************************************************************************)
 
 	let contents = convert_frag document_ast in
+	let custom = filter_customisations () in
 	let () = filter_references ()
-	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, labelmap, !images, DynArray.to_list errors)
+	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, DynArray.to_list images, labels, custom, DynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -958,10 +1012,10 @@ let sort_errors errors =
 
 let process_manuscript ~classnames ~accept_list ~deny_list ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accept_list ~deny_list ~default in
-	let (contents, bibs, notes, toc, labelmap, images, errors) = process_document ~classnames ~idiosyncrasies document_ast in
+	let (contents, bibs, notes, toc, images, labels, custom, errors) = process_document ~classnames ~idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
-		Ambivalent.make_valid_manuscript contents bibs notes toc labelmap images
+		Ambivalent.make_valid_manuscript contents bibs notes toc images labels custom
 	else
 		let sorted_errors = sort_errors (collate_errors source errors)
 		in Ambivalent.make_invalid_manuscript sorted_errors
@@ -969,7 +1023,7 @@ let process_manuscript ~classnames ~accept_list ~deny_list ~default ~source docu
 
 let process_composition ~classnames ~accept_list ~deny_list ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accept_list ~deny_list ~default in
-	let (contents, _, _, _, _, images, errors) = process_document ~classnames ~idiosyncrasies document_ast in
+	let (contents, _, _, _, images, _, _, errors) = process_document ~classnames ~idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_composition (Obj.magic contents) images

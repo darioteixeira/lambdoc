@@ -1,32 +1,28 @@
 (********************************************************************************)
-(*	Macromap.ml
+(*	Custom.ml
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-open Lambdoc_core.Basic
+(**	Custom document blocks.
+*)
+
+TYPE_CONV_PATH "Custom"
+
+open Basic
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type key_t = raw_t
-type value_t = int * Ast.seq_t
-type t = (key_t, value_t) Hashtbl.t
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
+type value_t = Design.t * raw_t with sexp
 
-(********************************************************************************)
-(**	{1 Functions and values}						*)
-(********************************************************************************)
+type key_t = string with sexp
 
-let create () = Hashtbl.create 10
-
-let add = Hashtbl.add
-
-let mem = Hashtbl.mem
-
-let find = Hashtbl.find
+type t = key_t * Label.t * order_t with sexp
 

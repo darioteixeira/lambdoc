@@ -33,7 +33,8 @@ type 'a block_t =
 	| `Image of Floatation.t * Image.t
 	| `Subpage of Floatation.t * 'a list
 	| `Pullquote of Floatation.t * 'a list
-	| `Boxout of Floatation.t * string option * Inline.seq_t option * 'a list
+	| `Boxout of Floatation.t * class_t option * Inline.seq_t option * 'a list
+	| `Custom of Floatation.t * Custom.t * Inline.seq_t option * 'a list
 	| `Equation of Wrapper.t * 'a
 	| `Printout of Wrapper.t * 'a
 	| `Table of Wrapper.t * 'a
@@ -61,11 +62,11 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] w
 		the document, whereas the latter allows everything.}
 		{li ['b] is either [`Listable] or [`Non_listable].  A block is
 		listable if it is a wrapper (equation, printout, table, or figure),
-		a pullquote, a boxout, or embeddable.}
+		a pullquote, a boxout, a custom environment, or embeddable.}
 		{li ['c] is either [`Embeddable] or [`Non_embeddable].  A block
 		is termed embeddable if it can be a child of quotes and boxouts.
-		All floaters except for pullquotes and boxouts are embeddable.
-		Note that all prose blocks are also embeddable.}
+		All floaters except for pullquotes, boxouts, and custom environments
+		 are embeddable.  Note that all prose blocks are also embeddable.}
 		{li ['d] is either [`Prose] or [`Non_prose].  A block is defined
 		as prose if it generates only text or lists of text, but it is not
 		a verse block.  Therefore, the only prose blocks are paragraphs
@@ -117,6 +118,9 @@ val pullquote: Floatation.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose 
 
 val boxout: Floatation.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
+
+val custom: Floatation.t -> Custom.t -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Custom_blk ]) t
 
 val equation: Wrapper.t -> (_, _, _, _, [< `Math_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Equation_blk ]) t

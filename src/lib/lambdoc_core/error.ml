@@ -80,6 +80,7 @@ type error_msg_t =
 	| Invalid_extra_floatation_parameter of tag_t option * string * string
 	| Invalid_extra_lang_parameter of tag_t option * string * string
 	| Invalid_extra_classname_parameter of tag_t option * string * string
+	| Invalid_extra_design_parameter of tag_t option * string * string
 	| Invalid_extra_unknown_parameter of tag_t option * int * string
 	| Invalid_extra_no_solutions of tag_t option * string
 	| Invalid_extra_multiple_solutions of tag_t option * string
@@ -93,6 +94,9 @@ type error_msg_t =
 	| Invalid_macro_call of ref_t * int * int
 	| Invalid_macro_reference of ref_t
 
+	| Duplicate_custom of tag_t option * string
+	| Undefined_custom of tag_t option * string
+
 	| Invalid_language of tag_t option * string
 	| Invalid_mathtex of tag_t option * string
 	| Invalid_mathml of tag_t option * string
@@ -104,7 +108,7 @@ type error_msg_t =
 	| Duplicate_label of tag_t option * ref_t
 	| Empty_target of tag_t option * ref_t
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
-	| Absent_target of tag_t option * ref_t
+	| Undefined_target of tag_t option * ref_t
 
 	| Malformed_code_point
 	| Reading_error of string

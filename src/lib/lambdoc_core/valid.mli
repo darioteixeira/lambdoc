@@ -16,14 +16,18 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
+type custom_t = (Custom.key_t, Custom.value_t) Hashtbl.t with sexp
+
 type 'a document_t =
 	{
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.heading_t list;
-	labelmap: Labelmap.t;
-	images: Resource.t;
+	images: alias_t list;
+	labels: labels_t;
+	custom: custom_t;
 	} with sexp
 
 type manuscript_t = [ `Manuscript ] document_t with sexp
@@ -39,13 +43,14 @@ val make_manuscript:
 	Bib.t list ->
 	Note.t list ->
 	Heading.heading_t list ->
-	Labelmap.t ->
-	Resource.t ->
+	alias_t list ->
+	labels_t ->
+	custom_t ->
 	manuscript_t
 
 val make_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
-	Resource.t ->
+	alias_t list ->
 	composition_t
 
 

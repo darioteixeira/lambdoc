@@ -1,3 +1,4 @@
 <scanner.ml>: pkg_ulex, syntax_camlp4o
 <main.ml>: pkg_menhirLib
+<parser.*>: pkg_extlib
 <*.cmx>: for-pack(Lambdoc_read_lambtex)

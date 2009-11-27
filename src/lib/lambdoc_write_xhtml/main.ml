@@ -73,9 +73,14 @@ let make_external_link = make_link
 let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
 
 
-let wrap_order = function
+let span_order = function
 	| ""	-> []
 	| order	-> [span [pcdata order]]
+
+
+let space_order  = function
+	| ""	-> []
+	| order	-> [entity "thinsp"; pcdata order]
 
 
 let cons_of_level = function
@@ -96,7 +101,7 @@ let make_floatation floatation = ["doc_float_" ^ (Floatation.to_string floatatio
 	
 
 let make_heading cons label order_str classname content =
-	cons ?a:(Some [a_id (make_label label); a_class [classname]]) ((wrap_order order_str) @ [span content])
+	cons ?a:(Some [a_id (make_label label); a_class [classname]]) ((span_order order_str) @ [span content])
 
 
 let make_sectional level label order_str content =
@@ -115,6 +120,9 @@ let section_conv location order =
 		| `Mainbody	-> Printers.mainbody
 		| `Appendixed	-> Printers.appendixed
 	in Order.string_of_hierarchical conv order
+
+
+let custom_conv order = Order.string_of_ordinal Printers.arabic order
 
 
 let wrapper_conv order = Order.string_of_ordinal Printers.arabic order
@@ -148,7 +156,8 @@ let write_valid_document settings classname doc =
 	and bibs = doc.Valid.bibs
 	and notes = doc.Valid.notes
 	and toc = doc.Valid.toc
-	and labelmap = doc.Valid.labelmap in
+	and labels = doc.Valid.labels
+	and custom = doc.Valid.custom in
 
 
 	(************************************************************************)
@@ -217,7 +226,7 @@ let write_valid_document settings classname doc =
 
 		| `See ref ->
 			let label = `User_label ref in
-			let target = Labelmap.find labelmap label
+			let target = Hashtbl.find labels label
 			in (match target with
 				| Target.Note_target order ->
 					let content = [pcdata (sprintf "(%s)" (note_conv order))]
@@ -227,7 +236,7 @@ let write_valid_document settings classname doc =
 
 		| `Cite ref ->
 			let label = `User_label ref in
-			let target = Labelmap.find labelmap label
+			let target = Hashtbl.find labels label
 			in (match target with
 				| Target.Bib_target order ->
 					let content = [pcdata (sprintf "[%s]" (bib_conv order))]
@@ -237,24 +246,38 @@ let write_valid_document settings classname doc =
 
 		| `Ref ref ->
 			let label = `User_label ref in
-			let target = Labelmap.find labelmap label
+			let target = Hashtbl.find labels label
 			in (match target with
+				| Target.Visible_target (Target.Custom_target (_, order)) ->
+					let content = [pcdata (custom_conv order)]
+					in make_internal_link label content
+				| Target.Visible_target (Target.Wrapper_target (_, order)) ->
+					let content = [pcdata (wrapper_conv order)]
+					in make_internal_link label content
 				| Target.Visible_target (Target.Part_target order) ->
 					let content = [pcdata (part_conv order)]
 					in make_internal_link label content
 				| Target.Visible_target (Target.Section_target (location, order)) ->
 					let content = [pcdata (section_conv location order)]
 					in make_internal_link label content
-				| Target.Visible_target (Target.Wrapper_target (_, order)) ->
-					let content = [pcdata (wrapper_conv order)]
-					in make_internal_link label content
 				| _ ->
 					raise (Command_ref_with_non_visible_block target))
 
 		| `Sref ref ->
-			let target = Labelmap.find labelmap (`User_label ref) in
+			let target = Hashtbl.find labels (`User_label ref) in
 			let make_sref name order_str = make_internal_link (`User_label ref) [pcdata name; space (); pcdata order_str]
 			in (match target with
+				| Target.Visible_target (Target.Custom_target (env, order)) ->
+					let (_, description) = Hashtbl.find custom env
+					in make_sref description (custom_conv order)
+				| Target.Visible_target (Target.Wrapper_target (Wrapper.Equation, order)) ->
+					make_sref settings.names.equation_name (wrapper_conv order)
+				| Target.Visible_target (Target.Wrapper_target (Wrapper.Printout, order)) ->
+					make_sref settings.names.printout_name (wrapper_conv order)
+				| Target.Visible_target (Target.Wrapper_target (Wrapper.Table, order)) ->
+					make_sref settings.names.table_name (wrapper_conv order)
+				| Target.Visible_target (Target.Wrapper_target (Wrapper.Figure, order)) ->
+					make_sref settings.names.figure_name (wrapper_conv order)
 				| Target.Visible_target (Target.Part_target order) ->
 					make_sref settings.names.part_name (part_conv order)
 				| Target.Visible_target (Target.Section_target (location, order)) ->
@@ -262,14 +285,6 @@ let write_valid_document settings classname doc =
 						| `Mainbody	-> settings.names.section_name
 						| `Appendixed	-> settings.names.appendix_name
 					in make_sref name (section_conv location order)
-				| Target.Visible_target (Target.Wrapper_target (Target.Equation_wrapper, order)) ->
-					make_sref settings.names.equation_name (wrapper_conv order)
-				| Target.Visible_target (Target.Wrapper_target (Target.Printout_wrapper, order)) ->
-					make_sref settings.names.printout_name (wrapper_conv order)
-				| Target.Visible_target (Target.Wrapper_target (Target.Table_wrapper, order)) ->
-					make_sref settings.names.table_name (wrapper_conv order)
-				| Target.Visible_target (Target.Wrapper_target (Target.Figure_wrapper, order)) ->
-					make_sref settings.names.figure_name (wrapper_conv order)
 				| _ ->
 					raise (Command_sref_with_non_visible_block target))
 
@@ -425,6 +440,30 @@ let write_valid_document settings classname doc =
 			in None, [XHTML.M.div ~a:[a_class (["doc_boxout"] @ style_float @ style_class)]
 				(title @ [XHTML.M.div ~a:[a_class ["doc_boxout_body"]] (write_frag frag)])]
 
+		| `Custom (floatation, (env, label, order), maybe_seq, frag) ->
+			let (design, description) = Hashtbl.find custom env in
+			let style_float = make_floatation floatation
+			and style_design = "doc_design_" ^ (Design.to_string design) in
+			let style = "doc_custom" :: style_design :: style_float in
+			let order_data = space_order (custom_conv order) in
+			let content = match design with
+				| Design.Inside ->
+					let caption_head = XHTML.M.h1 (pcdata description :: order_data @ [pcdata "."])
+					and caption_body = match maybe_seq with
+						| Some seq -> [XHTML.M.p ([pcdata "("] @ (write_seq seq) @ [pcdata ")."])]
+						| None	   -> [] in
+					let caption = XHTML.M.div ~a:[a_class ["doc_caption"]] (caption_head :: caption_body)
+					in [caption; XHTML.M.div (write_frag frag)]
+				| Design.Box
+				| Design.Hline ->
+					let caption_head = XHTML.M.h1 (pcdata description :: order_data @ [pcdata ":"])
+					and caption_body = match maybe_seq with
+						| Some seq -> [XHTML.M.p (write_seq seq)]
+						| None	   -> [] in
+					let caption = XHTML.M.div ~a:[a_class ["doc_caption"]] (caption_head :: caption_body)
+					in [XHTML.M.div (write_frag frag); caption]
+			in None, [XHTML.M.div ~a:[a_id (make_label label); a_class style] content]
+
 		| `Equation (wrapper, equation) ->
 			let name = settings.names.equation_name
 			and content = write_block ~wrapped:true equation
@@ -506,7 +545,7 @@ let write_valid_document settings classname doc =
 			| Some floatation -> floatation
 			| None		 -> failwith "write_wrapper" in
 		let caption_content =
-			let caption_head = XHTML.M.h1 [pcdata wrapper_name; entity "thinsp"; pcdata ((wrapper_conv order) ^ ":")]
+			let caption_head = XHTML.M.h1 (pcdata wrapper_name :: space_order (wrapper_conv order) @ [pcdata ":"])
 			and caption_body = XHTML.M.p (write_seq seq)
 			in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body] in
 		let classnames = ["doc_wrapper"; classname] @ (make_floatation floatation)
@@ -540,7 +579,7 @@ let write_valid_document settings classname doc =
 
 	and write_toc_entry sec =
 		let make_toc_entry label classname order_str content =
-		        Some (XHTML.M.li ~a:[a_class [classname]] [make_internal_link label ((wrap_order order_str) @ [span content])])
+		        Some (XHTML.M.li ~a:[a_class [classname]] [make_internal_link label ((span_order order_str) @ [span content])])
 		in match sec with
 			| `Part (label, order, `Custom seq) ->
 				make_toc_entry label (class_of_level `Level0) (part_conv order) (write_seq seq)

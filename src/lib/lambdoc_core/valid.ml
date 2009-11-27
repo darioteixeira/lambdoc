@@ -11,6 +11,7 @@
 
 TYPE_CONV_PATH "Valid"
 
+open Sexplib
 open Basic
 
 
@@ -18,14 +19,18 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
+type custom_t = (Custom.key_t, Custom.value_t) Hashtbl.t with sexp
+
 type 'a document_t =
 	{
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.heading_t list;
-	labelmap: Labelmap.t;
-	images: Resource.t;
+	images: alias_t list;
+	labels: labels_t;
+	custom: custom_t;
 	} with sexp
 
 type manuscript_t = [ `Manuscript ] document_t with sexp
@@ -36,14 +41,15 @@ type composition_t = [ `Composition ] document_t with sexp
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let make_manuscript content bibs notes toc labelmap images =
+let make_manuscript content bibs notes toc images labels custom =
 	{
 	content = Block.get_frag content;
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
-	labelmap = labelmap;
 	images = images;
+	labels = labels;
+	custom = custom;
 	}
 
 let make_composition content images =
@@ -52,8 +58,9 @@ let make_composition content images =
 	bibs = [];
 	notes = [];
 	toc = [];
-	labelmap = Labelmap.create ();
 	images = images;
+	labels = Hashtbl.create 10;
+	custom = Hashtbl.create 10;
 	}
 
 

@@ -30,13 +30,15 @@ let ocamlfind x =
 (* Menhir options *)
 let menhir_opts = S
 	[
+	(*
 	A"--dump";
 	A"--explain";
 	A"--graph";
-	(*A"--trace";*)
-	(*A"--log-automaton"; A"0";*)
-	(*A"--log-code"; A"0";*)
-	(*A"--log-grammar"; A"0";*)
+	A"--trace";
+	A"--log-automaton"; A"0";
+	A"--log-code"; A"0";
+	A"--log-grammar"; A"0";
+	*)
 	];;
 
 

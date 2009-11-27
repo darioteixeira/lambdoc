@@ -29,7 +29,6 @@ open Scanner
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Unknown_env_command of string
 exception Unknown_simple_command of string
 
 
@@ -142,7 +141,7 @@ let issue_begin_command raw_comm position =
 			| "figure"	-> BEGIN_FIGURE primary
 			| "bib"		-> BEGIN_BIB primary
 			| "note"	-> BEGIN_NOTE primary
-			| x		-> raise (Unknown_env_command x)
+			| _		-> BEGIN_CUSTOM primary
 	and second_token = BEGIN_DUMMY command
 	in (Set Blk, [first_token; second_token])
 
@@ -197,6 +196,7 @@ let issue_simple_command raw_comm position =
 		| "rule"
 		| "hr"			-> (Blk, RULE command)
 		| "macrodef"		-> (Blk, MACRODEF command)
+		| "customdef"		-> (Blk, CUSTOMDEF command)
 		| "item"
 		| "li"			-> (Blk, ITEM command)
 		| "question"		-> (Blk, QUESTION command)

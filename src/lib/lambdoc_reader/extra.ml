@@ -47,16 +47,20 @@ type handle_t =
 	| Lang_hnd
 	| Classname_hnd
 	| Args_hnd
+	| Counter_hnd
+	| Design_hnd
 
 
 type property_kind_t =
 	| Boolean_kind
 	| Numeric_kind
+	| String_kind
 	| Bullet_kind
 	| Numbering_kind
 	| Floatation_kind
 	| Lang_kind
 	| Classname_kind
+	| Design_kind
 
 
 type property_id_t = string * property_kind_t
@@ -65,11 +69,13 @@ type property_id_t = string * property_kind_t
 type property_data_t =
 	| Boolean_data of bool
 	| Numeric_data of int 
+	| String_data of string
 	| Bullet_data of Bullet.t
 	| Numbering_data of Numbering.t
 	| Floatation_data of Floatation.t
 	| Lang_data of Camlhighlight_core.lang_t
 	| Classname_data of string
+	| Design_data of Design.t
 
 
 type field_t =
@@ -113,6 +119,8 @@ let id_of_handle = function
 	| Lang_hnd	 -> ("lang", Lang_kind)
 	| Classname_hnd	 -> ("class", Classname_kind)
 	| Args_hnd	 -> ("args", Numeric_kind)
+	| Counter_hnd	 -> ("counter", String_kind)
+	| Design_hnd	 -> ("design", Design_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -185,6 +193,11 @@ let matcher ~classnames errors comm key kind field = match (key, kind, field) wi
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
+	| (key, String_kind, Unnamed_field v) ->
+		Undecided (String_data v)
+	| (key, String_kind, Keyvalue_field (k, v)) when key = k ->
+		Positive (String_data v)
+
 	| (key, Bullet_kind, Unnamed_field v) ->
 		(try Undecided (Bullet_data (Bullet.of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Bullet_kind, Keyvalue_field (k, v)) when key = k ->
@@ -232,6 +245,15 @@ let matcher ~classnames errors comm key kind field = match (key, kind, field) wi
 			let msg = Error.Invalid_extra_classname_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative
+
+	| (key, Design_kind, Unnamed_field v) ->
+		(try Undecided (Design_data (Design.of_string v)) with Invalid_argument _ -> Negative)
+	| (key, Design_kind, Keyvalue_field (k, v)) when key = k ->
+		(try Positive (Design_data (Design.of_string v))
+		with Invalid_argument _ ->
+			let msg = Error.Invalid_extra_design_parameter (comm.comm_tag, key, v)
+			in	DynArray.add errors (comm.comm_linenum, msg);
+				Negative)
 
 	| _ ->
 		Negative
@@ -398,18 +420,6 @@ let parse_for_enumerate errors comm =
 		| _			  -> Numbering.Decimal
 
 
-let parse_for_pullquote = parse_floater
-
-
-let parse_for_boxout ?classnames errors comm =
-	let assigned = process ?classnames errors comm [Floatation_hnd; Classname_hnd] in
-	let floatation = get_floatation assigned.(0)
-	and classname = match assigned.(1) with
-		| Some (Classname_data x) -> Some x
-		| _			  -> None
-	in (floatation, classname)
-
-
 let parse_for_mathtex = parse_floater
 
 
@@ -455,9 +465,34 @@ let parse_for_image errors comm =
 let parse_for_subpage = parse_floater
 
 
+let parse_for_pullquote = parse_floater
+
+
+let parse_for_boxout ?classnames errors comm =
+	let assigned = process ?classnames errors comm [Floatation_hnd; Classname_hnd] in
+	let floatation = get_floatation assigned.(0)
+	and classname = match assigned.(1) with
+		| Some (Classname_data x) -> Some x
+		| _			  -> None
+	in (floatation, classname)
+
+
+let parse_for_custom = parse_floater
+
+
 let parse_for_macrodef errors comm =
 	let assigned = process errors comm [Args_hnd]
 	in match assigned.(0) with
 		| Some (Numeric_data x)	-> x
 		| _			-> 0
+
+let parse_for_customdef ~env errors comm =
+	let assigned = process errors comm [Counter_hnd; Design_hnd] in
+	let counter = match assigned.(0) with
+		| Some (String_data x) -> x
+		| _		       -> env
+	and design = match assigned.(1) with
+		| Some (Design_data x)	-> x
+		| _			-> Design.Inside
+	in (counter, design)
 

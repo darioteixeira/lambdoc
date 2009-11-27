@@ -108,6 +108,7 @@ type frag_t = block_t list
 	| Subpage of frag_t
 	| Pullquote of frag_t
 	| Boxout of seq_t option * frag_t
+	| Custom of raw_t * seq_t option * frag_t
 	| Equation of caption_t * block_t
 	| Printout of caption_t * block_t
 	| Table of caption_t * block_t
@@ -125,6 +126,7 @@ type frag_t = block_t list
 	| Bib of bib_t
 	| Note of frag_t
 	| Macrodef of seq_t
+	| Customdef of raw_t * raw_t
 
 
 (********************************************************************************)

@@ -16,17 +16,11 @@ TYPE_CONV_PATH "Target"
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type wrapper_kind_t =
-	| Printout_wrapper
-	| Equation_wrapper
-	| Figure_wrapper
-	| Table_wrapper
-	with sexp
-
 type visible_target_t =
-	| Section_target of Heading.section_location_t * Heading.section_order_t
+	| Custom_target of Custom.key_t * Custom.order_t
+	| Wrapper_target of Wrapper.kind_t * Wrapper.order_t
 	| Part_target of Heading.part_order_t
-	| Wrapper_target of wrapper_kind_t * Wrapper.wrapper_order_t
+	| Section_target of Heading.section_location_t * Heading.section_order_t
 	with sexp
 
 type t =
@@ -40,17 +34,19 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let section location order = Visible_target (Section_target (location, order))
+let custom envname order = Visible_target (Custom_target (envname, order))
+
+let printout order = Visible_target (Wrapper_target (Wrapper.Printout, order))
+
+let equation order = Visible_target (Wrapper_target (Wrapper.Equation, order))
+
+let figure order = Visible_target (Wrapper_target (Wrapper.Figure, order))
+
+let table order = Visible_target (Wrapper_target (Wrapper.Table, order))
 
 let part order = Visible_target (Part_target order)
 
-let printout order = Visible_target (Wrapper_target (Printout_wrapper, order))
-
-let equation order = Visible_target (Wrapper_target (Equation_wrapper, order))
-
-let figure order = Visible_target (Wrapper_target (Figure_wrapper, order))
-
-let table order = Visible_target (Wrapper_target (Table_wrapper, order))
+let section location order = Visible_target (Section_target (location, order))
 
 let bib order = Bib_target order
 

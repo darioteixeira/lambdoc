@@ -4,6 +4,8 @@
 <bib.*>: pkg_sexplib.syntax, syntax_camlp4o
 <block.*>: pkg_sexplib.syntax, syntax_camlp4o
 <bullet.*>: pkg_sexplib.syntax, syntax_camlp4o
+<custom.*>: pkg_sexplib.syntax, syntax_camlp4o
+<design.*>: pkg_sexplib.syntax, syntax_camlp4o
 <error.*>: pkg_sexplib.syntax, syntax_camlp4o
 <floatation.*>: pkg_sexplib.syntax, syntax_camlp4o
 <heading.*>: pkg_sexplib.syntax, syntax_camlp4o
@@ -11,7 +13,6 @@
 <inline.*>: pkg_sexplib.syntax, syntax_camlp4o
 <invalid.*>: pkg_sexplib.syntax, syntax_camlp4o
 <label.*>: pkg_sexplib.syntax, syntax_camlp4o
-<labelmap.*>: pkg_sexplib.syntax, syntax_camlp4o
 <math.*>: pkg_sexplib.syntax, syntax_camlp4o
 <note.*>: pkg_sexplib.syntax, syntax_camlp4o
 <numbering.*>: pkg_sexplib.syntax, syntax_camlp4o

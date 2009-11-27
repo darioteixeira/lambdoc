@@ -55,12 +55,17 @@ let listing_class =
 let floater_class =
 	(Forbidden, Forbidden, Optional)
 
+let custom_class minipaged =
+	(Optional, (if minipaged then Mandatory0 else Forbidden0), Optional)
+
 let wrapper_class minipaged =
 	(Optional, (if minipaged then Mandatory else Forbidden), Forbidden)
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 
 let macrodef_class = (Mandatory, Forbidden, Optional)
+
+let customdef_class = (Forbidden, Forbidden, Optional)
 
 
 (*	This function checks whether a parameter is valid given its
@@ -165,8 +170,6 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_subpage	-> floater_class
 
 	and manuscript_block_feature_set = function
-		| `Feature_macrodef	-> macrodef_class
-
 		| `Feature_pullquote	-> floater_class
 		| `Feature_boxout	-> floater_class
 
@@ -174,9 +177,6 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_table	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_figure	-> wrapper_class (get_minipaged maybe_minipaged)
-
-		| `Feature_bib		-> ghost_class
-		| `Feature_note		-> ghost_class
 
 		| `Feature_part		-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_appendix	-> preset_heading_class
@@ -194,6 +194,12 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_abstract	-> forbidden_class
 		| `Feature_rule		-> forbidden_class
 
+		| `Feature_bib		-> ghost_class
+		| `Feature_note		-> ghost_class
+
+		| `Feature_macrodef	-> macrodef_class
+		| `Feature_customdef	-> customdef_class
+
 	and internal_feature_set = function
 		| `Feature_macrocall	-> forbidden_class
 		| `Feature_macroarg	-> forbidden_class
@@ -207,7 +213,8 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_thead	-> forbidden_class
 		| `Feature_tbody	-> forbidden_class
 		| `Feature_tfoot	-> forbidden_class
-		| `Feature_caption	-> forbidden_class in
+		| `Feature_caption	-> forbidden_class
+		| `Feature_custom	-> custom_class (get_minipaged maybe_minipaged) in
 
 	let permission_set = match feature with
 		| #Features.composition_inline_feature_t as x	-> composition_inline_feature_set x
