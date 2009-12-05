@@ -106,7 +106,7 @@ type frag_t = block_t list
 	| Quote of frag_t
 	| Mathtex_blk of raw_t
 	| Mathml_blk of raw_t
-	| Program of raw_t
+	| Source of raw_t
 	| Tabular of raw_t * tabular_t
 	| Verbatim of raw_t
 	| Image of raw_t * raw_t  (* (src, alt) *)

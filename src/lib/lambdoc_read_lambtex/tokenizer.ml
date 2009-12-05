@@ -117,8 +117,8 @@ let issue_begin_command raw_comm position =
 		then BEGIN_VERBATIM primary
 		else if String.starts_with primary "pre"
 		then BEGIN_VERBATIM primary
-		else if String.starts_with primary "prog"
-		then BEGIN_PROGRAM primary
+		else if String.starts_with primary "source"
+		then BEGIN_SOURCE primary
 		else match primary with
 			| "abstract"	-> BEGIN_ABSTRACT primary
 			| "itemize"

@@ -27,11 +27,11 @@ type 'a block_t =
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Math.t
-	| `Program of Program.t
+	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
-	| `Subpage of 'a list
 	| `Verbatim of raw_t
 	| `Image of Image.t
+	| `Subpage of 'a list
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
 	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
@@ -97,20 +97,20 @@ val quote: ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
 val math: Math.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Textual ], [> `Math_blk ]) t
 
-val program: Program.t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Program_blk ]) t
+val source: Source.t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Source_blk ]) t
 
 val tabular: 'a Tabular.t ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Tabular_blk ]) t
-
-val subpage: ('a, _, _, _, _) t list ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Subpage_blk ]) t
 
 val verbatim: raw_t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_textual ], [> `Verbatim_blk ]) t
 
 val image: Image.t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Image_blk ]) t
+
+val subpage: ('a, _, _, _, _) t list ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Subpage_blk ]) t
 
 val pullquote: Floatation.t -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable], [> `Non_textual ], [> `Pullquote_blk ]) t
@@ -124,7 +124,7 @@ val theorem: Floatation.t -> Custom.Theorem.t -> (_, _) Inline.t list option -> 
 val equation: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Math_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Equation_blk ]) t
 
-val printout: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Program_blk ]) t ->
+val printout: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Source_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Printout_blk ]) t
 
 val table: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Tabular_blk ]) t ->

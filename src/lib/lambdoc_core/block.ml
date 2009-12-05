@@ -24,11 +24,11 @@ type 'a block_t =
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Math.t
-	| `Program of Program.t
+	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
-	| `Subpage of 'a list
 	| `Verbatim of raw_t
 	| `Image of Image.t
+	| `Subpage of 'a list
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
 	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
@@ -78,20 +78,20 @@ let quote frag =
 let math data =
 	`Math data
 
-let program data =
-	`Program data
+let source data =
+	`Source data
 
 let tabular data =
 	`Tabular (Tabular.get_tabular data)
-
-let subpage frag =
-	`Subpage frag
 
 let verbatim data =
 	`Verbatim data
 
 let image data =
 	`Image data
+
+let subpage frag =
+	`Subpage frag
 
 let pullquote floatation frag =
 	`Pullquote (floatation, frag)

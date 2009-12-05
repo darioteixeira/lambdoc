@@ -608,26 +608,19 @@ let process_document ~idiosyncrasies document_ast =
 			let elem () = convert_mathml Block.math comm txt
 			in check_comm `Feature_mathml_blk comm elem
 
-		| (_, _, true, `Printout_blk, (comm, Ast.Program txt))
-		| (_, _, true, `Any_blk, (comm, Ast.Program txt)) ->
+		| (_, _, true, `Printout_blk, (comm, Ast.Source txt))
+		| (_, _, true, `Any_blk, (comm, Ast.Source txt)) ->
 			let elem () =
-				let (lang, linenums, zebra) = Extra.parse_for_program errors comm in
+				let (lang, linenums, zebra) = Extra.parse_for_source errors comm in
 				let hilite = Camlhighlight_parser.from_string lang txt in
-				let program = Program.make lang linenums zebra hilite
-				in Some (Block.program program)
-			in check_comm `Feature_program comm elem
+				let src = Source.make lang linenums zebra hilite
+				in Some (Block.source src)
+			in check_comm `Feature_source comm elem
 
 		| (_, _, true, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
 		| (_, _, true, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
 			let elem () = Some (Block.tabular (convert_tabular comm tcols tab))
 			in check_comm `Feature_tabular comm elem
-
-		| (_, _, true, `Figure_blk, (comm, Ast.Subpage frag))
-		| (_, _, true, `Any_blk, (comm, Ast.Subpage frag)) ->
-			let elem () =
-				let newfrag = List.filter_map (convert_block ~minipaged:true true true true `Any_blk) frag
-				in Some (Block.subpage (Obj.magic newfrag))
-			in check_comm `Feature_subpage comm elem
 
 		| (_, _, true, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Verbatim txt)) ->
@@ -642,6 +635,13 @@ let process_document ~idiosyncrasies document_ast =
 				DynArray.add images alias;
 				Some (Block.image image)
 			in check_comm `Feature_image comm elem
+
+		| (_, _, true, `Figure_blk, (comm, Ast.Subpage frag))
+		| (_, _, true, `Any_blk, (comm, Ast.Subpage frag)) ->
+			let elem () =
+				let newfrag = List.filter_map (convert_block ~minipaged:true true true true `Any_blk) frag
+				in Some (Block.subpage (Obj.magic newfrag))
+			in check_comm `Feature_subpage comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
 			let elem () =

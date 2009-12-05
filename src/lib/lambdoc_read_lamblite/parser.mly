@@ -40,8 +40,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_QUOTE
 %token <Lambdoc_reader.Ast.command_t> END_QUOTE
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_PROGRAM
-%token <Lambdoc_reader.Ast.command_t> END_PROGRAM
+%token <Lambdoc_reader.Ast.command_t> BEGIN_SOURCE
+%token <Lambdoc_reader.Ast.command_t> END_SOURCE
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_VERBATIM
 %token <Lambdoc_reader.Ast.command_t> END_VERBATIM
@@ -75,7 +75,7 @@ block:
 	| BEGIN_ITEMIZE item+ END_ITEMIZE		{($1, Ast.Itemize $2)}
 	| BEGIN_ENUMERATE item+ END_ENUMERATE		{($1, Ast.Enumerate $2)}
 	| BEGIN_QUOTE block+ END_QUOTE			{($1, Ast.Quote $2)}
-	| BEGIN_PROGRAM RAW END_PROGRAM			{($1, Ast.Program $2)}
+	| BEGIN_SOURCE RAW END_SOURCE			{($1, Ast.Source $2)}
 	| BEGIN_VERBATIM RAW END_VERBATIM		{($1, Ast.Verbatim $2)}
 	| BEGIN_PARHEAD inline+ END_PARHEAD		{($1, Ast.Parhead $2)}
 

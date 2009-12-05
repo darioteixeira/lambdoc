@@ -19,7 +19,7 @@ open XHTML.M
 open Lambdoc_core
 open Lambdoc_writer
 open Basic
-open Program
+open Source
 open Image
 open Valid
 open Settings
@@ -429,14 +429,11 @@ let write_valid_document settings classname doc =
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
 			in [XHTML.M.div ~a:[a_class ["doc_math"]] [xhtml]]
 
-		| `Program program ->
-			[Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~linenums:program.linenums ~zebra:program.zebra program.hilite]
+		| `Source src ->
+			[Camlhighlight_write_xhtml.write ~class_prefix:"doc_hl_" ~linenums:src.linenums ~zebra:src.zebra src.hilite]
 
 		| `Tabular tab ->
 			[write_tabular tab]
-
-		| `Subpage frag ->
-			[XHTML.M.div ~a:[a_class ["doc_subpage"]] (write_frag frag)]
 
 		| `Verbatim txt ->
 			[XHTML.M.div ~a:[a_class ["doc_verb"]] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
@@ -449,6 +446,9 @@ let write_valid_document settings classname doc =
 			let uri = settings.image_lookup image.alias in
 			let img = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
 			in [XHTML.M.div ~a:[a_class (["doc_image"] @ style)] [img]]
+
+		| `Subpage frag ->
+			[XHTML.M.div ~a:[a_class ["doc_subpage"]] (write_frag frag)]
 
 		| `Pullquote (floatation, frag) ->
 			let style = make_floatation floatation

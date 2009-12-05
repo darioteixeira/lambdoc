@@ -37,8 +37,8 @@ type text_t =
 	| Link_sep
 
 type line_t =
-	| Begin_program of string
-	| End_program
+	| Begin_source of string
+	| End_source
 	| Begin_verbatim
 	| End_verbatim
 	| Raw of string
@@ -99,7 +99,7 @@ let literal_scanner term_token = lexer
 
 let general_scanner = lexer
 	| "{{#" alpha* blank* eof ->
-		Begin_program (String.slice ~first:3 (String.strip (Ulexing.latin1_lexeme lexbuf)))
+		Begin_source (String.slice ~first:3 (String.strip (Ulexing.latin1_lexeme lexbuf)))
 	| "{{" blank* eof ->
 		Begin_verbatim
 	| "}}" blank* eof ->

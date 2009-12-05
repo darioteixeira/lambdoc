@@ -391,7 +391,7 @@ let parse_for_enumerate errors comm =
 		| _			  -> Numbering.Decimal
 
 
-let parse_for_program errors comm =
+let parse_for_source errors comm =
 	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd] in
 	let lang = match assigned.(0) with
 		| Some (Lang_data x) -> Some x

@@ -11,7 +11,7 @@
 <!ENTITY % Block
 	"paragraph | p | itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
-	| program | tabular | subpage | verbatim | pre | image
+	| source | tabular | verbatim | pre | image | subpage
 	| pull
 	| equation | printout | table | figure
 	| part | appendix
@@ -93,8 +93,8 @@
 <!ELEMENT msg %Inline;>
 <!ATTLIST msg %Forbidden;>
 
-<!ELEMENT prog (#PCDATA)>
-<!ATTLIST prog %Floater;>
+<!ELEMENT source (#PCDATA)>
+<!ATTLIST source %Floater;>
 
 <!ELEMENT tabular (thead?, tbody+, tfoot?)>
 <!ATTLIST tabular %Floater; cols CDATA #REQUIRED>

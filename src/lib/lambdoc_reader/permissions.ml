@@ -165,7 +165,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_quote	-> forbidden_class
 		| `Feature_mathtex_blk	-> floater_class
 		| `Feature_mathml_blk	-> floater_class
-		| `Feature_program	-> floater_class
+		| `Feature_source	-> floater_class
 		| `Feature_tabular	-> floater_class
 		| `Feature_verbatim	-> floater_class
 		| `Feature_image	-> floater_class

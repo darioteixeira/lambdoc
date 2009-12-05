@@ -63,10 +63,10 @@ let the comm = match comm.Ast.comm_tag with
 %token <string> BEGIN_QUOTE
 %token <string> BEGIN_MATHTEX_BLK
 %token <string> BEGIN_MATHML_BLK
-%token <string> BEGIN_PROGRAM
+%token <string> BEGIN_SOURCE
 %token <string> BEGIN_TABULAR
-%token <string> BEGIN_SUBPAGE
 %token <string> BEGIN_VERBATIM
+%token <string> BEGIN_SUBPAGE
 %token <string> BEGIN_PULLQUOTE
 %token <string> BEGIN_CUSTOM
 %token <string> BEGIN_EQUATION
@@ -198,10 +198,10 @@ env_block:
 	| begin_block(blk_quote) block+ end_block				{($1, Ast.Quote $2)}
 	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk $2)}
 	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk $2)}
-	| begin_block(blk_program) RAW end_block				{($1, Ast.Program $2)}
+	| begin_block(blk_source) RAW end_block					{($1, Ast.Source $2)}
 	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
-	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
+	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_pullquote) block+ end_block				{($1, Ast.Pullquote $2)}
 	| begin_block(blk_custom) inline_bundle? block+ end_block		{($1, Ast.Custom (the $1, $2, $3))}
 	| begin_block(blk_equation) block caption? end_block			{($1, Ast.Equation ($3, $2))}
@@ -333,7 +333,7 @@ blk_verse:		BEGIN_VERSE						{(Some $1, General)}
 blk_quote:		BEGIN_QUOTE						{(Some $1, General)}
 blk_mathtex_blk:	BEGIN_MATHTEX_BLK					{(Some $1, Literal $1)}
 blk_mathml_blk:		BEGIN_MATHML_BLK					{(Some $1, Literal $1)}
-blk_program:		BEGIN_PROGRAM						{(Some $1, Literal $1)}
+blk_source:		BEGIN_SOURCE						{(Some $1, Literal $1)}
 blk_tabular:		BEGIN_TABULAR						{(Some $1, Tabular)}
 blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Literal $1)}
 blk_subpage:		BEGIN_SUBPAGE						{(Some $1, General)}
