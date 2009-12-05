@@ -65,9 +65,9 @@ type blk_category_t =
 (**	The various types of error messages.
 *)
 type error_msg_t =
-	| Bad_label_parameter of tag_t option * invalid_parameter_reason_t
-	| Bad_order_parameter of tag_t option * invalid_parameter_reason_t
-	| Bad_extra_parameter of tag_t option * invalid_parameter_reason_t
+	| Invalid_label_parameter of tag_t option * invalid_parameter_reason_t
+	| Invalid_order_parameter of tag_t option * invalid_parameter_reason_t
+	| Invalid_extra_parameter of tag_t option * invalid_parameter_reason_t
 
 	| Nested_link of tag_t option
 	| Empty_listing of tag_t option
@@ -79,8 +79,6 @@ type error_msg_t =
 	| Invalid_extra_numbering_parameter of tag_t option * string * string
 	| Invalid_extra_floatation_parameter of tag_t option * string * string
 	| Invalid_extra_lang_parameter of tag_t option * string * string
-	| Invalid_extra_classname_parameter of tag_t option * string * string
-	| Invalid_extra_design_parameter of tag_t option * string * string
 	| Invalid_extra_unknown_parameter of tag_t option * int * string
 	| Invalid_extra_no_solutions of tag_t option * string
 	| Invalid_extra_multiple_solutions of tag_t option * string
@@ -92,12 +90,14 @@ type error_msg_t =
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int
 	| Invalid_macro_call of ref_t * int * int
-	| Invalid_macro_reference of ref_t
 
-	| Duplicate_custom of tag_t option * string
-	| Undefined_custom of tag_t option * string
+	| Duplicate_macro of tag_t option * ref_t
+	| Undefined_macro of tag_t option * ref_t
 
-	| Invalid_language of tag_t option * string
+	| Duplicate_custom of tag_t option * ref_t
+	| Undefined_custom of tag_t option * ref_t
+	| Invalid_counter of tag_t option * ref_t
+
 	| Invalid_mathtex of tag_t option * string
 	| Invalid_mathml of tag_t option * string
 	| Invalid_column_number of tag_t option * int * int * int
@@ -105,7 +105,7 @@ type error_msg_t =
 	| Invalid_cell_specifier of tag_t option * string
 	| Invalid_feature of tag_t option * string
 
-	| Duplicate_label of tag_t option * ref_t
+	| Duplicate_target of tag_t option * ref_t
 	| Empty_target of tag_t option * ref_t
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
 	| Undefined_target of tag_t option * ref_t

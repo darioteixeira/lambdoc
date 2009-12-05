@@ -39,15 +39,15 @@ let explain_tag = function
 
 let explain_error = function
 
-	| Error.Bad_label_parameter (tag, reason) ->
+	| Error.Invalid_label_parameter (tag, reason) ->
 		let exp_reason = explain_reason "a" "label" reason
 		in sprintf "Invalid labelling for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Bad_order_parameter (tag, reason) ->
+	| Error.Invalid_order_parameter (tag, reason) ->
 		let exp_reason = explain_reason "an" "order" reason
 		in sprintf "Invalid ordering for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Bad_extra_parameter (tag, reason) ->
+	| Error.Invalid_extra_parameter (tag, reason) ->
 		let exp_reason = explain_reason "an" "extra" reason
 		in sprintf "Invalid extra parameter for %s: %s." (explain_tag tag) exp_reason
 
@@ -78,12 +78,6 @@ let explain_error = function
 	| Error.Invalid_extra_lang_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a language specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
-	| Error.Invalid_extra_classname_parameter (tag, key, value) ->
-		sprintf "In %s, the key '%s' expects a classname specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
-
-	| Error.Invalid_extra_design_parameter (tag, key, value) ->
-		sprintf "In %s, the key '%s' expects a design specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
-
 	| Error.Invalid_extra_unknown_parameter (tag, col, field) ->
 		sprintf "In %s, the value '%s' assigned to field %d of the extra parameter cannot be interpreted." (explain_tag tag) field col
 
@@ -112,20 +106,23 @@ let explain_error = function
 			| x -> "This macro's arguments must be referenced by an integer ranging from 1 to " ^ (string_of_int x)
 		in sprintf "Invalid macro argument '%s'.  %s." found correct
 
-	| Error.Invalid_macro_call (label, found, expected) ->
-		sprintf "Invalid macro invocation.  Macro '%s' expects %d argument(s) but found %d instead." label expected found
+	| Error.Invalid_macro_call (name, found, expected) ->
+		sprintf "Invalid macro invocation.  Macro '%s' expects %d argument(s) but found %d instead." name expected found
 
-	| Error.Invalid_macro_reference label ->
-		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." label
+	| Error.Duplicate_macro (tag, name) ->
+		sprintf "The definition of macro '%s' in '%s' duplicates a previously defined macro." name (explain_tag tag)
 
-	| Error.Duplicate_custom (tag, env) ->
-		sprintf "The definition of custom environment '%s' in '%s' duplicates a previously defined environment." env (explain_tag tag)
+	| Error.Undefined_macro (tag, name) ->
+		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." name
 
-	| Error.Undefined_custom (tag, env) ->
-		sprintf "The environment '%s' used in '%s' has not been defined yet." env (explain_tag tag)
+	| Error.Duplicate_custom (tag, envname) ->
+		sprintf "The definition of custom environment '%s' in '%s' duplicates a previously defined environment." envname (explain_tag tag)
 
-	| Error.Invalid_language (tag, lang) ->
-		sprintf "Unknown language '%s' for %s." lang (explain_tag tag)
+	| Error.Undefined_custom (tag, envname) ->
+		sprintf "The environment '%s' used in '%s' has not been defined yet." envname (explain_tag tag)
+
+	| Error.Invalid_counter (tag, counter) ->
+		sprintf "The counter '%s' requested in '%s' has been already assigned to a different class of custom environment." counter (explain_tag tag)
 
 	| Error.Invalid_mathtex (tag, txt) ->
 		sprintf "Invalid mathtex expression '%s' in %s." txt (explain_tag tag)
@@ -145,7 +142,7 @@ let explain_error = function
 	| Error.Invalid_feature (tag, description) ->
 		sprintf "The feature '%s' requested by %s has been flagged as invalid for this document." description (explain_tag tag)
 
-	| Error.Duplicate_label (tag, label) ->
+	| Error.Duplicate_target (tag, label) ->
 		sprintf "Attempt to redefine label '%s' in %s." label (explain_tag tag)
 
 	| Error.Empty_target (tag, label) ->

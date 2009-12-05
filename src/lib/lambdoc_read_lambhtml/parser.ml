@@ -129,16 +129,15 @@ and process_block node =
 		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node))
 		| T_element "prog"		-> (!!comm, Ast.Program node#data)
 		| T_element "tabular"		-> let (cols, tabular) = process_tabular node in (!!comm, Ast.Tabular (cols, tabular))
+		| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node))
 		| T_element "verbatim"
 		| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)
 		| T_element "image"		-> (!!comm, Ast.Image (node#required_string_attribute "src", node#required_string_attribute "alt"))
-		| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node))
 		| T_element "pull"		-> (!!comm, Ast.Pullquote (process_frag node))
-		| T_element "boxout"		-> let (msg, frag) = process_callout node in (!!comm, Ast.Boxout (msg, frag))
-		| T_element "equation"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Equation (caption, block))
-		| T_element "printout"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Printout (caption, block))
-		| T_element "table"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Table (caption, block))
-		| T_element "figure"		-> let (block, caption) = process_wrapper node in (!!comm, Ast.Figure (caption, block))
+		| T_element "equation"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Equation (maybe_caption, block))
+		| T_element "printout"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Printout (maybe_caption, block))
+		| T_element "table"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Table (maybe_caption, block))
+		| T_element "figure"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Figure (maybe_caption, block))
 		| T_element "part"		-> (!!comm, Ast.Part (process_seq node))
 		| T_element "appendix"		-> (!!comm, Ast.Appendix)
 		| T_element "section"
@@ -224,10 +223,13 @@ and process_tabular node =
 
 
 and process_wrapper node = match node#sub_nodes with
-	| [block_node; caption_node] when caption_node#node_type = T_element "caption" ->
+	| [block_node; caption_node] ->
 		let block = process_block block_node
 		and caption = (command_from_node caption_node, process_seq caption_node)
-		in (block, caption)
+		in (Some caption, block)
+	| [block_node] ->
+		let block = process_block block_node
+		in (None, block)
 	| _ ->
 		failwith "process_wrapper"
 

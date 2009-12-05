@@ -23,19 +23,19 @@ type 'a block_t =
 	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
-	| `Math of Floatation.t * Math.t
-	| `Program of Floatation.t * Program.t
-	| `Tabular of Floatation.t * Tabular.tabular_t
-	| `Verbatim of Floatation.t * raw_t
-	| `Image of Floatation.t * Image.t
-	| `Subpage of Floatation.t * 'a list
+	| `Math of Math.t
+	| `Program of Program.t
+	| `Tabular of Tabular.tabular_t
+	| `Subpage of 'a list
+	| `Verbatim of raw_t
+	| `Image of Image.t
 	| `Pullquote of Floatation.t * 'a list
-	| `Boxout of Floatation.t * class_t option * Inline.seq_t option * 'a list
-	| `Custom of Floatation.t * Custom.t * Inline.seq_t option * 'a list
-	| `Equation of Wrapper.t * 'a
-	| `Printout of Wrapper.t * 'a
-	| `Table of Wrapper.t * 'a
-	| `Figure of Wrapper.t * 'a
+	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
+	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
+	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Heading of Heading.heading_t
 	| `Title of title_level_t * Inline.seq_t
 	| `Abstract of 'a list
@@ -75,47 +75,47 @@ let verse frag =
 let quote frag =
 	`Quote frag
 
-let math floatation mth =
-	`Math (floatation, mth)
+let math data =
+	`Math data
 
-let program floatation prog =
-	`Program (floatation, prog)
+let program data =
+	`Program data
 
-let tabular floatation tab =
-	`Tabular (floatation, Tabular.get_tabular tab)
+let tabular data =
+	`Tabular (Tabular.get_tabular data)
 
-let verbatim floatation txt =
-	`Verbatim (floatation, txt)
+let subpage frag =
+	`Subpage frag
 
-let image floatation img =
-	`Image (floatation, img)
+let verbatim data =
+	`Verbatim data
 
-let subpage floatation frag =
-	`Subpage (floatation, frag)
+let image data =
+	`Image data
 
 let pullquote floatation frag =
 	`Pullquote (floatation, frag)
 
-let boxout floatation maybe_classname maybe_seq frag =
-	`Boxout (floatation, maybe_classname, (maybe Inline.get_seq maybe_seq), frag)
+let boxout floatation data maybe_seq frag =
+	`Boxout (floatation, data, (maybe Inline.get_seq maybe_seq), frag)
 
-let custom floatation custom maybe_seq frag =
-	`Custom (floatation, custom, (maybe Inline.get_seq maybe_seq), frag)
+let theorem floatation data maybe_seq frag =
+	`Theorem (floatation, data, (maybe Inline.get_seq maybe_seq), frag)
 
-let equation wrapper equation_blk =
-	`Equation (wrapper, equation_blk)
+let equation floatation wrapper maybe_seq equation_blk =
+	`Equation (floatation, wrapper, (maybe Inline.get_seq maybe_seq), equation_blk)
 
-let printout wrapper printout_blk =
-	`Printout (wrapper, printout_blk)
+let printout floatation wrapper maybe_seq printout_blk =
+	`Printout (floatation, wrapper, (maybe Inline.get_seq maybe_seq), printout_blk)
 
-let table wrapper table_blk =
-	`Table (wrapper, table_blk)
+let table floatation wrapper maybe_seq table_blk =
+	`Table (floatation, wrapper, (maybe Inline.get_seq maybe_seq), table_blk)
 
-let figure wrapper figure_blk =
-	`Figure (wrapper, figure_blk)
+let figure floatation wrapper maybe_seq figure_blk =
+	`Figure (floatation, wrapper, (maybe Inline.get_seq maybe_seq), figure_blk)
 
-let heading head =
-	`Heading (Heading.get_heading head)
+let heading data =
+	`Heading (Heading.get_heading data)
 
 let title level seq =
 	`Title (level, Inline.get_seq seq)

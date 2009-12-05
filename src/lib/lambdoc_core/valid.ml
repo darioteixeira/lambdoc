@@ -11,7 +11,6 @@
 
 TYPE_CONV_PATH "Valid"
 
-open Sexplib
 open Basic
 
 
@@ -20,7 +19,6 @@ open Basic
 (********************************************************************************)
 
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
-type custom_t = (Custom.key_t, Custom.value_t) Hashtbl.t with sexp
 
 type 'a document_t =
 	{
@@ -30,7 +28,7 @@ type 'a document_t =
 	toc: Heading.heading_t list;
 	images: alias_t list;
 	labels: labels_t;
-	custom: custom_t;
+	custom: Custom.dict_t;
 	} with sexp
 
 type manuscript_t = [ `Manuscript ] document_t with sexp
@@ -59,8 +57,8 @@ let make_composition content images =
 	notes = [];
 	toc = [];
 	images = images;
-	labels = Hashtbl.create 10;
-	custom = Hashtbl.create 10;
+	labels = Hashtbl.create 0;
+	custom = Hashtbl.create 0;
 	}
 
 

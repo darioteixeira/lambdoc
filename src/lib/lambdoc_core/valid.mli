@@ -17,7 +17,6 @@ open Basic
 (********************************************************************************)
 
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
-type custom_t = (Custom.key_t, Custom.value_t) Hashtbl.t with sexp
 
 type 'a document_t =
 	{
@@ -27,7 +26,7 @@ type 'a document_t =
 	toc: Heading.heading_t list;
 	images: alias_t list;
 	labels: labels_t;
-	custom: custom_t;
+	custom: Custom.dict_t;
 	} with sexp
 
 type manuscript_t = [ `Manuscript ] document_t with sexp
@@ -45,7 +44,7 @@ val make_manuscript:
 	Heading.heading_t list ->
 	alias_t list ->
 	labels_t ->
-	custom_t ->
+	Custom.dict_t ->
 	manuscript_t
 
 val make_composition:

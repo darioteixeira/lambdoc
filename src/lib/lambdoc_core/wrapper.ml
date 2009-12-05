@@ -24,5 +24,5 @@ type kind_t =
 
 type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
 
-type t = Label.t * order_t * Inline.seq_t with sexp
+type t = Label.t * order_t with sexp
 

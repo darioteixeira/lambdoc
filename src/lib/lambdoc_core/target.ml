@@ -11,13 +11,15 @@
 
 TYPE_CONV_PATH "Target"
 
+open Basic
+
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type visible_target_t =
-	| Custom_target of Custom.key_t * Custom.order_t
+	| Custom_target of Custom.key_t * Custom.kind_t * Custom.order_t
 	| Wrapper_target of Wrapper.kind_t * Wrapper.order_t
 	| Part_target of Heading.part_order_t
 	| Section_target of Heading.section_location_t * Heading.section_order_t
@@ -34,15 +36,9 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let custom envname order = Visible_target (Custom_target (envname, order))
+let custom envname kind order = Visible_target (Custom_target (envname, kind, order))
 
-let printout order = Visible_target (Wrapper_target (Wrapper.Printout, order))
-
-let equation order = Visible_target (Wrapper_target (Wrapper.Equation, order))
-
-let figure order = Visible_target (Wrapper_target (Wrapper.Figure, order))
-
-let table order = Visible_target (Wrapper_target (Wrapper.Table, order))
+let wrapper kind order = Visible_target (Wrapper_target (kind, order))
 
 let part order = Visible_target (Part_target order)
 

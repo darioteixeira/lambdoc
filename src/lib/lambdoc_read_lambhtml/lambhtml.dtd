@@ -11,8 +11,8 @@
 <!ENTITY % Block
 	"paragraph | p | itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
-	| prog | tabular | verbatim | pre | image | subpage
-	| pull | boxout
+	| program | tabular | subpage | verbatim | pre | image
+	| pull
 	| equation | printout | table | figure
 	| part | appendix
 	| section | h1 | subsection | h2 | subsubsection | h3
@@ -99,6 +99,9 @@
 <!ELEMENT tabular (thead?, tbody+, tfoot?)>
 <!ATTLIST tabular %Floater; cols CDATA #REQUIRED>
 
+<!ELEMENT subpage %Frag;>
+<!ATTLIST subpage %Floater;>
+
 <!ELEMENT verbatim (#PCDATA)>
 <!ATTLIST verbatim %Floater;>
 
@@ -108,25 +111,19 @@
 <!ELEMENT image EMPTY>
 <!ATTLIST image %Floater; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
-<!ELEMENT subpage %Frag;>
-<!ATTLIST subpage %Floater;>
-
 <!ELEMENT pullquote %Frag;>
 <!ATTLIST pullquote %Floater;>
 
-<!ELEMENT boxout (msg?, %Frag;)>
-<!ATTLIST boxout %Floater;>
-
-<!ELEMENT equation ((%Block;), caption)>
+<!ELEMENT equation ((%Block;), caption?)>
 <!ATTLIST equation %Wrapper;>
 
-<!ELEMENT printout ((%Block;), caption)>
+<!ELEMENT printout ((%Block;), caption?)>
 <!ATTLIST printout %Wrapper;>
 
-<!ELEMENT table ((%Block;), caption)>
+<!ELEMENT table ((%Block;), caption?)>
 <!ATTLIST table %Wrapper;>
 
-<!ELEMENT figure ((%Block;), caption)>
+<!ELEMENT figure ((%Block;), caption?)>
 <!ATTLIST figure %Wrapper;>
 
 <!ELEMENT caption %Inline;>

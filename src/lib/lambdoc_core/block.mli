@@ -26,19 +26,19 @@ type 'a block_t =
 	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
-	| `Math of Floatation.t * Math.t
-	| `Program of Floatation.t * Program.t
-	| `Tabular of Floatation.t * Tabular.tabular_t
-	| `Verbatim of Floatation.t * raw_t
-	| `Image of Floatation.t * Image.t
-	| `Subpage of Floatation.t * 'a list
+	| `Math of Math.t
+	| `Program of Program.t
+	| `Tabular of Tabular.tabular_t
+	| `Subpage of 'a list
+	| `Verbatim of raw_t
+	| `Image of Image.t
 	| `Pullquote of Floatation.t * 'a list
-	| `Boxout of Floatation.t * class_t option * Inline.seq_t option * 'a list
-	| `Custom of Floatation.t * Custom.t * Inline.seq_t option * 'a list
-	| `Equation of Wrapper.t * 'a
-	| `Printout of Wrapper.t * 'a
-	| `Table of Wrapper.t * 'a
-	| `Figure of Wrapper.t * 'a
+	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
+	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
+	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Heading of Heading.heading_t
 	| `Title of title_level_t * Inline.seq_t
 	| `Abstract of 'a list
@@ -64,18 +64,17 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] w
 		listable if it is a wrapper (equation, printout, table, or figure),
 		a pullquote, a boxout, a custom environment, or embeddable.}
 		{li ['c] is either [`Embeddable] or [`Non_embeddable].  A block
-		is termed embeddable if it can be a child of quotes and boxouts.
-		All floaters except for pullquotes, boxouts, and custom environments
-		 are embeddable.  Note that all prose blocks are also embeddable.}
-		{li ['d] is either [`Prose] or [`Non_prose].  A block is defined
-		as prose if it generates only text or lists of text, but it is not
-		a verse block.  Therefore, the only prose blocks are paragraphs
+		is termed embeddable if it can be a child of boxes.  Note that
+		all textual blocks are also embeddable.}
+		{li ['d] is either [`Textual] or [`Non_textual].  A block is
+		defined as textual if it generates only text, mathematics, or
+		lists of text.  Therefore, the only textual blocks are paragraphs
 		and the three types of lists.}
 		{li ['e] indicates the actual block type.}}
 *)
 
 val paragraph: bool -> ('a, _) Inline.t list ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Prose ], [> `Paragraph_blk ]) t
+	('a, [> `Listable ], [> `Embeddable ], [> `Textual ], [> `Paragraph_blk ]) t
 
 val itemize: Bullet.t -> ('a, [< `Listable ], 'c, 'd, _) t list plus_t ->
 	('a, [> `Listable ], 'c, 'd, [> `Itemize_blk ]) t
@@ -87,64 +86,64 @@ val description: (('a, _) Inline.t list * ('a, [< `Listable ], 'c, 'd, _) t list
 	('a, [> `Listable ], 'c, 'd, [> `Description_blk ]) t
 
 val qanda: ((('a, _) Inline.t list option * ('a, [< `Listable ], 'c, _, _) t list) * (('a, _) Inline.t list option * ('a, [< `Listable ], 'c, _, _) t list)) plus_t ->
-	('a, [> `Listable ], 'c, [> `Non_prose ], [> `Description_blk ]) t
+	('a, [> `Listable ], 'c, [> `Non_textual ], [> `Qanda_blk ]) t
 
 val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose], [> `Verse_blk ]) t
+	('a, [> `Listable ], [> `Embeddable ], [> `Textual], [> `Verse_blk ]) t
 
 val quote: ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
-	('a, [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Quote_blk ]) t
+	('a, [> `Listable ], [> `Embeddable], [> `Non_textual ], [> `Quote_blk ]) t
 
-val math: Floatation.t -> Math.t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Math_blk ]) t
+val math: Math.t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Textual ], [> `Math_blk ]) t
 
-val program: Floatation.t -> Program.t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Program_blk ]) t
+val program: Program.t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Program_blk ]) t
 
-val tabular: Floatation.t -> 'a Tabular.t ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Tabular_blk ]) t
+val tabular: 'a Tabular.t ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Tabular_blk ]) t
 
-val verbatim: Floatation.t -> raw_t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_prose ], [> `Verbatim_blk ]) t
+val subpage: ('a, _, _, _, _) t list ->
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Subpage_blk ]) t
 
-val image: Floatation.t -> Image.t ->
-	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Image_blk ]) t
+val verbatim: raw_t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_textual ], [> `Verbatim_blk ]) t
 
-val subpage: Floatation.t -> ('a, _, _, _, _) t list ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Subpage_blk ]) t
+val image: Image.t ->
+	([> `Composition ], [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Image_blk ]) t
 
-val pullquote: Floatation.t -> ('a, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable], [> `Non_prose ], [> `Pullquote_blk ]) t
+val pullquote: Floatation.t -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable], [> `Non_textual ], [> `Pullquote_blk ]) t
 
-val boxout: Floatation.t -> string option -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Pullquote_blk ]) t
+val boxout: Floatation.t -> Custom.Boxout.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], _, _) t list ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Boxout_blk ]) t
 
-val custom: Floatation.t -> Custom.t -> ('a, _) Inline.t list option -> ('a, [< `Listable ], [< `Embeddable ], _, _) t list ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Custom_blk ]) t
+val theorem: Floatation.t -> Custom.Theorem.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Theorem_blk ]) t
 
-val equation: Wrapper.t -> (_, _, _, _, [< `Math_blk ]) t ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Equation_blk ]) t
+val equation: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Math_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Equation_blk ]) t
 
-val printout: Wrapper.t -> (_, _, _, _, [< `Program_blk ]) t ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Printout_blk ]) t
+val printout: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Program_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Printout_blk ]) t
 
-val table: Wrapper.t -> (_, _, _, _, [< `Tabular_blk ]) t ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Table_blk ]) t
+val table: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Tabular_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Table_blk ]) t
 
-val figure: Wrapper.t -> (_, _, _, _, [< `Verbatim_blk | `Image_blk | `Subpage_blk ]) t ->
-	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Figure_blk ]) t
+val figure: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Subpage_blk | `Verbatim_blk | `Image_blk ]) t ->
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Figure_blk ]) t
 
 val heading: ('a, 'b, 'c, 'd, 'e) Heading.t ->
 	('a, 'b, 'c, 'd, 'e) t
 
 val title: title_level_t -> (_, _) Inline.t list ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Title_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Title_blk ]) t
 
-val abstract: (_, [< `Listable ], [< `Embeddable ], [< `Prose ], _) t list ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Abstract_blk ]) t
+val abstract: (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Abstract_blk ]) t
 
 val rule: unit ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Rule_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Rule_blk ]) t
 
 val get_frag: (_, _, _, _, _) t list ->
 	frag_t

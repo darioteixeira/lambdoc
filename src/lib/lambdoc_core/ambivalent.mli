@@ -39,7 +39,7 @@ val make_valid_manuscript:
 	Heading.heading_t list ->
 	alias_t list ->
 	Valid.labels_t ->
-	Valid.custom_t ->
+	Custom.dict_t ->
 	manuscript_t
 
 val make_valid_composition:

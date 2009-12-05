@@ -45,10 +45,9 @@ let communicate request =
 (*	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let ambivalent_manuscript_from_string ?classnames ?accept_list ?deny_list ?default markup source =
+let ambivalent_manuscript_from_string ?accept_list ?deny_list ?default markup source =
 	let payload =
 		{
-		m_classnames = classnames;
 		m_accept_list = accept_list;
 		m_deny_list = deny_list;
 		m_default = default;
@@ -61,10 +60,9 @@ let ambivalent_manuscript_from_string ?classnames ?accept_list ?deny_list ?defau
 	Lwt.return reply
 
 
-let ambivalent_composition_from_string ?classnames ?accept_list ?deny_list ?default markup source =
+let ambivalent_composition_from_string ?accept_list ?deny_list ?default markup source =
 	let payload =
 		{
-		c_classnames = classnames;
 		c_accept_list = accept_list;
 		c_deny_list = deny_list;
 		c_default = default;

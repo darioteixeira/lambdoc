@@ -31,7 +31,6 @@ object (self)
 		let () = match request with
 			| Protocol.Manuscript_from_lambtex payload ->
 				let manuscript = Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string
-					?classnames:payload.m_classnames
 					?accept_list:payload.m_accept_list
 					?deny_list:payload.m_deny_list
 					?default:payload.m_default
@@ -39,7 +38,6 @@ object (self)
 				in Marshal.to_channel out_channel manuscript []
 			| Protocol.Composition_from_lambtex payload ->
 				let composition = Lambdoc_read_lambtex.Main.ambivalent_composition_from_string
-					?classnames:payload.c_classnames
 					?accept_list:payload.c_accept_list
 					?deny_list:payload.c_deny_list
 					?default:payload.c_default

@@ -134,7 +134,6 @@ let issue_begin_command raw_comm position =
 			| "tabular"	-> BEGIN_TABULAR primary
 			| "subpage"	-> BEGIN_SUBPAGE primary
 			| "pull"	-> BEGIN_PULLQUOTE primary
-			| "boxout"	-> BEGIN_BOXOUT primary
 			| "equation"	-> BEGIN_EQUATION primary
 			| "printout"	-> BEGIN_PRINTOUT primary
 			| "table"	-> BEGIN_TABLE primary
@@ -195,8 +194,9 @@ let issue_simple_command raw_comm position =
 		| "subtitle"		-> (Blk, SUBTITLE command)
 		| "rule"
 		| "hr"			-> (Blk, RULE command)
-		| "macrodef"		-> (Blk, MACRODEF command)
-		| "customdef"		-> (Blk, CUSTOMDEF command)
+		| "newmacro"		-> (Blk, MACRODEF command)
+		| "newboxout"		-> (Blk, BOXOUTDEF command)
+		| "newtheorem"		-> (Blk, THEOREMDEF command)
 		| "item"
 		| "li"			-> (Blk, ITEM command)
 		| "question"		-> (Blk, QUESTION command)

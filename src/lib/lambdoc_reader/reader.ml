@@ -33,7 +33,6 @@ module type S =
 sig
 	val ambivalent_manuscript_from_string:
 		?verify_utf8: bool ->
-		?classnames: string list ->
 		?accept_list: Features.manuscript_feature_t list ->
 		?deny_list: Features.manuscript_feature_t list ->
 		?default: Features.default_t ->
@@ -42,7 +41,6 @@ sig
 
 	val ambivalent_composition_from_string:
 		?verify_utf8: bool ->
-		?classnames: string list ->
 		?accept_list: Features.composition_feature_t list ->
 		?deny_list: Features.composition_feature_t list ->
 		?default: Features.default_t ->
@@ -61,7 +59,6 @@ module Make_reader (Reader: READER): S =
 struct
 	let ambivalent_document_from_string
 		?(verify_utf8 = true)
-		?(classnames = [])
 		?(accept_list = [])
 		?(deny_list = [])
 		?(default = `Accept)
@@ -71,7 +68,7 @@ struct
 			try
 				let () = if verify_utf8 then Preprocess.verify_utf8 source in
 				let document_ast = Reader.ast_from_string source
-				in valid_processor ~classnames ~accept_list ~deny_list ~default ~source document_ast
+				in valid_processor ~accept_list ~deny_list ~default ~source document_ast
 			with
 				| Preprocess.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (line, Error.Malformed_code_point)) error_lines in
@@ -81,14 +78,14 @@ struct
 					let errors = Postprocess.collate_errors source [(line, Error.Reading_error msg)]
 					in invalid_maker errors
 
-	let ambivalent_manuscript_from_string ?verify_utf8 ?classnames ?accept_list ?deny_list ?default source =
+	let ambivalent_manuscript_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =
 		let valid_processor = Postprocess.process_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?verify_utf8 ?classnames ?accept_list ?deny_list ?default ~valid_processor ~invalid_maker source
+		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_processor ~invalid_maker source
 
-	let ambivalent_composition_from_string ?verify_utf8 ?classnames ?accept_list ?deny_list ?default source =
+	let ambivalent_composition_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =
 		let valid_processor = Postprocess.process_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?verify_utf8 ?classnames ?accept_list ?deny_list ?default ~valid_processor ~invalid_maker source
+		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_processor ~invalid_maker source
 end
 

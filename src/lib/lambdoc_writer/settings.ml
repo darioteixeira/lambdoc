@@ -19,16 +19,16 @@ open Basic
 
 type names_t =
 	{
-	part_name: plain_t;
-	appendix_name: plain_t;
-	section_name: plain_t;
-	bibliography_name: plain_t;
-	notes_name: plain_t;
-	toc_name: plain_t;
-	equation_name: plain_t;
-	printout_name: plain_t;
-	table_name: plain_t;
-	figure_name: plain_t;
+	part_name: Inline.seq_t;
+	appendix_name: Inline.seq_t;
+	section_name: Inline.seq_t;
+	bibliography_name: Inline.seq_t;
+	notes_name: Inline.seq_t;
+	toc_name: Inline.seq_t;
+	equation_name: Inline.seq_t;
+	printout_name: Inline.seq_t;
+	table_name: Inline.seq_t;
+	figure_name: Inline.seq_t;
 	}
 
 type t =
@@ -44,33 +44,46 @@ type t =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let english_names =
+let make_names part_name appendix_name section_name bibliography_name notes_name toc_name equation_name printout_name table_name figure_name =
 	{
-	part_name = "Part";
-	appendix_name = "Appendix";
-	section_name = "Section";
-	bibliography_name = "Bibliography";
-	notes_name = "Notes";
-	toc_name = "Table of Contents";
-	equation_name = "Eq.";
-	printout_name = "Print.";
-	table_name = "Tab.";
-	figure_name = "Fig.";
+	part_name = Inline.get_seq part_name;
+	appendix_name = Inline.get_seq appendix_name; 
+	section_name = Inline.get_seq section_name; 
+	bibliography_name = Inline.get_seq bibliography_name; 
+	notes_name = Inline.get_seq notes_name; 
+	toc_name = Inline.get_seq toc_name; 
+	equation_name = Inline.get_seq equation_name; 
+	printout_name = Inline.get_seq printout_name; 
+	table_name = Inline.get_seq table_name; 
+	figure_name = Inline.get_seq figure_name; 
 	}
 
-let portuguese_names =
-	{
-	part_name = "Parte";
-	appendix_name = "Apêndice";
-	section_name = "Secção";
-	bibliography_name = "Bibliografia";
-	notes_name = "Notas";
-	toc_name = "Índice";
-	equation_name = "Eq.";
-	printout_name = "Print.";
-	table_name = "Tab.";
-	figure_name = "Fig.";
-	}
+
+let english_names = make_names
+	[Inline.plain "Part"]
+	[Inline.plain "Appendix"]
+	[Inline.plain "Section"]
+	[Inline.plain "Bibliography"]
+	[Inline.plain "Notes"]
+	[Inline.plain "Table of Contents"]
+	[Inline.plain "Eq."]
+	[Inline.plain "Print."]
+	[Inline.plain "Tab."]
+	[Inline.plain "Fig."]
+
+
+let portuguese_names = make_names
+	[Inline.plain "Parte"]
+	[Inline.plain "Apêndice"]
+	[Inline.plain "Secção"]
+	[Inline.plain "Bibliografia"]
+	[Inline.plain "Notas"]
+	[Inline.plain "Índice"]
+	[Inline.plain "Eq."]
+	[Inline.plain "List."]
+	[Inline.plain "Tab."]
+	[Inline.plain "Fig."]
+
 
 let make bullet numbering names image_lookup =
 	{
@@ -79,6 +92,7 @@ let make bullet numbering names image_lookup =
 	names = names;
 	image_lookup = image_lookup;
 	}
+
 
 let default = make Bullet.Disc Numbering.Decimal english_names XHTML.M.uri_of_string
 

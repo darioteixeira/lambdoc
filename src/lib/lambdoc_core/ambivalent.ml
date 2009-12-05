@@ -31,8 +31,8 @@ type composition_t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make_valid_manuscript content bibs notes toc images labels customised =
-	`Valid (Valid.make_manuscript content bibs notes toc images labels customised)
+let make_valid_manuscript content bibs notes toc images labels custom =
+	`Valid (Valid.make_manuscript content bibs notes toc images labels custom)
 
 let make_valid_composition content images =
 	`Valid (Valid.make_composition content images)

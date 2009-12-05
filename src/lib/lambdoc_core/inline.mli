@@ -66,7 +66,7 @@ val see: ref_t -> ([> `Manuscript ], [> `Link ]) t
 val cite: ref_t -> ([> `Manuscript ], [> `Link ]) t
 val ref: ref_t -> ([> `Manuscript ], [> `Link ]) t
 val sref: ref_t -> ([> `Manuscript ], [> `Link ]) t
-val mref: ref_t -> ('a, [< `Nonlink ]) t list -> ([> `Manuscript ], [> `Link ]) t
+val mref: ref_t -> (_, [< `Nonlink ]) t list -> ([> `Manuscript ], [> `Link ]) t
 
 val get_seq: (_, _) t list -> seq_t
 val get_seqs: (_, _) t list plus_t -> seq_t plus_t

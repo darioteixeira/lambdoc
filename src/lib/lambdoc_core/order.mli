@@ -77,6 +77,6 @@ val none: unit -> [> `None_given ]
 (**	{2 Printers}								*)
 (********************************************************************************)
 
-val string_of_ordinal: ordinal_converter_t -> (ordinal_t, 'b) t -> string
-val string_of_hierarchical: hierarchical_converter_t -> (hierarchical_t, 'b) t -> string
+val maybe_string_of_ordinal: ordinal_converter_t -> (ordinal_t, 'b) t -> string option
+val maybe_string_of_hierarchical: hierarchical_converter_t -> (hierarchical_t, 'b) t -> string option
 

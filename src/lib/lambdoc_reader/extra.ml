@@ -45,10 +45,8 @@ type handle_t =
 	| Numbering_hnd
 	| Floatation_hnd
 	| Lang_hnd
-	| Classname_hnd
 	| Args_hnd
 	| Counter_hnd
-	| Design_hnd
 
 
 type property_kind_t =
@@ -59,8 +57,6 @@ type property_kind_t =
 	| Numbering_kind
 	| Floatation_kind
 	| Lang_kind
-	| Classname_kind
-	| Design_kind
 
 
 type property_id_t = string * property_kind_t
@@ -74,8 +70,6 @@ type property_data_t =
 	| Numbering_data of Numbering.t
 	| Floatation_data of Floatation.t
 	| Lang_data of Camlhighlight_core.lang_t
-	| Classname_data of string
-	| Design_data of Design.t
 
 
 type field_t =
@@ -117,10 +111,8 @@ let id_of_handle = function
 	| Numbering_hnd	 -> ("num", Numbering_kind)
 	| Floatation_hnd -> ("float", Floatation_kind)
 	| Lang_hnd	 -> ("lang", Lang_kind)
-	| Classname_hnd	 -> ("class", Classname_kind)
 	| Args_hnd	 -> ("args", Numeric_kind)
 	| Counter_hnd	 -> ("counter", String_kind)
-	| Design_hnd	 -> ("design", Design_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -171,7 +163,7 @@ let fields_of_strings =
 	data wrapped inside a {!result_t}.  That way, other functions can tell
 	the degree of certainty associated with a matching.
 *)
-let matcher ~classnames errors comm key kind field = match (key, kind, field) with
+let matcher errors comm key kind field = match (key, kind, field) with
 
 	| (key, Boolean_kind, Boolean_field (Some k, v)) when key = k ->
 		Positive (Boolean_data v)
@@ -234,27 +226,6 @@ let matcher ~classnames errors comm key kind field = match (key, kind, field) wi
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
-	| (key, Classname_kind, Unnamed_field v) ->
-		if List.mem v classnames
-		then Undecided (Classname_data v)
-		else Negative
-	| (key, Classname_kind, Keyvalue_field (k, v)) when key = k ->
-		if List.mem v classnames
-		then Positive (Classname_data v)
-		else
-			let msg = Error.Invalid_extra_classname_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
-				Negative
-
-	| (key, Design_kind, Unnamed_field v) ->
-		(try Undecided (Design_data (Design.of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Design_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Design_data (Design.of_string v))
-		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_design_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
-				Negative)
-
 	| _ ->
 		Negative
 
@@ -262,11 +233,11 @@ let matcher ~classnames errors comm key kind field = match (key, kind, field) wi
 (**	Does the basic preprocessing on the raw data, preparing it for crunching
 	by the subsequent functions.
 *)
-let prepare ~classnames errors comm strs handles =
+let prepare errors comm strs handles =
 	let fields = fields_of_strings strs in
 	let result_from_handle hnd =
 		let (key, kind) = id_of_handle hnd
-		in Array.map (matcher ~classnames errors comm key kind) fields
+		in Array.map (matcher errors comm key kind) fields
 	in (fields, (List.map result_from_handle handles))
 
 
@@ -350,14 +321,14 @@ let solve assigned taken undecided =
 
 (**	High-level processing function.
 *)
-let process ?(classnames = []) errors comm handles =
+let process errors comm handles =
 	let dummy = Array.make (List.length handles) None
 	in match comm.comm_extra with
 		| None ->
 			dummy
 		| Some extra ->
 			let strs = Array.of_list (String.nsplit extra ",") in
-			let (fields, results) = prepare ~classnames errors comm strs handles in
+			let (fields, results) = prepare errors comm strs handles in
 			let (assigned, taken, undecided) = summarise (Array.length fields) results
 			in match solve assigned taken undecided with
 				| One_solution (assigned, taken) ->
@@ -420,14 +391,8 @@ let parse_for_enumerate errors comm =
 		| _			  -> Numbering.Decimal
 
 
-let parse_for_mathtex = parse_floater
-
-
-let parse_for_mathml = parse_floater
-
-
 let parse_for_program errors comm =
-	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd; Floatation_hnd] in
+	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd] in
 	let lang = match assigned.(0) with
 		| Some (Lang_data x) -> Some x
 		| _		     -> None in
@@ -437,47 +402,28 @@ let parse_for_program errors comm =
 		| (None, _)		     -> false in
 	let zebra = match (lang, assigned.(2)) with
 		| (_, Some (Boolean_data x)) -> x
-		| _			     -> true in
-	let floatation = get_floatation assigned.(3)
-	in (floatation, lang, linenums, zebra)
-
-
-let parse_for_tabular = parse_floater
-
-
-let parse_for_verbatim = parse_floater
+		| _			     -> true
+	in (lang, linenums, zebra)
 
 
 let parse_for_image errors comm =
-	let assigned = process errors comm [Floatation_hnd; Frame_hnd; Width_hnd] in
-	let floatation = match assigned.(0) with
-		| Some (Floatation_data x) -> x
-		| _			   -> Floatation.Center
-	and frame = match assigned.(1) with
+	let assigned = process errors comm [Frame_hnd; Width_hnd] in
+	let frame = match assigned.(1) with
 		| Some (Boolean_data x)	-> x
 		| _			-> false
 	and width = match assigned.(2) with
 		| Some (Numeric_data w)	-> Some w
 		| _			-> None
-	in (floatation, frame, width)
-
-
-let parse_for_subpage = parse_floater
+	in (frame, width)
 
 
 let parse_for_pullquote = parse_floater
 
 
-let parse_for_boxout ?classnames errors comm =
-	let assigned = process ?classnames errors comm [Floatation_hnd; Classname_hnd] in
-	let floatation = get_floatation assigned.(0)
-	and classname = match assigned.(1) with
-		| Some (Classname_data x) -> Some x
-		| _			  -> None
-	in (floatation, classname)
-
-
 let parse_for_custom = parse_floater
+
+
+let parse_for_wrapper = parse_floater
 
 
 let parse_for_macrodef errors comm =
@@ -486,13 +432,10 @@ let parse_for_macrodef errors comm =
 		| Some (Numeric_data x)	-> x
 		| _			-> 0
 
-let parse_for_customdef ~env errors comm =
-	let assigned = process errors comm [Counter_hnd; Design_hnd] in
+let parse_for_customdef ~envname errors comm =
+	let assigned = process errors comm [Counter_hnd] in
 	let counter = match assigned.(0) with
 		| Some (String_data x) -> x
-		| _		       -> env
-	and design = match assigned.(1) with
-		| Some (Design_data x)	-> x
-		| _			-> Design.Inside
-	in (counter, design)
+		| _		       -> envname
+	in counter
 

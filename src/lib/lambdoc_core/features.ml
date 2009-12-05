@@ -35,7 +35,7 @@ type composition_block_feature_t =
 
 
 type manuscript_block_feature_t =
-	[ `Feature_pullquote | `Feature_boxout
+	[ `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
@@ -43,7 +43,7 @@ type manuscript_block_feature_t =
 	| `Feature_title1 | `Feature_title2
 	| `Feature_abstract | `Feature_rule
 	| `Feature_bib | `Feature_note
-	| `Feature_macrodef | `Feature_customdef ]
+	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef ]
 
 
 (********************************************************************************)
@@ -112,7 +112,7 @@ let composition_block_features =
 
 let manuscript_block_features =
 	[
-	`Feature_pullquote; `Feature_boxout;
+	`Feature_pullquote;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_part; `Feature_appendix;
 	`Feature_section1; `Feature_section2; `Feature_section3;
@@ -120,7 +120,7 @@ let manuscript_block_features =
 	`Feature_title1; `Feature_title2;
 	`Feature_abstract; `Feature_rule;
 	`Feature_bib; `Feature_note;
-	`Feature_macrodef; `Feature_customdef;
+	`Feature_macrodef; `Feature_boxoutdef; `Feature_theoremdef;
 	]
 
 
@@ -184,7 +184,6 @@ let describe_composition_block_feature = function
 
 let describe_manuscript_block_feature = function
 	| `Feature_pullquote	-> "pull quote block"
-	| `Feature_boxout	-> "boxout block"
 
 	| `Feature_equation	-> "equation wrapper"
 	| `Feature_printout	-> "printout wrapper"
@@ -212,7 +211,8 @@ let describe_manuscript_block_feature = function
 	| `Feature_note		-> "note"
 
 	| `Feature_macrodef	-> "definition of macro"
-	| `Feature_customdef	-> "definition of custom environment"
+	| `Feature_boxoutdef	-> "definition of custom boxout environment"
+	| `Feature_theoremdef	-> "definition of custom theorem environment"
 
 
 let describe_internal_feature = function

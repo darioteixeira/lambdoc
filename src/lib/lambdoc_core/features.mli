@@ -35,7 +35,7 @@ type composition_block_feature_t =
 
 
 type manuscript_block_feature_t =
-	[ `Feature_pullquote | `Feature_boxout
+	[ `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
@@ -43,7 +43,7 @@ type manuscript_block_feature_t =
 	| `Feature_title1 | `Feature_title2
 	| `Feature_abstract | `Feature_rule
 	| `Feature_bib | `Feature_note
-	| `Feature_macrodef | `Feature_customdef ]
+	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef ]
 
 
 (********************************************************************************)

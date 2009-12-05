@@ -67,9 +67,9 @@ type hierarchical_converter_t =
 	the ordering should be automatically given by the system; [`User_given] means that the
 	ordering is manually given by the user; finally, when the block should not have any
 	ordering at all, [`None_given] is used.  Note that different classes of blocks allow
-	a different subset of these ordering variants.  Moreover, only the first two variants
-	must be parametrised over the actual ordering scheme used (as it makes no sense to talk
-	of an ordering scheme when [`None_given] is used).
+	a different subset of these ordering variants.  Moreover, only the first variant must
+	be parametrised over the actual ordering scheme used (as it makes no sense to talk of
+	an ordering scheme when [`None_given] is used, for example).
 *)
 
 type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
@@ -130,16 +130,16 @@ let none () = `None_given
 (**	{2 Printers}								*)
 (********************************************************************************)
 
-let string_of_ordinal conv = function
-	| `Auto_given o	-> conv o
-	| `User_given o	-> o
-	| `None_given	-> ""
+let maybe_string_of_ordinal conv = function
+	| `Auto_given o	-> Some (conv o)
+	| `User_given o	-> Some o
+	| `None_given	-> None
 
 
-let string_of_hierarchical conv = function
-	| `Auto_given (Level1_order l1)			-> conv.level1 l1
-	| `Auto_given (Level2_order (l1, l2))		-> (conv.level1 l1) ^ "." ^ (conv.level2 l2)
-	| `Auto_given (Level3_order (l1, l2, l3))	-> (conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3)
-	| `User_given o					-> o
-	| `None_given					-> ""
+let maybe_string_of_hierarchical conv = function
+	| `Auto_given (Level1_order l1)		  -> Some (conv.level1 l1)
+	| `Auto_given (Level2_order (l1, l2))	  -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2))
+	| `Auto_given (Level3_order (l1, l2, l3)) -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3))
+	| `User_given o				  -> Some o
+	| `None_given				  -> None
 

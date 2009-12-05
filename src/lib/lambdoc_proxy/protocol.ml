@@ -21,7 +21,6 @@ type markup_t =
 
 type manuscript_payload_t =
 	{
-	m_classnames: string list option;
 	m_accept_list: Features.manuscript_feature_t list option;
 	m_deny_list: Features.manuscript_feature_t list option;
 	m_default: Features.default_t option;
@@ -31,7 +30,6 @@ type manuscript_payload_t =
 
 type composition_payload_t =
 	{
-	c_classnames: string list option;
 	c_accept_list: Features.composition_feature_t list option;
 	c_deny_list: Features.composition_feature_t list option;
 	c_default: Features.default_t option;

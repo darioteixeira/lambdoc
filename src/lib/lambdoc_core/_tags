@@ -5,7 +5,6 @@
 <block.*>: pkg_sexplib.syntax, syntax_camlp4o
 <bullet.*>: pkg_sexplib.syntax, syntax_camlp4o
 <custom.*>: pkg_sexplib.syntax, syntax_camlp4o
-<design.*>: pkg_sexplib.syntax, syntax_camlp4o
 <error.*>: pkg_sexplib.syntax, syntax_camlp4o
 <floatation.*>: pkg_sexplib.syntax, syntax_camlp4o
 <heading.*>: pkg_sexplib.syntax, syntax_camlp4o

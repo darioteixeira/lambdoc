@@ -28,9 +28,9 @@ type alias_t = string with sexp			(** The type of aliases to filenames. *)
 
 type ref_t = string with sexp			(** The type of label references. *)
 
-type syntax_t = string option with sexp		(** The type for syntax declarations. *)
+type counter_t = string with sexp		(** The type of counters for custom environments. *)
 
-type class_t = string with sexp			(** The type for classes (as in "CSS class"). *)
+type syntax_t = string option with sexp		(** The type for syntax declarations. *)
 
 type tag_t = string with sexp			(** The type used for tags. *)
 

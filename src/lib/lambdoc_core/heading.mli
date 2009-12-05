@@ -69,25 +69,25 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
 (********************************************************************************)
 
 val part: Label.t -> part_order_t -> (_, _) Inline.t list ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Part_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Part_blk ]) t
 
 val appendix: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Part_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Part_blk ]) t
 
 val section: Label.t -> section_order_t -> section_location_t -> hierarchical_level_t -> (_, _) Inline.t list ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Section_blk ]) t
 
 val bibliography: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Section_blk ]) t
 
 val notes: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Section_blk ]) t
 
 val toc: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_prose ], [> `Section_blk ]) t
+	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Section_blk ]) t
 
 val parhead: ('a, _) Inline.t list ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Non_prose ], [> `Parhead_blk ]) t
+	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Parhead_blk ]) t
 
 val get_heading: (_, _, _, _, _) t ->
 	heading_t

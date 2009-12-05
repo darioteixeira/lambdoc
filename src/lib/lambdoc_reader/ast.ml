@@ -80,6 +80,11 @@ type tabular_t =
 	tbodies: tabular_group_t list;
 	}
 
+type customdef_t =
+	| Anonymous
+	| Unnumbered of seq_t
+	| Numbered of seq_t * raw_t
+
 type caption_t = command_t * seq_t
 
 type bib_t =
@@ -107,12 +112,11 @@ type frag_t = block_t list
 	| Image of raw_t * raw_t  (* (src, alt) *)
 	| Subpage of frag_t
 	| Pullquote of frag_t
-	| Boxout of seq_t option * frag_t
 	| Custom of raw_t * seq_t option * frag_t
-	| Equation of caption_t * block_t
-	| Printout of caption_t * block_t
-	| Table of caption_t * block_t
-	| Figure of caption_t * block_t
+	| Equation of caption_t option * block_t
+	| Printout of caption_t option * block_t
+	| Table of caption_t option * block_t
+	| Figure of caption_t option * block_t
 	| Part of seq_t
 	| Appendix
 	| Section of hierarchical_level_t * seq_t
@@ -125,8 +129,9 @@ type frag_t = block_t list
 	| Rule
 	| Bib of bib_t
 	| Note of frag_t
-	| Macrodef of seq_t
-	| Customdef of raw_t * raw_t
+	| Macrodef of raw_t * seq_t
+	| Boxoutdef of raw_t * customdef_t
+	| Theoremdef of raw_t * customdef_t
 
 
 (********************************************************************************)

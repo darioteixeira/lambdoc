@@ -65,10 +65,9 @@ let the comm = match comm.Ast.comm_tag with
 %token <string> BEGIN_MATHML_BLK
 %token <string> BEGIN_PROGRAM
 %token <string> BEGIN_TABULAR
-%token <string> BEGIN_VERBATIM
 %token <string> BEGIN_SUBPAGE
+%token <string> BEGIN_VERBATIM
 %token <string> BEGIN_PULLQUOTE
-%token <string> BEGIN_BOXOUT
 %token <string> BEGIN_CUSTOM
 %token <string> BEGIN_EQUATION
 %token <string> BEGIN_PRINTOUT 
@@ -117,7 +116,8 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
 %token <Lambdoc_reader.Ast.command_t> MACRODEF
-%token <Lambdoc_reader.Ast.command_t> CUSTOMDEF
+%token <Lambdoc_reader.Ast.command_t> BOXOUTDEF
+%token <Lambdoc_reader.Ast.command_t> THEOREMDEF
 
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> QUESTION
@@ -167,27 +167,12 @@ document:
 
 block:
 	| NEW_PAR inline+							{($1, Ast.Paragraph $2)}
+	| simple_block								{$1}
+	| env_block								{$1}
+
+simple_block:
 	| PARAGRAPH inline_bundle						{($1, Ast.Paragraph $2)}
-	| begin_block(blk_itemize) anon_item_frag+ end_block			{($1, Ast.Itemize $2)}
-	| begin_block(blk_enumerate) anon_item_frag+ end_block			{($1, Ast.Enumerate $2)}
-	| begin_block(blk_description) desc_item_frag+ end_block		{($1, Ast.Description $2)}
-	| begin_block(blk_qanda) qanda_frag+ end_block				{($1, Ast.Qanda $2)}
-	| begin_block(blk_verse) block+ end_block				{($1, Ast.Verse $2)}
-	| begin_block(blk_quote) block+ end_block				{($1, Ast.Quote $2)}
-	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk $2)}
-	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk $2)}
-	| begin_block(blk_program) RAW end_block				{($1, Ast.Program $2)}
-	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
-	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
 	| IMAGE raw_bundle raw_bundle						{($1, Ast.Image ($2, $3))}
-	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
-	| begin_block(blk_pullquote) block+ end_block				{($1, Ast.Pullquote $2)}
-	| begin_block(blk_boxout) inline_bundle? block+ end_block		{($1, Ast.Boxout ($2, $3))}
-	| begin_block(blk_custom) inline_bundle? block+ end_block		{($1, Ast.Custom (the $1, $2, $3))}
-	| begin_block(blk_equation) block caption end_block			{($1, Ast.Equation ($3, $2))}
-	| begin_block(blk_printout) block caption end_block			{($1, Ast.Printout ($3, $2))}
-	| begin_block(blk_table) block caption end_block			{($1, Ast.Table ($3, $2))}
-	| begin_block(blk_figure) block caption end_block			{($1, Ast.Figure ($3, $2))}
 	| PART inline_bundle							{($1, Ast.Part $2)}
 	| APPENDIX								{($1, Ast.Appendix)}
 	| SECTION inline_bundle							{($1, Ast.Section (`Level1, $2))}
@@ -199,13 +184,33 @@ block:
 	| PARHEAD inline_bundle							{($1, Ast.Parhead $2)}
 	| TITLE inline_bundle							{($1, Ast.Title (`Level1, $2))}
 	| SUBTITLE inline_bundle						{($1, Ast.Title (`Level2, $2))}
-	| begin_block(blk_abstract) block+ end_block				{($1, Ast.Abstract $2)}
 	| RULE									{($1, Ast.Rule)}
+	| MACRODEF raw_bundle inline_bundle					{($1, Ast.Macrodef ($2, $3))}
+	| BOXOUTDEF raw_bundle boxoutdef					{($1, Ast.Boxoutdef ($2, $3))}
+	| THEOREMDEF raw_bundle theoremdef					{($1, Ast.Theoremdef ($2, $3))}
+
+env_block:
+	| begin_block(blk_itemize) anon_item_frag+ end_block			{($1, Ast.Itemize $2)}
+	| begin_block(blk_enumerate) anon_item_frag+ end_block			{($1, Ast.Enumerate $2)}
+	| begin_block(blk_description) desc_item_frag+ end_block		{($1, Ast.Description $2)}
+	| begin_block(blk_qanda) qanda_frag+ end_block				{($1, Ast.Qanda $2)}
+	| begin_block(blk_verse) block+ end_block				{($1, Ast.Verse $2)}
+	| begin_block(blk_quote) block+ end_block				{($1, Ast.Quote $2)}
+	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk $2)}
+	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk $2)}
+	| begin_block(blk_program) RAW end_block				{($1, Ast.Program $2)}
+	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
+	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
+	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
+	| begin_block(blk_pullquote) block+ end_block				{($1, Ast.Pullquote $2)}
+	| begin_block(blk_custom) inline_bundle? block+ end_block		{($1, Ast.Custom (the $1, $2, $3))}
+	| begin_block(blk_equation) block caption? end_block			{($1, Ast.Equation ($3, $2))}
+	| begin_block(blk_printout) block caption? end_block			{($1, Ast.Printout ($3, $2))}
+	| begin_block(blk_table) block caption? end_block			{($1, Ast.Table ($3, $2))}
+	| begin_block(blk_figure) block caption? end_block			{($1, Ast.Figure ($3, $2))}
+	| begin_block(blk_abstract) block+ end_block				{($1, Ast.Abstract $2)}
 	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
 	| begin_block(blk_note) block+ end_block				{($1, Ast.Note $2)}
-	| MACRODEF inline_bundle						{($1, Ast.Macrodef $2)}
-	| CUSTOMDEF raw_bundle raw_bundle					{($1, Ast.Customdef ($2, $3))}
-
 
 anon_item_frag:
 	| ITEM block+								{($1, $2)}
@@ -233,6 +238,15 @@ bib_title:
 
 bib_resource:
 	| BIB_RESOURCE inline_bundle						{($1, $2)}
+
+boxoutdef:
+	| /* empty */								{Ast.Anonymous}
+	| inline_bundle								{Ast.Unnumbered $1}
+	| inline_bundle raw_bundle						{Ast.Numbered ($1, $2)}
+
+theoremdef:
+	| inline_bundle								{Ast.Unnumbered $1}
+	| inline_bundle raw_bundle						{Ast.Numbered ($1, $2)}
 
 
 /********************************************************************************/
@@ -324,7 +338,6 @@ blk_tabular:		BEGIN_TABULAR						{(Some $1, Tabular)}
 blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Literal $1)}
 blk_subpage:		BEGIN_SUBPAGE						{(Some $1, General)}
 blk_pullquote:		BEGIN_PULLQUOTE						{(Some $1, General)}
-blk_boxout:		BEGIN_BOXOUT						{(Some $1, General)}
 blk_custom:		BEGIN_CUSTOM						{(Some $1, General)}
 blk_equation:		BEGIN_EQUATION						{(Some $1, General)}
 blk_printout:		BEGIN_PRINTOUT 						{(Some $1, General)}

@@ -55,17 +55,19 @@ let listing_class =
 let floater_class =
 	(Forbidden, Forbidden, Optional)
 
-let custom_class minipaged =
-	(Optional, (if minipaged then Mandatory0 else Forbidden0), Optional)
+let custom_class =
+	(*	Note that the order parameter is not actually "Optional0";
+		because of its complexity it was checked by the caller,
+		so we treat it as "Optional0" so errors are not triggered.
+	*)
+	(Optional, Optional0, Optional)
 
 let wrapper_class minipaged =
 	(Optional, (if minipaged then Mandatory else Forbidden), Forbidden)
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 
-let macrodef_class = (Mandatory, Forbidden, Optional)
-
-let customdef_class = (Forbidden, Forbidden, Optional)
+let def_class = (Forbidden, Forbidden, Optional)
 
 
 (*	This function checks whether a parameter is valid given its
@@ -101,21 +103,21 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_label_parameter (comm.comm_tag, reason) in
+			let msg = Error.Invalid_label_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
 
 	and () = match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_order_parameter (comm.comm_tag, reason) in
+			let msg = Error.Invalid_order_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
 
 	and () = match reason_why_invalid perm_extra comm.comm_extra with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Bad_extra_parameter (comm.comm_tag, reason) in
+			let msg = Error.Invalid_extra_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
 	in ()
 
@@ -171,7 +173,6 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 
 	and manuscript_block_feature_set = function
 		| `Feature_pullquote	-> floater_class
-		| `Feature_boxout	-> floater_class
 
 		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
@@ -197,8 +198,9 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_bib		-> ghost_class
 		| `Feature_note		-> ghost_class
 
-		| `Feature_macrodef	-> macrodef_class
-		| `Feature_customdef	-> customdef_class
+		| `Feature_macrodef	-> def_class
+		| `Feature_boxoutdef	-> def_class
+		| `Feature_theoremdef	-> def_class
 
 	and internal_feature_set = function
 		| `Feature_macrocall	-> forbidden_class
@@ -214,7 +216,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_tbody	-> forbidden_class
 		| `Feature_tfoot	-> forbidden_class
 		| `Feature_caption	-> forbidden_class
-		| `Feature_custom	-> custom_class (get_minipaged maybe_minipaged) in
+		| `Feature_custom	-> custom_class in
 
 	let permission_set = match feature with
 		| #Features.composition_inline_feature_t as x	-> composition_inline_feature_set x
