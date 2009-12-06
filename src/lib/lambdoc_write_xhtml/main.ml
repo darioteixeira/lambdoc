@@ -378,17 +378,17 @@ let write_valid_document settings classname doc =
 
 		| `Paragraph (initial, seq) ->
 			let style = if initial then ["doc_initial"] else []
-			in [XHTML.M.p ~a:[a_class (["doc_par"] @ style)] (write_seq seq)]
+			in [XHTML.M.p ~a:[a_class ("doc_par" :: style)] (write_seq seq)]
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->
 			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
-			and style = "doc_style_" ^ (Bullet.to_string bul)
-			in [XHTML.M.ul ~a:[a_class ["doc_itemize"; style]] hd tl]
+			and style = ["doc_style_" ^ (Bullet.to_string bul)]
+			in [XHTML.M.ul ~a:[a_class ("doc_itemize" :: style)] hd tl]
 
 		| `Enumerate (num, (hd_frag, tl_frags)) ->
 			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
-			and style = "doc_style_" ^ (Numbering.to_string num)
-			in [XHTML.M.ol ~a:[a_class ["doc_enumerate"; style]] hd tl]
+			and style = ["doc_style_" ^ (Numbering.to_string num)]
+			in [XHTML.M.ol ~a:[a_class ("doc_enumerate" :: style)] hd tl]
 
 		| `Description (hd_frag, tl_frags) ->
 			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
@@ -445,14 +445,18 @@ let write_valid_document settings classname doc =
 				| None	 -> [] in
 			let uri = settings.image_lookup image.alias in
 			let img = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
-			in [XHTML.M.div ~a:[a_class (["doc_image"] @ style)] [img]]
+			in [XHTML.M.div ~a:[a_class ("doc_image" :: style)] [img]]
 
 		| `Subpage frag ->
 			[XHTML.M.div ~a:[a_class ["doc_subpage"]] (write_frag frag)]
 
+		| `Decor (floatation, blk) ->
+			let style = make_floatation floatation
+			in [XHTML.M.div ~a:[a_class ("doc_decor" :: style)] (write_block blk)]
+
 		| `Pullquote (floatation, frag) ->
 			let style = make_floatation floatation
-			in [XHTML.M.blockquote ~a:[a_class (["doc_pullquote"] @ style)] (write_frag frag)]
+			in [XHTML.M.blockquote ~a:[a_class ("doc_pullquote" :: style)] (write_frag frag)]
 
 		| `Boxout (floatation, data, maybe_seq, frag) ->
 			let formatter = function

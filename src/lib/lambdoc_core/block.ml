@@ -29,6 +29,7 @@ type 'a block_t =
 	| `Verbatim of raw_t
 	| `Image of Image.t
 	| `Subpage of 'a list
+	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
 	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
@@ -93,6 +94,9 @@ let image data =
 let subpage frag =
 	`Subpage frag
 
+let decor floatation blk =
+	`Decor (floatation, blk)
+
 let pullquote floatation frag =
 	`Pullquote (floatation, frag)
 
@@ -102,17 +106,17 @@ let boxout floatation data maybe_seq frag =
 let theorem floatation data maybe_seq frag =
 	`Theorem (floatation, data, (maybe Inline.get_seq maybe_seq), frag)
 
-let equation floatation wrapper maybe_seq equation_blk =
-	`Equation (floatation, wrapper, (maybe Inline.get_seq maybe_seq), equation_blk)
+let equation floatation wrapper maybe_seq blk =
+	`Equation (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
 
-let printout floatation wrapper maybe_seq printout_blk =
-	`Printout (floatation, wrapper, (maybe Inline.get_seq maybe_seq), printout_blk)
+let printout floatation wrapper maybe_seq blk =
+	`Printout (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
 
-let table floatation wrapper maybe_seq table_blk =
-	`Table (floatation, wrapper, (maybe Inline.get_seq maybe_seq), table_blk)
+let table floatation wrapper maybe_seq blk =
+	`Table (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
 
-let figure floatation wrapper maybe_seq figure_blk =
-	`Figure (floatation, wrapper, (maybe Inline.get_seq maybe_seq), figure_blk)
+let figure floatation wrapper maybe_seq blk =
+	`Figure (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
 
 let heading data =
 	`Heading (Heading.get_heading data)

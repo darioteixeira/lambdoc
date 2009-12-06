@@ -55,6 +55,7 @@ type target_t =
 type blk_category_t =
 	[ `Any_blk
 	| `Paragraph_blk
+	| `Decor_blk
 	| `Equation_blk
 	| `Printout_blk
 	| `Table_blk

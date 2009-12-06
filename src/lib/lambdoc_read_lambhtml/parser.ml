@@ -133,6 +133,7 @@ and process_block node =
 		| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)
 		| T_element "image"		-> (!!comm, Ast.Image (node#required_string_attribute "src", node#required_string_attribute "alt"))
 		| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node))
+		| T_element "decor"		-> (!!comm, Ast.Decor (process_unifrag node))
 		| T_element "pull"		-> (!!comm, Ast.Pullquote (process_frag node))
 		| T_element "equation"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Equation (maybe_caption, block))
 		| T_element "printout"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Printout (maybe_caption, block))
@@ -220,6 +221,11 @@ and process_tabular node =
 			| _			-> failwith "process_group" in
 	let () = List.iter process_group node#sub_nodes
 	in (cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
+
+
+and process_unifrag node = match node#sub_nodes with
+	| [blk] -> process_block blk
+	| _	-> failwith "process_unifrag"
 
 
 and process_wrapper node = match node#sub_nodes with

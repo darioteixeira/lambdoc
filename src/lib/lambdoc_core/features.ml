@@ -35,7 +35,7 @@ type composition_block_feature_t =
 
 
 type manuscript_block_feature_t =
-	[ `Feature_pullquote
+	[ `Feature_decor | `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
@@ -112,7 +112,7 @@ let composition_block_features =
 
 let manuscript_block_features =
 	[
-	`Feature_pullquote;
+	`Feature_decor; `Feature_pullquote;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_part; `Feature_appendix;
 	`Feature_section1; `Feature_section2; `Feature_section3;
@@ -183,7 +183,8 @@ let describe_composition_block_feature = function
 
 
 let describe_manuscript_block_feature = function
-	| `Feature_pullquote	-> "pull quote block"
+	| `Feature_decor	-> "decoration block"
+	| `Feature_pullquote	-> "pull-quote block"
 
 	| `Feature_equation	-> "equation wrapper"
 	| `Feature_printout	-> "printout wrapper"

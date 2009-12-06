@@ -12,7 +12,7 @@
 	"paragraph | p | itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
 	| source | tabular | verbatim | pre | image | subpage
-	| pull
+	| decor | pull
 	| equation | printout | table | figure
 	| part | appendix
 	| section | h1 | subsection | h2 | subsubsection | h3
@@ -94,25 +94,28 @@
 <!ATTLIST msg %Forbidden;>
 
 <!ELEMENT source (#PCDATA)>
-<!ATTLIST source %Floater;>
+<!ATTLIST source %Forbidden;>
 
 <!ELEMENT tabular (thead?, tbody+, tfoot?)>
-<!ATTLIST tabular %Floater; cols CDATA #REQUIRED>
+<!ATTLIST tabular cols CDATA #REQUIRED>
 
 <!ELEMENT subpage %Frag;>
-<!ATTLIST subpage %Floater;>
+<!ATTLIST subpage %Forbidden;>
 
 <!ELEMENT verbatim (#PCDATA)>
-<!ATTLIST verbatim %Floater;>
+<!ATTLIST verbatim %Forbidden;>
 
 <!ELEMENT pre (#PCDATA)>
-<!ATTLIST pre %Floater;>
+<!ATTLIST pre %Forbidden;>
 
 <!ELEMENT image EMPTY>
-<!ATTLIST image %Floater; src CDATA #REQUIRED alt CDATA #REQUIRED>
+<!ATTLIST image src CDATA #REQUIRED alt CDATA #REQUIRED>
 
-<!ELEMENT pullquote %Frag;>
-<!ATTLIST pullquote %Floater;>
+<!ELEMENT decor %Block;>
+<!ATTLIST decor %Floater;>
+
+<!ELEMENT pull %Frag;>
+<!ATTLIST pull %Floater;>
 
 <!ELEMENT equation ((%Block;), caption?)>
 <!ATTLIST equation %Wrapper;>

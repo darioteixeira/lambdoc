@@ -35,7 +35,7 @@ type composition_block_feature_t =
 
 
 type manuscript_block_feature_t =
-	[ `Feature_pullquote
+	[ `Feature_decor | `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3

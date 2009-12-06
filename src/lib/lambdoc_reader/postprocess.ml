@@ -622,11 +622,13 @@ let process_document ~idiosyncrasies document_ast =
 			let elem () = Some (Block.tabular (convert_tabular comm tcols tab))
 			in check_comm `Feature_tabular comm elem
 
+		| (_, _, true, `Decor_blk, (comm, Ast.Verbatim txt))
 		| (_, _, true, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Verbatim txt)) ->
 			let elem () = Some (Block.verbatim txt)
 			in check_comm `Feature_verbatim comm elem
 
+		| (_, _, true, `Decor_blk, (comm, Ast.Image (alias, alt)))
 		| (_, _, true, `Figure_blk, (comm, Ast.Image (alias, alt)))
 		| (_, _, true, `Any_blk, (comm, Ast.Image (alias, alt))) ->
 			let elem () =
@@ -642,6 +644,13 @@ let process_document ~idiosyncrasies document_ast =
 				let newfrag = List.filter_map (convert_block ~minipaged:true true true true `Any_blk) frag
 				in Some (Block.subpage (Obj.magic newfrag))
 			in check_comm `Feature_subpage comm elem
+
+		| (_, _, true, `Any_blk, (comm, Ast.Decor blk)) ->
+			let elem () =
+				let floatation = Extra.parse_for_decor errors comm
+				and maybe_newblk = convert_block ~minipaged false false true `Decor_blk blk
+				in maybe (Block.decor floatation) (Obj.magic maybe_newblk)
+			in check_comm `Feature_decor comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
 			let elem () =
@@ -692,9 +701,7 @@ let process_document ~idiosyncrasies document_ast =
 				let floatation = Extra.parse_for_wrapper errors comm
 				and (wrapper, maybe_caption) = convert_wrapper comm equation_counter Wrapper.Equation maybe_caption_ast
 				and maybe_equation = convert_block ~minipaged false false false `Equation_blk blk
-				in match maybe_equation with
-					| Some equation -> Some (Block.equation floatation wrapper maybe_caption (Obj.magic equation))
-					| _		-> None
+				in maybe (Block.equation floatation wrapper maybe_caption) (Obj.magic maybe_equation)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_caption_ast, blk))) ->
@@ -702,9 +709,7 @@ let process_document ~idiosyncrasies document_ast =
 				let floatation = Extra.parse_for_wrapper errors comm
 				and (wrapper, maybe_caption) = convert_wrapper comm printout_counter Wrapper.Printout maybe_caption_ast
 				and maybe_printout = convert_block ~minipaged false false true `Printout_blk blk
-				in match maybe_printout with
-					| Some printout -> Some (Block.printout floatation wrapper maybe_caption (Obj.magic printout))
-					| _		-> None
+				in maybe (Block.printout floatation wrapper maybe_caption) (Obj.magic maybe_printout)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_caption_ast, blk))) ->
@@ -712,9 +717,7 @@ let process_document ~idiosyncrasies document_ast =
 				let floatation = Extra.parse_for_wrapper errors comm
 				and (wrapper, maybe_caption) = convert_wrapper comm table_counter Wrapper.Table maybe_caption_ast
 				and maybe_table = convert_block ~minipaged false false true `Table_blk blk
-				in match maybe_table with
-					| Some table -> Some (Block.table floatation wrapper maybe_caption (Obj.magic table))
-					| _	     -> None
+				in maybe (Block.table floatation wrapper maybe_caption) (Obj.magic maybe_table)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_caption_ast, blk))) ->
@@ -722,9 +725,7 @@ let process_document ~idiosyncrasies document_ast =
 				let floatation = Extra.parse_for_wrapper errors comm
 				and (wrapper, maybe_caption) = convert_wrapper comm figure_counter Wrapper.Figure maybe_caption_ast
 				and maybe_figure = convert_block ~minipaged false false true `Figure_blk blk
-				in match maybe_figure with
-					| Some figure -> Some (Block.figure floatation wrapper maybe_caption (Obj.magic figure))
-					| _	      -> None
+				in maybe (Block.figure floatation wrapper maybe_caption) (Obj.magic maybe_figure)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Part seq)) ->

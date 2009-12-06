@@ -408,13 +408,16 @@ let parse_for_source errors comm =
 
 let parse_for_image errors comm =
 	let assigned = process errors comm [Frame_hnd; Width_hnd] in
-	let frame = match assigned.(1) with
+	let frame = match assigned.(0) with
 		| Some (Boolean_data x)	-> x
 		| _			-> false
-	and width = match assigned.(2) with
+	and width = match assigned.(1) with
 		| Some (Numeric_data w)	-> Some w
 		| _			-> None
 	in (frame, width)
+
+
+let parse_for_decor = parse_floater
 
 
 let parse_for_pullquote = parse_floater

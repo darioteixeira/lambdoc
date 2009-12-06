@@ -172,6 +172,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_subpage	-> floater_class
 
 	and manuscript_block_feature_set = function
+		| `Feature_decor	-> floater_class
 		| `Feature_pullquote	-> floater_class
 
 		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
