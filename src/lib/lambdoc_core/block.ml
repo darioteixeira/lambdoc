@@ -32,7 +32,7 @@ type 'a block_t =
 	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
-	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
+	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a list
 	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
@@ -103,8 +103,8 @@ let pullquote floatation frag =
 let boxout floatation data maybe_seq frag =
 	`Boxout (floatation, data, (maybe Inline.get_seq maybe_seq), frag)
 
-let theorem floatation data maybe_seq frag =
-	`Theorem (floatation, data, (maybe Inline.get_seq maybe_seq), frag)
+let theorem data maybe_seq frag =
+	`Theorem (data, (maybe Inline.get_seq maybe_seq), frag)
 
 let equation floatation wrapper maybe_seq blk =
 	`Equation (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)

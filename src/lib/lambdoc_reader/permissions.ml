@@ -63,7 +63,7 @@ let custom_class =
 	(Optional, Optional0, Optional)
 
 let wrapper_class minipaged =
-	(Optional, (if minipaged then Mandatory else Forbidden), Forbidden)
+	(Optional, (if minipaged then Mandatory else Forbidden), Optional)
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 

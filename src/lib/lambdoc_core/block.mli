@@ -35,7 +35,7 @@ type 'a block_t =
 	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
-	| `Theorem of Floatation.t * Custom.Theorem.t * Inline.seq_t option * 'a list
+	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a list
 	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
@@ -122,7 +122,7 @@ val pullquote: Floatation.t -> (_, [< `Listable ], [< `Embeddable ], [< `Textual
 val boxout: Floatation.t -> Custom.Boxout.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], _, _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Boxout_blk ]) t
 
-val theorem: Floatation.t -> Custom.Theorem.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
+val theorem: Custom.Theorem.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Theorem_blk ]) t
 
 val equation: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Math_blk ]) t ->

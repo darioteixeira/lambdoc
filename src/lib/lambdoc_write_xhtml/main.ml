@@ -118,20 +118,26 @@ let make_sectional level label orderlst content =
 (**	{3 Converters}								*)
 (********************************************************************************)
 
-let listify_order ?(prespace = false) order = match (order, prespace) with
-	| Some s, true	-> [space (); pcdata s]
-	| Some s, false -> [pcdata s]
-	| None, _	-> []
+let listify_order ?(prespace = false) ?(postdot = false) ?wrap order =
+	let content = match (order, wrap) with
+		| Some s, None	      -> Some s
+		| Some s, Some (b, a) -> Some (b ^ s ^ a)
+		| None, _	      -> None
+	in match (content, prespace, postdot) with
+		| Some s, true, _ -> [space (); pcdata s]
+		| Some s, _, true -> [pcdata (s ^ "."); entity "ensp"]
+		| Some s, _, _	  -> [pcdata s]
+		| _		  -> []
 
 
-let part_conv order = listify_order (Order.maybe_string_of_ordinal Printers.roman order)
+let part_conv ?postdot order = listify_order ?postdot (Order.maybe_string_of_ordinal Printers.roman order)
 
 
-let section_conv location order =
+let section_conv ?postdot location order =
 	let conv = match location with
 		| `Mainbody	-> Printers.mainbody
 		| `Appendixed	-> Printers.appendixed
-	in listify_order (Order.maybe_string_of_hierarchical conv order)
+	in listify_order ?postdot (Order.maybe_string_of_hierarchical conv order)
 
 
 let boxout_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
@@ -143,10 +149,10 @@ let theorem_conv ?prespace order = listify_order ?prespace (Order.maybe_string_o
 let wrapper_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
-let bib_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
+let bib_conv order = listify_order ~wrap:("[", "]") (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
-let note_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
+let note_conv order = listify_order ~wrap:("(", ")") (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
 (********************************************************************************)
@@ -472,9 +478,9 @@ let write_valid_document settings classname doc =
 					seq2
 				| _ ->
 					[]
-			in [write_custom floatation data maybe_seq frag "doc_boxout" formatter]
+			in [write_custom (Some floatation) data maybe_seq frag "doc_boxout" formatter]
 
-		| `Theorem (floatation, data, maybe_seq, frag) ->
+		| `Theorem (data, maybe_seq, frag) ->
 			let formatter triple =
 				let (hd, bd) = match triple with
 					| Some seq1, Some order, Some seq2 ->
@@ -494,7 +500,7 @@ let write_valid_document settings classname doc =
 					| [] -> []
 					| x  -> [span ~a:[a_class ["doc_capbody"]] x]
 				in caphead @ capbody
-			in [write_custom floatation (data :> Custom.all_t) maybe_seq frag "doc_theorem" formatter]
+			in [write_custom None (data :> Custom.all_t) maybe_seq frag "doc_theorem" formatter]
 
 		| `Equation (floatation, wrapper, maybe_seq, blk) ->
 			[write_wrapper floatation wrapper maybe_seq blk "doc_equation" Name_equation]
@@ -524,13 +530,13 @@ let write_valid_document settings classname doc =
 	and write_heading_block = function
 
 		| `Part (label, order, `Custom seq) ->
-			[make_heading XHTML.M.h1 label (part_conv order) "doc_part" (write_seq seq)]
+			[make_heading XHTML.M.h1 label (part_conv ~postdot:true order) "doc_part" (write_seq seq)]
 
 		| `Part (label, order, `Appendix) ->
 			[make_heading XHTML.M.h1 label (part_conv order) "doc_part" (write_name Name_appendix)]
 
 		| `Section (label, order, location, level, `Custom seq) ->
-			[make_sectional level label (section_conv location order) (write_seq seq)]
+			[make_sectional level label (section_conv ~postdot:true location order) (write_seq seq)]
 
 		| `Section (label, order, location, level, `Bibliography) ->
 			let title = make_sectional level label (section_conv location order) (write_name Name_bibliography) in
@@ -558,8 +564,10 @@ let write_valid_document settings classname doc =
 			[XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq)]
 
 
-	and write_custom floatation data maybe_seq frag classname formatter =
-		let style_float = make_floatation floatation in
+	and write_custom maybe_floatation data maybe_seq frag classname formatter =
+		let style = match maybe_floatation with
+			| Some floatation -> make_floatation floatation
+			| None		  -> [] in
 		let (label, triple) = match data with
 			| `Anonymous label		-> (label, (None, None, maybe write_seq maybe_seq))
 			| `Unnumbered (env, label)	-> (label, (Some (write_name (Name_custom env)), None, maybe write_seq maybe_seq))
@@ -568,7 +576,7 @@ let write_valid_document settings classname doc =
 			| [] -> []
 			| xs -> [XHTML.M.h1 ~a:[a_class [classname ^ "_head"]] xs] in
 		let content = title @ [XHTML.M.div ~a:[a_class [classname ^ "_body"]] (write_frag frag)]
-		in XHTML.M.div ~a:[a_id (make_label label); a_class (classname :: style_float)] content
+		in XHTML.M.div ~a:[a_id (make_label label); a_class (classname :: style)] content
 
 
 	and write_wrapper floatation (label, order) maybe_seq blk classname name =
@@ -613,11 +621,11 @@ let write_valid_document settings classname doc =
 		        Some (XHTML.M.li ~a:[a_class [classname]] [make_internal_link label (orderlst @ (Obj.magic content))])
 		in match sec with
 			| `Part (label, order, `Custom seq) ->
-				make_toc_entry label (class_of_level `Level0) (part_conv order) (write_seq seq)
+				make_toc_entry label (class_of_level `Level0) (part_conv ~postdot:true order) (write_seq seq)
 			| `Part (label, order, `Appendix) ->
 				make_toc_entry label (class_of_level `Level0) (part_conv order) (write_name Name_appendix)
 			| `Section (label, order, location, level, `Custom seq) ->
-				make_toc_entry label (class_of_level level) (section_conv location order) (write_seq seq)
+				make_toc_entry label (class_of_level level) (section_conv ~postdot:true location order) (write_seq seq)
 			| `Section (label, order, location, level, `Bibliography) ->
 				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_bibliography)
 			| `Section (label, order, location, level, `Notes) ->

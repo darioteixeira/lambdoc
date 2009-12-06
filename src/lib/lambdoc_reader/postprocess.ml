@@ -681,7 +681,7 @@ let process_document ~idiosyncrasies document_ast =
 						| Numbered _   -> Custom.numbered envname label order in
 					let (block_maker, allow_above_textual) = match kind with
 						| Custom.Boxout  -> (Block.boxout floatation (Custom.Boxout.make data), true)
-						| Custom.Theorem -> (Block.theorem floatation (Custom.Theorem.make data), false) in
+						| Custom.Theorem -> (Block.theorem (Custom.Theorem.make data), false) in
 					let newfrag = List.filter_map (convert_block ~minipaged false false allow_above_textual `Any_blk) frag
 					and maybe_newseq = maybe convert_seq maybe_seq
 					in Some (block_maker maybe_newseq (Obj.magic newfrag))
