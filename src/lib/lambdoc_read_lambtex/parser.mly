@@ -204,7 +204,7 @@ env_block:
 	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
 	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_decor) block end_block				{($1, Ast.Decor $2)}
-	| begin_block(blk_pullquote) block+ end_block				{($1, Ast.Pullquote $2)}
+	| begin_block(blk_pullquote) inline_bundle? block+ end_block		{($1, Ast.Pullquote ($2, $3))}
 	| begin_block(blk_custom) inline_bundle? block+ end_block		{($1, Ast.Custom (the $1, $2, $3))}
 	| begin_block(blk_equation) block caption? end_block			{($1, Ast.Equation ($3, $2))}
 	| begin_block(blk_printout) block caption? end_block			{($1, Ast.Printout ($3, $2))}

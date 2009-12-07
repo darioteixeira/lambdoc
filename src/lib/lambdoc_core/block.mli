@@ -33,7 +33,7 @@ type 'a block_t =
 	| `Image of Image.t
 	| `Subpage of 'a list
 	| `Decor of Floatation.t * 'a
-	| `Pullquote of Floatation.t * 'a list
+	| `Pullquote of Floatation.t * Inline.seq_t option * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
 	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a list
 	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
@@ -116,7 +116,7 @@ val subpage: ('a, _, _, _, _) t list ->
 val decor: Floatation.t -> (_, _, _, _, [< `Verbatim_blk | `Image_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Embeddable], [> `Non_textual ], [> `Decor_blk ]) t
 
-val pullquote: Floatation.t -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
+val pullquote: Floatation.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable], [> `Non_textual ], [> `Pullquote_blk ]) t
 
 val boxout: Floatation.t -> Custom.Boxout.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], _, _) t list ->

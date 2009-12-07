@@ -30,7 +30,7 @@ type 'a block_t =
 	| `Image of Image.t
 	| `Subpage of 'a list
 	| `Decor of Floatation.t * 'a
-	| `Pullquote of Floatation.t * 'a list
+	| `Pullquote of Floatation.t * Inline.seq_t option * 'a list
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
 	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a list
 	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
@@ -97,8 +97,8 @@ let subpage frag =
 let decor floatation blk =
 	`Decor (floatation, blk)
 
-let pullquote floatation frag =
-	`Pullquote (floatation, frag)
+let pullquote floatation maybe_seq frag =
+	`Pullquote (floatation, (maybe Inline.get_seq maybe_seq), frag)
 
 let boxout floatation data maybe_seq frag =
 	`Boxout (floatation, data, (maybe Inline.get_seq maybe_seq), frag)

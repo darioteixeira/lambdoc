@@ -112,7 +112,7 @@ type frag_t = block_t list
 	| Image of raw_t * raw_t  (* (src, alt) *)
 	| Subpage of frag_t
 	| Decor of block_t
-	| Pullquote of frag_t
+	| Pullquote of seq_t option * frag_t
 	| Custom of raw_t * seq_t option * frag_t
 	| Equation of caption_t option * block_t
 	| Printout of caption_t option * block_t

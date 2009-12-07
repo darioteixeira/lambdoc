@@ -134,7 +134,7 @@ and process_block node =
 		| T_element "image"		-> (!!comm, Ast.Image (node#required_string_attribute "src", node#required_string_attribute "alt"))
 		| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node))
 		| T_element "decor"		-> (!!comm, Ast.Decor (process_unifrag node))
-		| T_element "pull"		-> (!!comm, Ast.Pullquote (process_frag node))
+		| T_element "pull"		-> (!!comm, Ast.Pullquote (None, process_frag node))
 		| T_element "equation"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Equation (maybe_caption, block))
 		| T_element "printout"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Printout (maybe_caption, block))
 		| T_element "table"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Table (maybe_caption, block))

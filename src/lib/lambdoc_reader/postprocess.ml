@@ -652,11 +652,12 @@ let process_document ~idiosyncrasies document_ast =
 				in maybe (Block.decor floatation) (Obj.magic maybe_newblk)
 			in check_comm `Feature_decor comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Pullquote frag)) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_seq, frag))) ->
 			let elem () =
 				let floatation = Extra.parse_for_pullquote errors comm
+				and maybe_newseq = maybe convert_seq maybe_seq
 				and newfrag = List.filter_map (convert_block ~minipaged false false false `Any_blk) frag
-				in Some (Block.pullquote floatation (Obj.magic newfrag))
+				in Some (Block.pullquote floatation maybe_newseq (Obj.magic newfrag))
 			in check_comm `Feature_pullquote comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Custom (envname, maybe_seq, frag))) ->
@@ -682,8 +683,8 @@ let process_document ~idiosyncrasies document_ast =
 					let (block_maker, allow_above_textual) = match kind with
 						| Custom.Boxout  -> (Block.boxout floatation (Custom.Boxout.make data), true)
 						| Custom.Theorem -> (Block.theorem (Custom.Theorem.make data), false) in
-					let newfrag = List.filter_map (convert_block ~minipaged false false allow_above_textual `Any_blk) frag
-					and maybe_newseq = maybe convert_seq maybe_seq
+					let maybe_newseq = maybe convert_seq maybe_seq
+					and newfrag = List.filter_map (convert_block ~minipaged false false allow_above_textual `Any_blk) frag
 					in Some (block_maker maybe_newseq (Obj.magic newfrag))
 				with
 					| Not_found ->

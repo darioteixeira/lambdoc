@@ -369,7 +369,7 @@ let write_valid_document settings classname doc =
 			| None		-> None
 			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot hd tl)
 
-		in XHTML.M.div ~a:[a_class ["doc_tab"; "doc_blk"]] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
+		in XHTML.M.div ~a:[a_class ["doc_tab"]] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
 
 
 	(************************************************************************)
@@ -426,23 +426,23 @@ let write_valid_document settings classname doc =
 			in [XHTML.M.dl ~a:[a_class ["doc_qanda"]] new_hd new_tl]
 
 		| `Verse frag ->
-			[XHTML.M.div ~a:[a_class ["doc_verse"; "doc_blk"]] (write_frag frag)]
+			[XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag)]
 
 		| `Quote frag ->
-			[XHTML.M.blockquote ~a:[a_class ["doc_quote"; "doc_blk"]] (write_frag frag)]
+			[XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag)]
 
 		| `Math math ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
-			in [XHTML.M.div ~a:[a_class ["doc_math"; "doc_blk"]] [xhtml]]
+			in [XHTML.M.div ~a:[a_class ["doc_math"]] [xhtml]]
 
 		| `Source src ->
-			[Camlhighlight_write_xhtml.write ~class_prefix:"doc_src_" ~extra_classes:["doc_blk"] ~linenums:src.linenums ~zebra:src.zebra src.hilite]
+			[Camlhighlight_write_xhtml.write ~class_prefix:"doc_src_" ~linenums:src.linenums ~zebra:src.zebra src.hilite]
 
 		| `Tabular tab ->
 			[write_tabular tab]
 
 		| `Verbatim txt ->
-			[XHTML.M.div ~a:[a_class ["doc_verb"; "doc_blk"]] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
+			[XHTML.M.div ~a:[a_class ["doc_verb"]] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
 
 		| `Image image ->
 			let style = if image.frame then ["doc_image_frame"] else [] in
@@ -451,18 +451,21 @@ let write_valid_document settings classname doc =
 				| None	 -> [] in
 			let uri = settings.image_lookup image.alias in
 			let img = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
-			in [XHTML.M.div ~a:[a_class ("doc_image" :: "doc_blk" :: style)] [img]]
+			in [XHTML.M.div ~a:[a_class ("doc_image" :: style)] [img]]
 
 		| `Subpage frag ->
-			[XHTML.M.div ~a:[a_class ["doc_subpage"; "doc_blk"]] (write_frag frag)]
+			[XHTML.M.div ~a:[a_class ["doc_subpage"]] (write_frag frag)]
 
 		| `Decor (floatation, blk) ->
 			let style = make_floatation floatation
 			in [XHTML.M.div ~a:[a_class ("doc_decor" :: style)] (write_block blk)]
 
-		| `Pullquote (floatation, frag) ->
+		| `Pullquote (floatation, maybe_seq, frag) ->
 			let style = make_floatation floatation
-			in [XHTML.M.blockquote ~a:[a_class ("doc_pullquote" :: style)] (write_frag frag)]
+			and head = match maybe_seq with
+				| Some seq -> [XHTML.M.h1 ~a:[a_class ["doc_pullhead"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
+				| None	   -> []
+			in [XHTML.M.div ~a:[a_class ("doc_pull" :: style)] [XHTML.M.div ((write_frag frag) @ head)]]
 
 		| `Boxout (floatation, data, maybe_seq, frag) ->
 			let formatter = function
@@ -567,7 +570,7 @@ let write_valid_document settings classname doc =
 	and write_custom maybe_floatation data maybe_seq frag classname formatter =
 		let style = match maybe_floatation with
 			| Some floatation -> make_floatation floatation
-			| None		  -> ["doc_blk"] in
+			| None		  -> [] in
 		let (label, triple) = match data with
 			| `Anonymous label		-> (label, (None, None, maybe write_seq maybe_seq))
 			| `Unnumbered (env, label)	-> (label, (Some (write_name (Name_custom env)), None, maybe write_seq maybe_seq))
