@@ -133,7 +133,7 @@ let issue_begin_command raw_comm position =
 			| "quote"	-> BEGIN_QUOTE primary
 			| "tabular"	-> BEGIN_TABULAR primary
 			| "subpage"	-> BEGIN_SUBPAGE primary
-			| "decor"	-> BEGIN_SUBPAGE primary
+			| "decor"	-> BEGIN_DECOR primary
 			| "pull"	-> BEGIN_PULLQUOTE primary
 			| "equation"	-> BEGIN_EQUATION primary
 			| "printout"	-> BEGIN_PRINTOUT primary
