@@ -426,7 +426,7 @@ let write_valid_document settings classname doc =
 			in [XHTML.M.dl ~a:[a_class ["doc_qanda"]] new_hd new_tl]
 
 		| `Verse frag ->
-			[XHTML.M.div ~a:[a_class ["doc_verse"]] (write_frag frag)]
+			[XHTML.M.div ~a:[a_class ["doc_verse"]] [XHTML.M.div (write_frag frag)]]
 
 		| `Quote frag ->
 			[XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag)]
@@ -498,10 +498,10 @@ let write_valid_document settings classname doc =
 						([], []) in
 				let caphead = match hd with
 					| [] -> []
-					| x  -> [span ~a:[a_class ["doc_caphead"]] x]
+					| x  -> [span ~a:[a_class ["doc_thmname"]] x]
 				and capbody = match bd with
 					| [] -> []
-					| x  -> [span ~a:[a_class ["doc_capbody"]] x]
+					| x  -> [span ~a:[a_class ["doc_thmextra"]] x]
 				in caphead @ capbody
 			in [write_custom None (data :> Custom.all_t) maybe_seq frag "doc_theorem" formatter]
 
@@ -586,12 +586,14 @@ let write_valid_document settings classname doc =
 		let wrapper_content = match write_block blk with
 			| [b] -> b
 			| _   -> failwith "write_wrapper" in
-		let caption_content =
-			let caption_head = XHTML.M.h1 ((write_name name) @ [space ()] @ (wrapper_conv order) @ [pcdata ":"])
-			and caption_body = XHTML.M.p []
-			in XHTML.M.div ~a:[a_class ["doc_caption"]] [caption_head; caption_body] in
+		let caption =
+			let headcore = (write_name name) @ [space ()] @ (wrapper_conv order) in
+			let (length, caption_head, caption_body) = match maybe_seq with
+				| Some seq -> ("long", XHTML.M.h1 (headcore @ [pcdata ":"]), [XHTML.M.p (write_seq seq)])
+				| None	   -> ("short", XHTML.M.h1 ([pcdata "("] @ headcore @ [pcdata ")"]), [])
+			in XHTML.M.div ~a:[a_class ["doc_caption"; "doc_caption_" ^ length]] [XHTML.M.div (caption_head :: caption_body)] in
 		let classnames = ["doc_wrapper"; classname] @ (make_floatation floatation)
-		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption_content]
+		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption]
 
 
 	(************************************************************************)
