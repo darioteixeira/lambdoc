@@ -53,9 +53,11 @@
 
 .doc_initial:first-letter
 	{
-	color: Colour_heading;
+	float: left;
+	padding-right: 0.1em;
 	font-weight: bold;
-	font-size: Size_initial;
+	font-size: 3.4em;
+	color: Colour_forefancy;
 	}
 
 .doc_par:not(:first-child) {margin-top: Vmargin_par;}
@@ -93,16 +95,16 @@
 	margin-left: Hmargin_dt;
 	font-size: Size_normal;
 	font-weight: bold;
-	color: Colour_heading;
+	color: Colour_forefancy;
 	}
 
 .doc_itemize:not(:first-child),
 .doc_enumerate:not(:first-child),
-.doc_description:not(:first-child) {margin-top: Vmargin_block;}
+.doc_description:not(:first-child) {margin-top: Vmargin_textual;}
 
 .doc_itemize:not(:last-child),
 .doc_enumerate:not(:last-child),
-.doc_description:not(:last-child) {margin-bottom: Vmargin_block;}
+.doc_description:not(:last-child) {margin-bottom: Vmargin_textual;}
 
 
 /********************************************************************************/
@@ -125,10 +127,10 @@
 .doc_qanda > .doc_answer {color: Colour_answer;}
 
 .doc_qanda > dd.doc_question {margin: Vmargin_par 0;} 
-.doc_qanda > dd.doc_answer {margin: Vmargin_par 0 Vmargin_block;}
+.doc_qanda > dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual;}
 
-.doc_qanda:not(:first-child) {margin-top: Vmargin_block;}
-.doc_qanda:not(:last-child) {margin-bottom: Vmargin_block;}
+.doc_qanda:not(:first-child) {margin-top: Vmargin_textual;}
+.doc_qanda:not(:last-child) {margin-bottom: Vmargin_textual;}
 
 
 /********************************************************************************/
@@ -137,17 +139,24 @@
 
 .doc_verse
 	{
-	padding: 0 Hmargin_inset;
+	clear: both;
+	margin: 0 Hmargin_inset;
+	text-align: center;
+	}
+
+.doc_verse > div
+	{
+	display: inline-block;
 	font-style: italic;
 	}
 
-.doc_verse > .doc_par
+.doc_verse > div > .doc_par
 	{
 	text-indent: 0;
 	}
 
-.doc_verse:not(:first-child) {margin-top: Vmargin_block;}
-.doc_verse:not(:last-child) {margin-bottom: Vmargin_block;}
+.doc_verse:not(:first-child) {margin-top: Vmargin_textual;}
+.doc_verse:not(:last-child) {margin-bottom: Vmargin_textual;}
 
 
 /********************************************************************************/
@@ -157,66 +166,53 @@
 .doc_quote
 	{
 	clear: both;
-	margin: 0 Hmargin_inset 0 Hmargin_quote;
-	quotes: "\201c" "\201d";
+	margin: 0 Hmargin_inset;
+	padding-left: 0.75em;
+	border-left: 2px solid Colour_backfancy;
 	color: Colour_ghostly;
 	}
 
-.doc_quote:before
-	{
-	display: block;
-	font-family: "Georgia", serif;
-	font-size: 5em;
-	color: Colour_ghostly;
-	content: open-quote;
-	margin-left: -0.6em;
-	height: 0;
-	line-height: 1em;
-	}
-
-.doc_quote:not(:first-child) {margin-top: Vmargin_block;}
-.doc_quote:not(:last-child) {margin-bottom: Vmargin_block;}
-
-
-/********************************************************************************/
-/* CSS common to all floater blocks.						*/
-/********************************************************************************/
-
-.doc_float_center {clear: both; margin: 0 1em;}
-.doc_float_right {clear: both; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
-.doc_float_left {clear: both; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
-
-.doc_float_center:not(:first-child) {margin-top: Vmargin_floater;}
-.doc_float_center:not(:last-child) {margin-bottom: Vmargin_floater;}
-
-.doc_wrapper.doc_float_center:not(:first-child) {margin-top: Vmargin_wrapper;}
-.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
+.doc_quote:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_quote:not(:last-child) {margin-bottom: Vmargin_boxish;}
 
 
 /********************************************************************************/
 /* Mathematics environments.							*/
 /********************************************************************************/
 
-.doc_math {text-align: center;}
-
-
-/********************************************************************************/
-/* Code environments.								*/
-/********************************************************************************/
-
-.doc_hl_main
+.doc_math
 	{
-	font-size: Size_pre;
-	font-family: Family_mono;
-	line-height: Line_height_prog;
-	color: #000000;
-	background: Background_prog;
+	clear: both;
+	margin: 0 Hmargin_inset;
+	text-align: center;
+	}
+
+.doc_math:not(:first-child) {margin-top: Vmargin_textual;}
+.doc_math:not(:last-child) {margin-bottom: Vmargin_textual;}
+
+.doc_wrapper > .doc_math:not(:first-child) {margin-top: 0;}
+.doc_wrapper > .doc_math:not(:last-child) {margin-bottom: 0;}
+
+
+/********************************************************************************/
+/* Source environments.								*/
+/********************************************************************************/
+
+.doc_src_main
+	{
+	clear: both;
+	margin: 0 Hmargin_inset;
 	border: Border_box;
 	-moz-box-shadow: Box_shadow;
 	-moz-border-radius: Box_radius;
+	font-size: Size_pre;
+	font-family: Family_mono;
+	line-height: Line_height_src;
+	color: Color_body;
+	background: Background_src;
 	}
 
-.doc_hl_nums
+.doc_src_nums
 	{
 	float: left;
 	margin: 0 1em 0 0;
@@ -225,46 +221,48 @@
 	color: #000;
 	}
 
-.doc_hl_code
-	{
-	margin: 0;
-	padding: 0;
-	}
-
-.doc_hl_line,
-.doc_hl_even,
-.doc_hl_odd
+.doc_src_line,
+.doc_src_even,
+.doc_src_odd
 	{
 	display: block;
 	padding: 0.1em 1em;
 	}
 
-.doc_hl_odd	{background: Background_prog_odd;}
-.doc_hl_even	{background: Background_prog_even;}
-.doc_hl_dummy	{line-height: 0.5em;}
+.doc_src_odd	{background: Background_src_odd;}
+.doc_src_even	{background: Background_src_even;}
+.doc_src_dummy	{line-height: 0.5em;}
 
-.doc_hl_num	{color: #606; font-weight: bold;}
-.doc_hl_esc	{color: #f06; font-weight: bold;}
-.doc_hl_str	{color: #c33;}
-.doc_hl_dstr	{color: #0ff;}
-.doc_hl_slc	{color: #669; font-style: italic;}
-.doc_hl_com	{color: #669; font-style: italic;}
-.doc_hl_dir	{color: #600;}
-.doc_hl_sym	{color: #060;}
-.doc_hl_kwa	{color: #960; font-weight: bold;}
-.doc_hl_kwb	{color: #006;}
-.doc_hl_kwc	{color: #03c;}
-.doc_hl_kwd	{color: #090; font-weight: bold;}
+.doc_src_num	{color: #606; font-weight: bold;}
+.doc_src_esc	{color: #f06; font-weight: bold;}
+.doc_src_str	{color: #c33;}
+.doc_src_dstr	{color: #0ff;}
+.doc_src_slc	{color: #669; font-style: italic;}
+.doc_src_com	{color: #669; font-style: italic;}
+.doc_src_dir	{color: #600;}
+.doc_src_sym	{color: #060;}
+.doc_src_kwa	{color: #960; font-weight: bold;}
+.doc_src_kwb	{color: #006;}
+.doc_src_kwc	{color: #03c;}
+.doc_src_kwd	{color: #090; font-weight: bold;}
+
+.doc_src_main:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_src_main:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper > .doc_src_main:not(:first-child) {margin-top: 0;}
+.doc_wrapper > .doc_src_main:not(:last-child) {margin-bottom: 0;}
 
 
 /********************************************************************************/
 /* Tabular environments.		 					*/
 /********************************************************************************/
 
-.doc_tab.doc_float_center	{margin: 0 auto;}
-.doc_float_center > .doc_tab	{margin: 0 auto;}
-
-.doc_tab {text-align: center;}
+.doc_tab
+	{
+	clear: both;
+	margin: 0 Hmargin_inset;
+	text-align: center;
+	}
 
 .doc_tab > div {display: inline-block;}
 
@@ -307,15 +305,23 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_hline {border-bottom: Border_hline;}
 
-.doc_tab.doc_float_center:not(:first-child) {margin-top: Vmargin_floater;}
-.doc_tab.doc_float_center:not(:last-child) {margin-bottom: Vmargin_floater;}
+.doc_tab:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_tab:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper > .doc_tab:not(:first-child) {margin-top: 0;}
+.doc_wrapper > .doc_tab:not(:last-child) {margin-bottom: 0;}
 
 
 /********************************************************************************/
 /* Verbatim environments.							*/
 /********************************************************************************/
 
-.doc_verb {text-align: center;}
+.doc_verb
+	{
+	clear: both;
+	margin: 0 Hmargin_inset;
+	text-align: center;
+	}
 
 .doc_verb > div {display: inline-block;}
 
@@ -324,26 +330,39 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
         display: block;
 	overflow: hidden;
 	white-space: pre;
-	padding: Padding_box;
 	line-height: Line_height_verb;
 	text-align: left;
 	font-family: Family_mono;
 	font-size: Size_pre;
-        background: Background_verbatim;
-	border: Border_box;
-	-moz-box-shadow: Box_shadow;
-	-moz-border-radius: Box_radius;
 	}
+
+.doc_verb:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_verb:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper > .doc_verb:not(:first-child) {margin-top: 0;}
+.doc_wrapper > .doc_verb:not(:last-child) {margin-bottom: 0;}
 
 
 /********************************************************************************/
 /* Image environments.			 					*/
 /********************************************************************************/
 
-.doc_image			{text-align: center;}
+.doc_image
+	{
+	clear: both;
+	margin: 0 Hmargin_inset;
+	text-align: center;
+	}
+
 .doc_image > a			{display: inline-block;}
 .doc_image > a > img		{display: block; border: none; max-width: 100%;}
 .doc_image_shadow > a > img	{-moz-box-shadow: Box_shadow;}
+
+.doc_image:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_image:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper > .doc_image:not(:first-child) {margin-top: 0;}
+.doc_wrapper > .doc_image:not(:last-child) {margin-bottom: 0;}
 
 
 /********************************************************************************/
@@ -352,29 +371,79 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_subpage
 	{
+	clear: both;
+	margin: 0 Hmargin_inset;
 	padding: Padding_box;
-	background: Background_subpage;
 	border: Border_box;
 	-moz-box-shadow: Box_shadow;
 	-moz-border-radius: Box_radius;
+	background: Background_subpage;
 	}
+
+.doc_subpage:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_subpage:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper > .doc_subpage:not(:first-child) {margin-top: 0;}
+.doc_wrapper > .doc_subpage:not(:last-child) {margin-bottom: 0;}
+
+
+/********************************************************************************/
+/* CSS common to floater blocks.						*/
+/********************************************************************************/
+
+.doc_float_center {clear: both;}
+.doc_float_right {clear: right; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
+.doc_float_left {clear: left; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
+
+.doc_float_center:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_float_center:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper.doc_float_center:not(:first-child) {margin-top: Vmargin_wrapper;}
+.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
 
 
 /********************************************************************************/
 /* Pull-quote environments.							*/
 /********************************************************************************/
 
-.doc_pullquote
+.doc_pull
 	{
-	clear: both;
-	padding: Padding_box;
-	border-top: Border_pullquote;
-	border-bottom: Border_pullquote;
-	font-size: Size_pullquote;
+	margin: 0 Hmargin_inset;
+	padding-left: 2.75em;
+	text-align: center;
+	}
+
+.doc_pull > div
+	{
+	display: inline-block;
+	font-size: Size_pull;
+	font-style: italic;
 	font-weight: bold;
-	color: Colour_pullquote;
-	background: Background_pullquote;
-	-moz-border-radius: Box_radius;
+	quotes: "\201c" "\201d";
+	color: Colour_pulltext;
+	}
+
+
+.doc_pull > div > .doc_pullhead
+	{
+	text-align: right;
+	font-size: small;
+	font-style: normal;
+	font-weight: normal;
+	color: Colour_pullhead;
+	}
+
+.doc_pull > div:before
+	{
+	float: left;
+	display: block;
+	font-family: "Georgia", serif;
+	font-size: 5em;
+	content: open-quote;
+	margin-left: -0.7em;
+	height: 0;
+	line-height: 0.75em;
+	color: Colour_backfancy;
 	}
 
 
@@ -384,62 +453,82 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_boxout
 	{
+	margin: 0 Hmargin_inset;
 	padding: Padding_boxhalf;
-	background: Background_boxout;
 	border: Border_box;
 	-moz-box-shadow: Box_shadow;
 	-moz-border-radius: Box_radius;
+	background: Background_boxout;
 	}
 
 .doc_boxout_head
 	{
 	padding: 0 Padding_boxhalf Padding_boxhalf;
-	text-align: center;
 	border-bottom: Border_box;
-	}
-	
-.doc_boxout_head > h1
-	{
-	display: inline-block;
+	text-align: center;
 	font-family: Family_heading;
 	font-size: Size_large;
 	font-variant: small-caps;
 	font-weight: bold;
+	color: Colour_forefancy;
 	}
-
+	
 .doc_boxout_body
 	{
 	padding: Padding_boxhalf;
 	}
 
-//.doc_boxout_warn > div	{background: #ffdd77;}
-//.doc_boxout_tip > div	{background: #ccffcc;}
 
-.doc_boxout_warn > div > .doc_boxout_head > h1 {padding-left: 28px; background: url('boxout-warn.png') no-repeat left;}
-.doc_boxout_tip > div > .doc_boxout_head > h1 {padding-left: 28px; background: url('boxout-tip.png') no-repeat left;}
+/********************************************************************************/
+/* Theorem environments.							*/
+/********************************************************************************/
+
+.doc_theorem_head
+	{
+	float: left;
+	margin-right: Hmargin_inline_large;
+	}
+
+.doc_thmname {font-weight: bold; color: Colour_forefancy;}
+.doc_thmextra {margin-left: Hmargin_inline_large;}
+
+.doc_theorem:not(:first-child) {margin-top: Vmargin_textual;}
+.doc_theorem:not(:last-child) {margin-bottom: Vmargin_textual;}
 
 
 /********************************************************************************/
 /* CSS for wrapper captions.							*/
 /********************************************************************************/
 
-.doc_caption
+.doc_caption_long
 	{
-	margin: Vmargin_caption auto 0;
-	padding: 0 Hmargin_caption;
+	margin: Vmargin_caption_long Hmargin_inset 0;
+	text-align: center;
+	}
+
+.doc_caption_short
+	{
+	margin: Vmargin_caption_short Hmargin_inset 0;
+	text-align: right;
+	}
+
+.doc_caption > div
+	{
+	display: inline-block;
 	font-size: Size_small;
 	text-align: justify;
 	}
 
-.doc_caption > h1
+.doc_caption > div > h1
 	{
 	display: inline;
-	margin-right: Hmargin_inline_large;
 	font-weight: bold;
-	color: Colour_heading;
+	color: Colour_forefancy;
 	}
 
-.doc_caption > p {display: inline;}
+.doc_caption_long > div > h1 {margin-right: Hmargin_inline_small}
+
+.doc_caption_long > div > p {display: inline;}
 
 
 /********************************************************************************/
@@ -454,7 +543,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	font-variant: small-caps;
 	text-transform: capitalize;
 	text-align: center;
-	color: Colour_heading;
+	color: Colour_forefancy;
 	}
 
 h1.doc_title {font-size: Size_title1;}
@@ -464,8 +553,8 @@ h2.doc_title {font-size: Size_title2;}
 	{
 	clear: both;
 	padding: 0.25em 0;
-	border-top: 1px solid Colour_heading;
-	border-bottom: 1px solid Colour_heading;
+	border-top: 1px solid Colour_forefancy;
+	border-bottom: 1px solid Colour_forefancy;
 	font-family: Family_heading;
 	font-weight: bold;
 	font-size: Size_part;
@@ -474,7 +563,7 @@ h2.doc_title {font-size: Size_title2;}
 	text-align: center;
 	word-spacing: Heading_word_spacing;
 	letter-spacing: Heading_letter_spacing;
-	color: Colour_heading;
+	color: Colour_forefancy;
 	}
 
 .doc_sec
@@ -484,7 +573,7 @@ h2.doc_title {font-size: Size_title2;}
 	font-weight: bold;
 	word-spacing: Heading_word_spacing;
 	letter-spacing: Heading_letter_spacing;
-	color: Colour_heading;
+	color: Colour_forefancy;
 	}
 
 .doc_parhead
@@ -493,10 +582,10 @@ h2.doc_title {font-size: Size_title2;}
 	font-family: Family_heading;
 	font-weight: bold;
 	font-size: Size_h4;
-	color: Colour_heading;
+	color: Colour_forefancy;
 	}
 
-.doc_part > span + span, .doc_sec > span + span {margin-left: 0.75em;}
+.doc_part > span + span, .doc_sec > span + span {margin-left: 0.5em;}
 
 h1.doc_sec {font-size: Size_h1;}
 h2.doc_sec {font-size: Size_h2;}
@@ -534,8 +623,8 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 	margin: 0 Hmargin_inset;
 	}
 
-.doc_rule:not(:first-child) {margin-top: Vmargin_block;}
-.doc_rule:not(:last-child) {margin-bottom: Vmargin_block;}
+.doc_rule:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_rule:not(:last-child) {margin-bottom: Vmargin_boxish;}
 
 
 /********************************************************************************/

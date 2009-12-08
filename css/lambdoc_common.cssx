@@ -13,7 +13,7 @@ body
 
 .doc
 	{
-	margin: Vmargin_block auto;
+	margin: Vmargin_doc auto;
 	width: Body_width;
 	font-family: Family_body;
 	font-size: 0.625em;		/* For default of 16 * 0.625 = 10px */
