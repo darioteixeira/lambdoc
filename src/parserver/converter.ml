@@ -29,19 +29,29 @@ object (self)
 		Unix.clear_nonblock fd;
 		let request : Protocol.request_t = Marshal.from_channel in_channel in
 		let () = match request with
-			| Protocol.Manuscript_from_lambtex payload ->
-				let manuscript = Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string
-					?accept_list:payload.m_accept_list
-					?deny_list:payload.m_deny_list
-					?default:payload.m_default
-					payload.m_source
+			| Protocol.Read_manuscript payload ->
+				let verify_utf8 = payload.m_verify_utf8
+				and accept_list = payload.m_accept_list
+				and deny_list = payload.m_deny_list
+				and default = payload.m_default
+				and source = payload.m_source
+				and reader = match payload.m_markup with
+					| Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string
+					| Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string
+					| Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string in
+				let manuscript = reader ?verify_utf8 ?accept_list ?deny_list ?default source
 				in Marshal.to_channel out_channel manuscript []
-			| Protocol.Composition_from_lambtex payload ->
-				let composition = Lambdoc_read_lambtex.Main.ambivalent_composition_from_string
-					?accept_list:payload.c_accept_list
-					?deny_list:payload.c_deny_list
-					?default:payload.c_default
-					payload.c_source
+			| Protocol.Read_composition payload ->
+				let verify_utf8 = payload.c_verify_utf8
+				and accept_list = payload.c_accept_list
+				and deny_list = payload.c_deny_list
+				and default = payload.c_default
+				and source = payload.c_source
+				and reader = match payload.c_markup with
+					| Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_composition_from_string
+					| Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_composition_from_string
+					| Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_composition_from_string in
+				let composition = reader ?verify_utf8 ?accept_list ?deny_list ?default source
 				in Marshal.to_channel out_channel composition [] in
 		let () = close_out out_channel
 		in when_done ()
