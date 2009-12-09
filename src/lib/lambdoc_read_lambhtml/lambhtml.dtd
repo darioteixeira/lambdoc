@@ -111,7 +111,7 @@
 <!ELEMENT image EMPTY>
 <!ATTLIST image src CDATA #REQUIRED alt CDATA #REQUIRED>
 
-<!ELEMENT decor %Block;>
+<!ELEMENT decor (%Block;)>
 <!ATTLIST decor %Floater;>
 
 <!ELEMENT pull %Frag;>
