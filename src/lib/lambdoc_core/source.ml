@@ -16,8 +16,6 @@ TYPE_CONV_PATH "Source"
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Complete definition of highlighted source code samples.
-*)
 type t =
 	{
 	lang: Camlhighlight_core.lang_t option;
@@ -28,11 +26,9 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
-(**	Code constructor.
-*)
 let make lang linenums zebra hilite =
 	{
 	lang = lang;

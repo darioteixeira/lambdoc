@@ -503,7 +503,7 @@ let write_valid_document settings classname doc =
 					| [] -> []
 					| x  -> [span ~a:[a_class ["doc_thmextra"]] x]
 				in caphead @ capbody
-			in [write_custom None (data :> Custom.all_t) maybe_seq frag "doc_theorem" formatter]
+			in [write_custom None (data :> Custom.t) maybe_seq frag "doc_theorem" formatter]
 
 		| `Equation (floatation, wrapper, maybe_seq, blk) ->
 			[write_wrapper floatation wrapper maybe_seq blk "doc_equation" Name_equation]

@@ -53,7 +53,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] w
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 (**	The functions in this module use phantom types to enforce some invariants

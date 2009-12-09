@@ -18,8 +18,6 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Definition of an image.
-*)
 type t =
 	{
 	frame: bool;
@@ -30,11 +28,9 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
-(**	Image constructor.
-*)
 let make frame width alias alt =
 	{
 	frame = frame;

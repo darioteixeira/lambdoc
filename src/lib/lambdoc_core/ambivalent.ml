@@ -31,6 +31,10 @@ type composition_t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
+(********************************************************************************)
+(**	{2 Constructors}							*)
+(********************************************************************************)
+
 let make_valid_manuscript content bibs notes toc images labels custom =
 	`Valid (Valid.make_manuscript content bibs notes toc images labels custom)
 

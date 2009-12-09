@@ -56,7 +56,7 @@ type 'a t = private tabular_t
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val colspec_of_string: string -> colspec_t

@@ -78,7 +78,7 @@ type default_t = [ `Accept | `Deny ]
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val available_composition_features: composition_feature_t list

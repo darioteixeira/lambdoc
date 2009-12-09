@@ -19,7 +19,7 @@ type composition_t = Error.t list with sexp
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val make_manuscript: Error.t list -> manuscript_t

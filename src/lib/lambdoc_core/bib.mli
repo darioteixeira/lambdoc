@@ -29,7 +29,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val bib: Label.t -> order_t -> (_, _) Inline.t list -> (_, _) Inline.t list -> (_, _) Inline.t list -> t

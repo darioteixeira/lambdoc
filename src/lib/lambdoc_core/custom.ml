@@ -35,7 +35,7 @@ type unnumbered_t = [ `Unnumbered of key_t * Label.t ] with sexp
 
 type numbered_t = [ `Numbered of key_t * Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t ] with sexp
 
-type all_t = [ anonymous_t | unnumbered_t | numbered_t ]
+type t = [ anonymous_t | unnumbered_t | numbered_t ]
 
 
 (********************************************************************************)

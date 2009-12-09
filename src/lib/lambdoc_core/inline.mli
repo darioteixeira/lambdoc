@@ -45,7 +45,7 @@ type (+'a, +'b) t = private [< ('a, 'b) t inline_t ] with sexp
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val plain: plain_t -> ([> `Composition ], [> `Nonlink ]) t

@@ -65,7 +65,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 val part: Label.t -> part_order_t -> (_, _) Inline.t list ->
