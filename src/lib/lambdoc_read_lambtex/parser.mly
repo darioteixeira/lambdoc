@@ -112,7 +112,6 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> BIBLIOGRAPHY
 %token <Lambdoc_reader.Ast.command_t> NOTES
 %token <Lambdoc_reader.Ast.command_t> TOC
-%token <Lambdoc_reader.Ast.command_t> PARHEAD
 %token <Lambdoc_reader.Ast.command_t> TITLE
 %token <Lambdoc_reader.Ast.command_t> SUBTITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
@@ -182,7 +181,6 @@ simple_block:
 	| BIBLIOGRAPHY								{($1, Ast.Bibliography)}
 	| NOTES									{($1, Ast.Notes)}
 	| TOC									{($1, Ast.Toc)} 
-	| PARHEAD inline_bundle							{($1, Ast.Parhead $2)}
 	| TITLE inline_bundle							{($1, Ast.Title (`Level1, $2))}
 	| SUBTITLE inline_bundle						{($1, Ast.Title (`Level2, $2))}
 	| RULE									{($1, Ast.Rule)}

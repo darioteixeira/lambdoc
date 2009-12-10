@@ -17,7 +17,6 @@
 	| part | appendix
 	| section | h1 | subsection | h2 | subsubsection | h3
 	| bibliography | notes | toc
-	| parhead | h4
 	| title | subtitle | abstract | rule
 	| bib | note">
 
@@ -179,12 +178,6 @@
 
 <!ELEMENT toc EMPTY>
 <!ATTLIST toc %Preset_heading;>
-
-<!ELEMENT parhead %Inline;>
-<!ATTLIST parhead %Custom_heading;>
-
-<!ELEMENT h4 %Inline;>
-<!ATTLIST h4 %Custom_heading;>
 
 <!ELEMENT title %Inline;>
 <!ATTLIST title %Forbidden;>

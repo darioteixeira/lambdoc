@@ -29,7 +29,7 @@ type manuscript_inline_feature_t =
 
 type composition_block_feature_t =
 	[ `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
-	| `Feature_qanda | `Feature_parhead | `Feature_verse | `Feature_quote
+	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_source
 	| `Feature_tabular | `Feature_verbatim | `Feature_image | `Feature_subpage ]
 
@@ -104,7 +104,7 @@ let manuscript_inline_features =
 let composition_block_features =
 	[
 	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description;
-	`Feature_qanda; `Feature_parhead; `Feature_verse; `Feature_quote;
+	`Feature_qanda; `Feature_verse; `Feature_quote;
 	`Feature_mathtex_blk; `Feature_mathml_blk; `Feature_source;
 	`Feature_tabular; `Feature_verbatim; `Feature_image; `Feature_subpage;
 	]
@@ -170,7 +170,6 @@ let describe_composition_block_feature = function
 	| `Feature_enumerate	-> "enumerate block"
 	| `Feature_description	-> "description block"
 	| `Feature_qanda	-> "Q&A block"
-	| `Feature_parhead	-> "paragraph head"
 	| `Feature_verse	-> "verse block"
 	| `Feature_quote	-> "quote block"
 	| `Feature_mathtex_blk	-> "TeX math block"

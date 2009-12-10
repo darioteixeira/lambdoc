@@ -150,8 +150,6 @@ and process_block node =
 		| T_element "bibliography"	-> (!!comm, Ast.Bibliography)
 		| T_element "notes"		-> (!!comm, Ast.Notes)
 		| T_element "toc"		-> (!!comm, Ast.Toc)
-		| T_element "parhead"
-		| T_element "h4"		-> (!!comm, Ast.Parhead (process_seq node))
 		| T_element "title"		-> (!!comm, Ast.Title (`Level1, process_seq node))
 		| T_element "subtitle"		-> (!!comm, Ast.Title (`Level2, process_seq node))
 		| T_element "abstract"		-> (!!comm, Ast.Abstract [])

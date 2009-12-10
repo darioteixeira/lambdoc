@@ -160,7 +160,6 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_enumerate	-> listing_class
 		| `Feature_description	-> forbidden_class
 		| `Feature_qanda	-> forbidden_class
-		| `Feature_parhead	-> forbidden_class
 		| `Feature_verse	-> forbidden_class
 		| `Feature_quote	-> forbidden_class
 		| `Feature_mathtex_blk	-> floater_class

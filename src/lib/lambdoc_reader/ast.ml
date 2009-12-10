@@ -124,7 +124,6 @@ type frag_t = block_t list
 	| Bibliography
 	| Notes
 	| Toc
-	| Parhead of seq_t
 	| Title of title_level_t * seq_t
 	| Abstract of frag_t
 	| Rule

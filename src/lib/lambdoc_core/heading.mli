@@ -54,7 +54,6 @@ type section_location_t =
 type heading_t =
 	[ `Part of Label.t * part_order_t * part_content_t
 	| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
-	| `Parhead of Inline.seq_t
 	] with sexp
 
 
@@ -85,9 +84,6 @@ val notes: Label.t ->
 
 val toc: Label.t ->
 	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Section_blk ]) t
-
-val parhead: ('a, _) Inline.t list ->
-	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Parhead_blk ]) t
 
 val get_heading: (_, _, _, _, _) t ->
 	heading_t

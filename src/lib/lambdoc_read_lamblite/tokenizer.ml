@@ -15,9 +15,15 @@ open Lambdoc_reader.Ast
 open Scanner
 open Parser
 
+(********************************************************************************)
+(*	{1 Exceptions}								*)
+(********************************************************************************)
+
+exception Invalid_section_level of int
+
 
 (********************************************************************************)
-(*	{2 Type definitions}							*)
+(*	{1 Type definitions}							*)
 (********************************************************************************)
 
 type context_t =
@@ -27,7 +33,7 @@ type context_t =
 
 
 (********************************************************************************)
-(*	{2 Tokenizer class}							*)
+(*	{1 Tokenizer class}							*)
 (********************************************************************************)
 
 class tokenizer str =
@@ -193,10 +199,20 @@ in object (self)
 					| End_verbatim ->
 						context <- General;
 						self#store (END_VERBATIM self#op)
-					| Heading text ->
-						self#store (BEGIN_PARHEAD self#op);
+					| Section (1, text) ->
+						self#store (BEGIN_SECTION self#op);
 						List.iter self#store (self#tokens_of_text text);
-						self#store (END_PARHEAD self#op)
+						self#store (END_SECTION self#op)
+					| Section (2, text) ->
+						self#store (BEGIN_SUBSECTION self#op);
+						List.iter self#store (self#tokens_of_text text);
+						self#store (END_SUBSECTION self#op)
+					| Section (3, text) ->
+						self#store (BEGIN_SUBSUBSECTION self#op);
+						List.iter self#store (self#tokens_of_text text);
+						self#store (END_SUBSUBSECTION self#op)
+					| Section (x, text) ->
+						raise (Invalid_section_level x)
 					| Par (quote_new, list_new, text) ->
 						self#handle_par quote_new list_new text
 					| Raw txt ->

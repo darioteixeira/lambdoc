@@ -42,7 +42,7 @@ type line_t =
 	| Begin_verbatim
 	| End_verbatim
 	| Raw of string
-	| Heading of text_t list
+	| Section of int * text_t list
 	| Par of int * (list_t * int) option * text_t list
 
 
@@ -61,6 +61,7 @@ let count_char str what =
 let regexp alpha = ['a' - 'z']
 let regexp blank = [' ' '\t']
 let regexp space = ' '
+let regexp section_pat = '='+
 let regexp quote_pat = '>' ('>' | blank)*
 let regexp list_pat = '-'+ | '*'+ | '#'+
 
@@ -104,8 +105,10 @@ let general_scanner = lexer
 		Begin_verbatim
 	| "}}" blank* eof ->
 		raise Lone_terminator
-	| "==" space? ->
-		Heading (text_scanner lexbuf)
+	| section_pat space? ->
+		let lexeme = Ulexing.utf8_lexeme lexbuf in
+		let section_level = count_char lexeme '='
+		in Section (section_level, text_scanner lexbuf)
 	| quote_pat? blank* list_pat? blank* ->
 		let lexeme = Ulexing.utf8_lexeme lexbuf in
 		let quote_level = count_char lexeme '>'

@@ -210,7 +210,7 @@ let write_valid_document settings classname doc =
 
 		| `Math math ->
 			let xhtml : [> `Span ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
-			in XHTML.M.span ~a:[a_class ["doc_math"]] [xhtml]
+			in XHTML.M.span ~a:[a_class ["doc_mathinl"]] [xhtml]
 
 		| `Bold seq ->
 			XHTML.M.b ~a:[a_class ["doc_bold"]] (write_seq ~nbspfy seq)
@@ -433,7 +433,7 @@ let write_valid_document settings classname doc =
 
 		| `Math math ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
-			in [XHTML.M.div ~a:[a_class ["doc_math"]] [xhtml]]
+			in [XHTML.M.div ~a:[a_class ["doc_mathblk"]] [xhtml]]
 
 		| `Source src ->
 			[Camlhighlight_write_xhtml.write ~class_prefix:"doc_src_" ~linenums:src.linenums ~zebra:src.zebra src.hilite]
@@ -563,9 +563,6 @@ let write_valid_document settings classname doc =
 				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
 			in title::toc_xhtml
 
-		| `Parhead seq ->
-			[XHTML.M.h4 ~a:[a_class ["doc_parhead"]] (write_seq seq)]
-
 
 	and write_custom maybe_floatation data maybe_seq frag classname formatter =
 		let style = match maybe_floatation with
@@ -637,8 +634,6 @@ let write_valid_document settings classname doc =
 				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_notes)
 			| `Section (label, order, location, level, `Toc) ->
 				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_toc)
-			| `Parhead seq ->
-				None
 
 
 	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_frag content)

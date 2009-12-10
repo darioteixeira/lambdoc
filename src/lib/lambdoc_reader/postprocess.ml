@@ -783,13 +783,6 @@ let process_document ~idiosyncrasies document_ast =
 		| (true, true, true, `Any_blk, (comm, Ast.Toc)) ->
 			convert_preset_sectional ~tocable:false ~minipaged Heading.toc `Feature_toc comm
 
-		| (_, _, true, `Any_blk, (comm, Ast.Parhead seq)) ->
-			let elem () =
-				let heading = Heading.parhead (convert_seq seq) in
-				let block = Block.heading heading
-				in Some block
-			in check_comm `Feature_parhead comm elem
-
 		| (true, true, true, `Any_blk, (comm, Ast.Title (level, seq))) ->
 			let elem () = Some (Block.title level (convert_seq seq))
 			and feature = match level with

@@ -46,8 +46,14 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> BEGIN_VERBATIM
 %token <Lambdoc_reader.Ast.command_t> END_VERBATIM
 
-%token <Lambdoc_reader.Ast.command_t> BEGIN_PARHEAD
-%token <Lambdoc_reader.Ast.command_t> END_PARHEAD
+%token <Lambdoc_reader.Ast.command_t> BEGIN_SECTION
+%token <Lambdoc_reader.Ast.command_t> END_SECTION
+
+%token <Lambdoc_reader.Ast.command_t> BEGIN_SUBSECTION
+%token <Lambdoc_reader.Ast.command_t> END_SUBSECTION
+
+%token <Lambdoc_reader.Ast.command_t> BEGIN_SUBSUBSECTION
+%token <Lambdoc_reader.Ast.command_t> END_SUBSUBSECTION
 
 %token <Lambdoc_reader.Ast.command_t> ITEM
 
@@ -77,7 +83,9 @@ block:
 	| BEGIN_QUOTE block+ END_QUOTE			{($1, Ast.Quote $2)}
 	| BEGIN_SOURCE RAW END_SOURCE			{($1, Ast.Source $2)}
 	| BEGIN_VERBATIM RAW END_VERBATIM		{($1, Ast.Verbatim $2)}
-	| BEGIN_PARHEAD inline+ END_PARHEAD		{($1, Ast.Parhead $2)}
+	| BEGIN_SECTION inline+ END_SECTION		{($1, Ast.Section (`Level1, $2))}
+	| BEGIN_SUBSECTION inline+ END_SUBSECTION	{($1, Ast.Section (`Level2, $2))}
+	| BEGIN_SUBSUBSECTION inline+ END_SUBSUBSECTION	{($1, Ast.Section (`Level3, $2))}
 
 item:
 	| ITEM block+					{($1, $2)}

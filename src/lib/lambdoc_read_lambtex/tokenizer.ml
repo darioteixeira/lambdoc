@@ -189,8 +189,6 @@ let issue_simple_command raw_comm position =
 		| "bibliography"	-> (Blk, BIBLIOGRAPHY command)
 		| "notes"		-> (Blk, NOTES command)
 		| "toc"			-> (Blk, TOC command)
-		| "parhead"
-		| "h4"			-> (Blk, PARHEAD command)
 		| "title"		-> (Blk, TITLE command)
 		| "subtitle"		-> (Blk, SUBTITLE command)
 		| "rule"
