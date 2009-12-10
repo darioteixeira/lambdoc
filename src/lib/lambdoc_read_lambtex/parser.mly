@@ -121,7 +121,9 @@ let the comm = match comm.Ast.comm_tag with
 
 %token <Lambdoc_reader.Ast.command_t> ITEM
 %token <Lambdoc_reader.Ast.command_t> QUESTION
+%token <Lambdoc_reader.Ast.command_t> RQUESTION
 %token <Lambdoc_reader.Ast.command_t> ANSWER
+%token <Lambdoc_reader.Ast.command_t> RANSWER
 
 %token <Lambdoc_reader.Ast.command_t> THEAD
 %token <Lambdoc_reader.Ast.command_t> TFOOT
@@ -222,10 +224,12 @@ qanda_frag:
 	| question answer							{($1, $2)}
 
 question:
-	| QUESTION inline_bundle0? block+					{($1, $2, $3)}
+	| QUESTION inline_bundle? block+					{($1, Ast.Different $2, $3)}
+	| RQUESTION block+							{($1, Ast.Repeated, $2)}
 
 answer:
-	| ANSWER inline_bundle0? block+						{($1, $2, $3)}
+	| ANSWER inline_bundle? block+						{($1, Ast.Different $2, $3)}
+	| RANSWER block+							{($1, Ast.Repeated, $2)}
 
 caption:
 	| CAPTION inline_bundle							{($1, $2)}
@@ -299,7 +303,6 @@ inline:
 /********************************************************************************/
 
 inline_bundle: 		BEGIN push(general) OPEN_DUMMY inline+ pop_brk END	{$4}
-inline_bundle0: 	BEGIN push(general) OPEN_DUMMY inline* pop_brk END	{$4}
 raw_bundle: 		BEGIN push(raw) OPEN_DUMMY RAW pop_brk END		{$4}
 
 

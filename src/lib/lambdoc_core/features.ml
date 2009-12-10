@@ -28,7 +28,8 @@ type manuscript_inline_feature_t =
 
 
 type composition_block_feature_t =
-	[ `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
+	[ `Feature_paragraph
+	| `Feature_itemize | `Feature_enumerate | `Feature_description
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_source
 	| `Feature_tabular | `Feature_verbatim | `Feature_image | `Feature_subpage ]
@@ -63,7 +64,8 @@ type manuscript_feature_t =
 
 type internal_feature_t =
 	[ `Feature_macrocall | `Feature_macroarg
-	| `Feature_item | `Feature_question | `Feature_answer
+	| `Feature_item
+	| `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
 	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
 	| `Feature_thead | `Feature_tbody | `Feature_tfoot
 	| `Feature_caption | `Feature_custom ]
@@ -103,7 +105,8 @@ let manuscript_inline_features =
 
 let composition_block_features =
 	[
-	`Feature_paragraph; `Feature_itemize; `Feature_enumerate; `Feature_description;
+	`Feature_paragraph;
+	`Feature_itemize; `Feature_enumerate; `Feature_description;
 	`Feature_qanda; `Feature_verse; `Feature_quote;
 	`Feature_mathtex_blk; `Feature_mathml_blk; `Feature_source;
 	`Feature_tabular; `Feature_verbatim; `Feature_image; `Feature_subpage;
@@ -127,7 +130,8 @@ let manuscript_block_features =
 let internal_features =
 	[
 	`Feature_macrocall; `Feature_macroarg;
-	`Feature_item; `Feature_question; `Feature_answer;
+	`Feature_item;
+	`Feature_question; `Feature_rquestion; `Feature_answer; `Feature_ranswer;
 	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
 	`Feature_thead; `Feature_tbody; `Feature_tfoot;
 	`Feature_caption; `Feature_custom;
@@ -220,7 +224,9 @@ let describe_internal_feature = function
 	| `Feature_macroarg	-> "reference to the argument of macro"
         | `Feature_item		-> "item separator for lists"
 	| `Feature_question	-> "question in a Q&A block"
+	| `Feature_rquestion	-> "repeat question in a Q&A block"
 	| `Feature_answer	-> "answer in a Q&A block"
+	| `Feature_ranswer	-> "repeat answer in a Q&A block"
         | `Feature_bib_author	-> "author of a bibliography entry"
 	| `Feature_bib_title	-> "title of a bibliography entry"
 	| `Feature_bib_resource	-> "location of a bibliography entry"

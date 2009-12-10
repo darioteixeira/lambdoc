@@ -405,15 +405,17 @@ let write_valid_document settings classname doc =
 			in [XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl]
 
 		| `Qanda (hd_pair, tl_pairs) ->
-			let write_frag ~qora (maybe_seq, frag) =
+			let write_frag ~qora (maybe_maybe_seq, frag) =
 				let qora_class = match qora with
 					| `Question -> "doc_question"
 					| `Answer   -> "doc_answer" in
-				let seq = match (maybe_seq, qora) with
-					| (Some seq, `Question)	-> last_question_seq := seq; seq
-					| (Some seq, `Answer)	-> last_answer_seq := seq; seq
-					| (None, `Question)	-> !last_question_seq
-					| (None, `Answer)	-> !last_answer_seq in
+				let seq = match (maybe_maybe_seq, qora) with
+					| (Some (Some seq), `Question) -> last_question_seq := seq; seq
+					| (Some (Some seq), `Answer)   -> last_answer_seq := seq; seq
+					| (Some None, `Question)       -> last_question_seq := []; []
+					| (Some None, `Answer)	       -> last_answer_seq := []; []
+					| (None, `Question)	       -> !last_question_seq
+					| (None, `Answer)	       -> !last_answer_seq in
 				let empty_class = match seq with
 					| [] -> ["doc_empty"]
 					| _  -> []

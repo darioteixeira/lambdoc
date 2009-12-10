@@ -182,8 +182,8 @@ and process_qanda_frag frag_root =
 	let process_qora node =
 		let comm = lazy (command_from_node node)
 		in match node#sub_nodes with
-			| [dt; dd] -> (!!comm, Some (process_seq dt), process_frag ~flow:true dd)
-			| [dd]	   -> (!!comm, None, process_frag ~flow:true dd)
+			| [dt; dd] -> (!!comm, Different (Some (process_seq dt)), process_frag ~flow:true dd)
+			| [dd]	   -> (!!comm, Different None, process_frag ~flow:true dd)
 			| _	   -> failwith "process_qora" in
 	let process_group (question, answer) = match (question#node_type, answer#node_type) with
 		| (T_element "question", T_element "answer") -> (process_qora question, process_qora answer)

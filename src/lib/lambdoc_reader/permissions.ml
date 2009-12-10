@@ -208,7 +208,9 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_item		-> forbidden_class
 		| `Feature_describe	-> forbidden_class
 		| `Feature_question	-> forbidden_class
+		| `Feature_rquestion	-> forbidden_class
 		| `Feature_answer	-> forbidden_class
+		| `Feature_ranswer	-> forbidden_class
 		| `Feature_bib_author	-> forbidden_class
 		| `Feature_bib_title	-> forbidden_class
 		| `Feature_bib_resource	-> forbidden_class

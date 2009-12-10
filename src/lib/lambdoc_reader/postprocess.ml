@@ -878,19 +878,23 @@ let process_document ~idiosyncrasies document_ast =
 		in check_comm `Feature_item comm elem
 
 
-	and convert_qanda_frag ~minipaged allow_above_embeddable ((q_comm, q_seq, q_frag), (a_comm, a_seq, a_frag)) =
+	and convert_qanda_frag ~minipaged allow_above_embeddable ((q_comm, q_qanda, q_frag), (a_comm, a_qanda, a_frag)) =
 		let question = 
-			let elem () =
-				let newseq = maybe convert_seq q_seq
-				and newfrag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) q_frag
-				in Some (newseq, newfrag)
-			in check_comm `Feature_question q_comm elem
+			let newfrag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) q_frag in
+			let (feature, elem) = match q_qanda with
+				| Different maybe_seq ->
+					(`Feature_question, fun () -> Some (Some (maybe convert_seq maybe_seq), newfrag))
+				| Repeated ->
+					(`Feature_rquestion, fun () -> Some (None, newfrag))
+			in check_comm feature q_comm elem
 		and answer = 
-			let elem () =
-				let newseq = maybe convert_seq a_seq
-				and newfrag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) a_frag
-				in Some (newseq, newfrag)
-			in check_comm `Feature_answer a_comm elem
+			let newfrag = List.filter_map (Obj.magic (convert_block ~minipaged false allow_above_embeddable true `Any_blk)) a_frag in
+			let (feature, elem) = match a_qanda with
+				| Different maybe_seq ->
+					(`Feature_answer, fun () -> Some (Some (maybe convert_seq maybe_seq), newfrag))
+				| Repeated ->
+					(`Feature_ranswer, fun () -> Some (None, newfrag))
+			in check_comm feature a_comm elem
 		in match (question, answer) with
 			| (Some q, Some a) -> Some (q, a)
 			| _		   -> None

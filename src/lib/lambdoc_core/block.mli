@@ -23,7 +23,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
-	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
+	| `Qanda of ((Inline.seq_t option option * 'a list) * (Inline.seq_t option option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Math.t
@@ -86,7 +86,7 @@ val enumerate: Numbering.t -> ('a, [< `Listable ], 'c, 'd, _) t list plus_t ->
 val description: (('a, _) Inline.t list * ('a, [< `Listable ], 'c, 'd, _) t list) plus_t ->
 	('a, [> `Listable ], 'c, 'd, [> `Description_blk ]) t
 
-val qanda: ((('a, _) Inline.t list option * ('a, [< `Listable ], 'c, _, _) t list) * (('a, _) Inline.t list option * ('a, [< `Listable ], 'c, _, _) t list)) plus_t ->
+val qanda: ((('a, _) Inline.t list option option * ('a, [< `Listable ], 'c, _, _) t list) * (('a, _) Inline.t list option option * ('a, [< `Listable ], 'c, _, _) t list)) plus_t ->
 	('a, [> `Listable ], 'c, [> `Non_textual ], [> `Qanda_blk ]) t
 
 val verse: ('a, _, _, _, [< `Paragraph_block ]) t list ->

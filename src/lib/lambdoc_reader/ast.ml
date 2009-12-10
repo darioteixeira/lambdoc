@@ -101,7 +101,7 @@ type frag_t = block_t list
 	| Itemize of (command_t * frag_t) list
 	| Enumerate of (command_t * frag_t) list
 	| Description of (command_t * seq_t * frag_t) list
-	| Qanda of ((command_t * seq_t option * frag_t) * (command_t * seq_t option * frag_t)) list
+	| Qanda of ((command_t * qanda_t * frag_t) * (command_t * qanda_t * frag_t)) list
 	| Verse of frag_t
 	| Quote of frag_t
 	| Mathtex_blk of raw_t
@@ -132,6 +132,10 @@ type frag_t = block_t list
 	| Macrodef of raw_t * seq_t
 	| Boxoutdef of raw_t * customdef_t
 	| Theoremdef of raw_t * customdef_t
+
+and qanda_t =
+	| Different of seq_t option
+	| Repeated
 
 
 (********************************************************************************)

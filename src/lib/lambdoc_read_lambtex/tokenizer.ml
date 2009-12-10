@@ -199,7 +199,9 @@ let issue_simple_command raw_comm position =
 		| "item"
 		| "li"			-> (Blk, ITEM command)
 		| "question"		-> (Blk, QUESTION command)
+		| "rquestion"		-> (Blk, RQUESTION command)
 		| "answer"		-> (Blk, ANSWER command)
+		| "ranswer"		-> (Blk, RANSWER command)
 		| "head"		-> (Blk, THEAD command)
 		| "foot"		-> (Blk, TFOOT command)
 		| "body"		-> (Blk, TBODY command)

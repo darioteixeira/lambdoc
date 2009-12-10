@@ -20,7 +20,7 @@ type 'a block_t =
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
-	| `Qanda of ((Inline.seq_t option * 'a list) * (Inline.seq_t option * 'a list)) plus_t
+	| `Qanda of ((Inline.seq_t option option * 'a list) * (Inline.seq_t option option * 'a list)) plus_t
 	| `Verse of 'a list
 	| `Quote of 'a list
 	| `Math of Math.t
@@ -67,7 +67,7 @@ let description (hd, tl) =
 	in `Description (fplus conv hd tl)
 
 let qanda (hd, tl) =
-	let conv ((q_seq, q_frag), (a_seq, a_frag)) = ((maybe Inline.get_seq q_seq, q_frag), (maybe Inline.get_seq a_seq, a_frag))
+	let conv ((q_seq, q_frag), (a_seq, a_frag)) = ((maybe (maybe Inline.get_seq) q_seq, q_frag), (maybe (maybe Inline.get_seq) a_seq, a_frag))
 	in `Qanda (fplus conv hd tl)
 
 let verse frag =

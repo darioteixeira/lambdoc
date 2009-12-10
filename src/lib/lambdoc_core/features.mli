@@ -28,7 +28,8 @@ type manuscript_inline_feature_t =
 
 
 type composition_block_feature_t =
-	[ `Feature_paragraph | `Feature_itemize | `Feature_enumerate | `Feature_description
+	[ `Feature_paragraph
+	| `Feature_itemize | `Feature_enumerate | `Feature_description
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_source
 	| `Feature_tabular | `Feature_verbatim | `Feature_image | `Feature_subpage ]
@@ -63,7 +64,8 @@ type manuscript_feature_t =
 
 type internal_feature_t =
 	[ `Feature_macrocall | `Feature_macroarg
-	| `Feature_item | `Feature_question | `Feature_answer
+	| `Feature_item
+	| `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
 	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
 	| `Feature_thead | `Feature_tbody | `Feature_tfoot
 	| `Feature_caption | `Feature_custom ]
