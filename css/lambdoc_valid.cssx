@@ -54,9 +54,9 @@
 .doc_initial:first-letter
 	{
 	float: left;
-	padding-right: 0.1em;
+	margin-right: 0.1em;
 	font-weight: bold;
-	font-size: 3.4em;
+	font-size: 3.5em;
 	color: Colour_forefancy;
 	}
 
@@ -155,8 +155,8 @@
 	text-indent: 0;
 	}
 
-.doc_verse:not(:first-child) {margin-top: Vmargin_textual;}
-.doc_verse:not(:last-child) {margin-bottom: Vmargin_textual;}
+.doc_verse:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_verse:not(:last-child) {margin-bottom: Vmargin_boxish;}
 
 
 /********************************************************************************/
@@ -167,8 +167,8 @@
 	{
 	clear: both;
 	margin: 0 Hmargin_inset;
-	padding-left: 0.75em;
-	border-left: 2px solid Colour_backfancy;
+	padding-left: Hmargin_quote;
+	border-left: Border_quote;
 	color: Colour_ghostly;
 	}
 
@@ -180,18 +180,16 @@
 /* Mathematics environments.							*/
 /********************************************************************************/
 
-.doc_math
+.doc_mathblk
 	{
 	clear: both;
 	margin: 0 Hmargin_inset;
 	text-align: center;
 	}
 
-.doc_math:not(:first-child) {margin-top: Vmargin_textual;}
-.doc_math:not(:last-child) {margin-bottom: Vmargin_textual;}
-
-.doc_wrapper > .doc_math:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_math:not(:last-child) {margin-bottom: 0;}
+.doc_mathblk:not(:first-child) {margin-top: Vmargin_textual;}
+.doc_mathblk:not(:last-child) {margin-bottom: Vmargin_textual;}
+.doc_wrapper > .doc_mathblk {margin: 0;}
 
 
 /********************************************************************************/
@@ -208,6 +206,7 @@
 	font-size: Size_pre;
 	font-family: Family_mono;
 	line-height: Line_height_src;
+	overflow: auto;
 	color: Color_body;
 	background: Background_src;
 	}
@@ -215,23 +214,33 @@
 .doc_src_nums
 	{
 	float: left;
-	margin: 0 1em 0 0;
-	border-right: 1px solid #999;
+	margin-right: Hmargin_src;
+	border-right: Border_src;
 	font-weight: bold;
-	color: #000;
 	}
 
-.doc_src_line,
-.doc_src_even,
-.doc_src_odd
+.doc_src_line
 	{
 	display: block;
-	padding: 0.1em 1em;
+	white-space: pre;
+	height: 1em;
+	vertical-align: bottom;
+	padding: 0.25em 1em;	/* 0.25 = Padding_box / 4 */
 	}
 
-.doc_src_odd	{background: Background_src_odd;}
-.doc_src_even	{background: Background_src_even;}
-.doc_src_dummy	{line-height: 0.5em;}
+.doc_src_dummy
+	{
+	display: block;
+	height: 0;
+	padding: 0.375em 0;	/* 0.375 = (Padding_box - (Padding_box / 4)) / 2 */
+	}
+
+.doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: Background_src_odd;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(even) {background: Background_src_even;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topright: Box_radius;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topleft: Box_radius;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomright: Box_radius;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomleft: Box_radius;}
 
 .doc_src_num	{color: #606; font-weight: bold;}
 .doc_src_esc	{color: #f06; font-weight: bold;}
@@ -248,9 +257,7 @@
 
 .doc_src_main:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_src_main:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper > .doc_src_main:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_src_main:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_src_main {margin: 0;}
 
 
 /********************************************************************************/
@@ -262,9 +269,14 @@
 	clear: both;
 	margin: 0 Hmargin_inset;
 	text-align: center;
+	line-height: 0;
 	}
 
-.doc_tab > div {display: inline-block;}
+.doc_tab > div
+	{
+	display: inline-block;
+	line-height: Line_height_body;
+	}
 
 .doc_tab > div > table
 	{
@@ -307,9 +319,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_tab:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_tab:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper > .doc_tab:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_tab:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_tab {margin: 0;}
 
 
 /********************************************************************************/
@@ -321,6 +331,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	clear: both;
 	margin: 0 Hmargin_inset;
 	text-align: center;
+	line-height: 0;
 	}
 
 .doc_verb > div {display: inline-block;}
@@ -338,9 +349,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_verb:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_verb:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper > .doc_verb:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_verb:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_verb {margin: 0;}
 
 
 /********************************************************************************/
@@ -352,17 +361,16 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	clear: both;
 	margin: 0 Hmargin_inset;
 	text-align: center;
+	line-height: 0;
 	}
 
 .doc_image > a			{display: inline-block;}
-.doc_image > a > img		{display: block; border: none; max-width: 100%;}
-.doc_image_shadow > a > img	{-moz-box-shadow: Box_shadow;}
+.doc_image > a > img		{display: block; border: none; width: 100%;}
+.doc_image_frame > a > img	{-moz-box-shadow: Box_shadow;}
 
 .doc_image:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_image:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper > .doc_image:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_image:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_image {margin: 0;}
 
 
 /********************************************************************************/
@@ -382,24 +390,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_subpage:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_subpage:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper > .doc_subpage:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_subpage:not(:last-child) {margin-bottom: 0;}
-
-
-/********************************************************************************/
-/* CSS common to floater blocks.						*/
-/********************************************************************************/
-
-.doc_float_center {clear: both;}
-.doc_float_right {clear: right; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
-.doc_float_left {clear: left; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
-
-.doc_float_center:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_float_center:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper.doc_float_center:not(:first-child) {margin-top: Vmargin_wrapper;}
-.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
+.doc_wrapper > .doc_subpage {margin: 0;}
 
 
 /********************************************************************************/
@@ -483,6 +474,8 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 /* Theorem environments.							*/
 /********************************************************************************/
 
+.doc_theorem {margin: 0 Hmargin_inset;}
+
 .doc_theorem_head
 	{
 	float: left;
@@ -497,18 +490,33 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 
 /********************************************************************************/
+/* CSS common to floater blocks.						*/
+/********************************************************************************/
+
+.doc_float_center {clear: both; margin: 0 Hmargin_inset;}
+.doc_float_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
+.doc_float_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
+
+.doc_float_center:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_float_center:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+.doc_wrapper.doc_float_center:not(:first-child) {margin-top: Vmargin_wrapper;}
+.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
+
+
+/********************************************************************************/
 /* CSS for wrapper captions.							*/
 /********************************************************************************/
 
 .doc_caption_long
 	{
-	margin: Vmargin_caption_long Hmargin_inset 0;
+	margin: Vmargin_caption_long 0 0;
 	text-align: center;
 	}
 
 .doc_caption_short
 	{
-	margin: Vmargin_caption_short Hmargin_inset 0;
+	margin: Vmargin_caption_short 0 0;
 	text-align: right;
 	}
 
@@ -552,9 +560,9 @@ h2.doc_title {font-size: Size_title2;}
 .doc_part
 	{
 	clear: both;
-	padding: 0.25em 0;
-	border-top: 1px solid Colour_forefancy;
-	border-bottom: 1px solid Colour_forefancy;
+	padding: Padding_part 0;
+	border-top: Border_part;
+	border-bottom: Border_part;
 	font-family: Family_heading;
 	font-weight: bold;
 	font-size: Size_part;
@@ -576,39 +584,26 @@ h2.doc_title {font-size: Size_title2;}
 	color: Colour_forefancy;
 	}
 
-.doc_parhead
-	{
-	clear: both;
-	font-family: Family_heading;
-	font-weight: bold;
-	font-size: Size_h4;
-	color: Colour_forefancy;
-	}
-
-.doc_part > span + span, .doc_sec > span + span {margin-left: 0.5em;}
-
 h1.doc_sec {font-size: Size_h1;}
 h2.doc_sec {font-size: Size_h2;}
 h3.doc_sec {font-size: Size_h3;}
 
-.doc_title:not(:first-child) {margin-top: 2em;}
-.doc_part:not(:first-child) {margin-top: 2em;}
-.doc_sec:not(:first-child) {margin-top: 1.5em;}
-.doc_parhead:not(:first-child) {margin-top: 1.5em;}
+.doc_title:not(:first-child) {margin-top: Vmargin_title_top;}
+.doc_part:not(:first-child) {margin-top: Vmargin_part_top;}
+.doc_sec:not(:first-child) {margin-top: Vmargin_sec_top;}
 
-.doc_title:not(:last-child) {margin-bottom: 1.5em;}
-.doc_part:not(:last-child) {margin-bottom: 1.5em;}
-.doc_sec:not(:last-child) {margin-bottom: 0.25em;}
-.doc_parhead:not(:last-child) {margin-bottom: 0.25em;}
+.doc_title:not(:last-child) {margin-bottom: Vmargin_title_bottom;}
+.doc_part:not(:last-child) {margin-bottom: Vmargin_part_bottom;}
+.doc_sec:not(:last-child) {margin-bottom: Vmargin_sec_bottom;}
 
-h2.doc_title + h2.doc_title {margin-top: -1em;}
+h2.doc_title + h2.doc_title {margin-top: Vmargin_title_intra;}
 
 
 /********************************************************************************/
 /* Abstract.									*/
 /********************************************************************************/
 
-.doc_abs {margin: Vmargin_floater Hmargin_floater;}
+.doc_abs {margin: Vmargin_floater Hmargin_inset;}
 
 .doc_abs > .doc_sec {text-align: center;}
 

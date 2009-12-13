@@ -14,12 +14,13 @@
 #define Colour_forefancy	#501
 #define Colour_backfancy	#b08991
 #define Colour_ghostly		#333
+#define Colour_watery		#666
 #define Colour_question		Colour_forefancy
 #define Colour_answer		Colour_body
-#define Colour_pulltext		Colour_ghostly
+#define Colour_pulltext		#555
 #define Colour_pullhead		Colour_forefancy
 
-#define Background_src		#f9f9f9
+#define Background_src		#f3f6f9
 #define Background_src_odd	#f3f6fc
 #define Background_src_even	#f9f9f9
 #define Background_subpage	#f9f9f9
@@ -30,18 +31,21 @@
 /* Configuration of various borders.						*/
 /********************************************************************************/
 
-#define Border_tabular_outter	2px solid #666
-#define Border_tabular_inner	1px solid #666
-#define Border_box		1px solid #333
+#define Border_quote		2px solid Colour_watery
+#define Border_src		1px solid Colour_watery
+#define Border_tabular_outter	2px solid Colour_watery
+#define Border_tabular_inner	1px solid Colour_watery
+#define Border_box		1px solid Colour_ghostly
 #define Border_rule		1px dotted Colour_forefancy
-#define Border_hline		1px solid #000;
+#define Border_hline		1px solid Colour_body
+#define Border_part		1px solid Colour_forefancy
 
 
 /********************************************************************************/
 /* Box configuration.								*/
 /********************************************************************************/
 
-#define Box_radius	4px
+#define Box_radius	8px
 #define Box_shadow	3px 3px 3px #666
 
 
@@ -101,7 +105,6 @@
 #define Size_h1		1.7em
 #define Size_h2		1.6em
 #define Size_h3		1.5em
-#define Size_h4		1.4em
 
 #define Size_pull	1.071em		/* Relative to Size_normal: 14 * 1.071 = 15px */
 #define Size_pullhead	0.933em		/* Relative to Size_pull: 15 * 0.933 = 14px */
@@ -123,25 +126,32 @@
 #define Vmargin_caption_short	0.5em
 #define Vmargin_doc		1em
 
+#define Vmargin_title_top	2em
+#define Vmargin_title_bottom	1.5em
+#define Vmargin_title_intra	-1em
+#define Vmargin_part_top	2em
+#define Vmargin_part_bottom	1.5em
+#define Vmargin_sec_top		1.5em
+#define Vmargin_sec_bottom	0.5em
+
 #define Hmargin_list		2em
 #define Hmargin_dt		-1.5em		/* -1 * (Hmargin_list - 0.5em) */
 #define Hmargin_inset		1em
-#define Hmargin_quote		3em
-#define Hmargin_floater		1em
 #define Hmargin_inline_small	0.25em
 #define Hmargin_inline_large	0.5em
+#define Hmargin_quote		0.75em
+#define Hmargin_src		1em
 #define Hmargin_indent		1em
 
 #define Padding_box		1em
 #define Padding_boxhalf		0.5em		/* Padding_box / 2 */
-#define Padding_semibox		0.5em
-
 #define Padding_htab		1em
 #define Padding_vtabin		0.1em
 #define Padding_vtabout		0.4em
+#define Padding_part		0.25em
 
 #define Line_height_body	1.6em
-#define Line_height_prog	1.3em
+#define Line_height_src		1.3em
 #define Line_height_verb	1em
 
 

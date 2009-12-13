@@ -84,9 +84,9 @@ body
 .doc_initial:first-letter
  {
  float: left;
- padding-right: 0.1em;
+ margin-right: 0.1em;
  font-weight: bold;
- font-size: 3.4em;
+ font-size: 3.5em;
  color: #501;
  }
 .doc_par:not(:first-child) {margin-top: 0.5em;}
@@ -155,8 +155,8 @@ body
  text-indent: 0;
  }
 
-.doc_verse:not(:first-child) {margin-top: 1em;}
-.doc_verse:not(:last-child) {margin-bottom: 1em;}
+.doc_verse:not(:first-child) {margin-top: 2em;}
+.doc_verse:not(:last-child) {margin-bottom: 2em;}
 
 
 
@@ -168,7 +168,7 @@ body
  clear: both;
  margin: 0 1em;
  padding-left: 0.75em;
- border-left: 2px solid #b08991;
+ border-left: 2px solid #666;
  color: #333;
  }
 
@@ -180,18 +180,16 @@ body
 
 
 
-.doc_math
+.doc_mathblk
  {
  clear: both;
  margin: 0 1em;
  text-align: center;
  }
 
-.doc_math:not(:first-child) {margin-top: 1em;}
-.doc_math:not(:last-child) {margin-bottom: 1em;}
-
-.doc_wrapper > .doc_math:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_math:not(:last-child) {margin-bottom: 0;}
+.doc_mathblk:not(:first-child) {margin-top: 1em;}
+.doc_mathblk:not(:last-child) {margin-bottom: 1em;}
+.doc_wrapper > .doc_mathblk {margin: 0;}
 
 
 
@@ -204,34 +202,45 @@ body
  margin: 0 1em;
  border: 1px solid #333;
  -moz-box-shadow: 3px 3px 3px #666;
- -moz-border-radius: 4px;
+ -moz-border-radius: 8px;
  font-size: 1.2em;
  font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
- line-height: Line_height_src;
+ line-height: 1.3em;
+ overflow: auto;
  color: Color_body;
- background: #f9f9f9;
+ background: #f3f6f9;
  }
 
 .doc_src_nums
  {
  float: left;
- margin: 0 1em 0 0;
- border-right: 1px solid #999;
+ margin-right: 1em;
+ border-right: 1px solid #666;
  font-weight: bold;
- color: #000;
  }
 
-.doc_src_line,
-.doc_src_even,
-.doc_src_odd
+.doc_src_line
  {
  display: block;
- padding: 0.1em 1em;
+ white-space: pre;
+ height: 1em;
+ vertical-align: bottom;
+ padding: 0.25em 1em;
  }
 
-.doc_src_odd {background: #f3f6fc;}
-.doc_src_even {background: #f9f9f9;}
-.doc_src_dummy {line-height: 0.5em;}
+.doc_src_dummy
+ {
+ display: block;
+ height: 0;
+ padding: 0.375em 0;
+ }
+
+.doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: #f3f6fc;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(even) {background: #f9f9f9;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topright: 8px;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topleft: 8px;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomright: 8px;}
+.doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomleft: 8px;}
 
 .doc_src_num {color: #606; font-weight: bold;}
 .doc_src_esc {color: #f06; font-weight: bold;}
@@ -248,9 +257,7 @@ body
 
 .doc_src_main:not(:first-child) {margin-top: 2em;}
 .doc_src_main:not(:last-child) {margin-bottom: 2em;}
-
-.doc_wrapper > .doc_src_main:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_src_main:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_src_main {margin: 0;}
 
 
 
@@ -262,9 +269,14 @@ body
  clear: both;
  margin: 0 1em;
  text-align: center;
+ line-height: 0;
  }
 
-.doc_tab > div {display: inline-block;}
+.doc_tab > div
+ {
+ display: inline-block;
+ line-height: 1.6em;
+ }
 
 .doc_tab > div > table
  {
@@ -303,13 +315,11 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 .doc_cell_c {text-align: center;}
 .doc_cell_j {text-align: justify;}
 
-.doc_hline {border-bottom: 1px solid #000;;}
+.doc_hline {border-bottom: 1px solid #000;}
 
 .doc_tab:not(:first-child) {margin-top: 2em;}
 .doc_tab:not(:last-child) {margin-bottom: 2em;}
-
-.doc_wrapper > .doc_tab:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_tab:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_tab {margin: 0;}
 
 
 
@@ -321,6 +331,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  clear: both;
  margin: 0 1em;
  text-align: center;
+ line-height: 0;
  }
 
 .doc_verb > div {display: inline-block;}
@@ -338,9 +349,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 
 .doc_verb:not(:first-child) {margin-top: 2em;}
 .doc_verb:not(:last-child) {margin-bottom: 2em;}
-
-.doc_wrapper > .doc_verb:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_verb:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_verb {margin: 0;}
 
 
 
@@ -352,17 +361,16 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  clear: both;
  margin: 0 1em;
  text-align: center;
+ line-height: 0;
  }
 
 .doc_image > a {display: inline-block;}
-.doc_image > a > img {display: block; border: none; max-width: 100%;}
-.doc_image_shadow > a > img {-moz-box-shadow: 3px 3px 3px #666;}
+.doc_image > a > img {display: block; border: none; width: 100%;}
+.doc_image_frame > a > img {-moz-box-shadow: 3px 3px 3px #666;}
 
 .doc_image:not(:first-child) {margin-top: 2em;}
 .doc_image:not(:last-child) {margin-bottom: 2em;}
-
-.doc_wrapper > .doc_image:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_image:not(:last-child) {margin-bottom: 0;}
+.doc_wrapper > .doc_image {margin: 0;}
 
 
 
@@ -376,30 +384,13 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  padding: 1em;
  border: 1px solid #333;
  -moz-box-shadow: 3px 3px 3px #666;
- -moz-border-radius: 4px;
+ -moz-border-radius: 8px;
  background: #f9f9f9;
  }
 
 .doc_subpage:not(:first-child) {margin-top: 2em;}
 .doc_subpage:not(:last-child) {margin-bottom: 2em;}
-
-.doc_wrapper > .doc_subpage:not(:first-child) {margin-top: 0;}
-.doc_wrapper > .doc_subpage:not(:last-child) {margin-bottom: 0;}
-
-
-
-
-
-
-.doc_float_center {clear: both;}
-.doc_float_right {clear: right; margin: 0.5em 0 1em 1.75em; float: right; max-width: 40%;}
-.doc_float_left {clear: left; margin: 0.5em 1.75em 1em 0; float: left; max-width: 40%;}
-
-.doc_float_center:not(:first-child) {margin-top: 2em;}
-.doc_float_center:not(:last-child) {margin-bottom: 2em;}
-
-.doc_wrapper.doc_float_center:not(:first-child) {margin-top: 2.5em;}
-.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: 2.5em;}
+.doc_wrapper > .doc_subpage {margin: 0;}
 
 
 
@@ -420,7 +411,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  font-style: italic;
  font-weight: bold;
  quotes: "\201c" "\201d";
- color: #333;
+ color: #555;
  }
 
 
@@ -457,7 +448,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  padding: 0.5em;
  border: 1px solid #333;
  -moz-box-shadow: 3px 3px 3px #666;
- -moz-border-radius: 4px;
+ -moz-border-radius: 8px;
  background: #fffcf0;
  }
 
@@ -483,6 +474,8 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 
 
 
+.doc_theorem {margin: 0 1em;}
+
 .doc_theorem_head
  {
  float: left;
@@ -500,15 +493,30 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 
 
 
+.doc_float_center {clear: both; margin: 0 1em;}
+.doc_float_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
+.doc_float_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
+
+.doc_float_center:not(:first-child) {margin-top: 2em;}
+.doc_float_center:not(:last-child) {margin-bottom: 2em;}
+
+.doc_wrapper.doc_float_center:not(:first-child) {margin-top: 2.5em;}
+.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: 2.5em;}
+
+
+
+
+
+
 .doc_caption_long
  {
- margin: 1em 1em 0;
+ margin: 1em 0 0;
  text-align: center;
  }
 
 .doc_caption_short
  {
- margin: 0.5em 1em 0;
+ margin: 0.5em 0 0;
  text-align: right;
  }
 
@@ -576,17 +584,6 @@ h2.doc_title {font-size: 1.8em;}
  color: #501;
  }
 
-.doc_parhead
- {
- clear: both;
- font-family: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
- font-weight: bold;
- font-size: 1.4em;
- color: #501;
- }
-
-.doc_part > span + span, .doc_sec > span + span {margin-left: 0.5em;}
-
 h1.doc_sec {font-size: 1.7em;}
 h2.doc_sec {font-size: 1.6em;}
 h3.doc_sec {font-size: 1.5em;}
@@ -594,12 +591,10 @@ h3.doc_sec {font-size: 1.5em;}
 .doc_title:not(:first-child) {margin-top: 2em;}
 .doc_part:not(:first-child) {margin-top: 2em;}
 .doc_sec:not(:first-child) {margin-top: 1.5em;}
-.doc_parhead:not(:first-child) {margin-top: 1.5em;}
 
 .doc_title:not(:last-child) {margin-bottom: 1.5em;}
 .doc_part:not(:last-child) {margin-bottom: 1.5em;}
-.doc_sec:not(:last-child) {margin-bottom: 0.25em;}
-.doc_parhead:not(:last-child) {margin-bottom: 0.25em;}
+.doc_sec:not(:last-child) {margin-bottom: 0.5em;}
 
 h2.doc_title + h2.doc_title {margin-top: -1em;}
 
