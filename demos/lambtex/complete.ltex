@@ -1,16 +1,16 @@
-\macrodef[loremshort]{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
+\newmacro{loremshort}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
 
-\macrodef[lorem]{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.}
+\newmacro{lorem}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.}
 
-\macrodef[fox]{The quick brown fox jumps over the lazy dog.}
+\newmacro{fox}{The quick brown fox jumps over the lazy dog.}
 
-\macrodef[who]{John McAuthor}
-\macrodef[what]{Title of the article}
-\macrodef[where]{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\newmacro{who}{John McAuthor}
+\newmacro{what}{Title of the article}
+\newmacro{where}{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
 
 \title{A complete example of \caps{Lambtex}}
 \subtitle{Dario Teixeira}
-\subtitle{November 2009}
+\subtitle{December 2009}
 
 \begin{abstract}
 \p{${lorem}}
@@ -20,20 +20,20 @@
 
 \part(){Inline elements}
 
+\p<initial>{${lorem}}
+
 Here we have examples of text in \bold{bold} and \emph{emphasised} and \code{monospaced}
 and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You may also
 correct \del{perfect}\ins{broken} text. Here is a link to section number \ref{sec:foobar}
 or smartly, \sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
-section}.  The bibliography is at the end \cite{bib1}\cite{bib2}\cite{bib3}.  There is
+section}.  The bibliography is at the end\cite{bib1}\cite{bib2}\cite{bib3}.  There is
 also\see{note1} a list\see{note2} of notes\see{note3}.
-
-\p{${lorem}}
 
 \part(){Block elements}
 
 \section[sec:foobar]{Text paragraphs}
 
-\p<initial>{${lorem}}
+\p{${lorem}}
 \p{${lorem}}
 \p{${lorem}}
 \p{${lorem}}
@@ -48,18 +48,6 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 
 \subsubsection{Low level section}
 
-\p{${lorem}}
-
-\parhead{Paragraph head}
-
-\p{${lorem}}
-
-\parhead{Another paragraph head}
-
-\p{${lorem}}
-\p{${lorem}}
-\rule
-\p{${lorem}}
 \p{${lorem}}
 
 \section{Unordered lists}
@@ -105,14 +93,18 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 \answer{A:}
 	\p{${lorem}}
 	\p{${lorem}}
-\question{}
+\rquestion
 	\p{${lorem}}
-\answer{}
+\ranswer
 	\p{${lorem}}
-\question{}
+\question
 	\p{${lorem}}
-\answer{}
+\answer
 	\p{${lorem}}
+	\p{${lorem}}
+\rquestion
+	\p{${lorem}}
+\ranswer
 	\p{${lorem}}
 \end{qanda}
 \p{${lorem}}
@@ -121,20 +113,20 @@ also\see{note1} a list\see{note2} of notes\see{note3}.
 
 \p{${lorem}}
 \begin{verse}
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet
+${fox} \br
+${fox} \br
+${fox} \br
+${fox}
 
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet
+${fox} \br
+${fox} \br
+${fox} \br
+${fox}
 
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet \br
-Lorem ipsum dolor sit amet
+${fox} \br
+${fox} \br
+${fox} \br
+${fox}
 \end{verse}
 \p{${lorem}}
 
@@ -146,7 +138,7 @@ Lorem ipsum dolor sit amet
 \end{quote}
 \p{${lorem}}
 
-\section{Mathtex blocks}
+\section{Math blocks}
 
 \p{${lorem}}
 \begin{mathtex}
@@ -154,55 +146,34 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
 \p{${lorem}}
 
-\p{${lorem}}
-\begin<left>{mathtex}
-x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
-\p{${lorem}}
+
+\section{Source environments with line numbers and zebra}
 
 \p{${lorem}}
-\begin<right>{mathtex}
-x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
-\p{${lorem}}
-
-\section{Program environments}
-
-\p{${lorem}}
-\begin<ocaml>{prog}
+\begin<ocaml>{source}
 type 'a tree =
-	| Leaf
-	| Node of 'a * 'a tree * 'a tree
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-	| Leaf				-> 0
-	| Node (node, left, right)	-> 1 + (count left) + (count right);;
-\end{prog}
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
 \p{${lorem}}
 
-\p{${lorem}}
-\begin<left,!linenums,ocaml>{prog}
-type t =
-    | Foo of int
-    | Bar of float
 
-let is_foo = function
-    | Foo _ -> true
-    | Bar _ -> false
-\end{prog}
-\p{${lorem}}
+\section{Source environments with neither line numbers nor zebra}
 
 \p{${lorem}}
-\begin<right,!linenums,ocaml>{prog}
-type t =
-    | Foo of int
-    | Bar of float
+\begin<!zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
 
-let is_foo = function
-    | Foo _ -> true
-    | Bar _ -> false
-\end{prog}
-\p{${lorem}}
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
 \p{${lorem}}
 
 
@@ -224,29 +195,6 @@ let is_foo = function
 | Common name	|{1c_} Genus		|{1c_} Species		|
 |		|{2c} Scientific name				|
 \end{tabular}
-\p{${lorem}}
-\p{${lorem}}
-
-\begin<left>{tabular}{rl}
-\head
-| Common name	| Scientific name	|
-\body
-| Wolf		| \emph{Canis lupus}	|
-| Cat		| \emph{Felis catus}	|
-| Chicken	| \emph{Gallus gallus}	|
-\end{tabular}
-\p{${lorem}}
-\p{${lorem}}
-
-\begin<right>{tabular}{rl}
-\head
-| Common name	| Scientific name	|
-\body
-| Wolf		| \emph{Canis lupus}	|
-| Cat		| \emph{Felis catus}	|
-| Chicken	| \emph{Gallus gallus}	|
-\end{tabular}
-\p{${lorem}}
 \p{${lorem}}
 
 
@@ -272,75 +220,17 @@ let is_foo = function
 \end{verbatim}
 \p{${lorem}}
 
-\p{${lorem}}
-\begin<left>{verbatim}
-       -------
-       |  A  |
-       -------
-          |
-          |
-          |
-         / \
-        /   \
-       /     \
-      /       \
-     /         \
-    /           \
--------       -------
-|  A  |       |  C  |
--------       -------
-\end{verbatim}
-\p{${lorem}}
+
+\section{Images}
 
 \p{${lorem}}
-\begin<right>{verbatim}
-       -------
-       |  A  |
-       -------
-          |
-          |
-          |
-         / \
-        /   \
-       /     \
-      /       \
-     /         \
-    /           \
--------       -------
-|  A  |       |  C  |
--------       -------
-\end{verbatim}
+\image{circle-big.png}{Big Circle}
 \p{${lorem}}
+\image<frame>{square-big.png}{Big Square}
+\p{${lorem}}
+\image{triangle-huge.png}{Huge Triangle}
 \p{${lorem}}
 
-
-\section{Bitmap images}
-
-\p{${lorem}}
-\bitmap{circle-big.png}{Big Circle}
-\p{${lorem}}
-
-\p{${lorem}}
-\bitmap<frame>{square-big.png}{Big Square}
-\p{${lorem}}
-
-\p{${lorem}}
-\bitmap<left>{circle-small.png}{Small Circle}
-\p{${lorem}}
-
-\p{${lorem}}
-\bitmap<right>{circle-small.png}{Small Circle}
-\p{${lorem}}
-\p{${lorem}}
-
-\p{${lorem}}
-\bitmap<left,frame>{square-small.png}{Small Square}
-\p{${lorem}}
-
-\p{${lorem}}
-\bitmap<right,frame>{square-small.png}{Small Square}
-\p{${lorem}}
-\p{${lorem}}
 
 \section{Subpage environments}
 
@@ -350,25 +240,70 @@ let is_foo = function
 \p{${lorem}}
 \end{subpage}
 \p{${lorem}}
+
+
+\section{Decor environments}
+
+\subsection{Centered}
+\p{${lorem}}
+\begin{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
 \p{${lorem}}
 
-\begin<left>{subpage}
-\section(){Introduction}
+\subsection{Floating left}
 \p{${lorem}}
-\end{subpage}
-\p{${lorem}}
+\begin<left>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
 \p{${lorem}}
 \p{${lorem}}
 
-\begin<right>{subpage}
-\section(){Introduction}
+\subsection{Floating right}
 \p{${lorem}}
-\end{subpage}
+\begin<right>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
 \p{${lorem}}
 \p{${lorem}}
+
+\subsection{Floating left and right}
 \p{${lorem}}
+\begin<left>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
+\begin<right>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
+\p{${lorem}}
+\p{${lorem}}
+
+\subsection{Floating left and left}
+\p{${lorem}}
+\begin<left>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
+\begin<left>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
+\p{${lorem}}
+\p{${lorem}}
+
+\subsection{Floating right and right}
+\p{${lorem}}
+\begin<right>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
+\begin<right>{decor}
+\image{circle-small.png}{Small Circle}
+\end{decor}
+\p{${lorem}}
+\p{${lorem}}
+
 
 \section{Pull-quote environments}
+
+\subsection{Centered}
 
 \p{${lorem}}
 \begin{pull}
@@ -376,49 +311,99 @@ ${fox}
 \end{pull}
 \p{${lorem}}
 
-\p{${lorem}}
-\begin<right>{pull}
+\begin{pull}{John McAuthor}
 ${fox}
 \end{pull}
 \p{${lorem}}
+
+\subsection{Floating left}
 
 \p{${lorem}}
 \begin<left>{pull}
 ${fox}
 \end{pull}
 \p{${lorem}}
-
-\section{Boxout environments}
+\p{${lorem}}
 
 \p{${lorem}}
-\begin{boxout}{This is a boxout}
+\begin<left>{pull}{John McAuthor}
 ${fox}
-${fox}
-${fox}
-${fox}
-\end{boxout}
+\end{pull}
 \p{${lorem}}
 \p{${lorem}}
 
-\begin<right>{boxout}{This is a boxout}
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{pull}
 ${fox}
-${fox}
-${fox}
-${fox}
-\end{boxout}
+\end{pull}
 \p{${lorem}}
 \p{${lorem}}
 
-\begin<left>{boxout}{This is a boxout}
+\p{${lorem}}
+\begin<right>{pull}{John McAuthor}
 ${fox}
-${fox}
-${fox}
-${fox}
-\end{boxout}
+\end{pull}
 \p{${lorem}}
 \p{${lorem}}
+
+
+\section{Custom Boxout environments}
+
+\newboxout{warning}{Warning}
+
+\subsection{Centered}
+\p{${lorem}}
+\begin{warning}
+\p{${lorem}}
+\end{warning}
+\p{${lorem}}
+
+\subsection{Floating left}
+\p{${lorem}}
+\begin<left>{warning}
+\p{${lorem}}
+\end{warning}
+\p{${lorem}}
+\p{${lorem}}
+
+\subsection{Floating right}
+\p{${lorem}}
+\begin<right>{warning}
+\p{${lorem}}
+\end{warning}
+\p{${lorem}}
+\p{${lorem}}
+
+
+\section{Custom theorem environments}
+
+\newtheorem{theorem}{Theorem}{theorem}
+\newtheorem{proof}{Proof}
+
+\p{${lorem}}
+
+\begin{theorem}
+\p{${lorem}}
+\end{theorem}
+
+\p{${lorem}}
+
+\begin{theorem}{John McAuthor}
+\p{${lorem}}
+\end{theorem}
+
+\begin{proof}
+\p{${lorem} \sub{&#x220e;}}
+\end{proof}
+
+\p{${lorem}}
+
 
 \section{Equation environments}
+
+\subsection{Centered}
 
 \p{${lorem}}
 \begin{equation}
@@ -428,10 +413,12 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \caption{${fox}}
 \end{equation}
 \p{${lorem}}
-\p{${lorem}}
 
-\begin{equation}
-\begin<left>{mathtex}
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{equation}
+\begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
 \caption{${fox}}
@@ -439,63 +426,113 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \p{${lorem}}
 \p{${lorem}}
 
-\begin{equation}
-\begin<right>{mathtex}
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{equation}
+\begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
 \caption{${fox}}
 \end{equation}
 \p{${lorem}}
 \p{${lorem}}
+
+
+\section{Equation environments without caption}
+
+\subsection{Centered}
+
+\p{${lorem}}
+\begin{equation}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{${lorem}}
+
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{equation}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{${lorem}}
+\p{${lorem}}
+
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{equation}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{${lorem}}
+\p{${lorem}}
+
 
 \section{Printout environments}
 
+\subsection{Centered}
+
+\p{${lorem}}
 \begin{printout}
-\begin<ocaml>{prog}
+\begin<ocaml>{source}
 type 'a tree =
-	| Leaf
-	| Node of 'a * 'a tree * 'a tree
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-	| Leaf				-> 0
-	| Node (node, left, right)	-> 1 + (count left) + (count right);;
-\end{prog}
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
 \caption{${fox}}
 \end{printout}
 \p{${lorem}}
-\p{${lorem}}
 
-\begin{printout}
-\begin<left,ocaml>{prog}
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{printout}
+\begin<ocaml,!linenums>{source}
 type t =
-	| Foo of int
-	| Bar of float
+    | Foo of int
+    | Bar of float
 
 let is_foo = function
-	| Foo _ -> true
-	| Bar _ -> false
-\end{prog}
+    | Foo _ -> true
+    | Bar _ -> false
+\end{source}
 \caption{${fox}}
 \end{printout}
 \p{${lorem}}
 \p{${lorem}}
 
-\begin{printout}
-\begin<right,ocaml>{prog}
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{printout}
+\begin<ocaml,!linenums>{source}
 type t =
-	| Foo of int
-	| Bar of float
+    | Foo of int
+    | Bar of float
 
 let is_foo = function
-	| Foo _ -> true
-	| Bar _ -> false
-\end{prog}
+    | Foo _ -> true
+    | Bar _ -> false
+\end{source}
 \caption{${fox}}
 \end{printout}
 \p{${lorem}}
 \p{${lorem}}
+
 
 \section{Table environments}
+
+\subsection{Centered}
 
 \p{${lorem}}
 \begin{table}
@@ -517,10 +554,12 @@ let is_foo = function
 \caption{${fox}}
 \end{table}
 \p{${lorem}}
-\p{${lorem}}
 
-\begin{table}
-\begin<left>{tabular}{rl}
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{table}
+\begin{tabular}{rl}
 \head
 | Common name	| Scientific name	|
 \body
@@ -533,8 +572,11 @@ let is_foo = function
 \p{${lorem}}
 \p{${lorem}}
 
-\begin{table}
-\begin<right>{tabular}{rl}
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{table}
+\begin{tabular}{rl}
 \head
 | Common name	| Scientific name	|
 \body
@@ -546,8 +588,11 @@ let is_foo = function
 \end{table}
 \p{${lorem}}
 \p{${lorem}}
+
 
 \section{Figure environments around verbatim blocks}
+
+\subsection{Centered}
 
 \p{${lorem}}
 \begin{figure}
@@ -571,10 +616,12 @@ let is_foo = function
 \caption{${fox}}
 \end{figure}
 \p{${lorem}}
-\p{${lorem}}
 
-\begin{figure}
-\begin<left>{verbatim}
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{figure}
+\begin{verbatim}
        -------
        |  A  |
        -------
@@ -596,8 +643,11 @@ let is_foo = function
 \p{${lorem}}
 \p{${lorem}}
 
-\begin{figure}
-\begin<right>{verbatim}
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{figure}
+\begin{verbatim}
        -------
        |  A  |
        -------
@@ -618,26 +668,34 @@ let is_foo = function
 \end{figure}
 \p{${lorem}}
 \p{${lorem}}
+
 
 \section{Figure environments around images}
 
+\subsection{Centered}
+
 \p{${lorem}}
 \begin{figure}
-\bitmap{circle-big.png}{Big Circle}
+\image{circle-big.png}{Big Circle}
+\caption{${fox}}
+\end{figure}
+\p{${lorem}}
+
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{figure}
+\image{circle-small.png}{Small Circle}
 \caption{${fox}}
 \end{figure}
 \p{${lorem}}
 \p{${lorem}}
 
-\begin{figure}
-\bitmap<left>{circle-small.png}{Small Circle}
-\caption{${fox}}
-\end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\subsection{Floating right}
 
-\begin{figure}
-\bitmap<right>{circle-small.png}{Small Circle}
+\p{${lorem}}
+\begin<right>{figure}
+\image{circle-small.png}{Small Circle}
 \caption{${fox}}
 \end{figure}
 \p{${lorem}}
@@ -645,6 +703,8 @@ let is_foo = function
 
 
 \section{Figure environments around subpages}
+
+\subsection{Centered}
 
 \p{${lorem}}
 \begin{figure}
@@ -655,10 +715,24 @@ let is_foo = function
 \caption{${fox}}
 \end{figure}
 \p{${lorem}}
+
+\subsection{Centered with long caption}
+
+\p{${lorem}}
+\begin{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{${lorem}}
+\end{subpage}
+\caption{${fox} ${fox} ${fox} ${fox}}
+\end{figure}
 \p{${lorem}}
 
-\begin{figure}
-\begin<left>{subpage}
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{figure}
+\begin{subpage}
 \section(){Introduction}
 \p{${lorem}}
 \end{subpage}
@@ -666,10 +740,12 @@ let is_foo = function
 \end{figure}
 \p{${lorem}}
 \p{${lorem}}
-\p{${lorem}}
 
-\begin{figure}
-\begin<right>{subpage}
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{figure}
+\begin{subpage}
 \section(){Introduction}
 \p{${lorem}}
 \end{subpage}
@@ -677,7 +753,44 @@ let is_foo = function
 \end{figure}
 \p{${lorem}}
 \p{${lorem}}
+
+\section{Figure environments without caption around subpages}
+
+\subsection{Centered}
+
 \p{${lorem}}
+\begin{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{${lorem}}
+\end{subpage}
+\end{figure}
+\p{${lorem}}
+
+\subsection{Floating left}
+
+\p{${lorem}}
+\begin<left>{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{${lorem}}
+\end{subpage}
+\end{figure}
+\p{${lorem}}
+\p{${lorem}}
+
+\subsection{Floating right}
+
+\p{${lorem}}
+\begin<right>{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{${lorem}}
+\end{subpage}
+\end{figure}
+\p{${lorem}}
+\p{${lorem}}
+
 
 \part(){Backmatter}
 

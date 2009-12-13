@@ -1,6 +1,6 @@
 NAME=test
 
-all: $(NAME).cma $(NAME).cmxs circle-small.png circle-big.png square-small.png square-big.png
+all: $(NAME).cma $(NAME).cmxs circle-small.png circle-big.png square-small.png square-big.png triangle-huge.png
 
 %.cma: %.cmo
 	ocamlc -a -o $@ $+
@@ -22,6 +22,9 @@ all: $(NAME).cma $(NAME).cmxs circle-small.png circle-big.png square-small.png s
 
 %-big.png: %.svg
 	inkscape -D -f $< -e $@ -w 320
+
+%-huge.png: %.svg
+	inkscape -D -f $< -e $@ -w 960
 
 clean:
 	rm -f $(NAME).cm[ioa] $(NAME).cmxa $(NAME).cmxs $(NAME).[oa]
