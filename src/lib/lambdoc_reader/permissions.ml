@@ -67,8 +67,6 @@ let wrapper_class minipaged =
 
 let ghost_class = (Optional, Forbidden, Forbidden)
 
-let def_class = (Forbidden, Forbidden, Optional)
-
 
 (*	This function checks whether a parameter is valid given its
 	associated permission.  It returns an optional value stating
@@ -198,9 +196,9 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_bib		-> ghost_class
 		| `Feature_note		-> ghost_class
 
-		| `Feature_macrodef	-> def_class
-		| `Feature_boxoutdef	-> def_class
-		| `Feature_theoremdef	-> def_class
+		| `Feature_macrodef	-> forbidden_class
+		| `Feature_boxoutdef	-> forbidden_class
+		| `Feature_theoremdef	-> forbidden_class
 
 	and internal_feature_set = function
 		| `Feature_macrocall	-> forbidden_class
