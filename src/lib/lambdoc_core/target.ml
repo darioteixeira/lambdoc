@@ -36,7 +36,7 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let custom envname kind order = Visible_target (Custom_target (envname, kind, order))
+let custom env kind order = Visible_target (Custom_target (env, kind, order))
 
 let wrapper kind order = Visible_target (Wrapper_target (kind, order))
 

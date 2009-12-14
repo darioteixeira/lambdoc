@@ -660,11 +660,11 @@ let process_document ~idiosyncrasies document_ast =
 				in Some (Block.pullquote floatation maybe_newseq (Obj.magic newfrag))
 			in check_comm `Feature_pullquote comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Custom (envname, maybe_seq, frag))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Custom (env, maybe_seq, frag))) ->
 			let elem () =
 				try
-					let (kind, used, def) = Hashtbl.find customisations envname in
-					let () = if not used then Hashtbl.replace customisations envname (kind, true, def) in
+					let (kind, used, def) = Hashtbl.find customisations env in
+					let () = if not used then Hashtbl.replace customisations env (kind, true, def) in
 					let floatation = Extra.parse_for_custom errors comm in
 					let order = match (def, comm.comm_order, minipaged) with
 						| Numbered _, None, true	     -> raise (Bad_order Error.Reason_is_absent_when_mandatory)
@@ -675,11 +675,12 @@ let process_document ~idiosyncrasies document_ast =
 						| _, None, _			     -> Order.none ()
 						| _, Some "", _			     -> Order.none ()
 						| _, Some other, _		     -> raise (Bad_order (Error.Reason_is_non_empty_when_forbidden other)) in
-					let label = make_label comm (Target.custom envname kind order) in
-					let data = match def with
-						| Anonymous    -> Custom.anonymous label order
-						| Unnumbered _ -> Custom.unnumbered envname label order
-						| Numbered _   -> Custom.numbered envname label order in
+					let label = make_label comm (Target.custom env kind order) in
+					let custom_maker = match def with
+						| Anonymous    -> Custom.anonymous
+						| Unnumbered _ -> Custom.unnumbered
+						| Numbered _   -> Custom.numbered in
+					let data = custom_maker env label order in
 					let (block_maker, allow_above_textual) = match kind with
 						| Custom.Boxout  -> (Block.boxout floatation (Custom.Boxout.make data), true)
 						| Custom.Theorem -> (Block.theorem (Custom.Theorem.make data), false) in
@@ -688,7 +689,7 @@ let process_document ~idiosyncrasies document_ast =
 					in Some (block_maker maybe_newseq (Obj.magic newfrag))
 				with
 					| Not_found ->
-						let msg = Error.Undefined_custom (comm.comm_tag, envname)
+						let msg = Error.Undefined_custom (comm.comm_tag, env)
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| Bad_order reason ->
@@ -851,12 +852,12 @@ let process_document ~idiosyncrasies document_ast =
 				None
 			in check_comm `Feature_macrodef comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Boxoutdef (envname, boxoutdef))) ->
-			let elem () = convert_customdef comm envname Custom.Boxout boxoutdef; None
+		| (_, _, _, `Any_blk, (comm, Ast.Boxoutdef (env, boxoutdef))) ->
+			let elem () = convert_customdef comm env Custom.Boxout boxoutdef; None
 			in check_comm `Feature_boxoutdef comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Theoremdef (envname, boxoutdef))) ->
-			let elem () = convert_customdef comm envname Custom.Theorem boxoutdef; None
+		| (_, _, _, `Any_blk, (comm, Ast.Theoremdef (env, boxoutdef))) ->
+			let elem () = convert_customdef comm env Custom.Theorem boxoutdef; None
 			in check_comm `Feature_theoremdef comm elem
 
 		| (_, _, _, x, (comm, _)) ->
@@ -924,31 +925,31 @@ let process_document ~idiosyncrasies document_ast =
 		in ((label, order), maybe_caption)
 
 
-	and convert_customdef comm envname kind customdef =
-		if Hashtbl.mem customisations envname
+	and convert_customdef comm env kind customdef =
+		if Hashtbl.mem customisations env
 		then begin
-			let msg = Error.Duplicate_custom (comm.comm_tag, envname)
+			let msg = Error.Duplicate_custom (comm.comm_tag, env)
 			in DynArray.add errors (comm.comm_linenum, msg)
 		end
 		else match customdef with
 			| Ast.Anonymous ->
 				let data = (kind, false, Anonymous)
-				in Hashtbl.add customisations envname data
+				in Hashtbl.add customisations env data
 			| Ast.Unnumbered seq ->
 				let data = (kind, false, Unnumbered (convert_seq seq))
-				in Hashtbl.add customisations envname data
+				in Hashtbl.add customisations env data
 			| Ast.Numbered (seq, counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
 				let counter = Order.make_ordinal_counter () in
 				let data = (kind, false, Numbered (convert_seq seq, counter)) in
 				Hashtbl.add custom_counters counter_name (kind, counter);
-				Hashtbl.add customisations envname data
+				Hashtbl.add customisations env data
 			| Ast.Numbered (seq, counter_name) -> match Hashtbl.find custom_counters counter_name with
 				| (k, _) when k <> kind ->
 					let msg = Error.Invalid_counter (comm.comm_tag, counter_name)
 					in DynArray.add errors (comm.comm_linenum, msg)
 				| (_, counter) ->
 					let data = (kind, false, Numbered (convert_seq seq, counter))
-					in Hashtbl.add customisations envname data in
+					in Hashtbl.add customisations env data in
 
 
 	let convert_frag frag =

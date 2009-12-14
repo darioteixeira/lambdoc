@@ -435,10 +435,10 @@ let parse_for_macrodef errors comm =
 		| Some (Numeric_data x)	-> x
 		| _			-> 0
 
-let parse_for_customdef ~envname errors comm =
+let parse_for_customdef ~env errors comm =
 	let assigned = process errors comm [Counter_hnd] in
 	let counter = match assigned.(0) with
 		| Some (String_data x) -> x
-		| _		       -> envname
+		| _		       -> env
 	in counter
 

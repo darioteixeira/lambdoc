@@ -29,7 +29,7 @@ type dict_t = (key_t, Inline.seq_t) Hashtbl.t with sexp
 
 type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
-type anonymous_t = [ `Anonymous of Label.t ] with sexp
+type anonymous_t = [ `Anonymous of key_t * Label.t ] with sexp
 
 type unnumbered_t = [ `Unnumbered of key_t * Label.t ] with sexp
 
@@ -42,8 +42,8 @@ type t = [ anonymous_t | unnumbered_t | numbered_t ]
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let anonymous label = function
-	| `None_given -> `Anonymous label
+let anonymous key label = function
+	| `None_given -> `Anonymous (key, label)
 	| _	      -> invalid_arg "Custom.anonymous"
 
 let unnumbered key label = function

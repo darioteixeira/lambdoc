@@ -26,5 +26,5 @@ val parse_for_pullquote: 	(int * Error.error_msg_t) DynArray.t -> Ast.command_t 
 val parse_for_custom: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Floatation.t
 val parse_for_wrapper: 		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> Floatation.t
 val parse_for_macrodef:		(int * Error.error_msg_t) DynArray.t -> Ast.command_t -> int
-val parse_for_customdef:	envname:string -> (int * Error.error_msg_t) DynArray.t -> Ast.command_t -> string
+val parse_for_customdef:	env:string -> (int * Error.error_msg_t) DynArray.t -> Ast.command_t -> string
 

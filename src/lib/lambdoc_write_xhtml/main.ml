@@ -307,6 +307,10 @@ let write_valid_document settings classname doc =
 			make_internal_link (`User_label ref) (Obj.magic (write_seq ~nbspfy seq))
 
 
+	(************************************************************************)
+	(* Name converter.							*)
+	(************************************************************************)
+
 	and write_name =
 		let cache = Hashtbl.create (Hashtbl.length custom)
 		in fun name ->
@@ -570,15 +574,15 @@ let write_valid_document settings classname doc =
 		let style = match maybe_floatation with
 			| Some floatation -> make_floatation floatation
 			| None		  -> [] in
-		let (label, triple) = match data with
-			| `Anonymous label		-> (label, (None, None, maybe write_seq maybe_seq))
-			| `Unnumbered (env, label)	-> (label, (Some (write_name (Name_custom env)), None, maybe write_seq maybe_seq))
-			| `Numbered (env, label, order) -> (label, (Some (write_name (Name_custom env)), Some order, maybe write_seq maybe_seq)) in
+		let (env, label, triple) = match data with
+			| `Anonymous (env, label)	-> (env, label, (None, None, maybe write_seq maybe_seq))
+			| `Unnumbered (env, label)	-> (env, label, (Some (write_name (Name_custom env)), None, maybe write_seq maybe_seq))
+			| `Numbered (env, label, order) -> (env, label, (Some (write_name (Name_custom env)), Some order, maybe write_seq maybe_seq)) in
 		let title = match formatter triple with
 			| [] -> []
 			| xs -> [XHTML.M.h1 ~a:[a_class [classname ^ "_head"]] xs] in
 		let content = title @ [XHTML.M.div ~a:[a_class [classname ^ "_body"]] (write_frag frag)]
-		in XHTML.M.div ~a:[a_id (make_label label); a_class (classname :: style)] content
+		in XHTML.M.div ~a:[a_id (make_label label); a_class (classname :: (classname ^ "_env_"  ^ env) :: style)] content
 
 
 	and write_wrapper floatation (label, order) maybe_seq blk classname name =

@@ -115,11 +115,11 @@ let explain_error = function
 	| Error.Undefined_macro (tag, name) ->
 		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." name
 
-	| Error.Duplicate_custom (tag, envname) ->
-		sprintf "The definition of custom environment '%s' in '%s' duplicates a previously defined environment." envname (explain_tag tag)
+	| Error.Duplicate_custom (tag, env) ->
+		sprintf "The definition of custom environment '%s' in '%s' duplicates a previously defined environment." env (explain_tag tag)
 
-	| Error.Undefined_custom (tag, envname) ->
-		sprintf "The environment '%s' used in '%s' has not been defined yet." envname (explain_tag tag)
+	| Error.Undefined_custom (tag, env) ->
+		sprintf "The environment '%s' used in '%s' has not been defined yet." env (explain_tag tag)
 
 	| Error.Invalid_counter (tag, counter) ->
 		sprintf "The counter '%s' requested in '%s' has been already assigned to a different class of custom environment." counter (explain_tag tag)
