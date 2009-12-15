@@ -140,7 +140,7 @@ let section_conv ?postdot location order =
 	in listify_order ?postdot (Order.maybe_string_of_hierarchical conv order)
 
 
-let boxout_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
+let boxout_conv ?prespace order = listify_order ?prespace ~wrap:("#", "") (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
 let theorem_conv ?prespace order = listify_order ?prespace (Order.maybe_string_of_ordinal Printers.arabic order)
@@ -476,11 +476,11 @@ let write_valid_document settings classname doc =
 		| `Boxout (floatation, data, maybe_seq, frag) ->
 			let formatter = function
 				| Some seq1, Some order, Some seq2 ->
-					seq1 @ [space ()] @ (boxout_conv order) @ [pcdata ":"; space ()] @ seq2
+					seq1 @ (boxout_conv ~prespace:true order) @ [pcdata ":"; space ()] @ seq2
 				| Some seq1, None, Some seq2 ->
 					seq1 @ [pcdata ":"; space ()] @ seq2
 				| Some seq1, Some order, None ->
-					seq1 @ [space ()] @ (boxout_conv order)
+					seq1 @ (boxout_conv ~prespace:true order)
 				| Some seq1, None, None ->
 					seq1
 				| None, None, Some seq2 ->
