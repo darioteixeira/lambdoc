@@ -1,4 +1,4 @@
-IMAGES=callout-warn.png callout-tip.png rule.png
+IMAGES=boxout-warning.png boxout-tip.png
 
 all: lambdoc.css $(IMAGES)
 
@@ -7,11 +7,8 @@ lambdoc.css: lambdoc.cssx lambdoc_*.cssx
 	#csstidy tmp.css $@ --silent=true
 	#rm tmp.css
 
-callout-%.png: callout-%.svg
-	inkscape -D -f $< -e $@ -w 20
-
-rule.png: rule.svg
-	inkscape -D -f $< -e $@ -h 8
+boxout-%.png: boxout-%.svg
+	inkscape -D -f $< -e $@ -h 24 --export-background-opacity=0.0
 
 clean:
 	rm -f lambdoc.css $(IMAGES)

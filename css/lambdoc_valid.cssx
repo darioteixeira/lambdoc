@@ -225,7 +225,7 @@
 	white-space: pre;
 	height: 1em;
 	vertical-align: bottom;
-	padding: 0.25em 1em;	/* 0.25 = Padding_box / 4 */
+	padding: 0.3em 1em;	/* 0.25 = Padding_box / 4 */
 	}
 
 .doc_src_dummy
@@ -445,7 +445,6 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 .doc_boxout
 	{
 	margin: 0 Hmargin_inset;
-	padding: Padding_boxhalf;
 	border: Border_box;
 	-moz-box-shadow: Box_shadow;
 	-moz-border-radius: Box_radius;
@@ -454,8 +453,10 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 
 .doc_boxout_head
 	{
-	padding: 0 Padding_boxhalf Padding_boxhalf;
+	padding: Padding_box_title;
 	border-bottom: Border_box;
+	-moz-border-radius-topleft: Box_radius;
+	-moz-border-radius-topright: Box_radius;
 	text-align: center;
 	font-family: Family_heading;
 	font-size: Size_large;
@@ -466,7 +467,28 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	
 .doc_boxout_body
 	{
-	padding: Padding_boxhalf;
+	padding: Padding_box;
+	}
+
+
+/********************************************************************************/
+/* Sample configuration of some common boxouts.					*/
+/********************************************************************************/
+
+.doc_boxout_env_warning {background: #fffcf0;}
+.doc_boxout_env_warning > .doc_boxout_head
+	{
+	padding-left: 28px;
+	color: #ff9;
+	background: #c30 url('boxout-warning.png') no-repeat Padding_box_title center;
+	}
+
+.doc_boxout_env_tip {background: #f7fcff;}
+.doc_boxout_env_tip > .doc_boxout_head
+	{
+	padding-left: 28px;
+	color: #fff;
+	background: #06c url('boxout-tip.png') no-repeat Padding_box_title center;
 	}
 
 

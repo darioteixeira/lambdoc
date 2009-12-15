@@ -45,7 +45,7 @@
 /* Box configuration.								*/
 /********************************************************************************/
 
-#define Box_radius	8px
+#define Box_radius	6px
 #define Box_shadow	3px 3px 3px #666
 
 
@@ -144,7 +144,7 @@
 #define Hmargin_indent		1em
 
 #define Padding_box		1em
-#define Padding_boxhalf		0.5em		/* Padding_box / 2 */
+#define Padding_box_title	0.5em
 #define Padding_htab		1em
 #define Padding_vtabin		0.1em
 #define Padding_vtabout		0.4em
