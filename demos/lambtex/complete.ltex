@@ -23,11 +23,13 @@
 \p<initial>{${lorem}}
 
 Here we have examples of text in \bold{bold} and \emph{emphasised} and \code{monospaced}
-and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You may also
-correct \del{perfect}\ins{broken} text. Here is a link to section number \ref{sec:foobar}
-or smartly, \sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
-section}.  The bibliography is at the end\cite{bib1}\cite{bib2}\cite{bib3}.  There is
-also\see{note1} a list\see{note2} of notes\see{note3}.
+and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You
+may also correct \del{perfect}\ins{broken} text. Here is a link to section
+number \ref{sec:foobar} or smartly, \sref{sec:foobar}.  And here is a link to
+\mref{sec:foobar}{that same section}.  You can also link to Tip \ref{tip:one}, or
+smarly \sref{tip:one}, or a link to \mref{tip:one}{that same tip}. The bibliography is
+at the end\cite{bib1}\cite{bib2}\cite{bib3}.  There is also\see{note1} a list\see{note2}
+of notes\see{note3}.
 
 \part(){Block elements}
 
@@ -351,7 +353,65 @@ ${fox}
 
 \section{Custom Boxout environments}
 
+\newboxout{generic}
 \newboxout{warning}{Warning}
+\newboxout{tip}{Tip}{tip}
+
+\subsection{Generic without title}
+\p{${lorem}}
+\begin{generic}
+\p{${lorem}}
+\end{generic}
+\p{${lorem}}
+
+\subsection{Generic with title}
+\p{${lorem}}
+\begin{generic}{This is a title}
+\p{${lorem}}
+\end{generic}
+\p{${lorem}}
+
+\subsection{Warning without extra title}
+\p{${lorem}}
+\begin{warning}
+\p{${lorem}}
+\end{warning}
+\p{${lorem}}
+
+\subsection{Warning with extra title}
+\p{${lorem}}
+\begin{warning}{This is a title}
+\p{${lorem}}
+\end{warning}
+\p{${lorem}}
+
+\subsection{Tip without extra title}
+\p{${lorem}}
+\begin[tip:one]{tip}
+\p{${lorem}}
+\end{tip}
+\p{${lorem}}
+
+\subsection{Tip with neither extra title nor order}
+\p{${lorem}}
+\begin(){tip}
+\p{${lorem}}
+\end{tip}
+\p{${lorem}}
+
+\subsection{Tip with extra title}
+\p{${lorem}}
+\begin{tip}{This is a title}
+\p{${lorem}}
+\end{tip}
+\p{${lorem}}
+
+\subsection{Tip with extra title but no order}
+\p{${lorem}}
+\begin(){tip}{This is a title}
+\p{${lorem}}
+\end{tip}
+\p{${lorem}}
 
 \subsection{Centered}
 \p{${lorem}}
