@@ -32,22 +32,8 @@ end
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(**	{1 Private type definitions}						*)
 (********************************************************************************)
-
-type handle_t =
-	| Initial_hnd
-	| Linenums_hnd
-	| Zebra_hnd
-	| Frame_hnd
-	| Width_hnd
-	| Bullet_hnd
-	| Numbering_hnd
-	| Floatation_hnd
-	| Lang_hnd
-	| Args_hnd
-	| Counter_hnd
-
 
 type property_kind_t =
 	| Boolean_kind
@@ -92,7 +78,28 @@ type solution_t =
 
 
 (********************************************************************************)
-(**	{1 Private functions and values}					*)
+(**	{1 Public type definitions}						*)
+(********************************************************************************)
+
+type handle_t =
+	| Initial_hnd
+	| Linenums_hnd
+	| Zebra_hnd
+	| Frame_hnd
+	| Width_hnd
+	| Bullet_hnd
+	| Numbering_hnd
+	| Floatation_hnd
+	| Lang_hnd
+	| Args_hnd
+
+type error_t = (int * Error.error_msg_t) DynArray.t
+
+type extra_t = (handle_t, property_data_t option) Hashtbl.t
+
+
+(********************************************************************************)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 (********************************************************************************)
@@ -112,7 +119,6 @@ let id_of_handle = function
 	| Floatation_hnd -> ("float", Floatation_kind)
 	| Lang_hnd	 -> ("lang", Lang_kind)
 	| Args_hnd	 -> ("args", Numeric_kind)
-	| Counter_hnd	 -> ("counter", String_kind)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -321,7 +327,7 @@ let solve assigned taken undecided =
 
 (**	High-level processing function.
 *)
-let process errors comm handles =
+let process comm errors handles =
 	let dummy = Array.make (List.length handles) None
 	in match comm.comm_extra with
 		| None ->
@@ -351,94 +357,65 @@ let process errors comm handles =
 					dummy
 
 
-
 (********************************************************************************)
-(**	{2 Wrappers}								*)
+(**	{2 Parsing multiple handles}						*)
 (********************************************************************************)
 
-let get_floatation = function
+let parse comm errors handles =
+	let extra = Hashtbl.create (List.length handles)
+	and assigned = process comm errors handles
+	in	List.iteri (fun i el -> Hashtbl.add extra el assigned.(i)) handles;
+		extra
+
+
+let get_boolean ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Boolean_data x) -> x
+	| _			-> default
+
+
+let get_numeric ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Numeric_data x) -> x
+	| _		        -> default
+
+
+let get_maybenum ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Numeric_data x) -> Some x
+	| _		        -> default
+
+
+let get_bullet ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Bullet_data x) -> x
+	| _		       -> default
+
+
+let get_numbering ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Numbering_data x) -> x
+	| _			  -> default
+
+
+let get_floatation ~default extra handle = match Hashtbl.find extra handle with
 	| Some (Floatation_data x) -> x
-	| _			   -> Floatation.Center
+	| _			   -> default
 
 
-let parse_floater errors comm =
-	let assigned = process errors comm [Floatation_hnd]
-	in get_floatation assigned.(0)
+let get_lang ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Lang_data x) -> Some x
+	| _		     -> default
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{2 Parsing a single handle}						*)
 (********************************************************************************)
 
-let parse_for_paragraph errors comm =
-	let assigned = process errors comm [Initial_hnd]
-	in match assigned.(0) with
-		| Some (Boolean_data x) -> x
-		| _			-> false
+let fetcher getter ~default comm errors handle =
+	let extra = parse comm errors [handle]
+	in getter ~default extra handle
 
-
-let parse_for_itemize errors comm =
-	let assigned = process errors comm [Bullet_hnd]
-	in match assigned.(0) with
-		| Some (Bullet_data x) -> x
-		| _		       -> Bullet.Disc
-
-
-let parse_for_enumerate errors comm =
-	let assigned = process errors comm [Numbering_hnd]
-	in match assigned.(0) with
-		| Some (Numbering_data x) -> x
-		| _			  -> Numbering.Decimal
-
-
-let parse_for_source errors comm =
-	let assigned = process errors comm [Lang_hnd; Linenums_hnd; Zebra_hnd] in
-	let lang = match assigned.(0) with
-		| Some (Lang_data x) -> Some x
-		| _		     -> None in
-	let linenums = match (lang, assigned.(1)) with
-		| (_, Some (Boolean_data x)) -> x
-		| (Some _, _)		     -> true
-		| (None, _)		     -> false in
-	let zebra = match (lang, assigned.(2)) with
-		| (_, Some (Boolean_data x)) -> x
-		| _			     -> true
-	in (lang, linenums, zebra)
-
-
-let parse_for_image errors comm =
-	let assigned = process errors comm [Frame_hnd; Width_hnd] in
-	let frame = match assigned.(0) with
-		| Some (Boolean_data x)	-> x
-		| _			-> false
-	and width = match assigned.(1) with
-		| Some (Numeric_data w)	-> Some w
-		| _			-> None
-	in (frame, width)
-
-
-let parse_for_decor = parse_floater
-
-
-let parse_for_pullquote = parse_floater
-
-
-let parse_for_custom = parse_floater
-
-
-let parse_for_wrapper = parse_floater
-
-
-let parse_for_macrodef errors comm =
-	let assigned = process errors comm [Args_hnd]
-	in match assigned.(0) with
-		| Some (Numeric_data x)	-> x
-		| _			-> 0
-
-let parse_for_customdef ~env errors comm =
-	let assigned = process errors comm [Counter_hnd] in
-	let counter = match assigned.(0) with
-		| Some (String_data x) -> x
-		| _		       -> env
-	in counter
+let fetch_boolean = fetcher get_boolean
+let fetch_numeric = fetcher get_numeric
+let fetch_maybenum = fetcher get_maybenum
+let fetch_bullet = fetcher get_bullet
+let fetch_numbering = fetcher get_numbering
+let fetch_floatation = fetcher get_floatation
+let fetch_lang = fetcher get_lang
 

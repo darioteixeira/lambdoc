@@ -15,6 +15,7 @@ open ExtList
 open Lambdoc_core
 open Basic
 open Ast
+open Extra
 
 
 (********************************************************************************)
@@ -524,13 +525,13 @@ let process_document ~idiosyncrasies document_ast =
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph seq))
 		| (_, _, _, `Any_blk, (comm, Ast.Paragraph seq)) ->
 			let elem () =
-				let initial = Extra.parse_for_paragraph errors comm
+				let initial = Extra.fetch_boolean ~default:false comm errors Initial_hnd
 				in Some (Block.paragraph initial (convert_seq seq))
 			in check_comm `Feature_paragraph comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize frags)) ->
 			let elem () =
-				let bullet = Extra.parse_for_itemize errors comm
+				let bullet = Extra.fetch_bullet ~default:Bullet.Disc comm errors Bullet_hnd
 				and newfrags = List.filter_map (convert_anon_item_frag ~minipaged x1 x2) frags
 				in match (frags, newfrags) with
 					| [], _ ->
@@ -545,7 +546,7 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate frags)) ->
 			let elem () =
-				let numbering = Extra.parse_for_enumerate errors comm
+				let numbering = Extra.fetch_numbering ~default:Numbering.Decimal comm errors Numbering_hnd
 				and newfrags = List.filter_map (convert_anon_item_frag ~minipaged x1 x2) frags
 				in match (frags, newfrags) with
 					| [], _ ->
@@ -611,7 +612,10 @@ let process_document ~idiosyncrasies document_ast =
 		| (_, _, true, `Printout_blk, (comm, Ast.Source txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Source txt)) ->
 			let elem () =
-				let (lang, linenums, zebra) = Extra.parse_for_source errors comm in
+				let extra = Extra.parse comm errors [Lang_hnd; Linenums_hnd; Zebra_hnd] in
+				let lang = Extra.get_lang ~default:None extra Lang_hnd in
+				let linenums = Extra.get_boolean ~default:(match lang with Some _ -> true | _ -> false) extra Linenums_hnd
+				and zebra = Extra.get_boolean ~default:true extra Zebra_hnd in
 				let hilite = Camlhighlight_parser.from_string lang txt in
 				let src = Source.make lang linenums zebra hilite
 				in Some (Block.source src)
@@ -632,7 +636,9 @@ let process_document ~idiosyncrasies document_ast =
 		| (_, _, true, `Figure_blk, (comm, Ast.Image (alias, alt)))
 		| (_, _, true, `Any_blk, (comm, Ast.Image (alias, alt))) ->
 			let elem () =
-				let (frame, width) = Extra.parse_for_image errors comm in
+				let extra = Extra.parse comm errors [Frame_hnd; Width_hnd] in
+				let frame = Extra.get_boolean ~default:false extra Frame_hnd
+				and width = Extra.get_maybenum ~default:None extra Width_hnd in
 				let image = Image.make frame width alias alt in
 				DynArray.add images alias;
 				Some (Block.image image)
@@ -647,14 +653,14 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, _, true, `Any_blk, (comm, Ast.Decor blk)) ->
 			let elem () =
-				let floatation = Extra.parse_for_decor errors comm
+				let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd
 				and maybe_newblk = convert_block ~minipaged false false true `Decor_blk blk
 				in maybe (Block.decor floatation) (Obj.magic maybe_newblk)
 			in check_comm `Feature_decor comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_seq, frag))) ->
 			let elem () =
-				let floatation = Extra.parse_for_pullquote errors comm
+				let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd
 				and maybe_newseq = maybe convert_seq maybe_seq
 				and newfrag = List.filter_map (convert_block ~minipaged false false false `Any_blk) frag
 				in Some (Block.pullquote floatation maybe_newseq (Obj.magic newfrag))
@@ -665,7 +671,7 @@ let process_document ~idiosyncrasies document_ast =
 				try
 					let (kind, used, def) = Hashtbl.find customisations env in
 					let () = if not used then Hashtbl.replace customisations env (kind, true, def) in
-					let floatation = Extra.parse_for_custom errors comm in
+					let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 					let order = match (def, comm.comm_order, minipaged) with
 						| Numbered _, None, true	     -> raise (Bad_order Error.Reason_is_absent_when_mandatory)
 						| Numbered (_, counter), None, false -> Order.auto_ordinal counter
@@ -700,32 +706,28 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_caption_ast, blk))) ->
 			let elem () =
-				let floatation = Extra.parse_for_wrapper errors comm
-				and (wrapper, maybe_caption) = convert_wrapper comm equation_counter Wrapper.Equation maybe_caption_ast
+				let (floatation, wrapper, maybe_caption) = convert_wrapper comm equation_counter Wrapper.Equation maybe_caption_ast
 				and maybe_equation = convert_block ~minipaged false false false `Equation_blk blk
 				in maybe (Block.equation floatation wrapper maybe_caption) (Obj.magic maybe_equation)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_caption_ast, blk))) ->
 			let elem () =
-				let floatation = Extra.parse_for_wrapper errors comm
-				and (wrapper, maybe_caption) = convert_wrapper comm printout_counter Wrapper.Printout maybe_caption_ast
+				let (floatation, wrapper, maybe_caption) = convert_wrapper comm printout_counter Wrapper.Printout maybe_caption_ast
 				and maybe_printout = convert_block ~minipaged false false true `Printout_blk blk
 				in maybe (Block.printout floatation wrapper maybe_caption) (Obj.magic maybe_printout)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_caption_ast, blk))) ->
 			let elem () =
-				let floatation = Extra.parse_for_wrapper errors comm
-				and (wrapper, maybe_caption) = convert_wrapper comm table_counter Wrapper.Table maybe_caption_ast
+				let (floatation, wrapper, maybe_caption) = convert_wrapper comm table_counter Wrapper.Table maybe_caption_ast
 				and maybe_table = convert_block ~minipaged false false true `Table_blk blk
 				in maybe (Block.table floatation wrapper maybe_caption) (Obj.magic maybe_table)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_caption_ast, blk))) ->
 			let elem () =
-				let floatation = Extra.parse_for_wrapper errors comm
-				and (wrapper, maybe_caption) = convert_wrapper comm figure_counter Wrapper.Figure maybe_caption_ast
+				let (floatation, wrapper, maybe_caption) = convert_wrapper comm figure_counter Wrapper.Figure maybe_caption_ast
 				and maybe_figure = convert_block ~minipaged false false true `Figure_blk blk
 				in maybe (Block.figure floatation wrapper maybe_caption) (Obj.magic maybe_figure)
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
@@ -838,7 +840,7 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, seq))) ->
 			let elem () =
-				let num_args = Extra.parse_for_macrodef errors comm in
+				let num_args = Extra.fetch_numeric ~default:0 comm errors Args_hnd in
 				let errors_before = DynArray.length errors in
 				let _ = expand_seq_macros (Some (List.make num_args [(comm, Ast.Linebreak)])) seq in
 				let errors_after = DynArray.length errors in
@@ -913,6 +915,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	and convert_wrapper comm counter kind maybe_caption_ast =
+		let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 		let order = match comm.comm_order with
 			| None		-> Order.auto_ordinal counter
 			| Some thing	-> Order.user_ordinal thing in
@@ -922,7 +925,7 @@ let process_document ~idiosyncrasies document_ast =
 				let elem () = Some (convert_seq caption_seq)
 				in check_comm `Feature_caption caption_comm elem
 			| None -> None
-		in ((label, order), maybe_caption)
+		in (floatation, (label, order), maybe_caption)
 
 
 	and convert_customdef comm env kind customdef =
