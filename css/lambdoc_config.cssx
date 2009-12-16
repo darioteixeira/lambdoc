@@ -144,7 +144,7 @@
 #define Hmargin_indent		1em
 
 #define Padding_box		1em
-#define Padding_box_title	0.5em
+#define Padding_box_title	0.3em
 #define Padding_htab		1em
 #define Padding_vtabin		0.1em
 #define Padding_vtabout		0.4em

@@ -453,7 +453,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 
 .doc_boxout_head
  {
- padding: 0.5em;
+ padding: 0.3em;
  border-bottom: 1px solid #333;
  -moz-border-radius-topleft: 6px;
  -moz-border-radius-topright: 6px;
@@ -480,7 +480,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  {
  padding-left: 28px;
  color: #ff9;
- background: #c30 url('boxout-warning.png') no-repeat 0.5em center;
+ background: #b30 url('boxout-warning.png') no-repeat 6px center;
  }
 
 .doc_boxout_env_tip {background: #f7fcff;}
@@ -488,7 +488,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
  {
  padding-left: 28px;
  color: #fff;
- background: #06c url('boxout-tip.png') no-repeat 0.5em center;
+ background: #06c url('boxout-tip.png') no-repeat 6px center;
  }
 
 

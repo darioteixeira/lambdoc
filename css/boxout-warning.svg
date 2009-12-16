@@ -37,9 +37,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.50196078"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.9740065"
-     inkscape:cx="88.045066"
-     inkscape:cy="98.188875"
+     inkscape:zoom="2.7051282"
+     inkscape:cx="55.88787"
+     inkscape:cy="120.0173"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -55,8 +55,8 @@
        id="grid2383"
        visible="true"
        enabled="true"
-       spacingx="12px"
-       spacingy="12px"
+       spacingx="6px"
+       spacingy="6px"
        empspacing="4"
        snapvisiblegridlinesonly="true" />
   </sodipodi:namedview>
@@ -76,20 +76,20 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#ffff99;stroke-width:24;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
+       style="fill:none;fill-rule:evenodd;stroke:#ffff99;stroke-width:16;stroke-linecap:butt;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1"
        d="M 120,12 L 12,228 L 228,228 L 120,12 z"
        id="path2385"
        sodipodi:nodetypes="cccc" />
     <text
        xml:space="preserve"
-       style="font-size:200px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffff99;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Courier 10 Pitch;-inkscape-font-specification:Courier 10 Pitch"
-       x="60"
-       y="204"
+       style="font-size:180px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffff99;fill-opacity:1;stroke:none;font-family:Courier 10 Pitch;-inkscape-font-specification:Courier 10 Pitch"
+       x="66"
+       y="198"
        id="text3157"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3159"
-         x="60"
-         y="204">!</tspan></text>
+         x="66"
+         y="198">!</tspan></text>
   </g>
 </svg>

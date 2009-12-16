@@ -19,6 +19,21 @@
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
+    <linearGradient
+       id="linearGradient3605">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop3607" />
+      <stop
+         id="stop3613"
+         offset="0.32065257"
+         style="stop-color:#f7f7f7;stop-opacity:1;" />
+      <stop
+         style="stop-color:#bfbfbf;stop-opacity:1;"
+         offset="1"
+         id="stop3609" />
+    </linearGradient>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 526.18109 : 1"
@@ -37,9 +52,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.50196078"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.7916666"
-     inkscape:cx="211.27873"
-     inkscape:cy="34.453034"
+     inkscape:zoom="1.9740064"
+     inkscape:cx="87.478339"
+     inkscape:cy="69.874648"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -49,14 +64,16 @@
      inkscape:window-height="878"
      inkscape:window-x="-4"
      inkscape:window-y="-3"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
     <inkscape:grid
        type="xygrid"
        id="grid2383"
        visible="true"
        enabled="true"
-       spacingx="1.5px"
-       spacingy="1.5px"
+       spacingx="6px"
+       spacingy="6px"
        empspacing="4"
        snapvisiblegridlinesonly="true" />
   </sodipodi:namedview>
@@ -76,27 +93,27 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;stroke-dasharray:none"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;stroke-dasharray:none"
        d="M 120,12 C 73.632,12 36,49.632 36,96 C 36,124.5218 50.247655,149.72067 72,164.90625 C 72,164.90625 72,204 72,204 C 72,204 168,204 168,204 L 168,164.90625 C 189.75234,149.72067 204,124.5218 204,96 C 204,49.632 166.368,12 120,12 z"
        id="path3239"
        sodipodi:nodetypes="csccccsc" />
     <path
        style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       d="m 96,273 c 0,6.624 10.752,12 24,12 13.248,0 24,-5.376 24,-12 l -48,0 z"
+       d="m 96,252 c 0,6.624 10.752,12 24,12 13.248,0 24,-5.376 24,-12 l -48,0 z"
        id="path3265" />
     <path
        style="fill:none;stroke:#ffffff;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 78,225 84,0"
+       d="m 81,213 78,0"
        id="path3278"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#ffffff;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 78,243 84,0"
+       d="m 84,228 72,0"
        id="path3280"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#ffffff;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 78,261 84,0"
+       d="m 87,243 66,0"
        id="path3282"
        sodipodi:nodetypes="cc" />
     <path

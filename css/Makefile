@@ -7,8 +7,8 @@ lambdoc.css: lambdoc.cssx lambdoc_*.cssx
 	#csstidy tmp.css $@ --silent=true
 	#rm tmp.css
 
-boxout-%.png: boxout-%.svg
-	inkscape -D -f $< -e $@ -h 24 --export-background-opacity=0.0
+boxout-%.png: boxout-%.svg Makefile
+	inkscape -D -f $< -e $@ -w 20 -h 20 --export-background-opacity=0.0
 
 clean:
 	rm -f lambdoc.css $(IMAGES)

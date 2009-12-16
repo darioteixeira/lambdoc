@@ -480,7 +480,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	{
 	padding-left: 28px;
 	color: #ff9;
-	background: #c30 url('boxout-warning.png') no-repeat Padding_box_title center;
+	background: #b30 url('boxout-warning.png') no-repeat 6px center;
 	}
 
 .doc_boxout_env_tip {background: #f7fcff;}
@@ -488,7 +488,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	{
 	padding-left: 28px;
 	color: #fff;
-	background: #06c url('boxout-tip.png') no-repeat Padding_box_title center;
+	background: #06c url('boxout-tip.png') no-repeat 6px center;
 	}
 
 
