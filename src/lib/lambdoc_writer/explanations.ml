@@ -17,6 +17,18 @@ open Lambdoc_core
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
+let explain_nesting blk =
+	let expect which = "The document nesting rules expect a " ^ which ^ " block in this location"
+	in match blk with
+		| `Any_blk	 -> "The document nesting rules forbid this block in this location"
+		| `Paragraph_blk -> expect "'paragraph'"
+		| `Decor_blk	 -> expect "'image' or 'verbatim'"
+		| `Equation_blk	 -> expect "'mathtext' or 'mathml'"
+		| `Printout_blk	 -> expect "'source'"
+		| `Table_blk	 -> expect "'tabular'"
+		| `Figure_blk	 -> expect "'image', 'verbatim', or 'subpage'"
+
+
 let explain_reason article what = function
 
 	| Error.Reason_is_empty_when_non_empty_mandatory ->
@@ -33,8 +45,8 @@ let explain_reason article what = function
 
 
 let explain_tag = function
-	| Some tag	-> sprintf "command '%s'" tag
-	| None		-> "anonymous command"
+	| Some tag -> sprintf "command '%s'" tag
+	| None	   -> "anonymous command"
 
 
 let explain_error = function
@@ -58,7 +70,7 @@ let explain_error = function
 		sprintf "Empty listing in %s." (explain_tag tag)
 
 	| Error.Unexpected_block (tag, blk) ->
-		sprintf "Unexpected block %s." (explain_tag tag)
+		sprintf "Unexpected block %s. %s." (explain_tag tag) (explain_nesting blk)
 
 	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
