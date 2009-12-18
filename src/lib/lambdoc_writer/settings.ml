@@ -14,7 +14,7 @@ open Basic
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type names_t =
@@ -41,7 +41,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 let make_names part_name appendix_name section_name bibliography_name notes_name toc_name equation_name printout_name table_name figure_name =

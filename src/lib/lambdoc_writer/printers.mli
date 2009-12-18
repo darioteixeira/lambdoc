@@ -13,7 +13,7 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{2 Public functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val arabic: Order.ordinal_converter_t

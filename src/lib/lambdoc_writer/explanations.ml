@@ -14,7 +14,7 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{2 Functions and values}						*)
+(**	{1 Functions and values}						*)
 (********************************************************************************)
 
 let explain_reason article what = function
