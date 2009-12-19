@@ -22,7 +22,6 @@ open Extra
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Bad_nesting
 exception Bad_order of Error.invalid_parameter_reason_t
 
 
@@ -667,13 +666,10 @@ let process_document ~idiosyncrasies document_ast =
 				in Some (Block.pullquote floatation maybe_newseq (Obj.magic newfrag))
 			in check_comm `Feature_pullquote comm elem
 
-		| (_, x, true, `Any_blk, (comm, Ast.Custom (env, maybe_seq, frag))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Custom (env, maybe_seq, frag))) ->
 			let elem () =
 				try
 					let (kind, used, def) = Hashtbl.find customisations env in
-					let () = match (kind, x) with
-						| (Custom.Boxout, false) -> raise Bad_nesting
-						| _			 -> () in
 					let () = if not used then Hashtbl.replace customisations env (kind, true, def) in
 					let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 					let order = match (def, comm.comm_order, minipaged) with
@@ -700,10 +696,6 @@ let process_document ~idiosyncrasies document_ast =
 				with
 					| Not_found ->
 						let msg = Error.Undefined_custom (comm.comm_tag, env)
-						in DynArray.add errors (comm.comm_linenum, msg);
-						None
-					| Bad_nesting ->
-						let msg = Error.Unexpected_block (comm.comm_tag, `Any_blk)
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| Bad_order reason ->

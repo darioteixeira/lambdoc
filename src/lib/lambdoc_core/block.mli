@@ -123,7 +123,7 @@ val boxout: Floatation.t -> Custom.Boxout.t -> (_, _) Inline.t list option -> (_
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Boxout_blk ]) t
 
 val theorem: Custom.Theorem.t -> (_, _) Inline.t list option -> (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->
-	([> `Manuscript ], [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Theorem_blk ]) t
+	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Theorem_blk ]) t
 
 val equation: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _, _, [< `Math_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Equation_blk ]) t
