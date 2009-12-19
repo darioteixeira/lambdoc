@@ -53,7 +53,10 @@ type target_t =
 (**	Block categories.
 *)
 type blk_category_t =
-	[ `Any_blk
+	[ `Super_blk
+	| `Listable_blk
+	| `Embeddable_blk
+	| `Textual_blk
 	| `Paragraph_blk
 	| `Decor_blk
 	| `Equation_blk

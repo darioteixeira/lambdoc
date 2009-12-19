@@ -862,8 +862,20 @@ let process_document ~idiosyncrasies document_ast =
 			let elem () = convert_customdef comm env Custom.Theorem boxoutdef; None
 			in check_comm `Feature_theoremdef comm elem
 
-		| (_, _, _, x, (comm, _)) ->
-			let msg = Error.Unexpected_block (comm.comm_tag, x)
+		| (_, _, _, _, (comm, _)) ->
+			let blk = match allowed_blk with
+				| `Paragraph_blk
+				| `Decor_blk
+				| `Equation_blk
+				| `Printout_blk
+				| `Table_blk
+				| `Figure_blk as blk -> blk
+				| `Any_blk -> match (allow_above_listable, allow_above_embeddable, allow_above_textual) with
+					| (_, _, false) -> `Textual_blk
+					| (_, false, _) -> `Embeddable_blk
+					| (false, _, _) -> `Listable_blk
+					| _		-> `Super_blk in
+			let msg = Error.Unexpected_block (comm.comm_tag, blk)
 			in DynArray.add errors (comm.comm_linenum, msg);
 			None
 

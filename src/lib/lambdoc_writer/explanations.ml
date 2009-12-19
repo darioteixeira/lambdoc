@@ -18,15 +18,18 @@ open Lambdoc_core
 (********************************************************************************)
 
 let explain_nesting blk =
-	let expect which = "The document nesting rules expect a " ^ which ^ " block in this location"
-	in match blk with
-		| `Any_blk	 -> "The document nesting rules forbid this block in this location"
-		| `Paragraph_blk -> expect "'paragraph'"
-		| `Decor_blk	 -> expect "'image' or 'verbatim'"
-		| `Equation_blk	 -> expect "'mathtext' or 'mathml'"
-		| `Printout_blk	 -> expect "'source'"
-		| `Table_blk	 -> expect "'tabular'"
-		| `Figure_blk	 -> expect "'image', 'verbatim', or 'subpage'"
+	let which = match blk with
+		| `Super_blk	  -> "a super block (or sub-types)"
+		| `Listable_blk	  -> "a listable block (or sub-types)"
+		| `Embeddable_blk -> "an embeddable block (or sub-types)"
+		| `Textual_blk	  -> "a textual block"
+		| `Paragraph_blk  -> "a 'paragraph' block"
+		| `Decor_blk	  -> "an 'image' or 'verbatim' block"
+		| `Equation_blk	  -> "a 'mathtex' or 'mathml' block"
+		| `Printout_blk	  -> "a 'source' block"
+		| `Table_blk	  -> "a 'tabular' block"
+		| `Figure_blk	  -> "an 'image', 'verbatim', or 'subpage' block"
+	in "The document nesting rules expect " ^ which ^ " in this location"
 
 
 let explain_reason article what = function
@@ -70,7 +73,7 @@ let explain_error = function
 		sprintf "Empty listing in %s." (explain_tag tag)
 
 	| Error.Unexpected_block (tag, blk) ->
-		sprintf "Unexpected block %s. %s." (explain_tag tag) (explain_nesting blk)
+		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
 
 	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
