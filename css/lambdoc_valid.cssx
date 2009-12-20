@@ -344,8 +344,18 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 	line-height: Line_height_verb;
 	text-align: left;
 	font-family: Family_mono;
-	font-size: Size_pre;
 	}
+
+.doc_mult0 {font-size: 1.2em;}
+.doc_mult1 {font-size: 1.7em;}
+.doc_mult2 {font-size: 2.4em;}
+.doc_mult3 {font-size: 3.4em;}
+.doc_mult4 {font-size: 4.8em;}
+.doc_mult5 {font-size: 6.8em;}
+.doc_mult6 {font-size: 9.6em;}
+.doc_mult7 {font-size: 13.6em;}
+.doc_mult8 {font-size: 19.2em;}
+.doc_mult9 {font-size: 27.2em;}
 
 .doc_verb:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_verb:not(:last-child) {margin-bottom: Vmargin_boxish;}

@@ -122,7 +122,7 @@
 #define Vmargin_textual		1em
 #define Vmargin_boxish		2em
 #define Vmargin_wrapper		2.5em
-#define Vmargin_caption_long	1em
+#define Vmargin_caption_long	1.5em
 #define Vmargin_caption_short	0.5em
 #define Vmargin_doc		1em
 
