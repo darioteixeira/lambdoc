@@ -78,8 +78,8 @@ let explain_error = function
 	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
 
-	| Error.Invalid_extra_numeric_parameter (tag, key, value) ->
-		sprintf "In %s, the key '%s' expects a numeric parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
+	| Error.Invalid_extra_numeric_parameter (tag, key, value, low, high) ->
+		sprintf "In %s, the key '%s' expects an integer x such that %d <= x <= %d, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key low high value
 
 	| Error.Invalid_extra_bullet_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a bullet specifier, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value

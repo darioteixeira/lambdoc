@@ -447,8 +447,8 @@ let write_valid_document settings classname doc =
 		| `Tabular tab ->
 			[write_tabular tab]
 
-		| `Verbatim txt ->
-			[XHTML.M.div ~a:[a_class ["doc_verb"]] [XHTML.M.div [XHTML.M.pre [XHTML.M.pcdata txt]]]]
+		| `Verbatim (mult, txt) ->
+			[XHTML.M.div ~a:[a_class ["doc_verb"]] [XHTML.M.div [XHTML.M.pre ~a:[a_class ["doc_mult" ^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
 
 		| `Image image ->
 			let style = if image.frame then ["doc_image_frame"] else [] in

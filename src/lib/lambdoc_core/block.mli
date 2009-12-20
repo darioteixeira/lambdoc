@@ -29,7 +29,7 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
-	| `Verbatim of raw_t
+	| `Verbatim of int * raw_t
 	| `Image of Image.t
 	| `Subpage of 'a list
 	| `Decor of Floatation.t * 'a
@@ -104,7 +104,7 @@ val source: Source.t ->
 val tabular: 'a Tabular.t ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Tabular_blk ]) t
 
-val verbatim: raw_t ->
+val verbatim: int -> raw_t ->
 	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_textual ], [> `Verbatim_blk ]) t
 
 val image: Image.t ->

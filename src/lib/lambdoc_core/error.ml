@@ -78,7 +78,7 @@ type error_msg_t =
 	| Unexpected_block of tag_t option * blk_category_t
 
 	| Invalid_extra_boolean_parameter of tag_t option * string * string
-	| Invalid_extra_numeric_parameter of tag_t option * string * string
+	| Invalid_extra_numeric_parameter of tag_t option * string * string * int * int
 	| Invalid_extra_bullet_parameter of tag_t option * string * string
 	| Invalid_extra_numbering_parameter of tag_t option * string * string
 	| Invalid_extra_floatation_parameter of tag_t option * string * string

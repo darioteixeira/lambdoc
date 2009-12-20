@@ -26,7 +26,7 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
-	| `Verbatim of raw_t
+	| `Verbatim of int * raw_t
 	| `Image of Image.t
 	| `Subpage of 'a list
 	| `Decor of Floatation.t * 'a
@@ -85,8 +85,8 @@ let source data =
 let tabular data =
 	`Tabular (Tabular.get_tabular data)
 
-let verbatim data =
-	`Verbatim data
+let verbatim mult data =
+	`Verbatim (mult, data)
 
 let image data =
 	`Image data

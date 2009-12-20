@@ -37,7 +37,7 @@ end
 
 type property_kind_t =
 	| Boolean_kind
-	| Numeric_kind
+	| Numeric_kind of int * int
 	| String_kind
 	| Bullet_kind
 	| Numbering_kind
@@ -85,6 +85,7 @@ type handle_t =
 	| Initial_hnd
 	| Linenums_hnd
 	| Zebra_hnd
+	| Mult_hnd
 	| Frame_hnd
 	| Width_hnd
 	| Bullet_hnd
@@ -112,13 +113,14 @@ let id_of_handle = function
 	| Initial_hnd	 -> ("initial", Boolean_kind)
 	| Linenums_hnd	 -> ("linenums", Boolean_kind)
 	| Zebra_hnd	 -> ("zebra", Boolean_kind)
+	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9))
 	| Frame_hnd	 -> ("frame", Boolean_kind)
-	| Width_hnd	 -> ("width", Numeric_kind)
+	| Width_hnd	 -> ("width", Numeric_kind (1, 100))
 	| Bullet_hnd	 -> ("bul", Bullet_kind)
 	| Numbering_hnd	 -> ("num", Numbering_kind)
 	| Floatation_hnd -> ("float", Floatation_kind)
 	| Lang_hnd	 -> ("lang", Lang_kind)
-	| Args_hnd	 -> ("args", Numeric_kind)
+	| Args_hnd	 -> ("args", Numeric_kind (0, 9))
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -164,6 +166,21 @@ let fields_of_strings =
 		in Array.map field_of_string strs
 
 
+(**	This function determines whether the given string corresponds
+	to a valid integer in the specified range of values.
+*)
+let match_numeric v low high =
+	try
+		let num = int_of_string v in
+		if num < low
+		then None
+		else if num > high
+		then None
+		else Some (Numeric_data num)
+	with
+		Failure _ -> None
+
+
 (**	This function matches a property (defined by a key and a property kind)
 	with a field parsed by {!fields_of_strings}.  It returns the associated
 	data wrapped inside a {!result_t}.  That way, other functions can tell
@@ -182,13 +199,17 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		in	DynArray.add errors (comm.comm_linenum, msg);
 			Negative
 
-	| (key, Numeric_kind, Unnamed_field v) ->
-		(try Undecided (Numeric_data (int_of_string v)) with Failure _ -> Negative)
-	| (key, Numeric_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Numeric_data (int_of_string v))
-		with Failure _ ->
-			let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
+	| (key, Numeric_kind (low, high), Unnamed_field v) ->
+		(match match_numeric v low high with
+			| Some data -> Undecided data
+			| None	    -> Negative)
+	| (key, Numeric_kind (low, high), Keyvalue_field (k, v)) when key = k ->
+		(match match_numeric v low high with
+			| Some data ->
+				Positive data
+			| None ->
+				let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v, low, high) in
+				DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
 	| (key, String_kind, Unnamed_field v) ->

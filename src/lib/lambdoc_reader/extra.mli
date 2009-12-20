@@ -20,6 +20,7 @@ type handle_t =
 	| Initial_hnd
 	| Linenums_hnd
 	| Zebra_hnd
+	| Mult_hnd
 	| Frame_hnd
 	| Width_hnd
 	| Bullet_hnd

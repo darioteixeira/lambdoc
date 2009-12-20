@@ -629,7 +629,9 @@ let process_document ~idiosyncrasies document_ast =
 		| (_, _, true, `Decor_blk, (comm, Ast.Verbatim txt))
 		| (_, _, true, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Verbatim txt)) ->
-			let elem () = Some (Block.verbatim txt)
+			let elem () =
+				let mult = Extra.fetch_numeric ~default:0 comm errors Mult_hnd
+				in Some (Block.verbatim mult txt)
 			in check_comm `Feature_verbatim comm elem
 
 		| (_, _, true, `Decor_blk, (comm, Ast.Image (alias, alt)))

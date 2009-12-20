@@ -52,6 +52,9 @@ let paragraph_class =
 let listing_class =
 	(Forbidden, Forbidden, Optional)
 
+let extra_class =
+	(Forbidden, Forbidden, Optional)
+
 let floater_class =
 	(Forbidden, Forbidden, Optional)
 
@@ -160,13 +163,13 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_qanda	-> forbidden_class
 		| `Feature_verse	-> forbidden_class
 		| `Feature_quote	-> forbidden_class
-		| `Feature_mathtex_blk	-> floater_class
-		| `Feature_mathml_blk	-> floater_class
-		| `Feature_source	-> floater_class
-		| `Feature_tabular	-> floater_class
-		| `Feature_verbatim	-> floater_class
-		| `Feature_image	-> floater_class
-		| `Feature_subpage	-> floater_class
+		| `Feature_mathtex_blk	-> forbidden_class
+		| `Feature_mathml_blk	-> forbidden_class
+		| `Feature_source	-> extra_class
+		| `Feature_tabular	-> forbidden_class
+		| `Feature_verbatim	-> extra_class
+		| `Feature_image	-> extra_class
+		| `Feature_subpage	-> forbidden_class
 
 	and manuscript_block_feature_set = function
 		| `Feature_decor	-> floater_class
