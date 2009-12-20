@@ -174,11 +174,9 @@ let fields_of_strings =
 let match_numeric v low high =
 	try
 		let num = int_of_string v in
-		if num < low
-		then None
-		else if num > high
-		then None
-		else Some (Numeric_data num)
+		if (num >= low) && (num <= high)
+		then Some (Numeric_data num)
+		else None
 	with
 		Failure _ -> None
 
