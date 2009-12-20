@@ -15,6 +15,7 @@
 #define Colour_backfancy	#b08991
 #define Colour_ghostly		#333
 #define Colour_watery		#666
+#define Colour_shadow		#666
 #define Colour_question		Colour_forefancy
 #define Colour_answer		Colour_body
 #define Colour_pulltext		#555
@@ -46,7 +47,7 @@
 /********************************************************************************/
 
 #define Box_radius	6px
-#define Box_shadow	3px 3px 3px #666
+#define Box_shadow	3px 3px 3px Colour_shadow
 
 
 /********************************************************************************/

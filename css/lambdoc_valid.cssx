@@ -54,9 +54,10 @@
 .doc_initial:first-letter
 	{
 	float: left;
-	margin-right: 0.1em;
+	margin-right: 0.2em;
 	font-weight: bold;
 	font-size: 3.5em;
+	text-shadow: Colour_shadow 2px 2px 1px;
 	color: Colour_forefancy;
 	}
 
@@ -200,14 +201,18 @@
 	{
 	clear: both;
 	margin: 0 Hmargin_inset;
-	border: Border_box;
-	-moz-box-shadow: Box_shadow;
-	-moz-border-radius: Box_radius;
 	font-size: Size_pre;
 	font-family: Family_mono;
 	line-height: Line_height_src;
 	overflow: auto;
 	color: Color_body;
+	}
+
+.doc_src_box
+	{
+	border: Border_box;
+	-moz-box-shadow: Box_shadow;
+	-moz-border-radius: Box_radius;
 	background: Background_src;
 	}
 
@@ -255,8 +260,10 @@
 .doc_src_kwc	{color: #03c;}
 .doc_src_kwd	{color: #090; font-weight: bold;}
 
-.doc_src_main:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_src_main:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_src_main:not(:first-child) {margin-top: Vmargin_textual;}
+.doc_src_main:not(:last-child) {margin-bottom: Vmargin_textual;}
+.doc_src_box:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_src_box:not(:last-child) {margin-bottom: Vmargin_boxish;}
 .doc_wrapper > .doc_src_main {margin: 0;}
 
 
