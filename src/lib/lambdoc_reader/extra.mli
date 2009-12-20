@@ -19,6 +19,7 @@ open Lambdoc_core
 type handle_t =
 	| Initial_hnd
 	| Linenums_hnd
+	| Box_hnd
 	| Zebra_hnd
 	| Mult_hnd
 	| Frame_hnd

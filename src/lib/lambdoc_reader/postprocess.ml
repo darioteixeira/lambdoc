@@ -612,12 +612,13 @@ let process_document ~idiosyncrasies document_ast =
 		| (_, _, true, `Printout_blk, (comm, Ast.Source txt))
 		| (_, _, true, `Any_blk, (comm, Ast.Source txt)) ->
 			let elem () =
-				let extra = Extra.parse comm errors [Lang_hnd; Linenums_hnd; Zebra_hnd] in
+				let extra = Extra.parse comm errors [Lang_hnd; Linenums_hnd; Box_hnd; Zebra_hnd] in
 				let lang = Extra.get_lang ~default:None extra Lang_hnd in
-				let linenums = Extra.get_boolean ~default:(match lang with Some _ -> true | _ -> false) extra Linenums_hnd
-				and zebra = Extra.get_boolean ~default:true extra Zebra_hnd in
+				let box = Extra.get_boolean ~default:true extra Box_hnd in
+				let linenums = Extra.get_boolean ~default:(box && (match lang with Some _ -> true | _ -> false)) extra Linenums_hnd in
+				let zebra = Extra.get_boolean ~default:box extra Zebra_hnd in
 				let hilite = Camlhighlight_parser.from_string lang txt in
-				let src = Source.make lang linenums zebra hilite
+				let src = Source.make lang linenums box zebra hilite
 				in Some (Block.source src)
 			in check_comm `Feature_source comm elem
 

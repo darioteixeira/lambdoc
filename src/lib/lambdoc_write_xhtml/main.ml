@@ -442,7 +442,8 @@ let write_valid_document settings classname doc =
 			in [XHTML.M.div ~a:[a_class ["doc_mathblk"]] [xhtml]]
 
 		| `Source src ->
-			[Camlhighlight_write_xhtml.write ~class_prefix:"doc_src_" ~linenums:src.linenums ~zebra:src.zebra src.hilite]
+			let extra_classes = (if src.box then ["doc_src_box"] else []) @ (if src.zebra then ["doc_src_zebra"] else [])
+			in [Camlhighlight_write_xhtml.write ~class_prefix:"doc_src_" ~extra_classes ~dummy_lines:src.box ~linenums:src.linenums src.hilite]
 
 		| `Tabular tab ->
 			[write_tabular tab]

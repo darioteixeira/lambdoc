@@ -84,6 +84,7 @@ type solution_t =
 type handle_t =
 	| Initial_hnd
 	| Linenums_hnd
+	| Box_hnd
 	| Zebra_hnd
 	| Mult_hnd
 	| Frame_hnd
@@ -112,6 +113,7 @@ type extra_t = (handle_t, property_data_t option) Hashtbl.t
 let id_of_handle = function
 	| Initial_hnd	 -> ("initial", Boolean_kind)
 	| Linenums_hnd	 -> ("linenums", Boolean_kind)
+	| Box_hnd	 -> ("box", Boolean_kind)
 	| Zebra_hnd	 -> ("zebra", Boolean_kind)
 	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9))
 	| Frame_hnd	 -> ("frame", Boolean_kind)

@@ -20,6 +20,7 @@ type t =
 	{
 	lang: Camlhighlight_core.lang_t option;
 	linenums: bool;
+	box: bool;
 	zebra: bool;
 	hilite: Camlhighlight_core.t;
 	} with sexp
@@ -29,10 +30,11 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make lang linenums zebra hilite =
+let make lang linenums box zebra hilite =
 	{
 	lang = lang;
 	linenums = linenums;
+	box = box;
 	zebra = zebra;
 	hilite = hilite;
 	}
