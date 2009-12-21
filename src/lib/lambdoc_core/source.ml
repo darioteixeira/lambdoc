@@ -19,8 +19,8 @@ TYPE_CONV_PATH "Source"
 type t =
 	{
 	lang: Camlhighlight_core.lang_t option;
-	linenums: bool;
 	box: bool;
+	linenums: bool;
 	zebra: bool;
 	hilite: Camlhighlight_core.t;
 	} with sexp
@@ -30,11 +30,11 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make lang linenums box zebra hilite =
+let make lang box linenums zebra hilite =
 	{
 	lang = lang;
-	linenums = linenums;
 	box = box;
+	linenums = linenums;
 	zebra = zebra;
 	hilite = hilite;
 	}
