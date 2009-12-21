@@ -91,6 +91,7 @@ type error_msg_t =
 	| Invalid_deci_entity of string
 	| Invalid_hexa_entity of string
 
+	| Invalid_macro_nargs of ref_t * string
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int
 	| Invalid_macro_call of ref_t * int * int
@@ -107,7 +108,6 @@ type error_msg_t =
 	| Invalid_column_number of tag_t option * int * int * int
 	| Invalid_column_specifier of tag_t option * string
 	| Invalid_cell_specifier of tag_t option * string
-	| Invalid_feature of tag_t option * string
 
 	| Duplicate_target of tag_t option * ref_t
 	| Empty_target of tag_t option * ref_t
@@ -116,6 +116,7 @@ type error_msg_t =
 
 	| Malformed_code_point
 	| Reading_error of string
+	| Unavailable_feature of tag_t option * string
 
 	with sexp
 

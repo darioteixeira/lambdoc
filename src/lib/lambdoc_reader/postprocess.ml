@@ -131,7 +131,7 @@ let process_document ~idiosyncrasies document_ast =
 			Permissions.check_feature ?maybe_minipaged ?maybe_wrapped errors comm feature;
 			elem ()
 		end else
-			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe feature) in
+			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe feature) in
 			DynArray.add errors (comm.comm_linenum, msg);
 			None in
 
@@ -412,7 +412,7 @@ let process_document ~idiosyncrasies document_ast =
 				in a document whose idiosyncrasies forbid it.
 			*)
 
-			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe `Feature_macroarg) in
+			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe `Feature_macroarg) in
 			DynArray.add errors (comm.comm_linenum, msg);
 			None
 
@@ -423,7 +423,7 @@ let process_document ~idiosyncrasies document_ast =
 				in a document whose idiosyncrasies forbid it.
 			*)
 
-			let msg = Error.Invalid_feature (comm.comm_tag, Features.describe `Feature_macrocall) in
+			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe `Feature_macrocall) in
 			DynArray.add errors (comm.comm_linenum, msg);
 			None
 
@@ -841,9 +841,13 @@ let process_document ~idiosyncrasies document_ast =
 					None
 			in check_comm `Feature_note comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, seq))) ->
+		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, nargs, seq))) ->
 			let elem () =
-				let num_args = Extra.fetch_numeric ~default:0 comm errors Args_hnd in
+				let num_args =
+					try int_of_string nargs
+					with Failure _ ->
+						let msg = Error.Invalid_macro_nargs (name, nargs)
+						in DynArray.add errors (comm.comm_linenum, msg); 0 in
 				let errors_before = DynArray.length errors in
 				let _ = expand_seq_macros (Some (List.make num_args [(comm, Ast.Linebreak)])) seq in
 				let errors_after = DynArray.length errors in

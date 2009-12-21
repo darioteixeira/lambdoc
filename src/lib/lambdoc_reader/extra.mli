@@ -28,7 +28,6 @@ type handle_t =
 	| Numbering_hnd
 	| Floatation_hnd
 	| Lang_hnd
-	| Args_hnd
 
 type error_t = (int * Error.error_msg_t) DynArray.t
 

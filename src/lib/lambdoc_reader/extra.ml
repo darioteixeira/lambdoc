@@ -93,7 +93,6 @@ type handle_t =
 	| Numbering_hnd
 	| Floatation_hnd
 	| Lang_hnd
-	| Args_hnd
 
 type error_t = (int * Error.error_msg_t) DynArray.t
 
@@ -122,7 +121,6 @@ let id_of_handle = function
 	| Numbering_hnd	 -> ("num", Numbering_kind)
 	| Floatation_hnd -> ("float", Floatation_kind)
 	| Lang_hnd	 -> ("lang", Lang_kind)
-	| Args_hnd	 -> ("args", Numeric_kind (0, 9))
 
 
 (**	This function does the low-level, regular-expression based parsing

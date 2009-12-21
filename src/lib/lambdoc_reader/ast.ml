@@ -129,7 +129,7 @@ type frag_t = block_t list
 	| Rule
 	| Bib of bib_t
 	| Note of frag_t
-	| Macrodef of raw_t * seq_t
+	| Macrodef of raw_t * raw_t * seq_t
 	| Boxoutdef of raw_t * customdef_t
 	| Theoremdef of raw_t * customdef_t
 

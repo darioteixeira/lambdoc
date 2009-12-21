@@ -186,7 +186,7 @@ simple_block:
 	| TITLE inline_bundle							{($1, Ast.Title (`Level1, $2))}
 	| SUBTITLE inline_bundle						{($1, Ast.Title (`Level2, $2))}
 	| RULE									{($1, Ast.Rule)}
-	| MACRODEF raw_bundle inline_bundle					{($1, Ast.Macrodef ($2, $3))}
+	| MACRODEF raw_bundle raw_bundle inline_bundle				{($1, Ast.Macrodef ($2, $3, $4))}
 	| BOXOUTDEF raw_bundle boxoutdef					{($1, Ast.Boxoutdef ($2, $3))}
 	| THEOREMDEF raw_bundle theoremdef					{($1, Ast.Theoremdef ($2, $3))}
 

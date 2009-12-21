@@ -111,6 +111,9 @@ let explain_error = function
 	| Error.Invalid_hexa_entity ent ->
 		sprintf "Invalid Unicode hexadecimal code point '%s'." ent
 
+	| Error.Invalid_macro_nargs (name, nargs) ->
+		sprintf "Invalid number of parameters '%s' for macro '%s'.  Please provide an integer." nargs name
+
 	| Error.Invalid_macro_argument_context ->
 		"Invalid context for reference to a macro argument.  It may only be used inside a macro definition."
 
@@ -125,19 +128,19 @@ let explain_error = function
 		sprintf "Invalid macro invocation.  Macro '%s' expects %d argument(s) but found %d instead." name expected found
 
 	| Error.Duplicate_macro (tag, name) ->
-		sprintf "The definition of macro '%s' in '%s' duplicates a previously defined macro." name (explain_tag tag)
+		sprintf "The definition of macro '%s' in %s duplicates a previously defined macro." name (explain_tag tag)
 
 	| Error.Undefined_macro (tag, name) ->
 		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." name
 
 	| Error.Duplicate_custom (tag, env) ->
-		sprintf "The definition of custom environment '%s' in '%s' duplicates a previously defined environment." env (explain_tag tag)
+		sprintf "The definition of custom environment '%s' in %s duplicates a previously defined environment." env (explain_tag tag)
 
 	| Error.Undefined_custom (tag, env) ->
-		sprintf "The environment '%s' used in '%s' has not been defined yet." env (explain_tag tag)
+		sprintf "The environment '%s' used in %s has not been defined yet." env (explain_tag tag)
 
 	| Error.Invalid_counter (tag, counter) ->
-		sprintf "The counter '%s' requested in '%s' has been already assigned to a different class of custom environment." counter (explain_tag tag)
+		sprintf "The counter '%s' requested in %s has been already assigned to a different class of custom environment." counter (explain_tag tag)
 
 	| Error.Invalid_mathtex (tag, txt) ->
 		sprintf "Invalid mathtex expression '%s' in %s." txt (explain_tag tag)
@@ -153,9 +156,6 @@ let explain_error = function
 
 	| Error.Invalid_cell_specifier (tag, spec) ->
 		sprintf "Invalid cell specifier '%s' in %s.  Cell specifiers should consist of an integer indicating the span followed by a single character (either c/C, l/L, r/R, j/J) indicating the alignment." spec (explain_tag tag)
-
-	| Error.Invalid_feature (tag, description) ->
-		sprintf "The feature '%s' requested by %s has been flagged as invalid for this document." description (explain_tag tag)
 
 	| Error.Duplicate_target (tag, label) ->
 		sprintf "Attempt to redefine label '%s' in %s." label (explain_tag tag)
@@ -182,4 +182,7 @@ let explain_error = function
 
 	| Error.Reading_error msg ->
 		sprintf "%s." msg
+
+	| Error.Unavailable_feature (tag, description) ->
+		sprintf "The feature '%s' requested by %s is unavailable for this document." description (explain_tag tag)
 
