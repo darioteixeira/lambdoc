@@ -18,8 +18,9 @@ open Lambdoc_core
 
 type handle_t =
 	| Initial_hnd
-	| Linenums_hnd
+	| Indent_hnd
 	| Box_hnd
+	| Linenums_hnd
 	| Zebra_hnd
 	| Mult_hnd
 	| Frame_hnd
@@ -45,8 +46,9 @@ type extra_t
 val parse: Ast.command_t -> error_t -> handle_t list -> extra_t
 
 val get_boolean: default:bool -> extra_t -> handle_t -> bool
+val get_maybe_boolean: default:bool option -> extra_t -> handle_t -> bool option
 val get_numeric: default:int-> extra_t -> handle_t -> int
-val get_maybenum: default:int option -> extra_t -> handle_t -> int option
+val get_maybe_numeric: default:int option -> extra_t -> handle_t -> int option
 val get_bullet: default:Bullet.t -> extra_t -> handle_t -> Bullet.t
 val get_numbering: default:Numbering.t -> extra_t -> handle_t -> Numbering.t
 val get_floatation: default:Floatation.t -> extra_t -> handle_t -> Floatation.t
@@ -58,8 +60,9 @@ val get_lang: default:Camlhighlight_core.lang_t option -> extra_t -> handle_t ->
 (********************************************************************************)
 
 val fetch_boolean: default:bool -> Ast.command_t -> error_t -> handle_t -> bool
+val fetch_maybe_boolean: default:bool option -> Ast.command_t -> error_t -> handle_t -> bool option
 val fetch_numeric: default:int -> Ast.command_t -> error_t -> handle_t -> int
-val fetch_maybenum: default:int option -> Ast.command_t -> error_t -> handle_t -> int option
+val fetch_maybe_numeric: default:int option -> Ast.command_t -> error_t -> handle_t -> int option
 val fetch_bullet: default:Bullet.t -> Ast.command_t -> error_t -> handle_t -> Bullet.t
 val fetch_numbering: default:Numbering.t -> Ast.command_t -> error_t -> handle_t -> Numbering.t
 val fetch_floatation: default:Floatation.t -> Ast.command_t -> error_t -> handle_t -> Floatation.t

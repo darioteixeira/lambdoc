@@ -16,7 +16,7 @@ open Basic
 (********************************************************************************)
 
 type 'a block_t =
-	[ `Paragraph of bool * Inline.seq_t
+	[ `Paragraph of bool * bool option * Inline.seq_t
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
@@ -53,8 +53,8 @@ type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let paragraph initial seq =
-	`Paragraph (initial, Inline.get_seq seq)
+let paragraph initial indent seq =
+	`Paragraph (initial, indent, Inline.get_seq seq)
 
 let itemize bullet (head_frag, tail_frags) =
 	`Itemize (bullet, (head_frag, tail_frags))

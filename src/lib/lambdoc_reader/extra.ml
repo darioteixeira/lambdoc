@@ -83,8 +83,9 @@ type solution_t =
 
 type handle_t =
 	| Initial_hnd
-	| Linenums_hnd
+	| Indent_hnd
 	| Box_hnd
+	| Linenums_hnd
 	| Zebra_hnd
 	| Mult_hnd
 	| Frame_hnd
@@ -111,8 +112,9 @@ type extra_t = (handle_t, property_data_t option) Hashtbl.t
 *)
 let id_of_handle = function
 	| Initial_hnd	 -> ("initial", Boolean_kind)
-	| Linenums_hnd	 -> ("linenums", Boolean_kind)
+	| Indent_hnd	 -> ("indent", Boolean_kind)
 	| Box_hnd	 -> ("box", Boolean_kind)
+	| Linenums_hnd	 -> ("linenums", Boolean_kind)
 	| Zebra_hnd	 -> ("zebra", Boolean_kind)
 	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9))
 	| Frame_hnd	 -> ("frame", Boolean_kind)
@@ -382,13 +384,18 @@ let process comm errors handles =
 
 let parse comm errors handles =
 	let extra = Hashtbl.create (List.length handles)
-	and assigned = process comm errors handles
-	in	List.iteri (fun i el -> Hashtbl.add extra el assigned.(i)) handles;
-		extra
+	and assigned = process comm errors handles in
+	List.iteri (fun i el -> Hashtbl.add extra el assigned.(i)) handles;
+	extra
 
 
 let get_boolean ~default extra handle = match Hashtbl.find extra handle with
 	| Some (Boolean_data x) -> x
+	| _			-> default
+
+
+let get_maybe_boolean ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Boolean_data x) -> Some x
 	| _			-> default
 
 
@@ -397,7 +404,7 @@ let get_numeric ~default extra handle = match Hashtbl.find extra handle with
 	| _		        -> default
 
 
-let get_maybenum ~default extra handle = match Hashtbl.find extra handle with
+let get_maybe_numeric ~default extra handle = match Hashtbl.find extra handle with
 	| Some (Numeric_data x) -> Some x
 	| _		        -> default
 
@@ -431,8 +438,9 @@ let fetcher getter ~default comm errors handle =
 	in getter ~default extra handle
 
 let fetch_boolean = fetcher get_boolean
+let fetch_maybe_boolean = fetcher get_maybe_boolean
 let fetch_numeric = fetcher get_numeric
-let fetch_maybenum = fetcher get_maybenum
+let fetch_maybe_numeric = fetcher get_maybe_numeric
 let fetch_bullet = fetcher get_bullet
 let fetch_numbering = fetcher get_numbering
 let fetch_floatation = fetcher get_floatation

@@ -19,7 +19,7 @@ open Basic
 (**	The various types of individual building blocks.
 *)
 type 'a block_t =
-	[ `Paragraph of bool * Inline.seq_t
+	[ `Paragraph of bool * bool option * Inline.seq_t
 	| `Itemize of Bullet.t * 'a list plus_t
 	| `Enumerate of Numbering.t * 'a list plus_t
 	| `Description of (Inline.seq_t * 'a list) plus_t
@@ -74,7 +74,7 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< ('a, 'b, 'c, 'd, 'e) t block_t ] w
 		{li ['e] indicates the actual block type.}}
 *)
 
-val paragraph: bool -> ('a, _) Inline.t list ->
+val paragraph: bool -> bool option -> ('a, _) Inline.t list ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Textual ], [> `Paragraph_blk ]) t
 
 val itemize: Bullet.t -> ('a, [< `Listable ], 'c, 'd, _) t list plus_t ->

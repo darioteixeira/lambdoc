@@ -351,7 +351,7 @@ let write_valid_document settings classname doc =
 				| Tabular.Strong -> XHTML.M.th ~a:(a_hd :: a_tl) (write_seq seq) in
 
 		let write_row (hd, tl) =
-			XHTML.M.tr ~a:[a_class ["doc_row"]] (write_cell (-1) hd) (List.mapi write_cell tl) in
+			XHTML.M.tr (write_cell (-1) hd) (List.mapi write_cell tl) in
 
 		let write_group (hd, tl) =
 			let hd = write_row hd in
@@ -360,18 +360,18 @@ let write_valid_document settings classname doc =
 
 		let thead = match tab.Tabular.thead with
 			| None		-> None
-			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.thead hd tl)
+			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.thead ~a:[a_class ["doc_tgroup"]] hd tl)
 
 		and (tbody_hd, tbody_tl) =
 			let write_tbody grp =
 				let (hd, tl) = write_group grp
-				in XHTML.M.tbody hd tl in
+				in XHTML.M.tbody ~a:[a_class ["doc_tgroup"]] hd tl in
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
 		and tfoot = match tab.Tabular.tfoot with
 			| None		-> None
-			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot hd tl)
+			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot ~a:[a_class ["doc_tgroup"]] hd tl)
 
 		in XHTML.M.div ~a:[a_class ["doc_tab"]] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
 
@@ -386,8 +386,13 @@ let write_valid_document settings classname doc =
 
 	and write_block = function
 
-		| `Paragraph (initial, seq) ->
-			let style = if initial then ["doc_initial"] else []
+		| `Paragraph (initial, indent, seq) ->
+			let style_initial = if initial then ["doc_initial"] else []
+			and style_indent = match indent with
+				| Some true  -> ["doc_indent"]
+				| Some false -> ["doc_noindent"]
+				| None	     -> [] in
+			let style = style_initial @ style_indent
 			in [XHTML.M.p ~a:[a_class ("doc_par" :: style)] (write_seq seq)]
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->

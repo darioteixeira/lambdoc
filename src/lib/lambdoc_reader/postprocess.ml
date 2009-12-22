@@ -525,8 +525,10 @@ let process_document ~idiosyncrasies document_ast =
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph seq))
 		| (_, _, _, `Any_blk, (comm, Ast.Paragraph seq)) ->
 			let elem () =
-				let initial = Extra.fetch_boolean ~default:false comm errors Initial_hnd
-				in Some (Block.paragraph initial (convert_seq seq))
+				let extra = Extra.parse comm errors [Initial_hnd; Indent_hnd] in
+				let initial = Extra.get_boolean ~default:false extra Initial_hnd
+				and indent = Extra.get_maybe_boolean ~default:None extra Indent_hnd
+				in Some (Block.paragraph initial indent (convert_seq seq))
 			in check_comm `Feature_paragraph comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize frags)) ->
@@ -641,7 +643,7 @@ let process_document ~idiosyncrasies document_ast =
 			let elem () =
 				let extra = Extra.parse comm errors [Frame_hnd; Width_hnd] in
 				let frame = Extra.get_boolean ~default:false extra Frame_hnd
-				and width = Extra.get_maybenum ~default:None extra Width_hnd in
+				and width = Extra.get_maybe_numeric ~default:None extra Width_hnd in
 				let image = Image.make frame width alias alt in
 				DynArray.add images alias;
 				Some (Block.image image)
