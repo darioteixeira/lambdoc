@@ -46,16 +46,7 @@ let custom_heading_class minipaged =
 let preset_heading_class =
 	(Optional, Forbidden, Forbidden)
 
-let paragraph_class =
-	(Forbidden, Forbidden, Optional)
-
-let listing_class =
-	(Forbidden, Forbidden, Optional)
-
 let extra_class =
-	(Forbidden, Forbidden, Optional)
-
-let floater_class =
 	(Forbidden, Forbidden, Optional)
 
 let custom_class =
@@ -156,9 +147,9 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_mref		-> forbidden_class
 
 	and composition_block_feature_set = function
-		| `Feature_paragraph	-> paragraph_class
-		| `Feature_itemize	-> listing_class
-		| `Feature_enumerate	-> listing_class
+		| `Feature_paragraph	-> extra_class
+		| `Feature_itemize	-> extra_class
+		| `Feature_enumerate	-> extra_class
 		| `Feature_description	-> forbidden_class
 		| `Feature_qanda	-> forbidden_class
 		| `Feature_verse	-> forbidden_class
@@ -172,8 +163,8 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_subpage	-> forbidden_class
 
 	and manuscript_block_feature_set = function
-		| `Feature_decor	-> floater_class
-		| `Feature_pullquote	-> floater_class
+		| `Feature_decor	-> extra_class
+		| `Feature_pullquote	-> extra_class
 
 		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
