@@ -49,13 +49,14 @@ type action_t =
 (*	{1 Auxiliary regular expressions}					*)
 (********************************************************************************)
 
+let pat_ident = "[a-zA-Z][a-zA-Z0-9]*"
 let pat_begin = "\\\\begin"
-let pat_simple = "\\\\(?<simple>[a-zA-Z][a-zA-Z0-9_]*)"
-let pat_primary = "\\{(?<primary>[a-zA-Z][a-zA-Z0-9_]*)\\}"
+let pat_simple = "\\\\(?<simple>" ^ pat_ident ^ ")"
+let pat_primary = "\\{(?<primary>" ^ pat_ident ^ ")\\}"
 
-let pat_order = "(?<order>\\([a-zA-Z0-9\\.]*\\))"
-let pat_label = "(?<label>\\[[a-zA-Z0-9\\-:_]*\\])"
-let pat_extra = "(?<extra><[a-zA-Z0-9=,!]*>)"
+let pat_order = "(?<order>\\([^)]*\\))"
+let pat_label = "(?<label>\\[[^\\]]*\\])"
+let pat_extra = "(?<extra><[^>]*>)"
 let pat_optional = "(" ^ pat_order ^ "|" ^ pat_extra ^ "|" ^ pat_label ^")*"
 
 let begin_rex = Pcre.regexp ("^" ^ pat_begin ^ pat_optional ^ pat_primary ^ "$")
