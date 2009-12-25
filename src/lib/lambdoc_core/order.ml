@@ -16,7 +16,8 @@ open Basic
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_number_of_levels of hierarchical_level_t * int
+exception Invalid_order_format of string
+exception Invalid_order_levels of string * hierarchical_level_t * int
 
 
 (********************************************************************************)
@@ -73,9 +74,9 @@ type hierarchical_converter_t =
 *)
 
 type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
-type user_given_t = [ `User_given of string ] with sexp
+type 'a user_given_t = [ `User_given of 'a ] with sexp
 type none_given_t = [ `None_given ] with sexp
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] with sexp
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] with sexp
 
 
 (********************************************************************************)
@@ -112,15 +113,21 @@ let auto_hierarchical level counter =
 		| `Level3 -> `Auto_given (Level3_order (l1, l2, l3))
 
 
-let user_ordinal str = `User_given str
+let user_ordinal str =
+	try
+		`User_given (int_of_string str)
+	with
+		Failure "int_of_string" -> raise (Invalid_order_format str)
 
 
 let user_hierarchical level str =
-	match (level, List.length (String.nsplit str ".")) with
-		| (`Level1, 1)
-		| (`Level2, 2)
-		| (`Level3, 3)		-> `User_given str
-		| (expected, found)	-> raise (Invalid_number_of_levels (expected, found))
+	try match (level, String.nsplit str ".") with
+		| (`Level1, [l1])	  -> `User_given (Level1_order (int_of_string l1))
+		| (`Level2, [l1; l2])	  -> `User_given (Level2_order (int_of_string l1, int_of_string l2))
+		| (`Level3, [l1; l2; l3]) -> `User_given (Level3_order (int_of_string l1, int_of_string l2, int_of_string l3))
+		| (expected, found)	  -> raise (Invalid_order_levels (str, expected, List.length found))
+	with
+		Failure "int_of_string" -> raise (Invalid_order_format str)
 
 
 let none () = `None_given
@@ -131,15 +138,17 @@ let none () = `None_given
 (********************************************************************************)
 
 let maybe_string_of_ordinal conv = function
-	| `Auto_given o	-> Some (conv o)
-	| `User_given o	-> Some o
+	| `Auto_given o
+	| `User_given o	-> Some (conv o)
 	| `None_given	-> None
 
 
 let maybe_string_of_hierarchical conv = function
-	| `Auto_given (Level1_order l1)		  -> Some (conv.level1 l1)
-	| `Auto_given (Level2_order (l1, l2))	  -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2))
-	| `Auto_given (Level3_order (l1, l2, l3)) -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3))
-	| `User_given o				  -> Some o
+	| `Auto_given (Level1_order l1)
+	| `User_given (Level1_order l1)		  -> Some (conv.level1 l1)
+	| `Auto_given (Level2_order (l1, l2))
+	| `User_given (Level2_order (l1, l2))	  -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2))
+	| `Auto_given (Level3_order (l1, l2, l3))
+	| `User_given (Level3_order (l1, l2, l3)) -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3))
 	| `None_given				  -> None
 

@@ -100,7 +100,6 @@ let class_of_level = function
 	| `Level1 -> "level1"
 	| `Level2 -> "level2"
 	| `Level3 -> "level3"
-	| `Level4 -> "level4"
 
 
 let make_floatation floatation = ["doc_float_" ^ (Floatation.to_string floatation)]

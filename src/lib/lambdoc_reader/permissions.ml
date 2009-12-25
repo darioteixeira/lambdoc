@@ -95,21 +95,21 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Invalid_label_parameter (comm.comm_tag, reason) in
+			let msg = Error.Misplaced_label_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
 
 	and () = match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Invalid_order_parameter (comm.comm_tag, reason) in
+			let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
 
 	and () = match reason_why_invalid perm_extra comm.comm_extra with
 		| None ->
 			()
 		| Some reason ->
-			let msg = Error.Invalid_extra_parameter (comm.comm_tag, reason) in
+			let msg = Error.Misplaced_extra_parameter (comm.comm_tag, reason) in
 			DynArray.add errors (comm.comm_linenum, msg)
 	in ()
 

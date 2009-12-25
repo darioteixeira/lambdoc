@@ -22,7 +22,7 @@ type kind_t =
 	| Table
 	with sexp
 
-type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t ]) Order.t with sexp
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t ]) Order.t with sexp
 
 type t = Label.t * order_t with sexp
 

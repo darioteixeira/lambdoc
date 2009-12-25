@@ -16,7 +16,8 @@ open Basic
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_number_of_levels of hierarchical_level_t * int
+exception Invalid_order_format of string
+exception Invalid_order_levels of string * hierarchical_level_t * int
 
 
 (********************************************************************************)
@@ -45,9 +46,9 @@ type hierarchical_converter_t =
 	}
 
 type 'a auto_given_t = [ `Auto_given of 'a ] with sexp_poly
-type user_given_t = [ `User_given of string ] with sexp_poly
+type 'a user_given_t = [ `User_given of 'a ] with sexp_poly
 type none_given_t = [ `None_given ] with sexp_poly
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | user_given_t | none_given_t ] with sexp_poly
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] with sexp_poly
 
 
 (********************************************************************************)
@@ -68,8 +69,8 @@ val make_hierarchy_counter: unit -> hierarchical_counter_t ref
 
 val auto_ordinal: ordinal_counter_t ref -> [> `Auto_given of ordinal_t ]
 val auto_hierarchical: hierarchical_level_t -> hierarchical_counter_t ref -> [> `Auto_given of hierarchical_t ]
-val user_ordinal: string -> [> `User_given of string ]
-val user_hierarchical: hierarchical_level_t -> string -> [> `User_given of string ]
+val user_ordinal: string -> [> `User_given of ordinal_t ]
+val user_hierarchical: hierarchical_level_t -> string -> [> `User_given of hierarchical_t ]
 val none: unit -> [> `None_given ]
 
 

@@ -36,10 +36,20 @@ type customdef_t =
 
 
 (********************************************************************************)
-(**	{1 Low-level processing functions}					*)
+(**	{1 Definition of various regexps and associated functions}		*)
 (********************************************************************************)
 
+let matches_ident =
+	let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9:-_]*$"
+	in fun str -> Pcre.pmatch ~rex str
+
+
 let cell_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)$"
+
+
+(********************************************************************************)
+(**	{1 Low-level processing functions}					*)
+(********************************************************************************)
 
 
 (**	Processes an AST as provided by the parser, producing the corresponding
@@ -102,13 +112,48 @@ let process_document ~idiosyncrasies document_ast =
 		| Some thing ->
 			let new_label = `User_label thing in
 			let () =
-				if Hashtbl.mem labels new_label
-				then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_target (comm.comm_tag, thing)))
-				else Hashtbl.add labels new_label target
+				if matches_ident thing
+				then
+					if Hashtbl.mem labels new_label
+					then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_target (comm.comm_tag, thing)))
+					else Hashtbl.add labels new_label target
+				else
+					if thing <> ""
+					then DynArray.add errors (comm.comm_linenum, (Error.Invalid_label (comm.comm_tag, thing)))
 			in new_label
 		| None ->
 			incr auto_label_counter;
 			`Auto_label (string_of_int !auto_label_counter)
+
+
+	(*	This subfunction creates an user ordinal order, checking
+		for exceptions and appending the error list if necessary.
+	*)
+	and make_user_ordinal comm str =
+		try
+			Order.user_ordinal str
+		with
+			| Order.Invalid_order_format str ->
+				let msg = Error.Invalid_order_format (comm.comm_tag, str)
+				in DynArray.add errors (comm.comm_linenum, msg);
+				Order.user_ordinal "0"
+
+
+	(*	This subfunction creates an user hierarchical order, checking
+		for exceptions and appending the error list if necessary.
+	*)
+	and make_user_hierarchical comm level str =
+		try
+			Order.user_hierarchical level str
+		with
+			| Order.Invalid_order_format str ->
+				let msg = Error.Invalid_order_format (comm.comm_tag, str)
+				in DynArray.add errors (comm.comm_linenum, msg);
+				Order.user_hierarchical `Level1 "0"
+			| Order.Invalid_order_levels (str, expected, found) ->
+				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found)
+				in DynArray.add errors (comm.comm_linenum, msg);
+				Order.user_hierarchical `Level1 "0"
 
 
 	(*	Adds a new reference to the dictionary.
@@ -681,7 +726,7 @@ let process_document ~idiosyncrasies document_ast =
 						| Numbered _, None, true	     -> raise (Bad_order Error.Reason_is_absent_when_mandatory)
 						| Numbered (_, counter), None, false -> Order.auto_ordinal counter
 						| Numbered _, Some "", _	     -> Order.none ()
-						| Numbered _ , Some other, true	     -> Order.user_ordinal other
+						| Numbered _ , Some other, true	     -> make_user_ordinal comm other
 						| Numbered _ , Some other, false     -> raise (Bad_order (Error.Reason_is_non_empty_when_forbidden other))
 						| _, None, _			     -> Order.none ()
 						| _, Some "", _			     -> Order.none ()
@@ -704,7 +749,7 @@ let process_document ~idiosyncrasies document_ast =
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| Bad_order reason ->
-						let msg = Error.Invalid_order_parameter (comm.comm_tag, reason)
+						let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason)
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
@@ -740,9 +785,9 @@ let process_document ~idiosyncrasies document_ast =
 		| (true, true, true, `Any_blk, (comm, Ast.Part seq)) ->
 			let elem () =
 				let order = match comm.comm_order with
-					| None		-> Order.auto_ordinal part_counter
-					| Some ""	-> Order.none ()
-					| Some other	-> Order.user_ordinal other in
+					| None	     -> Order.auto_ordinal part_counter
+					| Some ""    -> Order.none ()
+					| Some other -> make_user_ordinal comm other in
 				let label = make_label comm (Target.part order) in
 				let heading = Heading.part label order (convert_seq seq) in
 				let block = Block.heading heading in
@@ -768,9 +813,9 @@ let process_document ~idiosyncrasies document_ast =
 					then (appendix_counter, `Appendixed)
 					else (section_counter, `Mainbody) in
 				let order = match comm.comm_order with
-					| None		-> Order.auto_hierarchical level counter
-					| Some ""	-> Order.none ()
-					| Some other	-> Order.user_hierarchical level other in
+					| None	     -> Order.auto_hierarchical level counter
+					| Some ""    -> Order.none ()
+					| Some other -> make_user_hierarchical comm level other in
 				let label = make_label comm (Target.section location order) in
 				let heading = Heading.section label order location level (convert_seq seq) in
 				let block = Block.heading heading in
@@ -845,6 +890,11 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, nargs, seq))) ->
 			let elem () =
+				if not (matches_ident name)
+				then begin
+					let msg = Error.Invalid_macro (comm.comm_tag, name)
+					in DynArray.add errors (comm.comm_linenum, msg)
+				end;
 				let num_args =
 					try int_of_string nargs
 					with Failure _ ->
@@ -938,8 +988,8 @@ let process_document ~idiosyncrasies document_ast =
 	and convert_wrapper comm counter kind maybe_caption_ast =
 		let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 		let order = match comm.comm_order with
-			| None		-> Order.auto_ordinal counter
-			| Some thing	-> Order.user_ordinal thing in
+			| None	     -> Order.auto_ordinal counter
+			| Some thing -> make_user_ordinal comm thing in
 		let label = make_label comm (Target.wrapper kind order) in
 		let maybe_caption = match maybe_caption_ast with
 			| Some (caption_comm, caption_seq) ->
@@ -950,7 +1000,12 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	and convert_customdef comm env kind customdef =
-		if Hashtbl.mem customisations env
+		if not (matches_ident env)
+		then begin
+			let msg = Error.Invalid_custom (comm.comm_tag, env)
+			in DynArray.add errors (comm.comm_linenum, msg)
+		end
+		else if Hashtbl.mem customisations env
 		then begin
 			let msg = Error.Duplicate_custom (comm.comm_tag, env)
 			in DynArray.add errors (comm.comm_linenum, msg)

@@ -27,13 +27,13 @@ type key_t = ref_t with sexp
 
 type dict_t = (key_t, Inline.seq_t) Hashtbl.t with sexp
 
-type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
 type anonymous_t = [ `Anonymous of key_t * Label.t ] with sexp
 
 type unnumbered_t = [ `Unnumbered of key_t * Label.t ] with sexp
 
-type numbered_t = [ `Numbered of key_t * Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.user_given_t | Order.none_given_t ]) Order.t ] with sexp
+type numbered_t = [ `Numbered of key_t * Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t ] with sexp
 
 type t = [ anonymous_t | unnumbered_t | numbered_t ]
 

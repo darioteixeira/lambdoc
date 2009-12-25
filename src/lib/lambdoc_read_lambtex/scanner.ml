@@ -105,9 +105,9 @@ let regexp alpha = ['a'-'z' 'A'-'Z']
 let regexp deci = ['0'-'9']
 let regexp ident = alpha (alpha | deci)*
 
-let regexp order = '(' [^')']* ')'
-let regexp label = '[' [^']']* ']'
-let regexp extra = '<' [^'>']* '>'
+let regexp order = '(' [^ ')' '[' ']' '<' '>' '{' '}']* ')'
+let regexp label = '[' [^ ']' '(' ')' '<' '>' '{' '}']* ']'
+let regexp extra = '<' [^ '>' '[' ']' '(' ')' '{' '}']* '>'
 let regexp optional = ( order | label | extra )*
 let regexp primary = '{' ident '}'
 

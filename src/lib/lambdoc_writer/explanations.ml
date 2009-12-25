@@ -52,28 +52,38 @@ let explain_tag = function
 	| None	   -> "anonymous command"
 
 
+let explain_ident what =
+	sprintf "%s must begin with a alphabetic letter, and is optionally followed by letters, digits, or the characters ':', '-', and '_'" what
+
+
+let explain_level = function
+	| `Level1 -> 1
+	| `Level2 -> 2
+	| `Level3 -> 3
+
+
 let explain_error = function
 
-	| Error.Invalid_label_parameter (tag, reason) ->
+	| Error.Misplaced_label_parameter (tag, reason) ->
 		let exp_reason = explain_reason "a" "label" reason
-		in sprintf "Invalid labelling for %s: %s." (explain_tag tag) exp_reason
+		in sprintf "Misplaced labelling for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Invalid_order_parameter (tag, reason) ->
+	| Error.Misplaced_order_parameter (tag, reason) ->
 		let exp_reason = explain_reason "an" "order" reason
-		in sprintf "Invalid ordering for %s: %s." (explain_tag tag) exp_reason
+		in sprintf "Misplaced ordering for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Invalid_extra_parameter (tag, reason) ->
+	| Error.Misplaced_extra_parameter (tag, reason) ->
 		let exp_reason = explain_reason "an" "extra" reason
-		in sprintf "Invalid extra parameter for %s: %s." (explain_tag tag) exp_reason
+		in sprintf "Misplaced extra parameter for %s: %s." (explain_tag tag) exp_reason
 
-	| Error.Nested_link tag ->
-		sprintf "Nested link in %s." (explain_tag tag)
+	| Error.Invalid_label (tag, label) ->
+		sprintf "Invalid label '%s' in %s. %s." label (explain_tag tag) (explain_ident "A label")
 
-	| Error.Empty_listing tag ->
-		sprintf "Empty listing in %s." (explain_tag tag)
+	| Error.Invalid_order_format (tag, order) ->
+		sprintf "Unable to interpret the string '%s' in %s as an ordering." order (explain_tag tag)
 
-	| Error.Unexpected_block (tag, blk) ->
-		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
+	| Error.Invalid_order_levels (tag, order, expected, found) ->
+		sprintf "Expected %d hierarchical levels in the ordering for %s, but the string '%s' contains %d instead." (explain_level expected) (explain_tag tag) order found
 
 	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
 		sprintf "In %s, the key '%s' expects a boolean parameter, yet the assigned value '%s' cannot be interpreted as such." (explain_tag tag) key value
@@ -100,7 +110,7 @@ let explain_error = function
 		sprintf "In %s, no conclusive assignment can be made for the extra parameter '%s'." (explain_tag tag) extra
 
 	| Error.Invalid_extra_multiple_solutions (tag, extra) ->
-		sprintf "In %s, the extra parameters '%s' cannot be interpreted unambiguously." (explain_tag tag) extra
+		sprintf "In %s, the extra parameter '%s' cannot be interpreted unambiguously." (explain_tag tag) extra
 
 	| Error.Invalid_name_entity ent ->
 		sprintf "Unknown entity '%s'." ent
@@ -127,11 +137,17 @@ let explain_error = function
 	| Error.Invalid_macro_call (name, found, expected) ->
 		sprintf "Invalid macro invocation.  Macro '%s' expects %d argument(s) but found %d instead." name expected found
 
+	| Error.Invalid_macro (tag, name) ->
+		sprintf "Invalid macro name '%s' in %s. %s." name (explain_tag tag) (explain_ident "A macro")
+
 	| Error.Duplicate_macro (tag, name) ->
 		sprintf "The definition of macro '%s' in %s duplicates a previously defined macro." name (explain_tag tag)
 
 	| Error.Undefined_macro (tag, name) ->
 		sprintf "Reference to undefined macro '%s'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." name
+
+	| Error.Invalid_custom (tag, env) ->
+		sprintf "Invalid name '%s' for custom environment in %s. %s." env (explain_tag tag) (explain_ident "A custom environment")
 
 	| Error.Duplicate_custom (tag, env) ->
 		sprintf "The definition of custom environment '%s' in %s duplicates a previously defined environment." env (explain_tag tag)
@@ -176,6 +192,15 @@ let explain_error = function
 
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
+
+	| Error.Nested_link tag ->
+		sprintf "Nested link in %s." (explain_tag tag)
+
+	| Error.Empty_listing tag ->
+		sprintf "Empty listing in %s." (explain_tag tag)
+
+	| Error.Unexpected_block (tag, blk) ->
+		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
 
 	| Error.Malformed_code_point ->
 		sprintf "This line contains a malformed UTF-8 code point (represented by the character '\xef\xbf\xbd')."

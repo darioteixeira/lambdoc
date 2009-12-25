@@ -69,14 +69,13 @@ type blk_category_t =
 (**	The various types of error messages.
 *)
 type error_msg_t =
-	| Invalid_label_parameter of tag_t option * invalid_parameter_reason_t
-	| Invalid_order_parameter of tag_t option * invalid_parameter_reason_t
-	| Invalid_extra_parameter of tag_t option * invalid_parameter_reason_t
+	| Misplaced_label_parameter of tag_t option * invalid_parameter_reason_t
+	| Misplaced_order_parameter of tag_t option * invalid_parameter_reason_t
+	| Misplaced_extra_parameter of tag_t option * invalid_parameter_reason_t
 
-	| Nested_link of tag_t option
-	| Empty_listing of tag_t option
-	| Unexpected_block of tag_t option * blk_category_t
-
+	| Invalid_label of tag_t option * ref_t
+	| Invalid_order_format of tag_t option * string
+	| Invalid_order_levels of tag_t option * string * hierarchical_level_t * int
 	| Invalid_extra_boolean_parameter of tag_t option * string * string
 	| Invalid_extra_numeric_parameter of tag_t option * string * string * int * int
 	| Invalid_extra_bullet_parameter of tag_t option * string * string
@@ -96,9 +95,11 @@ type error_msg_t =
 	| Invalid_macro_argument_number of string * int
 	| Invalid_macro_call of ref_t * int * int
 
+	| Invalid_macro of tag_t option * ref_t
 	| Duplicate_macro of tag_t option * ref_t
 	| Undefined_macro of tag_t option * ref_t
 
+	| Invalid_custom of tag_t option * ref_t
 	| Duplicate_custom of tag_t option * ref_t
 	| Undefined_custom of tag_t option * ref_t
 	| Invalid_counter of tag_t option * ref_t
@@ -113,6 +114,10 @@ type error_msg_t =
 	| Empty_target of tag_t option * ref_t
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
 	| Undefined_target of tag_t option * ref_t
+
+	| Nested_link of tag_t option
+	| Empty_listing of tag_t option
+	| Unexpected_block of tag_t option * blk_category_t
 
 	| Malformed_code_point
 	| Reading_error of string

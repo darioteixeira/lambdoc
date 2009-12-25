@@ -54,9 +54,9 @@ let pat_begin = "\\\\begin"
 let pat_simple = "\\\\(?<simple>" ^ pat_ident ^ ")"
 let pat_primary = "\\{(?<primary>" ^ pat_ident ^ ")\\}"
 
-let pat_order = "(?<order>\\([^)]*\\))"
-let pat_label = "(?<label>\\[[^\\]]*\\])"
-let pat_extra = "(?<extra><[^>]*>)"
+let pat_order = "(?<order>\\([^)\\[\\]<>\\{\\}]*\\))"
+let pat_label = "(?<label>\\[[^\\]\\(\\)<>\\{\\}]*\\])"
+let pat_extra = "(?<extra><[^>\\[\\]\\(\\)\\{\\}]*>)"
 let pat_optional = "(" ^ pat_order ^ "|" ^ pat_extra ^ "|" ^ pat_label ^")*"
 
 let begin_rex = Pcre.regexp ("^" ^ pat_begin ^ pat_optional ^ pat_primary ^ "$")
