@@ -1,12 +1,12 @@
-\newmacro{loremshort}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
+\newmacro{loremshort}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
 
-\newmacro{lorem}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.}
+\newmacro{lorem}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.}
 
-\newmacro{fox}{The quick brown fox jumps over the lazy dog.}
+\newmacro{fox}{0}{The quick brown fox jumps over the lazy dog.}
 
-\newmacro{who}{John McAuthor}
-\newmacro{what}{Title of the article}
-\newmacro{where}{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\newmacro{who}{0}{John McAuthor}
+\newmacro{what}{0}{Title of the article}
+\newmacro{where}{0}{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
 
 \title{A complete example of \caps{Lambtex}}
 \subtitle{Dario Teixeira}
@@ -149,7 +149,7 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \p{${lorem}}
 
 
-\section{Source environments with line numbers and zebra}
+\section{Boxed source environments with syntax highlighting, line numbers, and zebra stripes}
 
 \p{${lorem}}
 \begin<ocaml>{source}
@@ -164,10 +164,25 @@ let rec count = function
 \p{${lorem}}
 
 
-\section{Source environments with neither line numbers nor zebra}
+\section{Boxed source environments with no syntax highlighting, no line numbers, and no zebra stripes}
 
 \p{${lorem}}
 \begin<!zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
+\p{${lorem}}
+
+
+\section{Unboxed source environments with syntax highlighting, but neither line numbers nor zebra stripes}
+
+\p{${lorem}}
+\begin<ocaml,!box>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -192,7 +207,9 @@ let rec count = function
 | Chicken	| \emph{Gallus}		| \emph{gallus}		|
 | Lion		| \emph{Panthera}	| \emph{leo}		|
 | Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+\body
 | English oak	| \emph{Quercus}	| \emph{robur}		|
+| European yew	| \emph{Taxus}		| \emph{baccata}	|
 \foot
 | Common name	|{1c_} Genus		|{1c_} Species		|
 |		|{2c} Scientific name				|
@@ -203,6 +220,7 @@ let rec count = function
 \section{Verbatim environments}
 
 \p{${lorem}}
+
 \begin{verbatim}
        -------
        |  A  |
@@ -220,6 +238,15 @@ let rec count = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
+
+\p{${lorem}}
+
+\begin<6>{verbatim}
+┏┻┓
+┫☃┣
+┗┳┛
+\end{verbatim}
+
 \p{${lorem}}
 
 
