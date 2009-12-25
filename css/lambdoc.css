@@ -93,6 +93,8 @@ body
 .doc_par:not(:first-child) {margin-top: 0.5em;}
 .doc_par:not(:last-child) {margin-bottom: 0.5em;}
 .doc_par + .doc_par {text-indent: 1em;}
+.doc_par.doc_indent {text-indent: 1em;}
+.doc_par.doc_noindent {text-indent: 0;}
 .doc_itemize,
 .doc_enumerate,
 .doc_description {margin: 0 0 0 2em;}
@@ -156,8 +158,8 @@ body
  text-indent: 0;
  }
 
-.doc_verse:not(:first-child) {margin-top: 2em;}
-.doc_verse:not(:last-child) {margin-bottom: 2em;}
+.doc_verse:not(:first-child) {margin-top: 1.5em;}
+.doc_verse:not(:last-child) {margin-bottom: 1.5em;}
 
 
 
@@ -173,8 +175,8 @@ body
  color: #333;
  }
 
-.doc_quote:not(:first-child) {margin-top: 2em;}
-.doc_quote:not(:last-child) {margin-bottom: 2em;}
+.doc_quote:not(:first-child) {margin-top: 1.5em;}
+.doc_quote:not(:last-child) {margin-bottom: 1.5em;}
 
 
 
@@ -260,8 +262,8 @@ body
 .doc_src_kwc {color: #03c;}
 .doc_src_kwd {color: #090; font-weight: bold;}
 
-.doc_src_main:not(:first-child) {margin-top: 1em;}
-.doc_src_main:not(:last-child) {margin-bottom: 1em;}
+.doc_src_main:not(:first-child) {margin-top: 1.5em;}
+.doc_src_main:not(:last-child) {margin-bottom: 1.5em;}
 .doc_src_box:not(:first-child) {margin-top: 2em;}
 .doc_src_box:not(:last-child) {margin-bottom: 2em;}
 .doc_wrapper > .doc_src_main {margin: 0;}
@@ -307,15 +309,16 @@ body
  border-top: 1px solid #666;
  }
 
-.doc_row > th {padding: 0.4em 1em; font-weight: bold;}
-.doc_row > td {padding: 0.4em 1em; font-weight: bold;}
-tbody > .doc_row > th {padding: 0.1em 1em;}
-tbody > .doc_row > td {padding: 0.1em 1em; font-weight: normal;}
+.doc_tgroup > tr > th {padding: 0.4em 1em; font-weight: bold;}
+.doc_tgroup > tr > td {padding: 0.4em 1em; font-weight: bold;}
+tbody.doc_tgroup > tr > th {padding: 0.1em 1em;}
+tbody.doc_tgroup > tr > td {padding: 0.1em 1em; font-weight: normal;}
 
-tbody:first-of-type > .doc_row:first-child > th {padding-top: 0.4em;}
-tbody:first-of-type > .doc_row:first-child > td {padding-top: 0.4em;}
-tbody > .doc_row:last-child > th {padding-bottom: 0.4em;}
-tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
+tbody.doc_tgroup > tr:first-child > th {padding-top: 0.4em;}
+tbody.doc_tgroup > tr:first-child > td {padding-top: 0.4em;}
+tbody.doc_tgroup > tr:last-child > th {padding-bottom: 0.4em;}
+tbody.doc_tgroup > tr:last-child > td {padding-bottom: 0.4em;}
+tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #666;}
 
 .doc_cell_l {text-align: left;}
 .doc_cell_r {text-align: right;}
@@ -562,7 +565,7 @@ tbody > .doc_row:last-child > td {padding-bottom: 0.4em;}
 .doc_caption > div
  {
  display: inline-block;
- font-size: 1.3em;
+ font-size: 1.2em;
  text-align: justify;
  }
 

@@ -36,6 +36,7 @@
 #define Border_src		1px solid Colour_watery
 #define Border_tabular_outter	2px solid Colour_watery
 #define Border_tabular_inner	1px solid Colour_watery
+#define Border_tabular_body	1px dotted Colour_watery
 #define Border_box		1px solid Colour_ghostly
 #define Border_rule		1px dotted Colour_forefancy
 #define Border_hline		1px solid Colour_body
@@ -93,9 +94,7 @@
 /********************************************************************************/
 
 #define Size_pre	1.2em
-#define Size_script	1.3em
-#define Size_note	0.857em		/* Relative to Size_normal: 14 * 0.857 = 12px */
-
+#define Size_caption	1.2em
 #define Size_small	1.3em
 #define Size_normal	1.4em
 #define Size_large	1.5em
@@ -109,6 +108,7 @@
 
 #define Size_pull	1.071em		/* Relative to Size_normal: 14 * 1.071 = 15px */
 #define Size_pullhead	0.933em		/* Relative to Size_pull: 15 * 0.933 = 14px */
+#define Size_note	0.857em		/* Relative to Size_normal: 14 * 0.857 = 12px */
 
 
 /********************************************************************************/
@@ -121,6 +121,7 @@
 #define Vmargin_short		0.25em
 #define Vmargin_par		0.5em
 #define Vmargin_textual		1em
+#define Vmargin_semiboxish	1.5em
 #define Vmargin_boxish		2em
 #define Vmargin_wrapper		2.5em
 #define Vmargin_caption_long	1.5em

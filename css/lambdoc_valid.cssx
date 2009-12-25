@@ -64,7 +64,9 @@
 .doc_par:not(:first-child) {margin-top: Vmargin_par;}
 .doc_par:not(:last-child) {margin-bottom: Vmargin_par;}
 
-.doc_par + .doc_par {text-indent: Hmargin_indent;}
+.doc_par + .doc_par	{text-indent: Hmargin_indent;}
+.doc_par.doc_indent	{text-indent: Hmargin_indent;}
+.doc_par.doc_noindent	{text-indent: 0;}
 
 
 /********************************************************************************/
@@ -156,8 +158,8 @@
 	text-indent: 0;
 	}
 
-.doc_verse:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_verse:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_verse:not(:first-child) {margin-top: Vmargin_semiboxish;}
+.doc_verse:not(:last-child) {margin-bottom: Vmargin_semiboxish;}
 
 
 /********************************************************************************/
@@ -173,8 +175,8 @@
 	color: Colour_ghostly;
 	}
 
-.doc_quote:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_quote:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_quote:not(:first-child) {margin-top: Vmargin_semiboxish;}
+.doc_quote:not(:last-child) {margin-bottom: Vmargin_semiboxish;}
 
 
 /********************************************************************************/
@@ -260,8 +262,8 @@
 .doc_src_kwc	{color: #03c;}
 .doc_src_kwd	{color: #090; font-weight: bold;}
 
-.doc_src_main:not(:first-child) {margin-top: Vmargin_textual;}
-.doc_src_main:not(:last-child) {margin-bottom: Vmargin_textual;}
+.doc_src_main:not(:first-child) {margin-top: Vmargin_semiboxish;}
+.doc_src_main:not(:last-child) {margin-bottom: Vmargin_semiboxish;}
 .doc_src_box:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_src_box:not(:last-child) {margin-bottom: Vmargin_boxish;}
 .doc_wrapper > .doc_src_main {margin: 0;}
@@ -307,15 +309,16 @@
 	border-top: Border_tabular_inner;
 	}
 
-.doc_row > th {padding: Padding_vtabout Padding_htab; font-weight: bold;}
-.doc_row > td {padding: Padding_vtabout Padding_htab; font-weight: bold;}
-tbody > .doc_row > th {padding: Padding_vtabin Padding_htab;}
-tbody > .doc_row > td {padding: Padding_vtabin Padding_htab; font-weight: normal;}
+.doc_tgroup > tr > th {padding: Padding_vtabout Padding_htab; font-weight: bold;}
+.doc_tgroup > tr > td {padding: Padding_vtabout Padding_htab; font-weight: bold;}
+tbody.doc_tgroup > tr > th {padding: Padding_vtabin Padding_htab;}
+tbody.doc_tgroup > tr > td {padding: Padding_vtabin Padding_htab; font-weight: normal;}
 
-tbody:first-of-type > .doc_row:first-child > th {padding-top: Padding_vtabout;}
-tbody:first-of-type > .doc_row:first-child > td {padding-top: Padding_vtabout;}
-tbody > .doc_row:last-child > th {padding-bottom: Padding_vtabout;}
-tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
+tbody.doc_tgroup > tr:first-child > th {padding-top: Padding_vtabout;}
+tbody.doc_tgroup > tr:first-child > td {padding-top: Padding_vtabout;}
+tbody.doc_tgroup > tr:last-child > th {padding-bottom: Padding_vtabout;}
+tbody.doc_tgroup > tr:last-child > td {padding-bottom: Padding_vtabout;}
+tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 
 .doc_cell_l {text-align: left;}
 .doc_cell_r {text-align: right;}
@@ -562,7 +565,7 @@ tbody > .doc_row:last-child > td {padding-bottom: Padding_vtabout;}
 .doc_caption > div
 	{
 	display: inline-block;
-	font-size: Size_small;
+	font-size: Size_caption;
 	text-align: justify;
 	}
 
