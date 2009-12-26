@@ -12,13 +12,13 @@
 #define Colour_del		#900
 #define Colour_lnk		#009
 #define Colour_forefancy	#501
-#define Colour_backfancy	#b08991
+#define Colour_backfancy	#ccc
 #define Colour_ghostly		#333
 #define Colour_watery		#666
 #define Colour_shadow		#666
 #define Colour_question		Colour_forefancy
 #define Colour_answer		Colour_body
-#define Colour_pulltext		#555
+#define Colour_pulltext		#333
 #define Colour_pullhead		Colour_forefancy
 
 #define Background_src		#f3f6f9
@@ -121,7 +121,7 @@
 #define Vmargin_short		0.25em
 #define Vmargin_par		0.5em
 #define Vmargin_textual		1em
-#define Vmargin_semiboxish	1.5em
+#define Vmargin_hybrid		1.5em
 #define Vmargin_boxish		2em
 #define Vmargin_wrapper		2.5em
 #define Vmargin_caption_long	1.5em
@@ -135,6 +135,7 @@
 #define Vmargin_part_bottom	1.5em
 #define Vmargin_sec_top		1.5em
 #define Vmargin_sec_bottom	0.5em
+#define Vmargin_ghost_entry	0.75em
 
 #define Hmargin_list		2em
 #define Hmargin_dt		-1.5em		/* -1 * (Hmargin_list - 0.5em) */
@@ -144,6 +145,8 @@
 #define Hmargin_quote		0.75em
 #define Hmargin_src		1em
 #define Hmargin_indent		1em
+#define Hmargin_ghost_text	3em
+#define Width_ghost_num		2.5em
 
 #define Padding_box		1em
 #define Padding_box_title	0.3em

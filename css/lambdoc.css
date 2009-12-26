@@ -431,7 +431,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #666;}
  font-style: italic;
  font-weight: bold;
  quotes: "\201c" "\201d";
- color: #555;
+ color: #333;
  }
 
 
@@ -454,7 +454,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #666;}
  margin-left: -0.7em;
  height: 0;
  line-height: 0.75em;
- color: #b08991;
+ color: #ccc;
  }
 
 
@@ -671,7 +671,7 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 .doc_toc
  {
  list-style-type: none;
- margin-top: 0.75em;
+ margin-top: 1em;
  padding-left: 0;
  font-size: 1.4em;
  }
@@ -683,8 +683,6 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
  text-decoration: underline;
  margin: 0.25em 0;
  }
-
-.doc_toc > li > a > span + span {margin-left: 0.5em;}
 
 
 

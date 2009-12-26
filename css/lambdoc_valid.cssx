@@ -158,8 +158,8 @@
 	text-indent: 0;
 	}
 
-.doc_verse:not(:first-child) {margin-top: Vmargin_semiboxish;}
-.doc_verse:not(:last-child) {margin-bottom: Vmargin_semiboxish;}
+.doc_verse:not(:first-child) {margin-top: Vmargin_hybrid;}
+.doc_verse:not(:last-child) {margin-bottom: Vmargin_hybrid;}
 
 
 /********************************************************************************/
@@ -175,8 +175,8 @@
 	color: Colour_ghostly;
 	}
 
-.doc_quote:not(:first-child) {margin-top: Vmargin_semiboxish;}
-.doc_quote:not(:last-child) {margin-bottom: Vmargin_semiboxish;}
+.doc_quote:not(:first-child) {margin-top: Vmargin_hybrid;}
+.doc_quote:not(:last-child) {margin-bottom: Vmargin_hybrid;}
 
 
 /********************************************************************************/
@@ -262,8 +262,8 @@
 .doc_src_kwc	{color: #03c;}
 .doc_src_kwd	{color: #090; font-weight: bold;}
 
-.doc_src_main:not(:first-child) {margin-top: Vmargin_semiboxish;}
-.doc_src_main:not(:last-child) {margin-bottom: Vmargin_semiboxish;}
+.doc_src_main:not(:first-child) {margin-top: Vmargin_hybrid;}
+.doc_src_main:not(:last-child) {margin-bottom: Vmargin_hybrid;}
 .doc_src_box:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_src_box:not(:last-child) {margin-bottom: Vmargin_boxish;}
 .doc_wrapper > .doc_src_main {margin: 0;}
@@ -671,7 +671,7 @@ h2.doc_title + h2.doc_title {margin-top: Vmargin_title_intra;}
 .doc_toc
 	{
 	list-style-type: none;
-	margin-top: 0.75em;
+	margin-top: Vmargin_textual;
 	padding-left: 0;
 	font-size: Size_normal;
 	}
@@ -684,8 +684,6 @@ h2.doc_title + h2.doc_title {margin-top: Vmargin_title_intra;}
 	margin: 0.25em 0;
 	}
 
-.doc_toc > li > a > span + span {margin-left: 0.5em;}
-
 
 /********************************************************************************/
 /* CSS for story bibliography.		 					*/
@@ -693,24 +691,24 @@ h2.doc_title + h2.doc_title {margin-top: Vmargin_title_intra;}
 
 .doc_bibs
 	{
-	margin-top: 1em;
+	margin-top: Vmargin_textual;
 	padding: 0;
 	list-style-type: none;
 	}
 
-.doc_bibs > li {margin-top: 0.75em;}
+.doc_bibs > li {margin-top: Vmargin_ghost_entry;}
 
 .doc_bibs > li > span
 	{
-	width: 2.5em;
+	width: Width_ghost_num;
 	float: left;
 	font-weight: bold;
 	text-align: right;
 	}
 
-.doc_bibs > li > p {margin-left: 3em;}
+.doc_bibs > li > p {margin-left: Hmargin_ghost_text;}
 
-.doc_bib_author {margin-right: 0.5em;}
+.doc_bib_author {margin-right: Hmargin_inline_large;}
 
 .doc_bib_author:after {content: ':';}
 
@@ -729,20 +727,20 @@ h2.doc_title + h2.doc_title {margin-top: Vmargin_title_intra;}
 
 .doc_notes
 	{
-	margin-top: 1em;
+	margin-top: Vmargin_textual;
 	padding: 0;
 	list-style-type: none;
 	}
 
-.doc_notes > li {margin-top: 0.75em;}
+.doc_notes > li {margin-top: Vmargin_ghost_entry;}
 
 .doc_notes > li > span
 	{
-	width: 2.5em;
+	width: Width_ghost_num;
 	float: left;
 	font-weight: bold;
 	text-align: right;
 	}
 
-.doc_notes > li > div {margin-left: 3em;}
+.doc_notes > li > div {margin-left: Hmargin_ghost_text;}
 
