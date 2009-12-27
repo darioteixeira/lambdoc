@@ -1,23 +1,9 @@
-NAME=test
+LAMBCMD=../../src/_build/lambcmd/lambcmd.native
 
-all: $(NAME).cma $(NAME).cmxs
+all: complete.html
 
-%.cma: %.cmo
-	ocamlc -a -o $@ $+
-
-%.cmxa: %.cmx
-	ocamlopt -a -o $@ $+
-
-%.cmxs: %.cmxa
-	ocamlopt -shared -linkall -I `pwd` -o $@ $<
-
-%.cmo: %.ml
-	ocamlfind ocamlc -thread -package extlib,lwt,ocsigen,lambdoc -c $<
-
-%.cmx: %.ml
-	ocamlfind ocamlopt -thread -package extlib,lwt,ocsigen,lambdoc -c $<
+complete.html: complete.lambhtml
+	$(LAMBCMD) -f lambhtml -t xhtml -i $< -o $@
 
 clean:
-	rm -f $(NAME).cm[ioa] $(NAME).cmxa $(NAME).cmxs $(NAME).[oa]
-
-.PRECIOUS: %.cmxa
+	rm -rf complete.html
