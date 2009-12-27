@@ -29,7 +29,7 @@ let string_of_xhtml xhtml =
 				(title (pcdata "Lambdoc document"))
 				[
 				meta ~a:[a_http_equiv "content-type"] ~content:"text/html; charset=utf-8" ();
-				style ~contenttype:"text/css" ~a:[a_media [`All]; a_title "Default"] [pcdata "css/lambdoc.css"]
+				link ~a:[a_href (uri_of_string "css/lambdoc.css"); a_rel [`Stylesheet]; a_media [`All]; a_title "Default"] ();
 				])
 			(body [xhtml]))
 	in Xhtmlpretty.xhtml_print page
