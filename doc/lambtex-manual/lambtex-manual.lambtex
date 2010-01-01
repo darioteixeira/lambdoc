@@ -106,10 +106,10 @@ round, square, and angle brackets, respectively.}
 \section[sec:paragraphs]{Paragraph blocks}
 
 Paragraphs are the simplest of all blocks, usually being composed of just a sequence
-of inline text terminated by a blank line.  It is however also possible to declare a
-paragraph via the simple command \code{\\p}, with the paragraph contents specified
-inside the mandatory curly brackets.  Consider thus the following ${lambtex}
-source fragment:
+of inline text terminated by a blank line.  It is however also possible to declare
+a paragraph via the simple command \code{\\paragraph} or its synonym \code{\\p}.
+Should you choose the simple command, the paragraph contents are to be specified inside
+the mandatory curly brackets.  Consider thus the following ${lambtex} source fragment:
 
 \begin{source}
 This is the first example of a paragraph.  Note that
@@ -144,12 +144,22 @@ it cares about are that blank lines separate paragraphs.  if you wish for a line
 within a paragraph (ie, without terminating the current paragraph), use the \code{\\br}
 simple command, as demonstrated.
 
-Using the command \code{\\p} to declare a paragraph is usually neither necessary
-nor recommended.  This method exists for the sole reason that it may be desirable to
-provide the composer with extra parameters about the paragraph.  Presently, the only
-extra parameter accepted is \code{initial}, which signals that the first letter of
-the paragraph should be rendered in a special manner.  \sref{sec:extra} dives into
-more detail on the subject of extra parameters.
+Using the command \code{\\paragraph} to declare a paragraph is usually neither
+necessary nor recommended.  This method exists for the sole reason that it may be
+desirable to provide the composer with extra parameters about the paragraph.  Presently,
+the extra parameters accepted are \code{initial} and \code{indent}.  The former is a
+boolean which signals whether the first letter of the paragraph should be rendered in
+a special manner.  Its default value is always \code{false}, so you must explicitly set
+it to \code{true} when needed.  The latter is tripartite, accepting values \code{auto}
+(the default), \code{true}, or \code{false}.  It indicates whether the paragraph
+should be indented.  In most situations the \code{auto} algorithm should be good
+enough: it indents a paragraph only if immediately preceded by another paragraph.
+There are however situations where you may indeed require an override by explicitly
+setting the indentation to \code{true} or \code{false}.
+
+At this point we recommend that you consult \sref{sec:extra}, which dives into more
+detail on the subject of extra parameters.  There you can learn of shorthand manners
+of inputting booleans and other values.
 
 
 \section{Formatting inline text}
@@ -168,20 +178,18 @@ you can also just type \code{\\b}.
 \head
 | Command				| Description 						|
 \body
-| \code{\\bold\{\emph{inline}\}}	| You can make some passages be \bold{bold}.		|
-| \code{\\b\{\emph{inline}\}}		| \emph{idem}						|
-| \code{\\strong\{\emph{inline}\}}	| \emph{idem}						|
-| \code{\\emph\{\emph{inline}\}}	| Here's another way to \emph{emphasise} text.		|
-| \code{\\i\{\emph{inline}\}}		| \emph{idem}						|
-| \code{\\em\{\emph{inline}\}}		| \emph{idem}						|
-| \code{\\code\{\emph{inline}\}}	| You can also imitate a \code{typewriter}.		|
-| \code{\\tt\{\emph{inline}\}}		| \emph{idem}						|
+| \code{\\bold\{\emph{inline}\}}	| You can make some passages be \bold{bold}.\br
+					  (Synonyms \code{\\strong} and \code{\\b})		|
 | \code{\\caps\{\emph{inline}\}}	| ${lambtex} supports text in small-caps.		|
-| \code{\\sup\{\emph{inline}\}}		| The 1\sup{st} of January has a superscript.		|
-| \code{\\sub\{\emph{inline}\}}		| Whereas H\sub{2}O requires a subscript.		|
-| \code{\\ins\{\emph{inline}\}}		| Sometimes it's \ins{very} handy to insert new text.	|
+| \code{\\code\{\emph{inline}\}}	| You can also imitate a \code{typewriter}.\br
+					  (Synonym \code{\\tt})					|
 | \code{\\del\{\emph{inline}\}}		| You may also fix \del{annoyingly} incorrect passages.	|
-| \code{\\mbox\{\emph{inline}\}}	| The inline sequence should not be split across a line break. |
+| \code{\\emph\{\emph{inline}\}}	| Here's another way to \emph{emphasise} text.\br
+					  (Synonyms \code{\\em} and \code{\\i})			|
+| \code{\\ins\{\emph{inline}\}}		| Sometimes it's \ins{very} handy to insert new text.	|
+| \code{\\mbox\{\emph{inline}\}}	| Some inline sequences should not be split across lines. |
+| \code{\\sub\{\emph{inline}\}}		| H\sub{2}O requires a subscript.			|
+| \code{\\sup\{\emph{inline}\}}		| The 1\sup{st} of January has a superscript.		|
 \end{tabular}
 \caption{List of all text formatting commands, including synonyms where
 applicable.  All these commands take one parameter enclosed in curly
@@ -710,7 +718,7 @@ one printed page.  The parameterless simple commands \code{\\head}, \code{\\body
 Note that header and footer rows are optional (in which case the \code{\\body} marker
 is also optional, since rows are assumed by default to be body rows).  Moreover, you
 can declare more than one group of body rows, and the default \caps{css} stylesheet
-will separate each group with some extra vertical spacing.
+will visibly separate each group.
 
 The code below is the source for the tabular environment listed above.  Note the use
 of the \code{\\head} and \code{\\body} commands to delineate row classes, and how the
@@ -983,7 +991,7 @@ The result is as follows:
 
 
 \begin{subpage}
-\part(I){Prelude}
+\part(1){Prelude}
 
 \section(1){Introduction}
 
@@ -1624,10 +1632,10 @@ arguments are parsed.
 \section[sec:structure]{The structure of ${lambtex} documents}
 
 We described a ${lambtex} document as being composed of a list of blocks, with some
-of these blocks being themselves composed of other blocks.  A document has therefore
-a tree structure. We have, however, glossed over some of the restrictions imposed on
-the tree.  The goal of this section is therefore to rectify that omission by providing
-a full account of the structure of a ${lambtex} document.
+of these blocks being themselves composed of other blocks.  We have, however, glossed
+over some of the restrictions imposed on this structure.  The goal of this section is
+therefore to rectify that omission by providing a full account of the structure of a
+${lambtex} document.
 
 Blocks come in different types.  Moreover, it is possible to establish a subtyping
 hierarchy that relates the different block types. \sref{fig:hierarchy} illustrates that
@@ -1660,84 +1668,57 @@ declaration after their name; these blocks --- termed \emph{recursive blocks} --
 are those whose contents are other blocks.
 
 
-If a ${lambtex} document were an unconstrained tree, a recursive block would
+If a ${lambtex} document were unconstrained, one would expect a recursive block to
 be composed of a list of super blocks.  Because super blocks sit at the top of the
 hierarchy, \bold{any} block can be used where a super block is allowed.  Therefore,
-in an unconstrained tree, it would be perfectly legal for a quotation block to be
-the parent of a section, or for an abstract block to include another.  Needless to
-say, an unconstrained tree would accommodate for pathological documents bearing no
-resemblance to any reasonable real-world circumstances.  It is for this reason that
-a ${lambtex} document tree has a few constraints in place.  As you shall see,
-these constraints are however fairly minor and still allow for very flexible documents.
+in an unconstrained scenario, it would be perfectly legal for a quotation block to
+be the parent of a section, or for an abstract block to include another.  Needless to
+say, an unconstrained document would accommodate for pathological situations bearing
+no resemblance to any reasonable real-world documents.  It is for this reason that a
+${lambtex} document has a few constraints in place.  As you shall see, these constraints
+are however fairly minor and still allow for very flexible documents.
 
 In basic terms, documents are constrained by limiting the types of blocks accepted
 as children of recursive blocks.  The exact subtype allowed for each recursive block
-is shown in the figure as an \emph{of ...} declaration after the block name, and is
-summarised in \sref{tab:recursive}.  Let us consider, for example, a quote block.
-It only allows a list of \emph{embeddable blocks} as children.  This means that you
-cannot quote a figure nor an abstract, but you can do so with any of the embeddable
-block subtypes.  Furthermore, these rules apply to the entire descendant tree.
-This means that if an itemize block is the child of a quote block, then the most
-restricted rules of the parent apply also to the child's descendants.  In this case
-that would mean that the itemize block would also only accept embeddable blocks as
-children instead of its usually more permissive allowance of any \emph{listable block}.
-The exception to this rule is the subpage block, which resets the hierarchy.
-
-
-\begin[tab:recursive]{table}
-\begin{tabular}{rl}
-\head
-| Block			| Children |
-\body
-| \code{abstract}	| \emph{[textual_block]} |
-| \code{pull}		| \emph{[textual_block]} |
-| \code{boxout}		| \emph{[embeddable_block]} |
-| \code{theorem}	| \emph{[textual_block]} |
-| \code{equation}	| \code{mathtex | mathml} |
-| \code{printout}	| \code{code} |
-| \code{table}		| \code{tabular} |
-| \code{figure}		| \code{verbatim | image | subpage} |
-| \code{quote}		| \emph{[embeddable_block]} |
-| \code{qanda}		| \emph{[[listable_block] * [listable_block]]} |
-| \code{subpage}	| \emph{[super_block]} |
-| \code{decor}		| \code{verbatim | image} |
-| \code{itemize}	| \emph{[[listable_block]]} |
-| \code{enumerate}	| \emph{[[listable_block]]} |
-| \code{description}	| \emph{[[listable_block]]} |
-| \code{verse}		| \code{[paragraph]} |
-\end{tabular}
-\caption{Constraints applicable to each recursive block.  The square bracket notation indicates
-that a list is accepted, and a double square bracket indicates a list of lists is expected. The
-pipe operator '\code{|}' is used to indicate alternatives, whereas the asterisk operator '\code{*}'
-denotes a tuple.}
-\end{table}
+is shown in the figure as an \emph{of ...} declaration after the block name.  Let us
+consider, for example, a quote block.  It only allows a list of \emph{embeddable blocks}
+as children.  This means that you cannot quote a figure nor an abstract, but you can
+do so with any of the embeddable blocks or subtypes (\emph{textual blocks}, namely).
+Furthermore, these rules apply to the entire descendant tree.  This means that if
+an itemize block is the child of a quote block, then the most restricted rules of
+the parent apply also to the child's descendants.  In this case that would mean that
+the itemize block would also only accept embeddable blocks as children instead of its
+usually more permissive allowance of any \emph{listable block}.  The exception to this
+rule is the subpage block, which resets the hierarchy.
 
 
 \section[sec:synonyms]{Command synonyms}
 
-For reference purposes, \sref{tab:synonyms} lists all existing synonyms for both simple and
-environment commands (the former's name is prefixed by a backslash).
+For reference purposes, \sref{tab:synonyms} lists all existing synonyms for both simple
+and environment commands (the former's name is prefixed by a backslash).  Remember that
+in the case of environment commands, the same name must be used for the \code{begin}
+and \code{end} tags, even if they are synonyms.
 
 \begin[tab:synonyms]{table}
 \begin{tabular}{rl}
 \head
-| Canonical form	| Synonyms |
+| Canonical form		| Synonyms			|
 \body
-| \code{\\bold}		| \code{\\strong}, \code{\\b} |
-| \code{\\emph}		| \code{\\em}, \code{\\i} |
-| \code{\\code}		| \code{\\tt}, \code{\\m} |
-| \code{\\link}		| \code{\\a} |
+| \code{\\bold}			| \code{\\strong}, \code{\\b}	|
+| \code{\\code}			| \code{\\tt}			|
+| \code{\\emph}			| \code{\\em}, \code{\\i}	|
+| \code{\\item}			| \code{\\li}			|
+| \code{\\link}			| \code{\\a}			|
+| \code{\\paragraph}		| \code{\\p}			|
+| \code{\\rule}			| \code{\\hr}			|
+| \code{\\section}		| \code{\\h1}			|
+| \code{\\subsection}		| \code{\\h2}			|
+| \code{\\subsubsection}	| \code{\\h3}			|
 \body
-| \code{\\item}		| \code{\\li} |
-| \code{\\item}		| \code{\\dt} |
-\body
-| \code{\\section}	| \code{\\h1} |
-| \code{\\subsection}	| \code{\\h2} |
-| \code{\\subsubsection}| \code{\\h3} |
-\body
-| \code{enumerate}	| \code{ul} |
-| \code{itemize}	| \code{ol} |
-| \code{description}	| \code{dl} |
+| \code{description}		| \code{dl}			|
+| \code{enumerate}		| \code{ol}			|
+| \code{itemize}		| \code{itemise}, \code{ul}	|
+| \code{verbatim}		| \code{pre}			|
 \end{tabular}
 \caption{List of all available command synonyms.}
 \end{table}
@@ -1765,16 +1746,15 @@ in \sref{tab:permdesc}.
 
 
 \begin[tab:permdesc]{table}
-\begin{tabular}{rl}
+\begin{tabular}{cl}
 \head
 | Permission		| Definition |
 \body
-| optional		| The parameter is optional, but may not be empty if it is present. |
-| optional\sub{0}	| The parameter is optional and may be empty. |
-| mandatory		| The parameter is mandatory, and it may not be empty. |
-| mandatory\sub{0}	| The parameter is mandatory, but it may be empty. |
-| forbidden		| The parameter is altogether forbidden. |
-| forbidden\sub{0}	| The parameter is forbidden, unless it is empty. |
+| ≈			| The parameter is optional, but may not be empty if it is present. |
+| ✔			| The parameter is mandatory, and it may not be empty. |
+| ✔\sub{ø}		| The parameter is mandatory, but it may be empty. |
+| ✘			| The parameter is altogether forbidden. |
+| ✘\sub{ø}		| The parameter is forbidden, unless it is empty. |
 \end{tabular}
 \caption{Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
 \end{table}
@@ -1783,79 +1763,83 @@ in \sref{tab:permdesc}.
 \begin[tab:permlist]{table}
 \begin{tabular}{rlll}
 \head
-| Command			| Order				| Label			| Extra |
+| Command			| Order					| Label		| Extra |
 \body
-| \code{\\br}			| forbidden			| forbidden		| forbidden |
-| \code{\\bold}			| forbidden			| forbidden		| forbidden |
-| \code{\\emph}			| forbidden			| forbidden		| forbidden |
-| \code{\\code}			| forbidden			| forbidden		| forbidden |
-| \code{\\caps}			| forbidden			| forbidden		| forbidden |
-| \code{\\thru}			| forbidden			| forbidden		| forbidden |
-| \code{\\sup}			| forbidden			| forbidden		| forbidden |
-| \code{\\sub}			| forbidden			| forbidden		| forbidden |
-| \code{\\mbox}			| forbidden			| forbidden		| forbidden |
+| \code{\\answer}		| ✘					| ✘		| ✘ |
+| \code{\\appendix}		| ✘					| ≈		| ✘ |
+| \code{\\bibliography}		| ✘					| ≈		| ✘ |
+| \code{\\body}			| ✘					| ✘		| ✘ |
+| \code{\\bold}			| ✘					| ✘		| ✘ |
+| \code{\\br}			| ✘					| ✘		| ✘ |
+| \code{\\caps}			| ✘					| ✘		| ✘ |
+| \code{\\caption}		| ✘					| ✘		| ✘ |
+| \code{\\cite}			| ✘					| ✘		| ✘ |
+| \code{\\code}			| ✘					| ✘		| ✘ |
+| \code{\\del}			| ✘					| ✘		| ✘ |
+| \code{\\foot}			| ✘					| ✘		| ✘ |
+| \code{\\head}			| ✘					| ✘		| ✘ |
+| \code{\\image}		| ✘					| ✘		| \code{frame}, \code{width} |
+| \code{\\ins}			| ✘					| ✘		| ✘ |
+| \code{\\item}			| ✘					| ✘		| ✘ |
+| \code{\\link}			| ✘					| ✘		| ✘ |
+| \code{\\mbox}			| ✘					| ✘		| ✘ |
+| \code{\\mref}			| ✘					| ✘		| ✘ |
+| \code{\\notes}		| ✘					| ≈		| ✘ |
+| \code{\\paragraph}		| ✘					| ✘		| \code{initial}, \code{indent} |
+| \code{\\part}			| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘ |
+| \code{\\question}		| ✘					| ≈		| ✘ |
+| \code{\\ranswer}		| ✘					| ≈		| ✘ |
+| \code{\\ref}			| ✘					| ✘		| ✘ |
+| \code{\\rquestion}		| ✘					| ≈		| ✘ |
+| \code{\\rule}			| ✘					| ✘		| ✘ |
+| \code{\\section}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘ |
+| \code{\\see}			| ✘					| ✘		| ✘ |
+| \code{\\sref}			| ✘					| ✘		| ✘ |
+| \code{\\sub}			| ✘					| ✘		| ✘ |
+| \code{\\subsection}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘ |
+| \code{\\subsubsection}	| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘ |
+| \code{\\subtitle}		| ✘					| ✘		| ✘ |
+| \code{\\sup}			| ✘					| ✘		| ✘ |
+| \code{\\title}		| ✘					| ✘		| ✘ |
+| \code{\\toc}			| ✘					| ≈		| ✘ |
+| \code{\\what}			| ✘					| ✘		| ✘ |
+| \code{\\where}		| ✘					| ✘		| ✘ |
+| \code{\\who}			| ✘					| ✘		| ✘ |
 \body
-| \code{\\link}			| forbidden			| forbidden		| forbidden |
-| \code{\\cite}			| forbidden			| forbidden		| forbidden |
-| \code{\\see}			| forbidden			| forbidden		| forbidden |
-| \code{\\ref}			| forbidden			| forbidden		| forbidden |
-| \code{\\sref}			| forbidden			| forbidden		| forbidden |
-| \code{\\mref}			| forbidden			| forbidden		| forbidden |
-\body
-| \code{\\part}			| forbidden\sub{0}/mandatory\sub{0} (see \sref{sec:order})	| optional	| forbidden |
-| \code{\\appendix}		| forbidden\sub{0}/mandatory\sub{0} (see \sref{sec:order})	| optional	| forbidden |
-| \code{\\section}		| forbidden\sub{0}/mandatory\sub{0} (see \sref{sec:order})	| optional	| forbidden |
-| \code{\\subsection}		| forbidden\sub{0}/mandatory\sub{0} (see \sref{sec:order})	| optional	| forbidden |
-| \code{\\subsubsection}	| forbidden\sub{0}/mandatory\sub{0} (see \sref{sec:order})	| optional	| forbidden |
-| \code{\\bibliography}		| forbidden			| optional		| forbidden |
-| \code{\\notes}		| forbidden			| optional		| forbidden |
-| \code{\\toc}			| forbidden			| optional		| forbidden |
-\body
-| \code{\\title}		| forbidden			| forbidden		| forbidden |
-| \code{\\subtitle}		| forbidden			| forbidden		| forbidden |
-| \code{\\rule}			| forbidden			| forbidden		| forbidden |
-\body
-| \code{\\item}			| forbidden			| forbidden		| forbidden |
-| \code{\\image}		| forbidden			| forbidden		| optional |
-| \code{\\caption}		| forbidden			| forbidden		| forbidden |
-\body
-| \code{\\who}			| forbidden			| forbidden		| forbidden |
-| \code{\\what}			| forbidden			| forbidden		| forbidden |
-| \code{\\where}		| forbidden			| forbidden		| forbidden |
-\body
-| \code{\\head}			| forbidden			| forbidden		| forbidden |
-| \code{\\body}			| forbidden			| forbidden		| forbidden |
-| \code{\\foot}			| forbidden			| forbidden		| forbidden |
-\body
-| \code{\{abstract\}}		| forbidden			| forbidden		| forbidden |
-| \code{\{itemize\}}		| forbidden			| forbidden		| optional |
-| \code{\{enumerate\}}		| forbidden			| forbidden		| optional |
-| \code{\{description\}}	| forbidden			| forbidden		| forbidden |
-| \code{\{verse\}}		| forbidden			| forbidden		| forbidden |
-| \code{\{quote\}}		| forbidden			| forbidden		| forbidden |
-| \code{\{mathtex\}}		| forbidden			| forbidden		| optional |
-| \code{\{mathml\}}		| forbidden			| forbidden		| optional |
-| \code{\{code\}}		| forbidden			| forbidden		| optional |
-| \code{\{tabular\}}		| forbidden			| forbidden		| optional |
-| \code{\{verbatim\}}		| forbidden			| forbidden		| optional |
-| \code{\{subpage\}}		| forbidden			| forbidden		| optional |
-| \code{\{pull\}}		| forbidden			| forbidden		| optional |
-| \code{\{boxout\}}		| forbidden			| forbidden		| optional |
-\body
-| \code{\{equation\}}		| forbidden/mandatory (see \sref{sec:order})	| optional	| forbidden |
-| \code{\{printout\}}		| forbidden/mandatory (see \sref{sec:order})	| optional	| forbidden |
-| \code{\{table\}}		| forbidden/mandatory (see \sref{sec:order})	| optional	| forbidden |
-| \code{\{figure\}}		| forbidden/mandatory (see \sref{sec:order})	| optional	| forbidden |
-\body
-| \code{\{bib\}}		| forbidden			| optional		| forbidden |
-| \code{\{note\}}		| forbidden			| optional		| forbidden |
+| \code{abstract}		| ✘					| ✘		| ✘ |
+| \code{bib}			| ✘					| ≈		| ✘ |
+| \code{\emph{boxout}}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| \code{float} |
+| \code{decor}			| ✘					| ✘		| \code{float} |
+| \code{description}		| ✘					| ✘		| ✘ |
+| \code{enumerate}		| ✘					| ✘		| \code{bul} |
+| \code{equation}		| \mref{sec:order}{✘/✔}			| ≈		| \code{float} |
+| \code{figure}			| \mref{sec:order}{✘/✔}			| ≈		| \code{float} |
+| \code{itemize}		| ✘					| ✘		| \code{num} |
+| \code{mathml}			| ✘					| ✘		| ✘ |
+| \code{mathtex}		| ✘					| ✘		| ✘ |
+| \code{note}			| ✘					| ≈		| ✘ |
+| \code{quote}			| ✘					| ✘		| ✘ |
+| \code{printout}		| \mref{sec:order}{✘/✔}			| ≈		| \code{float} |
+| \code{pull}			| ✘					| ✘		| \code{float} |
+| \code{qanda}			| ✘					| ✘		| ✘ |
+| \code{source}			| ✘					| ✘		| \code{box}, \code{linenums}, \code{zebra}, \code{lang} |
+| \code{subpage}		| ✘					| ✘		| \code{float} |
+| \code{table}			| \mref{sec:order}{✘/✔}			| ≈		| ✘ |
+| \code{tabular}		| ✘					| ✘		| ✘ |
+| \code{\emph{theorem}}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘ |
+| \code{verbatim}		| ✘					| ✘		| \code{mult} |
+| \code{verse}			| ✘					| ✘		| ✘ |
 \end{tabular}
-\caption{The permissions associated with the various ${lambtex} commands for each of
-the three classes (order, label, and extra) of optional arguments.  Note that simple commands
-are shown prefixed with a backslash, whereas environment commands are enclosed inside brackets.}
+\caption{The permissions associated with the various ${lambtex} commands for each of the three
+classes (order, label, and extra) of optional arguments.  In the case of extra parameters, the
+options available for each command are also displayed.  Note that simple commands are shown
+prefixed with a backslash, whereas environment commands are enclosed inside brackets.
+Within each category, commands are shown alphabetically.  Furthermore, the commands
+\code{\emph{boxout}} and \code{\emph{theorem}} are shown in italics because the actual
+command name is user-defined.}
 \end{table}
 
-\section[sec:order]{Notes on the ordering of wrappers and sectional blocks}
+\section[sec:order]{Notes on ordering in the context of sub-pages}
 
 A wrapper is essentially a floater element with a caption and an order associated
 with it.  There are four elements in ${lambtex} that fit into this category: equations,
@@ -1870,32 +1854,31 @@ concerning the ordering and hyperlinking of floaters and sectional commands.
 	Only numbered elements may be referred to using \code{\\ref}
 	and \code{\\sref} commands:
 
-	Unless the user explicitly demanded an empty ordering, sectional commands
-	have by default a number.  As for wrappers, they always have an associated
-	order. Therefore, it makes sense that the hyperlinking commands that are
-	supposed to produce a number should only be used with wrappers or numbered
-	sectional blocks.  These commands are \code{\\ref} and \code{\\sref}.  On the
-	other hand, because \code{\\mref} does not output a number, it is always allowed.
+	\p<!indent>{Unless the user explicitly demanded an empty ordering, sectional commands
+	have by default a number.  As for wrappers, they always have an associated order.
+	Therefore, it makes sense that the hyperlinking commands that are supposed to produce
+	a number should only be used with wrappers or numbered sectional blocks.  These commands
+	are \code{\\ref} and \code{\\sref}.  On the other hand, because \code{\\mref} does not
+	output a number, it is always allowed.}
 
 \item
 	You must explicitly provide a manual ordering for subpaged
 	wrappers or sectional blocks:
 
-	A subpaged element is one that is declared inside a subpage figure (see
-	\sref{sec:subpage}).  Because they lie outside the main flow of the document,
-	these elements are not automatically numbered.	You must therefore explicitly
-	provide them with an ordering parameter.  This is done by inserting the
-	numbering between parentheses.	Note that in the case of sectional commands
-	an empty ordering is allowed.
+	\p<!indent>{A subpaged element is one that is declared inside a subpage figure (see
+	\sref{sec:subpage}).  Because they lie outside the main flow of the document, these
+	elements are not automatically numbered.  You must therefore explicitly provide them
+	with an ordering parameter.  This is done by inserting the numbering between parentheses.
+	Note that in the case of sectional commands an empty ordering is allowed.}
 
 \item
 	You may not provide a manual ordering for non-subpaged wrappers
 	or sectional blocks:
 
-	This rule is complementary to the previous one.  Because wrappers and sections
-	in the main document are numbered automatically by ${lambtex}, you may
-	not interfere with that automatism by providing an explicit ordering.  Note,
-	however, that an empty ordering is always allowed for sectional commands.
+	\p<!indent>{This rule is complementary to the previous one.  Because wrappers and sections
+	in the main document are numbered automatically by ${lambtex}, you may not interfere with
+	that automatism by providing an explicit ordering.  Note, however, that an empty ordering
+	is always allowed for sectional commands.}
 
 \end{enumerate}
 
@@ -1930,7 +1913,7 @@ below lists all the existing extra parameters together with the accepted values 
 | \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{Camlhighlight} library) |
 \end{tabular}
 \caption{List of all existing extra parameters and associated range of values.
-Consult \sref{tab:extracomm} for a list of which of these parameters are
+Consult \sref{tab:permlist} for a list of which of these parameters are
 accepted for each command.}
 \end{table}
 
@@ -1946,7 +1929,7 @@ instead of the canonical form.  The shorthand pre-conditions are as follows:
 	for each parameter, and because there are practically no overlaps in the existing
 	set of commands, this condition applies almost always.	The notable exception
 	is the environment command \code{source}, which accepts three different boolean
-	parameters (see \sref{tab:extracomm}).
+	parameters (see \sref{tab:permlist}).
 
 \item	Boolean parameters may be set by specifying the parameter name.  Therefore, if
 	parameter \code{beta} is boolean, you may set it to true by declaring either
@@ -1972,29 +1955,6 @@ instead of the canonical form.  The shorthand pre-conditions are as follows:
 As can be deduced from the above rules, ${lambtex} uses a basic constraint
 satisfaction algorithm to resolve extra parameter declarations.  If the declaration
 is unambiguous to a human, so it should be to ${lambtex}.
-
-\begin[tab:extracomm]{table}
-\begin{tabular}{rl}
-\head
-| Command			| Accepted extra parameters |
-\body
-| \code{\\p}			| \code{initial}, \code{indent} |
-| \code{\\image}		| \code{frame}, \code{width} |
-| \code{itemize}		| \code{bul} |
-| \code{enumerate}		| \code{num} |
-| \code{source}			| \code{box}, \code{linenums}, \code{zebra}, \code{lang} |
-| \code{verbatim}		| \code{mult} |
-| \code{pull}			| \code{float} |
-| \code{decor}			| \code{float} |
-| \code{boxout}			| \code{float} |
-| \code{equation}		| \code{float} |
-| \code{printout}		| \code{float} |
-| \code{table}			| \code{float} |
-| \code{figure}			| \code{float} |
-\end{tabular}
-\caption{Extra parameters accepted for each command.  None
-of the commands not listed here accepts any extra parameters.}
-\end{table}
 
 
 \part(){Backmatter}
