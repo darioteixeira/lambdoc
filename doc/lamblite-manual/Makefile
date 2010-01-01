@@ -1,22 +1,10 @@
-NAME=lamblite_manual
+LAMBCMD=../../src/_build/lambcmd/lambcmd.native
 
-all: $(NAME).cma $(NAME).cmxs
+all: index.html
 
-%.cma: %.cmo
-	ocamlc -a -o $@ $+
-
-%.cmxa: %.cmx
-	ocamlopt -a -o $@ $+
-
-%.cmxs: %.cmxa
-	ocamlopt -shared -linkall -I `pwd` -o $@ $<
-
-%.cmo: %.ml
-	ocamlfind ocamlc -thread -package lwt,ocsigen,lambdoc -c $<
-
-%.cmx: %.ml
-	ocamlfind ocamlopt -thread -package lwt,ocsigen,lambdoc -c $<
+index.html: lamblite-manual.lambtex
+	$(LAMBCMD) -f lambtex -t xhtml -i $< -o $@
 
 clean:
-	rm -f $(NAME).[ao] $(NAME).cm[ioa] $(NAME).cmxa $(NAME).cmxs
+	rm -rf index.html
 

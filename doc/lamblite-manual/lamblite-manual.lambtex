@@ -13,14 +13,14 @@ and \caps{Creole}\cite{bib:creole}.
 
 You may also use HTML entities such as &euro; or &#x2603;.
 
-\begin{code}
+\begin{source}
 Line breaks within one paragraph are not important,
 since paragraphs are only terminated by an empty line.
 
 Within a paragraph you can format certain passages
 in **bold text**, //emphasised text//, or even in
 {{monospaced text}}.
-\end{code}
+\end{source}
 
 \begin{subpage}
 Line breaks within one paragraph are not important,
@@ -28,12 +28,12 @@ since paragraphs are only terminated by an empty line.
 
 Within a paragraph you can format certain passages
 in \bold{bold text}, \emph{emphasised text}, or even
-in \mono{monospaced text}.
+in \code{monospaced text}.
 \end{subpage}
 
 \section{Lists}
 
-\begin{code}
+\begin{source}
 The reasons are three:
 
 - one
@@ -43,19 +43,19 @@ The reasons are three:
   # b
   # c
 - four
-\end{code}
+\end{source}
 
 
 \section{Quotations}
 
-\begin{code}
+\begin{source}
 This is what you said:
 
 > Eggs should be opened by their large end.
 > Opening them by their small end is heresy.
 
 I beg to differ. Let me expand on why.
-\end{code}
+\end{source}
 
 
 \begin{subpage}
@@ -75,7 +75,7 @@ I beg to differ. Let me expand on why.
 
 \section{Verbatim environments}
 
-\begin{code}
+\begin{source}
 This is a normal text paragraph:
 
 <<
@@ -83,17 +83,17 @@ This is a normal text paragraph:
 |        |
 ----------
 >>
-\end{code}
+\end{source}
 
 \section{Code blocks}
 
-\begin{code}
+\begin{source}
 This is a normal text paragraph:
 
 {{
 let x = a
 }}
-\end{code}
+\end{source}
 
 \bibliography
 
