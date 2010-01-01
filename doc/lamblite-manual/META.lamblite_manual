@@ -1,0 +1,4 @@
+directory = "."
+requires = "extlib,lambdoc"
+archive(plugin,byte) = "lamblite_manual.cma"
+archive(plugin,native) = "lamblite_manual.cmxs"

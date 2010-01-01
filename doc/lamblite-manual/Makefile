@@ -1,0 +1,22 @@
+NAME=lamblite_manual
+
+all: $(NAME).cma $(NAME).cmxs
+
+%.cma: %.cmo
+	ocamlc -a -o $@ $+
+
+%.cmxa: %.cmx
+	ocamlopt -a -o $@ $+
+
+%.cmxs: %.cmxa
+	ocamlopt -shared -linkall -I `pwd` -o $@ $<
+
+%.cmo: %.ml
+	ocamlfind ocamlc -thread -package lwt,ocsigen,lambdoc -c $<
+
+%.cmx: %.ml
+	ocamlfind ocamlopt -thread -package lwt,ocsigen,lambdoc -c $<
+
+clean:
+	rm -f $(NAME).[ao] $(NAME).cm[ioa] $(NAME).cmxa $(NAME).cmxs
+

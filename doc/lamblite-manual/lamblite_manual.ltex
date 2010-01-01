@@ -1,0 +1,111 @@
+\title{The \caps{Lamblite} Manual}
+\subtitle{Dario Teixeira}
+\subtitle{August 2009}
+
+\toc[sec:toc]
+
+\section()[sec:intro]{Introduction}
+
+\caps{Lamblite} is a lightweight markup language inspired by \caps{Markdown}\cite{bib:markdown}
+and \caps{Creole}\cite{bib:creole}.
+
+\section{Paragraphs}
+
+You may also use HTML entities such as &euro; or &#x2603;.
+
+\begin{code}
+Line breaks within one paragraph are not important,
+since paragraphs are only terminated by an empty line.
+
+Within a paragraph you can format certain passages
+in **bold text**, //emphasised text//, or even in
+{{monospaced text}}.
+\end{code}
+
+\begin{subpage}
+Line breaks within one paragraph are not important,
+since paragraphs are only terminated by an empty line.
+
+Within a paragraph you can format certain passages
+in \bold{bold text}, \emph{emphasised text}, or even
+in \mono{monospaced text}.
+\end{subpage}
+
+\section{Lists}
+
+\begin{code}
+The reasons are three:
+
+- one
+- two
+- three:
+  # a
+  # b
+  # c
+- four
+\end{code}
+
+
+\section{Quotations}
+
+\begin{code}
+This is what you said:
+
+> Eggs should be opened by their large end.
+> Opening them by their small end is heresy.
+
+I beg to differ. Let me expand on why.
+\end{code}
+
+
+\begin{subpage}
+This is what you said:
+
+\begin{quote}
+Eggs should be opened by their large end.
+Opening them by their small end is heresy.
+\end{quote}
+
+I beg to differ. Let me expand on why.
+\end{subpage}
+
+
+
+
+
+\section{Verbatim environments}
+
+\begin{code}
+This is a normal text paragraph:
+
+<<
+----------
+|        |
+----------
+>>
+\end{code}
+
+\section{Code blocks}
+
+\begin{code}
+This is a normal text paragraph:
+
+{{
+let x = a
+}}
+\end{code}
+
+\bibliography
+
+\begin[bib:markdown]{bib}
+\who{who}
+\what{what}
+\where{where}
+\end{bib}
+
+\begin[bib:creole]{bib}
+\who{who}
+\what{what}
+\where{where}
+\end{bib}
+
