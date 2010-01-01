@@ -84,10 +84,11 @@ body
 .doc_initial:first-letter
  {
  float: left;
- margin-right: 0.2em;
+ margin-right: 0.15em;
  font-weight: bold;
  font-size: 3.5em;
- text-shadow: #666 2px 2px 1px;
+ text-transform: capitalize;
+ text-shadow: #666 1px 1px 2px;
  color: #501;
  }
 .doc_par:not(:first-child) {margin-top: 0.5em;}
