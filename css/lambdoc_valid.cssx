@@ -224,16 +224,21 @@
 	float: left;
 	margin-right: Hmargin_src;
 	border-right: Border_src;
+	white-space: normal;
 	font-weight: bold;
+	}
+
+.doc_src_code
+	{
+	white-space: normal;
 	}
 
 .doc_src_line
 	{
 	display: block;
 	white-space: pre;
-	height: 1em;
-	vertical-align: bottom;
-	padding: 0.3em 1em;	/* 0.25 = Padding_box / 4 */
+	height: Line_height_src;
+	padding: 0.2em 1em;
 	}
 
 .doc_src_dummy
