@@ -1,9 +1,9 @@
 LAMBCMD=../../src/_build/lambcmd/lambcmd.native
 
-all: complete.html
+all: index.html
 
-complete.html: complete.lamblite
+index.html: sample.lamblite
 	$(LAMBCMD) -f lamblite -t xhtml -i $< -o $@
 
 clean:
-	rm -rf complete.html
+	rm -rf index.html

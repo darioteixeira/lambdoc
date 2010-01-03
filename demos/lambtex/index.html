@@ -16,7 +16,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <h2 class="doc_title">Dario Teixeira
       </h2>
-      <h2 class="doc_title">December 2009
+      <h2 class="doc_title">January 2010
       </h2>
       <div class="doc_abs">
         <h1 class="doc_sec">Abstract
@@ -382,15 +382,31 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
-        <p class="doc_src_nums">
-          <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line">1</span><span class="doc_src_line">2</span><span class="doc_src_line">3</span><span class="doc_src_line">4</span><span class="doc_src_line">5</span><span class="doc_src_line">6</span><span class="doc_src_line">7</span>
-          <span class="doc_src_line doc_src_dummy"></span>
-        </p>
-        <p class="doc_src_code">
-          <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</span>
-          <span class="doc_src_line"></span><span class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">);;</span></span>
-          <span class="doc_src_line doc_src_dummy"></span>
-        </p>
+        <pre class="doc_src_nums">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">1</code>
+<code class="doc_src_line">2</code>
+<code class="doc_src_line">3</code>
+<code class="doc_src_line">4</code>
+<code class="doc_src_line">5</code>
+<code class="doc_src_line">6</code>
+<code class="doc_src_line">7</code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+        <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">);;</span></code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
       <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
       </p>
@@ -399,11 +415,19 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
       </p>
       <div class="doc_src_box doc_src_main">
-        <p class="doc_src_code">
-          <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line">type 'a tree =</span><span class="doc_src_line">    | Leaf</span><span class="doc_src_line">    | Node of 'a * 'a tree * 'a tree</span>
-          <span class="doc_src_line"></span><span class="doc_src_line">let rec count = function</span><span class="doc_src_line">    | Leaf		       -&gt; 0</span><span class="doc_src_line">    | Node (node, left, right) -&gt; 1 + (count left) + (count right);;</span>
-          <span class="doc_src_line doc_src_dummy"></span>
-        </p>
+        <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">type 'a tree =</code>
+<code class="doc_src_line">    | Leaf</code>
+<code class="doc_src_line">    | Node of 'a * 'a tree * 'a tree</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">let rec count = function</code>
+<code class="doc_src_line">    | Leaf		       -&gt; 0</code>
+<code class="doc_src_line">    | Node (node, left, right) -&gt; 1 + (count left) + (count right);;</code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
       <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
       </p>
@@ -412,9 +436,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
       </p>
       <div class="doc_src_main">
-        <p class="doc_src_code"><span class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</span>
-          <span class="doc_src_line"></span><span class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">);;</span></span>
-        </p>
+        <pre class="doc_src_code">
+<code class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">);;</span></code></pre>
       </div>
       <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.
       </p>
@@ -1074,15 +1104,31 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <div id="doc:a:75" class="doc_wrapper doc_printout doc_float_center">
         <div class="doc_src_box doc_src_zebra doc_src_main">
-          <p class="doc_src_nums">
-            <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line">1</span><span class="doc_src_line">2</span><span class="doc_src_line">3</span><span class="doc_src_line">4</span><span class="doc_src_line">5</span><span class="doc_src_line">6</span><span class="doc_src_line">7</span>
-            <span class="doc_src_line doc_src_dummy"></span>
-          </p>
-          <p class="doc_src_code">
-            <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</span>
-            <span class="doc_src_line"></span><span class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">);;</span></span>
-            <span class="doc_src_line doc_src_dummy"></span>
-          </p>
+          <pre class="doc_src_nums">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">1</code>
+<code class="doc_src_line">2</code>
+<code class="doc_src_line">3</code>
+<code class="doc_src_line">4</code>
+<code class="doc_src_line">5</code>
+<code class="doc_src_line">6</code>
+<code class="doc_src_line">7</code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+          <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">);;</span></code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
@@ -1101,11 +1147,19 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <div id="doc:a:77" class="doc_wrapper doc_printout doc_float_left">
         <div class="doc_src_box doc_src_zebra doc_src_main">
-          <p class="doc_src_code">
-            <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line"><span class="doc_src_kwa">type</span> t <span class="doc_src_sym">=</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">int</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">float</span></span>
-            <span class="doc_src_line"></span><span class="doc_src_line"><span class="doc_src_kwa">let</span> is_foo <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">true</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">false</span></span>
-            <span class="doc_src_line doc_src_dummy"></span>
-          </p>
+          <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">type</span> t <span class="doc_src_sym">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">int</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">float</span></code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">let</span> is_foo <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">true</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">false</span></code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
@@ -1126,11 +1180,19 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <div id="doc:a:79" class="doc_wrapper doc_printout doc_float_right">
         <div class="doc_src_box doc_src_zebra doc_src_main">
-          <p class="doc_src_code">
-            <span class="doc_src_line doc_src_dummy"></span><span class="doc_src_line"><span class="doc_src_kwa">type</span> t <span class="doc_src_sym">=</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">int</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">float</span></span>
-            <span class="doc_src_line"></span><span class="doc_src_line"><span class="doc_src_kwa">let</span> is_foo <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">true</span></span><span class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">false</span></span>
-            <span class="doc_src_line doc_src_dummy"></span>
-          </p>
+          <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">type</span> t <span class="doc_src_sym">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">int</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">float</span></code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_kwa">let</span> is_foo <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Foo</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">true</span></code>
+<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Bar</span> _ <span class="doc_src_sym">-&gt;</span> <span class="doc_src_kwa">false</span></code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
