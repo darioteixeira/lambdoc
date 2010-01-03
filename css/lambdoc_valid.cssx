@@ -238,14 +238,14 @@
 	display: block;
 	white-space: pre;
 	height: Line_height_src;
-	padding: 0.2em 1em;
+	padding: 0 1em;
 	}
 
 .doc_src_dummy
 	{
 	display: block;
 	height: 0;
-	padding: 0.375em 0;	/* 0.375 = (Padding_box - (Padding_box / 4)) / 2 */
+	padding: 0.3em 0;
 	}
 
 .doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: Background_src_odd;}

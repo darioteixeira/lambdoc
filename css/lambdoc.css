@@ -206,7 +206,7 @@ body
  margin: 0 1em;
  font-size: 1.2em;
  font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
- line-height: 1.2em;
+ line-height: 1.8em;
  overflow: auto;
  color: Color_body;
  }
@@ -237,15 +237,15 @@ body
  {
  display: block;
  white-space: pre;
- height: 1.2em;
- padding: 0.2em 1em;
+ height: 1.8em;
+ padding: 0 1em;
  }
 
 .doc_src_dummy
  {
  display: block;
  height: 0;
- padding: 0.375em 0;
+ padding: 0.3em 0;
  }
 
 .doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: #f3f6fc;}

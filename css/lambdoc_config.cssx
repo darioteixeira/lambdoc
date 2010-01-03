@@ -156,7 +156,7 @@
 #define Padding_part		0.25em
 
 #define Line_height_body	1.6em
-#define Line_height_src		1.2em
+#define Line_height_src		1.8em
 #define Line_height_verb	1em
 
 
