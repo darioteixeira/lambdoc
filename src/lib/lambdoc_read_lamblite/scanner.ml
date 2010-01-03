@@ -31,16 +31,14 @@ type text_t =
 	| Plain of string
 	| Bold_mark
 	| Emph_mark
-	| Code_mark
-	| Begin_link
-	| End_link
-	| Link_sep
+	| Sup_mark
+	| Sub_mark
+	| Begin_code | End_code
+	| Begin_link | End_link | Link_sep
 
 type line_t =
-	| Begin_source of string
-	| End_source
-	| Begin_verbatim
-	| End_verbatim
+	| Begin_source of string | End_source
+	| Begin_verbatim of string | End_verbatim
 	| Raw of string
 	| Section of int * text_t list
 	| Par of int * (list_t * int) option * text_t list
@@ -58,9 +56,8 @@ let count_char str what =
 (*	{2 Regular expressions}							*)
 (********************************************************************************)
 
-let regexp alpha = ['a' - 'z']
 let regexp blank = [' ' '\t']
-let regexp space = ' '
+let regexp non_blank = [^ ' ' '\t']
 let regexp section_pat = '='+
 let regexp quote_pat = '>' ('>' | blank)*
 let regexp list_pat = '-'+ | '*'+ | '#'+
@@ -79,37 +76,47 @@ let text_scanner lexbuf =
 		| '\\' _ -> main_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
 		| "**"	 -> main_scanner (Bold_mark :: accum) lexbuf
 		| "//"	 -> main_scanner (Emph_mark :: accum) lexbuf
-		| "__"	 -> main_scanner (Code_mark :: accum) lexbuf
+		| "^^"	 -> main_scanner (Sup_mark :: accum) lexbuf
+		| "__"	 -> main_scanner (Sub_mark :: accum) lexbuf
+		| "{{"	 -> main_scanner (Begin_code :: accum) lexbuf
+		| "}}"	 -> main_scanner (End_code :: accum) lexbuf
 		| "[["	 -> link_scanner (Begin_link :: accum) lexbuf
 		| "]]"	 -> main_scanner (End_link :: accum) lexbuf
-		| "||"	 -> main_scanner (Link_sep :: accum) lexbuf
+		| "|"	 -> main_scanner (Link_sep :: accum) lexbuf
 		| _	 -> main_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	and link_scanner accum = lexer
 		| eof	 -> accum
 		| '\\' _ -> link_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
 		| "]]"	 -> main_scanner (End_link :: accum) lexbuf
-		| "||"	 -> main_scanner (Link_sep :: accum) lexbuf
+		| "|"	 -> main_scanner (Link_sep :: accum) lexbuf
 		| _	 -> link_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	in List.rev (main_scanner [] lexbuf)
 
 
-let literal_scanner term_token = lexer
-	| "}}" blank* eof -> term_token
-	| _+		  -> Raw (Ulexing.utf8_lexeme lexbuf)
+let source_scanner = lexer
+	| "}}}" blank* eof -> End_source
+	| _*		   -> Raw (Ulexing.utf8_lexeme lexbuf)
+
+
+let verbatim_scanner = lexer
+	| ")))" blank* eof -> End_verbatim
+	| _*		   -> Raw (Ulexing.utf8_lexeme lexbuf)
 
 
 let general_scanner = lexer
-	| "{{#" alpha* blank* eof ->
-		Begin_source (String.slice ~first:3 (String.strip (Ulexing.latin1_lexeme lexbuf)))
-	| "{{" blank* eof ->
-		Begin_verbatim
-	| "}}" blank* eof ->
+	| "{{{" non_blank* blank* eof ->
+		Begin_source (Ulexing.utf8_sub_lexeme lexbuf 3 ((Ulexing.lexeme_length lexbuf) - 3))
+	| "(((" non_blank* blank* eof ->
+		Begin_verbatim (Ulexing.utf8_sub_lexeme lexbuf 3 ((Ulexing.lexeme_length lexbuf) - 3))
+	| "}}}" blank* eof ->
 		raise Lone_terminator
-	| section_pat space? ->
+	| ")))" blank* eof ->
+		raise Lone_terminator
+	| section_pat blank? ->
 		let lexeme = Ulexing.utf8_lexeme lexbuf in
 		let section_level = count_char lexeme '='
 		in Section (section_level, text_scanner lexbuf)
-	| quote_pat? blank* list_pat? blank* ->
+	| quote_pat? blank* (list_pat blank+)? ->
 		let lexeme = Ulexing.utf8_lexeme lexbuf in
 		let quote_level = count_char lexeme '>'
 		and list_level =

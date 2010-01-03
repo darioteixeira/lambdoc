@@ -81,7 +81,10 @@ in object (self)
 			| Plain x	-> PLAIN (self#op, x)
 			| Bold_mark	-> BOLD_MARK self#op
 			| Emph_mark	-> EMPH_MARK self#op
-			| Code_mark	-> CODE_MARK self#op
+			| Sup_mark	-> SUP_MARK self#op
+			| Sub_mark	-> SUB_MARK self#op
+			| Begin_code	-> BEGIN_CODE self#op
+			| End_code	-> END_CODE self#op
 			| Begin_link	-> BEGIN_LINK self#op
 			| End_link	-> END_LINK self#op
 			| Link_sep	-> LINK_SEP self#op
@@ -167,7 +170,7 @@ in object (self)
 		let tokens = self#tokens_of_text text in
 		let () = match (par_state, tokens) with
 			| false, hd::tl	-> List.iter self#store ((BEGIN_PAR self#op) :: tokens)
-			| true, hd::tl	-> List.iter self#store tokens
+			| true, hd::tl	-> List.iter self#store (PLAIN (self#op, " ") :: tokens)
 			| true, []	-> self#store (END_PAR self#op)
 			| _		-> ()
 		in par_state <- text <> [] 
@@ -181,21 +184,22 @@ in object (self)
 			else
 				let scanner = match context with
 					| General	-> Scanner.general_scanner
-					| Source	-> Scanner.literal_scanner End_source
-					| Verbatim	-> Scanner.literal_scanner End_verbatim in
+					| Source	-> Scanner.source_scanner
+					| Verbatim	-> Scanner.verbatim_scanner in
 				let lexbuf = Ulexing.from_utf8_string lines.(line_counter) in
 				let tok = scanner lexbuf
 				in match tok with
-					| Begin_source lang ->
+					| Begin_source extra ->
 						context <- Source;
-						let extra = if String.length lang = 0 then None else Some ("lang=" ^ lang)
-						in self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{#") ~extra ()))
+						let extra = if String.length extra = 0 then None else Some extra
+						in self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~extra ()))
 					| End_source ->
 						context <- General;
 						self#store (END_SOURCE self#op)
-					| Begin_verbatim ->
+					| Begin_verbatim extra ->
 						context <- Verbatim;
-						self#store (BEGIN_VERBATIM self#op)
+						let extra = if String.length extra = 0 then None else Some extra
+						in self#store (BEGIN_VERBATIM (self#comm ~tag:(Some "(((") ~extra ()))
 					| End_verbatim ->
 						context <- General;
 						self#store (END_VERBATIM self#op)
