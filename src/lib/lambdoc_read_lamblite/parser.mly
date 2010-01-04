@@ -97,7 +97,6 @@ item:
 
 inline:
 	| plain						{$1}
-	| ENTITY					{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
 	| BOLD_MARK plain BOLD_MARK			{($1, Ast.Bold [$2])}
 	| EMPH_MARK plain EMPH_MARK			{($1, Ast.Emph [$2])}
 	| SUP_MARK plain SUP_MARK			{($1, Ast.Sup [$2])}
@@ -109,6 +108,7 @@ inline:
 
 plain:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}
+	| ENTITY					{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
 
 raw:
 	| PLAIN						{let (comm, txt) = $1 in txt}
