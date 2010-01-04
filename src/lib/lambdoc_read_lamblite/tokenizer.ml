@@ -71,18 +71,21 @@ in object (self)
 
 	method private store token =
 		productions <- match (productions, token) with
-			| ([PLAIN (op, txt1)], PLAIN (_, txt2))	-> [PLAIN (op, txt1 ^ " " ^ txt2)]
+			| ([PLAIN (op, txt1)], PLAIN (_, txt2))	-> [PLAIN (op, txt1 ^ txt2)]
 			| ([RAW txt1], RAW txt2)		-> [RAW (txt1 ^ "\n" ^ txt2)]
 			| _					-> productions @ [token]
 
 
 	method private tokens_of_text text_list =
 		let conv = function
-			| Plain x	-> PLAIN (self#op, x)
+			| Plain txt	-> PLAIN (self#op, txt)
+			| Entity ent	-> ENTITY (self#op, ent)
 			| Bold_mark	-> BOLD_MARK self#op
 			| Emph_mark	-> EMPH_MARK self#op
 			| Sup_mark	-> SUP_MARK self#op
 			| Sub_mark	-> SUB_MARK self#op
+			| Begin_caps	-> BEGIN_CAPS self#op
+			| End_caps	-> END_CAPS self#op
 			| Begin_code	-> BEGIN_CODE self#op
 			| End_code	-> END_CODE self#op
 			| Begin_link	-> BEGIN_LINK self#op

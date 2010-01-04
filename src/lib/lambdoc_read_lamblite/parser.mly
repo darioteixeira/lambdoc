@@ -19,11 +19,14 @@ open Lambdoc_reader
 
 %token <Lambdoc_core.Basic.raw_t> RAW
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.plain_t> PLAIN
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
 
 %token <Lambdoc_reader.Ast.command_t> BOLD_MARK
 %token <Lambdoc_reader.Ast.command_t> EMPH_MARK
 %token <Lambdoc_reader.Ast.command_t> SUP_MARK
 %token <Lambdoc_reader.Ast.command_t> SUB_MARK
+%token <Lambdoc_reader.Ast.command_t> BEGIN_CAPS
+%token <Lambdoc_reader.Ast.command_t> END_CAPS
 %token <Lambdoc_reader.Ast.command_t> BEGIN_CODE
 %token <Lambdoc_reader.Ast.command_t> END_CODE
 %token <Lambdoc_reader.Ast.command_t> BEGIN_LINK
@@ -94,10 +97,12 @@ item:
 
 inline:
 	| plain						{$1}
+	| ENTITY					{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
 	| BOLD_MARK plain BOLD_MARK			{($1, Ast.Bold [$2])}
 	| EMPH_MARK plain EMPH_MARK			{($1, Ast.Emph [$2])}
 	| SUP_MARK plain SUP_MARK			{($1, Ast.Sup [$2])}
 	| SUB_MARK plain SUB_MARK			{($1, Ast.Sub [$2])}
+	| BEGIN_CAPS plain END_CAPS			{($1, Ast.Caps [$2])}
 	| BEGIN_CODE plain END_CODE			{($1, Ast.Code [$2])}
 	| BEGIN_LINK raw END_LINK			{($1, Ast.Link ($2, None))}
 	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, Some [$4]))}
