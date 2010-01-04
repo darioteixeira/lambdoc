@@ -35,8 +35,6 @@ struct
 		in try
 			menhir_with_ulex Parser.document tokenizer
 		with
-			| Scanner.Lone_terminator ->
-				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 			| Tokenizer.Invalid_section_level num ->
 				let msg = Printf.sprintf "You have requested %d levels of sectioning, but only 3 are available" num
 				in raise (Reading_error (tokenizer#position.pos_lnum, msg))

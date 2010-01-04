@@ -33,6 +33,11 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> END_LINK
 %token <Lambdoc_reader.Ast.command_t> LINK_SEP
 
+%token <Lambdoc_reader.Ast.command_t> BEGIN_MATHTEX_INL
+%token <Lambdoc_reader.Ast.command_t> END_MATHTEX_INL
+%token <Lambdoc_reader.Ast.command_t> BEGIN_MATHML_INL
+%token <Lambdoc_reader.Ast.command_t> END_MATHML_INL
+
 %token <Lambdoc_reader.Ast.command_t> BEGIN_PAR
 %token <Lambdoc_reader.Ast.command_t> END_PAR
 
@@ -105,6 +110,8 @@ inline:
 	| BEGIN_CODE plain END_CODE			{($1, Ast.Code [$2])}
 	| BEGIN_LINK raw END_LINK			{($1, Ast.Link ($2, None))}
 	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, Some [$4]))}
+	| BEGIN_MATHTEX_INL raw END_MATHTEX_INL		{($1, Ast.Mathtex_inl $2)}
+	| BEGIN_MATHML_INL raw END_MATHML_INL		{($1, Ast.Mathml_inl $2)}
 
 plain:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}

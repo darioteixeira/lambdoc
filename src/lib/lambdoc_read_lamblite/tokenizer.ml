@@ -78,19 +78,23 @@ in object (self)
 
 	method private tokens_of_text text_list =
 		let conv = function
-			| Plain txt	-> PLAIN (self#op, txt)
-			| Entity ent	-> ENTITY (self#op, ent)
-			| Bold_mark	-> BOLD_MARK self#op
-			| Emph_mark	-> EMPH_MARK self#op
-			| Sup_mark	-> SUP_MARK self#op
-			| Sub_mark	-> SUB_MARK self#op
-			| Begin_caps	-> BEGIN_CAPS self#op
-			| End_caps	-> END_CAPS self#op
-			| Begin_code	-> BEGIN_CODE self#op
-			| End_code	-> END_CODE self#op
-			| Begin_link	-> BEGIN_LINK self#op
-			| End_link	-> END_LINK self#op
-			| Link_sep	-> LINK_SEP self#op
+			| Plain txt		-> PLAIN (self#op, txt)
+			| Entity ent		-> ENTITY (self#op, ent)
+			| Bold_mark		-> BOLD_MARK self#op
+			| Emph_mark		-> EMPH_MARK self#op
+			| Sup_mark		-> SUP_MARK self#op
+			| Sub_mark		-> SUB_MARK self#op
+			| Begin_caps		-> BEGIN_CAPS self#op
+			| End_caps		-> END_CAPS self#op
+			| Begin_code		-> BEGIN_CODE self#op
+			| End_code		-> END_CODE self#op
+			| Begin_link		-> BEGIN_LINK self#op
+			| End_link		-> END_LINK self#op
+			| Link_sep		-> LINK_SEP self#op
+			| Begin_mathtex_inl	-> BEGIN_MATHTEX_INL self#op
+			| End_mathtex_inl	-> END_MATHTEX_INL self#op
+			| Begin_mathml_inl	-> BEGIN_MATHML_INL self#op
+			| End_mathml_inl	-> END_MATHML_INL self#op
 		in List.map conv text_list
 
 

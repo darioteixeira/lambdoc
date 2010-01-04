@@ -14,13 +14,6 @@ open Lambdoc_reader
 
 
 (********************************************************************************)
-(*	{2 Exceptions}								*)
-(********************************************************************************)
-
-exception Lone_terminator
-
-
-(********************************************************************************)
 (*	{2 Type definitions}							*)
 (********************************************************************************)
 
@@ -38,6 +31,8 @@ type text_t =
 	| Begin_caps | End_caps
 	| Begin_code | End_code
 	| Begin_link | End_link | Link_sep
+	| Begin_mathtex_inl | End_mathtex_inl
+	| Begin_mathml_inl | End_mathml_inl
 
 type line_t =
 	| Begin_source of string | End_source
@@ -71,6 +66,24 @@ let regexp section_pat = '='+
 let regexp quote_pat = '>' ('>' | blank)*
 let regexp list_pat = '-'+ | '*'+ | '#'+
 
+let regexp escape = '\\'
+let regexp bold_mark = "**"
+let regexp emph_mark = "//"
+let regexp sup_mark = "^^"
+let regexp sub_mark = "__"
+let regexp begin_caps = "(("
+let regexp end_caps = "))"
+let regexp begin_code = "{{"
+let regexp end_code = "}}"
+let regexp begin_link = "[["
+let regexp end_link = "]]"
+let regexp link_sep = "|"
+
+let regexp begin_mathtex_inl = "[$"
+let regexp end_mathtex_inl = "$]"
+let regexp begin_mathml_inl = "<$"
+let regexp end_mathml_inl = "$>"
+
 let regexp entity_hexa = "&#x" (alpha | deci)+ ';'
 let regexp entity_deci = "&#" (alpha | deci)+ ';'
 let regexp entity_name = '&' (alpha | deci)+ ';'
@@ -79,6 +92,11 @@ let regexp endash = "--"
 let regexp emdash = "---"
 let regexp quote_open = "``"
 let regexp quote_close = "''"
+
+let regexp begin_source = "{{{"
+let regexp end_source = "}}}"
+let regexp begin_verbatim = "((("
+let regexp end_verbatim = ")))"
 
 
 (********************************************************************************)
@@ -90,55 +108,67 @@ let text_scanner lexbuf =
 		| (Plain x) :: tl	-> (Plain (x ^ el)) :: tl
 		| _			-> (Plain el) :: accum in
 	let rec main_scanner accum = lexer
-		| eof		-> accum
-		| '\\' _ 	-> main_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
-		| "**"		-> main_scanner (Bold_mark :: accum) lexbuf
-		| "//"		-> main_scanner (Emph_mark :: accum) lexbuf
-		| "^^"		-> main_scanner (Sup_mark :: accum) lexbuf
-		| "__"		-> main_scanner (Sub_mark :: accum) lexbuf
-		| "(("		-> main_scanner (Begin_caps :: accum) lexbuf
-		| "))"		-> main_scanner (End_caps :: accum) lexbuf
-		| "{{"		-> main_scanner (Begin_code :: accum) lexbuf
-		| "}}"		-> main_scanner (End_code :: accum) lexbuf
-		| "[["		-> link_scanner (Begin_link :: accum) lexbuf
-		| "]]"		-> main_scanner (End_link :: accum) lexbuf
-		| "|"		-> main_scanner (Link_sep :: accum) lexbuf
-		| entity_hexa	-> main_scanner (Entity (Entity.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)) :: accum) lexbuf
-		| entity_deci	-> main_scanner (Entity (Entity.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)) :: accum) lexbuf
-		| entity_name	-> main_scanner (Entity (Entity.Ent_name (rtrim_lexbuf ~first:1 lexbuf)) :: accum) lexbuf
-		| endash	-> main_scanner (Entity (Entity.Ent_name "ndash") :: accum) lexbuf
-		| emdash	-> main_scanner (Entity (Entity.Ent_name "mdash") :: accum) lexbuf
-		| quote_open	-> main_scanner (Entity (Entity.Ent_name "ldquo") :: accum) lexbuf
-		| quote_close	-> main_scanner (Entity (Entity.Ent_name "rdquo") :: accum) lexbuf
-		| _		-> main_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
+		| eof			-> accum
+		| escape _ 		-> main_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
+		| bold_mark		-> main_scanner (Bold_mark :: accum) lexbuf
+		| emph_mark		-> main_scanner (Emph_mark :: accum) lexbuf
+		| sup_mark		-> main_scanner (Sup_mark :: accum) lexbuf
+		| sub_mark		-> main_scanner (Sub_mark :: accum) lexbuf
+		| begin_caps		-> main_scanner (Begin_caps :: accum) lexbuf
+		| end_caps		-> main_scanner (End_caps :: accum) lexbuf
+		| begin_code		-> main_scanner (Begin_code :: accum) lexbuf
+		| end_code		-> main_scanner (End_code :: accum) lexbuf
+		| begin_link		-> link_scanner (Begin_link :: accum) lexbuf
+		| end_link		-> main_scanner (End_link :: accum) lexbuf
+		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
+		| begin_mathtex_inl	-> mathtex_inl_scanner (Begin_mathtex_inl :: accum) lexbuf
+		| end_mathtex_inl	-> main_scanner (End_mathtex_inl :: accum) lexbuf
+		| begin_mathml_inl	-> mathml_inl_scanner (Begin_mathml_inl :: accum) lexbuf
+		| end_mathml_inl	-> main_scanner (End_mathml_inl :: accum) lexbuf
+		| entity_hexa		-> main_scanner (Entity (Entity.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)) :: accum) lexbuf
+		| entity_deci		-> main_scanner (Entity (Entity.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)) :: accum) lexbuf
+		| entity_name		-> main_scanner (Entity (Entity.Ent_name (rtrim_lexbuf ~first:1 lexbuf)) :: accum) lexbuf
+		| endash		-> main_scanner (Entity (Entity.Ent_name "ndash") :: accum) lexbuf
+		| emdash		-> main_scanner (Entity (Entity.Ent_name "mdash") :: accum) lexbuf
+		| quote_open		-> main_scanner (Entity (Entity.Ent_name "ldquo") :: accum) lexbuf
+		| quote_close		-> main_scanner (Entity (Entity.Ent_name "rdquo") :: accum) lexbuf
+		| _			-> main_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	and link_scanner accum = lexer
-		| eof		-> accum
-		| '\\' _	-> link_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
-		| "]]"		-> main_scanner (End_link :: accum) lexbuf
-		| "|"		-> main_scanner (Link_sep :: accum) lexbuf
-		| _		-> link_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
+		| eof			-> accum
+		| escape _		-> link_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
+		| end_link		-> main_scanner (End_link :: accum) lexbuf
+		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
+		| _			-> link_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
+	and mathtex_inl_scanner accum = lexer
+		| eof			-> accum
+		| end_mathtex_inl	-> main_scanner (End_mathtex_inl :: accum) lexbuf
+		| _			-> mathtex_inl_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
+	and mathml_inl_scanner accum = lexer
+		| eof			-> accum
+		| end_mathml_inl	-> main_scanner (End_mathml_inl :: accum) lexbuf
+		| _			-> mathml_inl_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	in List.rev (main_scanner [] lexbuf)
 
 
 let source_scanner = lexer
-	| "}}}" blank* eof -> End_source
-	| _*		   -> Raw (Ulexing.utf8_lexeme lexbuf)
+	| end_source blank* eof -> End_source
+	| _*			-> Raw (Ulexing.utf8_lexeme lexbuf)
 
 
 let verbatim_scanner = lexer
-	| ")))" blank* eof -> End_verbatim
-	| _*		   -> Raw (Ulexing.utf8_lexeme lexbuf)
+	| end_verbatim blank* eof -> End_verbatim
+	| _*			  -> Raw (Ulexing.utf8_lexeme lexbuf)
 
 
 let general_scanner = lexer
-	| "{{{" non_blank* blank* eof ->
+	| begin_source non_blank* blank* eof ->
 		Begin_source (Ulexing.utf8_sub_lexeme lexbuf 3 ((Ulexing.lexeme_length lexbuf) - 3))
-	| "(((" non_blank* blank* eof ->
+	| end_source blank* eof ->
+		End_source
+	| begin_verbatim non_blank* blank* eof ->
 		Begin_verbatim (Ulexing.utf8_sub_lexeme lexbuf 3 ((Ulexing.lexeme_length lexbuf) - 3))
-	| "}}}" blank* eof ->
-		raise Lone_terminator
-	| ")))" blank* eof ->
-		raise Lone_terminator
+	| end_verbatim blank* eof ->
+		End_verbatim
 	| section_pat blank? ->
 		let lexeme = Ulexing.utf8_lexeme lexbuf in
 		let section_level = count_char lexeme '='
