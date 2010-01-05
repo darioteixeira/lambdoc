@@ -158,8 +158,8 @@ let process_document ~idiosyncrasies document_ast =
 
 	(*	Adds a new reference to the dictionary.
 	*)
-	and add_reference target_checker comm label =
-		DynArray.add references (target_checker, comm, label)
+	and add_reference target_checker comm ref =
+		DynArray.add references (target_checker, comm, ref)
 
 
 	(*	Adds a new TOC entry.
@@ -399,25 +399,28 @@ let process_document ~idiosyncrasies document_ast =
 				in Some (Inline.link lnk (Obj.magic maybe_newseq))
 			in check_comm `Feature_link comm elem
 
-		| (false, (comm, Ast.See label)) ->
+		| (false, (comm, Ast.See ref)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_note
-				in add_reference target_checker comm label;
-				Some (Inline.see label)
+				in add_reference target_checker comm ref;
+				Some (Inline.see ref)
 			in check_comm `Feature_see comm elem
 
-		| (false, (comm, Ast.Cite label)) ->
+		| (false, (comm, Ast.Cite ref)) ->
 			let elem () =
+				let refs = String.nsplit ref "," in
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_bib
-				in add_reference target_checker comm label;
-				Some (Inline.cite label)
+				in List.iter (add_reference target_checker comm) refs;
+				match refs with
+					| []	 -> None
+					| hd::tl -> Some (Inline.cite (hd, tl))
 			in check_comm `Feature_cite comm elem
 
-		| (false, (comm, Ast.Ref label)) ->
+		| (false, (comm, Ast.Ref ref)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -425,11 +428,11 @@ let process_document ~idiosyncrasies document_ast =
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
-				in add_reference target_checker comm label;
-				Some (Inline.ref label)
+				in add_reference target_checker comm ref;
+				Some (Inline.ref ref)
 			in check_comm `Feature_ref comm elem
 
-		| (false, (comm, Ast.Sref label)) ->
+		| (false, (comm, Ast.Sref ref)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -437,17 +440,17 @@ let process_document ~idiosyncrasies document_ast =
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
-				in add_reference target_checker comm label;
-				Some (Inline.sref label)
+				in add_reference target_checker comm ref;
+				Some (Inline.sref ref)
 			in check_comm `Feature_sref comm elem
 
-		| (false, (comm, Ast.Mref (label, seq))) ->
+		| (false, (comm, Ast.Mref (ref, seq))) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target _ -> `Valid_target
 					| _			  -> `Wrong_target Error.Target_label
-				in add_reference target_checker comm label;
-				Some (Inline.mref label (Obj.magic (convert_seq_aux true seq)))
+				in add_reference target_checker comm ref;
+				Some (Inline.mref ref (Obj.magic (convert_seq_aux true seq)))
 			in check_comm `Feature_mref comm elem
 
 		| (x, (comm, Ast.Macroarg num)) ->

@@ -31,7 +31,7 @@ type 'a inline_t =
 	| `Mbox of 'a list
 	| `Link of link_t * 'a list option
 	| `See of ref_t
-	| `Cite of ref_t
+	| `Cite of ref_t * ref_t list
 	| `Ref of ref_t
 	| `Sref of ref_t
 	| `Mref of ref_t * 'a list
@@ -62,7 +62,7 @@ let sub seq = `Sub seq
 let mbox seq = `Mbox seq
 let link lnk maybe_seq = `Link (lnk, maybe_seq)
 let see ref = `See ref
-let cite ref = `Cite ref
+let cite (hd, tl) = `Cite (hd, tl)
 let ref ref = `Ref ref
 let sref ref = `Sref ref
 let mref ref seq = `Mref (ref, seq)
