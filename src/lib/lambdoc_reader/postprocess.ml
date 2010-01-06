@@ -407,8 +407,12 @@ let process_document ~idiosyncrasies document_ast =
 					| _			-> `Wrong_target Error.Target_note
 				in List.iter (add_reference target_checker comm) refs;
 				match refs with
-					| []	 -> None
-					| hd::tl -> Some (Inline.see (hd, tl))
+					| hd::tl ->
+						Some (Inline.see (hd, tl))
+					| [] ->
+						let msg = Error.Empty_list comm.comm_tag in
+						DynArray.add errors (comm.comm_linenum, msg);
+						None
 			in check_comm `Feature_see comm elem
 
 		| (false, (comm, Ast.Cite ref)) ->
@@ -419,8 +423,12 @@ let process_document ~idiosyncrasies document_ast =
 					| _			-> `Wrong_target Error.Target_bib
 				in List.iter (add_reference target_checker comm) refs;
 				match refs with
-					| []	 -> None
-					| hd::tl -> Some (Inline.cite (hd, tl))
+					| hd::tl ->
+						Some (Inline.cite (hd, tl))
+					| [] ->
+						let msg = Error.Empty_list comm.comm_tag in
+						DynArray.add errors (comm.comm_linenum, msg);
+						None
 			in check_comm `Feature_cite comm elem
 
 		| (false, (comm, Ast.Ref ref)) ->
@@ -588,7 +596,7 @@ let process_document ~idiosyncrasies document_ast =
 				and newfrags = List.filter_map (convert_anon_item_frag ~minipaged x1 x2) frags
 				in match (frags, newfrags) with
 					| [], _ ->
-						let msg = Error.Empty_listing comm.comm_tag
+						let msg = Error.Empty_list comm.comm_tag
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| _, hd::tl ->
@@ -603,7 +611,7 @@ let process_document ~idiosyncrasies document_ast =
 				and newfrags = List.filter_map (convert_anon_item_frag ~minipaged x1 x2) frags
 				in match (frags, newfrags) with
 					| [], _ ->
-						let msg = Error.Empty_listing comm.comm_tag
+						let msg = Error.Empty_list comm.comm_tag
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| _, hd::tl ->
@@ -617,7 +625,7 @@ let process_document ~idiosyncrasies document_ast =
 				let newfrags = List.filter_map (convert_desc_item_frag ~minipaged x1 x2) frags
 				in match (frags, newfrags) with
 					| [], _ ->
-						let msg = Error.Empty_listing comm.comm_tag
+						let msg = Error.Empty_list comm.comm_tag
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| _, hd::tl ->
@@ -631,7 +639,7 @@ let process_document ~idiosyncrasies document_ast =
 				let newfrags = List.filter_map (convert_qanda_frag ~minipaged x) frags
 				in match (frags, newfrags) with
 					| [], _ ->
-						let msg = Error.Empty_listing comm.comm_tag
+						let msg = Error.Empty_list comm.comm_tag
 						in DynArray.add errors (comm.comm_linenum, msg);
 						None
 					| _, hd::tl ->

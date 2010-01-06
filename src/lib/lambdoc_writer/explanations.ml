@@ -193,11 +193,11 @@ let explain_error = function
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
+	| Error.Empty_list tag ->
+		sprintf "Empty list in %s." (explain_tag tag)
+
 	| Error.Nested_link tag ->
 		sprintf "Nested link in %s." (explain_tag tag)
-
-	| Error.Empty_listing tag ->
-		sprintf "Empty listing in %s." (explain_tag tag)
 
 	| Error.Unexpected_block (tag, blk) ->
 		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
