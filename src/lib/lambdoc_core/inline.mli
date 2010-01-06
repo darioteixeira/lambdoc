@@ -31,7 +31,7 @@ type 'a inline_t =
 	| `Sub of 'a list
 	| `Mbox of 'a list
 	| `Link of link_t * 'a list option
-	| `See of ref_t
+	| `See of ref_t * ref_t list
 	| `Cite of ref_t * ref_t list
 	| `Ref of ref_t
 	| `Sref of ref_t
@@ -62,7 +62,7 @@ val sup: ('a, 'b) t list -> ('a, 'b) t
 val sub: ('a, 'b) t list -> ('a, 'b) t
 val mbox: ('a, 'b) t list -> ('a, 'b) t
 val link: link_t -> ('a, [< `Nonlink ]) t list option -> ('a, [> `Link ]) t
-val see: ref_t -> ([> `Manuscript ], [> `Link ]) t
+val see: ref_t * ref_t list -> ([> `Manuscript ], [> `Link ]) t
 val cite: ref_t * ref_t list -> ([> `Manuscript ], [> `Link ]) t
 val ref: ref_t -> ([> `Manuscript ], [> `Link ]) t
 val sref: ref_t -> ([> `Manuscript ], [> `Link ]) t

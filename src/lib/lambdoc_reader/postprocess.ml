@@ -401,11 +401,14 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (false, (comm, Ast.See ref)) ->
 			let elem () =
+				let refs = String.nsplit ref "," in
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_note
-				in add_reference target_checker comm ref;
-				Some (Inline.see ref)
+				in List.iter (add_reference target_checker comm) refs;
+				match refs with
+					| []	 -> None
+					| hd::tl -> Some (Inline.see (hd, tl))
 			in check_comm `Feature_see comm elem
 
 		| (false, (comm, Ast.Cite ref)) ->

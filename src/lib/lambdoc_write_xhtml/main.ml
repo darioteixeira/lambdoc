@@ -148,12 +148,10 @@ let theorem_conv ?prespace order = listify_order ?prespace (Order.maybe_string_o
 let wrapper_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
-let bib_conv ?(wrapped = false) order =
-	let wrap = if wrapped then Some ("[", "]") else None
-	in listify_order ?wrap (Order.maybe_string_of_ordinal Printers.arabic order)
+let bib_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
-let note_conv order = listify_order ~wrap:("(", ")") (Order.maybe_string_of_ordinal Printers.arabic order)
+let note_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
 (********************************************************************************)
@@ -246,12 +244,15 @@ let write_valid_document settings classname doc =
 		| `Link (lnk, Some seq) ->
 			make_external_link lnk (Obj.magic (write_seq ~nbspfy seq))
 
-		| `See ref ->
-			let label = `User_label ref in
-			let target = Hashtbl.find labels label
-			in (match target with
-				| Target.Note_target order -> make_internal_link ~classname:"doc_see" label (note_conv order)
-				| _			   -> raise (Command_see_with_non_note target))
+		| `See (hd, tl) ->
+			let link_maker ref =
+				let label = `User_label ref in
+				let target = Hashtbl.find labels label
+				in (match target with
+					| Target.Note_target order -> make_internal_link label (note_conv order)
+					| _			   -> raise (Command_see_with_non_note target)) in
+			let commafy ref = [pcdata ","; link_maker ref]
+			in XHTML.M.span ~a:[a_class ["doc_see"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
 
 		| `Cite (hd, tl) ->
 			let link_maker ref =
