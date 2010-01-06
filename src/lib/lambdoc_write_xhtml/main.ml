@@ -117,11 +117,11 @@ let make_sectional level label orderlst content =
 (**	{3 Converters}								*)
 (********************************************************************************)
 
-let listify_order ?(prespace = false) ?(postdot = false) ?wrap order =
-	let content = match (order, wrap) with
-		| Some s, None	      -> Some s
-		| Some s, Some (b, a) -> Some (b ^ s ^ a)
-		| None, _	      -> None
+let listify_order ?(prespace = false) ?(postdot = false) ?prefix order =
+	let content = match (order, prefix) with
+		| Some s, None	 -> Some s
+		| Some s, Some p -> Some (p ^ s)
+		| None, _	 -> None
 	in match (content, prespace, postdot) with
 		| Some s, true, _ -> [space (); pcdata s]
 		| Some s, _, true -> [pcdata (s ^ "."); entity "ensp"]
@@ -139,7 +139,7 @@ let section_conv ?postdot location order =
 	in listify_order ?postdot (Order.maybe_string_of_hierarchical conv order)
 
 
-let boxout_conv ?prespace order = listify_order ?prespace ~wrap:("#", "") (Order.maybe_string_of_ordinal Printers.arabic order)
+let boxout_conv ?prespace order = listify_order ?prespace ~prefix:"#" (Order.maybe_string_of_ordinal Printers.arabic order)
 
 
 let theorem_conv ?prespace order = listify_order ?prespace (Order.maybe_string_of_ordinal Printers.arabic order)
@@ -617,7 +617,7 @@ let write_valid_document settings classname doc =
 	and write_note note =
 		XHTML.M.li ~a:[a_id (make_label note.Note.label)]
 			[
-			XHTML.M.span (note_conv note.Note.order);
+			XHTML.M.span (pcdata "(" :: (note_conv note.Note.order) @ [pcdata ")"]);
 			XHTML.M.div (write_frag note.Note.content);
 			]
 
@@ -625,7 +625,7 @@ let write_valid_document settings classname doc =
 	and write_bib bib =
 		XHTML.M.li ~a:[a_id (make_label bib.Bib.label)]
 			[
-			XHTML.M.span (bib_conv bib.Bib.order);
+			XHTML.M.span (pcdata "[" :: (bib_conv bib.Bib.order) @ [pcdata "]"]);
 			XHTML.M.p
 				[
 				XHTML.M.span ~a:[a_class ["doc_bib_author"]] (write_seq bib.Bib.author);
