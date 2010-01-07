@@ -193,6 +193,9 @@ let explain_error = function
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
+	| Error.Empty_inline tag ->
+		sprintf "Empty inline sequence in %s." (explain_tag tag)
+
 	| Error.Empty_list tag ->
 		sprintf "Empty list in %s." (explain_tag tag)
 

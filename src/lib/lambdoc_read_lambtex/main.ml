@@ -42,8 +42,6 @@ struct
 				raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected))
 			| Parser.Error ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
-			| Tokenizer.Unknown_simple_command tag ->
-				raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Unknown simple command '\\%s'" tag))
 end
 
 module M = Reader.Make_reader (R)

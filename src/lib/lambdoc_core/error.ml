@@ -115,6 +115,7 @@ type error_msg_t =
 	| Wrong_target of tag_t option * target_t * target_t * ref_t
 	| Undefined_target of tag_t option * ref_t
 
+	| Empty_inline of tag_t option
 	| Empty_list of tag_t option
 	| Nested_link of tag_t option
 	| Unexpected_block of tag_t option * blk_category_t

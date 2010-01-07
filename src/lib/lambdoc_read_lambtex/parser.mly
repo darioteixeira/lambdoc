@@ -32,9 +32,6 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
 %token <Lambdoc_core.Basic.raw_t> RAW
 
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.raw_t> MACROARG
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.raw_t> MACROCALL
-
 
 /********************************************************************************/
 /* Environment operators.  These are used in an inline context.			*/
@@ -51,7 +48,7 @@ let the comm = match comm.Ast.comm_tag with
 /********************************************************************************/
 /* Environment commands.  These are used only in a block context.		*/
 /* All environment commands are composed of a begin/end pair.			*/
-/* While the openingtag is different for each environment,			*/
+/* While the opening tag is different for each environment,			*/
 /* END_BLOCK is used as the common termination tag.				*/
 /********************************************************************************/
 
@@ -128,10 +125,13 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> THEAD
 %token <Lambdoc_reader.Ast.command_t> TFOOT
 %token <Lambdoc_reader.Ast.command_t> TBODY
-%token <Lambdoc_reader.Ast.command_t> CAPTION
 %token <Lambdoc_reader.Ast.command_t> BIB_AUTHOR
 %token <Lambdoc_reader.Ast.command_t> BIB_TITLE
 %token <Lambdoc_reader.Ast.command_t> BIB_RESOURCE
+%token <Lambdoc_reader.Ast.command_t> CAPTION
+
+%token <Lambdoc_reader.Ast.command_t> MACROARG
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.tag_t > MACROCALL
 
 
 /********************************************************************************/
@@ -293,16 +293,15 @@ inline:
 	| REF raw_bundle								{($1, Ast.Ref $2)}
 	| SREF raw_bundle								{($1, Ast.Sref $2)}
 	| MREF raw_bundle inline_bundle							{($1, Ast.Mref ($2, $3))}
-	| MACROARG									{let (comm, arg) = $1 in (comm, Ast.Macroarg arg)}
+	| MACROARG raw_bundle								{($1, Ast.Macroarg $2)}
 	| MACROCALL inline_bundle*							{let (comm, label) = $1 in (comm, Ast.Macrocall (label, $2))}
-
 
 
 /********************************************************************************/
 /* Bundles.									*/
 /********************************************************************************/
 
-inline_bundle: 		BEGIN push(general) OPEN_DUMMY inline+ pop_brk END	{$4}
+inline_bundle: 		BEGIN push(general) OPEN_DUMMY inline* pop_brk END	{$4}
 raw_bundle: 		BEGIN push(raw) OPEN_DUMMY RAW pop_brk END		{$4}
 
 

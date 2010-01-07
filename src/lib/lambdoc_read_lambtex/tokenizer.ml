@@ -26,13 +26,6 @@ open Scanner
 
 
 (********************************************************************************)
-(**	{1 Exceptions}								*)
-(********************************************************************************)
-
-exception Unknown_simple_command of string
-
-
-(********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
@@ -210,7 +203,8 @@ let issue_simple_command raw_comm position =
 		| "what"		-> (Blk, BIB_TITLE command)
 		| "where"		-> (Blk, BIB_RESOURCE command)
 		| "caption"		-> (Blk, CAPTION command)
-		| x			-> raise (Unknown_simple_command x)
+		| "arg"			-> (Inl, MACROARG command)
+		| _			-> (Inl, MACROCALL (command, simple))
 	in (Set context, [token])
 
 
@@ -282,8 +276,6 @@ object (self)
 			| `Tok_simple_comm comm		-> issue_simple_command comm self#position
 			| `Tok_env_begin comm		-> issue_begin_command comm self#position
 			| `Tok_env_end comm		-> (Set Blk, [END_DUMMY comm; END_BLOCK])
-			| `Tok_macroarg arg		-> (Set Inl, [MACROARG (op, arg)])
-			| `Tok_macrocall label		-> (Set Inl, [MACROCALL (op, label)])
 			| `Tok_begin			-> (Push Inl, [BEGIN; OPEN_DUMMY])
 			| `Tok_end			-> (Pop, [CLOSE_DUMMY; END])
 			| `Tok_begin_mathtex_inl	-> (Set Inl, [BEGIN_MATHTEX_INL op; OPEN_DUMMY])
