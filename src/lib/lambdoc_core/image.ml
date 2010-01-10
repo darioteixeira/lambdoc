@@ -22,7 +22,7 @@ type t =
 	{
 	frame: bool;
 	width: int option;
-	alias: alias_t;
+	alias: Alias.t;
 	alt: string;
 	} with sexp
 

@@ -23,7 +23,7 @@ type list_t =
 
 type text_t =
 	| Plain of string
-	| Entity of Entity.t
+	| Entity of Ast.entity_t
 	| Bold_mark
 	| Emph_mark
 	| Sup_mark
@@ -125,13 +125,13 @@ let text_scanner lexbuf =
 		| end_mathtex_inl	-> main_scanner (End_mathtex_inl :: accum) lexbuf
 		| begin_mathml_inl	-> mathml_inl_scanner (Begin_mathml_inl :: accum) lexbuf
 		| end_mathml_inl	-> main_scanner (End_mathml_inl :: accum) lexbuf
-		| entity_hexa		-> main_scanner (Entity (Entity.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)) :: accum) lexbuf
-		| entity_deci		-> main_scanner (Entity (Entity.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)) :: accum) lexbuf
-		| entity_name		-> main_scanner (Entity (Entity.Ent_name (rtrim_lexbuf ~first:1 lexbuf)) :: accum) lexbuf
-		| endash		-> main_scanner (Entity (Entity.Ent_name "ndash") :: accum) lexbuf
-		| emdash		-> main_scanner (Entity (Entity.Ent_name "mdash") :: accum) lexbuf
-		| quote_open		-> main_scanner (Entity (Entity.Ent_name "ldquo") :: accum) lexbuf
-		| quote_close		-> main_scanner (Entity (Entity.Ent_name "rdquo") :: accum) lexbuf
+		| entity_hexa		-> main_scanner (Entity (Ast.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)) :: accum) lexbuf
+		| entity_deci		-> main_scanner (Entity (Ast.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)) :: accum) lexbuf
+		| entity_name		-> main_scanner (Entity (Ast.Ent_name (rtrim_lexbuf ~first:1 lexbuf)) :: accum) lexbuf
+		| endash		-> main_scanner (Entity (Ast.Ent_name "ndash") :: accum) lexbuf
+		| emdash		-> main_scanner (Entity (Ast.Ent_name "mdash") :: accum) lexbuf
+		| quote_open		-> main_scanner (Entity (Ast.Ent_name "ldquo") :: accum) lexbuf
+		| quote_close		-> main_scanner (Entity (Ast.Ent_name "rdquo") :: accum) lexbuf
 		| _			-> main_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	and link_scanner accum = lexer
 		| eof			-> accum

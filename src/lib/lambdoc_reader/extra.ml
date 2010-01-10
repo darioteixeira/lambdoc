@@ -10,8 +10,10 @@ open ExtArray
 open ExtList
 open ExtString
 open Lambdoc_core
+open Basic
 open Error
 open Ast
+open Readconv
 
 
 (********************************************************************************)
@@ -218,27 +220,27 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		Positive (String_data v)
 
 	| (key, Bullet_kind, Unnamed_field v) ->
-		(try Undecided (Bullet_data (Bullet.of_string v)) with Invalid_argument _ -> Negative)
+		(try Undecided (Bullet_data (Basic_input.bullet_of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Bullet_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Bullet_data (Bullet.of_string v))
+		(try Positive (Bullet_data (Basic_input.bullet_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
 	| (key, Numbering_kind, Unnamed_field v) ->
-		(try Undecided (Numbering_data (Numbering.of_string v)) with Invalid_argument _ -> Negative)
+		(try Undecided (Numbering_data (Basic_input.numbering_of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Numbering_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Numbering_data (Numbering.of_string v))
+		(try Positive (Numbering_data (Basic_input.numbering_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);
 				Negative)
 
 	| (key, Floatation_kind, Unnamed_field v) ->
-		(try Undecided (Floatation_data (Floatation.of_string v)) with Invalid_argument _ -> Negative)
+		(try Undecided (Floatation_data (Basic_input.floatation_of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Floatation_kind, Keyvalue_field (k, v)) when key = k ->
-		(try Positive (Floatation_data (Floatation.of_string v))
+		(try Positive (Floatation_data (Basic_input.floatation_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (comm.comm_linenum, msg);

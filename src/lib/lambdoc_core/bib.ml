@@ -31,7 +31,7 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let bib label order author title resource =
+let make label order author title resource =
 	{
 	label = label;
 	order = order;

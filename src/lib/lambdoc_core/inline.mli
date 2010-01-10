@@ -9,6 +9,7 @@
 (**	Definitions concerning inline elements.
 *)
 
+open Prelude
 open Basic
 
 
@@ -17,8 +18,8 @@ open Basic
 (********************************************************************************)
 
 type 'a inline_t =
-	[ `Plain of plain_t
-	| `Entity of entity_t
+	[ `Plain of string
+	| `Entity of Entity.t
 	| `Linebreak
 	| `Math of Math.t
 	| `Bold of 'a list
@@ -30,12 +31,12 @@ type 'a inline_t =
 	| `Sup of 'a list
 	| `Sub of 'a list
 	| `Mbox of 'a list
-	| `Link of link_t * 'a list option
-	| `See of ref_t * ref_t list
-	| `Cite of ref_t * ref_t list
-	| `Ref of ref_t
-	| `Sref of ref_t
-	| `Mref of ref_t * 'a list
+	| `Link of Uri.t * 'a list option
+	| `See of Ref.t plus_t
+	| `Cite of Ref.t plus_t
+	| `Ref of Ref.t
+	| `Sref of Ref.t
+	| `Mref of Ref.t * 'a list
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -48,8 +49,8 @@ type (+'a, +'b) t = private [< ('a, 'b) t inline_t ] with sexp
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val plain: plain_t -> ([> `Composition ], [> `Nonlink ]) t
-val entity: entity_t -> ([> `Composition ], [> `Nonlink ]) t
+val plain: string -> ([> `Composition ], [> `Nonlink ]) t
+val entity: Entity.t -> ([> `Composition ], [> `Nonlink ]) t
 val linebreak: unit -> ([> `Composition ], [> `Nonlink ]) t
 val math: Math.t -> ([> `Composition ], [> `Nonlink ]) t
 val bold: ('a, 'b) t list -> ('a, 'b) t
@@ -61,12 +62,12 @@ val del: ('a, 'b) t list -> ('a, 'b) t
 val sup: ('a, 'b) t list -> ('a, 'b) t
 val sub: ('a, 'b) t list -> ('a, 'b) t
 val mbox: ('a, 'b) t list -> ('a, 'b) t
-val link: link_t -> ('a, [< `Nonlink ]) t list option -> ('a, [> `Link ]) t
-val see: ref_t * ref_t list -> ([> `Manuscript ], [> `Link ]) t
-val cite: ref_t * ref_t list -> ([> `Manuscript ], [> `Link ]) t
-val ref: ref_t -> ([> `Manuscript ], [> `Link ]) t
-val sref: ref_t -> ([> `Manuscript ], [> `Link ]) t
-val mref: ref_t -> (_, [< `Nonlink ]) t list -> ([> `Manuscript ], [> `Link ]) t
+val link: Uri.t -> ('a, [< `Nonlink ]) t list option -> ('a, [> `Link ]) t
+val see: Ref.t plus_t -> ([> `Manuscript ], [> `Link ]) t
+val cite: Ref.t plus_t -> ([> `Manuscript ], [> `Link ]) t
+val ref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
+val sref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
+val mref: Ref.t -> (_, [< `Nonlink ]) t list -> ([> `Manuscript ], [> `Link ]) t
 
 val get_seq: (_, _) t list -> seq_t
 val get_seqs: (_, _) t list plus_t -> seq_t plus_t

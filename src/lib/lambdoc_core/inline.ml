@@ -8,6 +8,7 @@
 
 TYPE_CONV_PATH "Inline"
 
+open Prelude
 open Basic
 
 
@@ -16,8 +17,8 @@ open Basic
 (********************************************************************************)
 
 type 'a inline_t =
-	[ `Plain of plain_t
-	| `Entity of entity_t
+	[ `Plain of string
+	| `Entity of Entity.t
 	| `Linebreak
 	| `Math of Math.t
 	| `Bold of 'a list
@@ -29,12 +30,12 @@ type 'a inline_t =
 	| `Sup of 'a list
 	| `Sub of 'a list
 	| `Mbox of 'a list
-	| `Link of link_t * 'a list option
-	| `See of ref_t * ref_t list
-	| `Cite of ref_t * ref_t list
-	| `Ref of ref_t
-	| `Sref of ref_t
-	| `Mref of ref_t * 'a list
+	| `Link of Uri.t * 'a list option
+	| `See of Ref.t plus_t
+	| `Cite of Ref.t plus_t
+	| `Ref of Ref.t
+	| `Sref of Ref.t
+	| `Mref of Ref.t * 'a list
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -60,7 +61,7 @@ let del seq = `Del seq
 let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq
-let link lnk maybe_seq = `Link (lnk, maybe_seq)
+let link uri maybe_seq = `Link (uri, maybe_seq)
 let see (hd, tl) = `See (hd, tl)
 let cite (hd, tl) = `Cite (hd, tl)
 let ref ref = `Ref ref

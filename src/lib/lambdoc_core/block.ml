@@ -8,6 +8,7 @@
 
 TYPE_CONV_PATH "Block"
 
+open Prelude
 open Basic
 
 
@@ -26,7 +27,7 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
-	| `Verbatim of int * raw_t
+	| `Verbatim of int * string
 	| `Image of Image.t
 	| `Subpage of 'a list
 	| `Decor of Floatation.t * 'a
@@ -38,7 +39,7 @@ type 'a block_t =
 	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Heading of Heading.heading_t
-	| `Title of title_level_t * Inline.seq_t
+	| `Title of Level.title_t * Inline.seq_t
 	| `Abstract of 'a list
 	| `Rule
 	] with sexp
@@ -64,11 +65,11 @@ let enumerate numbering (head_frag, tail_frags) =
 
 let description (hd, tl) =
 	let conv (seq, frag) = (Inline.get_seq seq, frag)
-	in `Description (fplus conv hd tl)
+	in `Description (plusmap conv hd tl)
 
 let qanda (hd, tl) =
 	let conv ((q_seq, q_frag), (a_seq, a_frag)) = ((maybe (maybe Inline.get_seq) q_seq, q_frag), (maybe (maybe Inline.get_seq) a_seq, a_frag))
-	in `Qanda (fplus conv hd tl)
+	in `Qanda (plusmap conv hd tl)
 
 let verse frag =
 	`Verse frag

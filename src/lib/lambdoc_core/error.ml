@@ -69,60 +69,60 @@ type blk_category_t =
 (**	The various types of error messages.
 *)
 type error_msg_t =
-	| Misplaced_label_parameter of tag_t option * invalid_parameter_reason_t
-	| Misplaced_order_parameter of tag_t option * invalid_parameter_reason_t
-	| Misplaced_extra_parameter of tag_t option * invalid_parameter_reason_t
+	| Misplaced_label_parameter of Ident.t option * invalid_parameter_reason_t
+	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
+	| Misplaced_extra_parameter of Ident.t option * invalid_parameter_reason_t
 
-	| Invalid_label of tag_t option * ref_t
-	| Invalid_order_format of tag_t option * string
-	| Invalid_order_levels of tag_t option * string * hierarchical_level_t * int
-	| Invalid_extra_boolean_parameter of tag_t option * string * string
-	| Invalid_extra_numeric_parameter of tag_t option * string * string * int * int
-	| Invalid_extra_bullet_parameter of tag_t option * string * string
-	| Invalid_extra_numbering_parameter of tag_t option * string * string
-	| Invalid_extra_floatation_parameter of tag_t option * string * string
-	| Invalid_extra_lang_parameter of tag_t option * string * string
-	| Invalid_extra_unknown_parameter of tag_t option * int * string
-	| Invalid_extra_no_solutions of tag_t option * string
-	| Invalid_extra_multiple_solutions of tag_t option * string
+	| Invalid_label of Ident.t option * Ref.t
+	| Invalid_order_format of Ident.t option * string
+	| Invalid_order_levels of Ident.t option * string * Level.hierarchical_t * int
+	| Invalid_extra_boolean_parameter of Ident.t option * string * string
+	| Invalid_extra_numeric_parameter of Ident.t option * string * string * int * int
+	| Invalid_extra_bullet_parameter of Ident.t option * string * string
+	| Invalid_extra_numbering_parameter of Ident.t option * string * string
+	| Invalid_extra_floatation_parameter of Ident.t option * string * string
+	| Invalid_extra_lang_parameter of Ident.t option * string * string
+	| Invalid_extra_unknown_parameter of Ident.t option * int * string
+	| Invalid_extra_no_solutions of Ident.t option * string
+	| Invalid_extra_multiple_solutions of Ident.t option * string
 
 	| Invalid_name_entity of string
 	| Invalid_deci_entity of string
 	| Invalid_hexa_entity of string
 
-	| Invalid_macro_nargs of ref_t * string
+	| Invalid_macro_nargs of Ref.t * string
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int
-	| Invalid_macro_call of ref_t * int * int
+	| Invalid_macro_call of Ref.t * int * int
 
-	| Invalid_macro of tag_t option * ref_t
-	| Duplicate_macro of tag_t option * ref_t
-	| Undefined_macro of tag_t option * ref_t
+	| Invalid_macro of Ident.t option * Ref.t
+	| Duplicate_macro of Ident.t option * Ref.t
+	| Undefined_macro of Ident.t option * Ref.t
 
-	| Invalid_custom of tag_t option * ref_t
-	| Duplicate_custom of tag_t option * ref_t
-	| Undefined_custom of tag_t option * ref_t
-	| Invalid_counter of tag_t option * ref_t
+	| Invalid_custom of Ident.t option * Ref.t
+	| Duplicate_custom of Ident.t option * Ref.t
+	| Undefined_custom of Ident.t option * Ref.t
+	| Invalid_counter of Ident.t option * Ref.t
 
-	| Invalid_mathtex of tag_t option * string
-	| Invalid_mathml of tag_t option * string
-	| Invalid_column_number of tag_t option * int * int * int
-	| Invalid_column_specifier of tag_t option * string
-	| Invalid_cell_specifier of tag_t option * string
+	| Invalid_mathtex of Ident.t option * string
+	| Invalid_mathml of Ident.t option * string
+	| Invalid_column_number of Ident.t option * int * int * int
+	| Invalid_column_specifier of Ident.t option * string
+	| Invalid_cell_specifier of Ident.t option * string
 
-	| Duplicate_target of tag_t option * ref_t
-	| Empty_target of tag_t option * ref_t
-	| Wrong_target of tag_t option * target_t * target_t * ref_t
-	| Undefined_target of tag_t option * ref_t
+	| Duplicate_target of Ident.t option * Ref.t
+	| Empty_target of Ident.t option * Ref.t
+	| Wrong_target of Ident.t option * target_t * target_t * Ref.t
+	| Undefined_target of Ident.t option * Ref.t
 
-	| Empty_inline of tag_t option
-	| Empty_list of tag_t option
-	| Nested_link of tag_t option
-	| Unexpected_block of tag_t option * blk_category_t
+	| Empty_inline of Ident.t option
+	| Empty_list of Ident.t option
+	| Nested_link of Ident.t option
+	| Unexpected_block of Ident.t option * blk_category_t
 
 	| Malformed_code_point
 	| Reading_error of string
-	| Unavailable_feature of tag_t option * string
+	| Unavailable_feature of Ident.t option * string
 
 	with sexp
 

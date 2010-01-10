@@ -28,9 +28,9 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> ROW_END
 %token <Lambdoc_reader.Ast.command_t> CELL_MARK
 
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.plain_t> PLAIN
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
-%token <Lambdoc_core.Basic.raw_t> RAW
+%token <Lambdoc_reader.Ast.command_t * string> PLAIN
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Ast.entity_t> ENTITY
+%token <string> RAW
 
 
 /********************************************************************************/
@@ -131,7 +131,7 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> CAPTION
 
 %token <Lambdoc_reader.Ast.command_t> MACROARG
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.tag_t > MACROCALL
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t > MACROCALL
 
 
 /********************************************************************************/

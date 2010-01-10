@@ -24,7 +24,7 @@ type 'a document_t =
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.heading_t list;
-	images: alias_t list;
+	images: Alias.t list;
 	labels: labels_t;
 	custom: Custom.dict_t;
 	} with sexp
@@ -46,14 +46,14 @@ val make_manuscript:
 	Bib.t list ->
 	Note.t list ->
 	Heading.heading_t list ->
-	alias_t list ->
+	Alias.t list ->
 	labels_t ->
 	Custom.dict_t ->
 	manuscript_t
 
 val make_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
-	alias_t list ->
+	Alias.t list ->
 	composition_t
 
 

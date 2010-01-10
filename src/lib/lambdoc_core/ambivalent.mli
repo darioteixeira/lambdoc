@@ -41,14 +41,14 @@ val make_valid_manuscript:
 	Bib.t list ->
 	Note.t list ->
 	Heading.heading_t list ->
-	alias_t list ->
+	Alias.t list ->
 	Valid.labels_t ->
 	Custom.dict_t ->
 	manuscript_t
 
 val make_valid_composition:
 	([< `Composition ], _, _, _, _) Block.t list ->
-	alias_t list ->
+	Alias.t list ->
 	composition_t
 
 val make_invalid_manuscript: Error.t list -> manuscript_t

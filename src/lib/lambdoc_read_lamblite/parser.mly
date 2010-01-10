@@ -17,9 +17,9 @@ open Lambdoc_reader
 
 %token EOF
 
-%token <Lambdoc_core.Basic.raw_t> RAW
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.plain_t> PLAIN
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Entity.t> ENTITY
+%token <string> RAW
+%token <Lambdoc_reader.Ast.command_t * string> PLAIN
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Ast.entity_t> ENTITY
 
 %token <Lambdoc_reader.Ast.command_t> BOLD_MARK
 %token <Lambdoc_reader.Ast.command_t> EMPH_MARK

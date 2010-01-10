@@ -14,6 +14,6 @@ let lambhtml_dtd =
 		let value = "&#" ^ (string_of_int value) ^ ";" in
 		let e = Pxp_dtd.Entity.create_internal_entity ~name ~value dtd
 		in dtd#add_gen_entity e false in
-	let () = Lambdoc_reader.Entity.pxp_iter add_entity
+	let () = Lambdoc_reader.Readconv.Basic_input.pxp_iter add_entity
 	in dtd
 

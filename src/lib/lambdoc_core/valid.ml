@@ -26,7 +26,7 @@ type 'a document_t =
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.heading_t list;
-	images: alias_t list;
+	images: Alias.t list;
 	labels: labels_t;
 	custom: Custom.dict_t;
 	} with sexp

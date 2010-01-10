@@ -9,6 +9,7 @@
 (**	Definitions concerning block elements.
 *)
 
+open Prelude
 open Basic
 
 
@@ -29,7 +30,7 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
-	| `Verbatim of int * raw_t
+	| `Verbatim of int * string
 	| `Image of Image.t
 	| `Subpage of 'a list
 	| `Decor of Floatation.t * 'a
@@ -41,7 +42,7 @@ type 'a block_t =
 	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Heading of Heading.heading_t
-	| `Title of title_level_t * Inline.seq_t
+	| `Title of Level.title_t * Inline.seq_t
 	| `Abstract of 'a list
 	| `Rule
 	] with sexp
@@ -104,7 +105,7 @@ val source: Source.t ->
 val tabular: 'a Tabular.t ->
 	('a, [> `Listable ], [> `Embeddable ], [> `Non_textual ], [> `Tabular_blk ]) t
 
-val verbatim: int -> raw_t ->
+val verbatim: int -> string ->
 	([> `Composition ], [> `Listable ], [> `Embeddable], [> `Non_textual ], [> `Verbatim_blk ]) t
 
 val image: Image.t ->
@@ -140,7 +141,7 @@ val figure: Floatation.t -> Wrapper.t -> (_, _) Inline.t list option -> (_, _, _
 val heading: ('a, 'b, 'c, 'd, 'e) Heading.t ->
 	('a, 'b, 'c, 'd, 'e) t
 
-val title: title_level_t -> (_, _) Inline.t list ->
+val title: Level.title_t -> (_, _) Inline.t list ->
 	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Title_blk ]) t
 
 val abstract: (_, [< `Listable ], [< `Embeddable ], [< `Textual ], _) t list ->

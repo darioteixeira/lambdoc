@@ -36,7 +36,7 @@ type t =
 	default_bullet: Bullet.t;
 	default_numbering: Numbering.t;
 	names: names_t;
-	image_lookup: alias_t -> XHTML.M.uri;
+	image_lookup: Alias.t -> XHTML.M.uri;
 	}
 
 

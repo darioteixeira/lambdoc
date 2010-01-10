@@ -13,8 +13,10 @@
 open ExtString
 open ExtList
 open Lambdoc_core
+open Prelude
 open Basic
 open Ast
+open Readconv
 open Extra
 
 
@@ -32,7 +34,7 @@ exception Bad_order of Error.invalid_parameter_reason_t
 type customdef_t =
 	| Anonymous
 	| Unnumbered of Inline.seq_t
-	| Numbered of Inline.seq_t * Order.ordinal_counter_t ref
+	| Numbered of Inline.seq_t * Order_input.ordinal_counter_t ref
 
 
 (********************************************************************************)
@@ -85,6 +87,8 @@ let process_document ~idiosyncrasies document_ast =
 	*)
 	let macros_authorised = Idiosyncrasies.check_feature `Feature_macrodef idiosyncrasies in
 
+	let expand_entities = true in
+
 
 	(************************************************************************)
 	(* Declaration of the mutable values used in the function.		*)
@@ -99,15 +103,15 @@ let process_document ~idiosyncrasies document_ast =
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
 	and errors = DynArray.create ()
-	and part_counter = Order.make_ordinal_counter ()
-	and section_counter = Order.make_hierarchy_counter ()
-	and appendix_counter = Order.make_hierarchy_counter ()
-	and printout_counter = Order.make_ordinal_counter ()
-	and equation_counter = Order.make_ordinal_counter ()
-	and figure_counter = Order.make_ordinal_counter ()
-	and table_counter = Order.make_ordinal_counter ()
-	and bib_counter = Order.make_ordinal_counter ()
-	and note_counter = Order.make_ordinal_counter ()
+	and part_counter = Order_input.make_ordinal_counter ()
+	and section_counter = Order_input.make_hierarchy_counter ()
+	and appendix_counter = Order_input.make_hierarchy_counter ()
+	and printout_counter = Order_input.make_ordinal_counter ()
+	and equation_counter = Order_input.make_ordinal_counter ()
+	and figure_counter = Order_input.make_ordinal_counter ()
+	and table_counter = Order_input.make_ordinal_counter ()
+	and bib_counter = Order_input.make_ordinal_counter ()
+	and note_counter = Order_input.make_ordinal_counter ()
 	and custom_counters = Hashtbl.create 10
         and auto_label_counter = ref 0
 	and appendixed = ref false in
@@ -146,12 +150,12 @@ let process_document ~idiosyncrasies document_ast =
 	*)
 	and make_user_ordinal comm str =
 		try
-			Order.user_ordinal str
+			Order_input.user_ordinal str
 		with
-			| Order.Invalid_order_format str ->
+			| Order_input.Invalid_order_format str ->
 				let msg = Error.Invalid_order_format (comm.comm_tag, str)
 				in DynArray.add errors (comm.comm_linenum, msg);
-				Order.user_ordinal "0"
+				Order_input.user_ordinal "0"
 
 
 	(*	This subfunction creates an user hierarchical order, checking
@@ -159,16 +163,16 @@ let process_document ~idiosyncrasies document_ast =
 	*)
 	and make_user_hierarchical comm level str =
 		try
-			Order.user_hierarchical level str
+			Order_input.user_hierarchical level str
 		with
-			| Order.Invalid_order_format str ->
+			| Order_input.Invalid_order_format str ->
 				let msg = Error.Invalid_order_format (comm.comm_tag, str)
 				in DynArray.add errors (comm.comm_linenum, msg);
-				Order.user_hierarchical `Level1 "0"
-			| Order.Invalid_order_levels (str, expected, found) ->
+				Order_input.user_hierarchical `Level1 "0"
+			| Order_input.Invalid_order_levels (str, expected, found) ->
 				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found)
 				in DynArray.add errors (comm.comm_linenum, msg);
-				Order.user_hierarchical `Level1 "0"
+				Order_input.user_hierarchical `Level1 "0"
 
 
 	(*	Adds a new reference to the dictionary.
@@ -231,9 +235,9 @@ let process_document ~idiosyncrasies document_ast =
 			in check_comm `Feature_plain comm elem
 
 		| (_, (comm, Ast.Entity ent)) ->
-			let elem () = match Entity.code_point ent with
-				| `Okay num  -> [Inline.entity num]
-				| `Error msg -> DynArray.add errors (comm.comm_linenum, msg); []
+			let elem () = match Basic_input.expand_entity ent with
+				| `Okay (txt, utf8) -> if expand_entities then [Inline.plain utf8] else [Inline.entity txt]
+				| `Error msg	    -> DynArray.add errors (comm.comm_linenum, msg); []
 			in check_comm `Feature_entity comm elem
 
 		| (_, (comm, Ast.Linebreak)) ->
@@ -428,12 +432,12 @@ let process_document ~idiosyncrasies document_ast =
 
 		let get_colspec comm spec =
 			try
-				Tabular.colspec_of_string spec
+				Tabular_input.colspec_of_string spec
 			with
 				Invalid_argument _ ->
-					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec)
-					in	DynArray.add errors (comm.comm_linenum, msg);
-						(Tabular.Center, Tabular.Normal) in
+					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec) in
+					DynArray.add errors (comm.comm_linenum, msg);
+					(Tabular.Center, Tabular.Normal) in
 
 		let specs = Array.map (get_colspec comm) (Array.of_list (List.map String.of_char (String.explode tcols))) in
 
@@ -446,7 +450,7 @@ let process_document ~idiosyncrasies document_ast =
 						try
 							let subs = Pcre.exec ~rex:cell_rex raw in
 							let colspan = int_of_string (Pcre.get_named_substring cell_rex "colspan" subs)
-							and colspec = Tabular.colspec_of_string (Pcre.get_named_substring cell_rex "colspec" subs)
+							and colspec = Tabular_input.colspec_of_string (Pcre.get_named_substring cell_rex "colspec" subs)
 							and hline = (Pcre.get_named_substring cell_rex "hline" subs) = "_"
 							in (colspan, Some (colspec, colspan), hline)
 						with _ ->
@@ -466,7 +470,7 @@ let process_document ~idiosyncrasies document_ast =
 				in cell in
 			let tab_row = match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"
-				| hd::tl	-> Tabular.make_row  (fplus converter hd tl)
+				| hd::tl	-> Tabular.make_row  (plusmap converter hd tl)
 			in if !rowspan <> num_columns
 			then begin
 				let msg = Error.Invalid_column_number (comm.comm_tag, comm.comm_linenum, !rowspan, num_columns)
@@ -481,7 +485,7 @@ let process_document ~idiosyncrasies document_ast =
 				| None		-> ()
 			in match rows with
 				| []		-> invalid_arg "Parser has given us an empty tabular group"
-				| hd::tl	-> Tabular.make_group (fplus convert_row hd tl) in
+				| hd::tl	-> Tabular.make_group (plusmap convert_row hd tl) in
 
 		let thead = maybe (convert_group `Feature_thead) tab.thead
 
@@ -489,7 +493,7 @@ let process_document ~idiosyncrasies document_ast =
 
 		in match tab.tbodies with
 			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make_tabular specs ?thead ?tfoot (fplus (convert_group `Feature_tbody) hd tl) in
+			| hd::tl	-> Tabular.make_tabular specs ?thead ?tfoot (plusmap (convert_group `Feature_tbody) hd tl) in
 
 
 	(************************************************************************)
@@ -656,12 +660,12 @@ let process_document ~idiosyncrasies document_ast =
 					let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 					let order = match (def, comm.comm_order, minipaged) with
 						| Numbered _, None, true	     -> raise (Bad_order Error.Reason_is_absent_when_mandatory)
-						| Numbered (_, counter), None, false -> Order.auto_ordinal counter
-						| Numbered _, Some "", _	     -> Order.none ()
+						| Numbered (_, counter), None, false -> Order_input.auto_ordinal counter
+						| Numbered _, Some "", _	     -> Order_input.no_order ()
 						| Numbered _ , Some other, true	     -> make_user_ordinal comm other
 						| Numbered _ , Some other, false     -> raise (Bad_order (Error.Reason_is_non_empty_when_forbidden other))
-						| _, None, _			     -> Order.none ()
-						| _, Some "", _			     -> Order.none ()
+						| _, None, _			     -> Order_input.no_order ()
+						| _, Some "", _			     -> Order_input.no_order ()
 						| _, Some other, _		     -> raise (Bad_order (Error.Reason_is_non_empty_when_forbidden other)) in
 					let label = make_label comm (Target.custom env kind order) in
 					let custom_maker = match def with
@@ -717,8 +721,8 @@ let process_document ~idiosyncrasies document_ast =
 		| (true, true, true, `Any_blk, (comm, Ast.Part seq)) ->
 			let elem () =
 				let order = match comm.comm_order with
-					| None	     -> Order.auto_ordinal part_counter
-					| Some ""    -> Order.none ()
+					| None	     -> Order_input.auto_ordinal part_counter
+					| Some ""    -> Order_input.no_order ()
 					| Some other -> make_user_ordinal comm other in
 				let label = make_label comm (Target.part order) in
 				let heading = Heading.part label order (convert_seq comm seq) in
@@ -729,7 +733,7 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (true, true, true, `Any_blk, (comm, Ast.Appendix)) ->
 			let elem () =
-				let order = Order.none () in
+				let order = Order_input.no_order () in
 				let label = make_label comm (Target.part order) in
 				let heading = Heading.appendix label in
 				let block = Block.heading heading in
@@ -745,8 +749,8 @@ let process_document ~idiosyncrasies document_ast =
 					then (appendix_counter, `Appendixed)
 					else (section_counter, `Mainbody) in
 				let order = match comm.comm_order with
-					| None	     -> Order.auto_hierarchical level counter
-					| Some ""    -> Order.none ()
+					| None	     -> Order_input.auto_hierarchical level counter
+					| Some ""    -> Order_input.no_order ()
 					| Some other -> make_user_hierarchical comm level other in
 				let label = make_label comm (Target.section location order) in
 				let heading = Heading.section label order location level (convert_seq comm seq) in
@@ -790,7 +794,7 @@ let process_document ~idiosyncrasies document_ast =
 				let (author_comm, author_seq) = bib.author
 				and (title_comm, title_seq) = bib.title
 				and (resource_comm, resource_seq) = bib.resource in
-				let order = Order.auto_ordinal bib_counter in
+				let order = Order_input.auto_ordinal bib_counter in
 				let label = make_label comm (Target.bib order)
 				and author =
 					let elem () = [convert_seq comm author_seq]
@@ -803,7 +807,7 @@ let process_document ~idiosyncrasies document_ast =
 					in check_comm `Feature_bib_resource resource_comm elem
 				in match (author, title, resource) with
 					| ([author], [title], [resource]) ->
-						let bib = Bib.bib label order author title resource in
+						let bib = Bib.make label order author title resource in
 						DynArray.add bibs bib;
 						[]
 					| _ ->
@@ -812,10 +816,10 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, _, _, `Any_blk, (comm, Ast.Note frag)) ->
 			let elem () =
-				let order = Order.auto_ordinal note_counter in
+				let order = Order_input.auto_ordinal note_counter in
 				let label = make_label comm (Target.note order) in
 				let newfrag = flatten_map (convert_block ~minipaged:true false true true `Any_blk) frag in
-				let note = Note.note label order newfrag in
+				let note = Note.make label order newfrag in
 				DynArray.add notes note;
 				[]
 			in check_comm `Feature_note comm elem
@@ -908,7 +912,7 @@ let process_document ~idiosyncrasies document_ast =
 
 	and convert_preset_sectional ~tocable ~minipaged cons feature comm = 
 		let elem () =
-			let order = Order.none () in
+			let order = Order_input.no_order () in
 			let label = make_label comm (Target.section `Mainbody order) in
 			let heading = cons label in
 			let block = Block.heading heading in
@@ -920,7 +924,7 @@ let process_document ~idiosyncrasies document_ast =
 	and convert_wrapper comm counter kind maybe_caption_ast =
 		let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 		let order = match comm.comm_order with
-			| None	     -> Order.auto_ordinal counter
+			| None	     -> Order_input.auto_ordinal counter
 			| Some thing -> make_user_ordinal comm thing in
 		let label = make_label comm (Target.wrapper kind order) in
 		let perhaps_caption = match maybe_caption_ast with
@@ -951,7 +955,7 @@ let process_document ~idiosyncrasies document_ast =
 				let data = (kind, false, Unnumbered (convert_seq comm seq))
 				in Hashtbl.add customisations env data
 			| Ast.Numbered (seq, counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
-				let counter = Order.make_ordinal_counter () in
+				let counter = Order_input.make_ordinal_counter () in
 				let data = (kind, false, Numbered (convert_seq comm seq, counter)) in
 				Hashtbl.add custom_counters counter_name (kind, counter);
 				Hashtbl.add customisations env data

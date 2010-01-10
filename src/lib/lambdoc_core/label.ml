@@ -11,6 +11,8 @@
 
 TYPE_CONV_PATH "Label"
 
+open Basic
+
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -21,8 +23,8 @@ TYPE_CONV_PATH "Label"
 	by the user).
 *)
 type t =
-	[ `Auto_label of Basic.ref_t
-	| `User_label of Basic.ref_t
+	[ `Auto_label of Ref.t
+	| `User_label of Ref.t
 	] with sexp
 
 

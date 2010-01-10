@@ -6,62 +6,23 @@
 *)
 (********************************************************************************)
 
+(**	Definitions pertaining to document ordering.
+*)
+
 TYPE_CONV_PATH "Order"
-
-open ExtString
-open Basic
-
-
-(********************************************************************************)
-(**	{1 Exceptions}								*)
-(********************************************************************************)
-
-exception Invalid_order_format of string
-exception Invalid_order_levels of string * hierarchical_level_t * int
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Ordinal ordering.
-*)
 type ordinal_t = int with sexp
 
-
-(**	Ordinal counter.
-*)
-type ordinal_counter_t = ordinal_t
-
-
-(**	Ordinal converter.
-*)
-type ordinal_converter_t = (ordinal_t -> string)
-
-
-(**	Hierarchical ordering.
-*)
 type hierarchical_t =
 	| Level1_order of int
 	| Level2_order of int * int
 	| Level3_order of int * int * int
 	with sexp
-
-
-(**	Hierarchical counter.
-*)
-type hierarchical_counter_t = int * int * int
-
-
-(**	Hierarchical converters.
-*)
-
-type hierarchical_converter_t =
-	{
-	level1: (int -> string);
-	level2: (int -> string);
-	level3: (int -> string);
-	}
 
 
 (**	A block's ordering can be assigned by any of three sources: [`Auto_given] means that
@@ -77,78 +38,4 @@ type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
 type 'a user_given_t = [ `User_given of 'a ] with sexp
 type none_given_t = [ `None_given ] with sexp
 type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] with sexp
-
-
-(********************************************************************************)
-(**	{1 Functions and values}						*)
-(********************************************************************************)
-
-(********************************************************************************)
-(**	{2 Creation of counters}						*)
-(********************************************************************************)
-
-let make_ordinal_counter () = ref 0
-
-let make_hierarchy_counter () = ref (0, 0, 0)
-
-
-(********************************************************************************)
-(**	{2 Constructors}							*)
-(********************************************************************************)
-
-let auto_ordinal counter =
-	let () = incr counter
-	in `Auto_given !counter
-
-
-let auto_hierarchical level counter =
-	let (l1, l2, l3) = match (level, !counter) with
-		| (`Level1, (l1, _, _))		-> (l1+1, 0, 0)
-		| (`Level2, (l1, l2, _))	-> (l1, l2+1, 0)
-		| (`Level3, (l1, l2, l3))	-> (l1, l2, l3+1) in
-	let () = counter := (l1, l2, l3)
-	in match level with
-		| `Level1 -> `Auto_given (Level1_order l1)
-		| `Level2 -> `Auto_given (Level2_order (l1, l2))
-		| `Level3 -> `Auto_given (Level3_order (l1, l2, l3))
-
-
-let user_ordinal str =
-	try
-		`User_given (int_of_string str)
-	with
-		Failure "int_of_string" -> raise (Invalid_order_format str)
-
-
-let user_hierarchical level str =
-	try match (level, String.nsplit str ".") with
-		| (`Level1, [l1])	  -> `User_given (Level1_order (int_of_string l1))
-		| (`Level2, [l1; l2])	  -> `User_given (Level2_order (int_of_string l1, int_of_string l2))
-		| (`Level3, [l1; l2; l3]) -> `User_given (Level3_order (int_of_string l1, int_of_string l2, int_of_string l3))
-		| (expected, found)	  -> raise (Invalid_order_levels (str, expected, List.length found))
-	with
-		Failure "int_of_string" -> raise (Invalid_order_format str)
-
-
-let none () = `None_given
-
-
-(********************************************************************************)
-(**	{2 Printers}								*)
-(********************************************************************************)
-
-let maybe_string_of_ordinal conv = function
-	| `Auto_given o
-	| `User_given o	-> Some (conv o)
-	| `None_given	-> None
-
-
-let maybe_string_of_hierarchical conv = function
-	| `Auto_given (Level1_order l1)
-	| `User_given (Level1_order l1)		  -> Some (conv.level1 l1)
-	| `Auto_given (Level2_order (l1, l2))
-	| `User_given (Level2_order (l1, l2))	  -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2))
-	| `Auto_given (Level3_order (l1, l2, l3))
-	| `User_given (Level3_order (l1, l2, l3)) -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3))
-	| `None_given				  -> None
 

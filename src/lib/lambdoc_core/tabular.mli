@@ -9,6 +9,7 @@
 (**	Definitions concerning tabular environments.
 *)
 
+open Prelude
 open Basic
 
 
@@ -59,17 +60,9 @@ type 'a t = private tabular_t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val colspec_of_string: string -> colspec_t
-
-val string_of_alignment: alignment_t -> string
-
 val make_cell: cellspec_t option -> bool -> ('a, _) Inline.t list -> 'a cell_t
-
 val make_row: 'a cell_t plus_t -> 'a row_t
-
 val make_group: 'a row_t plus_t -> 'a group_t
-
 val make_tabular: colspec_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t plus_t -> 'a t
-
 val get_tabular: 'a t -> tabular_t
 

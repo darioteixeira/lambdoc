@@ -8,6 +8,7 @@
 
 TYPE_CONV_PATH "Tabular"
 
+open Prelude
 open Basic
 
 
@@ -57,23 +58,6 @@ type 'a t = tabular_t
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
-
-let colspec_of_string = function
-	| "c" -> (Center, Normal)
-	| "C" -> (Center, Strong)
-	| "l" -> (Left, Normal)
-	| "L" -> (Left, Strong)
-	| "r" -> (Right, Normal)
-	| "R" -> (Right, Strong)
-	| "j" -> (Justify, Normal)
-	| "J" -> (Justify, Strong)
-	| x   -> invalid_arg "Tabular.colspec_of_string"
-
-let string_of_alignment = function
-	| Center	-> "c"
-	| Left		-> "l"
-	| Right		-> "r"
-	| Justify	-> "j"
 
 let make_cell cellspec hline seq = (cellspec, hline, Inline.get_seq seq)
 

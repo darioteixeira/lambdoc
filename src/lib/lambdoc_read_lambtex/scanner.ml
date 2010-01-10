@@ -37,7 +37,7 @@ type tok_parbreak_t =		[ `Tok_parbreak ]
 type tok_space_t =		[ `Tok_space ]
 type tok_raw_t =		[ `Tok_raw of string ]
 type tok_plain_t =		[ `Tok_plain of string ]
-type tok_entity_t =		[ `Tok_entity of Entity.t ]
+type tok_entity_t =		[ `Tok_entity of Ast.entity_t ]
 
 type general_token_t =
 	[ tok_simple_comm_t
@@ -178,13 +178,13 @@ let general_scanner : (Ulexing.lexbuf -> int * [> general_token_t]) = lexer
 	| parbreak		-> (count_lines lexbuf, `Tok_parbreak)
 	| space+ | eol		-> (count_lines lexbuf, `Tok_space)
 	| escape _		-> (count_lines lexbuf, `Tok_plain (sub_lexbuf ~pos:1 ~len:1 lexbuf))
-	| entity_hexa		-> (0, `Tok_entity (Entity.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)))
-	| entity_deci		-> (0, `Tok_entity (Entity.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)))
-	| entity_name		-> (0, `Tok_entity (Entity.Ent_name (rtrim_lexbuf ~first:1 lexbuf)))
-	| endash		-> (0, `Tok_entity (Entity.Ent_name "ndash"))
-	| emdash		-> (0, `Tok_entity (Entity.Ent_name "mdash"))
-	| quote_open		-> (0, `Tok_entity (Entity.Ent_name "ldquo"))
-	| quote_close		-> (0, `Tok_entity (Entity.Ent_name "rdquo"))
+	| entity_hexa		-> (0, `Tok_entity (Ast.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)))
+	| entity_deci		-> (0, `Tok_entity (Ast.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)))
+	| entity_name		-> (0, `Tok_entity (Ast.Ent_name (rtrim_lexbuf ~first:1 lexbuf)))
+	| endash		-> (0, `Tok_entity (Ast.Ent_name "ndash"))
+	| emdash		-> (0, `Tok_entity (Ast.Ent_name "mdash"))
+	| quote_open		-> (0, `Tok_entity (Ast.Ent_name "ldquo"))
+	| quote_close		-> (0, `Tok_entity (Ast.Ent_name "rdquo"))
 	| _			-> (0, `Tok_plain (whole_lexbuf lexbuf))
 
 
@@ -208,13 +208,13 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
 	| parbreak		-> (count_lines lexbuf, `Tok_parbreak)
 	| space+ | eol		-> (count_lines lexbuf, `Tok_space)
 	| escape _		-> (count_lines lexbuf, `Tok_plain (sub_lexbuf ~pos:1 ~len:1 lexbuf))
-	| entity_hexa		-> (0, `Tok_entity (Entity.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)))
-	| entity_deci		-> (0, `Tok_entity (Entity.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)))
-	| entity_name		-> (0, `Tok_entity (Entity.Ent_name (rtrim_lexbuf ~first:1 lexbuf)))
-	| endash		-> (0, `Tok_entity (Entity.Ent_name "ndash"))
-	| emdash		-> (0, `Tok_entity (Entity.Ent_name "mdash"))
-	| quote_open		-> (0, `Tok_entity (Entity.Ent_name "ldquo"))
-	| quote_close		-> (0, `Tok_entity (Entity.Ent_name "rdquo"))
+	| entity_hexa		-> (0, `Tok_entity (Ast.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)))
+	| entity_deci		-> (0, `Tok_entity (Ast.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)))
+	| entity_name		-> (0, `Tok_entity (Ast.Ent_name (rtrim_lexbuf ~first:1 lexbuf)))
+	| endash		-> (0, `Tok_entity (Ast.Ent_name "ndash"))
+	| emdash		-> (0, `Tok_entity (Ast.Ent_name "mdash"))
+	| quote_open		-> (0, `Tok_entity (Ast.Ent_name "ldquo"))
+	| quote_close		-> (0, `Tok_entity (Ast.Ent_name "rdquo"))
 	| _			-> (0, `Tok_plain (whole_lexbuf lexbuf))
 
 

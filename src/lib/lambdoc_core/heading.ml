@@ -37,7 +37,7 @@ type section_location_t =
 
 type heading_t =
 	[ `Part of Label.t * part_order_t * part_content_t
-	| `Section of Label.t * section_order_t * section_location_t * hierarchical_level_t * section_content_t
+	| `Section of Label.t * section_order_t * section_location_t * Level.hierarchical_t * section_content_t
 	] with sexp
 
 type (+'a, +'b, +'c, +'d, +'e) t = heading_t with sexp
@@ -48,10 +48,10 @@ type (+'a, +'b, +'c, +'d, +'e) t = heading_t with sexp
 (********************************************************************************)
 
 let part label order seq = `Part (label, order, `Custom (Inline.get_seq seq))
-let appendix label = `Part (label, Order.none (), `Appendix)
+let appendix label = `Part (label, `None_given, `Appendix)
 let section label order location level seq = `Section (label, order, location, level, `Custom (Inline.get_seq seq))
-let bibliography label = `Section (label, Order.none (), `Mainbody, `Level1, `Bibliography)
-let notes label = `Section (label, Order.none (), `Mainbody, `Level1, `Notes)
-let toc label = `Section (label, Order.none (), `Mainbody, `Level1, `Toc)
+let bibliography label = `Section (label, `None_given, `Mainbody, `Level1, `Bibliography)
+let notes label = `Section (label, `None_given, `Mainbody, `Level1, `Notes)
+let toc label = `Section (label, `None_given, `Mainbody, `Level1, `Toc)
 let get_heading heading = heading
 

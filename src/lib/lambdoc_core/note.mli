@@ -9,8 +9,6 @@
 (**	Definitions concerning note blocks.
 *)
 
-open Basic
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -30,5 +28,5 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val note: Label.t -> order_t -> (_, _, _, _, _) Block.t list -> t
+val make: Label.t -> order_t -> (_, _, _, _, _) Block.t list -> t
 

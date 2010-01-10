@@ -8,8 +8,6 @@
 
 TYPE_CONV_PATH "Note"
 
-open Basic
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -29,7 +27,7 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let note label order content =
+let make label order content =
 	{
 	label = label;
 	order = order;

@@ -11,7 +11,6 @@
 
 open Lambdoc_core
 open Basic
-open Entity
 
 
 (********************************************************************************)
@@ -24,8 +23,8 @@ open Entity
 
 type command_t =
 	{
-	comm_tag: tag_t option;
-	comm_label: string option;
+	comm_tag: Ident.t option;
+	comm_label: Ref.t option;
 	comm_order: string option;
 	comm_extra: string option;
 	comm_linenum: int;
@@ -36,14 +35,19 @@ type command_t =
 (**	{2 Data types for inline context}					*)
 (********************************************************************************)
 
+type entity_t =
+	| Ent_name of string
+	| Ent_deci of string
+	| Ent_hexa of string
+
 type seq_t = inline_t list
  and inline_t = command_t * raw_inline_t
  and raw_inline_t =
-	| Plain of plain_t
-	| Entity of Entity.t
+	| Plain of string
+	| Entity of entity_t
 	| Linebreak
-	| Mathtex_inl of raw_t
-	| Mathml_inl of raw_t
+	| Mathtex_inl of string
+	| Mathml_inl of string
 	| Bold of seq_t
 	| Emph of seq_t
 	| Code of seq_t
@@ -53,21 +57,21 @@ type seq_t = inline_t list
 	| Sup of seq_t
 	| Sub of seq_t
 	| Mbox of seq_t
-	| Link of raw_t * seq_t option
-	| See of raw_t	
-	| Cite of raw_t
-	| Ref of raw_t
-	| Sref of raw_t
-	| Mref of raw_t * seq_t
-	| Macroarg of raw_t
-	| Macrocall of raw_t * seq_t list
+	| Link of string * seq_t option
+	| See of string	
+	| Cite of string
+	| Ref of string
+	| Sref of string
+	| Mref of string * seq_t
+	| Macroarg of string
+	| Macrocall of string * seq_t list
 
 
 (********************************************************************************)
 (**	{2 Data types for document blocks}					*)
 (********************************************************************************)
 
-type tabular_cell_t = command_t * raw_t option * seq_t
+type tabular_cell_t = command_t * string option * seq_t
 
 type tabular_row_t = command_t * tabular_cell_t list
 
@@ -83,7 +87,7 @@ type tabular_t =
 type customdef_t =
 	| Anonymous
 	| Unnumbered of seq_t
-	| Numbered of seq_t * raw_t
+	| Numbered of seq_t * string
 
 type caption_t = command_t * seq_t
 
@@ -104,34 +108,34 @@ type frag_t = block_t list
 	| Qanda of ((command_t * qanda_t * frag_t) * (command_t * qanda_t * frag_t)) list
 	| Verse of frag_t
 	| Quote of frag_t
-	| Mathtex_blk of raw_t
-	| Mathml_blk of raw_t
-	| Source of raw_t
-	| Tabular of raw_t * tabular_t
-	| Verbatim of raw_t
-	| Image of raw_t * raw_t  (* (src, alt) *)
+	| Mathtex_blk of string
+	| Mathml_blk of string
+	| Source of string
+	| Tabular of string * tabular_t
+	| Verbatim of string
+	| Image of string * string  (* (src, alt) *)
 	| Subpage of frag_t
 	| Decor of block_t
 	| Pullquote of seq_t option * frag_t
-	| Custom of raw_t * seq_t option * frag_t
+	| Custom of string * seq_t option * frag_t
 	| Equation of caption_t option * block_t
 	| Printout of caption_t option * block_t
 	| Table of caption_t option * block_t
 	| Figure of caption_t option * block_t
 	| Part of seq_t
 	| Appendix
-	| Section of hierarchical_level_t * seq_t
+	| Section of Level.hierarchical_t * seq_t
 	| Bibliography
 	| Notes
 	| Toc
-	| Title of title_level_t * seq_t
+	| Title of Level.title_t * seq_t
 	| Abstract of frag_t
 	| Rule
 	| Bib of bib_t
 	| Note of frag_t
-	| Macrodef of raw_t * raw_t * seq_t
-	| Boxoutdef of raw_t * customdef_t
-	| Theoremdef of raw_t * customdef_t
+	| Macrodef of string * string * seq_t
+	| Boxoutdef of string * customdef_t
+	| Theoremdef of string * customdef_t
 
 and qanda_t =
 	| Different of seq_t option

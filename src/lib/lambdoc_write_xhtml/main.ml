@@ -17,11 +17,13 @@ open ExtString
 open XHTML.M
 
 open Lambdoc_core
-open Lambdoc_writer
+open Prelude
 open Basic
 open Source
 open Image
 open Valid
+open Lambdoc_writer
+open Writeconv
 open Settings
 
 
@@ -102,7 +104,7 @@ let class_of_level = function
 	| `Level3 -> "level3"
 
 
-let make_floatation floatation = ["doc_float_" ^ (Floatation.to_string floatation)]
+let make_floatation floatation = ["doc_float_" ^ (Basic_output.string_of_floatation floatation)]
 	
 
 let make_heading cons label orderlst classname content =
@@ -129,29 +131,29 @@ let listify_order ?(prespace = false) ?(postdot = false) ?prefix order =
 		| _		  -> []
 
 
-let part_conv ?postdot order = listify_order ?postdot (Order.maybe_string_of_ordinal Printers.roman order)
+let part_conv ?postdot order = listify_order ?postdot (Order_output.maybe_string_of_ordinal Order_output.format_roman order)
 
 
 let section_conv ?postdot location order =
 	let conv = match location with
-		| `Mainbody	-> Printers.mainbody
-		| `Appendixed	-> Printers.appendixed
-	in listify_order ?postdot (Order.maybe_string_of_hierarchical conv order)
+		| `Mainbody	-> Order_output.format_mainbody
+		| `Appendixed	-> Order_output.format_appendixed
+	in listify_order ?postdot (Order_output.maybe_string_of_hierarchical conv order)
 
 
-let boxout_conv ?prespace order = listify_order ?prespace ~prefix:"#" (Order.maybe_string_of_ordinal Printers.arabic order)
+let boxout_conv ?prespace order = listify_order ?prespace ~prefix:"#" (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
 
 
-let theorem_conv ?prespace order = listify_order ?prespace (Order.maybe_string_of_ordinal Printers.arabic order)
+let theorem_conv ?prespace order = listify_order ?prespace (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
 
 
-let wrapper_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
+let wrapper_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
 
 
-let bib_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
+let bib_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
 
 
-let note_conv order = listify_order (Order.maybe_string_of_ordinal Printers.arabic order)
+let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
 
 
 (********************************************************************************)
@@ -201,8 +203,8 @@ let write_valid_document settings classname doc =
 			then XHTML.M.span (to_nbsp txt)
 			else XHTML.M.pcdata txt
 
-		| `Entity num ->
-			XHTML.M.entity ("#" ^ (string_of_int num))
+		| `Entity txt ->
+			XHTML.M.entity txt
 
 		| `Linebreak ->
 			XHTML.M.br ()
@@ -349,7 +351,7 @@ let write_valid_document settings classname doc =
 			let ((alignment, weight), colspan) = match maybe_cellspec with
 				| Some (spec, span) -> (spec, Some span)
 				| None		    -> (Array.get tab.Tabular.tcols (ord+1), None) in
-			let a_hd = a_class (("doc_cell_" ^ Tabular.string_of_alignment alignment) :: (if hline then ["doc_hline"] else []))
+			let a_hd = a_class (("doc_cell_" ^ Tabular_output.string_of_alignment alignment) :: (if hline then ["doc_hline"] else []))
 			and a_tl = match colspan with Some n -> [a_colspan n] | None -> []
 			in match weight with
 				| Tabular.Normal -> XHTML.M.td ~a:(a_hd :: a_tl) (write_seq seq)
@@ -401,18 +403,18 @@ let write_valid_document settings classname doc =
 			in [XHTML.M.p ~a:[a_class ("doc_par" :: style)] (write_seq seq)]
 
 		| `Itemize (bul, (hd_frag, tl_frags)) ->
-			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
-			and style = ["doc_style_" ^ (Bullet.to_string bul)]
+			let (hd, tl) = plusmap (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
+			and style = ["doc_style_" ^ (Basic_output.string_of_bullet bul)]
 			in [XHTML.M.ul ~a:[a_class ("doc_itemize" :: style)] hd tl]
 
 		| `Enumerate (num, (hd_frag, tl_frags)) ->
-			let (hd, tl) = fplus (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
-			and style = ["doc_style_" ^ (Numbering.to_string num)]
+			let (hd, tl) = plusmap (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
+			and style = ["doc_style_" ^ (Basic_output.string_of_numbering num)]
 			in [XHTML.M.ol ~a:[a_class ("doc_enumerate" :: style)] hd tl]
 
 		| `Description (hd_frag, tl_frags) ->
 			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
-			let (hd, tl) = fplus write_frag hd_frag tl_frags in
+			let (hd, tl) = plusmap write_frag hd_frag tl_frags in
 			let (new_hd, new_tl) =
 				let (first, second) = hd
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
@@ -435,7 +437,7 @@ let write_valid_document settings classname doc =
 					| _  -> []
 				in (XHTML.M.dt ~a:[a_class (qora_class::empty_class)] (write_seq seq), XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
 			let write_pair (q, a) = (write_frag ~qora:`Question q, write_frag ~qora:`Answer a) in
-			let (hd, tl) = fplus write_pair hd_pair tl_pairs in
+			let (hd, tl) = plusmap write_pair hd_pair tl_pairs in
 			let (new_hd, new_tl) =
 				let ((first, second), (third, fourth)) = hd
 				in (first, second :: third :: fourth :: (List.flatten (List.map (fun ((q1, q2), (a1, a2)) -> [q1; q2; a1; a2]) tl)))
@@ -562,14 +564,14 @@ let write_valid_document settings classname doc =
 			let title = make_sectional level label (section_conv location order) (write_name Name_bibliography) in
 			let bibs = match bibs with
 				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_bib hd tl in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
+				| hd::tl -> let (hd, tl) = plusmap write_bib hd tl in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
 			in title::bibs
 
 		| `Section (label, order, location, level, `Notes) ->
 			let title = make_sectional level label (section_conv location order) (write_name Name_notes) in
 			let notes = match notes with
 				| []	 -> []
-				| hd::tl -> let (hd, tl) = fplus write_note hd tl in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
+				| hd::tl -> let (hd, tl) = plusmap write_note hd tl in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
 			in title::notes
 
 		| `Section (label, order, location, level, `Toc) ->

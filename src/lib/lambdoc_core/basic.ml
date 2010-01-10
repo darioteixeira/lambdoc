@@ -13,61 +13,150 @@ TYPE_CONV_PATH "Basic"
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(**	{1 Submodule definitions}						*)
 (********************************************************************************)
 
-type raw_t = string with sexp			(** The type of raw text. *)
+(********************************************************************************)
+(**	{2 Entity module}							*)
+(********************************************************************************)
 
-type plain_t = string with sexp			(** The type of undecorated text. *)
-
-type entity_t = int with sexp			(** Entities are represented as Unicode code points. *)
-
-type link_t = string with sexp			(** The type of links. *)
-
-type alias_t = string with sexp			(** The type of aliases to filenames. *)
-
-type ref_t = string with sexp			(** The type of label references. *)
-
-type counter_t = string with sexp		(** The type of counters for custom environments. *)
-
-type syntax_t = string option with sexp		(** The type for syntax declarations. *)
-
-type tag_t = string with sexp			(** The type used for tags. *)
-
-type 'a plus_t = 'a * 'a list with sexp		(** The type of non-empty lists. *)
-
-
-(**     Definition of hierarchy levels for sections.  We support a three-level
-	hierarchy, equivalent to XHTML's H1, H2, and H3.  These can be interpreted
-	as "section", "subsection", and "subsubsection". 
+(**	HTML entities are represented as strings.
 *)
-type hierarchical_level_t =
-        [ `Level1
-        | `Level2
-        | `Level3
-        ] with sexp
+module Entity =
+struct
+	type t = string with sexp
+end
 
 
-(**     Definition of hierarchy levels for titles.  We support a two-level
-	hierarchy, equivalent to XHTML's H1 and H2.  These can be interpreted
-	as "title" and "subtitle".
+(********************************************************************************)
+(**	{2 Uri module}								*)
+(********************************************************************************)
+
+(**	The type of links to external resources.
 *)
-type title_level_t =
-	[ `Level1
-	| `Level2
-        ] with sexp
+module Uri =
+struct
+	type t = string with sexp
+end
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{2 Alias module}							*)
 (********************************************************************************)
 
-let fplus f hd tl =
-	let new_hd = f hd in
-	let new_tl = List.map f tl
-	in (new_hd, new_tl)
+(**	The type of aliases to filenames.
+*)
+module Alias =
+struct
+	type t = string with sexp
+end
 
-let maybe f = function
-	| Some x	-> Some (f x)
-	| None		-> None
+
+(********************************************************************************)
+(**	{2 Ident module}							*)
+(********************************************************************************)
+
+(**	The type of identifiers.
+*)
+module Ident =
+struct
+	type t = string with sexp
+end
+
+
+(********************************************************************************)
+(**	{2 Ref module}								*)
+(********************************************************************************)
+
+(**	The type of internal references.
+*)
+module Ref =
+struct
+	type t = string with sexp
+end
+
+
+(********************************************************************************)
+(**	{2 Level module}							*)
+(********************************************************************************)
+
+(**	Definition of the levels used in documents.
+*)
+module Level =
+struct
+	(**     Definition of hierarchy levels for sections.  We support a
+		three-level hierarchy, equivalent to XHTML's H1, H2, and H3.
+		These can be interpreted as "section", "subsection", and
+		"subsubsection". 
+	*)
+	type hierarchical_t =
+		[ `Level1
+		| `Level2
+		| `Level3
+		] with sexp
+
+
+	(**     Definition of hierarchy levels for titles.  We support a
+		two-level hierarchy, equivalent to XHTML's H1 and H2.
+		These can be interpreted as "title" and "subtitle".
+	*)
+	type title_t =
+		[ `Level1
+		| `Level2
+		] with sexp
+end
+
+
+(********************************************************************************)
+(**	{2 Bullet module}							*)
+(********************************************************************************)
+
+(**	The various sorts of bullets accepted for unordered lists.
+	Note that these map directly into their CSS counterparts.
+*)
+module Bullet =
+struct
+	type t =
+		| Disc
+		| Circle
+		| Square
+		| None
+		with sexp
+end
+
+
+(********************************************************************************)
+(**	{2 Numbering module}							*)
+(********************************************************************************)
+
+(**	The various sorts of numbering accepted for ordered lists.
+	Note that these map directly into their CSS counterparts.
+*)
+module Numbering =
+struct
+	type t =
+		| Decimal
+		| Lower_roman
+		| Upper_roman
+		| Lower_alpha
+		| Upper_alpha
+		| None
+		with sexp
+end
+
+
+(********************************************************************************)
+(**	{2 Floatation module}							*)
+(********************************************************************************)
+
+(**	Definition of possible floatation options for document blocks.
+*)
+module Floatation =
+struct
+	type t =
+		| Center
+		| Left
+		| Right
+		with sexp
+end
 
