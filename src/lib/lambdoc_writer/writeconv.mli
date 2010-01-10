@@ -66,3 +66,19 @@ sig
 	val maybe_string_of_hierarchical: hierarchical_converter_t -> (hierarchical_t, 'b) t -> string option
 end
 
+
+(********************************************************************************)
+(**	{2 Math values}								*)
+(********************************************************************************)
+
+module Math_output:
+sig
+	open Math
+
+	exception Mathtex_undefined
+	exception Mathml_undefined
+
+	val get_mathtex: t -> mathtex_t
+	val get_mathml: t -> mathml_t
+end
+

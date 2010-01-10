@@ -6,15 +6,10 @@
 *)
 (********************************************************************************)
 
+(**	Definition of the module that encodes document math.
+*)
+
 TYPE_CONV_PATH "Math"
-
-
-(********************************************************************************)
-(**	{1 Exceptions}								*)
-(********************************************************************************)
-
-exception Mathtex_undefined
-exception Mathml_undefined
 
 
 (********************************************************************************)
@@ -29,28 +24,4 @@ type t =
 	| Mathml of mathml_t
 	| Both of mathtex_t * mathml_t
 	with sexp
-
-
-(********************************************************************************)
-(**	{1 Functions and values}						*)
-(********************************************************************************)
-
-let from_mathtex mathtex =
-	Mathtex mathtex
-
-let from_mathml mathml =
-	Mathml mathml
-
-let from_both mathtex mathml =
-	Both (mathtex, mathml)
-
-let get_mathtex = function
-	| Mathtex str	-> str
-	| Mathml _	-> raise Mathtex_undefined
-	| Both (str, _)	-> str
-
-let get_mathml = function
-	| Mathtex _	-> raise Mathml_undefined
-	| Mathml str	-> str
-	| Both (_, str)	-> str
 

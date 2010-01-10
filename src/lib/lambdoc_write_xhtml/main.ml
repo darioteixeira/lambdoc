@@ -210,7 +210,7 @@ let write_valid_document settings classname doc =
 			XHTML.M.br ()
 
 		| `Math math ->
-			let xhtml : [> `Span ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
+			let xhtml : [> `Span ] XHTML.M.elt = XHTML.M.unsafe_data (Math_output.get_mathml math)
 			in XHTML.M.span ~a:[a_class ["doc_mathinl"]] [xhtml]
 
 		| `Bold seq ->
@@ -450,7 +450,7 @@ let write_valid_document settings classname doc =
 			[XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag)]
 
 		| `Math math ->
-			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math.get_mathml math)
+			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math_output.get_mathml math)
 			in [XHTML.M.div ~a:[a_class ["doc_mathblk"]] [xhtml]]
 
 		| `Source src ->

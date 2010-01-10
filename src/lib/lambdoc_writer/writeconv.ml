@@ -18,7 +18,7 @@ open Lambdoc_core
 (********************************************************************************)
 
 (********************************************************************************)
-(**	{2 Tabular values}							*)
+(**	{2 Basic values}							*)
 (********************************************************************************)
 
 module Basic_output =
@@ -168,5 +168,28 @@ struct
 		| `Auto_given (Level3_order (l1, l2, l3))
 		| `User_given (Level3_order (l1, l2, l3)) -> Some ((conv.level1 l1) ^ "." ^ (conv.level2 l2) ^ "." ^ (conv.level3 l3))
 		| `None_given				  -> None
+end
+
+
+(********************************************************************************)
+(**	{2 Math values}								*)
+(********************************************************************************)
+
+module Math_output =
+struct
+	open Math
+
+	exception Mathtex_undefined
+	exception Mathml_undefined
+
+	let get_mathtex = function
+		| Mathtex str	-> str
+		| Mathml _	-> raise Mathtex_undefined
+		| Both (str, _)	-> str
+
+	let get_mathml = function
+		| Mathtex _	-> raise Mathml_undefined
+		| Mathml str	-> str
+		| Both (_, str)	-> str
 end
 

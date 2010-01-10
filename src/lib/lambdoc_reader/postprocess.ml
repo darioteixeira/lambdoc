@@ -206,8 +206,7 @@ let process_document ~idiosyncrasies document_ast =
 
 	let convert_mathtex constructor comm mathtex =
 		try
-			let mathml = Blahcaml.safe_mathml_from_tex mathtex
-			in [constructor (Math.from_both mathtex mathml)]
+			[constructor (Math_input.from_mathtex mathtex)]
 		with _ ->
 			let msg = Error.Invalid_mathtex (comm.comm_tag, mathtex) in
 			DynArray.add errors (comm.comm_linenum, msg);
@@ -216,8 +215,7 @@ let process_document ~idiosyncrasies document_ast =
 
 	and convert_mathml constructor comm mathml =
 		try
-			let mathml = Blahcaml.sanitize_mathml mathml
-			in [constructor (Math.from_mathml mathml)]
+			[constructor (Math_input.from_mathml mathml)]
 		with _ ->
 			let msg = Error.Invalid_mathml (comm.comm_tag, mathml) in
 			DynArray.add errors (comm.comm_linenum, msg);
