@@ -1,12 +1,12 @@
 (********************************************************************************)
-(*	Postprocess.ml
+(*	Compiler.ml
 	Copyright (c) 2009 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(**	Postprocessing on a document Ast.  These functions convert
+(**	Compilation of a document Ast.  These functions convert
 	a document AST into a proper, final, ambivalent document.
 *)
 
@@ -53,16 +53,16 @@ let maybe_of_perhaps = function
 
 
 (********************************************************************************)
-(**	{1 Low-level processing functions}					*)
+(**	{1 Low-level functions}							*)
 (********************************************************************************)
 
 
-(**	Processes an AST as provided by the parser, producing the corresponding
+(**	Compiles an AST as provided by the parser, producing the corresponding
 	document.  In addition, a label dictionary, bibliography entries, notes,
 	and possible errors are also returned.  Note that because Ocaml does not
 	yet support true GADTs, this function has to rely on Obj.magic.
 *)
-let process_document ~idiosyncrasies document_ast =
+let compile_document ~idiosyncrasies document_ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -189,7 +189,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
-	(* Postprocessing functions for mathematics.				*)
+	(* Compilation functions for mathematics.				*)
 	(************************************************************************)
 
 	let convert_mathtex constructor comm mathtex =
@@ -211,7 +211,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
-	(* Postprocessing functions for inline context.				*)
+	(* Compilation functions for inline context.				*)
 	(************************************************************************)
 
 	let rec convert_inline ~args is_link inline = match (is_link, inline) with
@@ -411,7 +411,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
-	(* Postprocessing functions for tabular environment.			*)
+	(* Compilation functions for tabular environment.			*)
 	(************************************************************************)
 
 	let convert_tabular comm tcols tab =
@@ -480,7 +480,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
-	(* Postprocessing functions for document blocks.			*)
+	(* Compilation functions for document blocks.				*)
 	(************************************************************************)
 
 	let rec convert_block ~minipaged allow_above_listable allow_above_embeddable allow_above_textual allowed_blk block =
@@ -1009,7 +1009,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 (********************************************************************************)
-(**	{1 Error postprocessing functions}					*)
+(**	{1 Error compilation functions}						*)
 (********************************************************************************)
 
 (**	Error collation function.  It takes a list of errors containing each an
@@ -1044,12 +1044,12 @@ let sort_errors errors =
 
 
 (********************************************************************************)
-(**	{1 Top-level processing functions}					*)
+(**	{1 Top-level functions}							*)
 (********************************************************************************)
 
-let process_manuscript ~accept_list ~deny_list ~default ~source document_ast =
+let compile_manuscript ~accept_list ~deny_list ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accept_list ~deny_list ~default in
-	let (contents, bibs, notes, toc, images, labels, custom, errors) = process_document ~idiosyncrasies document_ast in
+	let (contents, bibs, notes, toc, images, labels, custom, errors) = compile_document ~idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_manuscript contents bibs notes toc images labels custom
@@ -1058,9 +1058,9 @@ let process_manuscript ~accept_list ~deny_list ~default ~source document_ast =
 		in Ambivalent.make_invalid_manuscript sorted_errors
 
 
-let process_composition ~accept_list ~deny_list ~default ~source document_ast =
+let compile_composition ~accept_list ~deny_list ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accept_list ~deny_list ~default in
-	let (contents, _, _, _, images, _, _, errors) = process_document ~idiosyncrasies document_ast in
+	let (contents, _, _, _, images, _, _, errors) = compile_document ~idiosyncrasies document_ast in
 	if List.length errors = 0
 	then
 		Ambivalent.make_valid_composition (Obj.magic contents) images

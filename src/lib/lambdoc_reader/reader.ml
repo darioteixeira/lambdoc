@@ -62,30 +62,30 @@ struct
 		?(accept_list = [])
 		?(deny_list = [])
 		?(default = `Accept)
-		~valid_processor
+		~valid_compiler
 		~invalid_maker
 		source =
 			try
-				let () = if verify_utf8 then Preprocess.verify_utf8 source in
+				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let document_ast = Reader.ast_from_string source
-				in valid_processor ~accept_list ~deny_list ~default ~source document_ast
+				in valid_compiler ~accept_list ~deny_list ~default ~source document_ast
 			with
-				| Preprocess.Malformed_source (sane_str, error_lines) ->
+				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (line, Error.Malformed_code_point)) error_lines in
-					let errors = Postprocess.collate_errors sane_str msgs
+					let errors = Compiler.collate_errors sane_str msgs
 					in invalid_maker errors
 				| Reader.Reading_error (line, msg) ->
-					let errors = Postprocess.collate_errors source [(line, Error.Reading_error msg)]
+					let errors = Compiler.collate_errors source [(line, Error.Reading_error msg)]
 					in invalid_maker errors
 
 	let ambivalent_manuscript_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =
-		let valid_processor = Postprocess.process_manuscript
+		let valid_compiler = Compiler.compile_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_processor ~invalid_maker source
+		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_compiler ~invalid_maker source
 
 	let ambivalent_composition_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =
-		let valid_processor = Postprocess.process_composition
+		let valid_compiler = Compiler.compile_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_processor ~invalid_maker source
+		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_compiler ~invalid_maker source
 end
 
