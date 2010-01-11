@@ -30,9 +30,9 @@ type weight_t =
 
 type colspec_t = alignment_t * weight_t with sexp
 
-type cellspec_t = colspec_t * int with sexp
+type cellspec_t = colspec_t * int * bool with sexp
 
-type raw_cell_t = cellspec_t option * bool * Inline.seq_t with sexp
+type raw_cell_t = cellspec_t option * Inline.seq_t with sexp
 
 type 'a cell_t = raw_cell_t
 
@@ -59,7 +59,7 @@ type 'a t = tabular_t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make_cell cellspec hline seq = (cellspec, hline, Inline.get_seq seq)
+let make_cell cellspec seq = (cellspec, Inline.get_seq seq)
 
 let make_row (hd, tl) = (hd, tl)
 

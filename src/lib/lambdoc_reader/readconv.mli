@@ -27,6 +27,7 @@ sig
 	val expand_entity: Ast.entity_t -> [ `Okay of string * string | `Error of Error.error_msg_t ]
 	val pxp_iter: (string -> int -> unit) -> unit
 
+	val matches_ident: string -> bool
 	val bullet_of_string: string -> Bullet.t
 	val numbering_of_string: string -> Numbering.t
 	val floatation_of_string: string -> Floatation.t
@@ -42,6 +43,7 @@ sig
 	open Tabular
 
 	val colspec_of_string: string -> colspec_t
+	val cellspec_of_string: string -> cellspec_t
 end
 
 

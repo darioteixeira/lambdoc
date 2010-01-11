@@ -31,9 +31,9 @@ type weight_t =
 
 type colspec_t = alignment_t * weight_t with sexp
 
-type cellspec_t = colspec_t * int with sexp
+type cellspec_t = colspec_t * int * bool with sexp
 
-type raw_cell_t = cellspec_t option * bool * Inline.seq_t with sexp
+type raw_cell_t = cellspec_t option * Inline.seq_t with sexp
 
 type 'a cell_t = private raw_cell_t
 
@@ -60,7 +60,7 @@ type 'a t = private tabular_t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val make_cell: cellspec_t option -> bool -> ('a, _) Inline.t list -> 'a cell_t
+val make_cell: cellspec_t option -> ('a, _) Inline.t list -> 'a cell_t
 val make_row: 'a cell_t plus_t -> 'a row_t
 val make_group: 'a row_t plus_t -> 'a group_t
 val make_tabular: colspec_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t plus_t -> 'a t

@@ -38,18 +38,6 @@ type customdef_t =
 
 
 (********************************************************************************)
-(**	{1 Definition of various regexps and associated functions}		*)
-(********************************************************************************)
-
-let matches_ident =
-	let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9:-_]*$"
-	in fun str -> Pcre.pmatch ~rex str
-
-
-let cell_rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)$"
-
-
-(********************************************************************************)
 (**	{1 Auxiliary functions}							*)
 (********************************************************************************)
 
@@ -131,7 +119,7 @@ let process_document ~idiosyncrasies document_ast =
 		| Some thing ->
 			let new_label = `User_label thing in
 			let () =
-				if matches_ident thing
+				if Basic_input.matches_ident thing
 				then
 					if Hashtbl.mem labels new_label
 					then DynArray.add errors (comm.comm_linenum, (Error.Duplicate_target (comm.comm_tag, thing)))
@@ -442,23 +430,20 @@ let process_document ~idiosyncrasies document_ast =
 		let num_columns = Array.length specs in
 
 		let convert_cell (comm, raw_cellspec, seq) =
-			let (colspan, cellspec, hline) = match raw_cellspec with
+			let (colspan, cellspec) = match raw_cellspec with
 				| Some raw ->
 					begin
 						try
-							let subs = Pcre.exec ~rex:cell_rex raw in
-							let colspan = int_of_string (Pcre.get_named_substring cell_rex "colspan" subs)
-							and colspec = Tabular_input.colspec_of_string (Pcre.get_named_substring cell_rex "colspec" subs)
-							and hline = (Pcre.get_named_substring cell_rex "hline" subs) = "_"
-							in (colspan, Some (colspec, colspan), hline)
+							let (colspec, colspan, hline) = Tabular_input.cellspec_of_string raw
+							in (colspan, Some (colspec, colspan, hline))
 						with _ ->
 							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw)
 							in DynArray.add errors (comm.comm_linenum, msg);
-							(1, None, false)
+							(1, None)
 					end
 				| None ->
-					(1, None, false)
-			in (colspan, Tabular.make_cell cellspec hline (convert_seq comm seq)) in
+					(1, None)
+			in (colspan, Tabular.make_cell cellspec (convert_seq comm seq)) in
 
 		let convert_row (comm, row) =
 			let rowspan = ref 0 in
@@ -824,7 +809,7 @@ let process_document ~idiosyncrasies document_ast =
 
 		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, nargs, seq))) ->
 			let elem () =
-				if not (matches_ident name)
+				if not (Basic_input.matches_ident name)
 				then begin
 					let msg = Error.Invalid_macro (comm.comm_tag, name)
 					in DynArray.add errors (comm.comm_linenum, msg)
@@ -935,7 +920,7 @@ let process_document ~idiosyncrasies document_ast =
 
 
 	and convert_customdef comm env kind customdef =
-		if not (matches_ident env)
+		if not (Basic_input.matches_ident env)
 		then begin
 			let msg = Error.Invalid_custom (comm.comm_tag, env)
 			in DynArray.add errors (comm.comm_linenum, msg)

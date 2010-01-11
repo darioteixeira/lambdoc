@@ -316,6 +316,11 @@ struct
 		Hashtbl.iter f pxp_entity_map
 
 
+	let matches_ident =
+		let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9:-_]*$"
+		in fun str -> Pcre.pmatch ~rex str
+	
+
 	let bullet_of_string = function
 		| "disc"   -> Bullet.Disc
 		| "circle" -> Bullet.Circle
@@ -360,6 +365,15 @@ struct
 		| "j" -> (Justify, Normal)
 		| "J" -> (Justify, Strong)
 		| _   -> invalid_arg "colspec_of_string"
+
+	let cellspec_of_string =
+		let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)$"
+		in fun str ->
+			let subs = Pcre.exec ~rex str in
+			let colspan = int_of_string (Pcre.get_named_substring rex "colspan" subs)
+			and colspec = colspec_of_string (Pcre.get_named_substring rex "colspec" subs)
+			and hline = (Pcre.get_named_substring rex "hline" subs) = "_"
+			in (colspec, colspan, hline)
 end
 
 
