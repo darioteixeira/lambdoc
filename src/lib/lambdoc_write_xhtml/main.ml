@@ -166,8 +166,8 @@ let write_valid_document settings classname doc =
 	(* Predefined sequences with last question and answer.			*)
 	(************************************************************************)
 
-	let last_question_seq = ref [`Plain "Q:"]
-	and last_answer_seq = ref [`Plain "A:"]
+	let last_question_seq = ref (Some (`Plain "Q:", []))
+	and last_answer_seq = ref (Some (`Plain "A:", []))
 
 
 	(************************************************************************)
@@ -187,7 +187,8 @@ let write_valid_document settings classname doc =
 	(************************************************************************)
 
 	let rec write_seq ?(nbspfy=false) seq =
-		List.map (write_inline ~nbspfy) seq
+		let (hd, tl) = nemap (write_inline ~nbspfy) seq
+		in hd :: tl
 
 
 	and write_inline ~nbspfy = function
@@ -241,7 +242,7 @@ let write_valid_document settings classname doc =
 			XHTML.M.span (write_seq ~nbspfy:true seq)
 
 		| `Link (lnk, None) ->
-			make_external_link lnk (Obj.magic (write_seq ~nbspfy [`Plain lnk]))
+			make_external_link lnk (Obj.magic (write_seq ~nbspfy (`Plain lnk, [])))
 
 		| `Link (lnk, Some seq) ->
 			make_external_link lnk (Obj.magic (write_seq ~nbspfy seq))
@@ -388,7 +389,8 @@ let write_valid_document settings classname doc =
 	(************************************************************************)
 
 	let rec write_frag frag =
-		List.flatten (List.map write_block frag)
+		let (hd, tl) = nemap write_block frag
+		in List.flatten (hd :: tl)
 
 
 	and write_block = function
@@ -402,42 +404,40 @@ let write_valid_document settings classname doc =
 			let style = style_initial @ style_indent
 			in [XHTML.M.p ~a:[a_class ("doc_par" :: style)] (write_seq seq)]
 
-		| `Itemize (bul, (hd_frag, tl_frags)) ->
-			let (hd, tl) = plusmap (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
+		| `Itemize (bul, frags) ->
+			let (hd, tl) = nemap (fun frag -> XHTML.M.li (write_frag frag)) frags
 			and style = ["doc_style_" ^ (Basic_output.string_of_bullet bul)]
 			in [XHTML.M.ul ~a:[a_class ("doc_itemize" :: style)] hd tl]
 
-		| `Enumerate (num, (hd_frag, tl_frags)) ->
-			let (hd, tl) = plusmap (fun frag -> XHTML.M.li (write_frag frag)) hd_frag tl_frags
+		| `Enumerate (num, frags) ->
+			let (hd, tl) = nemap (fun frag -> XHTML.M.li (write_frag frag)) frags
 			and style = ["doc_style_" ^ (Basic_output.string_of_numbering num)]
 			in [XHTML.M.ol ~a:[a_class ("doc_enumerate" :: style)] hd tl]
 
-		| `Description (hd_frag, tl_frags) ->
+		| `Description frags ->
 			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
-			let (hd, tl) = plusmap write_frag hd_frag tl_frags in
+			let (hd, tl) = nemap write_frag frags in
 			let (new_hd, new_tl) =
 				let (first, second) = hd
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
 			in [XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl]
 
-		| `Qanda (hd_pair, tl_pairs) ->
+		| `Qanda pairs ->
 			let write_frag ~qora (maybe_maybe_seq, frag) =
 				let qora_class = match qora with
 					| `Question -> "doc_question"
 					| `Answer   -> "doc_answer" in
-				let seq = match (maybe_maybe_seq, qora) with
-					| (Some (Some seq), `Question) -> last_question_seq := seq; seq
-					| (Some (Some seq), `Answer)   -> last_answer_seq := seq; seq
-					| (Some None, `Question)       -> last_question_seq := []; []
-					| (Some None, `Answer)	       -> last_answer_seq := []; []
-					| (None, `Question)	       -> !last_question_seq
-					| (None, `Answer)	       -> !last_answer_seq in
-				let empty_class = match seq with
-					| [] -> ["doc_empty"]
-					| _  -> []
-				in (XHTML.M.dt ~a:[a_class (qora_class::empty_class)] (write_seq seq), XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
+				let maybe_seq = match (maybe_maybe_seq, qora) with
+					| (Some maybe_seq, `Question)	-> last_question_seq := maybe_seq; maybe_seq
+					| (Some maybe_seq, `Answer)	-> last_answer_seq := maybe_seq; maybe_seq
+					| (None, `Question)		-> !last_question_seq
+					| (None, `Answer)		-> !last_answer_seq in
+				let (outseq, empty_class) = match maybe_seq with
+					| Some seq -> (write_seq seq, ["doc_empty"])
+					| None	   -> ([], [])
+				in (XHTML.M.dt ~a:[a_class (qora_class::empty_class)] outseq, XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
 			let write_pair (q, a) = (write_frag ~qora:`Question q, write_frag ~qora:`Answer a) in
-			let (hd, tl) = plusmap write_pair hd_pair tl_pairs in
+			let (hd, tl) = nemap write_pair pairs in
 			let (new_hd, new_tl) =
 				let ((first, second), (third, fourth)) = hd
 				in (first, second :: third :: fourth :: (List.flatten (List.map (fun ((q1, q2), (a1, a2)) -> [q1; q2; a1; a2]) tl)))
@@ -563,23 +563,23 @@ let write_valid_document settings classname doc =
 		| `Section (label, order, location, level, `Bibliography) ->
 			let title = make_sectional level label (section_conv location order) (write_name Name_bibliography) in
 			let bibs = match bibs with
-				| []	 -> []
-				| hd::tl -> let (hd, tl) = plusmap write_bib hd tl in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
+				| []	   -> []
+				| hd :: tl -> let (hd, tl) = nemap write_bib (hd, tl) in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
 			in title::bibs
 
 		| `Section (label, order, location, level, `Notes) ->
 			let title = make_sectional level label (section_conv location order) (write_name Name_notes) in
 			let notes = match notes with
-				| []	 -> []
-				| hd::tl -> let (hd, tl) = plusmap write_note hd tl in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
+				| []	   -> []
+				| hd :: tl -> let (hd, tl) = nemap write_note (hd, tl) in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
 			in title::notes
 
 		| `Section (label, order, location, level, `Toc) ->
 			let title = make_sectional level label (section_conv location order) (write_name Name_toc) in
 			let entries = List.filter_map write_toc_entry toc in
 			let toc_xhtml = match entries with
-				| []	 -> []
-				| hd::tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
+				| []	   -> []
+				| hd :: tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
 			in title::toc_xhtml
 
 
@@ -662,44 +662,40 @@ let write_valid_document settings classname doc =
 (**	{3 Conversion of invalid documents}					*)
 (********************************************************************************)
 
-let write_error (error_context, error_msg) =
-
-	let line_number = error_context.Error.error_line_number
-	and line_before = error_context.Error.error_line_before
-	and line_actual = error_context.Error.error_line_actual
-	and line_after = error_context.Error.error_line_after in
-
-	let show_context =
-		let show_line classname delta line =
-			XHTML.M.li ~a:[a_class [classname]]
-				[
-				span [pcdata (sprintf "%03d" (line_number + delta))];
-				span [pcdata line]
-				] in
-		let show_line_around delta line =
-			show_line "doc_error_around" delta line
-		and show_line_actual =
-			show_line "doc_error_actual" 0 line_actual in
-		let lines =
-			(List.mapi (fun ord line -> show_line_around (ord - (List.length line_before)) line) line_before) @
-			[show_line_actual] @
-			(List.mapi (fun ord line -> show_line_around (ord+1) line) line_after)
-		in match lines with
-			| []		-> raise Empty_error_context
-			| hd::tl	-> XHTML.M.ul ~a:[a_class ["doc_error_lines"]] hd tl
-
-	in XHTML.M.li ~a:[a_class ["doc_error"]]
-		[
-		XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata (sprintf "Error in line %d:" line_number)];
-		show_context;
-		XHTML.M.p ~a:[a_class ["doc_error_msg"]] [pcdata (Explanations.explain_error error_msg)]
-		]
+let write_error (maybe_error_context, error_msg) =
+	let context = match maybe_error_context with
+		| Some error_context ->
+			let line_number = error_context.Error.error_line_number
+			and line_before = error_context.Error.error_line_before
+			and line_actual = error_context.Error.error_line_actual
+			and line_after = error_context.Error.error_line_after in
+			let show_line classname delta line =
+				XHTML.M.li ~a:[a_class [classname]]
+					[
+					span [pcdata (sprintf "%03d" (line_number + delta))];
+					span [pcdata line]
+					] in
+			let show_line_around delta line =
+				show_line "doc_error_around" delta line
+			and show_line_actual =
+				show_line "doc_error_actual" 0 line_actual in
+			let lines =
+				(List.mapi (fun ord line -> show_line_around (ord - (List.length line_before)) line) line_before) @
+				[show_line_actual] @
+				(List.mapi (fun ord line -> show_line_around (ord+1) line) line_after)
+			in	[
+				XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata (sprintf "Error in line %d:" line_number)];
+				XHTML.M.ul ~a:[a_class ["doc_error_lines"]] (List.hd lines) (List.tl lines);
+				]
+		| None ->
+			[XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata "Global error:"]]
+	and explanation = [XHTML.M.p ~a:[a_class ["doc_error_msg"]] [pcdata (Explanations.explain_error error_msg)]]
+	in XHTML.M.li ~a:[a_class ["doc_error"]] (context @ explanation)
 
 
-let write_invalid_document classname = function
-	| []		-> raise Empty_error_list
-	| hd::tl	-> div ~a:[a_class ["doc"; "doc_invalid"; classname]]
-				[ul ~a:[a_class ["doc_errors"]] (write_error hd) (List.map write_error tl)]
+let write_invalid_document classname errors =
+	let (hd, tl) = nemap write_error errors
+	in div ~a:[a_class ["doc"; "doc_invalid"; classname]] [ul ~a:[a_class ["doc_errors"]] hd tl]
 
 
 (********************************************************************************)

@@ -19,19 +19,17 @@ TYPE_CONV_PATH "Prelude"
 
 (**	The type of non-empty lists.
 *)
-type 'a plus_t = 'a * 'a list with sexp
+type 'a nelist = 'a * 'a list with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-(**	Similar to [List.map], but for values of type {!plus_t}.
+(**	Similar to [List.map], but for values of type {!nelist}.
 *)
-let plusmap f hd tl =
-	let new_hd = f hd in
-	let new_tl = List.map f tl
-	in (new_hd, new_tl)
+let nemap func (hd, tl) =
+	(func hd, List.map func tl)
 
 
 (**	Possibly apply a function.

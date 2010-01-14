@@ -9,6 +9,7 @@
 (**	Definitions concerning valid documents.
 *)
 
+open Prelude
 open Basic
 
 
@@ -42,7 +43,7 @@ type composition_t = [ `Composition ] document_t with sexp
 (********************************************************************************)
 
 val make_manuscript:
-	([< `Composition | `Manuscript ], _, _, _, _) Block.t list ->
+	([< `Composition | `Manuscript ], _, _, _, _) Block.t nelist ->
 	Bib.t list ->
 	Note.t list ->
 	Heading.heading_t list ->
@@ -52,7 +53,7 @@ val make_manuscript:
 	manuscript_t
 
 val make_composition:
-	([< `Composition ], _, _, _, _) Block.t list ->
+	([< `Composition ], _, _, _, _) Block.t nelist ->
 	Alias.t list ->
 	composition_t
 

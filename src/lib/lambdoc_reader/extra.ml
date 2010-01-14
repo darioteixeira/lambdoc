@@ -97,7 +97,7 @@ type handle_t =
 	| Floatation_hnd
 	| Lang_hnd
 
-type error_t = (int * Error.error_msg_t) DynArray.t
+type error_t = (int option * Error.error_msg_t) DynArray.t
 
 type extra_t = (handle_t, property_data_t option) Hashtbl.t
 
@@ -198,7 +198,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		Positive (Boolean_data true)
 	| (key, Boolean_kind, Keyvalue_field (k, v)) when key = k ->
 		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v)
-		in	DynArray.add errors (comm.comm_linenum, msg);
+		in	DynArray.add errors (Some comm.comm_linenum, msg);
 			Negative
 
 	| (key, Numeric_kind (low, high), Unnamed_field v) ->
@@ -211,7 +211,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 				Positive data
 			| None ->
 				let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v, low, high) in
-				DynArray.add errors (comm.comm_linenum, msg);
+				DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
 	| (key, String_kind, Unnamed_field v) ->
@@ -225,7 +225,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		(try Positive (Bullet_data (Basic_input.bullet_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
+			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
 	| (key, Numbering_kind, Unnamed_field v) ->
@@ -234,7 +234,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		(try Positive (Numbering_data (Basic_input.numbering_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
+			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
 	| (key, Floatation_kind, Unnamed_field v) ->
@@ -243,7 +243,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		(try Positive (Floatation_data (Basic_input.floatation_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
+			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
 	| (key, Lang_kind, Unnamed_field v) ->
@@ -252,7 +252,7 @@ let matcher errors comm key kind field = match (key, kind, field) with
 		(try Positive (Lang_data (Camlhighlight_core.lang_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (comm.comm_linenum, msg);
+			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
 	| _ ->
@@ -367,16 +367,16 @@ let process comm errors handles =
 						then	()
 						else	(any_untaken := true;
 							let msg = Error.Invalid_extra_unknown_parameter (comm.comm_tag, col, strs.(col))
-							in DynArray.add errors (comm.comm_linenum, msg))
+							in DynArray.add errors (Some comm.comm_linenum, msg))
 					in	Array.iteri check taken;
 						assigned
 				| No_solutions ->
 					let msg = Error.Invalid_extra_no_solutions (comm.comm_tag, extra)
-					in DynArray.add errors (comm.comm_linenum, msg);
+					in DynArray.add errors (Some comm.comm_linenum, msg);
 					dummy
 				| Multiple_solutions ->
 					let msg = Error.Invalid_extra_multiple_solutions (comm.comm_tag, extra)
-					in DynArray.add errors (comm.comm_linenum, msg);
+					in DynArray.add errors (Some comm.comm_linenum, msg);
 					dummy
 
 

@@ -71,11 +71,11 @@ struct
 				in valid_compiler ~accept_list ~deny_list ~default ~source document_ast
 			with
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
-					let msgs = List.map (fun line -> (line, Error.Malformed_code_point)) error_lines in
-					let errors = Compiler.collate_errors sane_str msgs
+					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
+					let errors = Compiler.process_errors ~sort:false sane_str msgs
 					in invalid_maker errors
 				| Reader.Reading_error (line, msg) ->
-					let errors = Compiler.collate_errors source [(line, Error.Reading_error msg)]
+					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)]
 					in invalid_maker errors
 
 	let ambivalent_manuscript_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =

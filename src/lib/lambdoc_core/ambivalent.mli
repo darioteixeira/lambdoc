@@ -9,6 +9,7 @@
 (**	Definitions concerning ambivalent documents.
 *)
 
+open Prelude
 open Basic
 
 
@@ -37,7 +38,7 @@ type composition_t =
 (********************************************************************************)
 
 val make_valid_manuscript:
-	([< `Composition | `Manuscript ], _, _, _, _) Block.t list ->
+	([< `Composition | `Manuscript ], _, _, _, _) Block.t nelist ->
 	Bib.t list ->
 	Note.t list ->
 	Heading.heading_t list ->
@@ -47,13 +48,13 @@ val make_valid_manuscript:
 	manuscript_t
 
 val make_valid_composition:
-	([< `Composition ], _, _, _, _) Block.t list ->
+	([< `Composition ], _, _, _, _) Block.t nelist ->
 	Alias.t list ->
 	composition_t
 
-val make_invalid_manuscript: Error.t list -> manuscript_t
+val make_invalid_manuscript: Error.t nelist -> manuscript_t
 
-val make_invalid_composition: Error.t list -> composition_t
+val make_invalid_composition: Error.t nelist -> composition_t
 
 
 (********************************************************************************)

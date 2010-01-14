@@ -191,45 +191,45 @@ simple_block:
 	| THEOREMDEF raw_bundle theoremdef					{($1, Ast.Theoremdef ($2, $3))}
 
 env_block:
-	| begin_block(blk_itemize) anon_item_frag+ end_block			{($1, Ast.Itemize $2)}
-	| begin_block(blk_enumerate) anon_item_frag+ end_block			{($1, Ast.Enumerate $2)}
-	| begin_block(blk_description) desc_item_frag+ end_block		{($1, Ast.Description $2)}
-	| begin_block(blk_qanda) qanda_frag+ end_block				{($1, Ast.Qanda $2)}
-	| begin_block(blk_verse) block+ end_block				{($1, Ast.Verse $2)}
-	| begin_block(blk_quote) block+ end_block				{($1, Ast.Quote $2)}
+	| begin_block(blk_itemize) anon_item_frag* end_block			{($1, Ast.Itemize $2)}
+	| begin_block(blk_enumerate) anon_item_frag* end_block			{($1, Ast.Enumerate $2)}
+	| begin_block(blk_description) desc_item_frag* end_block		{($1, Ast.Description $2)}
+	| begin_block(blk_qanda) qanda_frag* end_block				{($1, Ast.Qanda $2)}
+	| begin_block(blk_verse) block* end_block				{($1, Ast.Verse $2)}
+	| begin_block(blk_quote) block* end_block				{($1, Ast.Quote $2)}
 	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk $2)}
 	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk $2)}
 	| begin_block(blk_source) RAW end_block					{($1, Ast.Source $2)}
 	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
 	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
-	| begin_block(blk_subpage) block+ end_block				{($1, Ast.Subpage $2)}
+	| begin_block(blk_subpage) block* end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_decor) block end_block				{($1, Ast.Decor $2)}
-	| begin_block(blk_pullquote) inline_bundle? block+ end_block		{($1, Ast.Pullquote ($2, $3))}
-	| begin_block(blk_custom) inline_bundle? block+ end_block		{($1, Ast.Custom (the $1, $2, $3))}
+	| begin_block(blk_pullquote) inline_bundle? block* end_block		{($1, Ast.Pullquote ($2, $3))}
+	| begin_block(blk_custom) inline_bundle? block* end_block		{($1, Ast.Custom (the $1, $2, $3))}
 	| begin_block(blk_equation) block caption? end_block			{($1, Ast.Equation ($3, $2))}
 	| begin_block(blk_printout) block caption? end_block			{($1, Ast.Printout ($3, $2))}
 	| begin_block(blk_table) block caption? end_block			{($1, Ast.Table ($3, $2))}
 	| begin_block(blk_figure) block caption? end_block			{($1, Ast.Figure ($3, $2))}
-	| begin_block(blk_abstract) block+ end_block				{($1, Ast.Abstract $2)}
+	| begin_block(blk_abstract) block* end_block				{($1, Ast.Abstract $2)}
 	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
-	| begin_block(blk_note) block+ end_block				{($1, Ast.Note $2)}
+	| begin_block(blk_note) block* end_block				{($1, Ast.Note $2)}
 
 anon_item_frag:
-	| ITEM block+								{($1, $2)}
+	| ITEM block*								{($1, $2)}
 
 desc_item_frag:
-	| ITEM inline_bundle block+						{($1, $2, $3)}
+	| ITEM inline_bundle block*						{($1, $2, $3)}
 
 qanda_frag:
 	| question answer							{($1, $2)}
 
 question:
-	| QUESTION inline_bundle? block+					{($1, Ast.Different $2, $3)}
-	| RQUESTION block+							{($1, Ast.Repeated, $2)}
+	| QUESTION inline_bundle? block*					{($1, Ast.Different $2, $3)}
+	| RQUESTION block*							{($1, Ast.Repeated, $2)}
 
 answer:
-	| ANSWER inline_bundle? block+						{($1, Ast.Different $2, $3)}
-	| RANSWER block+							{($1, Ast.Repeated, $2)}
+	| ANSWER inline_bundle? block*						{($1, Ast.Different $2, $3)}
+	| RANSWER block*							{($1, Ast.Repeated, $2)}
 
 caption:
 	| CAPTION inline_bundle							{($1, $2)}

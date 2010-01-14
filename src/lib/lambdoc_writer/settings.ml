@@ -60,29 +60,29 @@ let make_names part_name appendix_name section_name bibliography_name notes_name
 
 
 let english_names = make_names
-	[Inline.plain "Part"]
-	[Inline.plain "Appendix"]
-	[Inline.plain "Section"]
-	[Inline.plain "Bibliography"]
-	[Inline.plain "Notes"]
-	[Inline.plain "Table of Contents"]
-	[Inline.plain "Eq."]
-	[Inline.plain "Print."]
-	[Inline.plain "Tab."]
-	[Inline.plain "Fig."]
+	(Inline.plain "Part", [])
+	(Inline.plain "Appendix", [])
+	(Inline.plain "Section", [])
+	(Inline.plain "Bibliography", [])
+	(Inline.plain "Notes", [])
+	(Inline.plain "Table of Contents", [])
+	(Inline.plain "Eq.", [])
+	(Inline.plain "Print.", [])
+	(Inline.plain "Tab.", [])
+	(Inline.plain "Fig.", [])
 
 
 let portuguese_names = make_names
-	[Inline.plain "Parte"]
-	[Inline.plain "Apêndice"]
-	[Inline.plain "Secção"]
-	[Inline.plain "Bibliografia"]
-	[Inline.plain "Notas"]
-	[Inline.plain "Índice"]
-	[Inline.plain "Eq."]
-	[Inline.plain "List."]
-	[Inline.plain "Tab."]
-	[Inline.plain "Fig."]
+	(Inline.plain "Parte", [])
+	(Inline.plain "Apêndice", [])
+	(Inline.plain "Secção", [])
+	(Inline.plain "Bibliografia", [])
+	(Inline.plain "Notas", [])
+	(Inline.plain "Índice", [])
+	(Inline.plain "Eq.", [])
+	(Inline.plain "List.", [])
+	(Inline.plain "Tab.", [])
+	(Inline.plain "Fig.", [])
 
 
 let make bullet numbering names image_lookup =

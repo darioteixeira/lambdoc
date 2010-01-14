@@ -31,7 +31,7 @@ type handle_t =
 	| Floatation_hnd
 	| Lang_hnd
 
-type error_t = (int * Error.error_msg_t) DynArray.t
+type error_t = (int option * Error.error_msg_t) DynArray.t
 
 type extra_t
 

@@ -164,8 +164,8 @@ let explain_error = function
 	| Error.Invalid_mathml (tag, txt) ->
 		sprintf "Invalid mathml expression '%s' in %s." txt (explain_tag tag)
 
-	| Error.Invalid_column_number (tag, linenum, found, expected) ->
-		sprintf "Wrong number of columns for a row belonging to the %s started in line %d: found %d but expected %d columns." (explain_tag tag) linenum found expected
+	| Error.Invalid_column_number (tag, found, expected) ->
+		sprintf "Wrong number of columns for a row belonging to the tabular environment defined by %s: found %d but expected %d columns." (explain_tag tag) found expected
 
 	| Error.Invalid_column_specifier (tag, spec) ->
 		sprintf "Unknown column specifier '%s' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec (explain_tag tag)
@@ -193,14 +193,17 @@ let explain_error = function
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '%s' in %s." label (explain_tag tag)
 
-	| Error.Empty_inline tag ->
-		sprintf "Empty inline sequence in %s." (explain_tag tag)
-
 	| Error.Empty_list tag ->
 		sprintf "Empty list in %s." (explain_tag tag)
 
-	| Error.Nested_link tag ->
-		sprintf "Nested link in %s." (explain_tag tag)
+	| Error.Empty_sequence tag ->
+		sprintf "Empty inline sequence in %s." (explain_tag tag)
+
+	| Error.Empty_fragment tag ->
+		sprintf "Empty fragment in %s." (explain_tag tag)
+
+	| Error.Unexpected_inline tag ->
+		sprintf "Unexpected node %s in inline sequence.  Remember that nested links are not allowed!." (explain_tag tag)
 
 	| Error.Unexpected_block (tag, blk) ->
 		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)

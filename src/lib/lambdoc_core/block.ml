@@ -18,34 +18,34 @@ open Basic
 
 type 'a block_t =
 	[ `Paragraph of bool * bool option * Inline.seq_t
-	| `Itemize of Bullet.t * 'a list plus_t
-	| `Enumerate of Numbering.t * 'a list plus_t
-	| `Description of (Inline.seq_t * 'a list) plus_t
-	| `Qanda of ((Inline.seq_t option option * 'a list) * (Inline.seq_t option option * 'a list)) plus_t
-	| `Verse of 'a list
-	| `Quote of 'a list
+	| `Itemize of Bullet.t * 'a nelist nelist
+	| `Enumerate of Numbering.t * 'a nelist nelist
+	| `Description of (Inline.seq_t * 'a nelist) nelist
+	| `Qanda of ((Inline.seq_t option option * 'a nelist) * (Inline.seq_t option option * 'a nelist)) nelist
+	| `Verse of 'a nelist
+	| `Quote of 'a nelist
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
 	| `Verbatim of int * string
 	| `Image of Image.t
-	| `Subpage of 'a list
+	| `Subpage of 'a nelist
 	| `Decor of Floatation.t * 'a
-	| `Pullquote of Floatation.t * Inline.seq_t option * 'a list
-	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a list
-	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a list
+	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
+	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
+	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a nelist
 	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
 	| `Heading of Heading.heading_t
 	| `Title of Level.title_t * Inline.seq_t
-	| `Abstract of 'a list
+	| `Abstract of 'a nelist
 	| `Rule
 	] with sexp
 
 type raw_block_t = raw_block_t block_t with sexp
-type frag_t = raw_block_t list with sexp
+type frag_t = raw_block_t nelist with sexp
 
 type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 
@@ -57,19 +57,19 @@ type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
 let paragraph initial indent seq =
 	`Paragraph (initial, indent, Inline.get_seq seq)
 
-let itemize bullet (head_frag, tail_frags) =
-	`Itemize (bullet, (head_frag, tail_frags))
+let itemize bullet frags =
+	`Itemize (bullet, frags)
 
-let enumerate numbering (head_frag, tail_frags) =
-	`Enumerate (numbering, (head_frag, tail_frags))
+let enumerate numbering frags =
+	`Enumerate (numbering, frags)
 
-let description (hd, tl) =
+let description frags =
 	let conv (seq, frag) = (Inline.get_seq seq, frag)
-	in `Description (plusmap conv hd tl)
+	in `Description (nemap conv frags)
 
-let qanda (hd, tl) =
+let qanda frags =
 	let conv ((q_seq, q_frag), (a_seq, a_frag)) = ((maybe (maybe Inline.get_seq) q_seq, q_frag), (maybe (maybe Inline.get_seq) a_seq, a_frag))
-	in `Qanda (plusmap conv hd tl)
+	in `Qanda (nemap conv frags)
 
 let verse frag =
 	`Verse frag
@@ -134,3 +134,5 @@ let rule () =
 let get_frag frag =
 	frag
 
+let get_blocks xs =
+	xs

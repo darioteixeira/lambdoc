@@ -17,29 +17,29 @@ open Basic
 (********************************************************************************)
 
 type 'a inline_t =
-	[ `Plain of string
+	[ `Plain of Ustring.t
 	| `Entity of Entity.t
 	| `Linebreak
 	| `Math of Math.t
-	| `Bold of 'a list
-	| `Emph of 'a list
-	| `Code of 'a list
-	| `Caps of 'a list
-	| `Ins of 'a list
-	| `Del of 'a list
-	| `Sup of 'a list
-	| `Sub of 'a list
-	| `Mbox of 'a list
-	| `Link of Uri.t * 'a list option
-	| `See of Ref.t plus_t
-	| `Cite of Ref.t plus_t
+	| `Bold of 'a nelist
+	| `Emph of 'a nelist
+	| `Code of 'a nelist
+	| `Caps of 'a nelist
+	| `Ins of 'a nelist
+	| `Del of 'a nelist
+	| `Sup of 'a nelist
+	| `Sub of 'a nelist
+	| `Mbox of 'a nelist
+	| `Link of Uri.t * 'a nelist option
+	| `See of Ref.t nelist
+	| `Cite of Ref.t nelist
 	| `Ref of Ref.t
 	| `Sref of Ref.t
-	| `Mref of Ref.t * 'a list
+	| `Mref of Ref.t * 'a nelist
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
-type seq_t = raw_inline_t list with sexp
+type seq_t = raw_inline_t nelist with sexp
 
 type (+'a, +'b) t = ('a, 'b) t inline_t with sexp
 
@@ -69,5 +69,5 @@ let sref ref = `Sref ref
 let mref ref seq = `Mref (ref, seq)
 
 let get_seq seq = seq
-let get_seqs (hd, tl) = (hd, tl)
+let get_inlines xs = xs
 

@@ -37,11 +37,11 @@ type raw_cell_t = cellspec_t option * Inline.seq_t with sexp
 
 type 'a cell_t = private raw_cell_t
 
-type raw_row_t = raw_cell_t plus_t with sexp
+type raw_row_t = raw_cell_t nelist with sexp
 
 type 'a row_t = private raw_row_t
 
-type raw_group_t = raw_row_t plus_t with sexp
+type raw_group_t = raw_row_t nelist with sexp
 
 type 'a group_t = private raw_group_t
 
@@ -50,7 +50,7 @@ type tabular_t =
 	tcols: colspec_t array;
 	thead: raw_group_t option;
 	tfoot: raw_group_t option;
-	tbodies: raw_group_t plus_t;
+	tbodies: raw_group_t nelist;
 	} with sexp
 
 type 'a t = private tabular_t
@@ -60,9 +60,9 @@ type 'a t = private tabular_t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val make_cell: cellspec_t option -> ('a, _) Inline.t list -> 'a cell_t
-val make_row: 'a cell_t plus_t -> 'a row_t
-val make_group: 'a row_t plus_t -> 'a group_t
-val make_tabular: colspec_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t plus_t -> 'a t
+val make_cell: cellspec_t option -> ('a, _) Inline.t nelist -> 'a cell_t
+val make_row: 'a cell_t nelist -> 'a row_t
+val make_group: 'a row_t nelist -> 'a group_t
+val make_tabular: colspec_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t nelist -> 'a t
 val get_tabular: 'a t -> tabular_t
 

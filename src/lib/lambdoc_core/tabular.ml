@@ -36,11 +36,11 @@ type raw_cell_t = cellspec_t option * Inline.seq_t with sexp
 
 type 'a cell_t = raw_cell_t
 
-type raw_row_t = raw_cell_t plus_t with sexp
+type raw_row_t = raw_cell_t nelist with sexp
 
 type 'a row_t = raw_row_t
 
-type raw_group_t = raw_row_t plus_t with sexp
+type raw_group_t = raw_row_t nelist with sexp
 
 type 'a group_t = raw_group_t
 
@@ -49,7 +49,7 @@ type tabular_t =
 	tcols: colspec_t array;
 	thead: raw_group_t option;
 	tfoot: raw_group_t option;
-	tbodies: raw_group_t plus_t;
+	tbodies: raw_group_t nelist;
 	} with sexp
 
 type 'a t = tabular_t

@@ -106,7 +106,7 @@ type error_msg_t =
 
 	| Invalid_mathtex of Ident.t option * string
 	| Invalid_mathml of Ident.t option * string
-	| Invalid_column_number of Ident.t option * int * int * int
+	| Invalid_column_number of Ident.t option * int * int
 	| Invalid_column_specifier of Ident.t option * string
 	| Invalid_cell_specifier of Ident.t option * string
 
@@ -115,9 +115,10 @@ type error_msg_t =
 	| Wrong_target of Ident.t option * target_t * target_t * Ref.t
 	| Undefined_target of Ident.t option * Ref.t
 
-	| Empty_inline of Ident.t option
 	| Empty_list of Ident.t option
-	| Nested_link of Ident.t option
+	| Empty_sequence of Ident.t option
+	| Empty_fragment of Ident.t option
+	| Unexpected_inline of Ident.t option
 	| Unexpected_block of Ident.t option * blk_category_t
 
 	| Malformed_code_point
@@ -128,7 +129,7 @@ type error_msg_t =
 
 
 (**	An error is a pair consisting of the context where the error
-	occurred and the error message itself.
+	occurred (where applicable) and the error message itself.
 *)
-type t = error_context_t * error_msg_t with sexp
+type t = error_context_t option * error_msg_t with sexp
 

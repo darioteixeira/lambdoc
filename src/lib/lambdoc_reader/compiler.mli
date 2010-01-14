@@ -11,16 +11,18 @@
 *)
 
 open Lambdoc_core
+open Prelude
 
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val collate_errors:
+val process_errors:
+	sort:bool ->
 	string ->
-	(int * Error.error_msg_t) list ->
-	Error.t list
+	(int option * Error.error_msg_t) list ->
+	Error.t nelist
 
 val compile_manuscript:
 	accept_list: Features.manuscript_feature_t list ->

@@ -18,29 +18,29 @@ open Basic
 (********************************************************************************)
 
 type 'a inline_t =
-	[ `Plain of string
+	[ `Plain of Ustring.t
 	| `Entity of Entity.t
 	| `Linebreak
 	| `Math of Math.t
-	| `Bold of 'a list
-	| `Emph of 'a list
-	| `Code of 'a list
-	| `Caps of 'a list
-	| `Ins of 'a list
-	| `Del of 'a list
-	| `Sup of 'a list
-	| `Sub of 'a list
-	| `Mbox of 'a list
-	| `Link of Uri.t * 'a list option
-	| `See of Ref.t plus_t
-	| `Cite of Ref.t plus_t
+	| `Bold of 'a nelist
+	| `Emph of 'a nelist
+	| `Code of 'a nelist
+	| `Caps of 'a nelist
+	| `Ins of 'a nelist
+	| `Del of 'a nelist
+	| `Sup of 'a nelist
+	| `Sub of 'a nelist
+	| `Mbox of 'a nelist
+	| `Link of Uri.t * 'a nelist option
+	| `See of Ref.t nelist
+	| `Cite of Ref.t nelist
 	| `Ref of Ref.t
 	| `Sref of Ref.t
-	| `Mref of Ref.t * 'a list
+	| `Mref of Ref.t * 'a nelist
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
-type seq_t = raw_inline_t list with sexp
+type seq_t = raw_inline_t nelist with sexp
 
 type (+'a, +'b) t = private [< ('a, 'b) t inline_t ] with sexp
 
@@ -49,26 +49,26 @@ type (+'a, +'b) t = private [< ('a, 'b) t inline_t ] with sexp
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val plain: string -> ([> `Composition ], [> `Nonlink ]) t
+val plain: Ustring.t -> ([> `Composition ], [> `Nonlink ]) t
 val entity: Entity.t -> ([> `Composition ], [> `Nonlink ]) t
 val linebreak: unit -> ([> `Composition ], [> `Nonlink ]) t
 val math: Math.t -> ([> `Composition ], [> `Nonlink ]) t
-val bold: ('a, 'b) t list -> ('a, 'b) t
-val emph: ('a, 'b) t list -> ('a, 'b) t
-val code: ('a, 'b) t list -> ('a, 'b) t
-val caps: ('a, 'b) t list -> ('a, 'b) t
-val ins: ('a, 'b) t list -> ('a, 'b) t
-val del: ('a, 'b) t list -> ('a, 'b) t
-val sup: ('a, 'b) t list -> ('a, 'b) t
-val sub: ('a, 'b) t list -> ('a, 'b) t
-val mbox: ('a, 'b) t list -> ('a, 'b) t
-val link: Uri.t -> ('a, [< `Nonlink ]) t list option -> ('a, [> `Link ]) t
-val see: Ref.t plus_t -> ([> `Manuscript ], [> `Link ]) t
-val cite: Ref.t plus_t -> ([> `Manuscript ], [> `Link ]) t
+val bold: ('a, 'b) t nelist -> ('a, 'b) t
+val emph: ('a, 'b) t nelist -> ('a, 'b) t
+val code: ('a, 'b) t nelist -> ('a, 'b) t
+val caps: ('a, 'b) t nelist -> ('a, 'b) t
+val ins: ('a, 'b) t nelist -> ('a, 'b) t
+val del: ('a, 'b) t nelist -> ('a, 'b) t
+val sup: ('a, 'b) t nelist -> ('a, 'b) t
+val sub: ('a, 'b) t nelist -> ('a, 'b) t
+val mbox: ('a, 'b) t nelist -> ('a, 'b) t
+val link: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
+val see: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val cite: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
 val ref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
 val sref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
-val mref: Ref.t -> (_, [< `Nonlink ]) t list -> ([> `Manuscript ], [> `Link ]) t
+val mref: Ref.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
 
-val get_seq: (_, _) t list -> seq_t
-val get_seqs: (_, _) t list plus_t -> seq_t plus_t
+val get_seq: (_, _) t nelist -> seq_t
+val get_inlines: (_, _) t list -> raw_inline_t list
 

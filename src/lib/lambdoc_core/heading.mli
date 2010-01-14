@@ -9,6 +9,7 @@
 (**	Definitions concerning heading elements.
 *)
 
+open Prelude
 open Basic
 
 
@@ -67,13 +68,13 @@ type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val part: Label.t -> part_order_t -> (_, _) Inline.t list ->
+val part: Label.t -> part_order_t -> (_, _) Inline.t nelist ->
 	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Part_blk ]) t
 
 val appendix: Label.t ->
 	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Part_blk ]) t
 
-val section: Label.t -> section_order_t -> section_location_t -> Level.hierarchical_t -> (_, _) Inline.t list ->
+val section: Label.t -> section_order_t -> section_location_t -> Level.hierarchical_t -> (_, _) Inline.t nelist ->
 	([> `Manuscript ], [> `Non_listable ], [> `Non_embeddable ], [> `Non_textual ], [> `Section_blk ]) t
 
 val bibliography: Label.t ->
