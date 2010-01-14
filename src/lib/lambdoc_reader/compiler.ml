@@ -438,7 +438,7 @@ let compile_document ~idiosyncrasies document_ast =
 
 		let num_columns = Array.length specs in
 
-		let convert_cell (comm, raw_cellspec, astseq) =
+		let convert_cell (comm, raw_cellspec, maybe_astseq) =
 			let (colspan, cellspec) = match raw_cellspec with
 				| Some raw ->
 					begin
@@ -452,9 +452,9 @@ let compile_document ~idiosyncrasies document_ast =
 					end
 				| None ->
 					(1, None)
-			in (colspan, Tabular.make_cell cellspec (convert_seq comm astseq)) in
+			in (colspan, Tabular.make_cell cellspec (maybe (convert_seq ~comm) maybe_astseq)) in
 
-		let convert_row (comm, row) =
+		let convert_row (row_comm, row) =
 			let rowspan = ref 0 in
 			let converter raw_cell =
 				let (colspan, cell) = convert_cell raw_cell in
@@ -465,8 +465,8 @@ let compile_document ~idiosyncrasies document_ast =
 				| hd::tl	-> Tabular.make_row (nemap converter (hd, tl))
 			in if !rowspan <> num_columns
 			then begin
-				let msg = Error.Invalid_column_number (comm.comm_tag, !rowspan, num_columns)
-				in DynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_tag, comm.comm_linenum, !rowspan, num_columns)
+				in DynArray.add errors (Some row_comm.comm_linenum, msg);
 				tab_row
 			end else
 				tab_row in

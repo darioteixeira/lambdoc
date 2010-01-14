@@ -106,7 +106,7 @@ type error_msg_t =
 
 	| Invalid_mathtex of Ident.t option * string
 	| Invalid_mathml of Ident.t option * string
-	| Invalid_column_number of Ident.t option * int * int
+	| Invalid_column_number of Ident.t option * Ident.t option * int * int * int
 	| Invalid_column_specifier of Ident.t option * string
 	| Invalid_cell_specifier of Ident.t option * string
 

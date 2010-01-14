@@ -71,7 +71,7 @@ type seq_t = inline_t list
 (**	{2 Data types for document blocks}					*)
 (********************************************************************************)
 
-type tabular_cell_t = command_t * string option * seq_t
+type tabular_cell_t = command_t * string option * seq_t option
 
 type tabular_row_t = command_t * tabular_cell_t list
 

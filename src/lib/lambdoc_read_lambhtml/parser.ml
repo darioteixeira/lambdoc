@@ -207,7 +207,8 @@ and process_tabular node =
 	let process_cell node =
 		let comm = lazy (command_from_node node)
 		and cellspec = node#optional_string_attribute "cell"
-		in (!!comm, cellspec, process_seq node) in
+		and maybe_seq = match process_seq node with [] -> None | x -> Some x
+		in (!!comm, cellspec, maybe_seq) in
 	let process_row node =
 		(command_from_node node, List.map process_cell node#sub_nodes) in
 	let process_group node =

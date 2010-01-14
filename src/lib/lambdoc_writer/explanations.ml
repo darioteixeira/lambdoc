@@ -164,8 +164,8 @@ let explain_error = function
 	| Error.Invalid_mathml (tag, txt) ->
 		sprintf "Invalid mathml expression '%s' in %s." txt (explain_tag tag)
 
-	| Error.Invalid_column_number (tag, found, expected) ->
-		sprintf "Wrong number of columns for a row belonging to the tabular environment defined by %s: found %d but expected %d columns." (explain_tag tag) found expected
+	| Error.Invalid_column_number (tag, orig_tag, orig_linenum, found, expected) ->
+		sprintf "Wrong number of columns for a row declared by %s: found %d but expected %d columns.  This row belongs to the tabular environment declared in line %d by %s" (explain_tag tag) found expected orig_linenum (explain_tag orig_tag)
 
 	| Error.Invalid_column_specifier (tag, spec) ->
 		sprintf "Unknown column specifier '%s' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." spec (explain_tag tag)

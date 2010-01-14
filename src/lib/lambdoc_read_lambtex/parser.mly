@@ -265,7 +265,7 @@ head:	THEAD row+								{(Some $1, $2)}
 foot:	TFOOT row+								{(Some $1, $2)}
 body:	TBODY row+								{(Some $1, $2)}
 row:	cell+ ROW_END								{($2, $1)}
-cell:	CELL_MARK raw_bundle? inline*						{($1, $2, $3)}
+cell:	CELL_MARK raw_bundle? option(inline+)					{($1, $2, $3)}
 
 
 /********************************************************************************/
