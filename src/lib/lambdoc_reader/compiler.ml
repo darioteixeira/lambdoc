@@ -378,6 +378,7 @@ let compile_document ~idiosyncrasies document_ast =
 						DynArray.add errors (Some comm.comm_linenum, msg);
 						[]
 					else
+						let () = Printf.eprintf "Macrocall with #arglist=%d\n" (List.length arglist) in
 						let new_arglist = List.map (convert_inline_list ~comm ~args x) arglist
 						in convert_inline_list ~comm ~args:(Some new_arglist) x macro_astseq
 				with
@@ -403,20 +404,22 @@ let compile_document ~idiosyncrasies document_ast =
 				| [] ->
 					accum
 			in List.rev (coalesce_plain_aux [] (Inline.get_inlines seq)) in
-		let seq = flatten_map (convert_inline ~args is_link) astseq
-		in if macros_authorised || expand_entities then Obj.magic (coalesce_plain seq) else seq
-
-	and convert_seq_aux ~comm ~args is_link astseq =
-		let seq = convert_inline_list ~comm ~args is_link astseq
-		in match seq with
+		let seq = flatten_map (convert_inline ~args is_link) astseq in
+		let new_seq = if macros_authorised || expand_entities then Obj.magic (coalesce_plain seq) else seq
+		in match new_seq with
 			| [] ->
 				let msg = Error.Empty_sequence comm.comm_tag in
 				DynArray.add errors (Some comm.comm_linenum, msg);
-				(dummy_inline, [])
-			| hd :: tl ->
-				(hd, tl) in
+				[dummy_inline]
+			| xs ->
+				xs
 
-	let convert_seq ~comm ?args seq = convert_seq_aux ~comm ?args false seq in
+	and convert_seq_aux ~comm ~args is_link astseq =
+		let seq = convert_inline_list ~comm ~args is_link astseq
+		in (List.hd seq, List.tl seq) in
+
+	let convert_seq ~comm ?args seq =
+		convert_seq_aux ~comm ?args false seq in
 
 
 	(************************************************************************)
