@@ -79,8 +79,8 @@ and process_inline node =
 		| T_element "mbox"		-> (!!comm, Ast.Mbox (process_seq node))
 		| T_element "link"
 		| T_element "a"			-> (!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq node))
-		| T_element "see"		-> (!!comm, Ast.See (node#required_string_attribute "href"))
-		| T_element "cite"		-> (!!comm, Ast.Cite (node#required_string_attribute "href"))
+		| T_element "see"		-> (!!comm, Ast.See (node#required_list_attribute "href"))
+		| T_element "cite"		-> (!!comm, Ast.Cite (node#required_list_attribute "href"))
 		| T_element "ref"		-> (!!comm, Ast.Ref (node#required_string_attribute "href"))
 		| T_element "sref"		-> (!!comm, Ast.Sref (node#required_string_attribute "href"))
 		| T_element "mref"		-> (!!comm, Ast.Mref (node#required_string_attribute "href", process_seq node))

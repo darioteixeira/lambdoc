@@ -245,19 +245,19 @@
 <!ATTLIST a %Forbidden; href CDATA #REQUIRED>
 
 <!ELEMENT see EMPTY>
-<!ATTLIST see %Forbidden; href IDREF #REQUIRED>
+<!ATTLIST see %Forbidden; href NMTOKENS #REQUIRED>
 
 <!ELEMENT cite EMPTY>
-<!ATTLIST cite %Forbidden; href IDREF #REQUIRED>
+<!ATTLIST cite %Forbidden; href NMTOKENS #REQUIRED>
 
 <!ELEMENT ref EMPTY>
-<!ATTLIST ref %Forbidden; href IDREF #REQUIRED>
+<!ATTLIST ref %Forbidden; href NMTOKEN #REQUIRED>
 
 <!ELEMENT sref EMPTY>
-<!ATTLIST sref %Forbidden; href IDREF #REQUIRED>
+<!ATTLIST sref %Forbidden; href NMTOKEN #REQUIRED>
 
 <!ELEMENT mref %Inline;>
-<!ATTLIST mref %Forbidden; href IDREF #REQUIRED>
+<!ATTLIST mref %Forbidden; href NMTOKEN #REQUIRED>
 
 <!-- Tabular elements -->
 

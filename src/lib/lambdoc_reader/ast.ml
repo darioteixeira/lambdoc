@@ -58,8 +58,8 @@ type seq_t = inline_t list
 	| Sub of seq_t
 	| Mbox of seq_t
 	| Link of string * seq_t option
-	| See of string	
-	| Cite of string
+	| See of string	list
+	| Cite of string list
 	| Ref of string
 	| Sref of string
 	| Mref of string * seq_t

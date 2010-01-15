@@ -53,7 +53,7 @@ let explain_tag = function
 
 
 let explain_ident what =
-	sprintf "%s must begin with a alphabetic letter, and is optionally followed by letters, digits, or the characters ':', '-', and '_'" what
+	sprintf "%s must begin with a alphabetic letter, and is optionally followed by letters, digits, or the characters '.', ':', '-', and '_'" what
 
 
 let explain_level = function

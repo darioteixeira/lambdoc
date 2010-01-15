@@ -317,7 +317,7 @@ struct
 
 
 	let matches_ident =
-		let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9:-_]*$"
+		let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9\\.:-_]*$"
 		in fun str -> Pcre.pmatch ~rex str
 	
 

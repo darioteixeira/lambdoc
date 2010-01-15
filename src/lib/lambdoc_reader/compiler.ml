@@ -168,7 +168,12 @@ let compile_document ~idiosyncrasies document_ast =
 	(*	Adds a new reference to the dictionary.
 	*)
 	and add_reference target_checker comm ref =
-		DynArray.add references (target_checker, comm, ref)
+		if Basic_input.matches_ident ref
+		then
+			DynArray.add references (target_checker, comm, ref)
+		else
+			let msg = Error.Invalid_label (comm.comm_tag, ref)
+			in DynArray.add errors (Some comm.comm_linenum, msg)
 
 
 	(*	Adds a new TOC entry.
@@ -285,9 +290,8 @@ let compile_document ~idiosyncrasies document_ast =
 				in [Inline.link lnk (Obj.magic maybe_seq)]
 			in check_comm `Feature_link comm elem
 
-		| (false, (comm, Ast.See ref)) ->
+		| (false, (comm, Ast.See refs)) ->
 			let elem () =
-				let refs = String.nsplit ref "," in
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_note
@@ -301,9 +305,8 @@ let compile_document ~idiosyncrasies document_ast =
 						[]
 			in check_comm `Feature_see comm elem
 
-		| (false, (comm, Ast.Cite ref)) ->
+		| (false, (comm, Ast.Cite refs)) ->
 			let elem () =
-				let refs = String.nsplit ref "," in
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_bib
@@ -378,7 +381,6 @@ let compile_document ~idiosyncrasies document_ast =
 						DynArray.add errors (Some comm.comm_linenum, msg);
 						[]
 					else
-						let () = Printf.eprintf "Macrocall with #arglist=%d\n" (List.length arglist) in
 						let new_arglist = List.map (convert_inline_list ~comm ~args x) arglist
 						in convert_inline_list ~comm ~args:(Some new_arglist) x macro_astseq
 				with
