@@ -20,6 +20,8 @@ open Parser
 (********************************************************************************)
 
 exception Invalid_section_level of int
+exception Invalid_ulist_level of int * int
+exception Invalid_olist_level of int * int
 
 
 (********************************************************************************)
@@ -154,6 +156,7 @@ in object (self)
 			| x, Some (kind, level) when level <= List.length x ->
 				begin
 					self#unset_par;
+					self#unset_par;
 					self#unwind_list level;
 					match list_state with
 						| top::tl when top = kind ->
@@ -167,12 +170,22 @@ in object (self)
 							end
 				end
 
+			| x, Some (kind, level) ->
+				begin
+					match kind with
+						| Ulist -> raise (Invalid_ulist_level ((List.length x), level))
+						| Olist -> raise (Invalid_olist_level ((List.length x), level))
+				end
+
 			| hd::tl, None when not par_state && (List.length text) > 0 ->
-				self#unwind_list 0
+				begin
+					self#unwind_list 0
+				end
 				
 			| _ ->
-				() in
-				
+				begin
+					()
+				end in
 
 		let tokens = self#tokens_of_text text in
 		let () = match (par_state, tokens) with
@@ -186,9 +199,10 @@ in object (self)
 	method private produce =
 		let () =
 			if line_counter >= Array.length lines
-			then
+			then begin
+				self#unwind_list 0;
 				productions <- productions @ [EOF]
-			else
+			end else
 				let scanner = match context with
 					| General	-> Scanner.general_scanner
 					| Source	-> Scanner.source_scanner
@@ -197,6 +211,7 @@ in object (self)
 				let tok = scanner lexbuf
 				in match tok with
 					| Begin_source extra ->
+						self#unwind_list 0;
 						context <- Source;
 						let extra = if String.length extra = 0 then None else Some extra
 						in self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~extra ()))
@@ -204,6 +219,7 @@ in object (self)
 						context <- General;
 						self#store (END_SOURCE self#op)
 					| Begin_verbatim extra ->
+						self#unwind_list 0;
 						context <- Verbatim;
 						let extra = if String.length extra = 0 then None else Some extra
 						in self#store (BEGIN_VERBATIM (self#comm ~tag:(Some "(((") ~extra ()))
@@ -211,14 +227,17 @@ in object (self)
 						context <- General;
 						self#store (END_VERBATIM self#op)
 					| Section (1, text) ->
+						self#unwind_list 0;
 						self#store (BEGIN_SECTION self#op);
 						List.iter self#store (self#tokens_of_text text);
 						self#store (END_SECTION self#op)
 					| Section (2, text) ->
+						self#unwind_list 0;
 						self#store (BEGIN_SUBSECTION self#op);
 						List.iter self#store (self#tokens_of_text text);
 						self#store (END_SUBSECTION self#op)
 					| Section (3, text) ->
+						self#unwind_list 0;
 						self#store (BEGIN_SUBSUBSECTION self#op);
 						List.iter self#store (self#tokens_of_text text);
 						self#store (END_SUBSUBSECTION self#op)
