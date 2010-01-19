@@ -93,10 +93,6 @@ in object (self)
 			| Begin_link		-> BEGIN_LINK self#op
 			| End_link		-> END_LINK self#op
 			| Link_sep		-> LINK_SEP self#op
-			| Begin_mathtex_inl	-> BEGIN_MATHTEX_INL self#op
-			| End_mathtex_inl	-> END_MATHTEX_INL self#op
-			| Begin_mathml_inl	-> BEGIN_MATHML_INL self#op
-			| End_mathml_inl	-> END_MATHML_INL self#op
 		in List.map conv text_list
 
 

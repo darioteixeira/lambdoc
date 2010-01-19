@@ -31,8 +31,6 @@ type text_t =
 	| Begin_caps | End_caps
 	| Begin_code | End_code
 	| Begin_link | End_link | Link_sep
-	| Begin_mathtex_inl | End_mathtex_inl
-	| Begin_mathml_inl | End_mathml_inl
 
 type line_t =
 	| Begin_source of string | End_source
@@ -64,7 +62,7 @@ let regexp blank = [' ' '\t']
 let regexp non_blank = [^ ' ' '\t']
 let regexp section_pat = '='+
 let regexp quote_pat = '>' ('>' | blank)*
-let regexp list_pat = '-'+ | '*'+ | '#'+
+let regexp list_pat = '-'+ | '#'+
 
 let regexp escape = '\\'
 let regexp bold_mark = "**"
@@ -78,11 +76,6 @@ let regexp end_code = "}}"
 let regexp begin_link = "[["
 let regexp end_link = "]]"
 let regexp link_sep = "|"
-
-let regexp begin_mathtex_inl = "[$"
-let regexp end_mathtex_inl = "$]"
-let regexp begin_mathml_inl = "<$"
-let regexp end_mathml_inl = "$>"
 
 let regexp entity_hexa = "&#x" (alpha | deci)+ ';'
 let regexp entity_deci = "&#" (alpha | deci)+ ';'
@@ -121,10 +114,6 @@ let text_scanner lexbuf =
 		| begin_link		-> link_scanner (Begin_link :: accum) lexbuf
 		| end_link		-> main_scanner (End_link :: accum) lexbuf
 		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
-		| begin_mathtex_inl	-> mathtex_inl_scanner (Begin_mathtex_inl :: accum) lexbuf
-		| end_mathtex_inl	-> main_scanner (End_mathtex_inl :: accum) lexbuf
-		| begin_mathml_inl	-> mathml_inl_scanner (Begin_mathml_inl :: accum) lexbuf
-		| end_mathml_inl	-> main_scanner (End_mathml_inl :: accum) lexbuf
 		| entity_hexa		-> main_scanner (Entity (Ast.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)) :: accum) lexbuf
 		| entity_deci		-> main_scanner (Entity (Ast.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)) :: accum) lexbuf
 		| entity_name		-> main_scanner (Entity (Ast.Ent_name (rtrim_lexbuf ~first:1 lexbuf)) :: accum) lexbuf
@@ -139,14 +128,6 @@ let text_scanner lexbuf =
 		| end_link		-> main_scanner (End_link :: accum) lexbuf
 		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
 		| _			-> link_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
-	and mathtex_inl_scanner accum = lexer
-		| eof			-> accum
-		| end_mathtex_inl	-> main_scanner (End_mathtex_inl :: accum) lexbuf
-		| _			-> mathtex_inl_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
-	and mathml_inl_scanner accum = lexer
-		| eof			-> accum
-		| end_mathml_inl	-> main_scanner (End_mathml_inl :: accum) lexbuf
-		| _			-> mathml_inl_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	in List.rev (main_scanner [] lexbuf)
 
 
@@ -178,7 +159,7 @@ let general_scanner = lexer
 		let quote_level = count_char lexeme '>'
 		and list_level =
 			let counter = count_char lexeme
-			in match (counter '*', counter '#') with
+			in match (counter '-', counter '#') with
 				| (x, 0) when x > 0 -> Some (Ulist, x)
 				| (0, x) when x > 0 -> Some (Olist, x)
 				| _		    -> None
