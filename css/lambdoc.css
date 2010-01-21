@@ -362,13 +362,13 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #666;}
  font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
  }
 
-.doc_mult0 {font-size: 1.2em;}
-.doc_mult1 {font-size: 1.7em;}
-.doc_mult2 {font-size: 2.4em;}
-.doc_mult3 {font-size: 3.4em;}
-.doc_mult4 {font-size: 4.8em;}
-.doc_mult5 {font-size: 6.8em;}
-.doc_mult6 {font-size: 9.6em;}
+.doc_mult0 {font-size: 1.20em;}
+.doc_mult1 {font-size: 1.70em;}
+.doc_mult2 {font-size: 2.40em;}
+.doc_mult3 {font-size: 3.39em;}
+.doc_mult4 {font-size: 4.80em;}
+.doc_mult5 {font-size: 6.79em;}
+.doc_mult6 {font-size: 9.60em;}
 .doc_mult7 {font-size: 13.6em;}
 .doc_mult8 {font-size: 19.2em;}
 .doc_mult9 {font-size: 27.2em;}
@@ -390,8 +390,8 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #666;}
  line-height: 0;
  }
 
-.doc_image > a {display: inline-block;}
-.doc_image > a > img {display: block; border: none; width: 100%;}
+.doc_image > a {display: inline-block; width: 100%;}
+.doc_image > a > img {display: inline; border: none;}
 .doc_image_frame > a > img {-moz-box-shadow: 3px 3px 3px #666;}
 
 .doc_image:not(:first-child) {margin-top: 2em;}
@@ -638,7 +638,7 @@ h3.doc_sec {font-size: 1.5em;}
 
 .doc_title:not(:first-child) {margin-top: 2em;}
 .doc_part:not(:first-child) {margin-top: 2em;}
-.doc_sec:not(:first-child) {margin-top: 1.5em;}
+.doc_sec:not(:first-child) {margin-top: 2em;}
 
 .doc_title:not(:last-child) {margin-bottom: 1.5em;}
 .doc_part:not(:last-child) {margin-bottom: 1.5em;}

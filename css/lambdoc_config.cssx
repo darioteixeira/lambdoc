@@ -133,7 +133,7 @@
 #define Vmargin_title_intra	-1em
 #define Vmargin_part_top	2em
 #define Vmargin_part_bottom	1.5em
-#define Vmargin_sec_top		1.5em
+#define Vmargin_sec_top		2em
 #define Vmargin_sec_bottom	0.5em
 #define Vmargin_ghost_entry	0.75em
 
