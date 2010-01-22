@@ -52,7 +52,9 @@ type property_id_t = string * property_kind_t
 
 type property_data_t =
 	| Boolean_data of bool
+	| Boolean_auto_data of bool option
 	| Numeric_data of int 
+	| Numeric_auto_data of int option
 	| String_data of string
 	| Bullet_data of Bullet.t
 	| Numbering_data of Numbering.t
@@ -113,18 +115,18 @@ type extra_t = (handle_t, property_data_t option) Hashtbl.t
 (**	Definition of the key and property kind associated with each handle.
 *)
 let id_of_handle = function
-	| Initial_hnd	 -> ("initial", Boolean_kind)
-	| Indent_hnd	 -> ("indent", Boolean_kind)
-	| Box_hnd	 -> ("box", Boolean_kind)
-	| Linenums_hnd	 -> ("linenums", Boolean_kind)
-	| Zebra_hnd	 -> ("zebra", Boolean_kind)
-	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9))
-	| Frame_hnd	 -> ("frame", Boolean_kind)
-	| Width_hnd	 -> ("width", Numeric_kind (1, 100))
-	| Bullet_hnd	 -> ("bul", Bullet_kind)
-	| Numbering_hnd	 -> ("num", Numbering_kind)
-	| Floatation_hnd -> ("float", Floatation_kind)
-	| Lang_hnd	 -> ("lang", Lang_kind)
+	| Initial_hnd	 -> ("initial", Boolean_kind, false)
+	| Indent_hnd	 -> ("indent", Boolean_kind, true)
+	| Box_hnd	 -> ("box", Boolean_kind, false)
+	| Linenums_hnd	 -> ("linenums", Boolean_kind, false)
+	| Zebra_hnd	 -> ("zebra", Boolean_kind, false)
+	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9), false)
+	| Frame_hnd	 -> ("frame", Boolean_kind, false)
+	| Width_hnd	 -> ("width", Numeric_kind (1, 100), true)
+	| Bullet_hnd	 -> ("bul", Bullet_kind, false)
+	| Numbering_hnd	 -> ("num", Numbering_kind, false)
+	| Floatation_hnd -> ("float", Floatation_kind, false)
+	| Lang_hnd	 -> ("lang", Lang_kind, false)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -177,7 +179,7 @@ let match_numeric v low high =
 	try
 		let num = int_of_string v in
 		if (num >= low) && (num <= high)
-		then Some (Numeric_data num)
+		then Some num
 		else None
 	with
 		Failure _ -> None
@@ -188,67 +190,75 @@ let match_numeric v low high =
 	data wrapped inside a {!result_t}.  That way, other functions can tell
 	the degree of certainty associated with a matching.
 *)
-let matcher errors comm key kind field = match (key, kind, field) with
+let matcher errors comm key kind auto field = match (key, kind, auto, field) with
 
-	| (key, Boolean_kind, Boolean_field (Some k, v)) when key = k ->
-		Positive (Boolean_data v)
-	| (key, Boolean_kind, Boolean_field (None, v)) ->
-		Undecided (Boolean_data v)
-	| (key, Boolean_kind, Unnamed_field k) when key = k ->
-		Positive (Boolean_data true)
-	| (key, Boolean_kind, Keyvalue_field (k, v)) when key = k ->
+	| (key, Boolean_kind, a, Boolean_field (Some k, v)) when k = key ->
+		if a then Positive (Boolean_auto_data (Some v)) else Positive (Boolean_data v)
+	| (key, Boolean_kind, a, Boolean_field (None, v)) ->
+		if a then Undecided (Boolean_auto_data (Some v)) else Undecided (Boolean_data v)
+	| (key, Boolean_kind, true, Unnamed_field v) when v = "auto" ->
+		Undecided (Boolean_auto_data None)
+	| (key, Boolean_kind, a, Unnamed_field k) when k = key ->
+		if a then Positive (Boolean_auto_data (Some true)) else Positive (Boolean_data true)
+	| (key, Boolean_kind, true, Keyvalue_field (k, v)) when k = key && v = "auto" ->
+		Positive (Boolean_auto_data None)
+	| (key, Boolean_kind, _, Keyvalue_field (k, v)) when k = key ->
 		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v)
 		in	DynArray.add errors (Some comm.comm_linenum, msg);
 			Negative
 
-	| (key, Numeric_kind (low, high), Unnamed_field v) ->
+	| (key, Numeric_kind (low, high), true, Unnamed_field v) when v = "auto" ->
+		Undecided (Numeric_auto_data None)
+	| (key, Numeric_kind (low, high), a, Unnamed_field v) ->
 		(match match_numeric v low high with
-			| Some data -> Undecided data
+			| Some data -> Undecided (if a then Numeric_auto_data (Some data) else Numeric_data data)
 			| None	    -> Negative)
-	| (key, Numeric_kind (low, high), Keyvalue_field (k, v)) when key = k ->
+	| (key, Numeric_kind (low, high), true, Keyvalue_field (k, v)) when k = key && v = "auto" ->
+		Positive (Numeric_auto_data None)
+	| (key, Numeric_kind (low, high), a, Keyvalue_field (k, v)) when k = key ->
 		(match match_numeric v low high with
 			| Some data ->
-				Positive data
+				Positive (if a then Numeric_auto_data (Some data) else Numeric_data data)
 			| None ->
 				let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v, low, high) in
 				DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
-	| (key, String_kind, Unnamed_field v) ->
+	| (key, String_kind, false, Unnamed_field v) ->
 		Undecided (String_data v)
-	| (key, String_kind, Keyvalue_field (k, v)) when key = k ->
+	| (key, String_kind, false, Keyvalue_field (k, v)) when k = key ->
 		Positive (String_data v)
 
-	| (key, Bullet_kind, Unnamed_field v) ->
+	| (key, Bullet_kind, false, Unnamed_field v) ->
 		(try Undecided (Bullet_data (Basic_input.bullet_of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Bullet_kind, Keyvalue_field (k, v)) when key = k ->
+	| (key, Bullet_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Bullet_data (Basic_input.bullet_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
-	| (key, Numbering_kind, Unnamed_field v) ->
+	| (key, Numbering_kind, false, Unnamed_field v) ->
 		(try Undecided (Numbering_data (Basic_input.numbering_of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Numbering_kind, Keyvalue_field (k, v)) when key = k ->
+	| (key, Numbering_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Numbering_data (Basic_input.numbering_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
-	| (key, Floatation_kind, Unnamed_field v) ->
+	| (key, Floatation_kind, false, Unnamed_field v) ->
 		(try Undecided (Floatation_data (Basic_input.floatation_of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Floatation_kind, Keyvalue_field (k, v)) when key = k ->
+	| (key, Floatation_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Floatation_data (Basic_input.floatation_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v)
 			in	DynArray.add errors (Some comm.comm_linenum, msg);
 				Negative)
 
-	| (key, Lang_kind, Unnamed_field v) ->
+	| (key, Lang_kind, false, Unnamed_field v) ->
 		(try Undecided (Lang_data (Camlhighlight_core.lang_of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Lang_kind, Keyvalue_field (k, v)) when key = k ->
+	| (key, Lang_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Lang_data (Camlhighlight_core.lang_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v)
@@ -265,8 +275,8 @@ let matcher errors comm key kind field = match (key, kind, field) with
 let prepare errors comm strs handles =
 	let fields = fields_of_strings strs in
 	let result_from_handle hnd =
-		let (key, kind) = id_of_handle hnd
-		in Array.map (matcher errors comm key kind) fields
+		let (key, kind, auto) = id_of_handle hnd
+		in Array.map (matcher errors comm key kind auto) fields
 	in (fields, (List.map result_from_handle handles))
 
 
@@ -397,8 +407,8 @@ let get_boolean ~default extra handle = match Hashtbl.find extra handle with
 
 
 let get_maybe_boolean ~default extra handle = match Hashtbl.find extra handle with
-	| Some (Boolean_data x) -> Some x
-	| _			-> default
+	| Some (Boolean_auto_data x) -> x
+	| _			     -> default
 
 
 let get_numeric ~default extra handle = match Hashtbl.find extra handle with
@@ -407,8 +417,8 @@ let get_numeric ~default extra handle = match Hashtbl.find extra handle with
 
 
 let get_maybe_numeric ~default extra handle = match Hashtbl.find extra handle with
-	| Some (Numeric_data x) -> Some x
-	| _		        -> default
+	| Some (Numeric_auto_data x) -> x
+	| _			     -> default
 
 
 let get_bullet ~default extra handle = match Hashtbl.find extra handle with

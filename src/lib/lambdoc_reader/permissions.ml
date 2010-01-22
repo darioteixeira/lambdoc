@@ -38,30 +38,28 @@ type permission_t =
 *)
 
 let forbidden_class =
-	(Forbidden, Forbidden, Forbidden)
+	(Forbidden, Forbidden, Forbidden0)
 
 let custom_heading_class minipaged =
-	(Optional, (if minipaged then Mandatory0 else Forbidden0), Forbidden)
+	(Optional, (if minipaged then Mandatory0 else Forbidden0), Forbidden0)
 
 let preset_heading_class =
-	(Optional, Forbidden, Forbidden)
+	(Optional, Forbidden, Forbidden0)
 
 let extra_class =
-	(Forbidden, Forbidden, Optional)
+	(Forbidden, Forbidden, Optional0)
 
 let custom_class =
 	(*	Note that the order parameter is not actually "Optional0";
 		because of its complexity it was checked by the caller,
 		so we treat it as "Optional0" so errors are not triggered.
 	*)
-	(Optional, Optional0, Optional)
+	(Optional, Optional0, Optional0)
 
 let wrapper_class minipaged =
-	(Optional, (if minipaged then Mandatory else Forbidden), Optional)
+	(Optional, (if minipaged then Mandatory else Forbidden), Optional0)
 
-let ghost_class = (Optional, Forbidden, Forbidden)
-
-let macro_class = (Forbidden, Forbidden, Forbidden0)
+let ghost_class = (Optional, Forbidden, Forbidden0)
 
 
 (*	This function checks whether a parameter is valid given its
@@ -197,7 +195,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_theoremdef	-> forbidden_class
 
 	and internal_feature_set = function
-		| `Feature_macrocall	-> macro_class
+		| `Feature_macrocall	-> forbidden_class
 		| `Feature_macroarg	-> forbidden_class
 		| `Feature_item		-> forbidden_class
 		| `Feature_describe	-> forbidden_class
