@@ -65,9 +65,9 @@
 .doc_par:not(:first-child) {margin-top: Vmargin_par;}
 .doc_par:not(:last-child) {margin-bottom: Vmargin_par;}
 
-.doc_par + .doc_par	{text-indent: Hmargin_indent;}
-.doc_par.doc_indent	{text-indent: Hmargin_indent;}
-.doc_par.doc_noindent	{text-indent: 0;}
+.doc_par + .doc_par:not(.doc_initial)	{text-indent: Hmargin_indent;}
+.doc_par.doc_indent:not(.doc_initial)	{text-indent: Hmargin_indent;}
+.doc_par.doc_noindent			{text-indent: 0;}
 
 
 /********************************************************************************/
@@ -391,7 +391,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	}
 
 .doc_image > a			{display: inline-block; width: 100%;}
-.doc_image > a > img		{display: inline; border: none;}
+.doc_image > a > img		{display: inline; max-width: 100%; border: none;}
 .doc_image_frame > a > img	{-moz-box-shadow: Box_shadow;}
 
 .doc_image:not(:first-child) {margin-top: Vmargin_boxish;}
