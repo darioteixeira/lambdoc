@@ -14,6 +14,7 @@
 .doc_del {text-decoration: line-through; color: Colour_del;}
 .doc_sup {vertical-align: 0.3em;}
 .doc_sub {vertical-align: -0.1em;}
+.doc_mbox {white-space: nowrap;}
 
 
 /********************************************************************************/

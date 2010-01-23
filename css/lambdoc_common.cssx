@@ -19,5 +19,6 @@ body
 	font-size: 0.625em;		/* For default of 16 * 0.625 = 10px */
 	line-height: Line_height_body;
 	color: Colour_body;
+	overflow: hidden;
 	}
 

@@ -50,6 +50,7 @@ body
  font-size: 0.625em;
  line-height: 1.6em;
  color: #000;
+ overflow: hidden;
  }
 .doc_bold {font-weight: bold;}
 .doc_emph {font-style: italic;}
@@ -59,6 +60,7 @@ body
 .doc_del {text-decoration: line-through; color: #900;}
 .doc_sup {vertical-align: 0.3em;}
 .doc_sub {vertical-align: -0.1em;}
+.doc_mbox {white-space: nowrap;}
 .doc_lnk
  {
  text-decoration: none;
@@ -147,7 +149,6 @@ body
  margin: 0 1em;
  text-align: center;
  }
-
 .doc_verse > div
  {
  display: inline-block;

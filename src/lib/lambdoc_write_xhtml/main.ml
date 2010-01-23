@@ -28,28 +28,18 @@ open Settings
 
 
 (********************************************************************************)
-(**	{2 Exceptions}								*)
+(**	{1 Exceptions}								*)
 (********************************************************************************)
 
 exception Command_see_with_non_note of Target.t
 exception Command_cite_with_non_bib of Target.t
 exception Command_ref_with_non_visible_block of Target.t
 exception Command_sref_with_non_visible_block of Target.t
-exception Command_sref_with_none_boxout
-exception Empty_error_context
-exception Empty_error_list
 
 
 (********************************************************************************)
-(**	{2 Private type definitions}						*)
+(**	{1 Private type definitions}						*)
 (********************************************************************************)
-
-(*
-type textual_node_xhtml_t = [ `PCDATA ] XHTML.M.elt
-type nonlink_node_xhtml_t = [ `PCDATA | `Br | `B | `I | `Tt | `Ins | `Del | `Sub | `Sup | `Span ] XHTML.M.elt
-type link_node_xhtml_t = [ `A ] XHTML.M.elt
-type super_node_xhtml_t = [ `A | `PCDATA | `Br | `B | `I | `Tt | `Ins | `Del | `Sub | `Sup | `Span ] XHTML.M.elt
-*)
 
 type name_t =
 	| Name_custom of string
@@ -66,12 +56,11 @@ type name_t =
 
 
 (********************************************************************************)
-(**	{2 Private functions}							*)
+(**	{1 Private functions}							*)
 (********************************************************************************)
 
-
 (********************************************************************************)
-(**	{3 Helper functions}							*)
+(**	{2 Helper functions}							*)
 (********************************************************************************)
 
 let make_label = function
@@ -116,7 +105,7 @@ let make_sectional level label orderlst content =
 
 
 (********************************************************************************)
-(**	{3 Converters}								*)
+(**	{2 Converters}								*)
 (********************************************************************************)
 
 let listify_order ?(prespace = false) ?(postdot = false) ?prefix order =
@@ -157,7 +146,7 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 
 
 (********************************************************************************)
-(**	{3 Conversion of valid documents}					*)
+(**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
 let write_valid_document settings classname doc =
@@ -186,23 +175,15 @@ let write_valid_document settings classname doc =
 	(* Converters for inline context.					*)
 	(************************************************************************)
 
-	let rec write_seq ?(nbspfy=false) seq =
-		let (hd, tl) = nemap (write_inline ~nbspfy) seq
+	let rec write_seq seq =
+		let (hd, tl) = nemap write_inline seq
 		in hd :: tl
 
 
-	and write_inline ~nbspfy = function
+	and write_inline = function
 
 		| `Plain txt ->
-			let to_nbsp txt =
-				let rec trans = function
-					| hd1 :: hd2 :: tl	-> (XHTML.M.pcdata hd1) :: (XHTML.M.space ()) :: (trans (hd2 :: tl))
-					| hd :: tl		-> (XHTML.M.pcdata hd) :: (trans tl)
-					| []			-> []
-				in trans (String.nsplit txt " ")
-			in if nbspfy
-			then XHTML.M.span (to_nbsp txt)
-			else XHTML.M.pcdata txt
+			XHTML.M.pcdata txt
 
 		| `Entity txt ->
 			XHTML.M.entity txt
@@ -215,37 +196,37 @@ let write_valid_document settings classname doc =
 			in XHTML.M.span ~a:[a_class ["doc_mathinl"]] [xhtml]
 
 		| `Bold seq ->
-			XHTML.M.b ~a:[a_class ["doc_bold"]] (write_seq ~nbspfy seq)
+			XHTML.M.b ~a:[a_class ["doc_bold"]] (write_seq seq)
 
 		| `Emph seq ->
-			XHTML.M.i ~a:[a_class ["doc_emph"]] (write_seq ~nbspfy seq)
+			XHTML.M.i ~a:[a_class ["doc_emph"]] (write_seq seq)
 
 		| `Code seq ->
-			XHTML.M.tt ~a:[a_class ["doc_code"]] (write_seq ~nbspfy seq)
+			XHTML.M.tt ~a:[a_class ["doc_code"]] (write_seq seq)
 
 		| `Caps seq ->
-			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_seq ~nbspfy seq)
+			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_seq seq)
 
 		| `Ins seq ->
-			XHTML.M.ins ~a:[a_class ["doc_ins"]] (write_seq ~nbspfy seq)
+			XHTML.M.ins ~a:[a_class ["doc_ins"]] (write_seq seq)
 
 		| `Del seq ->
-			XHTML.M.del ~a:[a_class ["doc_del"]] (write_seq ~nbspfy seq)
+			XHTML.M.del ~a:[a_class ["doc_del"]] (write_seq seq)
 
 		| `Sup seq ->
-			XHTML.M.sup ~a:[a_class ["doc_sup"]] (write_seq ~nbspfy seq)
+			XHTML.M.sup ~a:[a_class ["doc_sup"]] (write_seq seq)
 
 		| `Sub seq ->
-			XHTML.M.sub ~a:[a_class ["doc_sub"]] (write_seq ~nbspfy seq)
+			XHTML.M.sub ~a:[a_class ["doc_sub"]] (write_seq seq)
 
 		| `Mbox seq ->
-			XHTML.M.span (write_seq ~nbspfy:true seq)
+			XHTML.M.span ~a:[a_class ["doc_mbox"]] (write_seq seq)
 
 		| `Link (lnk, None) ->
-			make_external_link lnk (Obj.magic (write_seq ~nbspfy (`Plain lnk, [])))
+			make_external_link lnk (Obj.magic (write_seq (`Plain lnk, [])))
 
 		| `Link (lnk, Some seq) ->
-			make_external_link lnk (Obj.magic (write_seq ~nbspfy seq))
+			make_external_link lnk (Obj.magic (write_seq seq))
 
 		| `See (hd, tl) ->
 			let link_maker ref =
@@ -312,7 +293,7 @@ let write_valid_document settings classname doc =
 					raise (Command_sref_with_non_visible_block target))
 
 		| `Mref (ref, seq) ->
-			make_internal_link (`User_label ref) (Obj.magic (write_seq ~nbspfy seq))
+			make_internal_link (`User_label ref) (Obj.magic (write_seq seq))
 
 
 	(************************************************************************)
@@ -660,7 +641,7 @@ let write_valid_document settings classname doc =
 
 
 (********************************************************************************)
-(**	{3 Conversion of invalid documents}					*)
+(**	{2 Conversion of invalid documents}					*)
 (********************************************************************************)
 
 let write_error (maybe_error_context, error_msg) =
@@ -700,7 +681,7 @@ let write_invalid_document classname errors =
 
 
 (********************************************************************************)
-(**	{3 Classnames}								*)
+(**	{2 High-level interface}						*)
 (********************************************************************************)
 
 let write_ambivalent_document settings classname = function
@@ -708,17 +689,14 @@ let write_ambivalent_document settings classname = function
 	| `Invalid doc	-> write_invalid_document classname doc
 
 
-(********************************************************************************)
-(**	{3 Classnames}								*)
-(********************************************************************************)
-
 let manuscript_classname = "doc_manuscript"
+
 
 let composition_classname = "doc_composition"
 
 
 (********************************************************************************)
-(**	{2 Public types and functions}						*)
+(**	{1 Public types and functions}						*)
 (********************************************************************************)
 
 (**	The following types and functions conform to the Document_writer.S
