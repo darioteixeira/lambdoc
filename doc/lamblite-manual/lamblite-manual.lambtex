@@ -1,61 +1,265 @@
-\title{The \caps{Lamblite} Manual}
+\newmacro{lambdoc}{0}{\caps{lambdoc}}
+\newmacro{lamblite}{0}{\caps{lamblite}}
+\newmacro{lambtex}{0}{\caps{lambtex}}
+\newmacro{thin}{0}{&#8202;}
+\newmacro{marker}{1}{\code{\arg{1}\arg{1}}}
+
+\title{The \lamblite Manual}
 \subtitle{Dario Teixeira}
-\subtitle{August 2009}
+\subtitle{January 2010}
 
-\toc[sec:toc]
+\toc
 
-\section()[sec:intro]{Introduction}
+\rule
 
-\caps{Lamblite} is a lightweight markup language inspired by \caps{Markdown}\cite{bib:markdown}
-and \caps{Creole}\cite{bib:creole}.
+\p<initial>{\lamblite is a lightweight markup language for the description of documents.
+It is inspired by \caps{markdown}\cite{bib:markdown} and \caps{creole}\cite{bib:creole},
+and remains for the most part compatible with the latter. Similarly to other lightweight
+markup languages, \lamblite is targeted at the description of documents consisting
+largely of text, and where syntactic annotations match traditional conventions used
+in email.  While not as powerful and flexible as a full-featured markup language like
+\caps{LaTeX}\cite{bib:latex} or \lambtex\cite{bib:lambtex}, the lightweight markup
+used by \lamblite should be sufficient to describe most simple documents.}
 
-\section{Paragraphs}
+\lamblite is part of the family of markup languages supported by the \lambdoc
+library\cite{bib:lambdoc}.  \lambdoc distinguishes between two classes of documents
+--- \emph{manuscripts} and \emph{compositions} --- and \lamblite may be used for
+writing either.  A manuscript may make use of sectioning, internal links, and other
+advanced features of the library such as pull-quotes and decorations.  A composition,
+on the other hand, is a simpler kind of document which neither makes use of internal
+links nor some of the other advanced features of \lambdoc.  Note that compositions
+are a proper subset of manuscripts.
 
-You may also use HTML entities such as &euro; or &#x2603;.
+With one exception, all the elements supported by \lamblite are part of the feature
+set of compositions.  The exception consists of the sectioning specifiers described in
+\sref{sec:sectioning}.  Therefore, documents making use of this feature are necessarily
+manuscripts, while those that do not may be either compositions or manuscripts.
+It also follows that \lamblite supports only a limited subset of all the features
+available in \lambdoc, as \sref{fig:features} illustrates.  If your document requires
+a richer set of semantic elements, you should consider using instead a full-fledged
+\lambdoc language like \lambtex.
+
+\begin[fig:features]{figure}
+\image{features.png}{Features}
+\caption{Representation of the set of features supported by \lamblite contrasted
+with the overall features of the \lambdoc library.  It should be salient that even
+though \lamblite does support both composition and manuscript features, it covers
+only a subset of both.}
+\end{figure}
+
+
+\section{Paragraphs and text formatting}
+
+A \lamblite document is composed of a sequence of blocks.  Examples of blocks include
+paragraphs of text, quotes, and source-code listings.  Blocks occupy the entire width
+of the page, and are vertically separated from other blocks by a small margin.
+
+Paragraphs are the simplest of all blocks, being composed of just text (either plain or
+annotated with special formatting directives).  To separate two paragraphs, you must
+put at least one blank line between them.  However, the blank line is optional when
+separating a paragraph and a non-paragraph block.  Moreover, linebreaks are irrelevant
+within the same paragraph.
+
+It is possible to apply some special formatting to passages of text. This is done by
+enclosing the passage between special begin and end markers, which always consist of
+two identical characters. \sref{tab:format} lists all the formatting options and the
+begin/end markers used for each.  Note that in many cases the begin marker is identical
+to the end marker.  Also, bear in mind that nesting formatting directives is not allowed.
+
+\begin[tab:format]{table}
+\begin{tabular}{ccc}
+\head
+| Begin marker		| End marker		| Example					|
+\body
+| \marker{*}		| \marker{*}		| You can make some passages be \bold{bold}.	|
+| \marker{/}		| \marker{/}		| Here's another way to \emph{emphasise} text.	|
+| \marker{\{}		| \marker{\}}		| You can also imitate a \code{typewriter}.	|
+| \marker{(}		| \marker{)}		| \lamblite supports text in small-caps.	|
+| \marker{^}		| \marker{^}		| The 1\sup{st} of January has a superscript.	|
+| \marker{,}		| \marker{,}		| H\sub{2}O requires a subscript.		|
+\end{tabular}
+\caption{Text formatting annotations.  Simply wrap between the begin and end markers
+the passage of text you wish to format.  Note that in many cases the end marker is
+identical to the begin marker.}
+\end{table}
+
+\lamblite supports also hyperlinks into external
+resources.  The general notation for hyperlinks is
+\mbox{\code{[[}\thin\code{\emph{uri}}\thin\code{|}\thin\code{\emph{description}}\thin\code{]]}},
+where \code{\emph{uri}} is the actual resource identifier and \code{\emph{description}}
+is the clickable hyperlink text.  The latter is optional, meaning that
+\mbox{\code{[[}\code{\emph{uri}}\code{]]}} will also produce a hyperlink, but one
+using the \caps{uri} itself as description text.
+
+The following source-code fragment illustrates the declaration of paragraphs in
+\lamblite, text formatting commands, and the use of hyperlinks:
 
 \begin{source}
 Line breaks within one paragraph are not important,
-since paragraphs are only terminated by an empty line.
+since paragraphs are only terminated by a blank line.
 
 Within a paragraph you can format certain passages
-in **bold text**, //emphasised text//, or even in
-{{monospaced text}}.
+in **bold text**, //emphasised text//,
+{{monospaced text}}, or even in ((small caps)).
+
+For the sake of completeness, it is also possible
+to declare superscripts such as 1^^st^^ of January,
+and subscripts such as H,,2,,O.
+
+Adding a hyperlink into the [[http://www.wikipedia.org/|Wikipedia]]
+is easy.  Here's another one: [[http://www.wikipedia.org/]].
 \end{source}
+
+This is the corresponding output from the \lamblite composer:
 
 \begin{subpage}
 Line breaks within one paragraph are not important,
-since paragraphs are only terminated by an empty line.
+since paragraphs are only terminated by a blank line.
 
 Within a paragraph you can format certain passages
-in \bold{bold text}, \emph{emphasised text}, or even
-in \code{monospaced text}.
+in \bold{bold text}, \emph{emphasised text},
+\code{monospaced text}, or even in \caps{small caps}.
+
+For the sake of completeness, it is also possible
+to declare superscripts such as 1\sup{st} of January,
+and subscripts such as H\sub{2}O.
+
+Adding a hyperlink into the \link{http://www.wikipedia.org/}{Wikipedia}
+is easy.  Here's another one: \link{http://www.wikipedia.org/}.
 \end{subpage}
 
-\section{Lists}
+
+\section{Special characters}
+
+\lamblite allows the direct use of \caps{html} entities via the same notation used
+in \caps{html}.  More precisely, entities are to be enclosed between the characters
+'\code{\&}' (ampersand) and '\code{;}' (semicolon), and may be specified by name
+or by \caps{unicode} code point in decimal or hexadecimal notation.  As an example,
+if the \caps{euro} symbol '\code{&euro;}' is not readily available in your keyboard,
+you may enter it in either of the following three manners:
+
+\begin{tabular}{ccc}
+\head
+| Name                  | Decimal               | Hexadecimal           |
+\body
+| \code{\&euro;}        | \code{\&#8364;}       | \code{\&#x20ac;}      |
+\end{tabular}
+
+The reader will have noted that \lamblite must interpret the character '\code{\&}'
+(ampersand) differently, and therefore you need a workaround if you want to input an
+actual ampersand.  In fact, there is another character that is interpreted differently
+by \lamblite, and as such also requires a special escaping sequence.  That character
+is '\code{\\}' (backslash), which also happens to be the character used for escaping.
+Therefore, displaying a backslash or an ampersand is achieved with \code{\\\\} and
+\code{\\\&}, respectively.  Another option is of course to use the \code{#47} and
+\code{amp} \caps{html} entities.
+
+Note that in most practical situations you can get away with inputting an ampersand
+directly without escaping.  This is because the scanner will only interpret an ampersand
+as the beginning of an entity declaration if it is immediately followed by an alphabetic
+or numeric sequence terminated by a semicolon.  If it is not, then the ampersand is
+interpreted as plain text.
+
+Besides individual characters, there are also some multi-character sequences that are
+interpreted differently by \lamblite.  One example are the previously described two
+character markers used for text formatting.  \sref{tab:seq} lists all the other ones.
+Remember to use the escape character if you wish to input any of these sequences
+literally.
+
+\begin[tab:seq]{table}
+\begin{tabular}{cl}
+\head
+| Sequence		| Translation |
+\body
+| \code{\-\-\-}		| Typographic em-dash\br (don't use at the beginning of a line)|
+| \code{\-\-}		| Typographic en-dash\br (don't use at the beginning of a line)|
+| \code{\`\`}		| Opening double quotes |
+| \code{\'\'}		| Closing double quotes |
+\end{tabular}
+\caption{Special character sequences and their \lamblite interpretation.  Remember to use
+the backslash for escaping if you wish to input any of these sequences verbatim.  Note
+that using dash(es) at the start of a line is the marker for unordered lists (see
+\mref{sec:lists}{the next section} for details).}
+\end{table}
+
+
+\section[sec:lists]{Lists}
+
+Lists in \lamblite come in two varieties: ordered and unordered.  The former are
+denoted my prefixing each list item with the character '\code{#}', whereas in the
+latter case the prefix is '\code{-}'.  Declaring sub-lists (ie, lists within lists)
+is also possible: simply repeat either '\code{#}' or '\code{-}' a number of times in
+accordance to the depth of the sub-list.  These marker characters may be indented,
+as long as they are the first non-whitespace character in the line.
+
+Separating a list from a preceding paragraph with a blank line is not required, though
+it is advisable.  Similarly, usage of blank lines between list items is also optional.
+More importantly, make sure the list depth as indicated by the number of '\code{#}'
+or '\code{-}' characters makes sense: the \lamblite composer will complain if you
+declare at the top-level a list with depth higher than 1, or if a sub-list increases
+list depth by more than one unit.
+
+The following sample illustrates lists in \lamblite.  Note the flexible use of blank
+lines and whitespace for indentation.
 
 \begin{source}
-The reasons are three:
+The reasons are four:
 
-- one
-- two
-- three:
-  # a
-  # b
-  # c
-- four
+# This is the first reason;
+
+# This is the second reason; it is okay
+  to break a line within each item.
+
+# The third reason has a number of sub-clauses:
+
+  -- Alpha
+  -- Beta
+  -- Gamma
+
+# And here is the fourth and final reason.
 \end{source}
+
+This is the result as produced by the composer:
+
+\begin{subpage}
+The reasons are four:
+
+\begin{ol}
+\li	This is the first reason;
+\li	This is the second reason; it is okay
+	to break a line within each item.
+\li	The third reason has a number of sub-clauses:
+	\begin{ul}
+	\li	Alpha
+	\li	Beta
+	\li	Gamma
+	\end{ul}
+\li	And here is the fourth and final reason.
+\end{ol}
+\end{subpage}
 
 
 \section{Quotations}
+
+Quotations in \lamblite follow the email tradition of prefixing each quoted line with
+the character '\code{>}' (the greater-than sign).  Following this marker you may have
+a normal paragraph or a list definition, as the example below illustrates:
 
 \begin{source}
 This is what you said:
 
 > Eggs should be opened by their large end.
 > Opening them by their small end is heresy.
+> Here are three reasons why:
+>
+> # First;
+> # Second;
+> # Third.
 
 I beg to differ. Let me expand on why.
 \end{source}
+
+This is the result produced by the composer:
 
 
 \begin{subpage}
@@ -64,48 +268,297 @@ This is what you said:
 \begin{quote}
 Eggs should be opened by their large end.
 Opening them by their small end is heresy.
+Here are three reasons why:
+\begin{ol}
+\li First;
+\li Second;
+\li Third.
+\end{ol}
 \end{quote}
 
 I beg to differ. Let me expand on why.
 \end{subpage}
 
-
-
-
-
-\section{Verbatim environments}
+Quotations within quotations are also legal.  The quotation level is indicated by
+the number of '\code{>}' characters that prefix the line.  Whitespace between the
+'\code{>}' characters is optional.  Consider thus the following \lamblite source:
 
 \begin{source}
-This is a normal text paragraph:
+This is your interpretation of the discussion:
 
-<<
-----------
-|        |
-----------
->>
+>This is what you said:
+>
+>> Eggs should be opened by their large end.
+>> Opening them by their small end is heresy.
 \end{source}
 
-\section{Code blocks}
+This is the result:
+
+\begin{subpage}
+This is your interpretation of the discussion:
+
+\begin{quote}
+This is what you said:
+
+\begin{quote}
+Eggs should be opened by their large end.
+Opening them by their small end is heresy.
+\end{quote}
+\end{quote}
+\end{subpage}
+
+
+\section[sec:verbatim]{Verbatim blocks}
+
+A verbatim block denotes a fragment of text where linebreaks are significant and the
+text is to be rendered using a monospaced font.  The primary application of verbatim
+blocks is to display \caps{ascii}-art diagrams.  In \lamblite, the beginning of a
+verbatim block is denoted by a line consisting entirely of the characters '\code{(((}'
+(plus optional extra specifiers, described below), and its termination by a line
+consisting only of the characters '\code{)))}'.  There is no attempt at interpreting
+the characters inside a verbatim block; in other words, escaping is not possible,
+and neither is the input of \caps{html} entities using the ampersand operator.
+
+Verbatim environments accept a limited form of configuration.  In the same line and
+immediately after the begin marker you may specify an optional scaling factor for
+the environment.  In the general case, this takes the form \code{mult=\emph{n}},
+where [$n$] is an integer between 0 and 9 (inclusive).  The actual scaling is given
+by the formula [$\sqrt{2}^n$], which means that setting [$n$] to 0 will result in a
+figure shown in normal size (this is the default), while [$n=9$] results in a figure
+22.6 times larger than normal.  Note that the prefix \code{mult=} is optional, and
+therefore the integer factor may appear on its own after the '\code{(((}' sequence.
+
+Consider thus the following \lamblite source-code fragment:
 
 \begin{source}
-This is a normal text paragraph:
+Here's a box:
 
-{{
-let x = a
-}}
+(((
+---------
+|  Box  |
+---------
+)))
+
+And here's a snowman shown with a multiplication factor of 7,
+corresponding to a font 11.3 times larger than normal:
+
+(((mult=7
+☃
+)))
 \end{source}
+
+The result as produced by the composer is shown below.  Note the use of the multiplier
+option in the second figure.
+
+\begin{subpage}
+Here's a box:
+\begin{verbatim}
+---------
+|  Box  |
+---------
+\end{verbatim}
+And here's a snowman shown with a multiplication factor of 7,
+corresponding to a font 11.3 times larger than normal:
+\begin<7>{verbatim}
+☃
+\end{verbatim}
+\end{subpage}
+
+
+\section[sec:source]{Source-code blocks}
+
+While nothing prevents you from using the aforedescribed verbatim blocks for displaying
+source-code listings, \lamblite does have a dedicated facility for this purpose, with a
+number of advantages.  Source-code blocks are declared in much the same way as verbatim
+blocks, but use '\code{\{\{\{}' and '\code{\}\}\}}' as delimiter characters instead.
+Moreover, they also accept --- albeit different --- configuration options.
+
+Similarly to verbatim blocks, the configuration of a source-code environment is to be
+placed immediately after the '\code{\{\{\{}' sequence that signals the beginning of
+the block (whitespace is optional both before and after, but the configuration must be
+on the same line).  Because multiple configuration options are allowed, these should be
+separated by commas.  The canonical form for specifying that an option \code{\emph{key}}
+should take value \code{\emph{value}} is \code{\emph{key}=\emph{value}}.  However,
+if there is no chance of ambiguity then a shorthand notation may be used (see
+\sref{sec:extra} for details).
+
+As for the accepted configuration options, the most important is undoubtedly
+\code{lang}, which sets the rules used for syntax highlighting.  The remaining three
+options are used to tweak the manner in which the source code is to be displayed.
+First among them, the boolean parameter \code{box} indicates whether the source
+should be displayed inside a box, as in the example below.  This is the default,
+though you may want to set this option to \code{false} if you have short code segments
+that you wish to integrate more tightly with the flow of the document text.  Second,
+the boolean parameter \code{linenums} indicates whether line numbers should be added
+to the listing.  Its default is \code{true} if the source language was specified and
+the source is shown inside a box.  Otherwise it is \code{false}.  Finally, the also
+boolean parameter \code{zebra} controls the printing of the zebra stripes.  Its default
+value is \code{true} if the source lies inside a box, and \code{false} otherwise.
+
+The obligatory example, showing an \caps{ocaml} source-code fragment:
+
+\begin{source}
+{{{lang=ocaml
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right)
+}}}
+\end{source}
+
+The result as produced from the composer is shown below.  Note the syntax-highlighting
+following \caps{ocaml} conventions, the zebra lines, and the display of line numbers:
+
+\begin<lang=ocaml>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right)
+\end{source}
+
+
+\section[sec:sectioning]{Sectioning}
+
+\lamblite supports up to three levels of sectioning headers, designated as
+\emph{sections}, \emph{sub-sections}, and \emph{sub-sub-sections}.  These map
+directly to \caps{html}'s \code{h1}, \code{h2}, and \code{h3} elements, respectively.
+The declaration of a header is done by prefixing the header text with one, two, or
+three times the character '\code{=}', where the number of equal signs corresponds to
+the sectioning level.  Note that whitespace between the equal sign(s) and the header
+text is optional, and is discarded if present.
+
+Consider thus the following \lamblite fragment:
+
+\begin{source}
+= This is a section
+
+Lorem ipsum dolor sit amet.
+
+== This is a sub-section
+
+Lorem ipsum dolor sit amet.
+
+=== This is a sub-subsection
+
+Lorem ipsum dolor sit amet.
+\end{source}
+
+Below is the result as produced by the \lamblite composer.  Note that the numbering is
+automatically assigned.
+
+\begin{subpage}
+\section(1){This is a section}
+
+Lorem ipsum dolor sit amet.
+
+\subsection(1.1){This is a sub-section}
+
+Lorem ipsum dolor sit amet.
+
+\subsubsection(1.1.1){This is a sub-subsection}
+
+Lorem ipsum dolor sit amet.
+\end{subpage}
+
+
+\appendix
+
+\section[sec:extra]{How extra parameters are parsed}
+
+Both \mref{sec:verbatim}{verbatim} and \mref{sec:source}{source-code} blocks may be given
+some extra configuration options.  Canonically, specifying that a parameter \code{alpha}
+should have a value \code{x} is done by declaring \code{alpha=x} as the extra parameter.
+Should the command accept multiple parameters, these can be separated by inserting a
+'\code{,}' (comma) between them.  \sref{tab:extradesc} below lists all the existing
+extra parameters together with the accepted values for each.
+
+\begin[tab:extradesc]{table}
+\begin{tabular}{rl}
+\head
+| Command		| Accepted values |
+\body
+| \code{box}		| Boolean |
+| \code{linenums}	| Boolean |
+| \code{zebra}		| Boolean |
+| \code{mult}		| Integer between 0 and 9 (inclusive) |
+| \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
+\end{tabular}
+\caption{List of all existing extra parameters and associated range of values.}
+\end{table}
+
+
+Note that for brevity sake, \lamblite allows shorthand forms to be specified
+instead of the canonical form.  The shorthand pre-conditions are as follows:
+
+\begin{enumerate}
+
+\item	It suffices to declare a value if there is no ambiguity as to which parameter
+	it belongs to.	In the example above this means declaring simply \code{x}
+	instead of \code{alpha=x}.
+
+\item	Boolean parameters may be set by specifying the parameter name.  Therefore, if
+	parameter \code{beta} is boolean, you may set it to true by declaring either
+	\code{beta}, \code{beta=true}, \code{beta=y}, or if there are no other boolean
+	parameters accepted for the command, just \code{true} or \code{y}.  Similarly,
+	a boolean parameter may be unset by prefixing it with '\code{!}'.  Therefore,
+	setting \code{beta} to false can be done by declaring either \code{!beta},
+	\code{beta=false}, \code{beta=n}, or if there is no chance of conflict, just
+	\code{false} or \code{n}.
+
+\item	When setting multiple extra parameters, if one of the settings is provided in
+	canonical form or as a boolean parameter name, then it can be used to constrain
+	an otherwise ambiguous declaration.  Consider thus a command that takes two
+	boolean extra parameters, \code{alpha} and \code{beta}.  Only providing the
+	sequence \code{true} is ambiguous, because \lamblite has no way of knowing
+	to which parameter it refers.  However, specifying \code{!alpha,true} is not
+	ambiguous, because this can only be interpreted as setting parameter \code{alpha}
+	to \code{false}, and the remaining parameter --- which can only be \code{beta}
+	--- to \code{true}.
+
+\end{enumerate}
+
+As can be deduced from the above rules, \lamblite uses a basic constraint satisfaction
+algorithm to resolve extra parameter declarations.  If the declaration is unambiguous
+to a human, so it should be to \lamblite.
+
+
+\part(){Backmatter}
 
 \bibliography
 
 \begin[bib:markdown]{bib}
-\who{who}
-\what{what}
-\where{where}
+\who{John Gruber and Aaron Swartz}
+\what{\caps{markdown} homepage}
+\where{\link{http://daringfireball.net/projects/markdown/}}
 \end{bib}
 
 \begin[bib:creole]{bib}
-\who{who}
-\what{what}
-\where{where}
+\who{Various}
+\what{\caps{creole} homepage}
+\where{\link{http://www.wikicreole.org/}}
+\end{bib}
+
+\begin[bib:latex]{bib}
+\who{Leslie Lamport}
+\what{LaTeX: a Document Preparation System (2\sup{nd} edition)}
+\where{Addison-Wesley Professional, 1994. ISBN 0-201-52983-1.}
+\end{bib}
+
+\begin[bib:lambtex]{bib}
+\who{Dario Teixeira}
+\what{\lambtex manual}
+\where{\link{http://lambdoc.forge.ocamlcore.org/}}
+\end{bib}
+
+\begin[bib:lambdoc]{bib}
+\who{Dario Teixeira}
+\what{\lambdoc homepage}
+\where{\link{http://lambdoc.forge.ocamlcore.org/}}
 \end{bib}
 
