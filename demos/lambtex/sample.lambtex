@@ -4,23 +4,23 @@
 
 \newmacro{fox}{0}{The quick brown fox jumps over the lazy dog.}
 
-\newmacro{who}{0}{John McAuthor}
-\newmacro{what}{0}{Title of the article}
-\newmacro{where}{0}{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\newmacro{elwho}{0}{John McAuthor}
+\newmacro{elwhat}{0}{Title of the article}
+\newmacro{elwhere}{0}{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
 
 \title{A complete example of \caps{Lambtex}}
 \subtitle{Dario Teixeira}
 \subtitle{January 2010}
 
 \begin{abstract}
-\p{${lorem}}
+\p{\lorem}
 \end{abstract}
 
 \toc
 
 \part(){Inline elements}
 
-\p<initial>{${lorem}}
+\p<initial>{\lorem}
 
 Here we have examples of text in \bold{bold} and \emph{emphasised} and \code{monospaced}
 and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You
@@ -28,130 +28,121 @@ may also correct \del{perfect}\ins{broken} text. Here is a link to section
 number \ref{sec:foobar} or smartly, \sref{sec:foobar}.  And here is a link to
 \mref{sec:foobar}{that same section}.  You can also link to Tip \ref{tip:one}, or
 smarly \sref{tip:one}, or a link to \mref{tip:one}{that same tip}. The bibliography is
-at the end\cite{bib1}\cite{bib2}\cite{bib3}.  There is also\see{note1} a list\see{note2}
-of notes\see{note3}.
+at the end\cite{bib1}\cite{bib2}\cite{bib3}.  You can also place multiple citations
+in the same square brackets\cite{bib1}{bib2}{bib3}. There is also\see{note1} a
+list\see{note2} of notes\see{note3}, which if you prefer you can reference them with
+a single command\see{note1}{note2}{note3}.
 
 \part(){Block elements}
 
 \section[sec:foobar]{Text paragraphs}
 
-\p{${lorem}}
-\p{${lorem}}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
+\p{\lorem}
+\p{\lorem}
 
 \section{Top level section}
 
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Mid level section}
 
-\p{${lorem}}
+\p{\lorem}
 
 \subsubsection{Low level section}
 
-\p{${lorem}}
+\p{\lorem}
 
 \section{Unordered lists}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{itemize}
-\item ${lorem}
-\item ${lorem}
-\item ${lorem}
+\item \lorem
+\item \lorem
+\item \lorem
 \end{itemize}
-\p{${lorem}}
+\p{\lorem}
 
 \section{Ordered lists}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{enumerate}
-\item \p{${lorem}}
-\item \p{${lorem}}
-\item \p{${lorem}}
+\item \p{\lorem}
+\item \p{\lorem}
+\item \p{\lorem}
 \end{enumerate}
-\p{${lorem}}
+\p{\lorem}
 
 \section{Description lists}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{description}
-\item{alpha} \p{${lorem}}
-\item{beta} \p{${lorem}}
-\item{gamma} \p{${lorem}}
+\item{alpha} \p{\lorem}
+\item{beta} \p{\lorem}
+\item{gamma} \p{\lorem}
 \end{description}
-\p{${lorem}}
+\p{\lorem}
 
 \section{Q&A environments}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{qanda}
 \question{Question:}
-	\p{${loremshort}}
+	\p{\loremshort}
 \answer{Answer:}
-	\p{${lorem}}
+	\p{\lorem}
 \question{Q:}
-	\p{${loremshort}}
+	\p{\loremshort}
 \answer{A:}
-	\p{${lorem}}
-	\p{${lorem}}
+	\p{\lorem}
+	\p{\lorem}
 \rquestion
-	\p{${lorem}}
+	\p{\lorem}
 \ranswer
-	\p{${lorem}}
+	\p{\lorem}
 \question
-	\p{${lorem}}
+	\p{\lorem}
 \answer
-	\p{${lorem}}
-	\p{${lorem}}
+	\p{\lorem}
+	\p{\lorem}
 \rquestion
-	\p{${lorem}}
+	\p{\lorem}
 \ranswer
-	\p{${lorem}}
+	\p{\lorem}
 \end{qanda}
-\p{${lorem}}
+\p{\lorem}
 
 \section{Verse environments}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{verse}
-${fox} \br
-${fox} \br
-${fox} \br
-${fox}
-
-${fox} \br
-${fox} \br
-${fox} \br
-${fox}
-
-${fox} \br
-${fox} \br
-${fox} \br
-${fox}
+\p{\fox \br \fox \br \fox \br \fox}
+\p{\fox \br \fox \br \fox \br \fox}
+\p{\fox \br \fox \br \fox \br \fox}
 \end{verse}
-\p{${lorem}}
+\p{\lorem}
 
 \section{Quote environments}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{quote}
-\p{${lorem}}
+\p{\lorem}
 \end{quote}
-\p{${lorem}}
+\p{\lorem}
 
 \section{Math blocks}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Boxed source environments with syntax highlighting, line numbers, and zebra stripes}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<ocaml>{source}
 type 'a tree =
     | Leaf
@@ -161,12 +152,12 @@ let rec count = function
     | Leaf		       -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 \end{source}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Boxed source environments with no syntax highlighting, no line numbers, and no zebra stripes}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<!zebra>{source}
 type 'a tree =
     | Leaf
@@ -176,12 +167,12 @@ let rec count = function
     | Leaf		       -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 \end{source}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Unboxed source environments with syntax highlighting, but neither line numbers nor zebra stripes}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<ocaml,!box>{source}
 type 'a tree =
     | Leaf
@@ -191,12 +182,12 @@ let rec count = function
     | Leaf		       -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 \end{source}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Tabular environments}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{tabular}{rll}
 \head
 |		|{2c_} Scientific name				|
@@ -211,15 +202,15 @@ let rec count = function
 | English oak	| \emph{Quercus}	| \emph{robur}		|
 | European yew	| \emph{Taxus}		| \emph{baccata}	|
 \foot
-| Common name	|{1c_} Genus		|{1c_} Species		|
-|		|{2c} Scientific name				|
+| Common name	| Genus			| Species		|
+|		|{2c^} Scientific name				|
 \end{tabular}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Verbatim environments}
 
-\p{${lorem}}
+\p{\lorem}
 
 \begin{verbatim}
        -------
@@ -239,7 +230,7 @@ let rec count = function
 -------       -------
 \end{verbatim}
 
-\p{${lorem}}
+\p{\lorem}
 
 \begin<6>{verbatim}
 ┏┻┓
@@ -247,135 +238,135 @@ let rec count = function
 ┗┳┛
 \end{verbatim}
 
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Images}
 
-\p{${lorem}}
+\p{\lorem}
 \image{circle-big.png}{Big Circle}
-\p{${lorem}}
+\p{\lorem}
 \image<frame>{square-big.png}{Big Square}
-\p{${lorem}}
+\p{\lorem}
 \image{triangle-huge.png}{Huge Triangle}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Subpage environments}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Decor environments}
 
 \subsection{Centered}
-\p{${lorem}}
+\p{\lorem}
 \begin{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating left and right}
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
 \begin<right>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating left and left}
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
 \begin<left>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right and right}
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
 \begin<right>{decor}
 \image{circle-small.png}{Small Circle}
 \end{decor}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Pull-quote environments}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{pull}
-${fox}
+\fox
 \end{pull}
-\p{${lorem}}
+\p{\lorem}
 
 \begin{pull}{John McAuthor}
-${fox}
+\fox
 \end{pull}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{pull}
-${fox}
+\fox
 \end{pull}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{pull}{John McAuthor}
-${fox}
+\fox
 \end{pull}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{pull}
-${fox}
+\fox
 \end{pull}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{pull}{John McAuthor}
-${fox}
+\fox
 \end{pull}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Custom Boxout environments}
@@ -385,83 +376,83 @@ ${fox}
 \newboxout{tip}{Tip}{tip}
 
 \subsection{Generic without title}
-\p{${lorem}}
+\p{\lorem}
 \begin{generic}
-\p{${lorem}}
+\p{\lorem}
 \end{generic}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Generic with title}
-\p{${lorem}}
+\p{\lorem}
 \begin{generic}{This is a title}
-\p{${lorem}}
+\p{\lorem}
 \end{generic}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Warning without extra title}
-\p{${lorem}}
+\p{\lorem}
 \begin{warning}
-\p{${lorem}}
+\p{\lorem}
 \end{warning}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Warning with extra title}
-\p{${lorem}}
+\p{\lorem}
 \begin{warning}{This is a title}
-\p{${lorem}}
+\p{\lorem}
 \end{warning}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Tip without extra title}
-\p{${lorem}}
+\p{\lorem}
 \begin[tip:one]{tip}
-\p{${lorem}}
+\p{\lorem}
 \end{tip}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Tip with neither extra title nor order}
-\p{${lorem}}
+\p{\lorem}
 \begin(){tip}
-\p{${lorem}}
+\p{\lorem}
 \end{tip}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Tip with extra title}
-\p{${lorem}}
+\p{\lorem}
 \begin{tip}{This is a title}
-\p{${lorem}}
+\p{\lorem}
 \end{tip}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Tip with extra title but no order}
-\p{${lorem}}
+\p{\lorem}
 \begin(){tip}{This is a title}
-\p{${lorem}}
+\p{\lorem}
 \end{tip}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Centered}
-\p{${lorem}}
+\p{\lorem}
 \begin{warning}
-\p{${lorem}}
+\p{\lorem}
 \end{warning}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{warning}
-\p{${lorem}}
+\p{\lorem}
 \end{warning}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{warning}
-\p{${lorem}}
+\p{\lorem}
 \end{warning}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Custom theorem environments}
@@ -469,103 +460,103 @@ ${fox}
 \newtheorem{theorem}{Theorem}{theorem}
 \newtheorem{proof}{Proof}
 
-\p{${lorem}}
+\p{\lorem}
 
 \begin{theorem}
-\p{${lorem}}
+\p{\lorem}
 \end{theorem}
 
-\p{${lorem}}
+\p{\lorem}
 
 \begin{theorem}{John McAuthor}
-\p{${lorem}}
+\p{\lorem}
 \end{theorem}
 
 \begin{proof}
-\p{${lorem} \sub{&#x220e;}}
+\p{\lorem \sub{&#x220e;}}
 \end{proof}
 
-\p{${lorem}}
+\p{\lorem}
 
 
 \section{Equation environments}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{${fox}}
+\caption{\fox}
 \end{equation}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{${fox}}
+\caption{\fox}
 \end{equation}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{${fox}}
+\caption{\fox}
 \end{equation}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Equation environments without caption}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
 \end{equation}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
 \end{equation}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{equation}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
 \end{equation}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Printout environments}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{printout}
 \begin<ocaml>{source}
 type 'a tree =
@@ -576,13 +567,13 @@ let rec count = function
     | Leaf		       -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 \end{source}
-\caption{${fox}}
+\caption{\fox}
 \end{printout}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{printout}
 \begin<ocaml,!linenums>{source}
 type t =
@@ -593,14 +584,14 @@ let is_foo = function
     | Foo _ -> true
     | Bar _ -> false
 \end{source}
-\caption{${fox}}
+\caption{\fox}
 \end{printout}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{printout}
 \begin<ocaml,!linenums>{source}
 type t =
@@ -611,17 +602,17 @@ let is_foo = function
     | Foo _ -> true
     | Bar _ -> false
 \end{source}
-\caption{${fox}}
+\caption{\fox}
 \end{printout}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Table environments}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{table}
 \begin{tabular}{rll}
 \head
@@ -638,13 +629,13 @@ let is_foo = function
 | Common name	|{1c_} Genus		|{1c_} Species		|
 |		|{2c} Scientific name				|
 \end{tabular}
-\caption{${fox}}
+\caption{\fox}
 \end{table}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{table}
 \begin{tabular}{rl}
 \head
@@ -654,14 +645,14 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\caption{${fox}}
+\caption{\fox}
 \end{table}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{table}
 \begin{tabular}{rl}
 \head
@@ -671,17 +662,17 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\caption{${fox}}
+\caption{\fox}
 \end{table}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Figure environments around verbatim blocks}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{figure}
 \begin{verbatim}
        -------
@@ -700,13 +691,13 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{figure}
 \begin{verbatim}
        -------
@@ -725,14 +716,14 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{figure}
 \begin{verbatim}
        -------
@@ -751,132 +742,132 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Figure environments around images}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{figure}
 \image{circle-big.png}{Big Circle}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{figure}
 \image{circle-small.png}{Small Circle}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{figure}
 \image{circle-small.png}{Small Circle}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \section{Figure environments around subpages}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Centered with long caption}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
-\caption{${fox} ${fox} ${fox} ${fox}}
+\caption{\fox \fox \fox \fox}
 \end{figure}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
-\caption{${fox}}
+\caption{\fox}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \section{Figure environments without caption around subpages}
 
 \subsection{Centered}
 
-\p{${lorem}}
+\p{\lorem}
 \begin{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
 \end{figure}
-\p{${lorem}}
+\p{\lorem}
 
 \subsection{Floating left}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<left>{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 \subsection{Floating right}
 
-\p{${lorem}}
+\p{\lorem}
 \begin<right>{figure}
 \begin{subpage}
 \section(){Introduction}
-\p{${lorem}}
+\p{\lorem}
 \end{subpage}
 \end{figure}
-\p{${lorem}}
-\p{${lorem}}
+\p{\lorem}
+\p{\lorem}
 
 
 \part(){Backmatter}
@@ -884,104 +875,104 @@ let is_foo = function
 \bibliography
 
 \begin[bib1]{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin[bib2]{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin[bib3]{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \begin{bib}
-\who{${who}}
-\what{${what}}
-\where{${where}}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
 \end{bib}
 
 \notes
 
 \begin[note1]{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin[note2]{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin[note3]{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
 \begin{note}
-\p{${lorem}}
+\p{\lorem}
 \end{note}
 
