@@ -50,7 +50,6 @@ body
  font-size: 0.625em;
  line-height: 1.6em;
  color: #000;
- overflow: hidden;
  }
 .doc_bold {font-weight: bold;}
 .doc_emph {font-style: italic;}
@@ -97,7 +96,7 @@ body
 .doc_par:not(:last-child) {margin-bottom: 0.5em;}
 .doc_par + .doc_par:not(.doc_initial) {text-indent: 1em;}
 .doc_par.doc_indent:not(.doc_initial) {text-indent: 1em;}
-.doc_par.doc_noindent {text-indent: 0;}
+.doc_par.doc_noindent {text-indent: 0 !important;}
 .doc_itemize,
 .doc_enumerate,
 .doc_description {margin: 0 0 0 2em;}
@@ -149,6 +148,7 @@ body
  margin: 0 1em;
  text-align: center;
  }
+
 .doc_verse > div
  {
  display: inline-block;
@@ -157,7 +157,7 @@ body
 
 .doc_verse > div > .doc_par
  {
- text-indent: 0;
+ text-indent: 0 !important;
  }
 
 .doc_verse:not(:first-child) {margin-top: 1.5em;}

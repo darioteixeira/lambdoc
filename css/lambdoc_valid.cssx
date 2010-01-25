@@ -68,7 +68,7 @@
 
 .doc_par + .doc_par:not(.doc_initial)	{text-indent: Hmargin_indent;}
 .doc_par.doc_indent:not(.doc_initial)	{text-indent: Hmargin_indent;}
-.doc_par.doc_noindent			{text-indent: 0;}
+.doc_par.doc_noindent			{text-indent: 0 !important;}
 
 
 /********************************************************************************/
@@ -157,7 +157,7 @@
 
 .doc_verse > div > .doc_par
 	{
-	text-indent: 0;
+	text-indent: 0 !important;
 	}
 
 .doc_verse:not(:first-child) {margin-top: Vmargin_hybrid;}
