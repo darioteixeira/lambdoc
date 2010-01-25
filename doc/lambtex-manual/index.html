@@ -113,7 +113,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">This manual is divided into two main parts plus an appendix. The <a class="doc_lnk" href="#doc:u:part:basic">first part</a> introduces the basic principles of the language; these allow you to describe simple documents with formatted text, paragraphs, ordered and unordered lists, tabular environments, and other features. <a class="doc_lnk" href="#doc:u:part:advanced">Part&nbsp;II</a> describes the advanced features of the language; these enable documents to have internal links, sectioning, a bibliography, notes, etc. Finally, there is an <a class="doc_lnk" href="#doc:u:part:theappendix">appendix</a> providing reference information concerning miscelaneous issues which do not fit into the main flow of the manual.
       </p>
-      <p class="doc_par">There is a good reason behind such a stark demarcation between these two main classes of features. In <span class="doc_caps">lambdoc</span> — the library that provides support for <span class="doc_caps">lambtex</span> — a document that uses both basic and advanced features is termed a <i class="doc_emph">manuscript</i>, and may, for instance, be the main story on a blog post or article<span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:lambdoc">2</a>]</span>. On the other hand, documents that only use the basic features are termed <i class="doc_emph">compositions</i>, and may be used as comments to the main story.
+      <p class="doc_par">Note that there is a good reason behind such a stark demarcation between the composition/manuscript classes of features. In <span class="doc_caps">lambdoc</span> — the library that provides support for <span class="doc_caps">lambtex</span> — a document that uses both basic and advanced features is termed a <i class="doc_emph">manuscript</i>, and may, for instance, be the main story on a blog post or article<span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:lambdoc">2</a>]</span>. On the other hand, documents that only use the basic features are termed <i class="doc_emph">compositions</i>, and may be used as comments to the main story.
       </p>
       <h1 id="doc:u:part:basic" class="doc_part">I.&ensp;<span>Essential <span class="doc_caps">lambtex</span></span>
       </h1>
@@ -134,11 +134,6 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           <div>
             <table>
               <thead class="doc_tgroup">
-                <tr>
-                  <td class="doc_cell_c doc_hline" colspan="3">Optional
-                  </td>
-                  <td class="doc_cell_c"></td>
-                </tr>
                 <tr>
                   <td class="doc_cell_c">Order
                   </td>
@@ -176,7 +171,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <h1 id="doc:u:sec:paragraphs" class="doc_sec">2.&ensp;<span>Paragraph blocks</span>
       </h1>
-      <p class="doc_par">Paragraphs are the simplest of all blocks, usually being composed of just a sequence of inline text terminated by a blank line. It is however also possible to declare a paragraph via the simple command <tt class="doc_code">\paragraph</tt> or its synonym <tt class="doc_code">\p</tt>. Should you choose the simple command, the paragraph contents are to be specified inside the mandatory curly brackets. Consider thus the following <span class="doc_caps">lambtex</span> source fragment:
+      <p class="doc_par">Paragraphs are the simplest of all blocks, typically being composed of just a sequence of inline text terminated by a blank line. It is however also possible to declare a paragraph via the simple command <tt class="doc_code">\paragraph</tt> or its synonym <tt class="doc_code">\p</tt>. Should you choose the simple command, the paragraph contents are to be specified inside the mandatory curly brackets. Consider thus the following <span class="doc_caps">lambtex</span> source fragment:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
@@ -210,13 +205,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">Note that the line breaks within the text are irrelevant for the composer; all that it cares about are that blank lines separate paragraphs. if you wish for a line break within a paragraph (ie, without terminating the current paragraph), use the <tt class="doc_code">\br</tt> simple command, as demonstrated.
       </p>
-      <p class="doc_par">Using the command <tt class="doc_code">\paragraph</tt> (or its synonym <tt class="doc_code">\p</tt>) to declare a paragraph is usually neither necessary nor recommended. This method exists for the sole reason that it may be desirable to provide the composer with extra parameters about the paragraph. Presently, the extra parameters accepted are <tt class="doc_code">initial</tt> and <tt class="doc_code">indent</tt>. The former is a boolean which signals whether the first letter of the paragraph should be rendered in a special manner. Its default value is always <tt class="doc_code">false</tt>, so you must explicitly set it to <tt class="doc_code">true</tt> when needed. The latter is tripartite, accepting values <tt class="doc_code">auto</tt> (the default), <tt class="doc_code">true</tt>, or <tt class="doc_code">false</tt>. It indicates whether the paragraph should be indented. In most situations the <tt class="doc_code">auto</tt> algorithm should be good enough: it indents a paragraph only if immediately preceded by another paragraph. There are however situations where you may indeed require an override by explicitly setting the indentation to <tt class="doc_code">true</tt> or <tt class="doc_code">false</tt>.
+      <p class="doc_par">Using the command <tt class="doc_code">\paragraph</tt> (or its synonym <tt class="doc_code">\p</tt>) to declare a paragraph is usually neither necessary nor recommended. This method exists for the sole reason that it may be desirable to provide the composer with extra parameters about the paragraph. Presently, the extra parameters accepted are <tt class="doc_code">initial</tt> and <tt class="doc_code">indent</tt>. The former is a boolean which signals whether the first letter of the paragraph should be rendered in a special manner. Its default value is always <tt class="doc_code">false</tt>, so you must explicitly set it to <tt class="doc_code">true</tt> when needed. The latter indicates whether the paragraph should be indented, and is tripartite in the value domain. The values it accepts are <tt class="doc_code">auto</tt> (the default), <tt class="doc_code">true</tt>, or <tt class="doc_code">false</tt>. In most situations the <tt class="doc_code">auto</tt> algorithm should be good enough: it indents a paragraph only if immediately preceded by another paragraph. There are however situations where you may indeed require an override by explicitly setting the indentation to <tt class="doc_code">true</tt> or <tt class="doc_code">false</tt>.
       </p>
       <p class="doc_par">At this point we recommend that you consult <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;E</a>, which dives into more detail on the subject of extra parameters. There you can learn of shorthand manners of inputting booleans and other values.
       </p>
       <h1 id="doc:a:1" class="doc_sec">3.&ensp;<span>Formatting inline text</span>
       </h1>
-      <p class="doc_par">As shown by <a class="doc_lnk" href="#doc:u:tab:inline">Tab.&nbsp;2</a>, <span class="doc_caps">lambtex</span> offers a broad set of text formatting commands. Remember that besides their application inside paragraph blocks, any of these commands may also be used in a context where inline text is allowed. That means you may use them in section titles, figure captions, inside tables, etc. Note that the inline formatting commands take as parameter a sequence of inline text. It is thus perfectly possible to nest these commands without any restrictions. Moreover, some of these commands have (typically shorter) synonyms. Therefore, instead of <tt class="doc_code">\bold</tt> you can also just type <tt class="doc_code">\b</tt>.
+      <p class="doc_par">As shown by <a class="doc_lnk" href="#doc:u:tab:inline">Tab.&nbsp;2</a>, <span class="doc_caps">lambtex</span> offers a broad set of text formatting commands. Remember that besides their application inside paragraph blocks, any of these commands may also be used in a context where inline text is allowed. That means you may use them in section titles, figure captions, inside tables, etc. Note that all inline formatting commands take as parameter a sequence of inline text. It is thus perfectly possible to nest these commands without any restrictions. Moreover, some of these commands have (typically shorter) synonyms. Therefore, instead of <tt class="doc_code">\bold</tt> you can also just type <tt class="doc_code">\b</tt>.
       </p>
       <div id="doc:u:tab:inline" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
@@ -491,9 +486,9 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </li>
         </ul>
       </div>
-      <p class="doc_par">For the sake of brevity and for compatibility with <span class="doc_caps">html</span> standards, you may also use the synonyms <tt class="doc_code">ol</tt>, <tt class="doc_code">ul</tt>, <tt class="doc_code">dl</tt>, and <tt class="doc_code">\li</tt>, for <tt class="doc_code">enumerate</tt>, <tt class="doc_code">itemize</tt>, <tt class="doc_code">description</tt>, and <tt class="doc_code">\item</tt>, respectively. Moreover, the British spelling <tt class="doc_code">itemise</tt> may also be used for ordered lists. However, the start and end tags must still match: though, for example, <tt class="doc_code">ol</tt> is a synonym for <tt class="doc_code">enumerate</tt>, if you start an ordered list with <tt class="doc_code">\begin{ol}</tt> you must terminate it with <tt class="doc_code">\end{ol}</tt>.
+      <p class="doc_par">For the sake of brevity and for compatibility with <span class="doc_caps">html</span> standards, you may also use the synonyms <tt class="doc_code">ol</tt>, <tt class="doc_code">ul</tt>, <tt class="doc_code">dl</tt>, and <tt class="doc_code">\li</tt>, for <tt class="doc_code">enumerate</tt>, <tt class="doc_code">itemize</tt>, <tt class="doc_code">description</tt>, and <tt class="doc_code">\item</tt>, respectively. Moreover, the British spelling <tt class="doc_code">itemise</tt> may be used for ordered lists. However, the start and end tags must still match: though, for example, <tt class="doc_code">ol</tt> is a synonym for <tt class="doc_code">enumerate</tt>, if you start an ordered list with <tt class="doc_code">\begin{ol}</tt> you must terminate it with <tt class="doc_code">\end{ol}</tt>.
       </p>
-      <p class="doc_par">It is possible to customise the bullet used in unordered lists or the numbering system used in ordered lists. To do so you need to pass an extra parameter to either the <tt class="doc_code">\begin{itemize}</tt> or <tt class="doc_code">\begin{enumerate}</tt> commands. Remember that extra parameters are enclosed between angle brackets, and are to be placed before a command's opening curly brackets (check <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;E</a> for a more thorough description of extra parameters). <span><span>Tables&nbsp;</span><a class="doc_lnk" href="#doc:u:tab:itemize">4</a><span>&nbsp;and&nbsp;</span><a class="doc_lnk" href="#doc:u:tab:enumerate">5</a></span> list the available options for the itemize and enumerate environments, respectively.
+      <p class="doc_par">It is possible to customise the bullet used in unordered lists or the numbering system used in ordered lists. To do so you need to pass an extra parameter to either the <tt class="doc_code">\begin{itemize}</tt> or <tt class="doc_code">\begin{enumerate}</tt> commands. Remember that extra parameters are enclosed between angle brackets, and are to be placed before a command's opening curly brackets (check <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;E</a> for a more thorough description of extra parameters). <span class="doc_mbox">Tables <a class="doc_lnk" href="#doc:u:tab:itemize">4</a> and <a class="doc_lnk" href="#doc:u:tab:enumerate">5</a></span> list the available options for the itemize and enumerate environments, respectively.
       </p>
       <div id="doc:u:tab:itemize" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
@@ -501,7 +496,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
             <table>
               <thead class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_r">Extra parameter
+                  <td class="doc_cell_r">Value
                   </td>
                   <td class="doc_cell_l">Type of bullet
                   </td>
@@ -551,7 +546,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
             <table>
               <thead class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_r">Extra parameter
+                  <td class="doc_cell_r">Value
                   </td>
                   <td class="doc_cell_l">Type of numbering
                   </td>
@@ -778,7 +773,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 </pre>
         </div>
       </div>
-      <p class="doc_par">We say there is <i class="doc_emph">almost</i> no interpretation of the contents of the verbatim environment because there is one exception. The string <tt class="doc_code">\end{verbatim}</tt> is used as the end marker, and therefore the <span class="doc_caps">lambtex</span> scanner will exit the environment if it encounters this string. This raises the obvious question of how one can insert that string itself within a verbatim context without triggering the termination of the environment. The solution used by <span class="doc_caps">lambtex</span> is reminescent of the <a class="doc_lnk" href="http://en.wikipedia.org/wiki/Here_document"><span class="doc_caps">heredoc</span></a> approach used by other languages. Basically, the markers that delimit verbatim environments need only use <tt class="doc_code">verbatim</tt> as a prefix. The only condition for termination is that the end marker matches the begin marker. Therefore, to include the string <tt class="doc_code">\end{verbatim}</tt> within a verbatim environment, you can simply delimitate that environment with, for example, <tt class="doc_code">\begin{verbatim1}</tt> and <tt class="doc_code">\end{verbatim1}</tt>.
+      <p class="doc_par">We say there is <i class="doc_emph">almost</i> no interpretation of the contents of the verbatim environment because there is one exception. The string <tt class="doc_code">\end{verbatim}</tt> is used as the end marker, and therefore the <span class="doc_caps">lambtex</span> scanner will exit the environment if it encounters this string. This raises the obvious question of how one can insert that string itself within a verbatim context without triggering the termination of the environment. The solution used by <span class="doc_caps">lambtex</span> is reminescent of the <a class="doc_lnk" href="http://en.wikipedia.org/wiki/Here_document"><span class="doc_caps">heredoc</span></a> approach used by other languages. Basically, the markers that delimit verbatim environments need only use <tt class="doc_code">verbatim</tt> as a prefix. The only condition for termination is that the end marker matches the begin marker. Therefore, to include the string <tt class="doc_code">\end{verbatim}</tt> within a verbatim environment, you can simply delimitate that environment with, for example, <tt class="doc_code">\begin{verbatim1}</tt> and <tt class="doc_code">\end{verbatim1}</tt>. Note that only numbers and lowercase letters may be used as suffix characters.
       </p>
       <p class="doc_par">Optionally, you may provide the extra parameter <tt class="doc_code">mult</tt> to a verbatim environment. This parameter accepts an integer between 0 and 9, indicating a multiplying factor for the contents of the environment. For a factor of <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></span>, the actual scaling relative to normal size is given by <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><msqrt><mn>2</mn></msqrt><mi>x</mi></msup></math></span>. The default factor is 0, which corresponds to normal size. One common application of this feature is to display <span class="doc_caps">unicode</span> characters as full-sized pictures. As an example, this is what the <span class="doc_caps">unicode</span> snowman (code point <span class="doc_caps">U+2603</span>) looks like with a multiplier of 7, corresponding to a font size 11.3 times larger than normal:
       </p>
@@ -791,7 +786,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <h1 id="doc:u:sec:code" class="doc_sec">11.&ensp;<span>Presenting source-code</span>
       </h1>
-      <p class="doc_par">While it is of course possible to input source code listings using the above discussed verbatim environment, <span class="doc_caps">lambtex</span> has a dedicated facility with a number of advantages. This new environment is named <tt class="doc_code">source</tt>, and offers the possibility of adding line numbers to the code listing and highlighting the source according to the syntax of most popular languages. You have in fact already encountered this environment multiple times in this document: it has been used for formatting <span class="doc_caps">lambtex</span> source code, albeit without line numbers or syntax highlighting. Suppose thus you wish to pretty-print an <a class="doc_lnk" href="http://caml.inria.fr/"><span class="doc_caps">ocaml</span></a> source fragment. You can declare a source-code environment the following way:
+      <p class="doc_par">While it is of course possible to input source code listings using the above discussed verbatim environment, <span class="doc_caps">lambtex</span> has a dedicated facility with a number of advantages. This new environment is named <tt class="doc_code">source</tt>, and offers the possibility of adding line numbers to the code listing and highlighting the source according to the syntax of most popular languages. You have in fact already encountered this environment multiple times in this document: it has been used for formatting <span class="doc_caps">lambtex</span> source code, albeit without line numbers or syntax highlighting. Suppose thus you wish to pretty-print an <a class="doc_lnk" href="http://caml.inria.fr/"><span class="doc_caps">ocaml</span></a> fragment. You can declare a source-code environment the following way:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
@@ -915,49 +910,49 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
               </thead>
               <tbody class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_r">l
+                  <td class="doc_cell_r"><tt class="doc_code">l</tt>
                   </td>
                   <td class="doc_cell_l">Column is left-aligned.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">L
+                  <td class="doc_cell_r"><tt class="doc_code">L</tt>
                   </td>
                   <td class="doc_cell_l">Column is left-aligned and strong.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">r
+                  <td class="doc_cell_r"><tt class="doc_code">r</tt>
                   </td>
                   <td class="doc_cell_l">Column is right-aligned.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">R
+                  <td class="doc_cell_r"><tt class="doc_code">R</tt>
                   </td>
                   <td class="doc_cell_l">Column is right-aligned and strong.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">c
+                  <td class="doc_cell_r"><tt class="doc_code">c</tt>
                   </td>
                   <td class="doc_cell_l">Column is centre-aligned.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">C
+                  <td class="doc_cell_r"><tt class="doc_code">C</tt>
                   </td>
                   <td class="doc_cell_l">Column is centre-aligned and strong.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">j
+                  <td class="doc_cell_r"><tt class="doc_code">j</tt>
                   </td>
                   <td class="doc_cell_l">Column is justified.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">J
+                  <td class="doc_cell_r"><tt class="doc_code">J</tt>
                   </td>
                   <td class="doc_cell_l">Column is justified and strong.
                   </td>
@@ -999,29 +994,136 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">Some tables may require more sophisticated formatting. The most common requirement is for multi-column cells, and <span class="doc_caps">lambtex</span> does support them. This feature is enabled by a special syntax that allows the customisation of each individual cell. More precisely, the pipe character '<tt class="doc_code">|</tt>' that precedes each cell is optionally followed by a curly bracketed expression containing the cell's formatting.
       </p>
-      <p class="doc_par">The formatting expression is composed of three parts. First is an integer indicating how many columns the cell should span; second is a single character matching one of the specifiers listed in <a class="doc_lnk" href="#doc:u:tab:tabular">Tab.&nbsp;6</a>; last and optional is the character '<tt class="doc_code">_</tt>', which if present indicates that a horizontal line should be put below the cell. Note that the formatting should satisfy the regular expression <span><tt class="doc_code"><i class="doc_emph"><span>digit</span></i><span>+&nbsp;</span><i class="doc_emph"><span>spec</span></i><span>&nbsp;'_'?</span></tt></span>.
+      <p class="doc_par">The formatting expression is composed of three parts. First is an integer indicating how many columns the cell should span; second is a single character matching one of the specifiers listed in <a class="doc_lnk" href="#doc:u:tab:tabular">Tab.&nbsp;6</a>; last and optional are the characters '<tt class="doc_code">_</tt>' (underscore) and/or '<tt class="doc_code">^</tt>' (caret), which if present indicate that a horizontal line should be put above or below the cell. Note that the formatting should satisfy the regular expression <span class="doc_mbox"><tt class="doc_code"><i class="doc_emph">digit</i>+ <i class="doc_emph">spec</i> ( '_' | '^' | '_^' | '^_' )?</tt></span>.
       </p>
-      <p class="doc_par">You have already encountered in this document an example of a table making use of advanced formatting. We are referring to <a class="doc_lnk" href="#doc:u:tab:parameters">Tab.&nbsp;1</a>, listed in <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>. The corresponding source is listed below; note how the expression <tt class="doc_code">3c_</tt> configures the first cell so that it spans three columns, is centered, and has a horizontal line below.
+      <p class="doc_par">This discussion would not be complete without the presentation of a complete example illustrating the application of advanced cell formatting. Consider thus the <span class="doc_caps">lambtex</span> fragment below, whose output is displayed in <a class="doc_lnk" href="#doc:u:tab:species">Tab.&nbsp;7</a>. Besides the use of header, footer, and multiple body rows, also noteworthy are the cell configuration expressions <tt class="doc_code">2c_</tt> and <tt class="doc_code">2c^</tt>, which configure their corresponding cells to span two columns, be centered, and show a horizontal line below and above, respectively.
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{tabular}{cccc}</code>
+<code class="doc_src_line">\begin{tabular}{rll}</code>
 <code class="doc_src_line">\head</code>
-<code class="doc_src_line">|{3c_} Optional					|		 |</code>
-<code class="doc_src_line">| Order		| Label		| Extra		| Primary	 |</code>
+<code class="doc_src_line">|		|{2c_} Scientific name			|</code>
+<code class="doc_src_line">| Common name	| Genus			| Species	|</code>
 <code class="doc_src_line">\body</code>
-<code class="doc_src_line">| \code{(...)}	| \code{[...]}	| \code{&lt;...&gt;}	| \code{\{...\}} |</code>
+<code class="doc_src_line">| Wolf		| \emph{Canis}		| \emph{lupus}	|</code>
+<code class="doc_src_line">| Cat		| \emph{Felis}		| \emph{catus}	|</code>
+<code class="doc_src_line">| Chicken	| \emph{Gallus}		| \emph{gallus}	|</code>
+<code class="doc_src_line">| Lion		| \emph{Panthera}	| \emph{leo}	|</code>
+<code class="doc_src_line">\body</code>
+<code class="doc_src_line">| English oak	| \emph{Quercus}	| \emph{robur}	|</code>
+<code class="doc_src_line">| European yew	| \emph{Taxus}		| \emph{baccata}|</code>
+<code class="doc_src_line">\foot</code>
+<code class="doc_src_line">| Common name	| Genus			| Species	|</code>
+<code class="doc_src_line">|		|{2c^} Scientific name			|</code>
 <code class="doc_src_line">\end{tabular}</code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">To conclude, note that if you want a tabular environment to be numbered and referenced from anywhere in the document, you need to wrap it inside a <tt class="doc_code">table</tt>. This is part of the advanced features of the language, and is discussed in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>.
+      <p class="doc_par">To conclude, note that if you wish for a tabular environment to be numbered and referenced from anywhere in the document, you need to wrap it inside a <tt class="doc_code">table</tt>. This is part of the advanced features of the language, and is discussed in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>.
       </p>
+      <div id="doc:u:tab:species" class="doc_wrapper doc_table doc_float_center">
+        <div class="doc_tab">
+          <div>
+            <table>
+              <thead class="doc_tgroup">
+                <tr>
+                  <td class="doc_cell_r"></td>
+                  <td class="doc_cell_c doc_uline" colspan="2">Scientific name
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r">Common name
+                  </td>
+                  <td class="doc_cell_l">Genus
+                  </td>
+                  <td class="doc_cell_l">Species
+                  </td>
+                </tr>
+              </thead>
+              <tfoot class="doc_tgroup">
+                <tr>
+                  <td class="doc_cell_r">Common name
+                  </td>
+                  <td class="doc_cell_l">Genus
+                  </td>
+                  <td class="doc_cell_l">Species
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"></td>
+                  <td class="doc_cell_c doc_oline" colspan="2">Scientific name
+                  </td>
+                </tr>
+              </tfoot>
+              <tbody class="doc_tgroup">
+                <tr>
+                  <td class="doc_cell_r">Wolf
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Canis</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">lupus</i>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r">Cat
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Felis</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">catus</i>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r">Chicken
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Gallus</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">gallus</i>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r">Lion
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Panthera</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">leo</i>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody class="doc_tgroup">
+                <tr>
+                  <td class="doc_cell_r">English oak
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Quercus</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">robur</i>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r">European yew
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Taxus</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">baccata</i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="doc_caption doc_caption_long">
+          <div>
+            <h1>Tab.&nbsp;7:
+            </h1>
+            <p>The classification of some common animals and plants. This table illustrates the use of the advanced formatting facilities that enable customisation of individual cells.
+            </p>
+          </div>
+        </div>
+      </div>
       <h1 id="doc:u:sec:math" class="doc_sec">13.&ensp;<span>Mathematical formulas</span>
       </h1>
-      <p class="doc_par"><span class="doc_caps">lambtex</span> also supports the inclusion of equations and mathematical formulas in a document. Mathematics are to be entered using either <span class="doc_caps">MathML</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:mathml">3</a>]</span> or the <span class="doc_caps">TeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:tex">4</a>]</span> format. The former was chosen because an increasing number of tools have the ability to export <span class="doc_caps">MathML</span>. As for the latter, it is the <i class="doc_emph">de facto</i> standard for manually typing mathematical expressions.
+      <p class="doc_par"><span class="doc_caps">lambtex</span> also supports the inclusion of equations and mathematical formulas in a document. Mathematics are to be entered using either <span class="doc_caps">MathML</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:mathml">3</a>]</span> or the <span class="doc_caps">TeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:tex">4</a>]</span> format. The former was chosen because an increasing number of tools has the ability to export <span class="doc_caps">MathML</span>. As for the latter, it is the <i class="doc_emph">de facto</i> standard for manually typing mathematical expressions.
       </p>
       <p class="doc_par">Mathematical expressions may be entered in an inline context (embedded inside a paragraph, for example), or in a block context. In the former case, the expression should be delimited between the characters '<tt class="doc_code">[$</tt>' and '<tt class="doc_code">$]</tt>' if it is written in <span class="doc_caps">TeX</span> format, and between characters '<tt class="doc_code">&lt;$</tt>' and '<tt class="doc_code">$&gt;</tt>' if written in <span class="doc_caps">MathML</span>. Though <span class="doc_caps">lambtex</span> does not enforce it, common sense dictates that inline mathematics should restrict themselves to expressions that fit comfortably in a single line. One example is the quadratic equation <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi><mspace width="0"/><msup><mi>x</mi><mn>2</mn></msup><mo lspace="0.222em" rspace="0.222em">+</mo><mi>b</mi><mspace width="0"/><mi>x</mi><mo lspace="0.222em" rspace="0.222em">+</mo><mi>c</mi><mo lspace="0.278em" rspace="0.278em">=</mo><mn>0</mn></mrow></math></span>.
       </p>
@@ -1058,7 +1160,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">There are additional configuration options for images, all set via optional extra parameters. Like its name suggests, the boolean parameter <tt class="doc_code">frame</tt> adds a small framed shadow to the image. It is off by default, and esthetically it is more sensible for rectangular images. The size of the image can be controlled by the parameter <tt class="doc_code">width</tt>. Its value is either <tt class="doc_code">auto</tt> or an integer between 1 and 100 (inclusive), indicating the percentage of the total width of the page that the image should occupy (minus a small margin common to all non-text blocks). The default is <tt class="doc_code">auto</tt>, which translates into an image occupying its natural width in pixels (up to the maximum width of the page). Note that images are always clickable and that the target <span class="doc_caps">uri</span> is that of the image itself. This is useful, for example, for seeing at their full size images that were scaled down with the <tt class="doc_code">width</tt> parameter.
+      <p class="doc_par">There are additional configuration options for images, all set via optional extra parameters. Like its name suggests, the boolean parameter <tt class="doc_code">frame</tt> adds a small framed shadow to the image. It is off by default, and esthetically it is more sensible for rectangular images such as photographs. The size of the image can be controlled by the parameter <tt class="doc_code">width</tt>. Its value is either <tt class="doc_code">auto</tt> or an integer between 1 and 100 (inclusive), indicating the percentage of the total width of the page that the image should occupy (minus a small margin common to all non-text blocks). The default is <tt class="doc_code">auto</tt>, which translates into an image occupying its natural width in pixels (up to the maximum width of the page). Note that images are always clickable and that the target <span class="doc_caps">uri</span> is that of the image itself. This is useful, for example, for seeing at their full size images that were scaled down with the <tt class="doc_code">width</tt> parameter or that did not fit into the width of the page.
       </p>
       <p class="doc_par">It is a common practice to add a numbered caption to an image. To achieve this in <span class="doc_caps">lambtex</span> you must wrap the <tt class="doc_code">image</tt> block inside a <tt class="doc_code">figure</tt>, as described in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>. Images may also be used strictly for decorative purposes, in which case they may be floated to the left or right of the page. This is however part of the advanced features of the language and is discussed only in <a class="doc_lnk" href="#doc:u:sec:floaters">Section&nbsp;24</a>.
       </p>
@@ -1066,7 +1168,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">Another interesting <span class="doc_caps">lambtex</span> feature is the ability to display child documents inside a framed block. These nested documents, termed <i class="doc_emph">sub-pages</i>, are offered by the <tt class="doc_code">subpage</tt> environment. While in general their usage is very limited and it is unlikely you will ever need to use sub-pages, for some applications — namely writing manuals about <span class="doc_caps">lambtex</span> — they are indispensable.
       </p>
-      <p class="doc_par">Sub-pages are not completely independent documents. You may refer to elements inside a sub-page from the main document and vice-versa. Moreover, any notes and bibliography entries (see <span><span>Sections&nbsp;</span><a class="doc_lnk" href="#doc:u:sec:onnotes">28</a><span>&nbsp;and&nbsp;</span><a class="doc_lnk" href="#doc:u:sec:onbiblio">29</a></span>) declared inside a sub-page are still associated with the main document. Finally, take into consideration that <span class="doc_caps">lambtex</span> will not automatically assign an ordering for sections and wrapper blocks declared inside sub-pages (these blocks are part of the advanced language features and are discussed in <a class="doc_lnk" href="#doc:u:sec:headings">Section&nbsp;18</a> and <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>, respectively).
+      <p class="doc_par">Sub-pages are not completely independent documents. You may refer to elements inside a sub-page from the main document and vice-versa. Moreover, any notes and bibliography entries (see <span class="doc_mbox">Sections <a class="doc_lnk" href="#doc:u:sec:onnotes">28</a> and <a class="doc_lnk" href="#doc:u:sec:onbiblio">29</a></span>) declared inside a sub-page are still associated with the main document. Finally, take into consideration that <span class="doc_caps">lambtex</span> will not automatically assign an ordering for sections and wrapper blocks declared inside sub-pages (these blocks are part of the advanced language features and are discussed in <a class="doc_lnk" href="#doc:u:sec:headings">Section&nbsp;18</a> and <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>, respectively).
       </p>
       <p class="doc_par">You have already encountered several examples of sub-pages while reading this document, as they have been used to illustrate the output of the composer in association with each code sample. The example below is the code that was used to produce the very first sub-page you have encountered in this document, back in the <a class="doc_lnk" href="#doc:u:sec:paragraphs">section on paragraph blocks</a>.
       </p>
@@ -1182,11 +1284,11 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <p class="doc_par">The quick brown fox jumps over the lazy brown dog. 
         </p>
       </div>
-      <p class="doc_par">To conclude, and since this is our first encounter with label parameters, the reader should note that labels have two constraints. First, the allowed character set is limited to lowercase roman letters, digits, and the characters '<tt class="doc_code">.</tt>' (period), '<tt class="doc_code">:</tt>' (colon), '<tt class="doc_code">-</tt>' (dash), and '<tt class="doc_code">_</tt>' (underscore). Second, the first character must be a letter.
+      <p class="doc_par">To conclude, and since this is our first encounter with label parameters, the reader should note that labels have two constraints. First, the allowed character set is limited to lowercase roman letters, digits, and the characters '<tt class="doc_code">.</tt>' (period), '<tt class="doc_code">:</tt>' (colon), '<tt class="doc_code">-</tt>' (dash), and '<tt class="doc_code">_</tt>' (underscore). Second, the first character must be a letter. Also note that all labels share the same namespace; we recommend adopting the <span class="doc_caps">LaTeX</span> custom of using a prefix indicating the target type. In the example above, the prefix <tt class="doc_code">sec:</tt> is used for the sectioning family of commands.
       </p>
       <h1 id="doc:u:sec:intlinks" class="doc_sec">19.&ensp;<span>Internal hyperlinks</span>
       </h1>
-      <p class="doc_par"><span class="doc_caps">lambtex</span> supports hyperlinks both to external resources and into targets in the same document. The former is provided by the already described simple command <tt class="doc_code">\link</tt>, whereas the latter relies on a set of different simple commands, each one tailored for a different use and/or kind of target. <a class="doc_lnk" href="#doc:u:tab:hyperlinks">Tab.&nbsp;7</a> lists all available hyperlinks commands, and the following source illustrates their use:
+      <p class="doc_par"><span class="doc_caps">lambtex</span> supports hyperlinks both to external resources and into targets in the same document. The former is provided by the already described simple command <tt class="doc_code">\link</tt>, whereas the latter relies on a set of different simple commands, each one tailored for a different use and/or kind of target. <a class="doc_lnk" href="#doc:u:tab:hyperlinks">Tab.&nbsp;8</a> lists all available hyperlinks commands, and the following source illustrates their use:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
@@ -1209,10 +1311,10 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">The corresponding output of the composer is the following:
       </p>
       <div class="doc_subpage">
-        <p class="doc_par">You can easily insert a link into an external resource such as <a class="doc_lnk" href="http://www.wikipedia.com/">Wikipedia</a>. Internal links come into several guises: they can be references to notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:meta">3</a>)</span>; bibliographic references like those available in <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">1</a>]</span>; pointers to labelled figures, tables, printouts, equations, or sections such as <span><span>Section&nbsp;</span><a class="doc_lnk" href="#doc:u:sec:anatomy">1</a></span>; smart references to those same elements such as <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>; and finally, references where the order is not automatically added (for example, you may refer yet again <a class="doc_lnk" href="#doc:u:sec:anatomy">to that same section</a>). 
+        <p class="doc_par">You can easily insert a link into an external resource such as <a class="doc_lnk" href="http://www.wikipedia.com/">Wikipedia</a>. Internal links come into several guises: they can be references to notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:meta">3</a>)</span>; bibliographic references like those available in <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">1</a>]</span>; pointers to labelled figures, tables, printouts, equations, or sections such as <span class="doc_mbox">Section <a class="doc_lnk" href="#doc:u:sec:anatomy">1</a></span>; smart references to those same elements such as <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>; and finally, references where the order is not automatically added (for example, you may refer yet again <a class="doc_lnk" href="#doc:u:sec:anatomy">to that same section</a>). 
         </p>
       </div>
-      <p class="doc_par">Bear in mind that the use of the smart references offered by command <tt class="doc_code">\sref</tt> is strongly recommended over the manual references provided by command <tt class="doc_code">\ref</tt>. The reason is three-fold. First, because smart references ensure the consistent use of one naming scheme over an entire document and across several documents. Second, because smart references automatically make sure that a non-breaking space is inserted between the element name and its ordering number, thus preventing their separation by a line break (to achieve the same with manual references, the user must explicitly place both elements inside an <tt class="doc_code">\mbox</tt> command, or use the <tt class="doc_code">nbsp</tt> <span class="doc_caps">html</span> entity). Third and last, because smart references will make a hyperlink of both the name and the ordering, which is friendlier for mouse clicking and arguably esthetically more pleasant.
+      <p class="doc_par">Bear in mind that the use of the smart references offered by command <tt class="doc_code">\sref</tt> is strongly recommended over the manual references provided by command <tt class="doc_code">\ref</tt>. The reason is three-fold. First, because smart references ensure the consistent use of one naming scheme over an entire document and across several documents. Second, because smart references automatically make sure that a non-breaking space is inserted between the element name and its ordering number, thus preventing their separation by a line break (to achieve the same effect with manual references, the user must explicitly place both elements inside an <tt class="doc_code">\mbox</tt> command, or use the <tt class="doc_code">nbsp</tt> <span class="doc_caps">html</span> entity). Third and last, because smart references will make a hyperlink of both the name and the ordering, which is friendlier for mouse clicking and arguably esthetically more pleasant.
       </p>
       <p class="doc_par">On a related note, we recommend that <tt class="doc_code">\see</tt> and <tt class="doc_code">\cite</tt> commands not be separated from the preceding element by spaces. The default <span class="doc_caps">css</span> stylesheet shipped with <span class="doc_caps">lambtex</span> already adds a small margin, and by not having spaces you avoid the split across line breaks or the need to resort to the <tt class="doc_code">\mbox</tt> command or the <tt class="doc_code">nbsp</tt> <span class="doc_caps">html</span> entity.
       </p>
@@ -1230,7 +1332,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
               </thead>
               <tbody class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\link{<i class="doc_emph">uri</i>}{<i class="doc_emph">inline</i>}</tt>
+                  <td class="doc_cell_r"><span class="doc_mbox"><tt class="doc_code">\link{<i class="doc_emph">uri</i>}{<i class="doc_emph">inline</i>}</tt></span>
                   </td>
                   <td class="doc_cell_l">Inserts a link to an external resource.
                   </td>
@@ -1238,7 +1340,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\see{<i class="doc_emph">label</i>}</tt>
                   </td>
-                  <td class="doc_cell_l">Inserts a reference to a document note (see <a class="doc_lnk" href="#doc:u:sec:onnotes">Section&nbsp;28</a>).
+                  <td class="doc_cell_l">Refers to a document note (see <a class="doc_lnk" href="#doc:u:sec:onnotes">Section&nbsp;28</a>).
                   </td>
                 </tr>
                 <tr>
@@ -1260,7 +1362,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\mref{<i class="doc_emph">label</i>}{<i class="doc_emph">inline</i>}</tt>
+                  <td class="doc_cell_r"><span class="doc_mbox"><tt class="doc_code">\mref{<i class="doc_emph">label</i>}{<i class="doc_emph">inline</i>}</tt></span>
                   </td>
                   <td class="doc_cell_l">Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order. Instead, the description provided as the second mandatory parameter is used for the hyperlink.
                   </td>
@@ -1271,9 +1373,9 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
-            <h1>Tab.&nbsp;7:
+            <h1>Tab.&nbsp;8:
             </h1>
-            <p>The various hyperlinking commands available in <span class="doc_caps">lambtex</span>. Note that the <tt class="doc_code"><i class="doc_emph">uri</i></tt> and <tt class="doc_code"><i class="doc_emph">label</i></tt> sequences are interpreted as raw text.
+            <p>The various hyperlinking commands available in <span class="doc_caps">lambtex</span>. Note that the <tt class="doc_code"><i class="doc_emph">uri</i></tt> and <tt class="doc_code"><i class="doc_emph">label</i></tt> sequences are interpreted as raw text. Moreover, the inline sequence may be ommited in command <tt class="doc_code">\link</tt>, and commands <tt class="doc_code">\see</tt> and <tt class="doc_code">\cite</tt> may be given more than one curly bracketed <tt class="doc_code"><i class="doc_emph">label</i></tt> sequence (see <span class="doc_mbox">Sections <a class="doc_lnk" href="#doc:u:sec:onnotes">28</a> and <a class="doc_lnk" href="#doc:u:sec:onbiblio">29</a></span> for details on the latter).
             </p>
           </div>
         </div>
@@ -1318,7 +1420,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">Boxout blocks allow you emphasise a document fragment by placing it inside a box. Boxouts are useful for warnings, notices, tips, reminders, etc. Boxouts are custom environments, in the sense that the command name that appears in the begin/end pairs is not built-in and is instead defined in the document itself. Therefore, before a boxout is used, it must first be declared via the simple command <tt class="doc_code">\newboxout</tt>. Moreover, boxouts are optionally titled and may be given an automatic ordering.
       </p>
-      <p class="doc_par">The command <tt class="doc_code">\newboxout</tt> accepts at least one, and up to three primary parameters. The first parameter is the name of the boxout environment; this is the same name that must subsequently be used inside the begin/end pairs. Obviously, you may not name a boxout with the same designation of an existing command, or with a designation that begins with the name of an environment that uses the <span class="doc_caps">heredoc</span> technique (namely <tt class="doc_code">verbatim</tt>, <tt class="doc_code">source</tt>, <tt class="doc_code">mathtex</tt>, and <tt class="doc_code">mathml</tt>). Moreover, the name must begin with a lowercase letter and be composed only of lowercase letters and digits. The second parameter, if present, is an inline sequence indicating a fixed title that will appear in all boxouts of this name. Finally, the third parameter may be used to assign a counter to this boxout. If not present, the boxout is unnumbered; moreover, different boxouts may share the same counter.
+      <p class="doc_par">The command <tt class="doc_code">\newboxout</tt> accepts at least one, and up to three primary parameters. The first parameter is the name of the boxout environment; this is the same name that must subsequently be used inside the begin/end pairs. Obviously, you may not name a boxout with the same designation of an existing command, or with a designation that begins with the name of an environment that uses the <span class="doc_caps">heredoc</span> technique (namely <tt class="doc_code">verbatim</tt>, <tt class="doc_code">source</tt>, <tt class="doc_code">mathtex</tt>, and <tt class="doc_code">mathml</tt>). Moreover, the name must begin with a lowercase letter and be composed only of lowercase letters and digits. The second parameter, if present, is an inline sequence indicating a fixed title that will appear in all boxouts of this name. Finally, the third parameter may be used to assign a counter to this boxout. If not present, the boxout is unnumbered; moreover, different boxouts may share the same counter. Note that the third parameter may only be given for boxouts that do have a title, and thus also a second parameter.
       </p>
       <p class="doc_par">Subsequent to its declaration, using a new boxout named <tt class="doc_code"><i class="doc_emph">name</i></tt> is simply a matter of wrapping its contents between <tt class="doc_code">\begin{<i class="doc_emph">name</i>}</tt> and <tt class="doc_code">\end{<i class="doc_emph">name</i>}</tt>. The begin tag accepts an optional primary parameter with an extra title to assign to the boxout. If the <tt class="doc_code">\newboxout</tt> boxout declaration did not include a title, then this extra title becomes the sole title for this particular instance of the boxout. If on the other hand <tt class="doc_code">\newboxout</tt> already declared a generic title, then the extra title is appended to the generic title. Should neither a generic nor an extra title be given, then the boxout will be titleless.
       </p>
@@ -1364,7 +1466,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">The resulting output is listed below. Note that in theorems the extra title is displayed between parentheses, in accordance to convention. Should you wish to customise the <span class="doc_caps">css</span> for particular classes of theorems, you may make use of the same technique described for boxouts. Note, however, that for a theorem named <tt class="doc_code"><i class="doc_emph">name</i></tt>, the associated classname is <tt class="doc_code">doc_theorem_env_<i class="doc_emph">name</i></tt>.
+      <p class="doc_par">The resulting output is shown below. Note that in theorems the extra title is displayed between parentheses, in accordance to convention. Should you wish to customise the <span class="doc_caps">css</span> for particular classes of theorems, you may make use of the same technique described for boxouts. Note, however, that for a theorem named <tt class="doc_code"><i class="doc_emph">name</i></tt>, the associated classname is <tt class="doc_code">doc_theorem_env_<i class="doc_emph">name</i></tt>.
       </p>
       <div class="doc_subpage">
         <div id="doc:a:13" class="doc_theorem doc_theorem_env_theorem">
@@ -1380,19 +1482,19 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">As discussed in <a class="doc_lnk" href="#doc:u:part:basic">Part&nbsp;I</a>, <span class="doc_caps">lambdoc</span> allows compositions to declare document blocks beyond simple paragraphs of text. Tabular environments, images, mathematics, or source-code listings, for example. All of these are anonymous blocks, in the sense they do not have an associated label and therefore cannot be referenced from elsewhere in the document (remember that internal references are not allowed in compositions). When writing a manuscript, however, there are valid reasons why you may want to reference an image or a source-code listing, or to provide these elements with a caption. It it for this motive that <span class="doc_caps">lambtex</span> also offers blocks that may be given a caption, an ordering, and may be referred from anywhere. These blocks are called <i class="doc_emph">wrappers</i>, and as their name implies, are essentially just a wrapper around other blocks such as <tt class="doc_code">source</tt>, <tt class="doc_code">tabular</tt>, <tt class="doc_code">mathtex</tt>, or <tt class="doc_code">mathml</tt> environments. There are four different classes of wrappers available:
       </p>
-      <dl class="doc_description"><dt>Equation</dt>
+      <dl class="doc_description"><dt>Equations</dt>
         <dd>
           <p class="doc_par">These are declared via the environment command <tt class="doc_code">equation</tt>, and may be used for wrapping <tt class="doc_code">mathtex</tt> and <tt class="doc_code">mathml</tt> blocks.
           </p>
-        </dd><dt>Printout</dt>
+        </dd><dt>Printouts</dt>
         <dd>
           <p class="doc_par">These are used for wrapping <tt class="doc_code">source</tt> environments, and are declared with the environment command <tt class="doc_code">printout</tt>.
           </p>
-        </dd><dt>Table</dt>
+        </dd><dt>Tables</dt>
         <dd>
           <p class="doc_par">Tables may only be used for wrapping <tt class="doc_code">tabular</tt> environments, and are declared with the environment command <tt class="doc_code">table</tt>.
           </p>
-        </dd><dt>Figure</dt>
+        </dd><dt>Figures</dt>
         <dd>
           <p class="doc_par">Finally, figures are declared with the environment command <tt class="doc_code">figure</tt>, and may be used for wrapping <tt class="doc_code">verbatim</tt>, <tt class="doc_code">image</tt>, and <tt class="doc_code">subpage</tt> blocks.
           </p>
@@ -1527,7 +1629,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">A note is declared via the environment command <tt class="doc_code">note</tt>. Notes can of course be labelled, and may be referenced from anywhere in the document via the simple command <tt class="doc_code">\see</tt>. The latter takes at least one primary parameter, and therefore you may reference multiple notes simply by providing additional primary parameters.
       </p>
-      <p class="doc_par">One important feature to remember is that the location where the note is declared is <b class="doc_bold">not</b> the same as where it will be appear in the rendered document (for this reason, notes are termed <i class="doc_emph">ghost blocks</i>). Instead, all notes will be printed together wherever the simple command <tt class="doc_code">\notes</tt> is declared. This last command will also create a special unordered section called <i class="doc_emph">Notes</i>, just like <a class="doc_lnk" href="#doc:u:sec:thenotes">the one present</a> in this manual. This “ghostly” character of note blocks allows them to be declared anywhere in the document, a handy feature if you wish to keep a note declaration close to the place where it is declared.
+      <p class="doc_par">One important feature to remember is that the location where the note is declared is <b class="doc_bold">not</b> the same as where it will be appear in the rendered document (for this reason, notes are termed <i class="doc_emph">ghost blocks</i>). Instead, all notes will be printed together wherever the simple command <tt class="doc_code">\notes</tt> is declared. This last command will also create an eponymously named unordered section, just like <a class="doc_lnk" href="#doc:u:sec:thenotes">the one present</a> in this manual. This “ghostly” character of note blocks allows them to be declared anywhere in the document, a handy feature if you wish to keep a note declaration close to the place where it is declared.
       </p>
       <p class="doc_par">The sample code below illustrates a note being referenced inside a paragraph and being defined afterwards. The example concludes with the simple command <tt class="doc_code">\notes</tt> requesting the printing of the homonymous section together with the defined note.
       </p>
@@ -1570,11 +1672,11 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">Whereas <span class="doc_caps">BibTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:bibtex">5</a>]</span> offers a very rich set of tags for bibliographic entries (author, title, journal volume, page numbers, conference location, etc), <span class="doc_caps">lambtex</span> limits this set to only three main tags. Those familiar with <span class="doc_caps">BibTeX</span> may feel constrained by this paucity. However, one must take into account that <span class="doc_caps">lambtex</span> was designed with the web as a foremost application area. In this context, one can have satisfactory — in the sense they are readily accessible — bibliographic entries based solely on a hyperlink. The <tt class="doc_code">\where</tt> command can therefore be used for linking to an external web resource, or if not available online, to provide all the miscelaneous information required to locate the resource in “dead tree world”.
+      <p class="doc_par">Whereas <span class="doc_caps">BibTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:bibtex">5</a>]</span> offers a very rich set of tags for bibliographic entries (author, title, journal volume, page numbers, conference location, etc), <span class="doc_caps">lambtex</span> limits this set to only three main tags. Those familiar with <span class="doc_caps">BibTeX</span> may feel constrained by this paucity. However, one must take into account that <span class="doc_caps">lambtex</span> was designed with the web as a foremost application area. In this context, one can have satisfactory — in the sense that they are readily accessible — bibliographic entries based solely on a hyperlink. The <tt class="doc_code">\where</tt> command can therefore be used for linking to an external web resource, or if not available online, to provide all the miscelaneous information required to locate the resource in “dead tree world”.
       </p>
       <h1 id="doc:u:sec:onappendix" class="doc_sec">30.&ensp;<span>Creating an appendix</span>
       </h1>
-      <p class="doc_par">Large manuscripts typically have fragments that do not fit into the main flow of the document. In many cases, these fragments can satisfactorily be included as notes (remember <a class="doc_lnk" href="#doc:u:sec:onnotes">Section&nbsp;28</a>). In other situations, however, it may make more sense to attach them as appendices to the main document. In <span class="doc_caps">lambtex</span>, creating an appendix is simply a matter of issueing the simple parameterless command <tt class="doc_code">\appendix</tt>. Besides declaring an unordered homonymous part, this command also marks all subsequent sections as belonging to the appendix. This means that an appendiced section is declared the usual way, via the command <tt class="doc_code">\section</tt> (the same applies to sub-sections and sub-sub-sections, of course). The only distinguishing aspect that makes it an appendiced section is being declared after <tt class="doc_code">\appendix</tt>.
+      <p class="doc_par">Large manuscripts typically have fragments that do not fit into the main flow of the document. In many cases, these fragments can satisfactorily be included as notes (remember <a class="doc_lnk" href="#doc:u:sec:onnotes">Section&nbsp;28</a>). In other situations, however, it may make more sense to attach them as appendices to the main document. In <span class="doc_caps">lambtex</span>, creating an appendix is simply a matter of issueing the simple parameterless command <tt class="doc_code">\appendix</tt>. Besides declaring an unordered part of the same name, this command also marks all subsequent sections as belonging to the appendix. This means that an appendiced section is declared the usual way, via the command <tt class="doc_code">\section</tt> (the same applies to sub-sections and sub-sub-sections, of course). The only distinguishing aspect that makes it an appendiced section is being declared after <tt class="doc_code">\appendix</tt>.
       </p>
       <p class="doc_par">You can see an example of appendiced sections in this very manual. Note how all sections declared after the <a class="doc_lnk" href="#doc:u:part:theappendix">appendix marker</a> are automatically ordered using alphabetic characters instead of numbers, as per the usual convention. Smart references produced by command <tt class="doc_code">\sref</tt> automatically adjust as well — yet another reason why you should avoid its “dumb” counterpart <tt class="doc_code">\ref</tt>.
       </p>
@@ -1584,13 +1686,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">Before being used, a macro must be declared via the simple command <tt class="doc_code">\newmacro</tt>. This command takes three mandatory primary parameters: the name of the macro, the number of arguments, and an inline sequence containing the text of the macro. Macro names must obviously be unique and not overlap with the names of built-in commands, but they live in their own private namespace. Moreover, and similarly to boxouts and theorems, the name must begin with a lowercase roman letter and be followed by a combination of lowercase roman letters and digits.
       </p>
-      <p class="doc_par">Should the macro take any arguments, these can be referenced from inside the macro text by the alias <tt class="doc_code">\arg{<i class="doc_emph">num</i>}</tt>, where the <tt class="doc_code"><i class="doc_emph">num</i></tt> between curly brackets is an integer indicating the argument number. Obviously, a macro with <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></span> arguments may not reference an argument <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo lspace="0.222em" rspace="0.222em">+</mo><mn>1</mn></mrow></math></span> or higher.
+      <p class="doc_par">Should the macro take any arguments, these can be referenced from inside the macro text by the alias <tt class="doc_code">\arg{<i class="doc_emph">num</i>}</tt>, where the <tt class="doc_code"><i class="doc_emph">num</i></tt> between curly brackets is an integer indicating the argument number. Obviously, a macro with <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></span> arguments may not reference an argument <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo lspace="0.222em" rspace="0.222em">+</mo><mn>1</mn></mrow></math></span> or higher. Moreover, arguments are expanded as inline sequences.
       </p>
-      <p class="doc_par">Wherever an inline sequence is accepted, a macro named <tt class="doc_code">name</tt> can be invoked via <tt class="doc_code">\name</tt>. The invocation of the macro causes the macro's text to be inserted at invocation point. Should the macro have any arguments, these must follow the macro's name immediately, being each one bracketed individually. Therefore, the invocation of macro <tt class="doc_code">name</tt> with arguments <tt class="doc_code">arg1</tt> and <tt class="doc_code">arg2</tt> is done with <tt class="doc_code">\name{arg1}{arg2}</tt>. Note that because macros can be invoked wherever an inline sequence is accepted and the text of a macro is an inline sequence itself, it follows that macros may invoke other macros. However, because a macro must be declared before being invoked, mutual recursion is not allowed. Moreover, a macro may not invoke itself either. These restrictions are in place to ensure that macro expansion always terminates.
+      <p class="doc_par">Wherever an inline sequence is accepted, a macro named <tt class="doc_code">name</tt> can be invoked via the simple command <tt class="doc_code">\name</tt>. The invocation of the macro causes the macro's text to be inserted at invocation point. Should the macro have any arguments, these must follow the macro's name immediately, being each one bracketed individually. Therefore, the invocation of macro <tt class="doc_code">name</tt> with arguments <tt class="doc_code">inline1</tt> and <tt class="doc_code">inline2</tt> is done with <span class="doc_mbox"><tt class="doc_code">\name{inline1}{inline2}</tt></span>. Note that because macros can be invoked wherever an inline sequence is accepted and the text of a macro is an inline sequence itself, it follows that macros may invoke other macros. However, because a macro must be declared before being invoked, mutual recursion is not allowed. Moreover, a macro may not invoke itself either. These restrictions are in place to ensure that macro expansion always terminates.
       </p>
-      <p class="doc_par">While token concatenation with parameterised macros is straightforward, you may wonder how it can be achieved with parameterless macros. To illustrate this issue, suppose you have defined a macro <tt class="doc_code">super</tt> that expands to the text “super”. Now, you wish to concatenate the invocation of this macro with the text “market”. However, entering <tt class="doc_code">\super market</tt> produces an unwanted space, whereas <tt class="doc_code">\supermarket</tt> produces an error, since the macro <tt class="doc_code">supermarket</tt> is undefined. Note that if the macro had any arguments this problem would be moot, since the brackets naturally delimitate the macro name. Therefore one solution is to always declare macros with at least one parameter, even if it is a dummy that can be discarded. There is however a better alternative, one which takes advantage of the fact that all commands accept (at least) an empty sequence extra parameters: simply put <tt class="doc_code">&lt;</tt> <tt class="doc_code">&gt;</tt> after the macro name. Concatenation in this example can thus be achieved by entering <tt class="doc_code">\super&lt;</tt> <tt class="doc_code">&gt;market</tt>.
+      <p class="doc_par">While token concatenation with parameterised macros is straightforward, you may wonder how it can be achieved with parameterless macros. To illustrate this issue, suppose you have defined a macro <tt class="doc_code">super</tt> that expands to the text <i class="doc_emph">“super”</i>. Now, you wish to concatenate the invocation of this macro with the text <i class="doc_emph">“market”</i>. However, entering <tt class="doc_code">\super market</tt> produces an unwanted space, whereas <tt class="doc_code">\supermarket</tt> produces an error, since the macro <tt class="doc_code">supermarket</tt> is undefined. Note that if the macro had any arguments this problem would be moot, since the brackets naturally delimitate the macro name. Therefore one solution is to always declare macros with at least one parameter, even if it is a dummy that can be discarded. There is however a better alternative, one which takes advantage of the fact that all commands accept (at least) an empty sequence as extra parameters: simply put <tt class="doc_code">&lt;</tt> <tt class="doc_code">&gt;</tt> after the macro name. Concatenation in this example can thus be achieved by entering <tt class="doc_code">\super&lt;</tt> <tt class="doc_code">&gt;market</tt>.
       </p>
-      <p class="doc_par">Let us now consider a full example of macro declaration. We wish to define a macro <tt class="doc_code">author</tt> that when invoked expands to the full name of an author. We also define a macro named <tt class="doc_code">greet</tt> that takes two arguments and produces a greeting. These two macros are then used in a small sample document. This is the source <span class="doc_caps">lambtex</span> code:
+      <p class="doc_par">Let us now consider a full example of macro declaration. We wish to define a macro <tt class="doc_code">author</tt> that when invoked expands to the full name of an author. We also define a macro named <tt class="doc_code">greet</tt> that takes two arguments and produces a greeting. These two macros are then used in a small sample document. This is the <span class="doc_caps">lambtex</span> source:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
@@ -1615,9 +1717,9 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <h1 id="doc:a:15" class="doc_sec">32.&ensp;<span>Concluding remarks</span>
       </h1>
-      <p class="doc_par">You are now familiar with the all the features available in the <span class="doc_caps">lambtex</span> markup language. We hope you will find it rich enough to cover your web publishing needs, while still being simple enough to dispense a significant investment of time for learning it.
+      <p class="doc_par">You are now familiar with the all the features available in the <span class="doc_caps">lambtex</span> markup language. We hope you will find it rich enough to cover your web publishing needs, while still being simple enough to dispense a significant investment of time learning it.
       </p>
-      <p class="doc_par">We now advise that you peruse the appendices attached to this manual. There you can find some reference material that did not fit into the flow of the main body of the document. <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a>, for example, discusses at length the structure of the <span class="doc_caps">lambtex</span> documents, while <a class="doc_lnk" href="#doc:u:sec:synonyms">Appendix&nbsp;B</a> summarises all command synonyms available, and <a class="doc_lnk" href="#doc:u:sec:parameters">Appendix&nbsp;C</a> covers all that you need to know concerning optional arguments. Unless you are writing about <span class="doc_caps">lambtex</span> itself, there is little chance you will need the information contained in <a class="doc_lnk" href="#doc:u:sec:order">Appendix&nbsp;D</a>. But if you do, it focuses on the somewhat arcane details concerning numbering in sub-pages. Finally, <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;E</a> contains all the nitty-gritty details about how extra arguments are parsed.
+      <p class="doc_par">We advise that you peruse the appendices attached to this manual. There you can find some reference material that did not fit into the flow of the main body of the document. <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a>, for example, discusses at length the structure of the <span class="doc_caps">lambtex</span> documents, while <a class="doc_lnk" href="#doc:u:sec:synonyms">Appendix&nbsp;B</a> summarises all command synonyms available, and <a class="doc_lnk" href="#doc:u:sec:parameters">Appendix&nbsp;C</a> covers all you need to know concerning optional arguments. Unless you are writing about <span class="doc_caps">lambtex</span> itself, there is little chance you will need the information contained in <a class="doc_lnk" href="#doc:u:sec:order">Appendix&nbsp;D</a>. But if you do, it focuses on the somewhat arcane aspects concerning numbering in sub-pages. Finally, <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;E</a> contains all the nitty-gritty details about how extra arguments are parsed.
       </p>
       <h1 id="doc:u:part:theappendix" class="doc_part"><span>Appendix</span>
       </h1>
@@ -1640,7 +1742,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </div>
         </div>
       </div>
-      <p class="doc_par">Two other things stand out in the figure. The first is that blocks are grouped into two broad categories: composition blocks (in green) and manuscript blocks (in blue). Though not relevant to a discussion concerning structure, this categorisation serves as a good, graphical reminder of which block types are allowed for composition/manuscript document types. Second, there is a list attached to each of the block types. This list indicates the actual document blocks that belong to that type. A <i class="doc_emph">textual block</i>, for example, can be either a paragraph, an itemize, enumerate, or description list, a verse block, or a block containing mathematics. Notice that many blocks have a <i class="doc_emph"><tt class="doc_code">of</tt> ...</i> declaration after their name; these blocks — termed <i class="doc_emph">recursive blocks</i> — are those whose contents are other blocks.
+      <p class="doc_par">Two other things stand out in the figure. The first is that blocks are grouped into two broad categories: composition blocks (in green) and manuscript blocks (in blue). Though not relevant to a discussion concerning structure, this categorisation serves as a good, graphical reminder of which block types are allowed for composition and manuscript document types. Second, there is a list attached to each of the block types. This list indicates the actual document blocks that belong to that type. A <i class="doc_emph">textual block</i>, for example, can be either a paragraph, an itemize, enumerate, or description list, a verse block, or a block containing mathematics. Notice that many blocks have a <i class="doc_emph"><tt class="doc_code">of</tt> ...</i> declaration after their name; these blocks — termed <i class="doc_emph">recursive blocks</i> — are those whose contents are other blocks.
       </p>
       <p class="doc_par">If a <span class="doc_caps">lambtex</span> document were unconstrained, one would expect a recursive block to be composed of a list of super blocks. Because super blocks sit at the top of the hierarchy, <b class="doc_bold">any</b> block can be used where a super block is allowed. Therefore, in an unconstrained scenario, it would be perfectly legal for a quotation block to be the parent of a section, or for an abstract block to include another. Needless to say, an unconstrained document would accommodate for pathological situations bearing no resemblance to any reasonable real-world documents. It is for this reason that a <span class="doc_caps">lambtex</span> document has a few constraints in place. As you shall see, these constraints are however fairly minor and still allow for very flexible documents.
       </p>
@@ -1648,7 +1750,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <h1 id="doc:u:sec:synonyms" class="doc_sec">B.&ensp;<span>Command synonyms</span>
       </h1>
-      <p class="doc_par">For reference purposes, <a class="doc_lnk" href="#doc:u:tab:synonyms">Tab.&nbsp;8</a> lists all existing synonyms for both simple and environment commands (the former's name is prefixed by a backslash). Remember that in the case of environment commands, the same name must be used for the <tt class="doc_code">begin</tt> and <tt class="doc_code">end</tt> tags, even if they are synonyms.
+      <p class="doc_par">For reference purposes, <a class="doc_lnk" href="#doc:u:tab:synonyms">Tab.&nbsp;9</a> lists all existing synonyms for both simple and environment commands (the former's name is prefixed by a backslash). Remember that in the case of environment commands, the same name must be used for the <tt class="doc_code">begin</tt> and <tt class="doc_code">end</tt> tags, even if they are synonyms.
       </p>
       <div id="doc:u:tab:synonyms" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
@@ -1755,7 +1857,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
-            <h1>Tab.&nbsp;8:
+            <h1>Tab.&nbsp;9:
             </h1>
             <p>List of all available command synonyms.
             </p>
@@ -1766,7 +1868,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">The typical simple command in <span class="doc_caps">LaTeX</span> has one or two primary parameters enclosed between curly brackets. In addition, many commands (both simple and environment) accept also optional parameters that specify an ordering, a label, or any extra information. When present, optional parameters may be specified in any order, as long as they precede any of the primary parameters. Moreover, each class of optional parameter is distinguished by the set of characters used for delimitation. Ordering parameters are enclosed in curved brackets, labelling parameters in square brackets, and extra parameters between angle brackets.
       </p>
-      <p class="doc_par">Note that not all optional parameters are meaningful for all existing commands. Some commands may, for instance, accept only an order and/or a label parameter, while others accept only extra parameters. In fact, no command exists that accepts all three classes of optional parameters, and there are several which accept none. <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;10</a> lists the classes accepted for each of all existing commands, both simple and environment ones. An exact definition of the terms used is shown in <a class="doc_lnk" href="#doc:u:tab:permdesc">Tab.&nbsp;9</a>.
+      <p class="doc_par">Note that not all optional parameters are meaningful for all existing commands. Some commands may, for instance, accept only an order and/or a label parameter, while others accept only extra parameters. In fact, no command exists that accepts all three classes of optional parameters, and there are several which accept none. <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;11</a> lists the classes accepted for each of all existing commands, both simple and environment ones. An exact definition of the terms used is shown in <a class="doc_lnk" href="#doc:u:tab:permdesc">Tab.&nbsp;10</a>.
       </p>
       <div id="doc:u:tab:permdesc" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
@@ -1823,14 +1925,14 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
-            <h1>Tab.&nbsp;9:
+            <h1>Tab.&nbsp;10:
             </h1>
-            <p>Definition of the various permissions. These terms are used in <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;10</a>.
+            <p>Definition of the various permissions. These terms are used in <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;11</a>.
             </p>
           </div>
         </div>
       </div>
-      <p class="doc_par">As the <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;10</a> below confirms, it is always possible to specify empty extra parameters for any command. This is done so that token concatenation is possible for simple commands that take no primary parameters, as is often the case with user-defined macros. A practical application of this feature is described in <a class="doc_lnk" href="#doc:u:sec:macros">Section&nbsp;31</a>.
+      <p class="doc_par">As the <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;11</a> below confirms, it is always possible to specify empty extra parameters for any command. This is done so that token concatenation is possible for simple commands that take no primary parameters, as is often the case with user-defined macros. A practical application of this feature is described in <a class="doc_lnk" href="#doc:u:sec:macros">Section&nbsp;31</a>.
       </p>
       <div id="doc:u:tab:permlist" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
@@ -2487,7 +2589,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
-            <h1>Tab.&nbsp;10:
+            <h1>Tab.&nbsp;11:
             </h1>
             <p>The permissions associated with the various <span class="doc_caps">lambtex</span> commands for each of the three classes (order, label, and extra) of optional arguments. In the case of extra parameters, the options available for each command are also displayed. Note that simple commands are shown prefixed with a backslash, whereas environment commands are enclosed inside brackets. Within each category, commands are shown alphabetically. Furthermore, the commands <tt class="doc_code"><i class="doc_emph">boxout</i></tt> and <tt class="doc_code"><i class="doc_emph">theorem</i></tt> are shown in italics because the actual command name is user-defined.
             </p>
@@ -2522,7 +2624,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </ol>
       <h1 id="doc:u:sec:extra" class="doc_sec">E.&ensp;<span>Extra parameters</span>
       </h1>
-      <p class="doc_par">Remember that extra parameters are those enclosed between angle brackets, and always precede any mandatory parameters the command may have. Canonically, specifying that a parameter <tt class="doc_code">alpha</tt> should have a value <tt class="doc_code">x</tt> is done by declaring <tt class="doc_code">alpha=x</tt> as the extra parameter. Should the command accept multiple parameters, these can be separated by inserting a '<tt class="doc_code">,</tt>' (comma) between them. <a class="doc_lnk" href="#doc:u:tab:extradesc">Tab.&nbsp;11</a> below lists all the existing extra parameters together with the accepted values for each.
+      <p class="doc_par">Remember that extra parameters are those enclosed between angle brackets, and always precede any mandatory parameters the command may have. Canonically, specifying that a parameter <tt class="doc_code">alpha</tt> should have a value <tt class="doc_code">x</tt> is done by declaring <tt class="doc_code">alpha=x</tt> as the extra parameter. Should the command accept multiple parameters, these can be separated by inserting a '<tt class="doc_code">,</tt>' (comma) between them. <a class="doc_lnk" href="#doc:u:tab:extradesc">Tab.&nbsp;12</a> below lists all the existing extra parameters together with the accepted values for each.
       </p>
       <div id="doc:u:tab:extradesc" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
@@ -2615,9 +2717,9 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
-            <h1>Tab.&nbsp;11:
+            <h1>Tab.&nbsp;12:
             </h1>
-            <p>List of all existing extra parameters and associated range of values. Consult <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;10</a> for a list of which of these parameters are accepted for each command.
+            <p>List of all existing extra parameters and associated range of values. Consult <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;11</a> for a list of which of these parameters are accepted for each command.
             </p>
           </div>
         </div>
@@ -2626,7 +2728,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <ol class="doc_enumerate doc_style_decimal">
         <li>
-          <p class="doc_par">It suffices to declare a value if there is no ambiguity as to which parameter it belongs to. In the example above this means declaring simply <tt class="doc_code">x</tt> instead of <tt class="doc_code">alpha=x</tt>. Because <span class="doc_caps">lambtex</span> knows which values are valid for each parameter, and because there are practically no overlaps in the existing set of commands, this condition applies almost always. The notable exception is the environment command <tt class="doc_code">source</tt>, which accepts three different boolean parameters (see <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;10</a>).
+          <p class="doc_par">It suffices to declare a value if there is no ambiguity as to which parameter it belongs to. In the example above this means declaring simply <tt class="doc_code">x</tt> instead of <tt class="doc_code">alpha=x</tt>. Because <span class="doc_caps">lambtex</span> knows which values are valid for each parameter, and because there are practically no overlaps in the existing set of commands, this condition applies almost always. The notable exception is the environment command <tt class="doc_code">source</tt>, which accepts three different boolean parameters (see <a class="doc_lnk" href="#doc:u:tab:permlist">Tab.&nbsp;11</a>).
           </p>
         </li>
         <li>

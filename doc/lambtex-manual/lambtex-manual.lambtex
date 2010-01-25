@@ -29,12 +29,12 @@ a bibliography, notes, etc.  Finally, there is an \mref{part:theappendix}{append
 providing reference information concerning miscelaneous issues which do not fit into
 the main flow of the manual.
 
-There is a good reason behind such a stark demarcation between these two main classes
-of features.  In \lambdoc --- the library that provides support for \lambtex --- a
-document that uses both basic and advanced features is termed a \emph{manuscript}, and
-may, for instance, be the main story on a blog post or article\cite{bib:lambdoc}.  On the
-other hand, documents that only use the basic features are termed \emph{compositions},
-and may be used as comments to the main story.
+Note that there is a good reason behind such a stark demarcation between the
+composition/manuscript classes of features.  In \lambdoc --- the library that provides
+support for \lambtex --- a document that uses both basic and advanced features is
+termed a \emph{manuscript}, and may, for instance, be the main story on a blog post
+or article\cite{bib:lambdoc}.  On the other hand, documents that only use the basic
+features are termed \emph{compositions}, and may be used as comments to the main story.
 
 
 \part[part:basic]{Essential \lambtex}
@@ -82,7 +82,6 @@ as they appear before any of the primary (curly bracketed) parameters.
 \begin[tab:parameters]{table}
 \begin{tabular}{cccc}
 \head
-|{3c_} Optional					|			|
 | Order		| Label		| Extra		| Primary		|
 \body
 | \code{(...)}	| \code{[...]}	| \code{<...>}	| \code{\{...\}}	|
@@ -96,7 +95,7 @@ round, square, and angle brackets, respectively.}
 
 \section[sec:paragraphs]{Paragraph blocks}
 
-Paragraphs are the simplest of all blocks, usually being composed of just a sequence
+Paragraphs are the simplest of all blocks, typically being composed of just a sequence
 of inline text terminated by a blank line.  It is however also possible to declare
 a paragraph via the simple command \code{\\paragraph} or its synonym \code{\\p}.
 Should you choose the simple command, the paragraph contents are to be specified inside
@@ -142,12 +141,12 @@ about the paragraph.  Presently, the extra parameters accepted are \code{initial
 and \code{indent}.  The former is a boolean which signals whether the first letter
 of the paragraph should be rendered in a special manner.  Its default value is
 always \code{false}, so you must explicitly set it to \code{true} when needed.
-The latter is tripartite, accepting values \code{auto} (the default), \code{true},
-or \code{false}.  It indicates whether the paragraph should be indented.  In most
-situations the \code{auto} algorithm should be good enough: it indents a paragraph only
-if immediately preceded by another paragraph.  There are however situations where you
-may indeed require an override by explicitly setting the indentation to \code{true}
-or \code{false}.
+The latter indicates whether the paragraph should be indented, and is tripartite in
+the value domain.  The values it accepts are \code{auto} (the default), \code{true},
+or \code{false}.  In most situations the \code{auto} algorithm should be good enough:
+it indents a paragraph only if immediately preceded by another paragraph.  There are
+however situations where you may indeed require an override by explicitly setting the
+indentation to \code{true} or \code{false}.
 
 At this point we recommend that you consult \sref{sec:extra}, which dives into more
 detail on the subject of extra parameters.  There you can learn of shorthand manners
@@ -159,7 +158,7 @@ of inputting booleans and other values.
 As shown by \sref{tab:inline}, \lambtex offers a broad set of text formatting commands.
 Remember that besides their application inside paragraph blocks, any of these commands
 may also be used in a context where inline text is allowed.  That means you may use them
-in section titles, figure captions, inside tables, etc.  Note that the inline formatting
+in section titles, figure captions, inside tables, etc.  Note that all inline formatting
 commands take as parameter a sequence of inline text.  It is thus perfectly possible to
 nest these commands without any restrictions.  Moreover, some of these commands have
 (typically shorter) synonyms.  Therefore, instead of \code{\\bold} you can also just
@@ -332,10 +331,10 @@ Here is a list of small furry mammals:
 \end{itemize}
 \end{subpage}
 
-For the sake of brevity and for compatibility with \caps{html} standards, you may also
-use the synonyms \code{ol}, \code{ul}, \code{dl}, and \code{\\li}, for \code{enumerate},
-\code{itemize}, \code{description}, and \code{\\item}, respectively.  Moreover,
-the British spelling \code{itemise} may also be used for ordered lists.  However,
+For the sake of brevity and for compatibility with \caps{html} standards, you
+may also use the synonyms \code{ol}, \code{ul}, \code{dl}, and \code{\\li}, for
+\code{enumerate}, \code{itemize}, \code{description}, and \code{\\item}, respectively.
+Moreover, the British spelling \code{itemise} may be used for ordered lists.  However,
 the start and end tags must still match: though, for example, \code{ol} is a synonym
 for \code{enumerate}, if you start an ordered list with \code{\\begin\{ol\}} you must
 terminate it with \code{\\end\{ol\}}.
@@ -352,7 +351,7 @@ available options for the itemize and enumerate environments, respectively.
 \begin[tab:itemize]{table}
 \begin{tabular}{rl}
 \head
-| Extra parameter	| Type of bullet		|
+| Value			| Type of bullet		|
 \body
 | \code{disc}		| A filled circle.		|
 | \code{circle}		| An empty circle.		|
@@ -368,7 +367,7 @@ values above should be prefixed by \code{bul=}, though the prefix is optional.}
 \begin[tab:enumerate]{table}
 \begin{tabular}{rl}
 \head
-| Extra parameter			| Type of numbering				|
+| Value					| Type of numbering				|
 \body
 | \code{decimal}, \code{0}		| Decimal numbers.				|
 | \code{lower-roman}, \code{i}		| Lower-case Roman numerals.			|
@@ -574,7 +573,8 @@ other languages.  Basically, the markers that delimit verbatim environments need
 \code{verbatim} as a prefix.  The only condition for termination is that the end marker
 matches the begin marker.  Therefore, to include the string \code{\\end\{verbatim\}}
 within a verbatim environment, you can simply delimitate that environment with, for
-example, \code{\\begin\{verbatim1\}} and \code{\\end\{verbatim1\}}.
+example, \code{\\begin\{verbatim1\}} and \code{\\end\{verbatim1\}}.  Note that only
+numbers and lowercase letters may be used as suffix characters.
 
 Optionally, you may provide the extra parameter \code{mult} to a verbatim environment.
 This parameter accepts an integer between 0 and 9, indicating a multiplying factor for
@@ -599,8 +599,8 @@ numbers to the code listing and highlighting the source according to the syntax 
 popular languages.  You have in fact already encountered this environment multiple
 times in this document: it has been used for formatting \lambtex source code, albeit
 without line numbers or syntax highlighting.  Suppose thus you wish to pretty-print
-an \link{http://caml.inria.fr/}{\caps{ocaml}} source fragment.  You can declare a
-source-code environment the following way:
+an \link{http://caml.inria.fr/}{\caps{ocaml}} fragment.  You can declare a source-code
+environment the following way:
 
 \begin{source1}
 \begin<lang=ocaml>{source}
@@ -685,14 +685,14 @@ for a list of all available column specifiers.
 \head
 | Specifier	| Formatting |
 \body
-| l		| Column is left-aligned. |
-| L		| Column is left-aligned and strong. |
-| r		| Column is right-aligned. |
-| R		| Column is right-aligned and strong. |
-| c		| Column is centre-aligned. |
-| C		| Column is centre-aligned and strong. |
-| j		| Column is justified. |
-| J		| Column is justified and strong. |
+| \code{l}	| Column is left-aligned. |
+| \code{L}	| Column is left-aligned and strong. |
+| \code{r}	| Column is right-aligned. |
+| \code{R}	| Column is right-aligned and strong. |
+| \code{c}	| Column is centre-aligned. |
+| \code{C}	| Column is centre-aligned and strong. |
+| \code{j}	| Column is justified. |
+| \code{J}	| Column is justified and strong. |
 \end{tabular}
 \caption{List of available column specifiers for tabular environments.
 A specifier tells \lambtex how each column should be formatted.}
@@ -736,39 +736,72 @@ the pipe character '\code{|}' that precedes each cell is optionally followed by 
 curly bracketed expression containing the cell's formatting.
 
 The formatting expression is composed of three parts.  First is an integer indicating
-how many columns the cell should span; second is a single character matching one of the
-specifiers listed in \sref{tab:tabular}; last and optional is the character '\code{_}',
-which if present indicates that a horizontal line should be put below the cell.
-Note that the formatting should satisfy the regular expression \mbox{\code{\emph{digit}+
-\emph{spec} '_'?}}.
+how many columns the cell should span; second is a single character matching one of
+the specifiers listed in \sref{tab:tabular}; last and optional are the characters
+'\code{_}' (underscore) and/or '\code{^}' (caret), which if present indicate that
+a horizontal line should be put above or below the cell.  Note that the formatting
+should satisfy the regular expression \mbox{\code{\emph{digit}+ \emph{spec} ( '_' |
+'^' | '_^' | '^_' )?}}.
 
-You have already encountered in this document an example of a table making use
-of advanced formatting.  We are referring to \sref{tab:parameters}, listed in
-\sref{sec:anatomy}.  The corresponding source is listed below; note how the expression
-\code{3c_} configures the first cell so that it spans three columns, is centered,
-and has a horizontal line below.
+This discussion would not be complete without the presentation of a complete example
+illustrating the application of advanced cell formatting.  Consider thus the \lambtex
+fragment below, whose output is displayed in \sref{tab:species}.  Besides the use of
+header, footer, and multiple body rows, also noteworthy are the cell configuration
+expressions \code{2c_} and \code{2c^}, which configure their corresponding cells to
+span two columns, be centered, and show a horizontal line below and above, respectively.
 
 \begin{source}
-\begin{tabular}{cccc}
+\begin{tabular}{rll}
 \head
-|{3c_} Optional					|		 |
-| Order		| Label		| Extra		| Primary	 |
+|		|{2c_} Scientific name			|
+| Common name	| Genus			| Species	|
 \body
-| \code{(...)}	| \code{[...]}	| \code{<...>}	| \code{\{...\}} |
+| Wolf		| \emph{Canis}		| \emph{lupus}	|
+| Cat		| \emph{Felis}		| \emph{catus}	|
+| Chicken	| \emph{Gallus}		| \emph{gallus}	|
+| Lion		| \emph{Panthera}	| \emph{leo}	|
+\body
+| English oak	| \emph{Quercus}	| \emph{robur}	|
+| European yew	| \emph{Taxus}		| \emph{baccata}|
+\foot
+| Common name	| Genus			| Species	|
+|		|{2c^} Scientific name			|
 \end{tabular}
 \end{source}
 
-To conclude, note that if you want a tabular environment to be numbered and referenced
-from anywhere in the document, you need to wrap it inside a \code{table}.  This is
-part of the advanced features of the language, and is discussed in \sref{sec:wrappers}.
+To conclude, note that if you wish for a tabular environment to be numbered and
+referenced from anywhere in the document, you need to wrap it inside a \code{table}.
+This is part of the advanced features of the language, and is discussed in
+\sref{sec:wrappers}.
+
+\begin[tab:species]{table}
+\begin{tabular}{rll}
+\head
+|		|{2c_} Scientific name			|
+| Common name	| Genus			| Species	|
+\body
+| Wolf		| \emph{Canis}		| \emph{lupus}	|
+| Cat		| \emph{Felis}		| \emph{catus}	|
+| Chicken	| \emph{Gallus}		| \emph{gallus}	|
+| Lion		| \emph{Panthera}	| \emph{leo}	|
+\body
+| English oak	| \emph{Quercus}	| \emph{robur}	|
+| European yew	| \emph{Taxus}		| \emph{baccata}|
+\foot
+| Common name	| Genus			| Species	|
+|		|{2c^} Scientific name			|
+\end{tabular}
+\caption{The classification of some common animals and plants.  This table illustrates
+the use of the advanced formatting facilities that enable customisation of individual cells.}
+\end{table}
 
 
 \section[sec:math]{Mathematical formulas}
 
-\lambtex also supports the inclusion of equations and mathematical formulas in
-a document.  Mathematics are to be entered using either \caps{MathML}\cite{bib:mathml}
+\lambtex also supports the inclusion of equations and mathematical formulas in a
+document.  Mathematics are to be entered using either \caps{MathML}\cite{bib:mathml}
 or the \caps{TeX}\cite{bib:tex} format.  The former was chosen because an increasing
-number of tools have the ability to export \caps{MathML}.  As for the latter, it is
+number of tools has the ability to export \caps{MathML}.  As for the latter, it is
 the \emph{de facto} standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside a
@@ -829,15 +862,16 @@ simple as this:
 
 There are additional configuration options for images, all set via optional extra
 parameters.  Like its name suggests, the boolean parameter \code{frame} adds a small
-framed shadow to the image.  It is off by default, and esthetically it is more
-sensible for rectangular images.  The size of the image can be controlled by the
-parameter \code{width}.  Its value is either \code{auto} or an integer between 1 and
-100 (inclusive), indicating the percentage of the total width of the page that the
+framed shadow to the image.  It is off by default, and esthetically it is more sensible
+for rectangular images such as photographs.  The size of the image can be controlled
+by the parameter \code{width}.  Its value is either \code{auto} or an integer between 1
+and 100 (inclusive), indicating the percentage of the total width of the page that the
 image should occupy (minus a small margin common to all non-text blocks).  The default
 is \code{auto}, which translates into an image occupying its natural width in pixels
 (up to the maximum width of the page).  Note that images are always clickable and that
 the target \caps{uri} is that of the image itself.  This is useful, for example, for
-seeing at their full size images that were scaled down with the \code{width} parameter.
+seeing at their full size images that were scaled down with the \code{width} parameter
+or that did not fit into the width of the page.
 
 It is a common practice to add a numbered caption to an image.  To achieve this in
 \lambtex you must wrap the \code{image} block inside a \code{figure}, as described
@@ -1000,7 +1034,10 @@ To conclude, and since this is our first encounter with label parameters, the re
 should note that labels have two constraints.  First, the allowed character set is
 limited to lowercase roman letters, digits, and the characters '\code{.}' (period),
 '\code{:}' (colon), '\code{-}' (dash), and '\code{_}' (underscore).  Second, the first
-character must be a letter.
+character must be a letter.  Also note that all labels share the same namespace; we
+recommend adopting the \caps{LaTeX} custom of using a prefix indicating the target
+type.  In the example above, the prefix \code{sec:} is used for the sectioning family
+of commands.
 
 
 \section[sec:intlinks]{Internal hyperlinks}
@@ -1048,14 +1085,15 @@ of notes.
 
 Bear in mind that the use of the smart references offered by command \code{\\sref}
 is strongly recommended over the manual references provided by command \code{\\ref}.
-The reason is three-fold.  First, because smart references ensure the consistent use of
-one naming scheme over an entire document and across several documents.  Second, because
-smart references automatically make sure that a non-breaking space is inserted between
-the element name and its ordering number, thus preventing their separation by a line
-break (to achieve the same with manual references, the user must explicitly place both
-elements inside an \code{\\mbox} command, or use the \code{nbsp} \caps{html} entity).
-Third and last, because smart references will make a hyperlink of both the name and the
-ordering, which is friendlier for mouse clicking and arguably esthetically more pleasant.
+The reason is three-fold.  First, because smart references ensure the consistent use
+of one naming scheme over an entire document and across several documents.  Second,
+because smart references automatically make sure that a non-breaking space is inserted
+between the element name and its ordering number, thus preventing their separation
+by a line break (to achieve the same effect with manual references, the user must
+explicitly place both elements inside an \code{\\mbox} command, or use the \code{nbsp}
+\caps{html} entity).  Third and last, because smart references will make a hyperlink
+of both the name and the ordering, which is friendlier for mouse clicking and arguably
+esthetically more pleasant.
 
 On a related note, we recommend that \code{\\see} and \code{\\cite} commands not be
 separated from the preceding element by spaces.  The default \caps{css} stylesheet
@@ -1068,16 +1106,19 @@ or the \code{nbsp} \caps{html} entity.
 \head
 | Command						| Description |
 \body
-| \code{\\link\{\emph{uri}\}\{\emph{inline}\}}		| Inserts a link to an external resource. |
-| \code{\\see\{\emph{label}\}}				| Inserts a reference to a document note (see \sref{sec:onnotes}). |
+| \mbox{\code{\\link\{\emph{uri}\}\{\emph{inline}\}}}	| Inserts a link to an external resource. |
+| \code{\\see\{\emph{label}\}}				| Refers to a document note (see \sref{sec:onnotes}). |
 | \code{\\cite\{\emph{label}\}}				| Cites a bibliographic reference (see \sref{sec:onbiblio}). |
 | \code{\\ref\{\emph{label}\}}				| Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
 | \code{\\sref\{\emph{label}\}}				| Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
-| \code{\\mref\{\emph{label}\}\{\emph{inline}\}}	| Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
+| \mbox{\code{\\mref\{\emph{label}\}\{\emph{inline}\}}}	| Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
 \end{tabular}
-\caption{The various hyperlinking commands available in \lambtex.
-Note that the \code{\emph{uri}} and \code{\emph{label}} sequences
-are interpreted as raw text.}
+\caption{The various hyperlinking commands available in \lambtex.  Note that
+the \code{\emph{uri}} and \code{\emph{label}} sequences are interpreted as raw
+text.  Moreover, the inline sequence may be ommited in command \code{\\link},
+and commands \code{\\see} and \code{\\cite} may be given more than one curly
+bracketed \code{\emph{label}} sequence (see \mbox{Sections \ref{sec:onnotes} and
+\ref{sec:onbiblio}} for details on the latter).}
 \end{table}
 
 
@@ -1142,7 +1183,8 @@ must begin with a lowercase letter and be composed only of lowercase letters and
 The second parameter, if present, is an inline sequence indicating a fixed title that
 will appear in all boxouts of this name.  Finally, the third parameter may be used to
 assign a counter to this boxout.  If not present, the boxout is unnumbered; moreover,
-different boxouts may share the same counter.
+different boxouts may share the same counter.  Note that the third parameter may only
+be given for boxouts that do have a title, and thus also a second parameter.
 
 Subsequent to its declaration, using a new boxout named \code{\emph{name}} is
 simply a matter of wrapping its contents between \code{\\begin\{\emph{name}\}} and
@@ -1217,7 +1259,7 @@ Furthermore, the egg satisfies the scalene condition, and therefore
 \end{theorem}
 \end{source}
 
-The resulting output is listed below.  Note that in theorems the extra title is displayed
+The resulting output is shown below.  Note that in theorems the extra title is displayed
 between parentheses, in accordance to convention.  Should you wish to customise the
 \caps{css} for particular classes of theorems, you may make use of the same technique
 described for boxouts.  Note, however, that for a theorem named \code{\emph{name}},
@@ -1252,22 +1294,22 @@ There are four different classes of wrappers available:
 
 \begin{description}
 
-\item{Equation}
+\item{Equations}
 
 	These are declared via the environment command \code{equation},
 	and may be used for wrapping \code{mathtex} and \code{mathml} blocks.
 
-\item{Printout}
+\item{Printouts}
 
 	These are used for wrapping \code{source} environments, and are
 	declared with the environment command \code{printout}.
 
-\item{Table}
+\item{Tables}
 
 	Tables may only be used for wrapping \code{tabular} environments,
 	and are declared with the environment command \code{table}.
 
-\item{Figure}
+\item{Figures}
 
 	Finally, figures are declared with the environment command
 	\code{figure}, and may be used for wrapping \code{verbatim},
@@ -1462,13 +1504,13 @@ labelled, and may be referenced from anywhere in the document via the simple com
 reference multiple notes simply by providing additional primary parameters.
 
 One important feature to remember is that the location where the note is declared
-is \bold{not} the same as where it will be appear in the rendered document (for
-this reason, notes are termed \emph{ghost blocks}).  Instead,  all notes will be
-printed together wherever the simple command \code{\\notes} is declared.  This last
-command will also create a special unordered section called \emph{Notes}, just like
-\mref{sec:thenotes}{the one present} in this manual.  This ``ghostly'' character of
-note blocks allows them to be declared anywhere in the document, a handy feature if
-you wish to keep a note declaration close to the place where it is declared.
+is \bold{not} the same as where it will be appear in the rendered document (for this
+reason, notes are termed \emph{ghost blocks}).  Instead,  all notes will be printed
+together wherever the simple command \code{\\notes} is declared.  This last command will
+also create an eponymously named unordered section, just like \mref{sec:thenotes}{the
+one present} in this manual.  This ``ghostly'' character of note blocks allows them
+to be declared anywhere in the document, a handy feature if you wish to keep a note
+declaration close to the place where it is declared.
 
 The sample code below illustrates a note being referenced inside a paragraph and being
 defined afterwards.  The example concludes with the simple command \code{\\notes}
@@ -1513,28 +1555,28 @@ invocation of \code{\\cite}, since this command accepts multiple primary paramet
 \end{source}
 
 Whereas \caps{BibTeX}\cite{bib:bibtex} offers a very rich set of tags for bibliographic
-entries (author, title, journal volume, page numbers, conference location, etc), \lambtex
-limits this set to only three main tags.  Those familiar with \caps{BibTeX} may feel
-constrained by this paucity.  However, one must take into account that \lambtex was
-designed with the web as a foremost application area.  In this context, one can have
-satisfactory --- in the sense they are readily accessible --- bibliographic entries
-based solely on a hyperlink.  The \code{\\where} command can therefore be used for
-linking to an external web resource, or if not available online, to provide all the
-miscelaneous information required to locate the resource in ``dead tree world''.
+entries (author, title, journal volume, page numbers, conference location, etc),
+\lambtex limits this set to only three main tags.  Those familiar with \caps{BibTeX}
+may feel constrained by this paucity.  However, one must take into account that \lambtex
+was designed with the web as a foremost application area.  In this context, one can
+have satisfactory --- in the sense that they are readily accessible --- bibliographic
+entries based solely on a hyperlink.  The \code{\\where} command can therefore be used
+for linking to an external web resource, or if not available online, to provide all
+the miscelaneous information required to locate the resource in ``dead tree world''.
 
 
 \section[sec:onappendix]{Creating an appendix}
 
 Large manuscripts typically have fragments that do not fit into the main flow of
 the document.  In many cases, these fragments can satisfactorily be included as notes
-(remember \sref{sec:onnotes}).  In other situations, however, it may make more sense to
-attach them as appendices to the main document.  In \lambtex, creating an appendix
+(remember \sref{sec:onnotes}).  In other situations, however, it may make more sense
+to attach them as appendices to the main document.  In \lambtex, creating an appendix
 is simply a matter of issueing the simple parameterless command \code{\\appendix}.
-Besides declaring an unordered homonymous part, this command also marks all subsequent
-sections as belonging to the appendix.  This means that an appendiced section is declared
-the usual way, via the command \code{\\section} (the same applies to sub-sections
-and sub-sub-sections, of course).  The only distinguishing aspect that makes it an
-appendiced section is being declared after \code{\\appendix}.
+Besides declaring an unordered part of the same name, this command also marks all
+subsequent sections as belonging to the appendix.  This means that an appendiced
+section is declared the usual way, via the command \code{\\section} (the same applies
+to sub-sections and sub-sub-sections, of course).  The only distinguishing aspect that
+makes it an appendiced section is being declared after \code{\\appendix}.
 
 You can see an example of appendiced sections in this very manual.  Note how all
 sections declared after the \mref{part:theappendix}{appendix marker} are automatically
@@ -1561,38 +1603,39 @@ lowercase roman letters and digits.
 Should the macro take any arguments, these can be referenced from inside the macro
 text by the alias \code{\\arg\{\emph{num}\}}, where the \code{\emph{num}} between curly
 brackets is an integer indicating the argument number.  Obviously, a macro with [$n$]
-arguments may not reference an argument [$n+1$] or higher.
+arguments may not reference an argument [$n+1$] or higher.  Moreover, arguments are
+expanded as inline sequences.
 
 Wherever an inline sequence is accepted, a macro named \code{name} can be invoked via
-\code{\\name}.  The invocation of the macro causes the macro's text to be inserted
-at invocation point.  Should the macro have any arguments, these must follow the
-macro's name immediately, being each one bracketed individually.  Therefore, the
-invocation of macro \code{name} with arguments \code{arg1} and \code{arg2} is done
-with \code{\\name\{arg1\}\{arg2\}}.  Note that because macros can be invoked wherever
-an inline sequence is accepted and the text of a macro is an inline sequence itself,
-it follows that macros may invoke other macros.  However, because a macro must be
-declared before being invoked, mutual recursion is not allowed.  Moreover, a macro
-may not invoke itself either.  These restrictions are in place to ensure that macro
-expansion always terminates.
+the simple command \code{\\name}.  The invocation of the macro causes the macro's text
+to be inserted at invocation point.  Should the macro have any arguments, these must
+follow the macro's name immediately, being each one bracketed individually.  Therefore,
+the invocation of macro \code{name} with arguments \code{inline1} and \code{inline2}
+is done with \mbox{\code{\\name\{inline1\}\{inline2\}}}.  Note that because macros
+can be invoked wherever an inline sequence is accepted and the text of a macro is
+an inline sequence itself, it follows that macros may invoke other macros.  However,
+because a macro must be declared before being invoked, mutual recursion is not allowed.
+Moreover, a macro may not invoke itself either.  These restrictions are in place to
+ensure that macro expansion always terminates.
 
-While token concatenation with parameterised macros is straightforward, you may wonder
-how it can be achieved with parameterless macros.  To illustrate this issue, suppose
-you have defined a macro \code{super} that expands to the text ``super''.  Now, you
-wish to concatenate the invocation of this macro with the text ``market''.  However,
-entering \code{\\super market} produces an unwanted space, whereas \code{\\supermarket}
-produces an error, since the macro \code{supermarket} is undefined.  Note that if
-the macro had any arguments this problem would be moot, since the brackets naturally
-delimitate the macro name.  Therefore one solution is to always declare macros with at
-least one parameter, even if it is a dummy that can be discarded.  There is however
-a better alternative, one which takes advantage of the fact that all commands accept
-(at least) an empty sequence extra parameters: simply put \code{<}&#8202;\code{>}
-after the macro name.  Concatenation in this example can thus be achieved by entering
-\code{\\super<}&#8202;\code{>market}.
+While token concatenation with parameterised macros is straightforward, you may
+wonder how it can be achieved with parameterless macros.  To illustrate this
+issue, suppose you have defined a macro \code{super} that expands to the text
+\emph{``super''}.  Now, you wish to concatenate the invocation of this macro with the
+text \emph{``market''}.  However, entering \code{\\super market} produces an unwanted
+space, whereas \code{\\supermarket} produces an error, since the macro \code{supermarket}
+is undefined.  Note that if the macro had any arguments this problem would be moot,
+since the brackets naturally delimitate the macro name.  Therefore one solution is
+to always declare macros with at least one parameter, even if it is a dummy that can
+be discarded.  There is however a better alternative, one which takes advantage of
+the fact that all commands accept (at least) an empty sequence as extra parameters:
+simply put \code{<}&#8202;\code{>} after the macro name.  Concatenation in this example
+can thus be achieved by entering \code{\\super<}&#8202;\code{>market}.
 
 Let us now consider a full example of macro declaration.  We wish to define a macro
-\code{author} that when invoked expands to the full name of an author.  We also define
-a macro named \code{greet} that takes two arguments and produces a greeting.  These two
-macros are then used in a small sample document.  This is the source \lambtex code:
+\code{author} that when invoked expands to the full name of an author.  We also
+define a macro named \code{greet} that takes two arguments and produces a greeting.
+These two macros are then used in a small sample document.  This is the \lambtex source:
 
 \begin{source}
 \newmacro{author}{0}{John McAuthor, of the small-ended approach,}
@@ -1619,20 +1662,19 @@ macros cannot be used to replace non-inline sequences of a command.
 
 \section{Concluding remarks}
 
-You are now familiar with the all the features available in the \lambtex markup
-language.  We hope you will find it rich enough to cover your web publishing needs, while
-still being simple enough to dispense a significant investment of time for learning it.
+You are now familiar with the all the features available in the \lambtex markup language.
+We hope you will find it rich enough to cover your web publishing needs, while still
+being simple enough to dispense a significant investment of time learning it.
 
-We now advise that you peruse the appendices attached to this manual.  There you can
-find some reference material that did not fit into the flow of the main body of the
-document.  \sref{sec:structure}, for example, discusses at length the structure of the
-\lambtex documents, while \sref{sec:synonyms} summarises all command synonyms
-available, and \sref{sec:parameters} covers all that you need to know concerning
-optional arguments.  Unless you are writing about \lambtex itself, there is
-little chance you will need the information contained in \sref{sec:order}.  But if
-you do, it focuses on the somewhat arcane details concerning numbering in sub-pages.
-Finally, \sref{sec:extra} contains all the nitty-gritty details about how extra
-arguments are parsed.
+We advise that you peruse the appendices attached to this manual.  There you can find
+some reference material that did not fit into the flow of the main body of the document.
+\sref{sec:structure}, for example, discusses at length the structure of the \lambtex
+documents, while \sref{sec:synonyms} summarises all command synonyms available,
+and \sref{sec:parameters} covers all you need to know concerning optional arguments.
+Unless you are writing about \lambtex itself, there is little chance you will need the
+information contained in \sref{sec:order}.  But if you do, it focuses on the somewhat
+arcane aspects concerning numbering in sub-pages.  Finally, \sref{sec:extra} contains
+all the nitty-gritty details about how extra arguments are parsed.
 
 
 \appendix[part:theappendix]
@@ -1665,16 +1707,16 @@ green and blue blocks.}
 \end{figure}
 
 
-Two other things stand out in the figure.  The first is that blocks are grouped into two
-broad categories: composition blocks (in green) and manuscript blocks (in blue). Though
-not relevant to a discussion concerning structure, this categorisation serves as a
-good, graphical reminder of which block types are allowed for composition/manuscript
-document types.  Second, there is a list attached to each of the block types.  This list
-indicates the actual document blocks that belong to that type.  A \emph{textual block},
-for example, can be either a paragraph, an itemize, enumerate, or description list,
-a verse block, or a block containing mathematics.  Notice that many blocks have a
-\emph{\code{of} ...} declaration after their name; these blocks --- termed \emph{recursive
-blocks} --- are those whose contents are other blocks.
+Two other things stand out in the figure.  The first is that blocks are grouped
+into two broad categories: composition blocks (in green) and manuscript blocks (in
+blue). Though not relevant to a discussion concerning structure, this categorisation
+serves as a good, graphical reminder of which block types are allowed for composition
+and manuscript document types.  Second, there is a list attached to each of the
+block types.  This list indicates the actual document blocks that belong to that type.
+A \emph{textual block}, for example, can be either a paragraph, an itemize, enumerate,
+or description list, a verse block, or a block containing mathematics.  Notice that
+many blocks have a \emph{\code{of} ...} declaration after their name; these blocks ---
+termed \emph{recursive blocks} --- are those whose contents are other blocks.
 
 
 If a \lambtex document were unconstrained, one would expect a recursive block to
