@@ -332,7 +332,8 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 .doc_cell_c {text-align: center;}
 .doc_cell_j {text-align: justify;}
 
-.doc_hline {border-bottom: Border_hline;}
+.doc_oline {border-top: Border_hline;}
+.doc_uline {border-bottom: Border_hline;}
 
 .doc_tab:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_tab:not(:last-child) {margin-bottom: Vmargin_boxish;}

@@ -325,14 +325,15 @@ tbody.doc_tgroup > tr:first-child > th {padding-top: 0.4em;}
 tbody.doc_tgroup > tr:first-child > td {padding-top: 0.4em;}
 tbody.doc_tgroup > tr:last-child > th {padding-bottom: 0.4em;}
 tbody.doc_tgroup > tr:last-child > td {padding-bottom: 0.4em;}
-tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #666;}
+tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #999;}
 
 .doc_cell_l {text-align: left;}
 .doc_cell_r {text-align: right;}
 .doc_cell_c {text-align: center;}
 .doc_cell_j {text-align: justify;}
 
-.doc_hline {border-bottom: 1px solid #000;}
+.doc_oline {border-top: 1px solid #000;}
+.doc_uline {border-bottom: 1px solid #000;}
 
 .doc_tab:not(:first-child) {margin-top: 2em;}
 .doc_tab:not(:last-child) {margin-bottom: 2em;}

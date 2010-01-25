@@ -367,13 +367,17 @@ struct
 		| _   -> invalid_arg "colspec_of_string"
 
 	let cellspec_of_string =
-		let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>_?)$"
+		let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$"
 		in fun str ->
 			let subs = Pcre.exec ~rex str in
 			let colspan = int_of_string (Pcre.get_named_substring rex "colspan" subs)
 			and colspec = colspec_of_string (Pcre.get_named_substring rex "colspec" subs)
-			and hline = (Pcre.get_named_substring rex "hline" subs) = "_"
-			in (colspec, colspan, hline)
+			and (overline, underline) = match Pcre.get_named_substring rex "hline" subs with
+				| "^_" | "_^" -> (true, true)
+				| "^"	      -> (true, false)
+				| "_"	      -> (false, true)
+				| _	      -> (false, false)
+			in (colspec, colspan, overline, underline)
 end
 
 

@@ -448,8 +448,8 @@ let compile_document ~idiosyncrasies document_ast =
 				| Some raw ->
 					begin
 						try
-							let (colspec, colspan, hline) = Tabular_input.cellspec_of_string raw
-							in (colspan, Some (colspec, colspan, hline))
+							let (colspec, colspan, overline, underline) = Tabular_input.cellspec_of_string raw
+							in (colspan, Some (colspec, colspan, overline, underline))
 						with _ ->
 							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw)
 							in DynArray.add errors (Some comm.comm_linenum, msg);
