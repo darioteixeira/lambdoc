@@ -14,11 +14,47 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
     <div class="doc doc_valid doc_manuscript">
       <h1 id="doc:a:1" class="doc_sec">1.&ensp;<span>Paragraphs and inline formatting</span>
       </h1>
-      <p class="doc_par">You can format text in <b class="doc_bold">bold</b>, or just <i class="doc_emph">emphasised</i> if you prefer.   It is also possible to enter <tt class="doc_code">monospaced</tt> text.  Superscripts are handy to   typeset ordinals such as 1<sup class="doc_sup">st</sup>, 2<sup class="doc_sup">nd</sup>, etc.  Subscripts also have practical   applications: how else would you typeset H<sub class="doc_sub">2</sub>O?  You may also enter links:   please check <a class="doc_lnk" href="http://localhost:8080/">http://localhost:8080/</a> or <a class="doc_lnk" href="http://localhost:8080/">Localhost</a>  now.
+      <p class="doc_par">You can format text in <b class="doc_bold">bold</b>, or just <i class="doc_emph">emphasised</i> if you prefer.  It is also possible to enter <tt class="doc_code">monospaced</tt> text and <span class="doc_caps">small caps</span>.  Superscripts are handy to typeset ordinals such as 1<sup class="doc_sup">st</sup>, 2<sup class="doc_sup">nd</sup>, etc.  Subscripts also have practical applications: how else would you typeset H<sub class="doc_sub">2</sub>O?  You may also enter links: please check <a class="doc_lnk" href="http://localhost:8080/">http://localhost:8080/</a> or <a class="doc_lnk" href="http://localhost:8080/">Localhost</a> now.
+      </p>
+      <p class="doc_par">It is possible to enter <span class="doc_caps">HTML</span> entities either by name (<tt class="doc_code">&amp;euro;</tt> produces '€'), by decimal code point (<tt class="doc_code">&amp;#8364;</tt> produces '€'), or by hexadecimal code point (<tt class="doc_code">&amp;#x20ac;</tt> produces '€').  You can also enter en-dashes (<tt class="doc_code">--</tt> produces '–'), em-dashes (<tt class="doc_code">---</tt> produces '—'), and proper double quotes (ex: “hello”).
       </p>
       <h1 id="doc:a:2" class="doc_sec">2.&ensp;<span>Lists</span>
       </h1>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      </p>
+      <ol class="doc_enumerate doc_style_decimal">
+        <li>
+          <p class="doc_par">This is the first reason;
+          </p>
+        </li>
+        <li>
+          <p class="doc_par">This is the second reason; it is okay to break a line within each item.
+          </p>
+        </li>
+        <li>
+          <p class="doc_par">The third reason has a number of sub-clauses:
+          </p>
+          <ul class="doc_itemize doc_style_disc">
+            <li>
+              <p class="doc_par">Alpha
+              </p>
+            </li>
+            <li>
+              <p class="doc_par">Beta
+              </p>
+            </li>
+            <li>
+              <p class="doc_par">Gamma
+              </p>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <p class="doc_par">And here is the fourth and final reason.
+          </p>
+        </li>
+      </ol>
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <ul class="doc_itemize doc_style_disc">
         <li>
@@ -74,33 +110,37 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </p>
         </li>
       </ul>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <h1 id="doc:a:3" class="doc_sec">3.&ensp;<span>Quotations</span>
       </h1>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <blockquote class="doc_quote">
-        <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+        <blockquote class="doc_quote">
+          <p class="doc_par">The quick bron fox jumps over the lazy dog. The quick bron fox jumps over the lazy dog. The quick bron fox jumps over the lazy dog.
+          </p>
+        </blockquote>
+        <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
         </p>
       </blockquote>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <h1 id="doc:a:4" class="doc_sec">4.&ensp;<span>This is a section</span>
       </h1>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <h2 id="doc:a:5" class="doc_sec">4.1.&ensp;<span>This is a sub-section</span>
       </h2>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <h3 id="doc:a:6" class="doc_sec">4.1.1.&ensp;<span>This is a sub-sub-section</span>
       </h3>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <h1 id="doc:a:7" class="doc_sec">5.&ensp;<span>Source environments</span>
       </h1>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_nums">
@@ -129,11 +169,11 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <h1 id="doc:a:8" class="doc_sec">6.&ensp;<span>Verbatim environments</span>
       </h1>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
       <div class="doc_verb">
         <div>
@@ -154,8 +194,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 -------       -------</pre>
         </div>
       </div>
-      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula   eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient   montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,   pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,   aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis   vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+      <p class="doc_par">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
       </p>
+      <div class="doc_verb">
+        <div>
+          <pre class="doc_mult9">☃</pre>
+        </div>
+      </div>
     </div>
   </body>
 </html>
