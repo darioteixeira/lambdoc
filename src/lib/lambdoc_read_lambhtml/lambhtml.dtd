@@ -9,7 +9,7 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	"paragraph | p | itemize | ul | enumerate | ol | description | dl
+	" paragraph | p | itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
 	| source | tabular | verbatim | pre | image | subpage
 	| decor | pull
@@ -18,264 +18,286 @@
 	| section | h1 | subsection | h2 | subsubsection | h3
 	| bibliography | notes | toc
 	| title | subtitle | abstract | rule
-	| bib | note">
+	| bib | note
+	| newmacro | newboxout | newtheorem">
 
 <!ENTITY % Node
 	" br 
 	| bold | strong | b | emph | em | i | code | tt | caps
 	| ins | del | sup | sub | mbox | link | a
-	| see | cite | ref | sref | mref">
+	| see | cite | ref | sref | mref
+	| arg | call">
 
 <!ENTITY % Frag "(%Block;)+">
 <!ENTITY % Inline "(#PCDATA | %Node;)*">
 <!ENTITY % Flow "(#PCDATA | %Node; | %Block;)*">
 
 <!ENTITY % Forbidden "">
-<!ENTITY % Custom_heading "label ID #IMPLIED order CDATA #IMPLIED">
-<!ENTITY % Preset_heading "label ID #IMPLIED">
-<!ENTITY % Listing "extra CDATA #IMPLIED">
-<!ENTITY % Floater "extra CDATA #IMPLIED">
-<!ENTITY % Wrapper "label ID #IMPLIED order CDATA #IMPLIED extra CDATA #IMPLIED">
-<!ENTITY % Ghost "label ID #IMPLIED">
+<!ENTITY % Common "label ID #IMPLIED order CDATA #IMPLIED extra CDATA #IMPLIED">
+
 
 <!-- Top-level element -->
 
 <!ELEMENT document (%Frag;)>
 
-<!-- Block elements -->
+
+<!-- Main block elements -->
+
+<!ELEMENT paragraph %Inline;>
+<!ATTLIST paragraph %Common;>
+
+<!ELEMENT p %Inline;>
+<!ATTLIST p %Common;>
+
+<!ELEMENT itemize (li)+>
+<!ATTLIST itemize %Common;>
+
+<!ELEMENT ul (li)+>
+<!ATTLIST ul %Common;>
+
+<!ELEMENT enumerate (li)+>
+<!ATTLIST enumerate %Common;>
+
+<!ELEMENT ol (li)+>
+<!ATTLIST ol %Common;>
+
+<!ELEMENT description (dt, dd)+>
+<!ATTLIST description %Common;>
+
+<!ELEMENT dl (dt, dd)+>
+<!ATTLIST dl %Common;>
+
+<!ELEMENT qanda (question, answer)+>
+<!ATTLIST qanda %Common;>
+
+<!ELEMENT verse %Frag;>
+<!ATTLIST verse %Common;>
+
+<!ELEMENT quote %Frag;>
+<!ATTLIST quote %Common;>
+
+<!ELEMENT source (#PCDATA)>
+<!ATTLIST source %Common;>
+
+<!ELEMENT tabular (thead?, tbody+, tfoot?)>
+<!ATTLIST tabular %Common; cols CDATA #REQUIRED>
+
+<!ELEMENT verbatim (#PCDATA)>
+<!ATTLIST verbatim %Common;>
+
+<!ELEMENT pre (#PCDATA)>
+<!ATTLIST pre %Common;>
+
+<!ELEMENT image EMPTY>
+<!ATTLIST image %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
+
+<!ELEMENT subpage %Frag;>
+<!ATTLIST subpage %Common;>
+
+<!ELEMENT decor (%Block;)>
+<!ATTLIST decor %Common;>
+
+<!ELEMENT pull %Frag;>
+<!ATTLIST pull %Common;>
+
+<!ELEMENT equation ((%Block;), caption?)>
+<!ATTLIST equation %Common;>
+
+<!ELEMENT printout ((%Block;), caption?)>
+<!ATTLIST printout %Common;>
+
+<!ELEMENT table ((%Block;), caption?)>
+<!ATTLIST table %Common;>
+
+<!ELEMENT figure ((%Block;), caption?)>
+<!ATTLIST figure %Common;>
+
+<!ELEMENT part %Inline;>
+<!ATTLIST part %Common;>
+
+<!ELEMENT appendix EMPTY>
+<!ATTLIST appendix %Common;>
+
+<!ELEMENT section %Inline;>
+<!ATTLIST section %Common;>
+
+<!ELEMENT h1 %Inline;>
+<!ATTLIST h1 %Common;>
+
+<!ELEMENT subsection %Inline;>
+<!ATTLIST subsection %Common;>
+
+<!ELEMENT h2 %Inline;>
+<!ATTLIST h2 %Common;>
+
+<!ELEMENT subsubsection %Inline;>
+<!ATTLIST subsubsection %Common;>
+
+<!ELEMENT h3 %Inline;>
+<!ATTLIST h3 %Common;>
+
+<!ELEMENT bibliography EMPTY>
+<!ATTLIST bibliography %Common;>
+
+<!ELEMENT notes EMPTY>
+<!ATTLIST notes %Common;>
+
+<!ELEMENT toc EMPTY>
+<!ATTLIST toc %Common;>
+
+<!ELEMENT title %Inline;>
+<!ATTLIST title %Common;>
+
+<!ELEMENT subtitle %Inline;>
+<!ATTLIST subtitle %Common;>
+
+<!ELEMENT abstract %Frag;>
+<!ATTLIST abstract %Common;>
+
+<!ELEMENT rule EMPTY>
+<!ATTLIST rule %Common;>
+
+<!ELEMENT bib (who, what, where)>
+<!ATTLIST bib %Common;>
+
+<!ELEMENT note %Frag;>
+<!ATTLIST note %Common;>
+
+<!ELEMENT newmacro %Inline;>
+<!ATTLIST newmacro %Common; name CDATA #REQUIRED nargs CDATA #REQUIRED>
+
+
+<!-- Auxiliary block elements -->
 
 <!ELEMENT li %Flow;>
-<!ATTLIST li %Forbidden;>
+<!ATTLIST li %Common;>
 
 <!ELEMENT dt %Inline;>
-<!ATTLIST dt %Forbidden;>
+<!ATTLIST dt %Common;>
 
 <!ELEMENT dd %Flow;>
 <!ATTLIST dd %Forbidden;>
 
 <!ELEMENT question (dt?, dd)>
-<!ATTLIST question %Forbidden;>
+<!ATTLIST question %Common;>
+
+<!ELEMENT rquestion %Flow;>
+<!ATTLIST rquestion %Common;>
 
 <!ELEMENT answer (dt?, dd)>
-<!ATTLIST answer %Forbidden;>
+<!ATTLIST answer %Common;>
 
-<!ELEMENT p %Inline;>
-<!ATTLIST p %Forbidden;>
-
-<!ELEMENT itemize (li)+>
-<!ATTLIST itemize %Listing;>
-
-<!ELEMENT ul (li)+>
-<!ATTLIST ul %Listing;>
-
-<!ELEMENT enumerate (li)+>
-<!ATTLIST enumerate %Listing;>
-
-<!ELEMENT ol (li)+>
-<!ATTLIST ol %Listing;>
-
-<!ELEMENT description (dt, dd)+>
-<!ATTLIST description %Forbidden;>
-
-<!ELEMENT dl (dt, dd)+>
-<!ATTLIST dl %Forbidden;>
-
-<!ELEMENT qanda (question, answer)+>
-<!ATTLIST qanda %Forbidden;>
-
-<!ELEMENT verse %Frag;>
-<!ATTLIST verse %Forbidden;>
-
-<!ELEMENT quote %Frag;>
-<!ATTLIST quote %Forbidden;>
-
-<!ELEMENT msg %Inline;>
-<!ATTLIST msg %Forbidden;>
-
-<!ELEMENT source (#PCDATA)>
-<!ATTLIST source %Forbidden;>
-
-<!ELEMENT tabular (thead?, tbody+, tfoot?)>
-<!ATTLIST tabular cols CDATA #REQUIRED>
-
-<!ELEMENT subpage %Frag;>
-<!ATTLIST subpage %Forbidden;>
-
-<!ELEMENT verbatim (#PCDATA)>
-<!ATTLIST verbatim %Forbidden;>
-
-<!ELEMENT pre (#PCDATA)>
-<!ATTLIST pre %Forbidden;>
-
-<!ELEMENT image EMPTY>
-<!ATTLIST image src CDATA #REQUIRED alt CDATA #REQUIRED>
-
-<!ELEMENT decor (%Block;)>
-<!ATTLIST decor %Floater;>
-
-<!ELEMENT pull %Frag;>
-<!ATTLIST pull %Floater;>
-
-<!ELEMENT equation ((%Block;), caption?)>
-<!ATTLIST equation %Wrapper;>
-
-<!ELEMENT printout ((%Block;), caption?)>
-<!ATTLIST printout %Wrapper;>
-
-<!ELEMENT table ((%Block;), caption?)>
-<!ATTLIST table %Wrapper;>
-
-<!ELEMENT figure ((%Block;), caption?)>
-<!ATTLIST figure %Wrapper;>
+<!ELEMENT ranswer %Flow;>
+<!ATTLIST ranswer %Common;>
 
 <!ELEMENT caption %Inline;>
-<!ATTLIST caption %Forbidden;>
-
-<!ELEMENT bib (who, what, where)>
-<!ATTLIST bib %Ghost;>
-
-<!ELEMENT note %Frag;>
-<!ATTLIST note %Ghost;>
+<!ATTLIST caption %Common;>
 
 <!ELEMENT who %Inline;>
-<!ATTLIST who %Forbidden;>
+<!ATTLIST who %Common;>
 
 <!ELEMENT what %Inline;>
-<!ATTLIST what %Forbidden;>
+<!ATTLIST what %Common;>
 
 <!ELEMENT where %Inline;>
-<!ATTLIST where %Forbidden;>
+<!ATTLIST where %Common;>
 
-<!ELEMENT part %Inline;>
-<!ATTLIST part %Custom_heading;>
-
-<!ELEMENT appendix EMPTY>
-<!ATTLIST appendix %Preset_heading;>
-
-<!ELEMENT section %Inline;>
-<!ATTLIST section %Custom_heading;>
-
-<!ELEMENT h1 %Inline;>
-<!ATTLIST h1 %Custom_heading;>
-
-<!ELEMENT subsection %Inline;>
-<!ATTLIST subsection %Custom_heading;>
-
-<!ELEMENT h2 %Inline;>
-<!ATTLIST h2 %Custom_heading;>
-
-<!ELEMENT subsubsection %Inline;>
-<!ATTLIST subsubsection %Custom_heading;>
-
-<!ELEMENT h3 %Inline;>
-<!ATTLIST h3 %Custom_heading;>
-
-<!ELEMENT bibliography EMPTY>
-<!ATTLIST bibliography %Preset_heading;>
-
-<!ELEMENT notes EMPTY>
-<!ATTLIST notes %Preset_heading;>
-
-<!ELEMENT toc EMPTY>
-<!ATTLIST toc %Preset_heading;>
-
-<!ELEMENT title %Inline;>
-<!ATTLIST title %Forbidden;>
-
-<!ELEMENT subtitle %Inline;>
-<!ATTLIST subtitle %Forbidden;>
-
-<!ELEMENT abstract %Frag;>
-<!ATTLIST abstract %Forbidden;>
-
-<!ELEMENT rule EMPTY>
-<!ATTLIST rule %Forbidden;>
-
-<!-- Inline elements -->
-
-<!ELEMENT br EMPTY>
-<!ATTLIST br %Forbidden;>
-
-<!ELEMENT bold %Inline;>
-<!ATTLIST bold %Forbidden;>
-
-<!ELEMENT strong %Inline;>
-<!ATTLIST strong %Forbidden;>
-
-<!ELEMENT b %Inline;>
-<!ATTLIST b %Forbidden;>
-
-<!ELEMENT emph %Inline;>
-<!ATTLIST emph %Forbidden;>
-
-<!ELEMENT em %Inline;>
-<!ATTLIST em %Forbidden;>
-
-<!ELEMENT i %Inline;>
-<!ATTLIST i %Forbidden;>
-
-<!ELEMENT code %Inline;>
-<!ATTLIST code %Forbidden;>
-
-<!ELEMENT tt %Inline;>
-<!ATTLIST tt %Forbidden;>
-
-<!ELEMENT caps %Inline;>
-<!ATTLIST caps %Forbidden;>
-
-<!ELEMENT ins %Inline;>
-<!ATTLIST ins %Forbidden;>
-
-<!ELEMENT del %Inline;>
-<!ATTLIST del %Forbidden;>
-
-<!ELEMENT sup %Inline;>
-<!ATTLIST sup %Forbidden;>
-
-<!ELEMENT sub %Inline;>
-<!ATTLIST sub %Forbidden;>
-
-<!ELEMENT mbox %Inline;>
-<!ATTLIST mbox %Forbidden;>
-
-<!ELEMENT link %Inline;>
-<!ATTLIST link %Forbidden; href CDATA #REQUIRED>
-
-<!ELEMENT a %Inline;>
-<!ATTLIST a %Forbidden; href CDATA #REQUIRED>
-
-<!ELEMENT see EMPTY>
-<!ATTLIST see %Forbidden; href NMTOKENS #REQUIRED>
-
-<!ELEMENT cite EMPTY>
-<!ATTLIST cite %Forbidden; href NMTOKENS #REQUIRED>
-
-<!ELEMENT ref EMPTY>
-<!ATTLIST ref %Forbidden; href NMTOKEN #REQUIRED>
-
-<!ELEMENT sref EMPTY>
-<!ATTLIST sref %Forbidden; href NMTOKEN #REQUIRED>
-
-<!ELEMENT mref %Inline;>
-<!ATTLIST mref %Forbidden; href NMTOKEN #REQUIRED>
 
 <!-- Tabular elements -->
 
 <!ELEMENT thead (tr)+>
-<!ATTLIST thead %Forbidden;>
+<!ATTLIST thead %Common;>
 
 <!ELEMENT tbody (tr)+>
-<!ATTLIST tbody %Forbidden;>
+<!ATTLIST tbody %Common;>
 
 <!ELEMENT tfoot (tr)+>
-<!ATTLIST tfoot %Forbidden;>
+<!ATTLIST tfoot %Common;>
 
 <!ELEMENT tr (th | td)+>
-<!ATTLIST tr %Forbidden;>
+<!ATTLIST tr %Common;>
 
 <!ELEMENT th %Inline;>
-<!ATTLIST th %Forbidden; cell CDATA #IMPLIED>
+<!ATTLIST th %Common; cell CDATA #IMPLIED>
 
 <!ELEMENT td %Inline;>
-<!ATTLIST td %Forbidden; cell CDATA #IMPLIED>
+<!ATTLIST td %Common; cell CDATA #IMPLIED>
+
+
+<!-- Inline elements -->
+
+<!ELEMENT br EMPTY>
+<!ATTLIST br %Common;>
+
+<!ELEMENT bold %Inline;>
+<!ATTLIST bold %Common;>
+
+<!ELEMENT strong %Inline;>
+<!ATTLIST strong %Common;>
+
+<!ELEMENT b %Inline;>
+<!ATTLIST b %Common;>
+
+<!ELEMENT emph %Inline;>
+<!ATTLIST emph %Common;>
+
+<!ELEMENT em %Inline;>
+<!ATTLIST em %Common;>
+
+<!ELEMENT i %Inline;>
+<!ATTLIST i %Common;>
+
+<!ELEMENT code %Inline;>
+<!ATTLIST code %Common;>
+
+<!ELEMENT tt %Inline;>
+<!ATTLIST tt %Common;>
+
+<!ELEMENT caps %Inline;>
+<!ATTLIST caps %Common;>
+
+<!ELEMENT ins %Inline;>
+<!ATTLIST ins %Common;>
+
+<!ELEMENT del %Inline;>
+<!ATTLIST del %Common;>
+
+<!ELEMENT sup %Inline;>
+<!ATTLIST sup %Common;>
+
+<!ELEMENT sub %Inline;>
+<!ATTLIST sub %Common;>
+
+<!ELEMENT mbox %Inline;>
+<!ATTLIST mbox %Common;>
+
+<!ELEMENT link %Inline;>
+<!ATTLIST link %Common; href CDATA #REQUIRED>
+
+<!ELEMENT a %Inline;>
+<!ATTLIST a %Common; href CDATA #REQUIRED>
+
+<!ELEMENT see EMPTY>
+<!ATTLIST see %Common; href NMTOKENS #REQUIRED>
+
+<!ELEMENT cite EMPTY>
+<!ATTLIST cite %Common; href NMTOKENS #REQUIRED>
+
+<!ELEMENT ref EMPTY>
+<!ATTLIST ref %Common; href NMTOKEN #REQUIRED>
+
+<!ELEMENT sref EMPTY>
+<!ATTLIST sref %Common; href NMTOKEN #REQUIRED>
+
+<!ELEMENT mref %Inline;>
+<!ATTLIST mref %Common; href NMTOKEN #REQUIRED>
+
+<!ELEMENT arg EMPTY>
+<!ATTLIST arg %Common; num CDATA #REQUIRED>
+
+<!ELEMENT call (with)*>
+<!ATTLIST call %Common; name CDATA #REQUIRED>
+
+<!ELEMENT with %Inline;>
+<!ATTLIST with %Forbidden;>
 

@@ -58,33 +58,62 @@ and process_maybe_seq seq_root = match seq_root#sub_nodes with
 	| _	-> Some (process_seq seq_root)
 
 
+and process_macrocall macro_root =
+	let process_node node = match node#node_type with
+		| T_element "with" -> process_seq node
+		| _		   -> failwith "process_macrocall"
+	in List.map process_node macro_root#sub_nodes
+
+
 and process_inline node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
-		| T_data			-> (!!comm, Ast.Plain node#data)
-		| T_element "br"		-> (!!comm, Ast.Linebreak)
+		| T_data ->
+			(!!comm, Ast.Plain node#data)
+		| T_element "br" ->
+			(!!comm, Ast.Linebreak)
 		| T_element "bold"
 		| T_element "strong"
-		| T_element "b"			-> (!!comm, Ast.Bold (process_seq node))
+		| T_element "b" ->
+			(!!comm, Ast.Bold (process_seq node))
 		| T_element "emph"
 		| T_element "em"
-		| T_element "i"			-> (!!comm, Ast.Emph (process_seq node))
+		| T_element "i" ->
+			(!!comm, Ast.Emph (process_seq node))
 		| T_element "code"
-		| T_element "tt"		-> (!!comm, Ast.Code (process_seq node))
-		| T_element "caps"		-> (!!comm, Ast.Caps (process_seq node))
-		| T_element "ins"		-> (!!comm, Ast.Ins (process_seq node))
-		| T_element "del"		-> (!!comm, Ast.Del (process_seq node))
-		| T_element "sup"		-> (!!comm, Ast.Sup (process_seq node))
-		| T_element "sub"		-> (!!comm, Ast.Sub (process_seq node))
-		| T_element "mbox"		-> (!!comm, Ast.Mbox (process_seq node))
+		| T_element "tt" ->
+			(!!comm, Ast.Code (process_seq node))
+		| T_element "caps" ->
+			(!!comm, Ast.Caps (process_seq node))
+		| T_element "ins" ->
+			(!!comm, Ast.Ins (process_seq node))
+		| T_element "del" ->
+			(!!comm, Ast.Del (process_seq node))
+		| T_element "sup" ->
+			(!!comm, Ast.Sup (process_seq node))
+		| T_element "sub" ->
+			(!!comm, Ast.Sub (process_seq node))
+		| T_element "mbox" ->
+			(!!comm, Ast.Mbox (process_seq node))
 		| T_element "link"
-		| T_element "a"			-> (!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq node))
-		| T_element "see"		-> (!!comm, Ast.See (node#required_list_attribute "href"))
-		| T_element "cite"		-> (!!comm, Ast.Cite (node#required_list_attribute "href"))
-		| T_element "ref"		-> (!!comm, Ast.Ref (node#required_string_attribute "href"))
-		| T_element "sref"		-> (!!comm, Ast.Sref (node#required_string_attribute "href"))
-		| T_element "mref"		-> (!!comm, Ast.Mref (node#required_string_attribute "href", process_seq node))
-		| _				-> failwith "process_inline_node"
+		| T_element "a" ->
+			(!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq node))
+		| T_element "see" ->
+			(!!comm, Ast.See (node#required_list_attribute "href"))
+		| T_element "cite" ->
+			(!!comm, Ast.Cite (node#required_list_attribute "href"))
+		| T_element "ref" ->
+			(!!comm, Ast.Ref (node#required_string_attribute "href"))
+		| T_element "sref" ->
+			(!!comm, Ast.Sref (node#required_string_attribute "href"))
+		| T_element "mref" ->
+			(!!comm, Ast.Mref (node#required_string_attribute "href", process_seq node))
+		| T_element "arg" ->
+			(!!comm, Ast.Macroarg (node#required_string_attribute "num"))
+		| T_element "call" ->
+			(!!comm, Ast.Macrocall (node#required_string_attribute "name", process_macrocall node))
+		| _ ->
+			failwith "process_inline_node"
 
 
 (*	In flow mode we must place loose inline elements into newly created paragraph blocks.
@@ -117,54 +146,102 @@ and process_block node =
 	let comm = lazy (command_from_node node)
 	in match node#node_type with
 		| T_element "paragraph"
-		| T_element "p"			-> (!!comm, Ast.Paragraph (process_seq node))
+		| T_element "p" ->
+			(!!comm, Ast.Paragraph (process_seq node))
 		| T_element "itemize"
-		| T_element "ul"		-> (!!comm, Ast.Itemize (process_anon_item_frag node))
+		| T_element "ul" ->
+			(!!comm, Ast.Itemize (process_anon_item_frag node))
 		| T_element "enumerate"
-		| T_element "ol"		-> (!!comm, Ast.Enumerate (process_anon_item_frag node))
+		| T_element "ol" ->
+			(!!comm, Ast.Enumerate (process_anon_item_frag node))
 		| T_element "description"
-		| T_element "dl"		-> (!!comm, Ast.Description (process_desc_item_frag node))
-		| T_element "qanda"		-> (!!comm, Ast.Qanda (process_qanda_frag node))
-		| T_element "verse"		-> (!!comm, Ast.Verse (process_frag node))
-		| T_element "quote"		-> (!!comm, Ast.Quote (process_frag node))
-		| T_element "source"		-> (!!comm, Ast.Source node#data)
-		| T_element "tabular"		-> let (cols, tabular) = process_tabular node in (!!comm, Ast.Tabular (cols, tabular))
+		| T_element "dl" ->
+			(!!comm, Ast.Description (process_desc_item_frag node))
+		| T_element "qanda" ->
+			(!!comm, Ast.Qanda (process_qanda_frag node))
+		| T_element "verse" ->
+			(!!comm, Ast.Verse (process_frag node))
+		| T_element "quote" ->
+			(!!comm, Ast.Quote (process_frag node))
+		| T_element "mathtex" ->
+			(!!comm, Ast.Mathtex_blk "")
+		| T_element "mathml" ->
+			(!!comm, Ast.Mathml_blk "")
+		| T_element "source" ->
+			(!!comm, Ast.Source node#data)
+		| T_element "tabular" ->
+			let (cols, tabular) = process_tabular node
+			in (!!comm, Ast.Tabular (cols, tabular))
 		| T_element "verbatim"
-		| T_element "pre"		-> (!!comm, Ast.Verbatim node#data)
-		| T_element "image"		-> (!!comm, Ast.Image (node#required_string_attribute "src", node#required_string_attribute "alt"))
-		| T_element "subpage"		-> (!!comm, Ast.Subpage (process_frag node))
-		| T_element "decor"		-> (!!comm, Ast.Decor (process_unifrag node))
-		| T_element "pull"		-> (!!comm, Ast.Pullquote (None, process_frag node))
-		| T_element "equation"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Equation (maybe_caption, block))
-		| T_element "printout"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Printout (maybe_caption, block))
-		| T_element "table"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Table (maybe_caption, block))
-		| T_element "figure"		-> let (maybe_caption, block) = process_wrapper node in (!!comm, Ast.Figure (maybe_caption, block))
-		| T_element "part"		-> (!!comm, Ast.Part (process_seq node))
-		| T_element "appendix"		-> (!!comm, Ast.Appendix)
+		| T_element "pre" ->
+			(!!comm, Ast.Verbatim node#data)
+		| T_element "image" ->
+			let src = node#required_string_attribute "src"
+			and alt = node#required_string_attribute "alt"
+			in (!!comm, Ast.Image (src, alt))
+		| T_element "subpage" ->
+			(!!comm, Ast.Subpage (process_frag node))
+		| T_element "decor" ->
+			(!!comm, Ast.Decor (process_unifrag node))
+		| T_element "pull" ->
+			(!!comm, Ast.Pullquote (None, process_frag node))
+		| T_element "equation" ->
+			let (maybe_caption, block) = process_wrapper node
+			in (!!comm, Ast.Equation (maybe_caption, block))
+		| T_element "printout" ->
+			let (maybe_caption, block) = process_wrapper node
+			in (!!comm, Ast.Printout (maybe_caption, block))
+		| T_element "table" ->
+			let (maybe_caption, block) = process_wrapper node
+			in (!!comm, Ast.Table (maybe_caption, block))
+		| T_element "figure" ->
+			let (maybe_caption, block) = process_wrapper node
+			in (!!comm, Ast.Figure (maybe_caption, block))
+		| T_element "part" ->
+			(!!comm, Ast.Part (process_seq node))
+		| T_element "appendix" ->
+			(!!comm, Ast.Appendix)
 		| T_element "section"
-		| T_element "h1"		-> (!!comm, Ast.Section (`Level1, process_seq node))
+		| T_element "h1" ->
+			(!!comm, Ast.Section (`Level1, process_seq node))
 		| T_element "subsection"
-		| T_element "h2"		-> (!!comm, Ast.Section (`Level2, process_seq node))
+		| T_element "h2" ->
+			(!!comm, Ast.Section (`Level2, process_seq node))
 		| T_element "subsubsection"
-		| T_element "h3"		-> (!!comm, Ast.Section (`Level3, process_seq node))
-		| T_element "bibliography"	-> (!!comm, Ast.Bibliography)
-		| T_element "notes"		-> (!!comm, Ast.Notes)
-		| T_element "toc"		-> (!!comm, Ast.Toc)
-		| T_element "title"		-> (!!comm, Ast.Title (`Level1, process_seq node))
-		| T_element "subtitle"		-> (!!comm, Ast.Title (`Level2, process_seq node))
-		| T_element "abstract"		-> (!!comm, Ast.Abstract [])
-		| T_element "rule"		-> (!!comm, Ast.Rule)
-		| T_element "bib"		-> (!!comm, Ast.Bib (process_bib node))
-		| T_element "note"		-> (!!comm, Ast.Note (process_frag node))
-		| _				-> failwith "process_block_node"
+		| T_element "h3" ->
+			(!!comm, Ast.Section (`Level3, process_seq node))
+		| T_element "bibliography" ->
+			(!!comm, Ast.Bibliography)
+		| T_element "notes" ->
+			(!!comm, Ast.Notes)
+		| T_element "toc" ->
+			(!!comm, Ast.Toc)
+		| T_element "title" ->
+			(!!comm, Ast.Title (`Level1, process_seq node))
+		| T_element "subtitle" ->
+			(!!comm, Ast.Title (`Level2, process_seq node))
+		| T_element "abstract" ->
+			(!!comm, Ast.Abstract (process_frag node))
+		| T_element "rule" ->
+			(!!comm, Ast.Rule)
+		| T_element "bib" ->
+			(!!comm, Ast.Bib (process_bib node))
+		| T_element "note" ->
+			(!!comm, Ast.Note (process_frag node))
+		| T_element "newmacro" ->
+			let name = node#required_string_attribute "name"
+			and nargs = node#required_string_attribute "nargs"
+			in (!!comm, Ast.Macrodef (name, nargs, process_seq node))
+		| _ ->
+			failwith "process_block_node"
 
 
 and process_anon_item_frag frag_root=
 	let process_node node =
 		let comm = lazy (command_from_node node)
 		in match node#node_type with
-			| T_element "li"		-> (!!comm, process_frag ~flow:true node)
-			| _				-> failwith "process_anon_item_frag"
+			| T_element "li" -> (!!comm, process_frag ~flow:true node)
+			| _		 -> failwith "process_anon_item_frag"
 	in List.map process_node frag_root#sub_nodes
 
 
@@ -172,8 +249,8 @@ and process_desc_item_frag frag_root =
 	let process_nodes (dt_node, dd_node) =
 		let comm = lazy (command_from_node dt_node) in
 		let (dt, dd) = match (dt_node#node_type, dd_node#node_type) with
-			| (T_element "dt", T_element "dd")	-> (process_seq dt_node, process_frag ~flow:true dd_node)
-			| _					-> failwith "process_desc_item_frag"
+			| (T_element "dt", T_element "dd") -> (process_seq dt_node, process_frag ~flow:true dd_node)
+			| _				   -> failwith "process_desc_item_frag"
 		in (!!comm, dt, dd)
 	in List.rev_map process_nodes (pairify frag_root#sub_nodes)
 
@@ -191,14 +268,6 @@ and process_qanda_frag frag_root =
 	in List.rev_map process_group (pairify frag_root#sub_nodes)
 
 
-and process_callout node = match node#sub_nodes with
-	| msg_node :: _ when msg_node#node_type = T_element "msg" ->
-		msg_node#remove ();
-		(Some (process_seq msg_node), process_frag node)
-	| _ ->
-		(None, process_frag node)
-
-
 and process_tabular node =
 	let cols = node#required_string_attribute "cols"
 	and thead = ref None
@@ -214,10 +283,10 @@ and process_tabular node =
 	let process_group node =
 		let comm = lazy (command_from_node node)
 		in match node#node_type with
-			| T_element "thead"	-> thead := Some (Some !!comm, List.map process_row node#sub_nodes)
-			| T_element "tfoot"	-> tfoot := Some (Some !!comm, List.map process_row node#sub_nodes)
-			| T_element "tbody"	-> tbodies := (Some !!comm, List.map process_row node#sub_nodes) :: !tbodies
-			| _			-> failwith "process_group" in
+			| T_element "thead" -> thead := Some (Some !!comm, List.map process_row node#sub_nodes)
+			| T_element "tfoot" -> tfoot := Some (Some !!comm, List.map process_row node#sub_nodes)
+			| T_element "tbody" -> tbodies := (Some !!comm, List.map process_row node#sub_nodes) :: !tbodies
+			| _		    -> failwith "process_group" in
 	let () = List.iter process_group node#sub_nodes
 	in (cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
 
@@ -251,7 +320,7 @@ and process_bib node = match node#sub_nodes with
 
 let process_document node = match node#node_type with
 	| T_element "document" -> process_frag node
-	| _			-> failwith "process_document"
+	| _		       -> failwith "process_document"
 
 
 (********************************************************************************)
