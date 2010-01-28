@@ -86,9 +86,9 @@ type error_msg_t =
 	| Invalid_extra_no_solutions of Ident.t option * string
 	| Invalid_extra_multiple_solutions of Ident.t option * string
 
-	| Invalid_name_entity of string
-	| Invalid_deci_entity of string
-	| Invalid_hexa_entity of string
+	| Invalid_entity_name of string
+	| Invalid_entity_deci of string
+	| Invalid_entity_hexa of string
 
 	| Invalid_macro_nargs of Ref.t * string
 	| Invalid_macro_argument_context
@@ -103,6 +103,7 @@ type error_msg_t =
 	| Duplicate_custom of Ident.t option * Ref.t
 	| Undefined_custom of Ident.t option * Ref.t
 	| Invalid_counter of Ident.t option * Ref.t
+	| Unexpected_counter of Ident.t option * Ref.t
 
 	| Invalid_mathtex of Ident.t option * string
 	| Invalid_mathml of Ident.t option * string

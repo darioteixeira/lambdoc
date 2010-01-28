@@ -112,13 +112,13 @@ let explain_error = function
 	| Error.Invalid_extra_multiple_solutions (tag, extra) ->
 		sprintf "In %s, the extra parameter '%s' cannot be interpreted unambiguously." (explain_tag tag) extra
 
-	| Error.Invalid_name_entity ent ->
+	| Error.Invalid_entity_name ent ->
 		sprintf "Unknown entity '%s'." ent
 
-	| Error.Invalid_deci_entity ent ->
+	| Error.Invalid_entity_deci ent ->
 		sprintf "Invalid Unicode decimal code point '%s'." ent
 
-	| Error.Invalid_hexa_entity ent ->
+	| Error.Invalid_entity_hexa ent ->
 		sprintf "Invalid Unicode hexadecimal code point '%s'." ent
 
 	| Error.Invalid_macro_nargs (name, nargs) ->
@@ -157,6 +157,9 @@ let explain_error = function
 
 	| Error.Invalid_counter (tag, counter) ->
 		sprintf "The counter '%s' requested in %s has been already assigned to a different class of custom environment." counter (explain_tag tag)
+
+	| Error.Unexpected_counter (tag, counter) ->
+		sprintf "You have requested counter '%s' for %s, but custom environments without a title may not have an associated counter." counter (explain_tag tag)
 
 	| Error.Invalid_mathtex (tag, txt) ->
 		sprintf "Invalid mathtex expression '%s' in %s." txt (explain_tag tag)

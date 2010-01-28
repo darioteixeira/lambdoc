@@ -198,18 +198,16 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_macrocall	-> forbidden_class
 		| `Feature_macroarg	-> forbidden_class
 		| `Feature_item		-> forbidden_class
-		| `Feature_describe	-> forbidden_class
 		| `Feature_question	-> forbidden_class
 		| `Feature_rquestion	-> forbidden_class
 		| `Feature_answer	-> forbidden_class
 		| `Feature_ranswer	-> forbidden_class
-		| `Feature_bib_author	-> forbidden_class
-		| `Feature_bib_title	-> forbidden_class
-		| `Feature_bib_resource	-> forbidden_class
 		| `Feature_thead	-> forbidden_class
 		| `Feature_tbody	-> forbidden_class
 		| `Feature_tfoot	-> forbidden_class
-		| `Feature_caption	-> forbidden_class
+		| `Feature_bib_author	-> forbidden_class
+		| `Feature_bib_title	-> forbidden_class
+		| `Feature_bib_resource	-> forbidden_class
 		| `Feature_custom	-> custom_class in
 
 	let permission_set = match feature with

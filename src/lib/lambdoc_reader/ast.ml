@@ -84,13 +84,6 @@ type tabular_t =
 	tbodies: tabular_group_t list;
 	}
 
-type customdef_t =
-	| Anonymous
-	| Unnumbered of seq_t
-	| Numbered of seq_t * string
-
-type caption_t = command_t * seq_t
-
 type bib_t =
 	{
 	author: command_t * seq_t;
@@ -113,15 +106,15 @@ type frag_t = block_t list
 	| Source of string
 	| Tabular of string * tabular_t
 	| Verbatim of string
-	| Image of string * string  (* (src, alt) *)
+	| Image of string * string
 	| Subpage of frag_t
 	| Decor of block_t
 	| Pullquote of seq_t option * frag_t
 	| Custom of string * seq_t option * frag_t
-	| Equation of caption_t option * block_t
-	| Printout of caption_t option * block_t
-	| Table of caption_t option * block_t
-	| Figure of caption_t option * block_t
+	| Equation of seq_t option * block_t
+	| Printout of seq_t option * block_t
+	| Table of seq_t option * block_t
+	| Figure of seq_t option * block_t
 	| Part of seq_t
 	| Appendix
 	| Section of Level.hierarchical_t * seq_t
@@ -134,8 +127,8 @@ type frag_t = block_t list
 	| Bib of bib_t
 	| Note of frag_t
 	| Macrodef of string * string * seq_t
-	| Boxoutdef of string * customdef_t
-	| Theoremdef of string * customdef_t
+	| Boxoutdef of string * seq_t option * string option
+	| Theoremdef of string * seq_t * string option
 
 and qanda_t =
 	| Different of seq_t option

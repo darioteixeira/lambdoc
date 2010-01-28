@@ -202,7 +202,6 @@ let issue_simple_command raw_comm position =
 		| "who"			-> (Blk, BIB_AUTHOR command)
 		| "what"		-> (Blk, BIB_TITLE command)
 		| "where"		-> (Blk, BIB_RESOURCE command)
-		| "caption"		-> (Blk, CAPTION command)
 		| "arg"			-> (Inl, MACROARG command)
 		| _			-> (Inl, MACROCALL (command, simple))
 	in (Set context, [token])

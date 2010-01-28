@@ -652,30 +652,30 @@ let compile_document ~idiosyncrasies document_ast =
 						[]
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astcap, astblk))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm equation_counter Wrapper.Equation maybe_astcap in
+				let (floatation, wrapper, maybe_seq) = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
 				let blk = Obj.magic (convert_block ~minipaged false false false `Equation_blk astblk)
 				in perhaps (Block.equation floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astcap, astblk))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm printout_counter Wrapper.Printout maybe_astcap
+				let (floatation, wrapper, maybe_seq) = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq
 				and blk = Obj.magic (convert_block ~minipaged false false true `Printout_blk astblk)
 				in perhaps (Block.printout floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astcap, astblk))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm table_counter Wrapper.Table maybe_astcap
+				let (floatation, wrapper, maybe_seq) = convert_wrapper comm table_counter Wrapper.Table maybe_astseq
 				and blk = Obj.magic (convert_block ~minipaged false false true `Table_blk astblk)
 				in perhaps (Block.table floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astcap, astblk))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm figure_counter Wrapper.Figure maybe_astcap
+				let (floatation, wrapper, maybe_seq) = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq
 				and blk = Obj.magic (convert_block ~minipaged false false true `Figure_blk astblk)
 				in perhaps (Block.figure floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
@@ -811,12 +811,12 @@ let compile_document ~idiosyncrasies document_ast =
 				[]
 			in check_comm `Feature_macrodef comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Boxoutdef (env, boxoutdef))) ->
-			let elem () = convert_customdef comm env Custom.Boxout boxoutdef; []
+		| (_, _, _, `Any_blk, (comm, Ast.Boxoutdef (env, maybe_caption, maybe_counter_name))) ->
+			let elem () = convert_customdef comm env Custom.Boxout maybe_caption maybe_counter_name; []
 			in check_comm `Feature_boxoutdef comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Theoremdef (env, boxoutdef))) ->
-			let elem () = convert_customdef comm env Custom.Theorem boxoutdef; []
+		| (_, _, _, `Any_blk, (comm, Ast.Theoremdef (env, caption, maybe_counter_name))) ->
+			let elem () = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name; []
 			in check_comm `Feature_theoremdef comm elem
 
 		| (_, _, _, _, (comm, _)) ->
@@ -848,22 +848,17 @@ let compile_document ~idiosyncrasies document_ast =
 		in check_comm ~maybe_minipaged:(Some minipaged) `Feature_notes comm elem
 
 
-	and convert_wrapper comm counter kind maybe_astcap =
+	and convert_wrapper comm counter kind maybe_astseq =
 		let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 		let order = match comm.comm_order with
 			| None	     -> Order_input.auto_ordinal counter
 			| Some thing -> make_user_ordinal comm thing in
 		let label = make_label comm (Target.wrapper kind order) in
-		let perhaps_seq = match maybe_astcap with
-			| Some (comm, astseq) ->
-				let elem () = [convert_seq ~comm astseq]
-				in check_comm `Feature_caption comm elem
-			| None ->
-				[]
-		in (floatation, (label, order), maybe_of_perhaps perhaps_seq)
+		let maybe_seq = maybe (convert_seq ~comm) maybe_astseq
+		in (floatation, (label, order), maybe_seq)
 
 
-	and convert_customdef comm env kind customdef =
+	and convert_customdef comm env kind maybe_caption maybe_counter_name =
 		if not (Basic_input.matches_ident env)
 		then begin
 			let msg = Error.Invalid_custom (comm.comm_tag, env)
@@ -874,19 +869,22 @@ let compile_document ~idiosyncrasies document_ast =
 			let msg = Error.Duplicate_custom (comm.comm_tag, env)
 			in DynArray.add errors (Some comm.comm_linenum, msg)
 		end
-		else match customdef with
-			| Ast.Anonymous ->
+		else match (maybe_caption, maybe_counter_name) with
+			| (None, None) ->
 				let data = (kind, false, Anonymous)
 				in Hashtbl.add customisations env data
-			| Ast.Unnumbered astseq ->
+			| (None, Some counter_name) ->
+				let msg = Error.Unexpected_counter (comm.comm_tag, counter_name)
+				in DynArray.add errors (Some comm.comm_linenum, msg)
+			| (Some astseq, None) ->
 				let data = (kind, false, Unnumbered (Inline.get_seq (convert_seq ~comm astseq)))
 				in Hashtbl.add customisations env data
-			| Ast.Numbered (astseq, counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
+			| (Some astseq, Some counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
 				let counter = Order_input.make_ordinal_counter () in
 				let data = (kind, false, Numbered (Inline.get_seq (convert_seq ~comm astseq), counter)) in
 				Hashtbl.add custom_counters counter_name (kind, counter);
 				Hashtbl.add customisations env data
-			| Ast.Numbered (astseq, counter_name) -> match Hashtbl.find custom_counters counter_name with
+			| (Some astseq, Some counter_name) -> match Hashtbl.find custom_counters counter_name with
 				| (k, _) when k <> kind ->
 					let msg = Error.Invalid_counter (comm.comm_tag, counter_name)
 					in DynArray.add errors (Some comm.comm_linenum, msg)

@@ -128,7 +128,6 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> BIB_AUTHOR
 %token <Lambdoc_reader.Ast.command_t> BIB_TITLE
 %token <Lambdoc_reader.Ast.command_t> BIB_RESOURCE
-%token <Lambdoc_reader.Ast.command_t> CAPTION
 
 %token <Lambdoc_reader.Ast.command_t> MACROARG
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t > MACROCALL
@@ -187,8 +186,8 @@ simple_block:
 	| SUBTITLE inline_bundle						{($1, Ast.Title (`Level2, $2))}
 	| RULE									{($1, Ast.Rule)}
 	| MACRODEF raw_bundle raw_bundle inline_bundle				{($1, Ast.Macrodef ($2, $3, $4))}
-	| BOXOUTDEF raw_bundle boxoutdef					{($1, Ast.Boxoutdef ($2, $3))}
-	| THEOREMDEF raw_bundle theoremdef					{($1, Ast.Theoremdef ($2, $3))}
+	| BOXOUTDEF raw_bundle boxoutdef					{let (caption, counter) = $3 in ($1, Ast.Boxoutdef ($2, caption, counter))}
+	| THEOREMDEF raw_bundle theoremdef					{let (caption, counter) = $3 in ($1, Ast.Theoremdef ($2, caption, counter))}
 
 env_block:
 	| begin_block(blk_itemize) anon_item_frag* end_block			{($1, Ast.Itemize $2)}
@@ -206,10 +205,10 @@ env_block:
 	| begin_block(blk_decor) block end_block				{($1, Ast.Decor $2)}
 	| begin_block(blk_pullquote) inline_bundle? block* end_block		{($1, Ast.Pullquote ($2, $3))}
 	| begin_block(blk_custom) inline_bundle? block* end_block		{($1, Ast.Custom (the $1, $2, $3))}
-	| begin_block(blk_equation) block caption? end_block			{($1, Ast.Equation ($3, $2))}
-	| begin_block(blk_printout) block caption? end_block			{($1, Ast.Printout ($3, $2))}
-	| begin_block(blk_table) block caption? end_block			{($1, Ast.Table ($3, $2))}
-	| begin_block(blk_figure) block caption? end_block			{($1, Ast.Figure ($3, $2))}
+	| begin_block(blk_equation) inline_bundle? block end_block		{($1, Ast.Equation ($2, $3))}
+	| begin_block(blk_printout) inline_bundle? block end_block		{($1, Ast.Printout ($2, $3))}
+	| begin_block(blk_table) inline_bundle? block end_block			{($1, Ast.Table ($2, $3))}
+	| begin_block(blk_figure) inline_bundle? block end_block		{($1, Ast.Figure ($2, $3))}
 	| begin_block(blk_abstract) block* end_block				{($1, Ast.Abstract $2)}
 	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
 	| begin_block(blk_note) block* end_block				{($1, Ast.Note $2)}
@@ -231,9 +230,6 @@ answer:
 	| ANSWER inline_bundle? block*						{($1, Ast.Different $2, $3)}
 	| RANSWER block*							{($1, Ast.Repeated, $2)}
 
-caption:
-	| CAPTION inline_bundle							{($1, $2)}
-
 bib_author:
 	| BIB_AUTHOR inline_bundle						{($1, $2)}
 
@@ -244,13 +240,13 @@ bib_resource:
 	| BIB_RESOURCE inline_bundle						{($1, $2)}
 
 boxoutdef:
-	| /* empty */								{Ast.Anonymous}
-	| inline_bundle								{Ast.Unnumbered $1}
-	| inline_bundle raw_bundle						{Ast.Numbered ($1, $2)}
+	| /* empty */								{(None, None)}
+	| inline_bundle								{(Some $1, None)}
+	| inline_bundle raw_bundle						{(Some $1, Some $2)}
 
 theoremdef:
-	| inline_bundle								{Ast.Unnumbered $1}
-	| inline_bundle raw_bundle						{Ast.Numbered ($1, $2)}
+	| inline_bundle								{($1, None)}
+	| inline_bundle raw_bundle						{($1, Some $2)}
 
 
 /********************************************************************************/

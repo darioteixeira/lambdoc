@@ -63,12 +63,10 @@ type manuscript_feature_t =
 
 
 type internal_feature_t =
-	[ `Feature_macrocall | `Feature_macroarg
-	| `Feature_item
-	| `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
-	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
+	[ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
 	| `Feature_thead | `Feature_tbody | `Feature_tfoot
-	| `Feature_caption | `Feature_custom ]
+	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
+	| `Feature_custom | `Feature_macrocall | `Feature_macroarg ]
 
 
 type feature_t =

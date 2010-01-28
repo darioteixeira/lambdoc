@@ -63,12 +63,10 @@ type manuscript_feature_t =
 
 
 type internal_feature_t =
-	[ `Feature_macrocall | `Feature_macroarg
-	| `Feature_item
-	| `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
-	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
+	[ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
 	| `Feature_thead | `Feature_tbody | `Feature_tfoot
-	| `Feature_caption | `Feature_custom ]
+	| `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
+	| `Feature_custom | `Feature_macrocall | `Feature_macroarg ]
 
 
 type feature_t =
@@ -129,12 +127,10 @@ let manuscript_block_features =
 
 let internal_features =
 	[
-	`Feature_macrocall; `Feature_macroarg;
-	`Feature_item;
-	`Feature_question; `Feature_rquestion; `Feature_answer; `Feature_ranswer;
-	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
+	`Feature_item; `Feature_question; `Feature_rquestion; `Feature_answer; `Feature_ranswer;
 	`Feature_thead; `Feature_tbody; `Feature_tfoot;
-	`Feature_caption; `Feature_custom;
+	`Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
+	`Feature_custom; `Feature_macrocall; `Feature_macroarg;
 	]
 
 
@@ -143,9 +139,9 @@ let internal_features =
 (********************************************************************************)
 
 let describe_composition_inline_feature = function
-	| `Feature_plain	-> "plain undecorated text"
+	| `Feature_plain	-> "plain text"
 	| `Feature_entity	-> "HTML entities"
-	| `Feature_linebreak	-> "line break without terminating paragraph"
+	| `Feature_linebreak	-> "line break within paragraph"
 	| `Feature_mathtex_inl	-> "inline TeX math"
 	| `Feature_mathml_inl	-> "inline MathML math"
 	| `Feature_bold		-> "bold text"
@@ -178,7 +174,7 @@ let describe_composition_block_feature = function
 	| `Feature_quote	-> "quote block"
 	| `Feature_mathtex_blk	-> "TeX math block"
 	| `Feature_mathml_blk	-> "MathML block"
-	| `Feature_source	-> "source code block"
+	| `Feature_source	-> "source-code block"
 	| `Feature_tabular	-> "tabular"
 	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_image	-> "image block"
@@ -197,44 +193,43 @@ let describe_manuscript_block_feature = function
 	| `Feature_part		-> "document part"
 	| `Feature_appendix	-> "appendix"
 
-	| `Feature_section1	-> "section1"
-	| `Feature_section2	-> "section2"
-	| `Feature_section3	-> "section3"
+	| `Feature_section1	-> "Level 1 sectioning"
+	| `Feature_section2	-> "Level 2 sectioning"
+	| `Feature_section3	-> "Level 3 sectioning"
 
 	| `Feature_bibliography	-> "bibliography"
 	| `Feature_notes	-> "notes"
 	| `Feature_toc		-> "table of contents"
 
-	| `Feature_title1	-> "document title1"
-	| `Feature_title2	-> "document title2"
+	| `Feature_title1	-> "Level 1 title"
+	| `Feature_title2	-> "Level 2 title"
 
-	| `Feature_abstract	-> "document abstract"
-	| `Feature_rule		-> "document rule"
+	| `Feature_abstract	-> "abstract"
+	| `Feature_rule		-> "rule"
 
 	| `Feature_bib		-> "bibliography entry"
 	| `Feature_note		-> "note"
 
 	| `Feature_macrodef	-> "definition of macro"
-	| `Feature_boxoutdef	-> "definition of custom boxout environment"
-	| `Feature_theoremdef	-> "definition of custom theorem environment"
+	| `Feature_boxoutdef	-> "definition of boxout environment"
+	| `Feature_theoremdef	-> "definition of theorem environment"
 
 
 let describe_internal_feature = function
-	| `Feature_macrocall	-> "invocation of macro"
-	| `Feature_macroarg	-> "reference to the argument of macro"
         | `Feature_item		-> "item separator for lists"
 	| `Feature_question	-> "question in a Q&A block"
 	| `Feature_rquestion	-> "repeat question in a Q&A block"
 	| `Feature_answer	-> "answer in a Q&A block"
 	| `Feature_ranswer	-> "repeat answer in a Q&A block"
-        | `Feature_bib_author	-> "author of a bibliography entry"
-	| `Feature_bib_title	-> "title of a bibliography entry"
-	| `Feature_bib_resource	-> "location of a bibliography entry"
         | `Feature_thead	-> "start of a header group in a tabular block"
 	| `Feature_tbody	-> "start of a block group in a tabular block"
 	| `Feature_tfoot	-> "start of a footer group in a tabular block"
-        | `Feature_caption	-> "caption for a wrapper (equation, printout, table, figure) block"
+        | `Feature_bib_author	-> "author of a bibliography entry"
+	| `Feature_bib_title	-> "title of a bibliography entry"
+	| `Feature_bib_resource	-> "location of a bibliography entry"
         | `Feature_custom	-> "custom environment"
+	| `Feature_macrocall	-> "invocation of macro"
+	| `Feature_macroarg	-> "reference to the argument of macro"
 
 
 (********************************************************************************)

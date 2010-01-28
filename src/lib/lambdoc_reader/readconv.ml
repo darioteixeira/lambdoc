@@ -307,9 +307,9 @@ struct
 
 
 	let expand_entity = function
-		| Ast.Ent_name name -> (try `Okay (name, utf8_of_codepoint (codepoint_of_name name)) with _-> `Error (Error.Invalid_name_entity name))
-		| Ast.Ent_deci deci -> (try `Okay (deci, utf8_of_codepoint (int_of_string deci)) with _ -> `Error (Error.Invalid_deci_entity deci))
-		| Ast.Ent_hexa hexa -> (try `Okay (hexa, utf8_of_codepoint (int_of_string ("0x" ^ hexa))) with _ -> `Error (Error.Invalid_hexa_entity hexa))
+		| Ast.Ent_name name -> (try `Okay (name, utf8_of_codepoint (codepoint_of_name name)) with _-> `Error (Error.Invalid_entity_name name))
+		| Ast.Ent_deci deci -> (try `Okay (deci, utf8_of_codepoint (int_of_string deci)) with _ -> `Error (Error.Invalid_entity_deci deci))
+		| Ast.Ent_hexa hexa -> (try `Okay (hexa, utf8_of_codepoint (int_of_string ("0x" ^ hexa))) with _ -> `Error (Error.Invalid_entity_hexa hexa))
 
 
 	let pxp_iter f =
