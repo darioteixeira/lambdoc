@@ -880,13 +880,20 @@ let compile_document ~idiosyncrasies document_ast =
 				let data = (kind, false, Unnumbered (Inline.get_seq (convert_seq ~comm astseq)))
 				in Hashtbl.add customisations env data
 			| (Some astseq, Some counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
-				let counter = Order_input.make_ordinal_counter () in
-				let data = (kind, false, Numbered (Inline.get_seq (convert_seq ~comm astseq), counter)) in
-				Hashtbl.add custom_counters counter_name (kind, counter);
-				Hashtbl.add customisations env data
+				if Basic_input.matches_ident counter_name
+				then begin
+					let counter = Order_input.make_ordinal_counter () in
+					let data = (kind, false, Numbered (Inline.get_seq (convert_seq ~comm astseq), counter)) in
+					Hashtbl.add custom_counters counter_name (kind, counter);
+					Hashtbl.add customisations env data
+				end
+				else begin
+					let msg = Error.Invalid_counter (comm.comm_tag, counter_name)
+					in DynArray.add errors (Some comm.comm_linenum, msg)
+				end
 			| (Some astseq, Some counter_name) -> match Hashtbl.find custom_counters counter_name with
 				| (k, _) when k <> kind ->
-					let msg = Error.Invalid_counter (comm.comm_tag, counter_name)
+					let msg = Error.Mismatched_counter (comm.comm_tag, counter_name)
 					in DynArray.add errors (Some comm.comm_linenum, msg)
 				| (_, counter) ->
 					let data = (kind, false, Numbered (Inline.get_seq (convert_seq ~comm astseq), counter))

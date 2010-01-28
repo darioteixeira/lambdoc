@@ -102,7 +102,9 @@ type error_msg_t =
 	| Invalid_custom of Ident.t option * Ref.t
 	| Duplicate_custom of Ident.t option * Ref.t
 	| Undefined_custom of Ident.t option * Ref.t
+
 	| Invalid_counter of Ident.t option * Ref.t
+	| Mismatched_counter of Ident.t option * Ref.t
 	| Unexpected_counter of Ident.t option * Ref.t
 
 	| Invalid_mathtex of Ident.t option * string

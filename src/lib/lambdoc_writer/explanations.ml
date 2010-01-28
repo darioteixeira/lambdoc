@@ -156,6 +156,9 @@ let explain_error = function
 		sprintf "The environment '%s' used in %s has not been defined yet." env (explain_tag tag)
 
 	| Error.Invalid_counter (tag, counter) ->
+		sprintf "Invalid name '%s' for counter in %s. %s." counter (explain_tag tag) (explain_ident "A counter")
+
+	| Error.Mismatched_counter (tag, counter) ->
 		sprintf "The counter '%s' requested in %s has been already assigned to a different class of custom environment." counter (explain_tag tag)
 
 	| Error.Unexpected_counter (tag, counter) ->
