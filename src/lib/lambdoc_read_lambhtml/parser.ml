@@ -31,7 +31,7 @@ let (!!) = Lazy.force
 
 let inline_elems =
 	[
-	"br";
+	"br"; "mathtexinl"; "mathmlinl";
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
 	"mbox"; "link"; "a";
@@ -72,6 +72,10 @@ and process_inline node =
 			(!!comm, Ast.Plain node#data)
 		| T_element "br" ->
 			(!!comm, Ast.Linebreak)
+		| T_element "mathtexinl" ->
+			(!!comm, Ast.Mathtex_inl node#data)
+		| T_element "mathmlinl" ->
+			(!!comm, Ast.Mathml_inl node#data)
 		| T_element "bold"
 		| T_element "strong"
 		| T_element "b" ->
@@ -113,7 +117,7 @@ and process_inline node =
 		| T_element "call" ->
 			(!!comm, Ast.Macrocall (node#required_string_attribute "name", process_macrocall node))
 		| _ ->
-			failwith "process_inline_node"
+			failwith "process_inline"
 
 
 (*	In flow mode we must place loose inline elements into newly created paragraph blocks.
@@ -163,10 +167,10 @@ and process_block node =
 			(!!comm, Ast.Verse (process_frag node))
 		| T_element "quote" ->
 			(!!comm, Ast.Quote (process_frag node))
-		| T_element "mathtex" ->
-			(!!comm, Ast.Mathtex_blk "")
-		| T_element "mathml" ->
-			(!!comm, Ast.Mathml_blk "")
+		| T_element "mathtexblk" ->
+			(!!comm, Ast.Mathtex_blk node#data)
+		| T_element "mathmlblk" ->
+			(!!comm, Ast.Mathml_blk node#data)
 		| T_element "source" ->
 			(!!comm, Ast.Source node#data)
 		| T_element "tabular" ->
@@ -185,6 +189,11 @@ and process_block node =
 			(!!comm, Ast.Decor (process_unifrag node))
 		| T_element "pull" ->
 			(!!comm, Ast.Pullquote (None, process_frag node))
+		| T_element "boxout"
+		| T_element "theorem" ->
+			let name = node#required_string_attribute "name"
+			and (maybe_caption, frag) = process_custom node
+			in (!!comm, Ast.Custom (name, maybe_caption, frag))
 		| T_element "equation" ->
 			let (maybe_caption, block) = process_wrapper node
 			in (!!comm, Ast.Equation (maybe_caption, block))
@@ -232,8 +241,18 @@ and process_block node =
 			let name = node#required_string_attribute "name"
 			and nargs = node#required_string_attribute "nargs"
 			in (!!comm, Ast.Macrodef (name, nargs, process_seq node))
+		| T_element "newboxout" ->
+			let name = node#required_string_attribute "name"
+			and maybe_caption = match node#sub_nodes with [] -> None | seq -> Some (process_seq node)
+			and maybe_counter = node#optional_string_attribute "counter"
+			in (!!comm, Ast.Boxoutdef (name, maybe_caption, maybe_counter))
+		| T_element "newtheorem" ->
+			let name = node#required_string_attribute "name"
+			and caption = process_seq node
+			and maybe_counter = node#optional_string_attribute "counter"
+			in (!!comm, Ast.Theoremdef (name, caption, maybe_counter))
 		| _ ->
-			failwith "process_block_node"
+			failwith "process_block"
 
 
 and process_anon_item_frag frag_root=
@@ -256,15 +275,21 @@ and process_desc_item_frag frag_root =
 
 
 and process_qanda_frag frag_root =
-	let process_qora node =
+	let process_different node =
 		let comm = lazy (command_from_node node)
 		in match node#sub_nodes with
 			| [dt; dd] -> (!!comm, Different (Some (process_seq dt)), process_frag ~flow:true dd)
 			| [dd]	   -> (!!comm, Different None, process_frag ~flow:true dd)
-			| _	   -> failwith "process_qora" in
+			| _	   -> failwith "process_different"
+	and process_repeated node =
+		let comm = lazy (command_from_node node)
+		in (!!comm, Repeated, process_frag ~flow:true node) in
 	let process_group (question, answer) = match (question#node_type, answer#node_type) with
-		| (T_element "question", T_element "answer") -> (process_qora question, process_qora answer)
-		| _					     -> failwith "process_qanda_frag"
+		| (T_element "question", T_element "answer")	-> (process_different question, process_different answer)
+		| (T_element "question", T_element "ranswer")	-> (process_different question, process_repeated answer)
+		| (T_element "rquestion", T_element "answer")	-> (process_repeated question, process_different answer)
+		| (T_element "rquestion", T_element "ranswer")	-> (process_repeated question, process_repeated answer)
+		| _						-> failwith "process_qanda_frag"
 	in List.rev_map process_group (pairify frag_root#sub_nodes)
 
 
@@ -296,16 +321,20 @@ and process_unifrag node = match node#sub_nodes with
 	| _	-> failwith "process_unifrag"
 
 
-and process_wrapper node = match node#sub_nodes with
-	| [block_node; caption_node] ->
-		let block = process_block block_node
-		and caption = (command_from_node caption_node, process_seq caption_node)
-		in (Some caption, block)
-	| [block_node] ->
-		let block = process_block block_node
-		in (None, block)
+and process_custom node = match node#sub_nodes with
+	| hd :: tl when hd#node_type = T_element "caption" ->
+		node#remove_nodes ~pos:0 ~len:1 ();
+		(Some (process_seq hd), process_frag node)
+	| hd :: tl ->
+		(None, process_frag node)
 	| _ ->
-		failwith "process_wrapper"
+		failwith "process_custom"
+
+
+and process_wrapper node = match node#sub_nodes with
+	| [caption_node; block_node] -> (Some (process_seq caption_node), process_block block_node)
+	| [block_node]		     -> (None, process_block block_node)
+	| _			     -> failwith "process_wrapper"
 
 
 and process_bib node = match node#sub_nodes with

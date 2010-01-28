@@ -9,10 +9,12 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	" paragraph | p | itemize | ul | enumerate | ol | description | dl
+	" paragraph | p
+	| itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
+	| mathtexblk | mathmlblk
 	| source | tabular | verbatim | pre | image | subpage
-	| decor | pull
+	| decor | pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix
 	| section | h1 | subsection | h2 | subsubsection | h3
@@ -22,13 +24,13 @@
 	| newmacro | newboxout | newtheorem">
 
 <!ENTITY % Node
-	" br 
+	" br | mathtexinl | mathmlinl
 	| bold | strong | b | emph | em | i | code | tt | caps
 	| ins | del | sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref
 	| arg | call">
 
-<!ENTITY % Frag "(%Block;)+">
+<!ENTITY % Frag "(%Block;)*">
 <!ENTITY % Inline "(#PCDATA | %Node;)*">
 <!ENTITY % Flow "(#PCDATA | %Node; | %Block;)*">
 
@@ -49,25 +51,25 @@
 <!ELEMENT p %Inline;>
 <!ATTLIST p %Common;>
 
-<!ELEMENT itemize (li)+>
+<!ELEMENT itemize (li)*>
 <!ATTLIST itemize %Common;>
 
-<!ELEMENT ul (li)+>
+<!ELEMENT ul (li)*>
 <!ATTLIST ul %Common;>
 
-<!ELEMENT enumerate (li)+>
+<!ELEMENT enumerate (li)*>
 <!ATTLIST enumerate %Common;>
 
-<!ELEMENT ol (li)+>
+<!ELEMENT ol (li)*>
 <!ATTLIST ol %Common;>
 
-<!ELEMENT description (dt, dd)+>
+<!ELEMENT description (dt, dd)*>
 <!ATTLIST description %Common;>
 
-<!ELEMENT dl (dt, dd)+>
+<!ELEMENT dl (dt, dd)*>
 <!ATTLIST dl %Common;>
 
-<!ELEMENT qanda (question, answer)+>
+<!ELEMENT qanda ((question | rquestion), (answer | ranswer))*>
 <!ATTLIST qanda %Common;>
 
 <!ELEMENT verse %Frag;>
@@ -76,10 +78,16 @@
 <!ELEMENT quote %Frag;>
 <!ATTLIST quote %Common;>
 
+<!ELEMENT mathtexblk (#PCDATA)>
+<!ATTLIST mathtexblk %Common;>
+
+<!ELEMENT mathmlblk ANY>
+<!ATTLIST mathmlblk %Common;>
+
 <!ELEMENT source (#PCDATA)>
 <!ATTLIST source %Common;>
 
-<!ELEMENT tabular (thead?, tbody+, tfoot?)>
+<!ELEMENT tabular (thead?, tbody*, tfoot?)>
 <!ATTLIST tabular %Common; cols CDATA #REQUIRED>
 
 <!ELEMENT verbatim (#PCDATA)>
@@ -100,16 +108,22 @@
 <!ELEMENT pull %Frag;>
 <!ATTLIST pull %Common;>
 
-<!ELEMENT equation ((%Block;), caption?)>
+<!ELEMENT boxout (caption?, %Frag;)>
+<!ATTLIST boxout %Common; name CDATA #REQUIRED>
+
+<!ELEMENT theorem (caption?, %Frag;)>
+<!ATTLIST theorem %Common; name CDATA #REQUIRED>
+
+<!ELEMENT equation (caption?, (%Block;))>
 <!ATTLIST equation %Common;>
 
-<!ELEMENT printout ((%Block;), caption?)>
+<!ELEMENT printout (caption?, (%Block;))>
 <!ATTLIST printout %Common;>
 
-<!ELEMENT table ((%Block;), caption?)>
+<!ELEMENT table (caption?, (%Block;))>
 <!ATTLIST table %Common;>
 
-<!ELEMENT figure ((%Block;), caption?)>
+<!ELEMENT figure (caption?, (%Block;))>
 <!ATTLIST figure %Common;>
 
 <!ELEMENT part %Inline;>
@@ -166,6 +180,12 @@
 <!ELEMENT newmacro %Inline;>
 <!ATTLIST newmacro %Common; name CDATA #REQUIRED nargs CDATA #REQUIRED>
 
+<!ELEMENT newboxout %Inline;>
+<!ATTLIST newboxout %Common; name CDATA #REQUIRED counter CDATA #IMPLIED>
+
+<!ELEMENT newtheorem %Inline;>
+<!ATTLIST newtheorem %Common; name CDATA #REQUIRED counter CDATA #IMPLIED>
+
 
 <!-- Auxiliary block elements -->
 
@@ -191,7 +211,7 @@
 <!ATTLIST ranswer %Common;>
 
 <!ELEMENT caption %Inline;>
-<!ATTLIST caption %Common;>
+<!ATTLIST caption %Forbidden;>
 
 <!ELEMENT who %Inline;>
 <!ATTLIST who %Common;>
@@ -228,6 +248,12 @@
 
 <!ELEMENT br EMPTY>
 <!ATTLIST br %Common;>
+
+<!ELEMENT mathtexinl (#PCDATA)>
+<!ATTLIST mathtexinl %Common;>
+
+<!ELEMENT mathmlinl ANY>
+<!ATTLIST mathmlinl %Common;>
 
 <!ELEMENT bold %Inline;>
 <!ATTLIST bold %Common;>
