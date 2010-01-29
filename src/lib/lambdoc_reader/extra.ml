@@ -203,9 +203,9 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 	| (key, Boolean_kind, true, Keyvalue_field (k, v)) when k = key && v = "auto" ->
 		Positive (Boolean_auto_data None)
 	| (key, Boolean_kind, _, Keyvalue_field (k, v)) when k = key ->
-		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v)
-		in	DynArray.add errors (Some comm.comm_linenum, msg);
-			Negative
+		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v) in
+		DynArray.add errors (Some comm.comm_linenum, msg);
+		Negative
 
 	| (key, Numeric_kind (low, high), true, Unnamed_field v) when v = "auto" ->
 		Undecided (Numeric_auto_data None)
@@ -234,36 +234,38 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 	| (key, Bullet_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Bullet_data (Basic_input.bullet_of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (Some comm.comm_linenum, msg);
-				Negative)
+			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v) in
+			DynArray.add errors (Some comm.comm_linenum, msg);
+			Negative)
 
 	| (key, Numbering_kind, false, Unnamed_field v) ->
 		(try Undecided (Numbering_data (Basic_input.numbering_of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Numbering_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Numbering_data (Basic_input.numbering_of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (Some comm.comm_linenum, msg);
-				Negative)
+			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v) in
+			DynArray.add errors (Some comm.comm_linenum, msg);
+			Negative)
 
 	| (key, Floatation_kind, false, Unnamed_field v) ->
 		(try Undecided (Floatation_data (Basic_input.floatation_of_string v)) with Invalid_argument _ -> Negative)
 	| (key, Floatation_kind, false, Keyvalue_field (k, v)) when k = key ->
 		(try Positive (Floatation_data (Basic_input.floatation_of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (Some comm.comm_linenum, msg);
-				Negative)
+			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v) in
+			DynArray.add errors (Some comm.comm_linenum, msg);
+			Negative)
 
 	| (key, Lang_kind, false, Unnamed_field v) ->
-		(try Undecided (Lang_data (Camlhighlight_core.lang_of_string v)) with Invalid_argument _ -> Negative)
+		if Camlhighlight_parser.is_available_lang v then Undecided (Lang_data v) else Negative
 	| (key, Lang_kind, false, Keyvalue_field (k, v)) when k = key ->
-		(try Positive (Lang_data (Camlhighlight_core.lang_of_string v))
-		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v)
-			in	DynArray.add errors (Some comm.comm_linenum, msg);
-				Negative)
+		if Camlhighlight_parser.is_available_lang v
+		then
+			Positive (Lang_data v)
+		else
+			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v) in
+			DynArray.add errors (Some comm.comm_linenum, msg);
+			Negative
 
 	| _ ->
 		Negative

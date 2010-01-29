@@ -560,7 +560,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				let box = Extra.get_boolean ~default:true extra Box_hnd in
 				let linenums = Extra.get_boolean ~default:(box && (match lang with Some _ -> true | _ -> false)) extra Linenums_hnd in
 				let zebra = Extra.get_boolean ~default:box extra Zebra_hnd in
-				let hilite = Camlhighlight_parser.from_string lang txt in
+				let hilite = Camlhighlight_parser.from_string ?lang txt in
 				let src = Source.make lang box linenums zebra hilite
 				in [Block.source src]
 			in check_comm `Feature_source comm elem
