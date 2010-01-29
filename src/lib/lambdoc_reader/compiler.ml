@@ -65,7 +65,7 @@ let maybe_of_perhaps = function
 	and possible errors are also returned.  Note that because Ocaml does not
 	yet support true GADTs, this function has to rely on Obj.magic.
 *)
-let compile_document ~idiosyncrasies document_ast =
+let compile_document ~expand_entities ~idiosyncrasies document_ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -77,8 +77,6 @@ let compile_document ~idiosyncrasies document_ast =
 		idiosyncrasies of this particular document.
 	*)
 	let macros_authorised = Idiosyncrasies.check_feature `Feature_macrodef idiosyncrasies in
-
-	let expand_entities = true in
 
 
 	(************************************************************************)
@@ -1080,9 +1078,9 @@ let process_errors ~sort source errors =
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile_manuscript ~accept_list ~deny_list ~default ~source document_ast =
+let compile_manuscript ~expand_entities ~accept_list ~deny_list ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accept_list ~deny_list ~default in
-	let (contents, bibs, notes, toc, images, labels, custom, errors) = compile_document ~idiosyncrasies document_ast
+	let (contents, bibs, notes, toc, images, labels, custom, errors) = compile_document ~expand_entities ~idiosyncrasies document_ast
 	in match errors with
 		| [] -> Ambivalent.make_valid_manuscript contents bibs notes toc images labels custom
 		| xs -> Ambivalent.make_invalid_manuscript (process_errors ~sort:true source errors)
@@ -1090,9 +1088,9 @@ let compile_manuscript ~accept_list ~deny_list ~default ~source document_ast =
 
 (**	Compile a document AST into a composition.
 *)
-let compile_composition ~accept_list ~deny_list ~default ~source document_ast =
+let compile_composition ~expand_entities ~accept_list ~deny_list ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accept_list ~deny_list ~default in
-	let (contents, _, _, _, images, _, _, errors) = compile_document ~idiosyncrasies document_ast
+	let (contents, _, _, _, images, _, _, errors) = compile_document ~expand_entities ~idiosyncrasies document_ast
 	in match errors with
 		| [] -> Ambivalent.make_valid_composition (Obj.magic contents) images
 		| xs -> Ambivalent.make_invalid_composition (process_errors ~sort:true source errors)

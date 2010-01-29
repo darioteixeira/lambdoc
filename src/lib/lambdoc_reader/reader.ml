@@ -33,6 +33,7 @@ module type S =
 sig
 	val ambivalent_manuscript_from_string:
 		?verify_utf8: bool ->
+		?expand_entities: bool ->
 		?accept_list: Features.manuscript_feature_t list ->
 		?deny_list: Features.manuscript_feature_t list ->
 		?default: Features.default_t ->
@@ -41,6 +42,7 @@ sig
 
 	val ambivalent_composition_from_string:
 		?verify_utf8: bool ->
+		?expand_entities: bool ->
 		?accept_list: Features.composition_feature_t list ->
 		?deny_list: Features.composition_feature_t list ->
 		?default: Features.default_t ->
@@ -59,6 +61,7 @@ module Make_reader (Reader: READER): S =
 struct
 	let ambivalent_document_from_string
 		?(verify_utf8 = true)
+		?(expand_entities = true)
 		?(accept_list = [])
 		?(deny_list = [])
 		?(default = `Accept)
@@ -68,7 +71,7 @@ struct
 			try
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let document_ast = Reader.ast_from_string source
-				in valid_compiler ~accept_list ~deny_list ~default ~source document_ast
+				in valid_compiler ~expand_entities ~accept_list ~deny_list ~default ~source document_ast
 			with
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
@@ -78,14 +81,14 @@ struct
 					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)]
 					in invalid_maker errors
 
-	let ambivalent_manuscript_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =
+	let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source =
 		let valid_compiler = Compiler.compile_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_compiler ~invalid_maker source
+		in ambivalent_document_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default ~valid_compiler ~invalid_maker source
 
-	let ambivalent_composition_from_string ?verify_utf8 ?accept_list ?deny_list ?default source =
+	let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source =
 		let valid_compiler = Compiler.compile_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?verify_utf8 ?accept_list ?deny_list ?default ~valid_compiler ~invalid_maker source
+		in ambivalent_document_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default ~valid_compiler ~invalid_maker source
 end
 

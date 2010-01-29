@@ -25,6 +25,7 @@ val process_errors:
 	Error.t nelist
 
 val compile_manuscript:
+	expand_entities: bool ->
 	accept_list: Features.manuscript_feature_t list ->
 	deny_list: Features.manuscript_feature_t list ->
 	default: Features.default_t ->
@@ -33,6 +34,7 @@ val compile_manuscript:
 	Ambivalent.manuscript_t
 
 val compile_composition:
+	expand_entities: bool ->
 	accept_list: Features.composition_feature_t list ->
 	deny_list: Features.composition_feature_t list ->
 	default: Features.default_t ->
