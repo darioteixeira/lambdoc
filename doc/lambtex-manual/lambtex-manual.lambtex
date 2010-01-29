@@ -54,14 +54,29 @@ intermixed with sequences of emphasised text, superscript text, etc.  You can th
 of \emph{block-level} and \emph{inline-level} elements in a \lambtex document.
 
 Inline-level elements are declared by \emph{simple} commands, while block-level elements
-may be declared by either simple or \emph{environment} commands.  The former take
-the generic shape \code{\\\emph{command}\{...\}}, where the content inside the curly
-brackets constitutes the parameters to the command.  Note that some simple commands may
-take more than one parameter (in which case more than one set of curly brackets is used),
-while others exist that take no parameters at all.  As for environment commands, they are
-composed of two parts: an initial and a final tag, which together delineate the contents
-of the environment.  The initial tag takes the form \code{\\begin\{\emph{command}\}},
-while the final tag is \code{\\end\{\emph{command}\}}.
+may be declared by either simple or \emph{environment} commands\see{note:commands}.
+The former take the generic shape \code{\\\emph{command}\{...\}}, where the content
+inside the curly brackets constitutes the parameters to the command.  Note that some
+simple commands may take more than one parameter (in which case more than one set of
+curly brackets is used), while others exist that take no parameters at all.  As for
+environment commands, they are composed of two parts: an initial and a final tag, which
+together delineate the contents of the environment.  The initial tag takes the form
+\code{\\begin\{\emph{command}\}}, while the final tag is \code{\\end\{\emph{command}\}}.
+
+\begin[note:commands]{note}
+As stated, any given command may either be expressed by the simple notation or as
+an environment.  This should be interpreted an exclusive-\caps{or} condition, meaning
+that no command exists that can be expressed as both.  However, the choice of adopting
+one or the other notation was not an arbitrary one.  Due to its syntactic terseness,
+the simple notation was preferred.  The more verbose environment notation was chosen
+only for those commands that satisfied at least one of the two following conditions:
+
+\begin{ul}
+\li	The command may be the parent of at least one block-level element.
+\li	The command declares a verbatim-like environment using the \caps{heredoc}
+	technique for delimitation (see \sref{sec:verbatim} for an example).
+\end{ul}
+\end{note}
 
 Besides the (normally mandatory) primary parameters, many simple and environment
 commands accept other classes of parameters, typically optional.  In total there
@@ -80,16 +95,16 @@ or more optional arguments are accepted, they may be specified in any order as l
 as they appear before any of the primary (curly bracketed) parameters.
 
 \begin[tab:parameters]{table}
+{The four classes of parameters that may be given to \lambtex commands.
+Primary parameters are typically mandatory and are enclosed by curly brackets;
+order, label, and extra parameters are usually optional and are enclosed by
+round, square, and angle brackets, respectively.}
 \begin{tabular}{cccc}
 \head
 | Order		| Label		| Extra		| Primary		|
 \body
 | \code{(...)}	| \code{[...]}	| \code{<...>}	| \code{\{...\}}	|
 \end{tabular}
-\caption{The four classes of parameters that may be given to \lambtex commands.
-Primary parameters are typically mandatory and are enclosed by curly brackets;
-order, label, and extra parameters are usually optional and are enclosed by
-round, square, and angle brackets, respectively.}
 \end{table}
 
 
@@ -165,6 +180,9 @@ nest these commands without any restrictions.  Moreover, some of these commands 
 type \code{\\b}.
 
 \begin[tab:inline]{table}
+{List of all text formatting commands, including synonyms where
+applicable.  All these commands take one parameter enclosed in
+curly brackets.  The parameter is a sequence of inline text.}
 \begin{tabular}{rl}
 \head
 | Command				| Example							|
@@ -182,9 +200,6 @@ type \code{\\b}.
 | \code{\\sub\{\emph{inline}\}}		| H\sub{2}O requires a subscript.				|
 | \code{\\sup\{\emph{inline}\}}		| The 1\sup{st} of January has a superscript.			|
 \end{tabular}
-\caption{List of all text formatting commands, including synonyms where
-applicable.  All these commands take one parameter enclosed in curly
-brackets.  The parameter is a sequence of inline text.}
 \end{table}
 
 
@@ -227,6 +242,9 @@ interpreted differently by \lambtex.  \sref{tab:seq} lists all of them.  Remembe
 use the escape character if you wish to input any of these sequences literally.
 
 \begin[tab:seq]{table}
+{Special character sequences and their \lambtex interpretation.  Remember
+to use the backslash for escaping if you wish to input any of these sequences
+verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
 \begin{tabular}{cl}
 \head
 | Sequence		| Translation |
@@ -241,9 +259,6 @@ use the escape character if you wish to input any of these sequences literally.
 | \code{\`\`}		| Opening double quotes |
 | \code{\'\'}		| Closing double quotes |
 \end{tabular}
-\caption{Special character sequences and their \lambtex interpretation.
-Remember to use the backslash for escaping if you wish to input any of these
-sequences verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
 \end{table}
 
 
@@ -349,6 +364,9 @@ available options for the itemize and enumerate environments, respectively.
 
 
 \begin[tab:itemize]{table}
+{Available extra parameters for the \code{itemize} command.  These allow you
+to change the bullet marking each list item.  For completeness, each of the
+values above should be prefixed by \code{bul=}, though the prefix is optional.}
 \begin{tabular}{rl}
 \head
 | Value			| Type of bullet		|
@@ -358,13 +376,13 @@ available options for the itemize and enumerate environments, respectively.
 | \code{square}		| A square.			|
 | \code{none}		| Ommit the bullet altogether.	|
 \end{tabular}
-\caption{Available extra parameters for the \code{itemize} command.  These allow
-you to change the bullet marking each list item.  For completeness, each of the
-values above should be prefixed by \code{bul=}, though the prefix is optional.}
 \end{table}
 
 
 \begin[tab:enumerate]{table}
+{Available extra parameters for the \code{enumerate} command.  These allow you
+to change the numbering scheme ordering each list item.  For completeness, each
+of the values above should be prefixed by \code{num=}, though the prefix is optional.}
 \begin{tabular}{rl}
 \head
 | Value					| Type of numbering				|
@@ -376,9 +394,6 @@ values above should be prefixed by \code{bul=}, though the prefix is optional.}
 | \code{upper-alpha}, \code{A}		| Upper-case letters in the Latin alphabet.	|
 | \code{none}				| Ommit the numbering altogether.		|
 \end{tabular}
-\caption{Available extra parameters for the \code{enumerate} command.  These allow you to change
-the numbering scheme ordering each list item.  For completeness, each of the values above should
-be prefixed by \code{num=}, though the prefix is optional.}
 \end{table}
 
 
@@ -681,6 +696,8 @@ and left again, the parameter string would be \code{lrcl}. Consult \sref{tab:tab
 for a list of all available column specifiers.
 
 \begin[tab:tabular]{table}
+{List of available column specifiers for tabular environments.
+A specifier tells \lambtex how each column should be formatted.}
 \begin{tabular}{rl}
 \head
 | Specifier	| Formatting |
@@ -694,8 +711,6 @@ for a list of all available column specifiers.
 | \code{j}	| Column is justified. |
 | \code{J}	| Column is justified and strong. |
 \end{tabular}
-\caption{List of available column specifiers for tabular environments.
-A specifier tells \lambtex how each column should be formatted.}
 \end{table}
 
 Inside a tabular environment, rows are terminated with the '\code{|}' character;
@@ -775,6 +790,8 @@ This is part of the advanced features of the language, and is discussed in
 \sref{sec:wrappers}.
 
 \begin[tab:species]{table}
+{The classification of some common animals and plants.  This table illustrates the use
+of the advanced formatting facilities that enable customisation of individual cells.}
 \begin{tabular}{rll}
 \head
 |		|{2c_} Scientific name			|
@@ -791,8 +808,6 @@ This is part of the advanced features of the language, and is discussed in
 | Common name	| Genus			| Species	|
 |		|{2c^} Scientific name			|
 \end{tabular}
-\caption{The classification of some common animals and plants.  This table illustrates
-the use of the advanced formatting facilities that enable customisation of individual cells.}
 \end{table}
 
 
@@ -1102,6 +1117,12 @@ avoid the split across line breaks or the need to resort to the \code{\\mbox} co
 or the \code{nbsp} \caps{html} entity.
 
 \begin[tab:hyperlinks]{table}
+{The various hyperlinking commands available in \lambtex.  Note that the
+\code{\emph{uri}} and \code{\emph{label}} sequences are interpreted as raw
+text.  Moreover, the inline sequence may be ommited in command \code{\\link},
+and commands \code{\\see} and \code{\\cite} may be given more than one curly
+bracketed \code{\emph{label}} sequence (see \mbox{Sections \ref{sec:onnotes}
+and \ref{sec:onbiblio}} for details on the latter).}
 \begin{tabular}{rl}
 \head
 | Command						| Description |
@@ -1113,12 +1134,6 @@ or the \code{nbsp} \caps{html} entity.
 | \code{\\sref\{\emph{label}\}}				| Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
 | \mbox{\code{\\mref\{\emph{label}\}\{\emph{inline}\}}}	| Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
 \end{tabular}
-\caption{The various hyperlinking commands available in \lambtex.  Note that
-the \code{\emph{uri}} and \code{\emph{label}} sequences are interpreted as raw
-text.  Moreover, the inline sequence may be ommited in command \code{\\link},
-and commands \code{\\see} and \code{\\cite} may be given more than one curly
-bracketed \code{\emph{label}} sequence (see \mbox{Sections \ref{sec:onnotes} and
-\ref{sec:onbiblio}} for details on the latter).}
 \end{table}
 
 
@@ -1175,16 +1190,19 @@ Moreover, boxouts are optionally titled and may be given an automatic ordering.
 
 The command \code{\\newboxout} accepts at least one, and up to three primary parameters.
 The first parameter is the name of the boxout environment; this is the same name that
-must subsequently be used inside the begin/end pairs.  Obviously, you may not name a
-boxout with the same designation of an existing command, or with a designation that
-begins with the name of an environment that uses the \caps{heredoc} technique (namely
-\code{verbatim}, \code{source}, \code{mathtex}, and \code{mathml}). Moreover, the name
-must begin with a lowercase letter and be composed only of lowercase letters and digits.
-The second parameter, if present, is an inline sequence indicating a fixed title that
-will appear in all boxouts of this name.  Finally, the third parameter may be used to
-assign a counter to this boxout.  If not present, the boxout is unnumbered; moreover,
-different boxouts may share the same counter.  Note that the third parameter may only
-be given for boxouts that do have a title, and thus also a second parameter.
+must subsequently be used inside the begin/end pairs.  Obviously, you may not name
+a boxout with the same designation of an existing command, or with a designation
+that begins with the name of an environment that uses the \caps{heredoc} technique
+(namely \code{verbatim}, \code{source}, \code{mathtex}, and \code{mathml}). Moreover,
+the name must begin with a lowercase letter and be composed only of lowercase letters
+and digits.  The second parameter, if present, is an inline sequence indicating a fixed
+title that will appear in all boxouts of this name.  Finally, the third parameter may
+be used to assign a counter to this boxout.  If not present, the boxout is unnumbered;
+moreover, different boxouts may share the same counter.  Note that the third parameter
+may only be given for boxouts that do have a title, and thus also a second parameter.
+In addition, bear in mind that counter identifiers must follow the same rules laid out
+for labels, as described in \sref{sec:headings}.  Counter identifiers do nevertheless
+reside in their own separate namespace, independent of that of labels.
 
 Subsequent to its declaration, using a new boxout named \code{\emph{name}} is
 simply a matter of wrapping its contents between \code{\\begin\{\emph{name}\}} and
@@ -1240,16 +1258,17 @@ have a title, and therefore the declaration has two mandatory primary parameters
 Similarly to boxouts, \code{\\newtheorem} may optionally include a third primary
 parameter specifying the counter if you wish the theorem to be numbered.  Note that
 even though the same counter may be shared between multiple theorem-like environments,
-you may not share a counter between a boxout and a theorem.
+you may not share a counter between a boxout and a theorem.  Because all counters
+share the same namespace, you must make sure collisions do not occur.
 
 Suppose thus you wish to create a theorem named \code{theorem}, and whose title is,
 unsurprisingly, \emph{``Theorem''}.  Moreover, you want the theorem to be numbered,
-and its counter to be called \code{thmcnt}.  One particular instantiation of this
-theorem has the extra title \emph{``John McAuthor''}, reflecting its authorship.
+and its counter to be called \code{cnt:theorem}.  One particular instantiation of
+this theorem has the extra title \emph{``John McAuthor''}, reflecting its authorship.
 This is the \lambtex source you may use:
 
 \begin{source}
-\newtheorem{theorem}{Theorem}{thmcnt}
+\newtheorem{theorem}{Theorem}{cnt:theorem}
 
 \begin{theorem}{John McAuthor}
 Let an egg be defined as an ellipsoid whose radii across the [$x$],
@@ -1266,7 +1285,7 @@ described for boxouts.  Note, however, that for a theorem named \code{\emph{name
 the associated classname is \code{doc_theorem_env_\emph{name}}.
 
 \begin{subpage}
-\newtheorem{theorem}{Theorem}{thmcnt}
+\newtheorem{theorem}{Theorem}{cnt:theorem}
 
 \begin(1){theorem}{John McAuthor}
 Let an egg be defined as an ellipsoid whose radii across the [$x$],
@@ -1325,23 +1344,20 @@ wrapper itself may be labelled.  The code below illustrates the use of a \code{f
 wrapper around a \code{image} block:
 
 \begin{source}
-\begin[fig:example]{figure}
+\begin[fig:example]{figure}{This is the figure's caption.}
 \image{circle.png}{This is a circle}
-\caption{This is an example of a figure.
-Click on it to see in its own page.}
 \end{figure}
 \end{source}
 
-Note that the captioning is declared via the simple command \code{\\caption}, which
-when present must follow the block being wrapped.  Also, you can refer to this figure
-from anywhere in the document by using the label \code{fig:example} with any of the
-simple commands \code{\\ref}, \code{\\sref}, and \code{\\mref}.  The resulting figure
-(\sref{fig:example}) is shown below:
+Remember that captioning is optional.  When present, the caption is an inline sequence
+declared as a primary parameter of the wrapper environment.  Should it not be given, the
+counter associated with the wrapper is displayed between parentheses below the wrapped
+block.  Also, you can refer to this figure from anywhere in the document by using the
+label \code{fig:example} with any of the simple commands \code{\\ref}, \code{\\sref},
+and \code{\\mref}.  The resulting figure (\sref{fig:example}) is shown below:
 
-\begin[fig:example]{figure}
+\begin[fig:example]{figure}{This is the figure's caption.}
 \image{circle.png}{This is a circle}
-\caption{This is an example of a figure.
-Click on it to see in its own page.}
 \end{figure}
 
 
@@ -1698,12 +1714,12 @@ in any circumstance where its supertype is allowed.  However, the converse is no
 
 
 \begin[fig:hierarchy]{figure}
+{The subtyping hierarchy for \lambtex blocks.  An arrow pointing from a source
+block to a target block indicates that the source is a subtype of the target and
+is therefore accepted in any circumstances where the target would be accepted.
+Compositions may use only blocks printed in green, whereas manuscripts may use
+both green and blue blocks.}
 \image{hierarchy.png}{Hierarchy}
-\caption{The subtyping hierarchy for \lambtex blocks.  An arrow pointing from
-a source block to a target block indicates that the source is a subtype of the target
-and is therefore accepted in any circumstances where the target would be accepted.
-Compositions may use only blocks printed in green, whereas manuscripts may use both
-green and blue blocks.}
 \end{figure}
 
 
@@ -1750,7 +1766,7 @@ and environment commands (the former's name is prefixed by a backslash).  Rememb
 in the case of environment commands, the same name must be used for the \code{begin}
 and \code{end} tags, even if they are synonyms.
 
-\begin[tab:synonyms]{table}
+\begin[tab:synonyms]{table}{List of all available command synonyms.}
 \begin{tabular}{rl}
 \head
 | Canonical name		| Synonyms			|
@@ -1771,7 +1787,6 @@ and \code{end} tags, even if they are synonyms.
 | \code{itemize}		| \code{itemise}, \code{ul}	|
 | \code{verbatim}		| \code{pre}			|
 \end{tabular}
-\caption{List of all available command synonyms.}
 \end{table}
 
 
@@ -1796,6 +1811,7 @@ in \sref{tab:permdesc}.
 
 
 \begin[tab:permdesc]{table}
+{Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
 \begin{tabular}{cl}
 \head
 | Permission		| Definition |
@@ -1807,7 +1823,6 @@ in \sref{tab:permdesc}.
 | ✘			| The parameter is altogether forbidden. |
 | ✘\sub{ø}		| The parameter is forbidden, unless it is empty. |
 \end{tabular}
-\caption{Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
 \end{table}
 
 As the \sref{tab:permlist} below confirms, it is always possible to specify empty extra
@@ -1816,6 +1831,12 @@ simple commands that take no primary parameters, as is often the case with user-
 macros.  A practical application of this feature is described in \sref{sec:macros}.
 
 \begin[tab:permlist]{table}
+{The permissions associated with the various \lambtex commands for each of the three classes
+(order, label, and extra) of optional arguments.  In the case of extra parameters, the options
+available for each command are also displayed.  Note that simple commands are shown prefixed
+with a backslash, whereas environment commands are enclosed inside brackets.  Within each
+category, commands are shown alphabetically.  Furthermore, the commands \code{\emph{boxout}}
+and \code{\emph{theorem}} are shown in italics because the actual command name is user-defined.}
 \begin{tabular}{rlll}
 \head
 | Command			| Order					| Label		| Extra |
@@ -1827,7 +1848,6 @@ macros.  A practical application of this feature is described in \sref{sec:macro
 | \code{\\bold}			| ✘					| ✘		| ✘\sub{ø} |
 | \code{\\br}			| ✘					| ✘		| ✘\sub{ø} |
 | \code{\\caps}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\caption}		| ✘					| ✘		| ✘\sub{ø} |
 | \code{\\cite}			| ✘					| ✘		| ✘\sub{ø} |
 | \code{\\code}			| ✘					| ✘		| ✘\sub{ø} |
 | \code{\\del}			| ✘					| ✘		| ✘\sub{ø} |
@@ -1885,13 +1905,6 @@ macros.  A practical application of this feature is described in \sref{sec:macro
 | \code{verbatim}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{mult}) |
 | \code{verse}			| ✘					| ✘		| ✘\sub{ø} |
 \end{tabular}
-\caption{The permissions associated with the various \lambtex commands for each of the three
-classes (order, label, and extra) of optional arguments.  In the case of extra parameters, the
-options available for each command are also displayed.  Note that simple commands are shown
-prefixed with a backslash, whereas environment commands are enclosed inside brackets.
-Within each category, commands are shown alphabetically.  Furthermore, the commands
-\code{\emph{boxout}} and \code{\emph{theorem}} are shown in italics because the actual
-command name is user-defined.}
 \end{table}
 
 \section[sec:order]{Notes on ordering in the context of sub-pages}
@@ -1955,6 +1968,9 @@ be separated by inserting a '\code{,}' (comma) between them.  \sref{tab:extrades
 below lists all the existing extra parameters together with the accepted values for each.
 
 \begin[tab:extradesc]{table}
+{List of all existing extra parameters and associated range of values.
+Consult \sref{tab:permlist} for a list of which of these parameters are
+accepted for each command.}
 \begin{tabular}{rl}
 \head
 | Command		| Accepted values |
@@ -1975,9 +1991,6 @@ below lists all the existing extra parameters together with the accepted values 
 | \code{float}		| Discrete values: \code{center}, \code{left}, \code{right} |
 | \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
 \end{tabular}
-\caption{List of all existing extra parameters and associated range of values.
-Consult \sref{tab:permlist} for a list of which of these parameters are
-accepted for each command.}
 \end{table}
 
 

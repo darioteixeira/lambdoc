@@ -123,7 +123,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">Many blocks are composed of <i class="doc_emph">inline text</i>. Paragraphs and section headings are good examples of such blocks. Inline text is a sequence of plain text and special characters intermixed with sequences of emphasised text, superscript text, etc. You can thus speak of <i class="doc_emph">block-level</i> and <i class="doc_emph">inline-level</i> elements in a <span class="doc_caps">lambtex</span> document.
       </p>
-      <p class="doc_par">Inline-level elements are declared by <i class="doc_emph">simple</i> commands, while block-level elements may be declared by either simple or <i class="doc_emph">environment</i> commands. The former take the generic shape <tt class="doc_code">\<i class="doc_emph">command</i>{...}</tt>, where the content inside the curly brackets constitutes the parameters to the command. Note that some simple commands may take more than one parameter (in which case more than one set of curly brackets is used), while others exist that take no parameters at all. As for environment commands, they are composed of two parts: an initial and a final tag, which together delineate the contents of the environment. The initial tag takes the form <tt class="doc_code">\begin{<i class="doc_emph">command</i>}</tt>, while the final tag is <tt class="doc_code">\end{<i class="doc_emph">command</i>}</tt>.
+      <p class="doc_par">Inline-level elements are declared by <i class="doc_emph">simple</i> commands, while block-level elements may be declared by either simple or <i class="doc_emph">environment</i> commands<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:commands">1</a>)</span>. The former take the generic shape <tt class="doc_code">\<i class="doc_emph">command</i>{...}</tt>, where the content inside the curly brackets constitutes the parameters to the command. Note that some simple commands may take more than one parameter (in which case more than one set of curly brackets is used), while others exist that take no parameters at all. As for environment commands, they are composed of two parts: an initial and a final tag, which together delineate the contents of the environment. The initial tag takes the form <tt class="doc_code">\begin{<i class="doc_emph">command</i>}</tt>, while the final tag is <tt class="doc_code">\end{<i class="doc_emph">command</i>}</tt>.
       </p>
       <p class="doc_par">Besides the (normally mandatory) primary parameters, many simple and environment commands accept other classes of parameters, typically optional. In total there are three of these other classes: order parameters, label parameters, and extra parameters. The first are enclosed by round brackets and are used to override the automatic ordering associated with blocks such as sections and equations. The second are enclosed by square brackets and are used for assigning a label to any block that may be referenced from somewhere else in the document. Finally, extra parameters are enclosed between angle brackets and are used to customise command specific settings. For the sake of reference, <a class="doc_lnk" href="#doc:u:tab:parameters">Tab.&nbsp;1</a> lists all the classes of parameters and the characters used for enclosing them.
       </p>
@@ -326,7 +326,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </table>
         </div>
       </div>
-      <p class="doc_par">The reader will have noted that <span class="doc_caps">lambtex</span> must interpret the character '<tt class="doc_code">&amp;</tt>' (ampersand) differently, and therefore you need a workaround if you want to input an actual ampersand. In fact, there are other characters besides the ampersand that are interpreted differently by <span class="doc_caps">lambtex</span>, and as such also require a special escaping sequence. These characters are '<tt class="doc_code">\</tt>' (backslash), '<tt class="doc_code">{</tt>' (opening curly bracket), and '<tt class="doc_code">}</tt>' (closing curly bracket). The character used for escaping is the backslash, which means that displaying an ampersand, for example, is achieved with <tt class="doc_code">\&amp;</tt>. Another option in this particular case is of course to use the <tt class="doc_code">amp</tt> <span class="doc_caps">html</span> entity<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:ampersand">1</a>)</span>.
+      <p class="doc_par">The reader will have noted that <span class="doc_caps">lambtex</span> must interpret the character '<tt class="doc_code">&amp;</tt>' (ampersand) differently, and therefore you need a workaround if you want to input an actual ampersand. In fact, there are other characters besides the ampersand that are interpreted differently by <span class="doc_caps">lambtex</span>, and as such also require a special escaping sequence. These characters are '<tt class="doc_code">\</tt>' (backslash), '<tt class="doc_code">{</tt>' (opening curly bracket), and '<tt class="doc_code">}</tt>' (closing curly bracket). The character used for escaping is the backslash, which means that displaying an ampersand, for example, is achieved with <tt class="doc_code">\&amp;</tt>. Another option in this particular case is of course to use the <tt class="doc_code">amp</tt> <span class="doc_caps">html</span> entity<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:ampersand">2</a>)</span>.
       </p>
       <p class="doc_par">Besides individual characters, there are also some multi-character sequences that are interpreted differently by <span class="doc_caps">lambtex</span>. <a class="doc_lnk" href="#doc:u:tab:seq">Tab.&nbsp;3</a> lists all of them. Remember to use the escape character if you wish to input any of these sequences literally.
       </p>
@@ -408,7 +408,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <h1 id="doc:a:3" class="doc_sec">5.&ensp;<span>Hyperlinks to external resources</span>
       </h1>
-      <p class="doc_par">The simple command <tt class="doc_code">\link</tt> (or its synonym <tt class="doc_code">\a</tt>) allows the creation of hyperlinks into any external resource. It takes the form <tt class="doc_code">\link{<i class="doc_emph">uri</i>}{<i class="doc_emph">inline</i>}</tt>, where <tt class="doc_code"><i class="doc_emph">uri</i></tt> is the raw text containing the address (<span class="doc_caps">uri</span>) of the target, and <tt class="doc_code"><i class="doc_emph">inline</i></tt> is the sequence of inline text that will actually be displayed. Should the two be the same, you may ommit the second parameter altogether. Moreover, note that in no circumstances may you nest a link inside another!<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:links">2</a>)</span>
+      <p class="doc_par">The simple command <tt class="doc_code">\link</tt> (or its synonym <tt class="doc_code">\a</tt>) allows the creation of hyperlinks into any external resource. It takes the form <tt class="doc_code">\link{<i class="doc_emph">uri</i>}{<i class="doc_emph">inline</i>}</tt>, where <tt class="doc_code"><i class="doc_emph">uri</i></tt> is the raw text containing the address (<span class="doc_caps">uri</span>) of the target, and <tt class="doc_code"><i class="doc_emph">inline</i></tt> is the sequence of inline text that will actually be displayed. Should the two be the same, you may ommit the second parameter altogether. Moreover, note that in no circumstances may you nest a link inside another!<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:links">3</a>)</span>
       </p>
       <p class="doc_par">Note that in the preceeding paragraph, the sequence <tt class="doc_code"><i class="doc_emph">uri</i></tt> is described as <i class="doc_emph">raw</i> text, not an inline sequence. In brief, a raw sequence is one whose contents are parsed verbatim, without (almost) any attempt to expand special characters and where inline formatting commands do not apply. In similarity to their inline counterparts, raw sequences are delimited by curly brackets. Therefore, the end of sequence character '<tt class="doc_code">}</tt>' is interpreted specially. Escaping is also possible, and thus the backslash character is also special.
       </p>
@@ -1311,7 +1311,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">The corresponding output of the composer is the following:
       </p>
       <div class="doc_subpage">
-        <p class="doc_par">You can easily insert a link into an external resource such as <a class="doc_lnk" href="http://www.wikipedia.com/">Wikipedia</a>. Internal links come into several guises: they can be references to notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:meta">3</a>)</span>; bibliographic references like those available in <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">1</a>]</span>; pointers to labelled figures, tables, printouts, equations, or sections such as <span class="doc_mbox">Section <a class="doc_lnk" href="#doc:u:sec:anatomy">1</a></span>; smart references to those same elements such as <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>; and finally, references where the order is not automatically added (for example, you may refer yet again <a class="doc_lnk" href="#doc:u:sec:anatomy">to that same section</a>). 
+        <p class="doc_par">You can easily insert a link into an external resource such as <a class="doc_lnk" href="http://www.wikipedia.com/">Wikipedia</a>. Internal links come into several guises: they can be references to notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:meta">4</a>)</span>; bibliographic references like those available in <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">1</a>]</span>; pointers to labelled figures, tables, printouts, equations, or sections such as <span class="doc_mbox">Section <a class="doc_lnk" href="#doc:u:sec:anatomy">1</a></span>; smart references to those same elements such as <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>; and finally, references where the order is not automatically added (for example, you may refer yet again <a class="doc_lnk" href="#doc:u:sec:anatomy">to that same section</a>). 
         </p>
       </div>
       <p class="doc_par">Bear in mind that the use of the smart references offered by command <tt class="doc_code">\sref</tt> is strongly recommended over the manual references provided by command <tt class="doc_code">\ref</tt>. The reason is three-fold. First, because smart references ensure the consistent use of one naming scheme over an entire document and across several documents. Second, because smart references automatically make sure that a non-breaking space is inserted between the element name and its ordering number, thus preventing their separation by a line break (to achieve the same effect with manual references, the user must explicitly place both elements inside an <tt class="doc_code">\mbox</tt> command, or use the <tt class="doc_code">nbsp</tt> <span class="doc_caps">html</span> entity). Third and last, because smart references will make a hyperlink of both the name and the ordering, which is friendlier for mouse clicking and arguably esthetically more pleasant.
@@ -1420,7 +1420,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">Boxout blocks allow you emphasise a document fragment by placing it inside a box. Boxouts are useful for warnings, notices, tips, reminders, etc. Boxouts are custom environments, in the sense that the command name that appears in the begin/end pairs is not built-in and is instead defined in the document itself. Therefore, before a boxout is used, it must first be declared via the simple command <tt class="doc_code">\newboxout</tt>. Moreover, boxouts are optionally titled and may be given an automatic ordering.
       </p>
-      <p class="doc_par">The command <tt class="doc_code">\newboxout</tt> accepts at least one, and up to three primary parameters. The first parameter is the name of the boxout environment; this is the same name that must subsequently be used inside the begin/end pairs. Obviously, you may not name a boxout with the same designation of an existing command, or with a designation that begins with the name of an environment that uses the <span class="doc_caps">heredoc</span> technique (namely <tt class="doc_code">verbatim</tt>, <tt class="doc_code">source</tt>, <tt class="doc_code">mathtex</tt>, and <tt class="doc_code">mathml</tt>). Moreover, the name must begin with a lowercase letter and be composed only of lowercase letters and digits. The second parameter, if present, is an inline sequence indicating a fixed title that will appear in all boxouts of this name. Finally, the third parameter may be used to assign a counter to this boxout. If not present, the boxout is unnumbered; moreover, different boxouts may share the same counter. Note that the third parameter may only be given for boxouts that do have a title, and thus also a second parameter.
+      <p class="doc_par">The command <tt class="doc_code">\newboxout</tt> accepts at least one, and up to three primary parameters. The first parameter is the name of the boxout environment; this is the same name that must subsequently be used inside the begin/end pairs. Obviously, you may not name a boxout with the same designation of an existing command, or with a designation that begins with the name of an environment that uses the <span class="doc_caps">heredoc</span> technique (namely <tt class="doc_code">verbatim</tt>, <tt class="doc_code">source</tt>, <tt class="doc_code">mathtex</tt>, and <tt class="doc_code">mathml</tt>). Moreover, the name must begin with a lowercase letter and be composed only of lowercase letters and digits. The second parameter, if present, is an inline sequence indicating a fixed title that will appear in all boxouts of this name. Finally, the third parameter may be used to assign a counter to this boxout. If not present, the boxout is unnumbered; moreover, different boxouts may share the same counter. Note that the third parameter may only be given for boxouts that do have a title, and thus also a second parameter. In addition, bear in mind that counter identifiers must follow the same rules laid out for labels, as described in <a class="doc_lnk" href="#doc:u:sec:headings">Section&nbsp;18</a>. Counter identifiers do nevertheless reside in their own separate namespace, independent of that of labels.
       </p>
       <p class="doc_par">Subsequent to its declaration, using a new boxout named <tt class="doc_code"><i class="doc_emph">name</i></tt> is simply a matter of wrapping its contents between <tt class="doc_code">\begin{<i class="doc_emph">name</i>}</tt> and <tt class="doc_code">\end{<i class="doc_emph">name</i>}</tt>. The begin tag accepts an optional primary parameter with an extra title to assign to the boxout. If the <tt class="doc_code">\newboxout</tt> boxout declaration did not include a title, then this extra title becomes the sole title for this particular instance of the boxout. If on the other hand <tt class="doc_code">\newboxout</tt> already declared a generic title, then the extra title is appended to the generic title. Should neither a generic nor an extra title be given, then the boxout will be titleless.
       </p>
@@ -1446,15 +1446,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <h1 id="doc:u:sec:theorems" class="doc_sec">22.&ensp;<span>Theorem-like environments</span>
       </h1>
-      <p class="doc_par">Theorems and their kin such as corollaries, lemmas, etc, are a staple of mathematical and computer-science writing. For this reason, <span class="doc_caps">lambtex</span> also supports them. In practice, theorem-like environments are declared and used in pretty much the same way as boxouts. The major difference is that the declaration of a new theorem is done via the simple command <tt class="doc_code">\newtheorem</tt>. Moreover, theorems must always have a title, and therefore the declaration has two mandatory primary parameters. Similarly to boxouts, <tt class="doc_code">\newtheorem</tt> may optionally include a third primary parameter specifying the counter if you wish the theorem to be numbered. Note that even though the same counter may be shared between multiple theorem-like environments, you may not share a counter between a boxout and a theorem.
+      <p class="doc_par">Theorems and their kin such as corollaries, lemmas, etc, are a staple of mathematical and computer-science writing. For this reason, <span class="doc_caps">lambtex</span> also supports them. In practice, theorem-like environments are declared and used in pretty much the same way as boxouts. The major difference is that the declaration of a new theorem is done via the simple command <tt class="doc_code">\newtheorem</tt>. Moreover, theorems must always have a title, and therefore the declaration has two mandatory primary parameters. Similarly to boxouts, <tt class="doc_code">\newtheorem</tt> may optionally include a third primary parameter specifying the counter if you wish the theorem to be numbered. Note that even though the same counter may be shared between multiple theorem-like environments, you may not share a counter between a boxout and a theorem. Because all counters share the same namespace, you must make sure collisions do not occur.
       </p>
-      <p class="doc_par">Suppose thus you wish to create a theorem named <tt class="doc_code">theorem</tt>, and whose title is, unsurprisingly, <i class="doc_emph">“Theorem”</i>. Moreover, you want the theorem to be numbered, and its counter to be called <tt class="doc_code">thmcnt</tt>. One particular instantiation of this theorem has the extra title <i class="doc_emph">“John McAuthor”</i>, reflecting its authorship. This is the <span class="doc_caps">lambtex</span> source you may use:
+      <p class="doc_par">Suppose thus you wish to create a theorem named <tt class="doc_code">theorem</tt>, and whose title is, unsurprisingly, <i class="doc_emph">“Theorem”</i>. Moreover, you want the theorem to be numbered, and its counter to be called <tt class="doc_code">cnt:theorem</tt>. One particular instantiation of this theorem has the extra title <i class="doc_emph">“John McAuthor”</i>, reflecting its authorship. This is the <span class="doc_caps">lambtex</span> source you may use:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\newtheorem{theorem}{Theorem}{thmcnt}</code>
+<code class="doc_src_line">\newtheorem{theorem}{Theorem}{cnt:theorem}</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\begin{theorem}{John McAuthor}</code>
@@ -1506,15 +1506,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin[fig:example]{figure}</code>
+<code class="doc_src_line">\begin[fig:example]{figure}{This is the figure's caption.}</code>
 <code class="doc_src_line">\image{circle.png}{This is a circle}</code>
-<code class="doc_src_line">\caption{This is an example of a figure.</code>
-<code class="doc_src_line">Click on it to see in its own page.}</code>
 <code class="doc_src_line">\end{figure}</code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">Note that the captioning is declared via the simple command <tt class="doc_code">\caption</tt>, which when present must follow the block being wrapped. Also, you can refer to this figure from anywhere in the document by using the label <tt class="doc_code">fig:example</tt> with any of the simple commands <tt class="doc_code">\ref</tt>, <tt class="doc_code">\sref</tt>, and <tt class="doc_code">\mref</tt>. The resulting figure (<a class="doc_lnk" href="#doc:u:fig:example">Fig.&nbsp;1</a>) is shown below:
+      <p class="doc_par">Remember that captioning is optional. When present, the caption is an inline sequence declared as a primary parameter of the wrapper environment. Should it not be given, the counter associated with the wrapper is displayed between parentheses below the wrapped block. Also, you can refer to this figure from anywhere in the document by using the label <tt class="doc_code">fig:example</tt> with any of the simple commands <tt class="doc_code">\ref</tt>, <tt class="doc_code">\sref</tt>, and <tt class="doc_code">\mref</tt>. The resulting figure (<a class="doc_lnk" href="#doc:u:fig:example">Fig.&nbsp;1</a>) is shown below:
       </p>
       <div id="doc:u:fig:example" class="doc_wrapper doc_figure doc_float_center">
         <div class="doc_image"><a href="circle.png">
@@ -1524,7 +1522,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           <div>
             <h1>Fig.&nbsp;1:
             </h1>
-            <p>This is an example of a figure. Click on it to see in its own page.
+            <p>This is the figure's caption.
             </p>
           </div>
         </div>
@@ -2013,16 +2011,6 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\caps</tt>
-                  </td>
-                  <td class="doc_cell_l">✘
-                  </td>
-                  <td class="doc_cell_l">✘
-                  </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\caption</tt>
                   </td>
                   <td class="doc_cell_l">✘
                   </td>
@@ -2747,19 +2735,35 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <h1 id="doc:u:sec:thenotes" class="doc_sec"><span>Notes</span>
       </h1>
       <ol class="doc_notes">
-        <li id="doc:u:note:ampersand"><span>(1)</span>
+        <li id="doc:u:note:commands"><span>(1)</span>
+          <div>
+            <p class="doc_par">As stated, any given command may either be expressed by the simple notation or as an environment. This should be interpreted an exclusive-<span class="doc_caps">or</span> condition, meaning that no command exists that can be expressed as both. However, the choice of adopting one or the other notation was not an arbitrary one. Due to its syntactic terseness, the simple notation was preferred. The more verbose environment notation was chosen only for those commands that satisfied at least one of the two following conditions:
+            </p>
+            <ul class="doc_itemize doc_style_disc">
+              <li>
+                <p class="doc_par">The command may be the parent of at least one block-level element. 
+                </p>
+              </li>
+              <li>
+                <p class="doc_par">The command declares a verbatim-like environment using the <span class="doc_caps">heredoc</span> technique for delimitation (see <a class="doc_lnk" href="#doc:u:sec:verbatim">Section&nbsp;10</a> for an example). 
+                </p>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li id="doc:u:note:ampersand"><span>(2)</span>
           <div>
             <p class="doc_par">Note that in most practical situations you can get away with inputting an ampersand directly without escaping. This is because the scanner will only interpret an ampersand as the beginning of an entity declaration if it is immediately followed by an alphabetic or numeric sequence terminated by a semicolon. If it is not, then the ampersand is interpreted as plain text. 
             </p>
           </div>
         </li>
-        <li id="doc:u:note:links"><span>(2)</span>
+        <li id="doc:u:note:links"><span>(3)</span>
           <div>
             <p class="doc_par">The <span class="doc_caps">xhtml</span> standard forbids nested links. Curiously enough, however, the <span class="doc_caps">w3c</span>'s own famous <a class="doc_lnk" href="http://validator.w3.org/">validator</a> is unable to detect such violations of the specification. 
             </p>
           </div>
         </li>
-        <li id="doc:u:note:meta"><span>(3)</span>
+        <li id="doc:u:note:meta"><span>(4)</span>
           <div>
             <p class="doc_par">This is a meta-note, a note about notes. It is used to demonstrate the declaration of notes. 
             </p>
