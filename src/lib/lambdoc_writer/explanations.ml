@@ -165,10 +165,10 @@ let explain_error = function
 		sprintf "You have requested counter '%s' for %s, but custom environments without a title may not have an associated counter." counter (explain_tag tag)
 
 	| Error.Invalid_mathtex (tag, txt) ->
-		sprintf "Invalid mathtex expression '%s' in %s." txt (explain_tag tag)
+		sprintf "Invalid MathTeX expression '%s' in %s." txt (explain_tag tag)
 
 	| Error.Invalid_mathml (tag, txt) ->
-		sprintf "Invalid mathml expression '%s' in %s." txt (explain_tag tag)
+		sprintf "Invalid MathML expression '%s' in %s." txt (explain_tag tag)
 
 	| Error.Invalid_column_number (tag, orig_tag, orig_linenum, found, expected) ->
 		sprintf "Wrong number of columns for a row declared by %s: found %d but expected %d columns.  This row belongs to the tabular environment declared in line %d by %s" (explain_tag tag) found expected orig_linenum (explain_tag orig_tag)

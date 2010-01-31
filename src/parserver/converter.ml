@@ -31,6 +31,7 @@ object (self)
 		let () = match request with
 			| Protocol.Read_manuscript payload ->
 				let verify_utf8 = payload.m_verify_utf8
+				and expand_entities = payload.m_expand_entities
 				and accept_list = payload.m_accept_list
 				and deny_list = payload.m_deny_list
 				and default = payload.m_default
@@ -39,10 +40,11 @@ object (self)
 					| Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string
 					| Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string
 					| Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string in
-				let manuscript = reader ?verify_utf8 ?accept_list ?deny_list ?default source
+				let manuscript = reader ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source
 				in Marshal.to_channel out_channel manuscript []
 			| Protocol.Read_composition payload ->
 				let verify_utf8 = payload.c_verify_utf8
+				and expand_entities = payload.c_expand_entities
 				and accept_list = payload.c_accept_list
 				and deny_list = payload.c_deny_list
 				and default = payload.c_default
@@ -51,7 +53,7 @@ object (self)
 					| Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_composition_from_string
 					| Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_composition_from_string
 					| Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_composition_from_string in
-				let composition = reader ?verify_utf8 ?accept_list ?deny_list ?default source
+				let composition = reader ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source
 				in Marshal.to_channel out_channel composition [] in
 		let () = close_out out_channel
 		in when_done ()

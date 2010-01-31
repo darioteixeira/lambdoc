@@ -22,6 +22,7 @@ exception Proxy_communication_error
 
 val ambivalent_manuscript_from_string:
 	?verify_utf8: bool ->
+	?expand_entities: bool ->
 	?accept_list: Features.manuscript_feature_t list ->
 	?deny_list: Features.manuscript_feature_t list ->
 	?default: Features.default_t ->
@@ -32,6 +33,7 @@ val ambivalent_manuscript_from_string:
 
 val ambivalent_composition_from_string:
 	?verify_utf8: bool ->
+	?expand_entities: bool ->
 	?accept_list: Features.composition_feature_t list ->
 	?deny_list: Features.composition_feature_t list ->
 	?default: Features.default_t ->

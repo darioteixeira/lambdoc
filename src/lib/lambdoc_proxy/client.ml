@@ -45,10 +45,11 @@ let communicate request =
 (*	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let ambivalent_manuscript_from_string ?verify_utf8 ?accept_list ?deny_list ?default source markup =
+let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source markup =
 	let payload =
 		{
 		m_verify_utf8 = verify_utf8;
+		m_expand_entities = expand_entities;
 		m_accept_list = accept_list;
 		m_deny_list = deny_list;
 		m_default = default;
@@ -59,10 +60,11 @@ let ambivalent_manuscript_from_string ?verify_utf8 ?accept_list ?deny_list ?defa
 	Lwt.return reply
 
 
-let ambivalent_composition_from_string ?verify_utf8 ?accept_list ?deny_list ?default source markup =
+let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source markup =
 	let payload =
 		{
 		c_verify_utf8 = verify_utf8;
+		c_expand_entities = expand_entities;
 		c_accept_list = accept_list;
 		c_deny_list = deny_list;
 		c_default = default;

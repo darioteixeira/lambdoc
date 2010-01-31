@@ -455,7 +455,8 @@ struct
 		in Both (mathtex, mathml)
 
 	let from_mathml mathml =
-		let mathml = Blahcaml.sanitize_mathml mathml
-		in Mathml mathml
+		let wrapped = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" ^ mathml ^ "</math>" in
+		let _ = Blahcaml.sanitize_mathml wrapped
+		in Mathml wrapped
 end
 

@@ -10,6 +10,7 @@
 *)
 
 open Pxp_document
+open Pxp_types
 open Lambdoc_reader
 open Ast
 
@@ -35,7 +36,8 @@ let inline_elems =
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
 	"mbox"; "link"; "a";
-	"see"; "cite"; "ref"; "sref"; "mref"
+	"see"; "cite"; "ref"; "sref"; "mref";
+	"arg"; "call";
 	]
 
 
@@ -170,7 +172,10 @@ and process_block node =
 		| T_element "mathtexblk" ->
 			(!!comm, Ast.Mathtex_blk node#data)
 		| T_element "mathmlblk" ->
-			(!!comm, Ast.Mathml_blk node#data)
+			let buffer = Buffer.create 16 in
+			let display_node : _ Pxp_document.node -> unit = fun node -> node#display (`Out_buffer buffer) `Enc_utf8 in
+			let () = node#iter_nodes display_node
+			in (!!comm, Ast.Mathml_blk (Buffer.contents buffer))
 		| T_element "source" ->
 			(!!comm, Ast.Source node#data)
 		| T_element "tabular" ->
@@ -251,6 +256,9 @@ and process_block node =
 			and caption = process_seq node
 			and maybe_counter = node#optional_string_attribute "counter"
 			in (!!comm, Ast.Theoremdef (name, caption, maybe_counter))
+		| T_element x ->
+			prerr_endline ("### " ^ x ^ " ###");
+			failwith "process_block"
 		| _ ->
 			failwith "process_block"
 
@@ -357,12 +365,14 @@ let process_document node = match node#node_type with
 (********************************************************************************)
 
 let parse str =
+	let warner = object method warn w = print_endline ("WARNING: " ^ w) end in
 	let config =
 		{
-		Pxp_types.default_config with
-		Pxp_types.encoding = `Enc_utf8;
-		Pxp_types.idref_pass = false;
-		Pxp_types.enable_namespace_processing = None;
+		default_config with
+		encoding = `Enc_utf8;
+		idref_pass = false;
+		enable_namespace_processing = None;
+		warner = warner;
 		} in
 	let spec = Pxp_tree_parser.default_spec in
 	let source = Pxp_types.from_string ("<document>\n" ^ str ^ "</document>") in
