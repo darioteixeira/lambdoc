@@ -775,7 +775,23 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">We say there is <i class="doc_emph">almost</i> no interpretation of the contents of the verbatim environment because there is one exception. The string <tt class="doc_code">\end{verbatim}</tt> is used as the end marker, and therefore the <span class="doc_caps">lambtex</span> scanner will exit the environment if it encounters this string. This raises the obvious question of how one can insert that string itself within a verbatim context without triggering the termination of the environment. The solution used by <span class="doc_caps">lambtex</span> is reminescent of the <a class="doc_lnk" href="http://en.wikipedia.org/wiki/Here_document"><span class="doc_caps">heredoc</span></a> approach used by other languages. Basically, the markers that delimit verbatim environments need only use <tt class="doc_code">verbatim</tt> as a prefix. The only condition for termination is that the end marker matches the begin marker. Therefore, to include the string <tt class="doc_code">\end{verbatim}</tt> within a verbatim environment, you can simply delimitate that environment with, for example, <tt class="doc_code">\begin{verbatim1}</tt> and <tt class="doc_code">\end{verbatim1}</tt>. Note that only numbers and lowercase letters may be used as suffix characters.
       </p>
-      <p class="doc_par">Optionally, you may provide the extra parameter <tt class="doc_code">mult</tt> to a verbatim environment. This parameter accepts an integer between 0 and 9, indicating a multiplying factor for the contents of the environment. For a factor of <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></span>, the actual scaling relative to normal size is given by <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><msqrt><mn>2</mn></msqrt><mi>x</mi></msup></math></span>. The default factor is 0, which corresponds to normal size. One common application of this feature is to display <span class="doc_caps">unicode</span> characters as full-sized pictures. As an example, this is what the <span class="doc_caps">unicode</span> snowman (code point <span class="doc_caps">U+2603</span>) looks like with a multiplier of 7, corresponding to a font size 11.3 times larger than normal:
+      <p class="doc_par">Optionally, you may provide the extra parameter <tt class="doc_code">mult</tt> to a verbatim environment. This parameter accepts an integer between 0 and 9, indicating a multiplying factor for the contents of the environment. For a factor of <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>x</mi
+></math
+></span>, the actual scaling relative to normal size is given by <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><msup
+><msqrt
+><mn
+>2</mn
+></msqrt
+><mi
+>x</mi
+></msup
+></math
+></span>. The default factor is 0, which corresponds to normal size. One common application of this feature is to display <span class="doc_caps">unicode</span> characters as full-sized pictures. As an example, this is what the <span class="doc_caps">unicode</span> snowman (code point <span class="doc_caps">U+2603</span>) looks like with a multiplier of 7, corresponding to a font size 11.3 times larger than normal:
       </p>
       <div class="doc_verb">
         <div>
@@ -1123,9 +1139,48 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <h1 id="doc:u:sec:math" class="doc_sec">13.&ensp;<span>Mathematical formulas</span>
       </h1>
-      <p class="doc_par"><span class="doc_caps">lambtex</span> also supports the inclusion of equations and mathematical formulas in a document. Mathematics are to be entered using either <span class="doc_caps">MathML</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:mathml">3</a>]</span> or the <span class="doc_caps">TeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:tex">4</a>]</span> format. The former was chosen because an increasing number of tools has the ability to export <span class="doc_caps">MathML</span>. As for the latter, it is the <i class="doc_emph">de facto</i> standard for manually typing mathematical expressions.
+      <p class="doc_par"><span class="doc_caps">lambtex</span> also supports the inclusion of equations and mathematical formulas in a document. Mathematics are to be entered using either <span class="doc_caps">MathML</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:mathml">3</a>]</span> (version 2.0) or the <span class="doc_caps">TeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:tex">4</a>]</span> format. The former was chosen because an increasing number of tools has the ability to export <span class="doc_caps">MathML</span>. As for the latter, it is the <i class="doc_emph">de facto</i> standard for manually typing mathematical expressions.
       </p>
-      <p class="doc_par">Mathematical expressions may be entered in an inline context (embedded inside a paragraph, for example), or in a block context. In the former case, the expression should be delimited between the characters '<tt class="doc_code">[$</tt>' and '<tt class="doc_code">$]</tt>' if it is written in <span class="doc_caps">TeX</span> format, and between characters '<tt class="doc_code">&lt;$</tt>' and '<tt class="doc_code">$&gt;</tt>' if written in <span class="doc_caps">MathML</span>. Though <span class="doc_caps">lambtex</span> does not enforce it, common sense dictates that inline mathematics should restrict themselves to expressions that fit comfortably in a single line. One example is the quadratic equation <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi><mspace width="0"/><msup><mi>x</mi><mn>2</mn></msup><mo lspace="0.222em" rspace="0.222em">+</mo><mi>b</mi><mspace width="0"/><mi>x</mi><mo lspace="0.222em" rspace="0.222em">+</mo><mi>c</mi><mo lspace="0.278em" rspace="0.278em">=</mo><mn>0</mn></mrow></math></span>.
+      <p class="doc_par">Mathematical expressions may be entered in an inline context (embedded inside a paragraph, for example), or in a block context. In the former case, the expression should be delimited between the characters '<tt class="doc_code">[$</tt>' and '<tt class="doc_code">$]</tt>' if it is written in <span class="doc_caps">TeX</span> format, and between characters '<tt class="doc_code">&lt;$</tt>' and '<tt class="doc_code">$&gt;</tt>' if written in <span class="doc_caps">MathML</span>. Though <span class="doc_caps">lambtex</span> does not enforce it, common sense dictates that inline mathematics should restrict themselves to expressions that fit comfortably in a single line. One example is the quadratic equation <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>a</mi
+><mspace
+width="0"
+></mspace
+><msup
+><mi
+>x</mi
+><mn
+>2</mn
+></msup
+><mo
+lspace="0.222em"
+rspace="0.222em"
+>+</mo
+><mi
+>b</mi
+><mspace
+width="0"
+></mspace
+><mi
+>x</mi
+><mo
+lspace="0.222em"
+rspace="0.222em"
+>+</mo
+><mi
+>c</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>=</mo
+><mn
+>0</mn
+></mrow
+></math
+></span>.
       </p>
       <p class="doc_par"><span class="doc_caps">TeX</span> and <span class="doc_caps">MathML</span> mathematical expressions in a block context are specified via the <tt class="doc_code">mathtex</tt> and <tt class="doc_code">mathml</tt> environments, respectively. Furthermore, because both these environments expect their content to be raw text that should be parsed verbatim, they accept the <span class="doc_caps">heredoc</span> technique for delimiting the environment. Suppose thus you wished to enter a math block containing the quadratic formula that solves the equation listed above. Specified in the <span class="doc_caps">TeX</span> format, the code would be the following:
       </p>
@@ -1139,9 +1194,102 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">The resulting equation is shown below. Note that in similarity with other types of blocks, <span class="doc_caps">lambtex</span> also supports named mathematical expressions that may be numbered and referenced from anywhere in a document. For that you need to wrap a <tt class="doc_code">mathtex</tt> or <tt class="doc_code">mathml</tt> environment inside an <tt class="doc_code">equation</tt> block. This technique is part of the advanced features of the language and is discussed with greater detail in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>.
+      <p class="doc_par">The equivalent Presentation <span class="doc_caps">MathML</span> markup is listed below. Note that it is also acceptable to provide Content <span class="doc_caps">MathML</span> instead of Presentation <span class="doc_caps">MathML</span>. In either case, just make sure the markup conforms to version 2.0 of the <span class="doc_caps">MathML</span> standard, and that the <tt class="doc_code">math</tt> top-level element that wraps the <span class="doc_caps">MathML</span> contents is provided as part of the markup. These requirements also apply to the <span class="doc_caps">MathML</span> markup specified in an inline context. On the other hand, giving an explicit namespace to the <span class="doc_caps">MathML</span> markup — that is, specifying <tt class="doc_code">&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;</tt> as the top-level element — is <b class="doc_bold">not</b> necessary, since namespacing requirements are automatically taken care of.
       </p>
-      <div class="doc_mathblk"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo lspace="0.278em" rspace="0.278em">=</mo><mfrac><mrow><mo lspace="0" rspace="0">-</mo><mi>b</mi><mo lspace="0" rspace="0">&#xb1;</mo><msqrt><msup><mi>b</mi><mn>2</mn></msup><mo lspace="0" rspace="0">-</mo><mn>4</mn><mi>a</mi><mspace width="0"/><mi>c</mi></msqrt></mrow><mrow><mn>2</mn><mi>a</mi></mrow></mfrac></mrow></math>
+      <div class="doc_src_box doc_src_zebra doc_src_main">
+        <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">\begin{mathml}</code>
+<code class="doc_src_line">&lt;math&gt;</code>
+<code class="doc_src_line">	&lt;mrow&gt;</code>
+<code class="doc_src_line">	    &lt;mi&gt;x&lt;/mi&gt;</code>
+<code class="doc_src_line">	    &lt;mo&gt;=&lt;/mo&gt;</code>
+<code class="doc_src_line">	    &lt;mfrac&gt;</code>
+<code class="doc_src_line">		&lt;mrow&gt;</code>
+<code class="doc_src_line">		    &lt;mo form=&quot;prefix&quot;&gt;&amp;minus;&lt;/mo&gt;</code>
+<code class="doc_src_line">		    &lt;mi&gt;b&lt;/mi&gt;</code>
+<code class="doc_src_line">		    &lt;mo&gt;&amp;PlusMinus;&lt;/mo&gt;</code>
+<code class="doc_src_line">		    &lt;msqrt&gt;</code>
+<code class="doc_src_line">			&lt;msup&gt;</code>
+<code class="doc_src_line">			    &lt;mi&gt;b&lt;/mi&gt;</code>
+<code class="doc_src_line">			    &lt;mn&gt;2&lt;/mn&gt;</code>
+<code class="doc_src_line">			&lt;/msup&gt;</code>
+<code class="doc_src_line">			&lt;mo&gt;&amp;minus;&lt;/mo&gt;</code>
+<code class="doc_src_line">			&lt;mn&gt;4&lt;/mn&gt;</code>
+<code class="doc_src_line">			&lt;mo&gt;&amp;InvisibleTimes;&lt;/mo&gt;</code>
+<code class="doc_src_line">			&lt;mi&gt;a&lt;/mi&gt;</code>
+<code class="doc_src_line">			&lt;mo&gt;&amp;InvisibleTimes;&lt;/mo&gt;</code>
+<code class="doc_src_line">			&lt;mi&gt;c&lt;/mi&gt;</code>
+<code class="doc_src_line">		    &lt;/msqrt&gt;</code>
+<code class="doc_src_line">		&lt;/mrow&gt;</code>
+<code class="doc_src_line">		&lt;mrow&gt;</code>
+<code class="doc_src_line">		    &lt;mn&gt;2&lt;/mn&gt;</code>
+<code class="doc_src_line">		    &lt;mo&gt;&amp;InvisibleTimes;&lt;/mo&gt;</code>
+<code class="doc_src_line">		    &lt;mi&gt;a&lt;/mi&gt;</code>
+<code class="doc_src_line">		&lt;/mrow&gt;</code>
+<code class="doc_src_line">	    &lt;/mfrac&gt;</code>
+<code class="doc_src_line">	&lt;/mrow&gt;</code>
+<code class="doc_src_line">&lt;/math&gt;</code>
+<code class="doc_src_line">\end{mathml}</code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+      </div>
+      <p class="doc_par">The equation resulting from either of the above sources is shown below. To conclude, bear in mind that in similarity with other types of blocks, <span class="doc_caps">lambtex</span> also supports named mathematical expressions that may be numbered and referenced from anywhere in a document. For that you need to wrap a <tt class="doc_code">mathtex</tt> or <tt class="doc_code">mathml</tt> environment inside an <tt class="doc_code">equation</tt> block. This technique is part of the advanced features of the language and is discussed with greater detail in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>.
+      </p>
+      <div class="doc_mathblk"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>x</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>=</mo
+><mfrac
+><mrow
+><mo
+lspace="0"
+rspace="0"
+>-</mo
+><mi
+>b</mi
+><mo
+lspace="0"
+rspace="0"
+>±</mo
+><msqrt
+><msup
+><mi
+>b</mi
+><mn
+>2</mn
+></msup
+><mo
+lspace="0"
+rspace="0"
+>-</mo
+><mn
+>4</mn
+><mi
+>a</mi
+><mspace
+width="0"
+></mspace
+><mi
+>c</mi
+></msqrt
+></mrow
+><mrow
+><mn
+>2</mn
+><mi
+>a</mi
+></mrow
+></mfrac
+></mrow
+></math
+>
       </div>
       <h1 id="doc:a:6" class="doc_sec">14.&ensp;<span>Images</span>
       </h1>
@@ -1473,7 +1621,56 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           <h1 class="doc_theorem_head"><span class="doc_thmname">Theorem&nbsp;1</span><span class="doc_thmextra">(John McAuthor).</span>
           </h1>
           <div class="doc_theorem_body">
-            <p class="doc_par">Let an egg be defined as an ellipsoid whose radii across the <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math></span>, <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math></span>, and <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math></span> axes are respectively <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi></math></span>, <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math></span>, and <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>c</mi></math></span>. Furthermore, the egg satisfies the scalene condition, and therefore <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>a</mi><mo lspace="0.278em" rspace="0.278em">&gt;</mo><mi>b</mi><mo lspace="0.278em" rspace="0.278em">&gt;</mo><mi>c</mi></mrow></math></span>. All such eggs are optimally opened by their small-end. 
+            <p class="doc_par">Let an egg be defined as an ellipsoid whose radii across the <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>x</mi
+></math
+></span>, <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>y</mi
+></math
+></span>, and <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>z</mi
+></math
+></span> axes are respectively <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>a</mi
+></math
+></span>, <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>b</mi
+></math
+></span>, and <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>c</mi
+></math
+></span>. Furthermore, the egg satisfies the scalene condition, and therefore <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>a</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>&gt;</mo
+><mi
+>b</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>&gt;</mo
+><mi
+>c</mi
+></mrow
+></math
+></span>. All such eggs are optimally opened by their small-end. 
             </p>
           </div>
         </div>
@@ -1684,7 +1881,25 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">Before being used, a macro must be declared via the simple command <tt class="doc_code">\newmacro</tt>. This command takes three mandatory primary parameters: the name of the macro, the number of arguments, and an inline sequence containing the text of the macro. Macro names must obviously be unique and not overlap with the names of built-in commands, but they live in their own private namespace. Moreover, and similarly to boxouts and theorems, the name must begin with a lowercase roman letter and be followed by a combination of lowercase roman letters and digits.
       </p>
-      <p class="doc_par">Should the macro take any arguments, these can be referenced from inside the macro text by the alias <tt class="doc_code">\arg{<i class="doc_emph">num</i>}</tt>, where the <tt class="doc_code"><i class="doc_emph">num</i></tt> between curly brackets is an integer indicating the argument number. Obviously, a macro with <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></span> arguments may not reference an argument <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo lspace="0.222em" rspace="0.222em">+</mo><mn>1</mn></mrow></math></span> or higher. Moreover, arguments are expanded as inline sequences.
+      <p class="doc_par">Should the macro take any arguments, these can be referenced from inside the macro text by the alias <tt class="doc_code">\arg{<i class="doc_emph">num</i>}</tt>, where the <tt class="doc_code"><i class="doc_emph">num</i></tt> between curly brackets is an integer indicating the argument number. Obviously, a macro with <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>n</mi
+></math
+></span> arguments may not reference an argument <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>n</mi
+><mo
+lspace="0.222em"
+rspace="0.222em"
+>+</mo
+><mn
+>1</mn
+></mrow
+></math
+></span> or higher. Moreover, arguments are expanded as inline sequences.
       </p>
       <p class="doc_par">Wherever an inline sequence is accepted, a macro named <tt class="doc_code">name</tt> can be invoked via the simple command <tt class="doc_code">\name</tt>. The invocation of the macro causes the macro's text to be inserted at invocation point. Should the macro have any arguments, these must follow the macro's name immediately, being each one bracketed individually. Therefore, the invocation of macro <tt class="doc_code">name</tt> with arguments <tt class="doc_code">inline1</tt> and <tt class="doc_code">inline2</tt> is done with <span class="doc_mbox"><tt class="doc_code">\name{inline1}{inline2}</tt></span>. Note that because macros can be invoked wherever an inline sequence is accepted and the text of a macro is an inline sequence itself, it follows that macros may invoke other macros. However, because a macro must be declared before being invoked, mutual recursion is not allowed. Moreover, a macro may not invoke itself either. These restrictions are in place to ensure that macro expansion always terminates.
       </p>

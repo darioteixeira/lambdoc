@@ -815,9 +815,9 @@ of the advanced formatting facilities that enable customisation of individual ce
 
 \lambtex also supports the inclusion of equations and mathematical formulas in a
 document.  Mathematics are to be entered using either \caps{MathML}\cite{bib:mathml}
-or the \caps{TeX}\cite{bib:tex} format.  The former was chosen because an increasing
-number of tools has the ability to export \caps{MathML}.  As for the latter, it is
-the \emph{de facto} standard for manually typing mathematical expressions.
+(version 2.0) or the \caps{TeX}\cite{bib:tex} format.  The former was chosen because an
+increasing number of tools has the ability to export \caps{MathML}.  As for the latter,
+it is the \emph{de facto} standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside a
 paragraph, for example), or in a block context.  In the former case, the expression
@@ -841,12 +841,57 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 \end{mathtex}
 \end{source}
 
-The resulting equation is shown below.  Note that in similarity with other types of
-blocks, \lambtex also supports named mathematical expressions that may be numbered
-and referenced from anywhere in a document.  For that you need to wrap a \code{mathtex}
-or \code{mathml} environment inside an \code{equation} block.  This technique is
-part of the advanced features of the language and is discussed with greater detail
-in \sref{sec:wrappers}.
+The equivalent Presentation \caps{MathML} markup is listed below.  Note that it is
+also acceptable to provide Content \caps{MathML} instead of Presentation \caps{MathML}.
+In either case, just make sure the markup conforms to version 2.0 of the \caps{MathML}
+standard, and that the \code{math} top-level element that wraps the \caps{MathML}
+contents is provided as part of the markup.  These requirements also apply to the
+\caps{MathML} markup specified in an inline context.  On the other hand, giving an
+explicit namespace to the \caps{MathML} markup --- that is, specifying \code{<math
+xmlns="http://www.w3.org/1998/Math/MathML">} as the top-level element --- is \bold{not}
+necessary, since namespacing requirements are automatically taken care of.
+
+\begin{source}
+\begin{mathml}
+<math>
+	<mrow>
+	    <mi>x</mi>
+	    <mo>=</mo>
+	    <mfrac>
+		<mrow>
+		    <mo form="prefix">&minus;</mo>
+		    <mi>b</mi>
+		    <mo>&PlusMinus;</mo>
+		    <msqrt>
+			<msup>
+			    <mi>b</mi>
+			    <mn>2</mn>
+			</msup>
+			<mo>&minus;</mo>
+			<mn>4</mn>
+			<mo>&InvisibleTimes;</mo>
+			<mi>a</mi>
+			<mo>&InvisibleTimes;</mo>
+			<mi>c</mi>
+		    </msqrt>
+		</mrow>
+		<mrow>
+		    <mn>2</mn>
+		    <mo>&InvisibleTimes;</mo>
+		    <mi>a</mi>
+		</mrow>
+	    </mfrac>
+	</mrow>
+</math>
+\end{mathml}
+\end{source}
+
+The equation resulting from either of the above sources is shown below.  To conclude,
+bear in mind that in similarity with other types of blocks, \lambtex also supports
+named mathematical expressions that may be numbered and referenced from anywhere in
+a document.  For that you need to wrap a \code{mathtex} or \code{mathml} environment
+inside an \code{equation} block.  This technique is part of the advanced features of
+the language and is discussed with greater detail in \sref{sec:wrappers}.
 
 \begin{mathtex}
 x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
