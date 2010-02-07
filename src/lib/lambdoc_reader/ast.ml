@@ -35,16 +35,11 @@ type command_t =
 (**	{2 Data types for inline context}					*)
 (********************************************************************************)
 
-type entity_t =
-	| Ent_name of string
-	| Ent_deci of string
-	| Ent_hexa of string
-
 type seq_t = inline_t list
  and inline_t = command_t * raw_inline_t
  and raw_inline_t =
 	| Plain of string
-	| Entity of entity_t
+	| Entity of string
 	| Linebreak
 	| Mathtex_inl of string
 	| Mathml_inl of string

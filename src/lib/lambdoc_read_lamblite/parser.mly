@@ -19,7 +19,7 @@ open Lambdoc_reader
 
 %token <string> RAW
 %token <Lambdoc_reader.Ast.command_t * string> PLAIN
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Ast.entity_t> ENTITY
+%token <Lambdoc_reader.Ast.command_t * string> ENTITY
 
 %token <Lambdoc_reader.Ast.command_t> BOLD_MARK
 %token <Lambdoc_reader.Ast.command_t> EMPH_MARK

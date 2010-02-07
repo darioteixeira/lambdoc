@@ -23,7 +23,7 @@ type list_t =
 
 type text_t =
 	| Plain of string
-	| Entity of Ast.entity_t
+	| Entity of string
 	| Bold_mark
 	| Emph_mark
 	| Sup_mark
@@ -77,10 +77,7 @@ let regexp begin_link = "[["
 let regexp end_link = "]]"
 let regexp link_sep = "|"
 
-let regexp entity_hexa = "&#x" (alpha | deci)+ ';'
-let regexp entity_deci = "&#" (alpha | deci)+ ';'
-let regexp entity_name = '&' (alpha | deci)+ ';'
-
+let regexp entity = '&' '#'? (alpha | deci)+ ';'
 let regexp endash = "--"
 let regexp emdash = "---"
 let regexp quote_open = "``"
@@ -114,13 +111,11 @@ let text_scanner lexbuf =
 		| begin_link		-> link_scanner (Begin_link :: accum) lexbuf
 		| end_link		-> main_scanner (End_link :: accum) lexbuf
 		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
-		| entity_hexa		-> main_scanner (Entity (Ast.Ent_hexa (rtrim_lexbuf ~first:3 lexbuf)) :: accum) lexbuf
-		| entity_deci		-> main_scanner (Entity (Ast.Ent_deci (rtrim_lexbuf ~first:2 lexbuf)) :: accum) lexbuf
-		| entity_name		-> main_scanner (Entity (Ast.Ent_name (rtrim_lexbuf ~first:1 lexbuf)) :: accum) lexbuf
-		| endash		-> main_scanner (Entity (Ast.Ent_name "ndash") :: accum) lexbuf
-		| emdash		-> main_scanner (Entity (Ast.Ent_name "mdash") :: accum) lexbuf
-		| quote_open		-> main_scanner (Entity (Ast.Ent_name "ldquo") :: accum) lexbuf
-		| quote_close		-> main_scanner (Entity (Ast.Ent_name "rdquo") :: accum) lexbuf
+		| entity		-> main_scanner (Entity (rtrim_lexbuf ~first:1 lexbuf) :: accum) lexbuf
+		| endash		-> main_scanner (Entity "ndash" :: accum) lexbuf
+		| emdash		-> main_scanner (Entity "mdash" :: accum) lexbuf
+		| quote_open		-> main_scanner (Entity "ldquo" :: accum) lexbuf
+		| quote_close		-> main_scanner (Entity "rdquo" :: accum) lexbuf
 		| _			-> main_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	and link_scanner accum = lexer
 		| eof			-> accum

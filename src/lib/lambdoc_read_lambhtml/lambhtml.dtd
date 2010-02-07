@@ -24,7 +24,7 @@
 	| newmacro | newboxout | newtheorem">
 
 <!ENTITY % Node
-	" br | mathtexinl | mathmlinl
+	" entity | br | mathtexinl | mathmlinl
 	| bold | strong | b | emph | em | i | code | tt | caps
 	| ins | del | sup | sub | mbox | link | a
 	| see | cite | ref | sref | mref
@@ -81,7 +81,7 @@
 <!ELEMENT mathtexblk (#PCDATA)>
 <!ATTLIST mathtexblk %Common;>
 
-<!ELEMENT mathmlblk ANY>
+<!ELEMENT mathmlblk (#PCDATA)>	<!-- The "math" element is defined in the MathML2 DTD -->
 <!ATTLIST mathmlblk %Common;>
 
 <!ELEMENT source (#PCDATA)>
@@ -246,13 +246,16 @@
 
 <!-- Inline elements -->
 
+<!ELEMENT entity (#PCDATA)>
+<!ATTLIST entity %Forbidden;>
+
 <!ELEMENT br EMPTY>
 <!ATTLIST br %Common;>
 
 <!ELEMENT mathtexinl (#PCDATA)>
 <!ATTLIST mathtexinl %Common;>
 
-<!ELEMENT mathmlinl ANY>
+<!ELEMENT mathmlinl (#PCDATA)>	<!-- The "math" element is defined in the MathML2 DTD -->
 <!ATTLIST mathmlinl %Common;>
 
 <!ELEMENT bold %Inline;>

@@ -29,7 +29,7 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> CELL_MARK
 
 %token <Lambdoc_reader.Ast.command_t * string> PLAIN
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_reader.Ast.entity_t> ENTITY
+%token <Lambdoc_reader.Ast.command_t * string> ENTITY
 %token <string> RAW
 
 
