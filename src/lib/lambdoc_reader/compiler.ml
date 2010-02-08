@@ -498,8 +498,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 	let dummy_block = Block.paragraph false None (dummy_inline, []) in
 
 
-	let rec convert_block ~minipaged allow_above_listable allow_above_embeddable allow_above_textual allowed_blk block =
-		match (allow_above_listable, allow_above_embeddable, allow_above_textual, allowed_blk, block) with
+	let rec convert_block ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk block =
+		match (allow_above_listable, allow_above_quotable, allow_above_embeddable, allowed_blk, block) with
 
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph astseq))
 		| (_, _, _, `Any_blk, (comm, Ast.Paragraph astseq)) ->
@@ -526,8 +526,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () = convert_frag_of_desc_frags ~comm ~cons:Block.description ~minipaged x1 x2 astfrags
 			in check_comm `Feature_description comm elem
 
-		| (_, x, true, `Any_blk, (comm, Ast.Qanda astfrags)) ->
-			let elem () = convert_frag_of_qanda_frags ~comm ~cons:Block.qanda ~minipaged x astfrags
+		| (_, x1, x2, `Any_blk, (comm, Ast.Qanda astfrags)) ->
+			let elem () = convert_frag_of_qanda_frags ~comm ~cons:Block.qanda ~minipaged x1 x2 astfrags
 			in check_comm `Feature_qanda comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Verse astfrag)) ->
@@ -552,8 +552,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () = convert_mathml Block.math comm txt
 			in check_comm `Feature_mathml_blk comm elem
 
-		| (_, _, true, `Printout_blk, (comm, Ast.Source txt))
-		| (_, _, true, `Any_blk, (comm, Ast.Source txt)) ->
+		| (_, _, _, `Printout_blk, (comm, Ast.Source txt))
+		| (_, _, _, `Any_blk, (comm, Ast.Source txt)) ->
 			let elem () =
 				let extra = Extra.parse comm errors [Lang_hnd; Box_hnd; Linenums_hnd; Zebra_hnd] in
 				let lang = Extra.get_lang ~default:None extra Lang_hnd in
@@ -565,22 +565,22 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in [Block.source src]
 			in check_comm `Feature_source comm elem
 
-		| (_, _, true, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
-		| (_, _, true, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
+		| (_, _, _, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
+		| (_, _, _, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
 			let elem () = [Block.tabular (convert_tabular comm tcols tab)]
 			in check_comm `Feature_tabular comm elem
 
-		| (_, _, true, `Decor_blk, (comm, Ast.Verbatim txt))
-		| (_, _, true, `Figure_blk, (comm, Ast.Verbatim txt))
-		| (_, _, true, `Any_blk, (comm, Ast.Verbatim txt)) ->
+		| (_, _, _, `Decor_blk, (comm, Ast.Verbatim txt))
+		| (_, _, _, `Figure_blk, (comm, Ast.Verbatim txt))
+		| (_, _, _, `Any_blk, (comm, Ast.Verbatim txt)) ->
 			let elem () =
 				let mult = Extra.fetch_numeric ~default:0 comm errors Mult_hnd
 				in [Block.verbatim mult txt]
 			in check_comm `Feature_verbatim comm elem
 
-		| (_, _, true, `Decor_blk, (comm, Ast.Image (alias, alt)))
-		| (_, _, true, `Figure_blk, (comm, Ast.Image (alias, alt)))
-		| (_, _, true, `Any_blk, (comm, Ast.Image (alias, alt))) ->
+		| (_, _, _, `Decor_blk, (comm, Ast.Image (alias, alt)))
+		| (_, _, _, `Figure_blk, (comm, Ast.Image (alias, alt)))
+		| (_, _, _, `Any_blk, (comm, Ast.Image (alias, alt))) ->
 			let elem () =
 				let extra = Extra.parse comm errors [Frame_hnd; Width_hnd] in
 				let frame = Extra.get_boolean ~default:false extra Frame_hnd
@@ -590,17 +590,17 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				[Block.image image]
 			in check_comm `Feature_image comm elem
 
-		| (_, _, true, `Figure_blk, (comm, Ast.Subpage astfrag))
-		| (_, _, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
+		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
+		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
 			let elem () =
 				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged:true true true true `Any_blk astfrag)
 				in [Block.subpage frag]
 			in check_comm `Feature_subpage comm elem
 
-		| (_, _, true, `Any_blk, (comm, Ast.Decor astblk)) ->
+		| (_, _, _, `Any_blk, (comm, Ast.Decor astblk)) ->
 			let elem () =
 				let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd
-				and blk = Obj.magic (convert_block ~minipaged false false true `Decor_blk astblk)
+				and blk = Obj.magic (convert_block ~minipaged false false false `Decor_blk astblk)
 				in perhaps (Block.decor floatation) blk
 			in check_comm `Feature_decor comm elem
 
@@ -633,11 +633,11 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 						| Unnumbered _ -> Custom.unnumbered
 						| Numbered _   -> Custom.numbered in
 					let data = custom_maker env label order in
-					let (block_maker, allow_above_textual) = match kind with
+					let (block_maker, allow_above_embeddable) = match kind with
 						| Custom.Boxout  -> (Block.boxout floatation (Custom.Boxout.make data), true)
 						| Custom.Theorem -> (Block.theorem (Custom.Theorem.make data), false) in
 					let maybe_seq = maybe (convert_seq ~comm) maybe_astseq
-					and frag = convert_frag_aux ~comm ~minipaged false false allow_above_textual `Any_blk astfrag
+					and frag = convert_frag_aux ~comm ~minipaged false false allow_above_embeddable `Any_blk astfrag
 					in [block_maker maybe_seq frag]
 				with
 					| Not_found ->
@@ -825,9 +825,9 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				| `Printout_blk
 				| `Table_blk
 				| `Figure_blk as blk -> blk
-				| `Any_blk -> match (allow_above_listable, allow_above_embeddable, allow_above_textual) with
-					| (_, _, false) -> `Textual_blk
-					| (_, false, _) -> `Embeddable_blk
+				| `Any_blk -> match (allow_above_listable, allow_above_quotable, allow_above_embeddable) with
+					| (_, _, false) -> `Embeddable_blk
+					| (_, false, _) -> `Quotable_blk
 					| (false, _, _) -> `Listable_blk
 					| _		-> `Super_blk in
 			let msg = Error.Unexpected_block (comm.comm_tag, blk)
@@ -898,9 +898,9 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 					in Hashtbl.add customisations env data
 
 
-	and convert_frag_of_anon_frags ~comm ~cons ~minipaged allow_above_embeddable allow_above_textual astfrags =
+	and convert_frag_of_anon_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, astfrag) =
-			let elem () = [convert_frag_aux ~comm ~minipaged false allow_above_embeddable allow_above_textual `Any_blk astfrag]
+			let elem () = [convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag]
 			in check_comm `Feature_item comm elem in
 		let frags = Obj.magic (flatten_map conv astfrags)
 		in match frags with
@@ -913,11 +913,11 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 
 
 
-	and convert_frag_of_desc_frags ~comm ~cons ~minipaged allow_above_embeddable allow_above_textual astfrags =
+	and convert_frag_of_desc_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, astseq, astfrag) =
 			let elem () =
 				let seq = convert_seq ~comm astseq
-				and frag = convert_frag_aux ~comm ~minipaged false allow_above_embeddable allow_above_textual `Any_blk astfrag
+				and frag = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag
 				in [(seq, frag)]
 			in check_comm `Feature_item comm elem in
 		let frags = Obj.magic (flatten_map conv astfrags)
@@ -930,10 +930,10 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				[cons (hd, tl)]
 
 
-	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged allow_above_embeddable astfrags =
+	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
 		let conv ((q_comm, q_qanda, q_astfrag), (a_comm, a_qanda, a_astfrag)) =
 			let question = 
-				let frag = convert_frag_aux ~comm:q_comm ~minipaged false allow_above_embeddable true `Any_blk q_astfrag in
+				let frag = convert_frag_aux ~comm:q_comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk q_astfrag in
 				let (feature, elem) = match q_qanda with
 					| Different maybe_astseq ->
 						(`Feature_question, fun () -> [(Some (maybe (convert_seq ~comm:q_comm) maybe_astseq), frag)])
@@ -941,7 +941,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 						(`Feature_rquestion, fun () -> [(None, frag)])
 				in check_comm feature q_comm elem
 			and answer = 
-				let frag = convert_frag_aux ~comm:a_comm ~minipaged false allow_above_embeddable true `Any_blk a_astfrag in
+				let frag = convert_frag_aux ~comm:a_comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk a_astfrag in
 				let (feature, elem) = match a_qanda with
 					| Different maybe_astseq ->
 						(`Feature_answer, fun () -> [(Some (maybe (convert_seq ~comm:a_comm) maybe_astseq), frag)])
@@ -961,8 +961,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				[cons (hd, tl)]
 
 
-	and convert_frag_aux ?comm ~minipaged allow_above_listable allow_above_embeddable allow_above_textual allowed_blk astfrag =
-		let conv astblk = Obj.magic (convert_block ~minipaged allow_above_listable allow_above_embeddable allow_above_textual allowed_blk astblk) in
+	and convert_frag_aux ?comm ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
+		let conv astblk = Obj.magic (convert_block ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk) in
 		let frag = flatten_map conv astfrag
 		in match frag with
 			| [] ->

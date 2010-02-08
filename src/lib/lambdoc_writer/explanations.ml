@@ -21,8 +21,8 @@ let explain_nesting blk =
 	let which = match blk with
 		| `Super_blk	  -> "a super block (or sub-types)"
 		| `Listable_blk	  -> "a listable block (or sub-types)"
-		| `Embeddable_blk -> "an embeddable block (or sub-types)"
-		| `Textual_blk	  -> "a textual block"
+		| `Quotable_blk	  -> "a quotable block (or sub-types)"
+		| `Embeddable_blk -> "an embeddable block"
 		| `Paragraph_blk  -> "a 'paragraph' block"
 		| `Decor_blk	  -> "an 'image' or 'verbatim' block"
 		| `Equation_blk	  -> "a 'mathtex' or 'mathml' block"

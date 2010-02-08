@@ -55,8 +55,8 @@ type target_t =
 type blk_category_t =
 	[ `Super_blk
 	| `Listable_blk
+	| `Quotable_blk
 	| `Embeddable_blk
-	| `Textual_blk
 	| `Paragraph_blk
 	| `Decor_blk
 	| `Equation_blk
