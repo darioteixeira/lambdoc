@@ -28,7 +28,6 @@ struct
 			Parser.parse str
 		with
 			| Pxp_types.At (where, exc) ->
-				let fix_line line = line - 1 in
 				let subs = Pcre.exec ~rex:where_rex where in
 				let line = int_of_string (Pcre.get_named_substring where_rex "line" subs) in
 				let why = Pxp_types.string_of_exn exc in
@@ -38,9 +37,9 @@ struct
 						let line = int_of_string (Pcre.get_named_substring where_rex "line" subs) in
 						let before = Pcre.get_named_substring where_rex "before" subs in
 						let after = Pcre.get_named_substring where_rex "after" subs
-						in before ^ "at line " ^ (string_of_int (fix_line line)) ^ after
+						in before ^ "at line " ^ (string_of_int (line - 1)) ^ after
 					with Not_found -> why
-				in raise (Reading_error (fix_line line, new_why))
+				in raise (Reading_error (line - 1, new_why))
 			| Failure msg ->
 				raise (Failure ("Internal parser error in " ^ msg))
 end

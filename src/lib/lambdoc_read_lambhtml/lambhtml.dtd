@@ -79,10 +79,10 @@
 <!ATTLIST quote %Common;>
 
 <!ELEMENT mathtexblk (#PCDATA)>
-<!ATTLIST mathtexblk %Common;>
+<!ATTLIST mathtexblk %Common; idx CDATA #REQUIRED>
 
-<!ELEMENT mathmlblk (#PCDATA)>	<!-- The "math" element is defined in the MathML2 DTD -->
-<!ATTLIST mathmlblk %Common;>
+<!ELEMENT mathmlblk (#PCDATA)>
+<!ATTLIST mathmlblk %Common; idx CDATA #REQUIRED>
 
 <!ELEMENT source (#PCDATA)>
 <!ATTLIST source %Common;>
@@ -253,10 +253,10 @@
 <!ATTLIST br %Common;>
 
 <!ELEMENT mathtexinl (#PCDATA)>
-<!ATTLIST mathtexinl %Common;>
+<!ATTLIST mathtexinl %Common; idx CDATA #REQUIRED>
 
-<!ELEMENT mathmlinl (#PCDATA)>	<!-- The "math" element is defined in the MathML2 DTD -->
-<!ATTLIST mathmlinl %Common;>
+<!ELEMENT mathmlinl (#PCDATA)>
+<!ATTLIST mathmlinl %Common; idx CDATA #REQUIRED>
 
 <!ELEMENT bold %Inline;>
 <!ATTLIST bold %Common;>
