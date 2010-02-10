@@ -653,28 +653,28 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astseq, astblk))) ->
 			let elem () =
 				let (floatation, wrapper, maybe_seq) = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
-				let blk = Obj.magic (convert_block ~minipaged false false false `Equation_blk astblk)
+				let blk = Obj.magic (convert_block ~minipaged true true true `Equation_blk astblk)
 				in perhaps (Block.equation floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astseq, astblk))) ->
 			let elem () =
 				let (floatation, wrapper, maybe_seq) = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq
-				and blk = Obj.magic (convert_block ~minipaged false false true `Printout_blk astblk)
+				and blk = Obj.magic (convert_block ~minipaged true true true `Printout_blk astblk)
 				in perhaps (Block.printout floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astseq, astblk))) ->
 			let elem () =
 				let (floatation, wrapper, maybe_seq) = convert_wrapper comm table_counter Wrapper.Table maybe_astseq
-				and blk = Obj.magic (convert_block ~minipaged false false true `Table_blk astblk)
+				and blk = Obj.magic (convert_block ~minipaged true true true `Table_blk astblk)
 				in perhaps (Block.table floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astseq, astblk))) ->
 			let elem () =
 				let (floatation, wrapper, maybe_seq) = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq
-				and blk = Obj.magic (convert_block ~minipaged false false true `Figure_blk astblk)
+				and blk = Obj.magic (convert_block ~minipaged true true true `Figure_blk astblk)
 				in perhaps (Block.figure floatation wrapper maybe_seq) blk
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
@@ -832,7 +832,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 					| _		-> `Super_blk in
 			let msg = Error.Unexpected_block (comm.comm_tag, blk)
 			in DynArray.add errors (Some comm.comm_linenum, msg);
-			[]
+			[dummy_block]
 
 
 	and convert_preset_sectional ~tocable ~minipaged cons feature comm = 
