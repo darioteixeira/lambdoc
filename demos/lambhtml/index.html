@@ -12,7 +12,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
   </head>
   <body>
     <div class="doc doc_valid doc_manuscript">
-      <h1 class="doc_title">Complete sample of Lambhtml
+      <h1 class="doc_title">A complete sample of <span class="doc_caps">Lambhtml</span>
       </h1>
       <h2 class="doc_title">Dario Teixeira
       </h2>
@@ -21,129 +21,1175 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <div class="doc_abs">
         <h1 class="doc_sec">Abstract
         </h1>
+        <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+        </p>
       </div>
       <h1 id="doc:a:1" class="doc_sec"><span>Table of Contents</span>
       </h1>
       <ul class="doc_toc">
-        <li class="level0"><a class="doc_lnk" href="#doc:a:2">I.&ensp;Inline features</a>
+        <li class="level0"><a class="doc_lnk" href="#doc:a:2">Inline features</a>
         </li>
-        <li class="level0"><a class="doc_lnk" href="#doc:a:3">II.&ensp;Block features</a>
+        <li class="level0"><a class="doc_lnk" href="#doc:a:3">Block features</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:4">1.&ensp;Unordered lists</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:foobar">1.&ensp;Text paragraphs</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:5">2.&ensp;Ordered lists</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:4">2.&ensp;Unordered lists</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:6">3.&ensp;Definition lists</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:5">3.&ensp;Ordered lists</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:7">4.&ensp;Quotation environments</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:6">4.&ensp;Definition lists</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:8">5.&ensp;Tabular environments</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:7">5.&ensp;Q&amp;A environments</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:9">6.&ensp;Verbatim environments</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:8">6.&ensp;Verse environments</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:10">7.&ensp;Images</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:9">7.&ensp;Quote environments</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:11">8.&ensp;Subpages</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:10">8.&ensp;Mathtex blocks</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:13">9.&ensp;Equation wrapper</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:11">9.&ensp;Presentation Mathml blocks</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:14">10.&ensp;Printout wrapper</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:12">10.&ensp;Content Mathml blocks</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:15">11.&ensp;Table wrapper</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:13">11.&ensp;Source environments</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:17">12.&ensp;Figure wrapper</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:14">12.&ensp;Tabular environments</a>
         </li>
-        <li class="level0"><a class="doc_lnk" href="#doc:a:19">III.&ensp;Sectioning</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:15">13.&ensp;Verbatim environments</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:intro">13.&ensp;Introduction</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:16">14.&ensp;Images</a>
         </li>
-        <li class="level2"><a class="doc_lnk" href="#doc:a:20">13.1.&ensp;Sub-Introduction</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:17">15.&ensp;Subpages</a>
         </li>
-        <li class="level3"><a class="doc_lnk" href="#doc:a:21">13.1.1.&ensp;Sub-Sub-Introduction</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:19">16.&ensp;Decorations</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:22">Bibliography</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:20">17.&ensp;Pull-quotes</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:23">Notes</a>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:21">18.&ensp;Custom boxout environments</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:23">19.&ensp;Custom theorem environments</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:25">20.&ensp;Equation wrapper</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:27">21.&ensp;Printout wrapper</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:29">22.&ensp;Table wrapper</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:31">23.&ensp;Figure wrapper</a>
+        </li>
+        <li class="level0"><a class="doc_lnk" href="#doc:a:33">Sectioning</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:intro">24.&ensp;Introduction</a>
+        </li>
+        <li class="level2"><a class="doc_lnk" href="#doc:a:34">24.1.&ensp;Sub-Introduction</a>
+        </li>
+        <li class="level3"><a class="doc_lnk" href="#doc:a:35">24.1.1.&ensp;Sub-Sub-Introduction</a>
+        </li>
+        <li class="level0"><a class="doc_lnk" href="#doc:a:36">Backmatter</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:37">Bibliography</a>
+        </li>
+        <li class="level1"><a class="doc_lnk" href="#doc:a:38">Notes</a>
         </li>
       </ul>
-      <h1 id="doc:a:2" class="doc_part">I.&ensp;<span>Inline features</span>
+      <h1 id="doc:a:2" class="doc_part"><span>Inline features</span>
       </h1>
       <p class="doc_par">
-You can declare HTML entities by code point (ex: €), or by name (ex: €).
-Another example is &amp;, the &lt;, the &gt;, the &quot;, and '.
+You can declare HTML entities by name (ex: €), by decimal code point (ex:
+€), or by hexadecimal code point (ex: €).  Here we have examples
+of text in <b class="doc_bold">bold</b> and <i class="doc_emph">emphasised</i> and <tt class="doc_code">monospaced</tt> and in
+<span class="doc_caps">small-caps</span> and with <sup class="doc_sup">superscripts</sup> and <sub class="doc_sub">subscripts</sub>. You
+may also correct <del class="doc_del">perfect</del><ins class="doc_ins">broken</ins> text.  Also, <span class="doc_mbox"><i class="doc_emph">all of this
+emphasised text should appear on the same line.</i></span>
 
       </p>
       <p class="doc_par">
-This is a paragraph with <b class="doc_bold">bold text</b>, <i class="doc_emph">italic text</i>, and <tt class="doc_code">monospaced text</tt>.
-It also contains <span class="doc_caps">text in small caps</span>, <del class="doc_del">corrected</del><ins class="doc_ins">fixed</ins> text, <sup class="doc_sup">superscripts</sup>,
-and <sub class="doc_sub">subscripts</sub>. Also, <span><i class="doc_emph"><span>all&nbsp;of&nbsp;this&nbsp;emphasised&nbsp;text&nbsp;should&nbsp;appear&nbsp;on&nbsp;the&nbsp;same&nbsp;line.</span></i></span>
+Here is a link to section number <a class="doc_lnk" href="#doc:u:sec:foobar">1</a> or smartly, <a class="doc_lnk" href="#doc:u:sec:foobar">Section&nbsp;1</a>.  And here is a link to <a class="doc_lnk" href="#doc:u:sec:foobar">that same
+section</a>.  You can also link to Tip <a class="doc_lnk" href="#doc:u:tip:one">#1</a>, or smarly <a class="doc_lnk" href="#doc:u:tip:one">
+	Tip
+&nbsp;#1</a>, or a link to <a class="doc_lnk" href="#doc:u:tip:one"> that same tip</a>. The
+bibliography is at the end<span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:one">1</a>]</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:two">2</a>]</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:three">3</a>]</span>.  You can also place multiple citations in the same square
+brackets<span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:one">1</a>,<a class="doc_lnk" href="#doc:u:bib:two">2</a>,<a class="doc_lnk" href="#doc:u:bib:three">3</a>]</span>.  There is also<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:one">1</a>)</span>
+a list<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:two">2</a>)</span> of notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:three">3</a>)</span>, which if you prefer you
+can reference them with a single command<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:one">1</a>,<a class="doc_lnk" href="#doc:u:note:two">2</a>,<a class="doc_lnk" href="#doc:u:note:three">3</a>)</span>.
+
+      </p>
+      <h1 id="doc:a:3" class="doc_part"><span>Block features</span>
+      </h1>
+      <h1 id="doc:u:sec:foobar" class="doc_sec">1.&ensp;<span>Text paragraphs</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
 
       </p>
       <p class="doc_par">
-This paragraph contains an external link to <a class="doc_lnk" href="http://en.wikipedia.org/">Wikipedia</a>,
-and an internal link to Section <a class="doc_lnk" href="#doc:u:sec:intro">13</a>, a smarter link to <a class="doc_lnk" href="#doc:u:sec:intro">Section&nbsp;13</a>,
-and a manual link <a class="doc_lnk" href="#doc:u:sec:intro">to that same section</a>.  Finally, it also contains a note<a class="doc_lnk doc_see" href="#doc:u:note">(1)</a>
-and bibliography references<a class="doc_lnk doc_cite" href="#doc:u:kur1">[1]</a>.
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
 
       </p>
-      <h1 id="doc:a:3" class="doc_part">II.&ensp;<span>Block features</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:4" class="doc_sec">2.&ensp;<span>Unordered lists</span>
       </h1>
-      <h1 id="doc:a:4" class="doc_sec">1.&ensp;<span>Unordered lists</span>
-      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <ul class="doc_itemize doc_style_disc">
         <li>
-          <p class="doc_par">One item
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </li>
         <li>
-          <p class="doc_par">Another item
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </li>
         <li>
-          <p class="doc_par">Yet another item
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </li>
       </ul>
-      <h1 id="doc:a:5" class="doc_sec">2.&ensp;<span>Ordered lists</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:5" class="doc_sec">3.&ensp;<span>Ordered lists</span>
       </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <ol class="doc_enumerate doc_style_decimal">
         <li>
-          <p class="doc_par">One item
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </li>
         <li>
-          <p class="doc_par">Another item
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </li>
         <li>
-          <p class="doc_par">Yet another item
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </li>
       </ol>
-      <h1 id="doc:a:6" class="doc_sec">3.&ensp;<span>Definition lists</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:6" class="doc_sec">4.&ensp;<span>Definition lists</span>
       </h1>
-      <dl class="doc_description"><dt>One item</dt>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <dl class="doc_description"><dt>Alpha</dt>
         <dd>
-          <p class="doc_par">One item description
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
-        </dd><dt>Another item</dt>
+        </dd><dt>Beta</dt>
         <dd>
-          <p class="doc_par">Another item description
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
-        </dd><dt>Yet another item</dt>
+        </dd><dt>Gamma</dt>
         <dd>
-          <p class="doc_par">Yet another item description
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
           </p>
         </dd>
       </dl>
-      <h1 id="doc:a:7" class="doc_sec">4.&ensp;<span>Quotation environments</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:7" class="doc_sec">5.&ensp;<span>Q&amp;A environments</span>
       </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <dl class="doc_qanda"><dt class="doc_question doc_empty">Q:</dt>
+        <dd class="doc_question">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </dd><dt class="doc_answer doc_empty">A:</dt>
+        <dd class="doc_answer">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </dd><dt class="doc_question doc_empty">Q:</dt>
+        <dd class="doc_question">
+          <p class="doc_par">
+		
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+	
+          </p>
+        </dd><dt class="doc_answer doc_empty">A:</dt>
+        <dd class="doc_answer">
+          <p class="doc_par">
+		
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+	
+          </p>
+        </dd>
+        <dt class="doc_question"></dt>
+        <dd class="doc_question">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </dd>
+        <dt class="doc_answer"></dt>
+        <dd class="doc_answer">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </dd>
+        <dt class="doc_question"></dt>
+        <dd class="doc_question">
+          <p class="doc_par">
+		
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+	
+          </p>
+        </dd>
+        <dt class="doc_answer"></dt>
+        <dd class="doc_answer">
+          <p class="doc_par">
+		
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+	
+          </p>
+        </dd>
+      </dl>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:8" class="doc_sec">6.&ensp;<span>Verse environments</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_verse">
+        <div>
+          <p class="doc_par">
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+	
+          </p>
+          <p class="doc_par">
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+	
+          </p>
+          <p class="doc_par">
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+            <br />
+	
+	The quick brown fox jumps over the lazy dog.
+
+	
+          </p>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:9" class="doc_sec">7.&ensp;<span>Quote environments</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <blockquote class="doc_quote">
-        <p class="doc_par">This is a quote.
+        <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
         </p>
       </blockquote>
-      <h1 id="doc:a:8" class="doc_sec">5.&ensp;<span>Tabular environments</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:10" class="doc_sec">8.&ensp;<span>Mathtex blocks</span>
       </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_mathblk"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>x</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>=</mo
+><mfrac
+><mrow
+><msup
+><mi
+>a</mi
+><mn
+>2</mn
+></msup
+><mo
+lspace="0"
+rspace="0"
+>+</mo
+><msqrt
+><msup
+><mi
+>a</mi
+><mn
+>2</mn
+></msup
+><mo
+lspace="0"
+rspace="0"
+>+</mo
+><msup
+><mi
+>b</mi
+><mn
+>2</mn
+></msup
+></msqrt
+></mrow
+><mrow
+><mn
+>1</mn
+><mo
+lspace="0"
+rspace="0"
+>+</mo
+><msup
+><mi
+>y</mi
+><mn
+>2</mn
+></msup
+></mrow
+></mfrac
+></mrow
+></math
+>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:11" class="doc_sec">9.&ensp;<span>Presentation Mathml blocks</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_mathblk"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>x</mi
+><mo
+>=</mo
+><mfrac
+><mrow
+><mo
+form="prefix"
+>−</mo
+><mi
+>b</mi
+><mo
+>±</mo
+><msqrt
+><msup
+><mi
+>b</mi
+><mn
+>2</mn
+></msup
+><mo
+>−</mo
+><mn
+>4</mn
+><mo
+>⁢</mo
+><mi
+>a</mi
+><mo
+>⁢</mo
+><mi
+>c</mi
+></msqrt
+></mrow
+><mrow
+><mn
+>2</mn
+><mo
+>⁢</mo
+><mi
+>a</mi
+></mrow
+></mfrac
+></mrow
+></math
+>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:12" class="doc_sec">10.&ensp;<span>Content Mathml blocks</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_mathblk"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><apply
+><in
+definitionURL=""
+encoding=""
+></in
+><ci
+definitionURL=""
+encoding=""
+>x</ci
+><set
+><apply
+><divide
+definitionURL=""
+encoding=""
+></divide
+><apply
+><plus
+definitionURL=""
+encoding=""
+></plus
+><apply
+><minus
+definitionURL=""
+encoding=""
+></minus
+><ci
+definitionURL=""
+encoding=""
+>b</ci
+></apply
+><apply
+><root
+definitionURL=""
+encoding=""
+></root
+><apply
+><minus
+definitionURL=""
+encoding=""
+></minus
+><apply
+><power
+definitionURL=""
+encoding=""
+></power
+><ci
+definitionURL=""
+encoding=""
+>b</ci
+><cn
+base="10"
+definitionURL=""
+encoding=""
+>2</cn
+></apply
+><apply
+><times
+definitionURL=""
+encoding=""
+></times
+><cn
+base="10"
+definitionURL=""
+encoding=""
+>4</cn
+><ci
+definitionURL=""
+encoding=""
+>a</ci
+><ci
+definitionURL=""
+encoding=""
+>c</ci
+></apply
+></apply
+></apply
+></apply
+><apply
+><times
+definitionURL=""
+encoding=""
+></times
+><cn
+base="10"
+definitionURL=""
+encoding=""
+>2</cn
+><ci
+definitionURL=""
+encoding=""
+>a</ci
+></apply
+></apply
+><apply
+><divide
+definitionURL=""
+encoding=""
+></divide
+><apply
+><minus
+definitionURL=""
+encoding=""
+></minus
+><apply
+><minus
+definitionURL=""
+encoding=""
+></minus
+><ci
+definitionURL=""
+encoding=""
+>b</ci
+></apply
+><apply
+><root
+definitionURL=""
+encoding=""
+></root
+><apply
+><minus
+definitionURL=""
+encoding=""
+></minus
+><apply
+><power
+definitionURL=""
+encoding=""
+></power
+><ci
+definitionURL=""
+encoding=""
+>b</ci
+><cn
+base="10"
+definitionURL=""
+encoding=""
+>2</cn
+></apply
+><apply
+><times
+definitionURL=""
+encoding=""
+></times
+><cn
+base="10"
+definitionURL=""
+encoding=""
+>4</cn
+><ci
+definitionURL=""
+encoding=""
+>a</ci
+><ci
+definitionURL=""
+encoding=""
+>c</ci
+></apply
+></apply
+></apply
+></apply
+><apply
+><times
+definitionURL=""
+encoding=""
+></times
+><cn
+base="10"
+definitionURL=""
+encoding=""
+>2</cn
+><ci
+definitionURL=""
+encoding=""
+>a</ci
+></apply
+></apply
+></set
+></apply
+></math
+>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:13" class="doc_sec">11.&ensp;<span>Source environments</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_src_box doc_src_zebra doc_src_main">
+        <pre class="doc_src_nums">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">1</code>
+<code class="doc_src_line">2</code>
+<code class="doc_src_line">3</code>
+<code class="doc_src_line">4</code>
+<code class="doc_src_line">5</code>
+<code class="doc_src_line">6</code>
+<code class="doc_src_line">7</code>
+<code class="doc_src_line">8</code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+        <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_dir">type</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_kwa">tree</span> <span class="doc_src_esc">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Leaf</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Node</span> <span class="doc_src_dir">of</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_esc">*</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_kwa">tree</span> <span class="doc_src_esc">*</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_kwa">tree</span></code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_dir">let rec</span> <span class="doc_src_kwa">count</span> <span class="doc_src_esc">=</span> <span class="doc_src_dir">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Leaf</span>                     <span class="doc_src_esc">-&gt;</span> <span class="doc_src_kwc">0</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Node</span> <span class="doc_src_esc">(</span><span class="doc_src_kwa">node</span><span class="doc_src_esc">,</span> <span class="doc_src_kwa">left</span><span class="doc_src_esc">,</span> <span class="doc_src_kwa">right</span><span class="doc_src_esc">) -&gt;</span> <span class="doc_src_kwc">1</span> <span class="doc_src_esc">+ (</span><span class="doc_src_kwa">count left</span><span class="doc_src_esc">) + (</span><span class="doc_src_kwa">count right</span><span class="doc_src_esc">);;</span></code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:14" class="doc_sec">12.&ensp;<span>Tabular environments</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <div class="doc_tab">
         <div>
           <table>
@@ -210,33 +1256,555 @@ and bibliography references<a class="doc_lnk doc_cite" href="#doc:u:kur1">[1]</a
           </table>
         </div>
       </div>
-      <h1 id="doc:a:9" class="doc_sec">6.&ensp;<span>Verbatim environments</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:15" class="doc_sec">13.&ensp;<span>Verbatim environments</span>
       </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <div class="doc_verb">
         <div>
           <pre class="doc_mult0">
-This is verbatim.
+       -------
+       |  A  |
+       -------
+          |
+          |
+          |
+         / \
+        /   \
+       /     \
+      /       \
+     /         \
+    /           \
+-------       -------
+|  A  |       |  C  |
+-------       -------
 </pre>
         </div>
       </div>
-      <h1 id="doc:a:10" class="doc_sec">7.&ensp;<span>Images</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:16" class="doc_sec">14.&ensp;<span>Images</span>
       </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <div class="doc_image"><a href="foobar.png">
 <img src="foobar.png" alt="Foobar" /></a>
       </div>
-      <h1 id="doc:a:11" class="doc_sec">8.&ensp;<span>Subpages</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:17" class="doc_sec">15.&ensp;<span>Subpages</span>
       </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
       <div class="doc_subpage">
-        <h1 id="doc:a:12" class="doc_sec"><span>Title in subpage</span>
+        <h1 id="doc:a:18" class="doc_sec"><span>Title in subpage</span>
         </h1>
+        <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+        </p>
       </div>
-      <h1 id="doc:a:13" class="doc_sec">9.&ensp;<span>Equation wrapper</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:19" class="doc_sec">16.&ensp;<span>Decorations</span>
       </h1>
-      <h1 id="doc:a:14" class="doc_sec">10.&ensp;<span>Printout wrapper</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_decor doc_float_left">
+        <div class="doc_image"><a href="foobar.png">
+<img src="foobar.png" alt="Foobar" /></a>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:20" class="doc_sec">17.&ensp;<span>Pull-quotes</span>
       </h1>
-      <h1 id="doc:a:15" class="doc_sec">11.&ensp;<span>Table wrapper</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div class="doc_pull doc_float_center">
+        <div>
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
+          </p>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:21" class="doc_sec">18.&ensp;<span>Custom boxout environments</span>
       </h1>
-      <div id="doc:a:16" class="doc_wrapper doc_table doc_float_center">
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:a:22" class="doc_boxout doc_boxout_env_warning doc_float_center">
+        <h1 class="doc_boxout_head">
+	Warning
+
+        </h1>
+        <div class="doc_boxout_body">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:u:tip:one" class="doc_boxout doc_boxout_env_tip doc_float_center">
+        <h1 class="doc_boxout_head">
+	Tip
+&nbsp;#1:&nbsp;This is a title
+        </h1>
+        <div class="doc_boxout_body">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:23" class="doc_sec">19.&ensp;<span>Custom theorem environments</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:a:24" class="doc_theorem doc_theorem_env_theorem">
+        <h1 class="doc_theorem_head"><span class="doc_thmname">
+	Thereom
+&nbsp;1.</span>
+        </h1>
+        <div class="doc_theorem_body">
+          <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+          </p>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:25" class="doc_sec">20.&ensp;<span>Equation wrapper</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:a:26" class="doc_wrapper doc_equation doc_float_center">
+        <div class="doc_mathblk"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>x</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>=</mo
+><mfrac
+><mrow
+><msup
+><mi
+>a</mi
+><mn
+>2</mn
+></msup
+><mo
+lspace="0"
+rspace="0"
+>+</mo
+><msqrt
+><msup
+><mi
+>a</mi
+><mn
+>2</mn
+></msup
+><mo
+lspace="0"
+rspace="0"
+>+</mo
+><msup
+><mi
+>b</mi
+><mn
+>2</mn
+></msup
+></msqrt
+></mrow
+><mrow
+><mn
+>1</mn
+><mo
+lspace="0"
+rspace="0"
+>+</mo
+><msup
+><mi
+>y</mi
+><mn
+>2</mn
+></msup
+></mrow
+></mfrac
+></mrow
+></math
+>
+        </div>
+        <div class="doc_caption doc_caption_long">
+          <div>
+            <h1>Eq.&nbsp;1:
+            </h1>
+            <p>
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
+            </p>
+          </div>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:27" class="doc_sec">21.&ensp;<span>Printout wrapper</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:a:28" class="doc_wrapper doc_printout doc_float_center">
+        <div class="doc_src_box doc_src_zebra doc_src_main">
+          <pre class="doc_src_nums">
+
+<code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">1</code>
+<code class="doc_src_line">2</code>
+<code class="doc_src_line">3</code>
+<code class="doc_src_line">4</code>
+<code class="doc_src_line">5</code>
+<code class="doc_src_line">6</code>
+<code class="doc_src_line">7</code>
+<code class="doc_src_line">8</code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+          <pre class="doc_src_code">
+
+<code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_dir">type</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_kwa">tree</span> <span class="doc_src_esc">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Leaf</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Node</span> <span class="doc_src_dir">of</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_esc">*</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_kwa">tree</span> <span class="doc_src_esc">*</span> <span class="doc_src_dstr">'a</span> <span class="doc_src_kwa">tree</span></code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_dir">let rec</span> <span class="doc_src_kwa">count</span> <span class="doc_src_esc">=</span> <span class="doc_src_dir">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Leaf</span>                     <span class="doc_src_esc">-&gt;</span> <span class="doc_src_kwc">0</span></code>
+<code class="doc_src_line">    <span class="doc_src_esc">|</span> <span class="doc_src_sym">Node</span> <span class="doc_src_esc">(</span><span class="doc_src_kwa">node</span><span class="doc_src_esc">,</span> <span class="doc_src_kwa">left</span><span class="doc_src_esc">,</span> <span class="doc_src_kwa">right</span><span class="doc_src_esc">) -&gt;</span> <span class="doc_src_kwc">1</span> <span class="doc_src_esc">+ (</span><span class="doc_src_kwa">count left</span><span class="doc_src_esc">) + (</span><span class="doc_src_kwa">count right</span><span class="doc_src_esc">);;</span></code>
+
+<code class="doc_src_line doc_src_dummy"></code></pre>
+        </div>
+        <div class="doc_caption doc_caption_long">
+          <div>
+            <h1>Print.&nbsp;1:
+            </h1>
+            <p>
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
+            </p>
+          </div>
+        </div>
+      </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:29" class="doc_sec">22.&ensp;<span>Table wrapper</span>
+      </h1>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:a:30" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
           <div>
             <table>
@@ -269,52 +1837,194 @@ This is verbatim.
           <div>
             <h1>Tab.&nbsp;1:
             </h1>
-            <p>This is the caption of the table.
+            <p>
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
             </p>
           </div>
         </div>
       </div>
-      <h1 id="doc:a:17" class="doc_sec">12.&ensp;<span>Figure wrapper</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:31" class="doc_sec">23.&ensp;<span>Figure wrapper</span>
       </h1>
-      <div id="doc:a:18" class="doc_wrapper doc_figure doc_float_center">
-        <div class="doc_verb">
-          <div>
-            <pre class="doc_mult0">
-sdfasdfads
-</pre>
-          </div>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <div id="doc:a:32" class="doc_wrapper doc_figure doc_float_center">
+        <div class="doc_image"><a href="foobar.png">
+<img src="foobar.png" alt="Foobar" /></a>
         </div>
         <div class="doc_caption doc_caption_long">
           <div>
             <h1>Fig.&nbsp;1:
             </h1>
-            <p>This is the caption of the figure.
+            <p>
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
             </p>
           </div>
         </div>
       </div>
-      <h1 id="doc:a:19" class="doc_part">III.&ensp;<span>Sectioning</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:33" class="doc_part"><span>Sectioning</span>
       </h1>
-      <h1 id="doc:u:sec:intro" class="doc_sec">13.&ensp;<span>Introduction</span>
+      <h1 id="doc:u:sec:intro" class="doc_sec">24.&ensp;<span>Introduction</span>
       </h1>
-      <h2 id="doc:a:20" class="doc_sec">13.1.&ensp;<span>Sub-Introduction</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h2 id="doc:a:34" class="doc_sec">24.1.&ensp;<span>Sub-Introduction</span>
       </h2>
-      <h3 id="doc:a:21" class="doc_sec">13.1.1.&ensp;<span>Sub-Sub-Introduction</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h3 id="doc:a:35" class="doc_sec">24.1.1.&ensp;<span>Sub-Sub-Introduction</span>
       </h3>
-      <h1 id="doc:a:22" class="doc_sec"><span>Bibliography</span>
+      <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+      </p>
+      <h1 id="doc:a:36" class="doc_part"><span>Backmatter</span>
+      </h1>
+      <h1 id="doc:a:37" class="doc_sec"><span>Bibliography</span>
       </h1>
       <ol class="doc_bibs">
-        <li id="doc:u:kur1"><span>[1]</span>
-          <p><span class="doc_bib_author">Akira Kurosawa</span><span class="doc_bib_title">Rashomon</span><span class="doc_bib_resource">A theatre near you</span>
+        <li id="doc:u:bib:one"><span>[1]</span>
+          <p><span class="doc_bib_author">John McAuthor</span><span class="doc_bib_title">Title of the article</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://en.wikipedia.org/">http://en.wikipedia.org/</a></span>
+          </p>
+        </li>
+        <li id="doc:u:bib:two"><span>[2]</span>
+          <p><span class="doc_bib_author">John McAuthor</span><span class="doc_bib_title">Title of the article</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://en.wikipedia.org/">http://en.wikipedia.org/</a></span>
+          </p>
+        </li>
+        <li id="doc:u:bib:three"><span>[3]</span>
+          <p><span class="doc_bib_author">John McAuthor</span><span class="doc_bib_title">Title of the article</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://en.wikipedia.org/">http://en.wikipedia.org/</a></span>
           </p>
         </li>
       </ol>
-      <h1 id="doc:a:23" class="doc_sec"><span>Notes</span>
+      <h1 id="doc:a:38" class="doc_sec"><span>Notes</span>
       </h1>
       <ol class="doc_notes">
-        <li id="doc:u:note"><span>(1)</span>
+        <li id="doc:u:note:one"><span>(1)</span>
           <div>
-            <p class="doc_par">This is a note.
+            <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+            </p>
+          </div>
+        </li>
+        <li id="doc:u:note:two"><span>(2)</span>
+          <div>
+            <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
+            </p>
+          </div>
+        </li>
+        <li id="doc:u:note:three"><span>(3)</span>
+          <div>
+            <p class="doc_par">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+
             </p>
           </div>
         </li>

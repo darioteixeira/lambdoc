@@ -1,74 +1,332 @@
-<title>Complete sample of Lambhtml</title>
+<newmacro name="fox" nargs="0">
+	The quick brown fox jumps over the lazy dog.
+</newmacro>
 
+<newmacro name="short" nargs="0">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+</newmacro>
+
+<newmacro name="lorem" nargs="0">
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+	ullamcorper ultricies nisi.
+</newmacro>
+
+
+<!-- ****************************************************************** -->
+
+<title>A complete sample of <caps>Lambhtml</caps></title>
 <subtitle>Dario Teixeira</subtitle>
 <subtitle>January 2010</subtitle>
 
 <abstract>
-	<p>This is a complete sample of Lambhtml features.</p>
+<p><call name="lorem"/></p>
 </abstract>
 
 <toc/>
 
-<part>Inline features</part>
+
+<!-- ****************************************************************** -->
+<part order="">Inline features</part>
 
 <p>
-You can declare HTML entities by code point (ex: &#8364;), or by name (ex: &euro;).
-Another example is &amp;, the &lt;, the &gt;, the &quot;, and &apos;.
+You can declare HTML entities by name (ex: &euro;), by decimal code point (ex:
+&#8364;), or by hexadecimal code point (ex: &#x20ac;).  Here we have examples
+of text in <b>bold</b> and <i>emphasised</i> and <code>monospaced</code> and in
+<caps>small-caps</caps> and with <sup>superscripts</sup> and <sub>subscripts</sub>. You
+may also correct <del>perfect</del><ins>broken</ins> text.  Also, <mbox><i>all of this
+emphasised text should appear on the same line.</i></mbox>
 </p>
 
 <p>
-This is a paragraph with <b>bold text</b>, <i>italic text</i>, and <tt>monospaced text</tt>.
-It also contains <caps>text in small caps</caps>, <del>corrected</del><ins>fixed</ins> text, <sup>superscripts</sup>,
-and <sub>subscripts</sub>. Also, <mbox><i>all of this emphasised text should appear on the same line.</i></mbox>
+Here is a link to section number <ref href="sec:foobar"/> or smartly, <sref
+href="sec:foobar"/>.  And here is a link to <mref href="sec:foobar">that same
+section</mref>.  You can also link to Tip <ref href="tip:one"/>, or smarly <sref
+href="tip:one"/>, or a link to <mref href="tip:one"> that same tip</mref>. The
+bibliography is at the end<cite href="bib:one"/><cite href="bib:two"/><cite
+href="bib:three"/>.  You can also place multiple citations in the same square
+brackets<cite href="bib:one bib:two bib:three"/>.  There is also<see href="note:one"/>
+a list<see href="note:two"/> of notes<see href="note:three"/>, which if you prefer you
+can reference them with a single command<see href="note:one note:two note:three"/>.
 </p>
 
-<p>
-This paragraph contains an external link to <a href="http://en.wikipedia.org/">Wikipedia</a>,
-and an internal link to Section <ref href="sec:intro"/>, a smarter link to <sref href="sec:intro"/>,
-and a manual link <mref href="sec:intro">to that same section</mref>.  Finally, it also contains a note<see href="note"/>
-and bibliography references<cite href="kur1"/>.
-</p>
 
-<part>Block features</part>
+<!-- ****************************************************************** -->
+<part order="">Block features</part>
 
+
+<!-- ****************************************************************** -->
+<h1 label="sec:foobar">Text paragraphs</h1>
+
+<p><call name="lorem"/></p>
+<p><call name="lorem"/></p>
+<p><call name="lorem"/></p>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
 <h1>Unordered lists</h1>
 
+<p><call name="lorem"/></p>
 <ul>
-	<li>One item</li>
-	<li>Another item</li>
-	<li>Yet another item</li>
+	<li><call name="lorem"/></li>
+	<li><call name="lorem"/></li>
+	<li><call name="lorem"/></li>
 </ul>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
 <h1>Ordered lists</h1>
 
+<p><call name="lorem"/></p>
 <ol>
-	<li><p>One item</p></li>
-	<li><p>Another item</p></li>
-	<li><p>Yet another item</p></li>
+	<li><call name="lorem"/></li>
+	<li><call name="lorem"/></li>
+	<li><call name="lorem"/></li>
 </ol>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
 <h1>Definition lists</h1>
 
+<p><call name="lorem"/></p>
 <dl>
-	<dt>One item</dt>
-	<dd><p>One item description</p></dd>
+	<dt>Alpha</dt>
+	<dd><call name="lorem"/></dd>
 
-	<dt>Another item</dt>
-	<dd><p>Another item description</p></dd>
+	<dt>Beta</dt>
+	<dd><call name="lorem"/></dd>
 
-	<dt>Yet another item</dt>
-	<dd><p>Yet another item description</p></dd>
+	<dt>Gamma</dt>
+	<dd><call name="lorem"/></dd>
 </dl>
+<p><call name="lorem"/></p>
 
-<h1>Quotation environments</h1>
 
+<!-- ****************************************************************** -->
+<h1>Q&amp;A environments</h1>
+
+<p><call name="lorem"/></p>
+<qanda>
+	<question>
+		<dt>Q:</dt>
+		<dd><call name="lorem"/></dd>
+	</question>
+
+	<answer>
+		<dt>A:</dt>
+		<dd><call name="lorem"/></dd>
+	</answer>
+
+	<rquestion>
+		<call name="lorem"/>
+	</rquestion>
+
+	<ranswer>
+		<call name="lorem"/>
+	</ranswer>
+
+	<question>
+		<dd><call name="lorem"/></dd>
+	</question>
+
+	<answer>
+		<dd><call name="lorem"/></dd>
+	</answer>
+
+	<rquestion>
+		<call name="lorem"/>
+	</rquestion>
+
+	<ranswer>
+		<call name="lorem"/>
+	</ranswer>
+</qanda>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Verse environments</h1>
+
+<p><call name="lorem"/></p>
+<verse>
+	<p>
+	<call name="fox"/><br/>
+	<call name="fox"/><br/>
+	<call name="fox"/><br/>
+	<call name="fox"/>
+	</p>
+
+	<p>
+	<call name="fox"/><br/>
+	<call name="fox"/><br/>
+	<call name="fox"/><br/>
+	<call name="fox"/>
+	</p>
+
+	<p>
+	<call name="fox"/><br/>
+	<call name="fox"/><br/>
+	<call name="fox"/><br/>
+	<call name="fox"/>
+	</p>
+</verse>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Quote environments</h1>
+
+<p><call name="lorem"/></p>
 <quote>
-	<p>This is a quote.</p>
+<p><call name="lorem"/></p>
 </quote>
+<p><call name="lorem"/></p>
 
 
+<!-- ****************************************************************** -->
+<h1>Mathtex blocks</h1>
+
+<p><call name="lorem"/></p>
+<mathtexblk>
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+</mathtexblk>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Presentation Mathml blocks</h1>
+
+<p><call name="lorem"/></p>
+<mathmlblk>
+<math>
+	<mrow>
+		<mi>x</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mrow>
+				<mo form="prefix">&minus;</mo>
+				<mi>b</mi>
+				<mo>&PlusMinus;</mo>
+				<msqrt>
+					<msup>
+						<mi>b</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>&minus;</mo>
+					<mn>4</mn>
+					<mo>&InvisibleTimes;</mo>
+					<mi>a</mi>
+					<mo>&InvisibleTimes;</mo>
+					<mi>c</mi>
+				</msqrt>
+			</mrow>
+			<mrow>
+				<mn>2</mn>
+				<mo>&InvisibleTimes;</mo>
+				<mi>a</mi>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+</mathmlblk>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Content Mathml blocks</h1>
+
+<p><call name="lorem"/></p>
+<mathmlblk>
+<math>
+<apply><in/>
+<ci>x</ci>
+<set>
+<apply><divide/>
+<apply><plus/>
+<apply><minus/>
+<ci>b</ci>
+</apply>
+<apply><root/>
+<apply><minus/>
+<apply><power/>
+<ci>b</ci>
+<cn>2</cn>
+</apply>
+<apply><times/>
+<cn>4</cn>
+<ci>a</ci>
+<ci>c</ci>
+</apply>
+</apply>
+</apply>
+</apply>
+<apply><times/>
+<cn>2</cn>
+<ci>a</ci>
+</apply>
+</apply>
+<apply><divide/>
+<apply><minus/>
+<apply><minus/>
+<ci>b</ci>
+</apply>
+<apply><root/>
+<apply><minus/>
+<apply><power/>
+<ci>b</ci>
+<cn>2</cn>
+</apply>
+<apply><times/>
+<cn>4</cn>
+<ci>a</ci>
+<ci>c</ci>
+</apply>
+</apply>
+</apply>
+</apply>
+<apply><times/>
+<cn>2</cn>
+<ci>a</ci>
+</apply>
+</apply>
+</set>
+</apply>
+</math>
+</mathmlblk>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Source environments</h1>
+
+<p><call name="lorem"/></p>
+<source extra="ocaml">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+</source>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
 <h1>Tabular environments</h1>
 
+<p><call name="lorem"/></p>
 <tabular cols="cccc">
 <thead>
 	<tr>
@@ -111,78 +369,230 @@ and bibliography references<cite href="kur1"/>.
 	</tr>
 </tbody>
 </tabular>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
 <h1>Verbatim environments</h1>
 
+<p><call name="lorem"/></p>
 <pre>
-This is verbatim.
+       -------
+       |  A  |
+       -------
+          |
+          |
+          |
+         / \
+        /   \
+       /     \
+      /       \
+     /         \
+    /           \
+-------       -------
+|  A  |       |  C  |
+-------       -------
 </pre>
+<p><call name="lorem"/></p>
 
 
+<!-- ****************************************************************** -->
 <h1>Images</h1>
 
+<p><call name="lorem"/></p>
 <image src="foobar.png" alt="Foobar"/>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
 <h1>Subpages</h1>
 
+<p><call name="lorem"/></p>
 <subpage>
 	<h1 order="">Title in subpage</h1>
+	<p><call name="lorem"/></p>
 </subpage>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
+<h1>Decorations</h1>
+
+<p><call name="lorem"/></p>
+<decor extra="left">
+	<image src="foobar.png" alt="Foobar"/>
+</decor>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Pull-quotes</h1>
+
+<p><call name="lorem"/></p>
+<pull>
+	<p><call name="short"/></p>
+</pull>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Custom boxout environments</h1>
+
+<newboxout name="warning">
+	Warning
+</newboxout>
+
+<newboxout name="tip" counter="tip">
+	Tip
+</newboxout>
+
+<p><call name="lorem"/></p>
+<boxout name="warning">
+	<p><call name="lorem"/></p>
+</boxout>
+<p><call name="lorem"/></p>
+<boxout name="tip" label="tip:one">
+	<caption>This is a title</caption>
+	<p><call name="lorem"/></p>
+</boxout>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
+<h1>Custom theorem environments</h1>
+
+<newtheorem name="theorem" counter="thm">
+	Thereom
+</newtheorem>
+
+<p><call name="lorem"/></p>
+<theorem name="theorem">
+	<p><call name="lorem"/></p>
+</theorem>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
 <h1>Equation wrapper</h1>
 
+<p><call name="lorem"/></p>
+<equation>
+	<caption><call name="short"/></caption>
+	<mathtexblk>
+	x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+	</mathtexblk>
+</equation>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
 <h1>Printout wrapper</h1>
 
+<p><call name="lorem"/></p>
+<printout>
+<caption><call name="short"/></caption>
+<source extra="ocaml">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+</source>
+</printout>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
 <h1>Table wrapper</h1>
 
+<p><call name="lorem"/></p>
 <table>
-<tabular cols="cccc">
-<thead>
-	<tr>
-		<td>1</td>
-		<td>2</td>
-		<td>3</td>
-		<td>4</td>
-	</tr>
-</thead>
-<tbody>
-	<tr>
-		<td cell="2l">One</td>
-		<td>Three</td>
-		<td>Four</td>
-	</tr>
-</tbody>
-</tabular>
-<caption>This is the caption of the table.</caption>
+	<caption><call name="short"/></caption>
+	<tabular cols="cccc">
+	<thead>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td cell="2l">One</td>
+			<td>Three</td>
+			<td>Four</td>
+		</tr>
+	</tbody>
+	</tabular>
 </table>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
 <h1>Figure wrapper</h1>
 
+<p><call name="lorem"/></p>
 <figure>
-<pre>
-sdfasdfads
-</pre>
-<caption>This is the caption of the figure.</caption>
+	<caption><call name="short"/></caption>
+	<image src="foobar.png" alt="Foobar"/>
 </figure>
+<p><call name="lorem"/></p>
 
-<part>Sectioning</part>
+
+<!-- ****************************************************************** -->
+<part order="">Sectioning</part>
 
 <h1 label="sec:intro">Introduction</h1>
+<p><call name="lorem"/></p>
 
 <h2>Sub-Introduction</h2>
+<p><call name="lorem"/></p>
 
 <h3>Sub-Sub-Introduction</h3>
+<p><call name="lorem"/></p>
 
+
+<!-- ****************************************************************** -->
+<part order="">Backmatter</part>
+
+
+<!-- ****************************************************************** -->
 <bibliography/>
 
-<bib label="kur1">
-	<who>Akira Kurosawa</who>
-	<what>Rashomon</what>
-	<where>A theatre near you</where>
+<bib label="bib:one">
+	<who>John McAuthor</who>
+	<what>Title of the article</what>
+	<where><a href="http://en.wikipedia.org/"/></where>
 </bib>
 
+<bib label="bib:two">
+	<who>John McAuthor</who>
+	<what>Title of the article</what>
+	<where><a href="http://en.wikipedia.org/"/></where>
+</bib>
+
+<bib label="bib:three">
+	<who>John McAuthor</who>
+	<what>Title of the article</what>
+	<where><a href="http://en.wikipedia.org/"/></where>
+</bib>
+
+
+<!-- ****************************************************************** -->
 <notes/>
 
-<note label="note">
-<p>This is a note.</p>
+<note label="note:one">
+<p><call name="lorem"/></p>
 </note>
+
+<note label="note:two">
+<p><call name="lorem"/></p>
+</note>
+
+<note label="note:three">
+<p><call name="lorem"/></p>
+</note>
+

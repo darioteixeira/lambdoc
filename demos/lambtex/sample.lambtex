@@ -1,14 +1,14 @@
-\newmacro{loremshort}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
+\newmacro{fox}{0}{The quick brown fox jumps over the lazy dog.}
+
+\newmacro{short}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
 
 \newmacro{lorem}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.}
 
-\newmacro{fox}{0}{The quick brown fox jumps over the lazy dog.}
-
 \newmacro{elwho}{0}{John McAuthor}
 \newmacro{elwhat}{0}{Title of the article}
-\newmacro{elwhere}{0}{\link{http://www.wikipedia.org/}{http://www.wikipedia.org/}}
+\newmacro{elwhere}{0}{\link{http://www.wikipedia.org/}}
 
-\title{A complete example of \caps{Lambtex}}
+\title{A complete sample of \caps{Lambtex}}
 \subtitle{Dario Teixeira}
 \subtitle{January 2010}
 
@@ -18,22 +18,26 @@
 
 \toc
 
-\part(){Inline elements}
+\part(){Inline features}
 
 \p<initial>{\lorem}
 
-Here we have examples of text in \bold{bold} and \emph{emphasised} and \code{monospaced}
-and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You
-may also correct \del{perfect}\ins{broken} text. Here is a link to section
-number \ref{sec:foobar} or smartly, \sref{sec:foobar}.  And here is a link to
-\mref{sec:foobar}{that same section}.  You can also link to Tip \ref{tip:one}, or
-smarly \sref{tip:one}, or a link to \mref{tip:one}{that same tip}. The bibliography is
-at the end\cite{bib1}\cite{bib2}\cite{bib3}.  You can also place multiple citations
-in the same square brackets\cite{bib1}{bib2}{bib3}. There is also\see{note1} a
-list\see{note2} of notes\see{note3}, which if you prefer you can reference them with
-a single command\see{note1}{note2}{note3}.
+You can declare HTML entities by name (ex: &euro;), by decimal code point (ex:
+&#8364;), or by hexadecimal code point (ex: &#x20ac;).  Here we have examples of text in
+\bold{bold} and \emph{emphasised} and \code{monospaced} and in \caps{small-caps} and with
+\sup{superscripts} and \sub{subscripts}. You may also correct \del{perfect}\ins{broken}
+text.  Also, \mbox{\emph{all of this emphasised text should appear on the same line.}}
 
-\part(){Block elements}
+Here is a link to section number \ref{sec:foobar} or smartly,
+\sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
+section}.  You can also link to Tip \ref{tip:one}, or smarly \sref{tip:one},
+or a link to \mref{tip:one}{that same tip}. The bibliography is at the
+end\cite{bib:bib1}\cite{bib:bib2}\cite{bib:bib3}.  You can also place multiple
+citations in the same square brackets\cite{bib:bib1}{bib:bib2}{bib:bib3}. There is
+also\see{note:note1} a list\see{note:note2} of notes\see{note:note3}, which if you prefer
+you can reference them with a single command\see{note:note1}{note:note2}{note:note3}.
+
+\part(){Block features}
 
 \section[sec:foobar]{Text paragraphs}
 
@@ -42,17 +46,6 @@ a single command\see{note1}{note2}{note3}.
 \p{\lorem}
 \p{\lorem}
 
-\section{Top level section}
-
-\p{\lorem}
-
-\subsection{Mid level section}
-
-\p{\lorem}
-
-\subsubsection{Low level section}
-
-\p{\lorem}
 
 \section{Unordered lists}
 
@@ -89,11 +82,11 @@ a single command\see{note1}{note2}{note3}.
 \p{\lorem}
 \begin{qanda}
 \question{Question:}
-	\p{\loremshort}
+	\p{\short}
 \answer{Answer:}
 	\p{\lorem}
 \question{Q:}
-	\p{\loremshort}
+	\p{\short}
 \answer{A:}
 	\p{\lorem}
 	\p{\lorem}
@@ -113,6 +106,7 @@ a single command\see{note1}{note2}{note3}.
 \end{qanda}
 \p{\lorem}
 
+
 \section{Verse environments}
 
 \p{\lorem}
@@ -123,6 +117,7 @@ a single command\see{note1}{note2}{note3}.
 \end{verse}
 \p{\lorem}
 
+
 \section{Quote environments}
 
 \p{\lorem}
@@ -131,12 +126,114 @@ a single command\see{note1}{note2}{note3}.
 \end{quote}
 \p{\lorem}
 
-\section{Math blocks}
+
+\section{MathTeX blocks}
 
 \p{\lorem}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
+\p{\lorem}
+
+
+\section{Presentation MathML blocks}
+
+\p{\lorem}
+\begin{mathml}
+<math>
+	<mrow>
+		<mi>x</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mrow>
+				<mo form="prefix">&minus;</mo>
+				<mi>b</mi>
+				<mo>&PlusMinus;</mo>
+				<msqrt>
+					<msup>
+						<mi>b</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>&minus;</mo>
+					<mn>4</mn>
+					<mo>&InvisibleTimes;</mo>
+					<mi>a</mi>
+					<mo>&InvisibleTimes;</mo>
+					<mi>c</mi>
+				</msqrt>
+			</mrow>
+			<mrow>
+				<mn>2</mn>
+				<mo>&InvisibleTimes;</mo>
+				<mi>a</mi>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+\end{mathml}
+\p{\lorem}
+
+
+\section{Content MathML blocks}
+
+\p{\lorem}
+\begin{mathml}
+<math>
+<apply><in/>
+<ci>x</ci>
+<set>
+<apply><divide/>
+<apply><plus/>
+<apply><minus/>
+<ci>b</ci>
+</apply>
+<apply><root/>
+<apply><minus/>
+<apply><power/>
+<ci>b</ci>
+<cn>2</cn>
+</apply>
+<apply><times/>
+<cn>4</cn>
+<ci>a</ci>
+<ci>c</ci>
+</apply>
+</apply>
+</apply>
+</apply>
+<apply><times/>
+<cn>2</cn>
+<ci>a</ci>
+</apply>
+</apply>
+<apply><divide/>
+<apply><minus/>
+<apply><minus/>
+<ci>b</ci>
+</apply>
+<apply><root/>
+<apply><minus/>
+<apply><power/>
+<ci>b</ci>
+<cn>2</cn>
+</apply>
+<apply><times/>
+<cn>4</cn>
+<ci>a</ci>
+<ci>c</ci>
+</apply>
+</apply>
+</apply>
+</apply>
+<apply><times/>
+<cn>2</cn>
+<ci>a</ci>
+</apply>
+</apply>
+</set>
+</apply>
+</math>
+\end{mathml}
 \p{\lorem}
 
 
@@ -211,7 +308,6 @@ let rec count = function
 \section{Verbatim environments}
 
 \p{\lorem}
-
 \begin{verbatim}
        -------
        |  A  |
@@ -229,7 +325,6 @@ let rec count = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-
 \p{\lorem}
 
 \begin<6>{verbatim}
@@ -237,7 +332,6 @@ let rec count = function
 ┫☃┣
 ┗┳┛
 \end{verbatim}
-
 \p{\lorem}
 
 
@@ -484,22 +578,20 @@ let rec count = function
 \subsection{Centered}
 
 \p{\lorem}
-\begin{equation}
+\begin{equation}{\fox}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{\fox}
 \end{equation}
 \p{\lorem}
 
 \subsection{Floating left}
 
 \p{\lorem}
-\begin<left>{equation}
+\begin<left>{equation}{\fox}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{\fox}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -507,11 +599,10 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \subsection{Floating right}
 
 \p{\lorem}
-\begin<right>{equation}
+\begin<right>{equation}{\fox}
 \begin{mathtex}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \end{mathtex}
-\caption{\fox}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -557,7 +648,7 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \subsection{Centered}
 
 \p{\lorem}
-\begin{printout}
+\begin{printout}{\fox}
 \begin<ocaml>{source}
 type 'a tree =
     | Leaf
@@ -567,14 +658,13 @@ let rec count = function
     | Leaf		       -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 \end{source}
-\caption{\fox}
 \end{printout}
 \p{\lorem}
 
 \subsection{Floating left}
 
 \p{\lorem}
-\begin<left>{printout}
+\begin<left>{printout}{\fox}
 \begin<ocaml,!linenums>{source}
 type t =
     | Foo of int
@@ -584,7 +674,6 @@ let is_foo = function
     | Foo _ -> true
     | Bar _ -> false
 \end{source}
-\caption{\fox}
 \end{printout}
 \p{\lorem}
 \p{\lorem}
@@ -592,7 +681,7 @@ let is_foo = function
 \subsection{Floating right}
 
 \p{\lorem}
-\begin<right>{printout}
+\begin<right>{printout}{\fox}
 \begin<ocaml,!linenums>{source}
 type t =
     | Foo of int
@@ -602,7 +691,6 @@ let is_foo = function
     | Foo _ -> true
     | Bar _ -> false
 \end{source}
-\caption{\fox}
 \end{printout}
 \p{\lorem}
 \p{\lorem}
@@ -613,7 +701,7 @@ let is_foo = function
 \subsection{Centered}
 
 \p{\lorem}
-\begin{table}
+\begin{table}{\fox}
 \begin{tabular}{rll}
 \head
 |		|{2c_} Scientific name				|
@@ -629,14 +717,13 @@ let is_foo = function
 | Common name	|{1c_} Genus		|{1c_} Species		|
 |		|{2c} Scientific name				|
 \end{tabular}
-\caption{\fox}
 \end{table}
 \p{\lorem}
 
 \subsection{Floating left}
 
 \p{\lorem}
-\begin<left>{table}
+\begin<left>{table}{\fox}
 \begin{tabular}{rl}
 \head
 | Common name	| Scientific name	|
@@ -645,7 +732,6 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\caption{\fox}
 \end{table}
 \p{\lorem}
 \p{\lorem}
@@ -653,7 +739,7 @@ let is_foo = function
 \subsection{Floating right}
 
 \p{\lorem}
-\begin<right>{table}
+\begin<right>{table}{\fox}
 \begin{tabular}{rl}
 \head
 | Common name	| Scientific name	|
@@ -662,7 +748,6 @@ let is_foo = function
 | Cat		| \emph{Felis catus}	|
 | Chicken	| \emph{Gallus gallus}	|
 \end{tabular}
-\caption{\fox}
 \end{table}
 \p{\lorem}
 \p{\lorem}
@@ -673,7 +758,7 @@ let is_foo = function
 \subsection{Centered}
 
 \p{\lorem}
-\begin{figure}
+\begin{figure}{\fox}
 \begin{verbatim}
        -------
        |  A  |
@@ -691,14 +776,13 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 
 \subsection{Floating left}
 
 \p{\lorem}
-\begin<left>{figure}
+\begin<left>{figure}{\fox}
 \begin{verbatim}
        -------
        |  A  |
@@ -716,7 +800,6 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -724,7 +807,7 @@ let is_foo = function
 \subsection{Floating right}
 
 \p{\lorem}
-\begin<right>{figure}
+\begin<right>{figure}{\fox}
 \begin{verbatim}
        -------
        |  A  |
@@ -742,7 +825,6 @@ let is_foo = function
 |  A  |       |  C  |
 -------       -------
 \end{verbatim}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -753,18 +835,16 @@ let is_foo = function
 \subsection{Centered}
 
 \p{\lorem}
-\begin{figure}
+\begin{figure}{\fox}
 \image{circle-big.png}{Big Circle}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 
 \subsection{Floating left}
 
 \p{\lorem}
-\begin<left>{figure}
+\begin<left>{figure}{\fox}
 \image{circle-small.png}{Small Circle}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -772,9 +852,8 @@ let is_foo = function
 \subsection{Floating right}
 
 \p{\lorem}
-\begin<right>{figure}
+\begin<right>{figure}{\fox}
 \image{circle-small.png}{Small Circle}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -785,36 +864,33 @@ let is_foo = function
 \subsection{Centered}
 
 \p{\lorem}
-\begin{figure}
+\begin{figure}{\fox}
 \begin{subpage}
 \section(){Introduction}
 \p{\lorem}
 \end{subpage}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 
 \subsection{Centered with long caption}
 
 \p{\lorem}
-\begin{figure}
+\begin{figure}{\fox \fox \fox \fox}
 \begin{subpage}
 \section(){Introduction}
 \p{\lorem}
 \end{subpage}
-\caption{\fox \fox \fox \fox}
 \end{figure}
 \p{\lorem}
 
 \subsection{Floating left}
 
 \p{\lorem}
-\begin<left>{figure}
+\begin<left>{figure}{\fox}
 \begin{subpage}
 \section(){Introduction}
 \p{\lorem}
 \end{subpage}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -822,12 +898,11 @@ let is_foo = function
 \subsection{Floating right}
 
 \p{\lorem}
-\begin<right>{figure}
+\begin<right>{figure}{\fox}
 \begin{subpage}
 \section(){Introduction}
 \p{\lorem}
 \end{subpage}
-\caption{\fox}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -870,23 +945,33 @@ let is_foo = function
 \p{\lorem}
 
 
+\part(){Sectioning}
+
+\section{Introduction}
+\p{\lorem}
+\subsection{Sub-introduction}
+\p{\lorem}
+\subsubsection{Sub-sub-introduction}
+\p{\lorem}
+
+
 \part(){Backmatter}
 
 \bibliography
 
-\begin[bib1]{bib}
+\begin[bib:bib1]{bib}
 \who{\elwho}
 \what{\elwhat}
 \where{\elwhere}
 \end{bib}
 
-\begin[bib2]{bib}
+\begin[bib:bib2]{bib}
 \who{\elwho}
 \what{\elwhat}
 \where{\elwhere}
 \end{bib}
 
-\begin[bib3]{bib}
+\begin[bib:bib3]{bib}
 \who{\elwho}
 \what{\elwhat}
 \where{\elwhere}
@@ -936,15 +1021,15 @@ let is_foo = function
 
 \notes
 
-\begin[note1]{note}
+\begin[note:note1]{note}
 \p{\lorem}
 \end{note}
 
-\begin[note2]{note}
+\begin[note:note2]{note}
 \p{\lorem}
 \end{note}
 
-\begin[note3]{note}
+\begin[note:note3]{note}
 \p{\lorem}
 \end{note}
 
