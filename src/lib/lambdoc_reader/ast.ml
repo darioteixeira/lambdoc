@@ -105,7 +105,7 @@ type frag_t = block_t list
 	| Subpage of frag_t
 	| Decor of block_t
 	| Pullquote of seq_t option * frag_t
-	| Custom of string * seq_t option * frag_t
+	| Custom of Custom.kind_t option * string * seq_t option * frag_t
 	| Equation of seq_t option * block_t
 	| Printout of seq_t option * block_t
 	| Table of seq_t option * block_t

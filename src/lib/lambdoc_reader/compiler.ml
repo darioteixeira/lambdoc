@@ -28,7 +28,7 @@ open Extra
 (**	{2 Exceptions}								*)
 (********************************************************************************)
 
-exception Bad_order of Error.invalid_parameter_reason_t
+exception Mismatched_custom of Custom.kind_t * Custom.kind_t
 
 
 (********************************************************************************)
@@ -612,21 +612,26 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in [Block.pullquote floatation maybe_seq frag]
 			in check_comm `Feature_pullquote comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Custom (env, maybe_astseq, astfrag))) ->
+		| (_, true, true, `Any_blk, (comm, Ast.Custom (maybe_kind, env, maybe_astseq, astfrag))) ->
 			let elem () =
-				try
+				let bad_order reason =
+					let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
+					DynArray.add errors (Some comm.comm_linenum, msg);
+					Order_input.no_order ()
+				in try
 					let (kind, used, def) = Hashtbl.find customisations env in
+					let () = match maybe_kind with Some k when k <> kind -> raise (Mismatched_custom (k, kind)) | _ -> () in
 					let () = if not used then Hashtbl.replace customisations env (kind, true, def) in
 					let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 					let order = match (def, comm.comm_order, minipaged) with
-						| Numbered _, None, true	     -> raise (Bad_order Error.Reason_is_absent_when_mandatory)
+						| Numbered _, None, true	     -> bad_order Error.Reason_is_absent_when_mandatory
 						| Numbered (_, counter), None, false -> Order_input.auto_ordinal counter
 						| Numbered _, Some "", _	     -> Order_input.no_order ()
 						| Numbered _ , Some other, true	     -> make_user_ordinal comm other
-						| Numbered _ , Some other, false     -> raise (Bad_order (Error.Reason_is_non_empty_when_forbidden other))
+						| Numbered _ , Some other, false     -> bad_order (Error.Reason_is_non_empty_when_forbidden other)
 						| _, None, _			     -> Order_input.no_order ()
 						| _, Some "", _			     -> Order_input.no_order ()
-						| _, Some other, _		     -> raise (Bad_order (Error.Reason_is_non_empty_when_forbidden other)) in
+						| _, Some other, _		     -> bad_order (Error.Reason_is_non_empty_when_forbidden other) in
 					let label = make_label comm (Target.custom env kind order) in
 					let custom_maker = match def with
 						| Anonymous    -> Custom.anonymous
@@ -644,8 +649,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 						let msg = Error.Undefined_custom (comm.comm_tag, env)
 						in DynArray.add errors (Some comm.comm_linenum, msg);
 						[]
-					| Bad_order reason ->
-						let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason)
+					| Mismatched_custom (found, expected) ->
+						let msg = Error.Mismatched_custom (comm.comm_tag, env, found, expected)
 						in DynArray.add errors (Some comm.comm_linenum, msg);
 						[]
 			in check_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
@@ -999,7 +1004,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 						| Target.Visible_target _	-> Error.Target_label
 						| Target.Bib_target _		-> Error.Target_bib
 						| Target.Note_target _		-> Error.Target_note in
-					let msg = Error.Wrong_target (comm.comm_tag, expected, suggestion, label)
+					let msg = Error.Wrong_target (comm.comm_tag, label, expected, suggestion)
 					in DynArray.add errors (Some comm.comm_linenum, msg)
 			with
 				Not_found ->

@@ -149,6 +149,12 @@ let explain_error = function
 	| Error.Invalid_custom (tag, env) ->
 		sprintf "Invalid name '%s' for custom environment in %s. %s." env (explain_tag tag) (explain_ident "A custom environment")
 
+	| Error.Mismatched_custom (tag, env, found, expected) ->
+		let explain_custom = function
+			| Custom.Boxout  -> "boxout"
+			| Custom.Theorem -> "theorem"
+		in sprintf "In %s, the custom environment '%s' is used as a %s, but it was previously defined as a %s." (explain_tag tag) env (explain_custom found) (explain_custom expected)
+
 	| Error.Duplicate_custom (tag, env) ->
 		sprintf "The definition of custom environment '%s' in %s duplicates a previously defined environment." env (explain_tag tag)
 
@@ -185,7 +191,7 @@ let explain_error = function
 	| Error.Empty_target (tag, label) ->
 		sprintf "Empty target for %s and label '%s'." (explain_tag tag) label
 
-	| Error.Wrong_target (tag, expected, suggested, label) ->
+	| Error.Wrong_target (tag, label, expected, suggested) ->
 		let str_expected = match expected with
 			| Error.Target_bib    -> "bibliography notes"
 			| Error.Target_note   -> "note definitions"

@@ -100,6 +100,7 @@ type error_msg_t =
 	| Undefined_macro of Ident.t option * Ref.t
 
 	| Invalid_custom of Ident.t option * Ref.t
+	| Mismatched_custom of Ident.t option * Ref.t * Custom.kind_t * Custom.kind_t
 	| Duplicate_custom of Ident.t option * Ref.t
 	| Undefined_custom of Ident.t option * Ref.t
 
@@ -115,7 +116,7 @@ type error_msg_t =
 
 	| Duplicate_target of Ident.t option * Ref.t
 	| Empty_target of Ident.t option * Ref.t
-	| Wrong_target of Ident.t option * target_t * target_t * Ref.t
+	| Wrong_target of Ident.t option * Ref.t * target_t * target_t
 	| Undefined_target of Ident.t option * Ref.t
 
 	| Empty_list of Ident.t option

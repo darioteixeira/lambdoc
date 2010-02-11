@@ -13,6 +13,7 @@ open ExtList
 open ExtString
 open Pxp_document
 open Pxp_types
+open Lambdoc_core
 open Lambdoc_reader
 open Ast
 
@@ -246,11 +247,14 @@ and process_block store node =
 			(!!comm, Ast.Decor (process_unifrag store node))
 		| T_element "pull" ->
 			(!!comm, Ast.Pullquote (None, process_frag store node))
-		| T_element "boxout"
+		| T_element "boxout" ->
+			let name = node#required_string_attribute "name"
+			and (maybe_caption, frag) = process_custom store node
+			in (!!comm, Ast.Custom (Some Custom.Boxout, name, maybe_caption, frag))
 		| T_element "theorem" ->
 			let name = node#required_string_attribute "name"
 			and (maybe_caption, frag) = process_custom store node
-			in (!!comm, Ast.Custom (name, maybe_caption, frag))
+			in (!!comm, Ast.Custom (Some Custom.Theorem, name, maybe_caption, frag))
 		| T_element "equation" ->
 			let (maybe_caption, block) = process_wrapper store node
 			in (!!comm, Ast.Equation (maybe_caption, block))

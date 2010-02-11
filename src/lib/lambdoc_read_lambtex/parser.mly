@@ -204,7 +204,7 @@ env_block:
 	| begin_block(blk_subpage) block* end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_decor) block end_block				{($1, Ast.Decor $2)}
 	| begin_block(blk_pullquote) inline_bundle? block* end_block		{($1, Ast.Pullquote ($2, $3))}
-	| begin_block(blk_custom) inline_bundle? block* end_block		{($1, Ast.Custom (the $1, $2, $3))}
+	| begin_block(blk_custom) inline_bundle? block* end_block		{($1, Ast.Custom (None, the $1, $2, $3))}
 	| begin_block(blk_equation) inline_bundle? block end_block		{($1, Ast.Equation ($2, $3))}
 	| begin_block(blk_printout) inline_bundle? block end_block		{($1, Ast.Printout ($2, $3))}
 	| begin_block(blk_table) inline_bundle? block end_block			{($1, Ast.Table ($2, $3))}
