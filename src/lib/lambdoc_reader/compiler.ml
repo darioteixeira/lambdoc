@@ -51,10 +51,6 @@ let perhaps f = function
 	| [x] -> [f x]
 	| _   -> []
 
-let maybe_of_perhaps = function
-	| [x] -> Some x
-	| _   -> None
-
 
 (********************************************************************************)
 (**	{2 Generic document compilation}					*)
