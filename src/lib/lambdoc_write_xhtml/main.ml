@@ -149,7 +149,7 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 (**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document settings classname doc =
+let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) classname doc =
 
 	(************************************************************************)
 	(* Predefined sequences with last question and answer.			*)
@@ -640,7 +640,7 @@ let write_valid_document settings classname doc =
 				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_toc)
 
 
-	in XHTML.M.div ~a:[a_class ["doc"; "doc_valid"; classname]] (write_frag content)
+	in XHTML.M.div ~a:[a_class (classname :: default_classnames)] (write_frag content)
 
 
 (********************************************************************************)
@@ -674,13 +674,14 @@ let write_error (maybe_error_context, error_msg) =
 				]
 		| None ->
 			[XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata "Global error:"]]
-	and explanation = [XHTML.M.p ~a:[a_class ["doc_error_msg"]] [pcdata (Explanations.explain_error error_msg)]]
-	in XHTML.M.li ~a:[a_class ["doc_error"]] (context @ explanation)
+	and explanation_doc = Valid.make_composition (Block.paragraph false None (Explanations.explain error_msg), []) [] in
+	let explanation_out = [write_valid_document Settings.default ~default_classnames:[] "doc_error_msg" explanation_doc]
+	in XHTML.M.li ~a:[a_class ["doc_error"]] (context @ explanation_out)
 
 
-let write_invalid_document classname errors =
+let write_invalid_document ?(default_classnames = ["doc"; "doc_invalid"]) classname errors =
 	let (hd, tl) = nemap write_error errors
-	in div ~a:[a_class ["doc"; "doc_invalid"; classname]] [ul ~a:[a_class ["doc_errors"]] hd tl]
+	in div ~a:[a_class (classname :: default_classnames)] [ul ~a:[a_class ["doc_errors"]] hd tl]
 
 
 (********************************************************************************)
