@@ -137,6 +137,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_sup		-> forbidden_class
 		| `Feature_sub		-> forbidden_class
 		| `Feature_mbox		-> forbidden_class
+		| `Feature_span		-> forbidden_class
 		| `Feature_link		-> forbidden_class
 
 	and manuscript_inline_feature_set = function

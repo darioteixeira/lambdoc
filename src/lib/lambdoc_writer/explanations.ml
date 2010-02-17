@@ -130,6 +130,9 @@ let explain_error = function
 	| Error.Invalid_entity_hexa ent ->
 		sprintf "Invalid Unicode hexadecimal code point '#%s#'." (escape ent)
 
+	| Error.Invalid_span (tag, name) ->
+		sprintf "Invalid span classname '#%s#' in %s. %s." (escape name) (explain_tag tag) (explain_ident "A classname")
+
 	| Error.Invalid_macro_nargs (name, nargs) ->
 		sprintf "Invalid number of parameters '#%s#' for macro '#%s#'.  Please provide an integer." (escape nargs) name
 

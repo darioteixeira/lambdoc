@@ -31,6 +31,7 @@ type 'a inline_t =
 	| `Sup of 'a nelist
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
+	| `Span of Classname.t * 'a nelist
 	| `Link of Uri.t * 'a nelist option
 	| `See of Ref.t nelist
 	| `Cite of Ref.t nelist
@@ -62,6 +63,7 @@ val del: ('a, 'b) t nelist -> ('a, 'b) t
 val sup: ('a, 'b) t nelist -> ('a, 'b) t
 val sub: ('a, 'b) t nelist -> ('a, 'b) t
 val mbox: ('a, 'b) t nelist -> ('a, 'b) t
+val span: Classname.t -> ('a, 'b) t nelist -> ('a, 'b) t
 val link: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
 val see: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
 val cite: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t

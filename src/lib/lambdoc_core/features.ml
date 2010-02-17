@@ -20,7 +20,7 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_link ]
+	| `Feature_mbox | `Feature_span | `Feature_link ]
 
 
 type manuscript_inline_feature_t =
@@ -91,7 +91,7 @@ let composition_inline_features =
 	`Feature_mathtex_inl; `Feature_mathml_inl;
 	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
 	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
-	`Feature_mbox; `Feature_link;
+	`Feature_mbox; `Feature_span; `Feature_link;
 	]
 
 
@@ -153,6 +153,7 @@ let describe_composition_inline_feature = function
 	| `Feature_sup		-> "superscript text"
 	| `Feature_sub		-> "subscript text"
 	| `Feature_mbox		-> "non-breakable text"
+	| `Feature_span		-> "custom span"
 	| `Feature_link		-> "external link"
 
 

@@ -73,7 +73,7 @@ let inline_elems =
 	"entity"; "br"; "mathtexinl"; "mathmlinl";
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
-	"mbox"; "link"; "a";
+	"mbox"; "span"; "link"; "a";
 	"see"; "cite"; "ref"; "sref"; "mref";
 	"arg"; "call";
 	]
@@ -155,6 +155,8 @@ and process_inline store node =
 			(!!comm, Ast.Sub (process_seq store node))
 		| T_element "mbox" ->
 			(!!comm, Ast.Mbox (process_seq store node))
+		| T_element "span" ->
+			(!!comm, Ast.Span (node#required_string_attribute "class", process_seq store node))
 		| T_element "link"
 		| T_element "a" ->
 			(!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq store node))

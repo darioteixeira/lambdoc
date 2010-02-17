@@ -30,6 +30,7 @@ type 'a inline_t =
 	| `Sup of 'a nelist
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
+	| `Span of Classname.t * 'a nelist
 	| `Link of Uri.t * 'a nelist option
 	| `See of Ref.t nelist
 	| `Cite of Ref.t nelist
@@ -61,6 +62,7 @@ let del seq = `Del seq
 let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq
+let span classname seq = `Span (classname, seq)
 let link uri maybe_seq = `Link (uri, maybe_seq)
 let see (hd, tl) = `See (hd, tl)
 let cite (hd, tl) = `Cite (hd, tl)

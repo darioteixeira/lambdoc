@@ -90,6 +90,8 @@ type error_msg_t =
 	| Invalid_entity_deci of string
 	| Invalid_entity_hexa of string
 
+	| Invalid_span of Ident.t option * Classname.t
+
 	| Invalid_macro_nargs of Ref.t * string
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int

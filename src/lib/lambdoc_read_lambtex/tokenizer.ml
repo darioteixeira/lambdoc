@@ -162,6 +162,7 @@ let issue_simple_command raw_comm position =
 		| "sup"			-> (Inl, SUP command)
 		| "sub"			-> (Inl, SUB command)
 		| "mbox"		-> (Inl, MBOX command)
+		| "span"		-> (Inl, SPAN command)
 		| "link"
 		| "a"			-> (Inl, LINK command)
 		| "see"			-> (Inl, SEE command)
