@@ -768,7 +768,7 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
  font-family: monospace;
  background: #ffc;
  }
-.doc_error_lines > li > span:first-child
+.doc_error_linenum
  {
  display: block;
  float: left;
@@ -778,7 +778,7 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
  text-align: right;
  font-weight: bold;
  }
-.doc_error_lines > li > span + span
+.doc_error_linestr
  {
  min-height: 1.6em;
  display: block;
@@ -788,3 +788,4 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
  }
 .doc_error_around {background: #f9f9f9; color: #000;}
 .doc_error_actual {background: #f3f6fc; color: #c33;}
+.doc_error_msg > .doc_par > .doc_code {color: #9f1f1f;}

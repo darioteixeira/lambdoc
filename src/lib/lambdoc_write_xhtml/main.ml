@@ -660,8 +660,8 @@ let write_error (maybe_error_context, error_msg) =
 			let show_line classname delta line =
 				XHTML.M.li ~a:[a_class [classname]]
 					[
-					span [pcdata (sprintf "%03d" (line_number + delta))];
-					span [pcdata line]
+					span ~a:[a_class ["doc_error_linenum"]] [pcdata (sprintf "%03d" (line_number + delta))];
+					span ~a:[a_class ["doc_error_linestr"]] [pcdata line]
 					] in
 			let show_line_around delta line =
 				show_line "doc_error_around" delta line

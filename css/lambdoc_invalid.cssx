@@ -26,7 +26,7 @@
 	background: #ffc;
 	}
 
-.doc_error_lines > li > span:first-child
+.doc_error_linenum
 	{
 	display: block;
 	float: left;
@@ -37,7 +37,7 @@
 	font-weight: bold;
 	}
 
-.doc_error_lines > li > span + span
+.doc_error_linestr
 	{
 	min-height: 1.6em;
 	display: block;
@@ -46,6 +46,8 @@
 	padding: 0.2em 0.5em;
 	}
 
-.doc_error_around	{background: #f9f9f9; color: #000;}
-.doc_error_actual	{background: #f3f6fc; color: #c33;}
+.doc_error_around {background: #f9f9f9; color: #000;}
+.doc_error_actual {background: #f3f6fc; color: #c33;}
+
+.doc_error_msg > .doc_par > .doc_code {color: #9f1f1f;}
 
