@@ -109,6 +109,9 @@ let explain_error = function
 	| Error.Invalid_extra_floatation_parameter (tag, key, value) ->
 		sprintf "In %s, the key '#%s#' expects a floatation specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
+	| Error.Invalid_extra_classname_parameter (tag, key, value) ->
+		sprintf "In %s, the key '#%s#' expects a classname specifier, yet the assigned value '#%s#' cannot be interpreted as such. %s." (explain_tag tag) (escape key) (escape value) (explain_ident "A classname")
+
 	| Error.Invalid_extra_lang_parameter (tag, key, value) ->
 		sprintf "In %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
@@ -129,9 +132,6 @@ let explain_error = function
 
 	| Error.Invalid_entity_hexa ent ->
 		sprintf "Invalid Unicode hexadecimal code point '#%s#'." (escape ent)
-
-	| Error.Invalid_span (tag, name) ->
-		sprintf "Invalid span classname '#%s#' in %s. %s." (escape name) (explain_tag tag) (explain_ident "A classname")
 
 	| Error.Invalid_macro_nargs (name, nargs) ->
 		sprintf "Invalid number of parameters '#%s#' for macro '#%s#'.  Please provide an integer." (escape nargs) name

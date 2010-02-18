@@ -278,15 +278,10 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () = [Inline.mbox (convert_seq_aux ~comm ~args x astseq)]
 			in check_comm `Feature_mbox comm elem
 
-		| (x, (comm, Ast.Span (classname, astseq))) ->
+		| (x, (comm, Ast.Span astseq)) ->
 			let elem () =
-				if Basic_input.matches_ident classname
-				then
-					[Inline.span classname (convert_seq_aux ~comm ~args x astseq)]
-				else
-					let msg = Error.Invalid_span (comm.comm_tag, classname) in
-					DynArray.add errors (Some comm.comm_linenum, msg);
-					[]
+				let classname = Extra.fetch_classname ~default:None comm errors Classname_hnd
+				in [Inline.span classname (convert_seq_aux ~comm ~args x astseq)]
 			in check_comm `Feature_span comm elem
 
 		| (false, (comm, Ast.Link (lnk, maybe_astseq))) ->

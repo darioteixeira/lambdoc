@@ -156,7 +156,7 @@ and process_inline store node =
 		| T_element "mbox" ->
 			(!!comm, Ast.Mbox (process_seq store node))
 		| T_element "span" ->
-			(!!comm, Ast.Span (node#required_string_attribute "class", process_seq store node))
+			(!!comm, Ast.Span (process_seq store node))
 		| T_element "link"
 		| T_element "a" ->
 			(!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq store node))

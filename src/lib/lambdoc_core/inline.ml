@@ -30,7 +30,7 @@ type 'a inline_t =
 	| `Sup of 'a nelist
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
-	| `Span of Classname.t * 'a nelist
+	| `Span of Classname.t option * 'a nelist
 	| `Link of Uri.t * 'a nelist option
 	| `See of Ref.t nelist
 	| `Cite of Ref.t nelist

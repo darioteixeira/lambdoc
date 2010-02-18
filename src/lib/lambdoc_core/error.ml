@@ -81,6 +81,7 @@ type error_msg_t =
 	| Invalid_extra_bullet_parameter of Ident.t option * string * string
 	| Invalid_extra_numbering_parameter of Ident.t option * string * string
 	| Invalid_extra_floatation_parameter of Ident.t option * string * string
+	| Invalid_extra_classname_parameter of Ident.t option * string * string
 	| Invalid_extra_lang_parameter of Ident.t option * string * string
 	| Invalid_extra_unknown_parameter of Ident.t option * int * string
 	| Invalid_extra_no_solutions of Ident.t option * string
@@ -89,8 +90,6 @@ type error_msg_t =
 	| Invalid_entity_name of string
 	| Invalid_entity_deci of string
 	| Invalid_entity_hexa of string
-
-	| Invalid_span of Ident.t option * Classname.t
 
 	| Invalid_macro_nargs of Ref.t * string
 	| Invalid_macro_argument_context

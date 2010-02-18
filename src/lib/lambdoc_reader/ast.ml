@@ -52,7 +52,7 @@ type seq_t = inline_t list
 	| Sup of seq_t
 	| Sub of seq_t
 	| Mbox of seq_t
-	| Span of string * seq_t
+	| Span of seq_t
 	| Link of string * seq_t option
 	| See of string	list
 	| Cite of string list

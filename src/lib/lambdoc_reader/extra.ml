@@ -40,10 +40,10 @@ end
 type property_kind_t =
 	| Boolean_kind
 	| Numeric_kind of int * int
-	| String_kind
 	| Bullet_kind
 	| Numbering_kind
 	| Floatation_kind
+	| Classname_kind
 	| Lang_kind
 
 
@@ -55,10 +55,10 @@ type property_data_t =
 	| Boolean_auto_data of bool option
 	| Numeric_data of int 
 	| Numeric_auto_data of int option
-	| String_data of string
 	| Bullet_data of Bullet.t
 	| Numbering_data of Numbering.t
 	| Floatation_data of Floatation.t
+	| Classname_data of Classname.t
 	| Lang_data of Camlhighlight_core.lang_t
 
 
@@ -97,6 +97,7 @@ type handle_t =
 	| Bullet_hnd
 	| Numbering_hnd
 	| Floatation_hnd
+	| Classname_hnd
 	| Lang_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
@@ -109,10 +110,24 @@ type extra_t = (handle_t, property_data_t option) Hashtbl.t
 (********************************************************************************)
 
 (********************************************************************************)
+(**	{2 Dummy values}							*)
+(********************************************************************************)
+
+let dummy_boolean_data = Boolean_data false
+let dummy_numeric_data = Numeric_data 0
+let dummy_bullet_data = Bullet_data Bullet.None
+let dummy_numbering_data = Numbering_data Numbering.None
+let dummy_floatation_data = Floatation_data Floatation.Center
+let dummy_classname_data = Classname_data ""
+let dummy_lang_data = Lang_data ""
+
+
+(********************************************************************************)
 (**	{2 Low-level parsing functions}						*)
 (********************************************************************************)
 
-(**	Definition of the key and property kind associated with each handle.
+(**	For each handle we define the key name, the property kind, and whether
+	or not it accepts auto values.
 *)
 let id_of_handle = function
 	| Initial_hnd	 -> ("initial", Boolean_kind, false)
@@ -126,6 +141,7 @@ let id_of_handle = function
 	| Bullet_hnd	 -> ("bul", Bullet_kind, false)
 	| Numbering_hnd	 -> ("num", Numbering_kind, false)
 	| Floatation_hnd -> ("float", Floatation_kind, false)
+	| Classname_hnd	 -> ("class", Classname_kind, false)
 	| Lang_hnd	 -> ("lang", Lang_kind, false)
 
 
@@ -137,8 +153,8 @@ let id_of_handle = function
 let fields_of_strings =
 	let truth_rex = Pcre.regexp "^((?<key>[a-z]+)=)?((?<true>(true)|(yes)|(on))|(?<false>(false)|(no)|(off)))$"
 	and negated_rex = Pcre.regexp "^!(?<negated>[a-z]+)$"
-	and unnamed_rex = Pcre.regexp "^(?<unnamed>[a-z0-9]+)$"
-	and keyvalue_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>[a-z0-9]+)$"
+	and unnamed_rex = Pcre.regexp "^(?<unnamed>.+)$"
+	and keyvalue_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>.+)$"
 	in fun strs ->
 		let field_of_string str =
 			try
@@ -156,16 +172,16 @@ let fields_of_strings =
 				Not_found ->
 
 			try
-				let subs = Pcre.exec ~rex:unnamed_rex str
-				in Unnamed_field (Pcre.get_named_substring unnamed_rex "unnamed" subs)
-			with
-				Not_found ->
-
-			try
 				let subs = Pcre.exec ~rex:keyvalue_rex str in
 				let key = Pcre.get_named_substring keyvalue_rex "key" subs
 				and value = Pcre.get_named_substring keyvalue_rex "value" subs
 				in Keyvalue_field (key, value)
+			with
+				Not_found ->
+
+			try
+				let subs = Pcre.exec ~rex:unnamed_rex str
+				in Unnamed_field (Pcre.get_named_substring unnamed_rex "unnamed" subs)
 			with
 				Not_found -> Invalid_field str
 
@@ -205,7 +221,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 	| (key, Boolean_kind, _, Keyvalue_field (k, v)) when k = key ->
 		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v) in
 		DynArray.add errors (Some comm.comm_linenum, msg);
-		Negative
+		Positive (dummy_boolean_data)
 
 	| (key, Numeric_kind (low, high), true, Unnamed_field v) when v = "auto" ->
 		Undecided (Numeric_auto_data None)
@@ -222,12 +238,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 			| None ->
 				let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v, low, high) in
 				DynArray.add errors (Some comm.comm_linenum, msg);
-				Negative)
-
-	| (key, String_kind, false, Unnamed_field v) ->
-		Undecided (String_data v)
-	| (key, String_kind, false, Keyvalue_field (k, v)) when k = key ->
-		Positive (String_data v)
+				Positive (dummy_numeric_data))
 
 	| (key, Bullet_kind, false, Unnamed_field v) ->
 		(try Undecided (Bullet_data (Basic_input.bullet_of_string v)) with Invalid_argument _ -> Negative)
@@ -236,7 +247,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
-			Negative)
+			Positive (dummy_bullet_data))
 
 	| (key, Numbering_kind, false, Unnamed_field v) ->
 		(try Undecided (Numbering_data (Basic_input.numbering_of_string v)) with Invalid_argument _ -> Negative)
@@ -245,7 +256,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
-			Negative)
+			Positive (dummy_bullet_data))
 
 	| (key, Floatation_kind, false, Unnamed_field v) ->
 		(try Undecided (Floatation_data (Basic_input.floatation_of_string v)) with Invalid_argument _ -> Negative)
@@ -254,7 +265,18 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
-			Negative)
+			Positive (dummy_floatation_data))
+
+	| (key, Classname_kind, false, Unnamed_field v) ->
+		if Basic_input.matches_ident v then Undecided (Classname_data v) else Negative
+	| (key, Classname_kind, false, Keyvalue_field (k, v)) when k = key ->
+		if Basic_input.matches_ident v
+		then
+			Positive (Classname_data v)
+		else
+			let msg = Error.Invalid_extra_classname_parameter (comm.comm_tag, key, v) in
+			DynArray.add errors (Some comm.comm_linenum, msg);
+			Positive (dummy_classname_data)
 
 	| (key, Lang_kind, false, Unnamed_field v) ->
 		if Camlhighlight_parser.is_available_lang v then Undecided (Lang_data v) else Negative
@@ -265,7 +287,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		else
 			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
-			Negative
+			Positive (dummy_lang_data)
 
 	| _ ->
 		Negative
@@ -438,6 +460,11 @@ let get_floatation ~default extra handle = match Hashtbl.find extra handle with
 	| _			   -> default
 
 
+let get_classname ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Classname_data x) -> Some x
+	| _			  -> default
+
+
 let get_lang ~default extra handle = match Hashtbl.find extra handle with
 	| Some (Lang_data x) -> Some x
 	| _		     -> default
@@ -458,5 +485,6 @@ let fetch_maybe_numeric = fetcher get_maybe_numeric
 let fetch_bullet = fetcher get_bullet
 let fetch_numbering = fetcher get_numbering
 let fetch_floatation = fetcher get_floatation
+let fetch_classname = fetcher get_classname
 let fetch_lang = fetcher get_lang
 

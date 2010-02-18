@@ -29,6 +29,7 @@ type handle_t =
 	| Bullet_hnd
 	| Numbering_hnd
 	| Floatation_hnd
+	| Classname_hnd
 	| Lang_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
@@ -53,6 +54,7 @@ val get_maybe_numeric: default:int option -> extra_t -> handle_t -> int option
 val get_bullet: default:Bullet.t -> extra_t -> handle_t -> Bullet.t
 val get_numbering: default:Numbering.t -> extra_t -> handle_t -> Numbering.t
 val get_floatation: default:Floatation.t -> extra_t -> handle_t -> Floatation.t
+val get_classname: default:Classname.t option -> extra_t -> handle_t -> Classname.t option
 val get_lang: default:Camlhighlight_core.lang_t option -> extra_t -> handle_t -> Camlhighlight_core.lang_t option
 
 
@@ -67,5 +69,6 @@ val fetch_maybe_numeric: default:int option -> Ast.command_t -> error_t -> handl
 val fetch_bullet: default:Bullet.t -> Ast.command_t -> error_t -> handle_t -> Bullet.t
 val fetch_numbering: default:Numbering.t -> Ast.command_t -> error_t -> handle_t -> Numbering.t
 val fetch_floatation: default:Floatation.t -> Ast.command_t -> error_t -> handle_t -> Floatation.t
+val fetch_classname: default:Classname.t option -> Ast.command_t -> error_t -> handle_t -> Classname.t option
 val fetch_lang: default:Camlhighlight_core.lang_t option -> Ast.command_t -> error_t -> handle_t -> Camlhighlight_core.lang_t option
 

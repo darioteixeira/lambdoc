@@ -223,7 +223,8 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			XHTML.M.span ~a:[a_class ["doc_mbox"]] (write_seq seq)
 
 		| `Span (classname, seq) ->
-			XHTML.M.span ~a:[a_class ["doc_span_" ^ classname]] (write_seq seq)
+			let a = maybe (fun x -> [a_class ["doc_span_" ^ x]]) classname
+			in XHTML.M.span ?a (write_seq seq)
 
 		| `Link (lnk, None) ->
 			make_external_link lnk (Obj.magic (write_seq (`Plain lnk, [])))

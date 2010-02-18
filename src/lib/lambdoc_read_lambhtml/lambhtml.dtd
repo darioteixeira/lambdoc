@@ -301,7 +301,7 @@
 <!ATTLIST mbox %Common;>
 
 <!ELEMENT span %Inline;>
-<!ATTLIST span %Common; class NMTOKEN #REQUIRED>
+<!ATTLIST span %Common;>
 
 <!ELEMENT link %Inline;>
 <!ATTLIST link %Common; href CDATA #REQUIRED>

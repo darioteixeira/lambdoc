@@ -284,7 +284,7 @@ inline:
 	| SUP inline_bundle								{($1, Ast.Sup $2)}
 	| SUB inline_bundle								{($1, Ast.Sub $2)}
 	| MBOX inline_bundle								{($1, Ast.Mbox $2)}
-	| SPAN raw_bundle inline_bundle							{($1, Ast.Span ($2, $3))}
+	| SPAN inline_bundle								{($1, Ast.Span $2)}
 	| LINK raw_bundle inline_bundle?						{($1, Ast.Link ($2, $3))}
 	| SEE raw_bundle*								{($1, Ast.See $2)}
 	| CITE raw_bundle*								{($1, Ast.Cite $2)}
