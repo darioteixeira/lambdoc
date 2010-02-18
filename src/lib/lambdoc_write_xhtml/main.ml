@@ -108,26 +108,30 @@ let make_sectional level label orderlst content =
 (**	{2 Converters}								*)
 (********************************************************************************)
 
-let listify_order ?(prespace = false) ?(postdot = false) ?prefix order =
+let listify_order ?(prespace = false) ?(postspace = false) ?(postdot = false) ?prefix order =
 	let content = match (order, prefix) with
 		| Some s, None	 -> Some s
 		| Some s, Some p -> Some (p ^ s)
-		| None, _	 -> None
-	in match (content, prespace, postdot) with
-		| Some s, true, _ -> [space (); pcdata s]
-		| Some s, _, true -> [pcdata (s ^ "."); entity "ensp"]
-		| Some s, _, _	  -> [pcdata s]
-		| _		  -> []
+		| None, _	 -> None in
+	let content = match (content, prespace, postdot) with
+		| Some s, true, _ -> Some [space (); pcdata s]
+		| Some s, _, true -> Some [pcdata (s ^ ".")]
+		| Some s, _, _	  -> Some [pcdata s]
+		| _		  -> None
+	in match (content, postspace) with
+		| Some s, true	-> s @ [entity "ensp"]
+		| Some s, false	-> s
+		| None, _	-> []
 
 
-let part_conv ?postdot order = listify_order ?postdot (Order_output.maybe_string_of_ordinal Order_output.format_roman order)
+let part_conv ?poststuff order = listify_order ?postdot:poststuff ?postspace:poststuff (Order_output.maybe_string_of_ordinal Order_output.format_roman order)
 
 
-let section_conv ?postdot location order =
+let section_conv ?poststuff location order =
 	let conv = match location with
 		| `Mainbody	-> Order_output.format_mainbody
 		| `Appendixed	-> Order_output.format_appendixed
-	in listify_order ?postdot (Order_output.maybe_string_of_hierarchical conv order)
+	in listify_order ?postdot:poststuff ?postspace:poststuff (Order_output.maybe_string_of_hierarchical conv order)
 
 
 let boxout_conv ?prespace order = listify_order ?prespace ~prefix:"#" (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
@@ -541,30 +545,30 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 	and write_heading_block = function
 
 		| `Part (label, order, `Custom seq) ->
-			[make_heading XHTML.M.h1 label (part_conv ~postdot:true order) "doc_part" (write_seq seq)]
+			[make_heading XHTML.M.h1 label (part_conv ~poststuff:true order) "doc_part" (write_seq seq)]
 
 		| `Part (label, order, `Appendix) ->
-			[make_heading XHTML.M.h1 label (part_conv order) "doc_part" (write_name Name_appendix)]
+			[make_heading XHTML.M.h1 label (part_conv ~poststuff:true order) "doc_part" (write_name Name_appendix)]
 
 		| `Section (label, order, location, level, `Custom seq) ->
-			[make_sectional level label (section_conv ~postdot:true location order) (write_seq seq)]
+			[make_sectional level label (section_conv ~poststuff:true location order) (write_seq seq)]
 
 		| `Section (label, order, location, level, `Bibliography) ->
-			let title = make_sectional level label (section_conv location order) (write_name Name_bibliography) in
+			let title = make_sectional level label (section_conv ~poststuff:true location order) (write_name Name_bibliography) in
 			let bibs = match bibs with
 				| []	   -> []
 				| hd :: tl -> let (hd, tl) = nemap write_bib (hd, tl) in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
 			in title::bibs
 
 		| `Section (label, order, location, level, `Notes) ->
-			let title = make_sectional level label (section_conv location order) (write_name Name_notes) in
+			let title = make_sectional level label (section_conv ~poststuff:true location order) (write_name Name_notes) in
 			let notes = match notes with
 				| []	   -> []
 				| hd :: tl -> let (hd, tl) = nemap write_note (hd, tl) in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
 			in title::notes
 
 		| `Section (label, order, location, level, `Toc) ->
-			let title = make_sectional level label (section_conv location order) (write_name Name_toc) in
+			let title = make_sectional level label (section_conv ~poststuff:true location order) (write_name Name_toc) in
 			let entries = List.filter_map write_toc_entry toc in
 			let toc_xhtml = match entries with
 				| []	   -> []
@@ -631,17 +635,17 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 		        Some (XHTML.M.li ~a:[a_class [classname]] [make_internal_link label (orderlst @ (Obj.magic content))])
 		in match sec with
 			| `Part (label, order, `Custom seq) ->
-				make_toc_entry label (class_of_level `Level0) (part_conv ~postdot:true order) (write_seq seq)
+				make_toc_entry label (class_of_level `Level0) (part_conv ~poststuff:true order) (write_seq seq)
 			| `Part (label, order, `Appendix) ->
-				make_toc_entry label (class_of_level `Level0) (part_conv order) (write_name Name_appendix)
+				make_toc_entry label (class_of_level `Level0) (part_conv ~poststuff:true order) (write_name Name_appendix)
 			| `Section (label, order, location, level, `Custom seq) ->
-				make_toc_entry label (class_of_level level) (section_conv ~postdot:true location order) (write_seq seq)
+				make_toc_entry label (class_of_level level) (section_conv ~poststuff:true location order) (write_seq seq)
 			| `Section (label, order, location, level, `Bibliography) ->
-				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_bibliography)
+				make_toc_entry label (class_of_level level) (section_conv ~poststuff:true location order) (write_name Name_bibliography)
 			| `Section (label, order, location, level, `Notes) ->
-				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_notes)
+				make_toc_entry label (class_of_level level) (section_conv ~poststuff:true location order) (write_name Name_notes)
 			| `Section (label, order, location, level, `Toc) ->
-				make_toc_entry label (class_of_level level) (section_conv location order) (write_name Name_toc)
+				make_toc_entry label (class_of_level level) (section_conv ~poststuff:true location order) (write_name Name_toc)
 
 
 	in XHTML.M.div ~a:[a_class (classname :: default_classnames)] (write_frag content)
