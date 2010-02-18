@@ -2,6 +2,14 @@
 \newmacro{lambdoc}{0}{\caps{lambdoc}}
 \newmacro{thicksp}{0}{&emsp;}
 
+\newmacro{optional}{0}{\span<optional>{≈}}
+\newmacro{optional0}{0}{\span<optional>{≈\sub{ø}}}
+\newmacro{mandatory}{0}{\span<mandatory>{✔}}
+\newmacro{mandatory0}{0}{\span<mandatory>{✔\sub{ø}}}
+\newmacro{forbidden}{0}{\span<forbidden>{✘}}
+\newmacro{forbidden0}{0}{\span<forbidden>{✘\sub{ø}}}
+
+
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
 \subtitle{January 2010}
@@ -99,11 +107,15 @@ as they appear before any of the primary (curly bracketed) parameters.
 Primary parameters are typically mandatory and are enclosed by curly brackets;
 order, label, and extra parameters are usually optional and are enclosed by
 round, square, and angle brackets, respectively.}
-\begin{tabular}{cccc}
+\begin{tabular}{ccc}
 \head
-| Order		| Label		| Extra		| Primary		|
+|		|{2c_} Markers			|
+| Parameter	| Begin		| End		|
 \body
-| \code{(...)}	| \code{[...]}	| \code{<...>}	| \code{\{...\}}	|
+| Order		| \code{(}	| \code{)}	|
+| Label		| \code{[}	| \code{]}	|
+| Extra		| \code{<}	| \code{>}	|
+| Primary	| \code{\{}	| \code{\}}	|
 \end{tabular}
 \end{table}
 
@@ -153,15 +165,15 @@ Using the command \code{\\paragraph} (or its synonym \code{\\p}) to declare a
 paragraph is usually neither necessary nor recommended.  This method exists for the
 sole reason that it may be desirable to provide the composer with extra parameters
 about the paragraph.  Presently, the extra parameters accepted are \code{initial}
-and \code{indent}.  The former is a boolean which signals whether the first letter
-of the paragraph should be rendered in a special manner.  Its default value is
-always \code{false}, so you must explicitly set it to \code{true} when needed.
-The latter indicates whether the paragraph should be indented, and is tripartite in
-the value domain.  The values it accepts are \code{auto} (the default), \code{true},
-or \code{false}.  In most situations the \code{auto} algorithm should be good enough:
-it indents a paragraph only if immediately preceded by another paragraph.  There are
-however situations where you may indeed require an override by explicitly setting the
-indentation to \code{true} or \code{false}.
+and \code{indent}.  The former is a boolean which signals whether the first letter of
+the paragraph should be rendered in a special manner.  Its default value is always
+\code{false}, so you must explicitly set it to \code{true} when needed.  The latter
+indicates whether the paragraph should be indented, and is tripartite in value.  The
+values it accepts are \code{auto} (the default), \code{true}, or \code{false}.  In most
+situations the \code{auto} algorithm should be good enough: it indents a paragraph only
+if immediately preceded by another paragraph.  There are however situations where you
+may indeed require an override by explicitly setting the indentation to \code{true}
+or \code{false}.
 
 At this point we recommend that you consult \sref{sec:extra}, which dives into more
 detail on the subject of extra parameters.  There you can learn of shorthand manners
@@ -185,32 +197,48 @@ applicable.  All these commands take one parameter enclosed in
 curly brackets.  The parameter is a sequence of inline text.}
 \begin{tabular}{rl}
 \head
-| Command				| Example							|
+| Command						| Example							|
 \body
-| \code{\\bold\{\emph{inline}\}}	| You can make some passages be \bold{bold}.\br
-					  (Synonyms: \code{\\strong} and \code{\\b})			|
-| \code{\\caps\{\emph{inline}\}}	| \lambtex supports text in small-caps.				|
-| \code{\\code\{\emph{inline}\}}	| You can also imitate a \code{typewriter}.\br
-					  (Synonym: \code{\\tt})					|
-| \code{\\del\{\emph{inline}\}}		| You may also fix \del{annoyingly} incorrect passages.		|
-| \code{\\emph\{\emph{inline}\}}	| Here's another way to \emph{emphasise} text.\br
-					  (Synonyms: \code{\\em} and \code{\\i})			|
-| \code{\\ins\{\emph{inline}\}}		| Sometimes it's \ins{very} handy to insert new text.		|
-| \code{\\mbox\{\emph{inline}\}}	| Some inline sequences should not be split across lines.	|
-| \code{\\sub\{\emph{inline}\}}		| H\sub{2}O requires a subscript.				|
-| \code{\\sup\{\emph{inline}\}}		| The 1\sup{st} of January has a superscript.			|
+| \code{\\bold\{\emph{inline}\}}			| You can make some passages be \bold{bold}.\br
+							  (Synonyms: \code{\\strong} and \code{\\b})			|
+| \code{\\emph\{\emph{inline}\}}			| Here's another way to \emph{emphasise} text.\br
+							  (Synonyms: \code{\\em} and \code{\\i})			|
+| \code{\\code\{\emph{inline}\}}			| You can also imitate a \code{typewriter}.\br
+							  (Synonym: \code{\\tt})					|
+| \code{\\caps\{\emph{inline}\}}			| \lambtex supports text in small-caps.				|
+| \code{\\ins\{\emph{inline}\}}				| Sometimes it's \ins{very} handy to insert new text.		|
+| \code{\\del\{\emph{inline}\}}				| You may also fix \del{annoyingly} incorrect passages.		|
+| \code{\\sup\{\emph{inline}\}}				| The 1\sup{st} of January has a superscript.			|
+| \code{\\sub\{\emph{inline}\}}				| H\sub{2}O requires a subscript.				|
+| \code{\\mbox\{\emph{inline}\}}			| The inline sequence should not be split across lines.		|
+| \code{\\span\{\emph{inline}\}}			| You may create spans with custom classnames.			|
 \end{tabular}
 \end{table}
+
+While most commands listed in the table above should have a straightforward application,
+a few clarifying words concerning \code{\\span} are in order.  This command translates
+directly into an \caps{xhtml} \code{span} element; moreover, it accepts a class name
+declaration via the optional extra parameter \code{class}.  In \lambdoc's default
+configuration, this class name is prepended by `\code{doc_span_}' and output as the
+\code{span} element's own class name in the \caps{xhtml} output.  Combined with a
+suitable \caps{css} declaration, this allows the definition of custom formatting for
+certain passages.
+
+To conclude, note that the class name has two constraints.  First, the allowed character
+set is limited to lowercase roman letters, digits, and the characters '\code{.}'
+(period), '\code{:}' (colon), '\code{-}' (dash), and '\code{_}' (underscore).  Second,
+the first character must be a letter.
 
 
 \section{Special characters}
 
 \lambtex allows the direct use of \caps{html} entities via the same notation used
 in \caps{html}.  More precisely, entities are to be enclosed between the characters
-'\code{\&}' (ampersand) and '\code{;}' (semicolon), and may be specified by name
-or by \caps{unicode} code point in decimal or hexadecimal notation.  As an example,
-if the \caps{euro} symbol '\code{&euro;}' is not readily available in your keyboard,
-you may enter it in either of the following three manners:
+'\code{\&}' (ampersand) and '\code{;}' (semicolon), and may be specified by the so-called
+\emph{character entity reference} (ie, the entity's name), or by \emph{numeric character
+reference} (ie, a \caps{unicode} code point in decimal or hexadecimal notation).
+As an example, if the \caps{euro} symbol '\code{&euro;}' is not readily available in
+your keyboard, you may enter it in either of the following three manners:
 
 \begin{tabular}{ccc}
 \head
@@ -260,6 +288,7 @@ verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
 | \code{\'\'}		| Closing double quotes |
 \end{tabular}
 \end{table}
+
 
 
 \section{Hyperlinks to external resources}
@@ -514,7 +543,7 @@ Quotation blocks are typically used for including an excerpt from an external so
 into your document.  You may be quoting what someone said in an interview, or providing
 context when replying to a comment, for example.  Quotation bloks are delimited by
 the \code{quote} environment, and may enclose not only plain text paragraphs, but
-also lists or any of the so-called \emph{embeddable blocks}, as \sref{sec:structure}
+also lists or any of the so-called \emph{quotable blocks}, as \sref{sec:structure}
 describes in greater detail.  Consider thus the following \lambtex source:
 
 \begin{source}
@@ -773,10 +802,10 @@ span two columns, be centered, and show a horizontal line below and above, respe
 \body
 | Wolf		| \emph{Canis}		| \emph{lupus}	|
 | Cat		| \emph{Felis}		| \emph{catus}	|
-| Chicken	| \emph{Gallus}		| \emph{gallus}	|
 | Lion		| \emph{Panthera}	| \emph{leo}	|
 \body
 | English oak	| \emph{Quercus}	| \emph{robur}	|
+| Cork oak	| \emph{Quercus}	| \emph{suber}	|
 | European yew	| \emph{Taxus}		| \emph{baccata}|
 \foot
 | Common name	| Genus			| Species	|
@@ -799,10 +828,10 @@ of the advanced formatting facilities that enable customisation of individual ce
 \body
 | Wolf		| \emph{Canis}		| \emph{lupus}	|
 | Cat		| \emph{Felis}		| \emph{catus}	|
-| Chicken	| \emph{Gallus}		| \emph{gallus}	|
 | Lion		| \emph{Panthera}	| \emph{leo}	|
 \body
 | English oak	| \emph{Quercus}	| \emph{robur}	|
+| Cork oak	| \emph{Quercus}	| \emph{suber}	|
 | European yew	| \emph{Taxus}		| \emph{baccata}|
 \foot
 | Common name	| Genus			| Species	|
@@ -815,9 +844,9 @@ of the advanced formatting facilities that enable customisation of individual ce
 
 \lambtex also supports the inclusion of equations and mathematical formulas in a
 document.  Mathematics are to be entered using either \caps{MathML}\cite{bib:mathml}
-(version 2.0) or the \caps{TeX}\cite{bib:tex} format.  The former was chosen because an
-increasing number of tools has the ability to export \caps{MathML}.  As for the latter,
-it is the \emph{de facto} standard for manually typing mathematical expressions.
+or the \caps{TeX}\cite{bib:tex} format.  The former was chosen because an increasing
+number of tools has the ability to export \caps{MathML}.  As for the latter, it is
+the \emph{de facto} standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside a
 paragraph, for example), or in a block context.  In the former case, the expression
@@ -846,10 +875,9 @@ also acceptable to provide Content \caps{MathML} instead of Presentation \caps{M
 In either case, just make sure the markup conforms to version 2.0 of the \caps{MathML}
 standard, and that the \code{math} top-level element that wraps the \caps{MathML}
 contents is provided as part of the markup.  These requirements also apply to the
-\caps{MathML} markup specified in an inline context.  On the other hand, giving an
-explicit namespace to the \caps{MathML} markup --- that is, specifying \code{<math
-xmlns="http://www.w3.org/1998/Math/MathML">} as the top-level element --- is \bold{not}
-necessary, since namespacing requirements are automatically taken care of.
+\caps{MathML} markup specified in an inline context.  On the other hand, giving
+an explicit namespace to the \caps{MathML} markup is \bold{not} necessary, since
+namespacing requirements are automatically taken care of.
 
 \begin{source}
 \begin{mathml}
@@ -1483,11 +1511,11 @@ and weights heavily on decisions such as this one.  It is for this reason that t
 language offers a catch-all \code{\\subtitle} command instead of multiple commands
 tailored to each particular application.
 
-Abstracts are commonly found on scientific papers, and \lambtex supports them as well.
-An abstract is declared by enclosing one or more textual blocks within an \code{abstract}
-environment.  Please consult \sref{sec:structure} for more details on what constitutes a
-\emph{textual block}, and note the source fragment below for an example of the various
-frotmatter blocks.
+Abstracts are commonly found on scientific papers, and \lambtex supports them as
+well.  An abstract is declared by enclosing one or more embeddable blocks within an
+\code{abstract} environment.  Please consult \sref{sec:structure} for more details on
+what constitutes a \emph{embeddable block}, and note the source fragment below for an
+example of the various frontmatter blocks.
 
 \begin{source}
 \title{Small-endian vs big-endian: the solution}
@@ -1772,12 +1800,12 @@ Two other things stand out in the figure.  The first is that blocks are grouped
 into two broad categories: composition blocks (in green) and manuscript blocks (in
 blue). Though not relevant to a discussion concerning structure, this categorisation
 serves as a good, graphical reminder of which block types are allowed for composition
-and manuscript document types.  Second, there is a list attached to each of the
-block types.  This list indicates the actual document blocks that belong to that type.
-A \emph{textual block}, for example, can be either a paragraph, an itemize, enumerate,
-or description list, a verse block, or a block containing mathematics.  Notice that
-many blocks have a \emph{\code{of} ...} declaration after their name; these blocks ---
-termed \emph{recursive blocks} --- are those whose contents are other blocks.
+and manuscript document types.  Second, there is a list attached to each of the block
+types.  This list indicates the actual document blocks that belong to that type.
+An \emph{embeddable block}, for example, can be either a paragraph, an itemize,
+enumerate, or description list, a verse block, a block containing mathematics, etc.
+Notice that many blocks have a \emph{\code{of} ...} declaration after their name; these
+blocks --- termed \emph{recursive blocks} --- are those whose contents are other blocks.
 
 
 If a \lambtex document were unconstrained, one would expect a recursive block to
@@ -1793,15 +1821,15 @@ are however fairly minor and still allow for very flexible documents.
 In basic terms, documents are constrained by limiting the types of blocks accepted
 as children of recursive blocks.  The exact subtype allowed for each recursive block
 is shown in the figure as an \emph{\code{of} ...} declaration after the block name.
-Let us consider, for example, a quote block.  It only allows a list of \emph{embeddable
+Let us consider, for example, a quote block.  It only allows a list of \emph{quotable
 blocks} as children.  This means that you cannot quote a figure nor an abstract, but
-you can do so with any of the embeddable blocks or subtypes (\emph{textual blocks},
+you can do so with any of the quotable blocks or subtypes (\emph{embeddable blocks},
 namely).  Furthermore, these rules apply to the entire descendant tree.  This means
 that if an itemize block is the child of a quote block, then the most restricted rules
 of the parent apply also to the child's descendants.  In this case that would mean
-that the itemize block would also only accept embeddable blocks as children instead
-of its usually more permissive allowance of any \emph{listable block}.  The exception
-to this rule is the \code{subpage} block, which resets the hierarchy.
+that the itemize block would also only accept quotable blocks as children instead of
+its usually more permissive allowance of any \emph{listable block}.  The exception to
+this rule is the \code{subpage} block, which resets the hierarchy.
 
 
 \section[sec:synonyms]{Command synonyms}
@@ -1859,14 +1887,14 @@ in \sref{tab:permdesc}.
 {Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
 \begin{tabular}{cl}
 \head
-| Permission		| Definition |
+| Permission		| Definition							|
 \body
-| ≈			| The parameter is optional, but may not be empty if present. |
-| ≈\sub{ø}		| The parameter is optional, and may be empty. |
-| ✔			| The parameter is mandatory, and it may not be empty. |
-| ✔\sub{ø}		| The parameter is mandatory, but it may be empty. |
-| ✘			| The parameter is altogether forbidden. |
-| ✘\sub{ø}		| The parameter is forbidden, unless it is empty. |
+| \optional		| The parameter is optional, but may not be empty if present.	|
+| \optional0		| The parameter is optional, and may be empty.			|
+| \mandatory		| The parameter is mandatory, and it may not be empty.		|
+| \mandatory0		| The parameter is mandatory, but it may be empty.		|
+| \forbidden		| The parameter is altogether forbidden.			|
+| \forbidden0		| The parameter is forbidden, unless it is empty.		|
 \end{tabular}
 \end{table}
 
@@ -1884,71 +1912,72 @@ category, commands are shown alphabetically.  Furthermore, the commands \code{\e
 and \code{\emph{theorem}} are shown in italics because the actual command name is user-defined.}
 \begin{tabular}{rlll}
 \head
-| Command			| Order					| Label		| Extra |
+| Command			| Order						| Label		| Extra |
 \body
-| \code{\\answer}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\appendix}		| ✘					| ≈		| ✘\sub{ø} |
-| \code{\\bibliography}		| ✘					| ≈		| ✘\sub{ø} |
-| \code{\\body}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\bold}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\br}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\caps}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\cite}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\code}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\del}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\foot}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\head}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\image}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{frame}, \code{width}) |
-| \code{\\ins}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\item}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\link}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\mbox}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\mref}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\notes}		| ✘					| ≈		| ✘\sub{ø} |
-| \code{\\paragraph}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{initial}, \code{indent}) |
-| \code{\\part}			| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘\sub{ø} |
-| \code{\\question}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\ranswer}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\ref}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\rquestion}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\rule}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\section}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘\sub{ø} |
-| \code{\\see}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\sref}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\sub}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\subsection}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘\sub{ø} |
-| \code{\\subsubsection}	| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘\sub{ø} |
-| \code{\\subtitle}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\sup}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\title}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\toc}			| ✘					| ≈		| ✘\sub{ø} |
-| \code{\\what}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\where}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\\who}			| ✘					| ✘		| ✘\sub{ø} |
+| \code{\\answer}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\appendix}		| \forbidden					| \optional	| \forbidden0 |
+| \code{\\bibliography}		| \forbidden					| \optional	| \forbidden0 |
+| \code{\\body}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\bold}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\br}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\caps}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\cite}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\code}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\del}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\foot}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\head}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\image}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{frame}, \code{width}) |
+| \code{\\ins}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\item}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\link}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\mbox}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\span}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{class}) |
+| \code{\\mref}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\notes}		| \forbidden					| \optional	| \forbidden0 |
+| \code{\\paragraph}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{initial}, \code{indent}) |
+| \code{\\part}			| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
+| \code{\\question}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\ranswer}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\ref}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\rquestion}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\rule}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\section}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
+| \code{\\see}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\sref}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\sub}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\subsection}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
+| \code{\\subsubsection}	| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
+| \code{\\subtitle}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\sup}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\title}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\toc}			| \forbidden					| \optional	| \forbidden0 |
+| \code{\\what}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\where}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\who}			| \forbidden					| \forbidden	| \forbidden0 |
 \body
-| \code{abstract}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{bib}			| ✘					| ≈		| ✘\sub{ø} |
-| \code{\emph{boxout}}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{decor}			| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{description}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{enumerate}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{bul}) |
-| \code{equation}		| \mref{sec:order}{✘/✔}			| ≈		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{figure}			| \mref{sec:order}{✘/✔}			| ≈		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{itemize}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{num}) |
-| \code{mathml}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{mathtex}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{note}			| ✘					| ≈		| ✘\sub{ø} |
-| \code{quote}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{printout}		| \mref{sec:order}{✘/✔}			| ≈		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{pull}			| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{qanda}			| ✘					| ✘		| ✘\sub{ø} |
-| \code{source}			| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{box}, \code{linenums}, \code{zebra}, \code{lang}) |
-| \code{subpage}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{float}) |
-| \code{table}			| \mref{sec:order}{✘/✔}			| ≈		| ✘\sub{ø} |
-| \code{tabular}		| ✘					| ✘		| ✘\sub{ø} |
-| \code{\emph{theorem}}		| \mref{sec:order}{✘\sub{ø}/✔\sub{ø}}	| ≈		| ✘\sub{ø} |
-| \code{verbatim}		| ✘					| ✘		| ≈\sub{ø}\thicksp\(\code{mult}) |
-| \code{verse}			| ✘					| ✘		| ✘\sub{ø} |
+| \code{abstract}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{bib}			| \forbidden					| \optional	| \forbidden0 |
+| \code{\emph{boxout}}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \optional0\thicksp\(\code{float}) |
+| \code{decor}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
+| \code{description}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{enumerate}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{bul}) |
+| \code{equation}		| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \optional0\thicksp\(\code{float}) |
+| \code{figure}			| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \optional0\thicksp\(\code{float}) |
+| \code{itemize}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{num}) |
+| \code{mathml}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{mathtex}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{note}			| \forbidden					| \optional	| \forbidden0 |
+| \code{quote}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{printout}		| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \optional0\thicksp\(\code{float}) |
+| \code{pull}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
+| \code{qanda}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{source}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{box}, \code{linenums}, \code{zebra}, \code{lang}) |
+| \code{subpage}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
+| \code{table}			| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \forbidden0 |
+| \code{tabular}		| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\emph{theorem}}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
+| \code{verbatim}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{mult}) |
+| \code{verse}			| \forbidden					| \forbidden	| \forbidden0 |
 \end{tabular}
 \end{table}
 
@@ -2018,7 +2047,7 @@ Consult \sref{tab:permlist} for a list of which of these parameters are
 accepted for each command.}
 \begin{tabular}{rl}
 \head
-| Command		| Accepted values |
+| Parameter		| Accepted values |
 \body
 | \code{initial}	| Boolean |
 | \code{indent}		| Boolean or \code{auto} |
@@ -2034,6 +2063,7 @@ accepted for each command.}
 			\code{decimal}, \code{lower-roman}, \code{upper-roman},
 			\code{lower-alpha}, \code{upper-alpha}, \code{none} |
 | \code{float}		| Discrete values: \code{center}, \code{left}, \code{right} |
+| \code{class}		| A class name specification |
 | \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
 \end{tabular}
 \end{table}

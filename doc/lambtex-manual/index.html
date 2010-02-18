@@ -11,7 +11,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
     <link href="css/lambdoc.css" rel="stylesheet" media="all" title="Default" />
   </head>
   <body>
-    <div class="doc doc_valid doc_manuscript">
+    <div class="doc_manuscript doc doc_valid">
       <h1 class="doc_title">The <span class="doc_caps">lambtex</span> Manual
       </h1>
       <h2 class="doc_title">Dario Teixeira
@@ -135,25 +135,50 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
             <table>
               <thead class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_c">Order
+                  <td class="doc_cell_c"></td>
+                  <td class="doc_cell_c doc_uline" colspan="2">Markers
                   </td>
-                  <td class="doc_cell_c">Label
+                </tr>
+                <tr>
+                  <td class="doc_cell_c">Parameter
                   </td>
-                  <td class="doc_cell_c">Extra
+                  <td class="doc_cell_c">Begin
                   </td>
-                  <td class="doc_cell_c">Primary
+                  <td class="doc_cell_c">End
                   </td>
                 </tr>
               </thead>
               <tbody class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_c"><tt class="doc_code">(...)</tt>
+                  <td class="doc_cell_c">Order
                   </td>
-                  <td class="doc_cell_c"><tt class="doc_code">[...]</tt>
+                  <td class="doc_cell_c"><tt class="doc_code">(</tt>
                   </td>
-                  <td class="doc_cell_c"><tt class="doc_code">&lt;...&gt;</tt>
+                  <td class="doc_cell_c"><tt class="doc_code">)</tt>
                   </td>
-                  <td class="doc_cell_c"><tt class="doc_code">{...}</tt>
+                </tr>
+                <tr>
+                  <td class="doc_cell_c">Label
+                  </td>
+                  <td class="doc_cell_c"><tt class="doc_code">[</tt>
+                  </td>
+                  <td class="doc_cell_c"><tt class="doc_code">]</tt>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_c">Extra
+                  </td>
+                  <td class="doc_cell_c"><tt class="doc_code">&lt;</tt>
+                  </td>
+                  <td class="doc_cell_c"><tt class="doc_code">&gt;</tt>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_c">Primary
+                  </td>
+                  <td class="doc_cell_c"><tt class="doc_code">{</tt>
+                  </td>
+                  <td class="doc_cell_c"><tt class="doc_code">}</tt>
                   </td>
                 </tr>
               </tbody>
@@ -177,18 +202,22 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">This is the first example of a paragraph.  Note that</code>
 <code class="doc_src_line">it is composed of inline text.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">Lines can be broken at any point, because a paragraph</code>
-<code class="doc_src_line">is only terminated by a blank line. \br</code>
+<code class="doc_src_line">is only terminated by a blank line. &#8;r</code>
 <code class="doc_src_line">It is however possible to manually insert a line break</code>
 <code class="doc_src_line">without terminating the paragraph.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\p{There is also a simple command that allows the</code>
 <code class="doc_src_line">explicit declaration of a paragraph.}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -205,7 +234,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">Note that the line breaks within the text are irrelevant for the composer; all that it cares about are that blank lines separate paragraphs. if you wish for a line break within a paragraph (ie, without terminating the current paragraph), use the <tt class="doc_code">\br</tt> simple command, as demonstrated.
       </p>
-      <p class="doc_par">Using the command <tt class="doc_code">\paragraph</tt> (or its synonym <tt class="doc_code">\p</tt>) to declare a paragraph is usually neither necessary nor recommended. This method exists for the sole reason that it may be desirable to provide the composer with extra parameters about the paragraph. Presently, the extra parameters accepted are <tt class="doc_code">initial</tt> and <tt class="doc_code">indent</tt>. The former is a boolean which signals whether the first letter of the paragraph should be rendered in a special manner. Its default value is always <tt class="doc_code">false</tt>, so you must explicitly set it to <tt class="doc_code">true</tt> when needed. The latter indicates whether the paragraph should be indented, and is tripartite in the value domain. The values it accepts are <tt class="doc_code">auto</tt> (the default), <tt class="doc_code">true</tt>, or <tt class="doc_code">false</tt>. In most situations the <tt class="doc_code">auto</tt> algorithm should be good enough: it indents a paragraph only if immediately preceded by another paragraph. There are however situations where you may indeed require an override by explicitly setting the indentation to <tt class="doc_code">true</tt> or <tt class="doc_code">false</tt>.
+      <p class="doc_par">Using the command <tt class="doc_code">\paragraph</tt> (or its synonym <tt class="doc_code">\p</tt>) to declare a paragraph is usually neither necessary nor recommended. This method exists for the sole reason that it may be desirable to provide the composer with extra parameters about the paragraph. Presently, the extra parameters accepted are <tt class="doc_code">initial</tt> and <tt class="doc_code">indent</tt>. The former is a boolean which signals whether the first letter of the paragraph should be rendered in a special manner. Its default value is always <tt class="doc_code">false</tt>, so you must explicitly set it to <tt class="doc_code">true</tt> when needed. The latter indicates whether the paragraph should be indented, and is tripartite in value. The values it accepts are <tt class="doc_code">auto</tt> (the default), <tt class="doc_code">true</tt>, or <tt class="doc_code">false</tt>. In most situations the <tt class="doc_code">auto</tt> algorithm should be good enough: it indents a paragraph only if immediately preceded by another paragraph. There are however situations where you may indeed require an override by explicitly setting the indentation to <tt class="doc_code">true</tt> or <tt class="doc_code">false</tt>.
       </p>
       <p class="doc_par">At this point we recommend that you consult <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;E</a>, which dives into more detail on the subject of extra parameters. There you can learn of shorthand manners of inputting booleans and other values.
       </p>
@@ -234,9 +263,10 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\caps{<i class="doc_emph">inline</i>}</tt>
+                  <td class="doc_cell_r"><tt class="doc_code">\emph{<i class="doc_emph">inline</i>}</tt>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_caps">lambtex</span> supports text in small-caps.
+                  <td class="doc_cell_l">Here's another way to <i class="doc_emph">emphasise</i> text.
+                    <br /> (Synonyms: <tt class="doc_code">\em</tt> and <tt class="doc_code">\i</tt>)
                   </td>
                 </tr>
                 <tr>
@@ -247,16 +277,9 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\del{<i class="doc_emph">inline</i>}</tt>
+                  <td class="doc_cell_r"><tt class="doc_code">\caps{<i class="doc_emph">inline</i>}</tt>
                   </td>
-                  <td class="doc_cell_l">You may also fix <del class="doc_del">annoyingly</del> incorrect passages.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\emph{<i class="doc_emph">inline</i>}</tt>
-                  </td>
-                  <td class="doc_cell_l">Here's another way to <i class="doc_emph">emphasise</i> text.
-                    <br /> (Synonyms: <tt class="doc_code">\em</tt> and <tt class="doc_code">\i</tt>)
+                  <td class="doc_cell_l"><span class="doc_caps">lambtex</span> supports text in small-caps.
                   </td>
                 </tr>
                 <tr>
@@ -266,9 +289,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\mbox{<i class="doc_emph">inline</i>}</tt>
+                  <td class="doc_cell_r"><tt class="doc_code">\del{<i class="doc_emph">inline</i>}</tt>
                   </td>
-                  <td class="doc_cell_l">Some inline sequences should not be split across lines.
+                  <td class="doc_cell_l">You may also fix <del class="doc_del">annoyingly</del> incorrect passages.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"><tt class="doc_code">\sup{<i class="doc_emph">inline</i>}</tt>
+                  </td>
+                  <td class="doc_cell_l">The 1<sup class="doc_sup">st</sup> of January has a superscript.
                   </td>
                 </tr>
                 <tr>
@@ -278,9 +307,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\sup{<i class="doc_emph">inline</i>}</tt>
+                  <td class="doc_cell_r"><tt class="doc_code">\mbox{<i class="doc_emph">inline</i>}</tt>
                   </td>
-                  <td class="doc_cell_l">The 1<sup class="doc_sup">st</sup> of January has a superscript.
+                  <td class="doc_cell_l">The inline sequence should not be split across lines.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"><tt class="doc_code">\span{<i class="doc_emph">inline</i>}</tt>
+                  </td>
+                  <td class="doc_cell_l">You may create spans with custom classnames.
                   </td>
                 </tr>
               </tbody>
@@ -296,9 +331,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </div>
         </div>
       </div>
+      <p class="doc_par">While most commands listed in the table above should have a straightforward application, a few clarifying words concerning <tt class="doc_code">\span</tt> are in order. This command translates directly into an <span class="doc_caps">xhtml</span> <tt class="doc_code">span</tt> element; moreover, it accepts a class name declaration via the optional extra parameter <tt class="doc_code">class</tt>. In <span class="doc_caps">lambdoc</span>'s default configuration, this class name is prepended by `<tt class="doc_code">doc_span_</tt>' and output as the <tt class="doc_code">span</tt> element's own class name in the <span class="doc_caps">xhtml</span> output. Combined with a suitable <span class="doc_caps">css</span> declaration, this allows the definition of custom formatting for certain passages.
+      </p>
+      <p class="doc_par">To conclude, note that the class name has two constraints. First, the allowed character set is limited to lowercase roman letters, digits, and the characters '<tt class="doc_code">.</tt>' (period), '<tt class="doc_code">:</tt>' (colon), '<tt class="doc_code">-</tt>' (dash), and '<tt class="doc_code">_</tt>' (underscore). Second, the first character must be a letter.
+      </p>
       <h1 id="doc:a:2" class="doc_sec">4.&ensp;<span>Special characters</span>
       </h1>
-      <p class="doc_par"><span class="doc_caps">lambtex</span> allows the direct use of <span class="doc_caps">html</span> entities via the same notation used in <span class="doc_caps">html</span>. More precisely, entities are to be enclosed between the characters '<tt class="doc_code">&amp;</tt>' (ampersand) and '<tt class="doc_code">;</tt>' (semicolon), and may be specified by name or by <span class="doc_caps">unicode</span> code point in decimal or hexadecimal notation. As an example, if the <span class="doc_caps">euro</span> symbol '<tt class="doc_code">€</tt>' is not readily available in your keyboard, you may enter it in either of the following three manners:
+      <p class="doc_par"><span class="doc_caps">lambtex</span> allows the direct use of <span class="doc_caps">html</span> entities via the same notation used in <span class="doc_caps">html</span>. More precisely, entities are to be enclosed between the characters '<tt class="doc_code">&amp;</tt>' (ampersand) and '<tt class="doc_code">;</tt>' (semicolon), and may be specified by the so-called <i class="doc_emph">character entity reference</i> (ie, the entity's name), or by <i class="doc_emph">numeric character reference</i> (ie, a <span class="doc_caps">unicode</span> code point in decimal or hexadecimal notation). As an example, if the <span class="doc_caps">euro</span> symbol '<tt class="doc_code">€</tt>' is not readily available in your keyboard, you may enter it in either of the following three manners:
       </p>
       <div class="doc_tab">
         <div>
@@ -422,23 +461,27 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">Here is a list of small furry mammals:</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin{itemize}</code>
+<code class="doc_src_line">&#8;egin{itemize}</code>
 <code class="doc_src_line">\item Cat</code>
 <code class="doc_src_line">\item Some dog breeds:</code>
-<code class="doc_src_line">	\begin{description}</code>
+<code class="doc_src_line">	&#8;egin{description}</code>
 <code class="doc_src_line">	\item{poodle:} Small dogs kept for company</code>
 <code class="doc_src_line">	\item{greyhound:} Running dogs</code>
 <code class="doc_src_line">	\end{description}</code>
 <code class="doc_src_line">\item Various rodents ordered by abundance:</code>
-<code class="doc_src_line">	\begin{enumerate}</code>
+<code class="doc_src_line">	&#8;egin{enumerate}</code>
 <code class="doc_src_line">	\item Rat</code>
 <code class="doc_src_line">	\item Hamster</code>
 <code class="doc_src_line">	\item Capivara</code>
 <code class="doc_src_line">	\end{enumerate}</code>
 <code class="doc_src_line">\end{itemize}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -610,7 +653,9 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{qanda}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{qanda}</code>
 <code class="doc_src_line">\question{Egg Gazette:}</code>
 <code class="doc_src_line">On which side of the egg opening debate are you?</code>
 
@@ -628,13 +673,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 <code class="doc_src_line">Sheer madness!</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\rquestion</code>
+<code class="doc_src_line">question</code>
 <code class="doc_src_line">Could you elaborate?</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\ranswer</code>
+<code class="doc_src_line">answer</code>
 <code class="doc_src_line">I don't believe that to be necessary; the reasons are self-evident.</code>
 <code class="doc_src_line">\end{qanda}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -676,21 +723,25 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{verse}</code>
-<code class="doc_src_line">Arma virumque cano, Troiae qui primus ab oris \br</code>
-<code class="doc_src_line">Italiam, fato profugus, Laviniaque venit \br</code>
-<code class="doc_src_line">litora, multum ille et terris iactatus et alto \br</code>
-<code class="doc_src_line">vi superum saevae memorem Iunonis ob iram; \br</code>
-<code class="doc_src_line">multa quoque et bello passus, dum conderet urbem, \br</code>
-<code class="doc_src_line">inferretque deos Latio, genus unde Latinum, \br</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{verse}</code>
+<code class="doc_src_line">Arma virumque cano, Troiae qui primus ab oris &#8;r</code>
+<code class="doc_src_line">Italiam, fato profugus, Laviniaque venit &#8;r</code>
+<code class="doc_src_line">litora, multum ille et terris iactatus et alto &#8;r</code>
+<code class="doc_src_line">vi superum saevae memorem Iunonis ob iram; &#8;r</code>
+<code class="doc_src_line">multa quoque et bello passus, dum conderet urbem, &#8;r</code>
+<code class="doc_src_line">inferretque deos Latio, genus unde Latinum, &#8;r</code>
 <code class="doc_src_line">Albanique patres, atque altae moenia Romae.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">Musa, mihi causas memora, quo numine laeso, \br</code>
-<code class="doc_src_line">quidve dolens, regina deum tot volvere casus \br</code>
-<code class="doc_src_line">insignem pietate virum, tot adire labores \br</code>
-<code class="doc_src_line">impulerit.  Tantaene animis caelestibus irae? \br</code>
+<code class="doc_src_line">Musa, mihi causas memora, quo numine laeso, &#8;r</code>
+<code class="doc_src_line">quidve dolens, regina deum tot volvere casus &#8;r</code>
+<code class="doc_src_line">insignem pietate virum, tot adire labores &#8;r</code>
+<code class="doc_src_line">impulerit.  Tantaene animis caelestibus irae? &#8;r</code>
 <code class="doc_src_line">\end{verse}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -718,19 +769,23 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <h1 id="doc:u:sec:quotations" class="doc_sec">9.&ensp;<span>Quotations</span>
       </h1>
-      <p class="doc_par">Quotation blocks are typically used for including an excerpt from an external source into your document. You may be quoting what someone said in an interview, or providing context when replying to a comment, for example. Quotation bloks are delimited by the <tt class="doc_code">quote</tt> environment, and may enclose not only plain text paragraphs, but also lists or any of the so-called <i class="doc_emph">embeddable blocks</i>, as <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> describes in greater detail. Consider thus the following <span class="doc_caps">lambtex</span> source:
+      <p class="doc_par">Quotation blocks are typically used for including an excerpt from an external source into your document. You may be quoting what someone said in an interview, or providing context when replying to a comment, for example. Quotation bloks are delimited by the <tt class="doc_code">quote</tt> environment, and may enclose not only plain text paragraphs, but also lists or any of the so-called <i class="doc_emph">quotable blocks</i>, as <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> describes in greater detail. Consider thus the following <span class="doc_caps">lambtex</span> source:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">This is what you said:</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin{quote}</code>
+<code class="doc_src_line">&#8;egin{quote}</code>
 <code class="doc_src_line">Eggs should be opened by their large end.  Any other method is heresy.</code>
 <code class="doc_src_line">It is therefore my opinion that John McAuthor is a heretic.</code>
 <code class="doc_src_line">\end{quote}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -808,7 +863,9 @@ xmlns="http://www.w3.org/1998/Math/MathML"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin&lt;lang=ocaml&gt;{source}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin&lt;lang=ocaml&gt;{source}</code>
 <code class="doc_src_line">type 'a tree =</code>
 <code class="doc_src_line">	| Leaf of 'a</code>
 <code class="doc_src_line">	| Node of 'a tree * 'a tree</code>
@@ -818,6 +875,8 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 <code class="doc_src_line">	| Leaf _	-&gt; 1</code>
 <code class="doc_src_line">	| Node (a, b)	-&gt; (count_leaves a) + (count_leaves b)</code>
 <code class="doc_src_line">\end{source}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -834,19 +893,25 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 <code class="doc_src_line">5</code>
 <code class="doc_src_line">6</code>
 <code class="doc_src_line">7</code>
+<code class="doc_src_line">8</code>
+<code class="doc_src_line">9</code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></code>
-<code class="doc_src_line">        <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span></code>
-<code class="doc_src_line">        <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line"><span class="doc_src_kwa">let rec</span> count_leaves <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
-<code class="doc_src_line">        <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span> _        <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">1</span></code>
-<code class="doc_src_line">        <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>a<span class="doc_src_sym">,</span> b<span class="doc_src_sym">)   -&gt; (</span>count_leaves a<span class="doc_src_sym">) + (</span>count_leaves b<span class="doc_src_sym">)</span></code>
+<code class="doc_src_line"><span class="doc_src_Kwd">type</span> 'a tree <span class="doc_src_Sym">=</span></code>
+<code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Leaf</span> <span class="doc_src_Kwd">of</span> 'a</code>
+<code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Node</span> <span class="doc_src_Kwd">of</span> 'a tree <span class="doc_src_Sym">*</span> 'a tree</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line"><span class="doc_src_Kwd">let</span> <span class="doc_src_Kwd">rec</span> count_leaves <span class="doc_src_Sym">=</span> <span class="doc_src_Kwd">function</span></code>
+<code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Leaf</span> _	<span class="doc_src_Sym">-&gt;</span> <span class="doc_src_Num">1</span></code>
+<code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Node</span> <span class="doc_src_Sym">(</span>a<span class="doc_src_Sym">,</span> b<span class="doc_src_Sym">)</span>	<span class="doc_src_Sym">-&gt;</span> <span class="doc_src_Sym">(</span>count_leaves a<span class="doc_src_Sym">)</span> <span class="doc_src_Sym">+</span> <span class="doc_src_Sym">(</span>count_leaves b<span class="doc_src_Sym">)</span></code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -996,15 +1061,19 @@ xmlns="http://www.w3.org/1998/Math/MathML"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{tabular}{lll}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{tabular}{lll}</code>
 <code class="doc_src_line">\head</code>
 <code class="doc_src_line">| Name		| Phone			| Address	|</code>
-<code class="doc_src_line">\body</code>
+<code class="doc_src_line">&#8;ody</code>
 <code class="doc_src_line">| John		| 123456		| London	|</code>
 <code class="doc_src_line">| Mary		| 234567		| Paris		|</code>
 <code class="doc_src_line">| Mark		| 345678		| Moscow	|</code>
 <code class="doc_src_line">| Jane		| 456789		| Sydney	|</code>
 <code class="doc_src_line">\end{tabular}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1018,22 +1087,26 @@ xmlns="http://www.w3.org/1998/Math/MathML"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{tabular}{rll}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{tabular}{rll}</code>
 <code class="doc_src_line">\head</code>
 <code class="doc_src_line">|		|{2c_} Scientific name			|</code>
 <code class="doc_src_line">| Common name	| Genus			| Species	|</code>
-<code class="doc_src_line">\body</code>
+<code class="doc_src_line">&#8;ody</code>
 <code class="doc_src_line">| Wolf		| \emph{Canis}		| \emph{lupus}	|</code>
 <code class="doc_src_line">| Cat		| \emph{Felis}		| \emph{catus}	|</code>
-<code class="doc_src_line">| Chicken	| \emph{Gallus}		| \emph{gallus}	|</code>
 <code class="doc_src_line">| Lion		| \emph{Panthera}	| \emph{leo}	|</code>
-<code class="doc_src_line">\body</code>
+<code class="doc_src_line">&#8;ody</code>
 <code class="doc_src_line">| English oak	| \emph{Quercus}	| \emph{robur}	|</code>
+<code class="doc_src_line">| Cork oak	| \emph{Quercus}	| \emph{suber}	|</code>
 <code class="doc_src_line">| European yew	| \emph{Taxus}		| \emph{baccata}|</code>
 <code class="doc_src_line">\foot</code>
 <code class="doc_src_line">| Common name	| Genus			| Species	|</code>
 <code class="doc_src_line">|		|{2c^} Scientific name			|</code>
 <code class="doc_src_line">\end{tabular}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1091,14 +1164,6 @@ xmlns="http://www.w3.org/1998/Math/MathML"
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r">Chicken
-                  </td>
-                  <td class="doc_cell_l"><i class="doc_emph">Gallus</i>
-                  </td>
-                  <td class="doc_cell_l"><i class="doc_emph">gallus</i>
-                  </td>
-                </tr>
-                <tr>
                   <td class="doc_cell_r">Lion
                   </td>
                   <td class="doc_cell_l"><i class="doc_emph">Panthera</i>
@@ -1114,6 +1179,14 @@ xmlns="http://www.w3.org/1998/Math/MathML"
                   <td class="doc_cell_l"><i class="doc_emph">Quercus</i>
                   </td>
                   <td class="doc_cell_l"><i class="doc_emph">robur</i>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r">Cork oak
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">Quercus</i>
+                  </td>
+                  <td class="doc_cell_l"><i class="doc_emph">suber</i>
                   </td>
                 </tr>
                 <tr>
@@ -1139,7 +1212,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
       </div>
       <h1 id="doc:u:sec:math" class="doc_sec">13.&ensp;<span>Mathematical formulas</span>
       </h1>
-      <p class="doc_par"><span class="doc_caps">lambtex</span> also supports the inclusion of equations and mathematical formulas in a document. Mathematics are to be entered using either <span class="doc_caps">MathML</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:mathml">3</a>]</span> (version 2.0) or the <span class="doc_caps">TeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:tex">4</a>]</span> format. The former was chosen because an increasing number of tools has the ability to export <span class="doc_caps">MathML</span>. As for the latter, it is the <i class="doc_emph">de facto</i> standard for manually typing mathematical expressions.
+      <p class="doc_par"><span class="doc_caps">lambtex</span> also supports the inclusion of equations and mathematical formulas in a document. Mathematics are to be entered using either <span class="doc_caps">MathML</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:mathml">3</a>]</span> or the <span class="doc_caps">TeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:tex">4</a>]</span> format. The former was chosen because an increasing number of tools has the ability to export <span class="doc_caps">MathML</span>. As for the latter, it is the <i class="doc_emph">de facto</i> standard for manually typing mathematical expressions.
       </p>
       <p class="doc_par">Mathematical expressions may be entered in an inline context (embedded inside a paragraph, for example), or in a block context. In the former case, the expression should be delimited between the characters '<tt class="doc_code">[$</tt>' and '<tt class="doc_code">$]</tt>' if it is written in <span class="doc_caps">TeX</span> format, and between characters '<tt class="doc_code">&lt;$</tt>' and '<tt class="doc_code">$&gt;</tt>' if written in <span class="doc_caps">MathML</span>. Though <span class="doc_caps">lambtex</span> does not enforce it, common sense dictates that inline mathematics should restrict themselves to expressions that fit comfortably in a single line. One example is the quadratic equation <span class="doc_mathinl"><math
 xmlns="http://www.w3.org/1998/Math/MathML"
@@ -1188,19 +1261,25 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{mathtex}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{mathtex}</code>
 <code class="doc_src_line">x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}</code>
 <code class="doc_src_line">\end{mathtex}</code>
 
+<code class="doc_src_line"></code>
+
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">The equivalent Presentation <span class="doc_caps">MathML</span> markup is listed below. Note that it is also acceptable to provide Content <span class="doc_caps">MathML</span> instead of Presentation <span class="doc_caps">MathML</span>. In either case, just make sure the markup conforms to version 2.0 of the <span class="doc_caps">MathML</span> standard, and that the <tt class="doc_code">math</tt> top-level element that wraps the <span class="doc_caps">MathML</span> contents is provided as part of the markup. These requirements also apply to the <span class="doc_caps">MathML</span> markup specified in an inline context. On the other hand, giving an explicit namespace to the <span class="doc_caps">MathML</span> markup — that is, specifying <tt class="doc_code">&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;</tt> as the top-level element — is <b class="doc_bold">not</b> necessary, since namespacing requirements are automatically taken care of.
+      <p class="doc_par">The equivalent Presentation <span class="doc_caps">MathML</span> markup is listed below. Note that it is also acceptable to provide Content <span class="doc_caps">MathML</span> instead of Presentation <span class="doc_caps">MathML</span>. In either case, just make sure the markup conforms to version 2.0 of the <span class="doc_caps">MathML</span> standard, and that the <tt class="doc_code">math</tt> top-level element that wraps the <span class="doc_caps">MathML</span> contents is provided as part of the markup. These requirements also apply to the <span class="doc_caps">MathML</span> markup specified in an inline context. On the other hand, giving an explicit namespace to the <span class="doc_caps">MathML</span> markup is <b class="doc_bold">not</b> necessary, since namespacing requirements are automatically taken care of.
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{mathml}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{mathml}</code>
 <code class="doc_src_line">&lt;math&gt;</code>
 <code class="doc_src_line">	&lt;mrow&gt;</code>
 <code class="doc_src_line">	    &lt;mi&gt;x&lt;/mi&gt;</code>
@@ -1232,6 +1311,8 @@ rspace="0.278em"
 <code class="doc_src_line">	&lt;/mrow&gt;</code>
 <code class="doc_src_line">&lt;/math&gt;</code>
 <code class="doc_src_line">\end{mathml}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1304,7 +1385,11 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">\image{circle.png}{This is a circle}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1324,13 +1409,15 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{subpage}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{subpage}</code>
 <code class="doc_src_line">This is the first example of a paragraph.  Note that</code>
 <code class="doc_src_line">it is composed of inline text.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">Lines can be broken at any point, because a paragraph</code>
-<code class="doc_src_line">is only terminated by a blank line. \br</code>
+<code class="doc_src_line">is only terminated by a blank line. &#8;r</code>
 <code class="doc_src_line">It is however possible to manually insert a line break</code>
 <code class="doc_src_line">without terminating the paragraph.</code>
 
@@ -1338,6 +1425,8 @@ width="0"
 <code class="doc_src_line">\p{There is also a simple command that allows the</code>
 <code class="doc_src_line">explicit declaration of a paragraph.}</code>
 <code class="doc_src_line">\end{subpage}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1397,13 +1486,15 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">\part{Prelude}</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\section{Introduction}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">For more details, please check Section \ref{sec:details}.</code>
+<code class="doc_src_line">For more details, please check Section ef{sec:details}.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\subsection[sec:details]{This is a sub-section}</code>
@@ -1413,6 +1504,8 @@ width="0"
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">The quick brown fox jumps over the lazy brown dog.</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1442,17 +1535,21 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">You can easily insert a link into an external resource such</code>
 <code class="doc_src_line">as \link{http://www.wikipedia.com/}{Wikipedia}.  Internal</code>
 <code class="doc_src_line">links come into several guises: they can be references to</code>
 <code class="doc_src_line">notes\see{note:meta}; bibliographic references like those</code>
 <code class="doc_src_line">available in \caps{LaTeX}\cite{bib:latex}; pointers to</code>
 <code class="doc_src_line">labelled figures, tables, printouts, equations, or sections</code>
-<code class="doc_src_line">such as \mbox{Section \ref{sec:anatomy}}; smart references to</code>
+<code class="doc_src_line">such as \mbox{Section ef{sec:anatomy}}; smart references to</code>
 <code class="doc_src_line">those same elements such as \sref{sec:anatomy}; and finally,</code>
 <code class="doc_src_line">references where the order is not automatically added (for</code>
 <code class="doc_src_line">example, you may refer yet again \mref{sec:anatomy}{to that</code>
 <code class="doc_src_line">same section}).</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1546,11 +1643,15 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin{pull}{Homer Simpson}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{pull}{Homer Simpson}</code>
 <code class="doc_src_line">Weaseling out of things is important to learn:</code>
 <code class="doc_src_line">it's what separates us from the animals.</code>
 <code class="doc_src_line">Except the weasel.</code>
 <code class="doc_src_line">\end{pull}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1578,13 +1679,18 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\newboxout{warning}{Warning}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin{warning}{Boxout overload}</code>
+<code class="doc_src_line">
+ewboxout{warning}{Warning}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{warning}{Boxout overload}</code>
 <code class="doc_src_line">Boxouts are like quotation blocks:</code>
 <code class="doc_src_line">they are most effective when not abused!</code>
 <code class="doc_src_line">\end{warning}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1602,15 +1708,20 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\newtheorem{theorem}{Theorem}{cnt:theorem}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin{theorem}{John McAuthor}</code>
+<code class="doc_src_line">
+ewtheorem{theorem}{Theorem}{cnt:theorem}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin{theorem}{John McAuthor}</code>
 <code class="doc_src_line">Let an egg be defined as an ellipsoid whose radii across the [$x$],</code>
 <code class="doc_src_line">[$y$], and [$z$] axes are respectively [$a$], [$b$], and [$c$].</code>
 <code class="doc_src_line">Furthermore, the egg satisfies the scalene condition, and therefore</code>
 <code class="doc_src_line">[$a &gt; b &gt; c$].  All such eggs are optimally opened by their small-end.</code>
 <code class="doc_src_line">\end{theorem}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1703,9 +1814,13 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\begin[fig:example]{figure}{This is the figure's caption.}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">&#8;egin[fig:example]{figure}{This is the figure's caption.}</code>
 <code class="doc_src_line">\image{circle.png}{This is a circle}</code>
 <code class="doc_src_line">\end{figure}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1754,22 +1869,26 @@ rspace="0.278em"
       </p>
       <p class="doc_par"><span class="doc_caps">LaTeX</span> users are familiar with a richer set of sub-titles that includes special commands for specifying the author and date. There is obviously a trade-off between increasing language complexity and improving semantic richness. On this continuum, <span class="doc_caps">lambtex</span> sits further along than plain <span class="doc_caps">TeX</span> on the direction towards semantic richness. However, the awareness of increased language complexity is ever-present, and weights heavily on decisions such as this one. It is for this reason that the language offers a catch-all <tt class="doc_code">\subtitle</tt> command instead of multiple commands tailored to each particular application.
       </p>
-      <p class="doc_par">Abstracts are commonly found on scientific papers, and <span class="doc_caps">lambtex</span> supports them as well. An abstract is declared by enclosing one or more textual blocks within an <tt class="doc_code">abstract</tt> environment. Please consult <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> for more details on what constitutes a <i class="doc_emph">textual block</i>, and note the source fragment below for an example of the various frotmatter blocks.
+      <p class="doc_par">Abstracts are commonly found on scientific papers, and <span class="doc_caps">lambtex</span> supports them as well. An abstract is declared by enclosing one or more embeddable blocks within an <tt class="doc_code">abstract</tt> environment. Please consult <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> for more details on what constitutes a <i class="doc_emph">embeddable block</i>, and note the source fragment below for an example of the various frontmatter blocks.
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\title{Small-endian vs big-endian: the solution}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">	itle{Small-endian vs big-endian: the solution}</code>
 <code class="doc_src_line">\subtitle{John McAuthor}</code>
 <code class="doc_src_line">\subtitle{February 2009}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin{abstract}</code>
+<code class="doc_src_line">&#8;egin{abstract}</code>
 <code class="doc_src_line">This paper presents an irrefutable solution to the age-old question</code>
 <code class="doc_src_line">of whether eggs should be opened by the small-end or the big-end.</code>
 <code class="doc_src_line">Many insightful arguments shall be presented. (...)</code>
 <code class="doc_src_line">\end{abstract}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1799,13 +1918,17 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">This is a paragraph.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\rule</code>
+<code class="doc_src_line">ule</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">This is another paragraph.</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1832,17 +1955,22 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">This is a normal\see{note:example} paragraph that references</code>
 <code class="doc_src_line">an end-document note.  You may read all notes declared in the</code>
 <code class="doc_src_line">document \mref{sec:notes}{in this section}.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin[note:example]{note}</code>
+<code class="doc_src_line">&#8;egin[note:example]{note}</code>
 <code class="doc_src_line">And by 'normal' we mean 'not normal'.</code>
 <code class="doc_src_line">\end{note}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\notes[sec:notes]</code>
+<code class="doc_src_line">
+otes[sec:notes]</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1856,14 +1984,18 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+
+<code class="doc_src_line"></code>
 <code class="doc_src_line">\caps{lambtex} is largely inspired by LaTeX\cite{bib:latex}.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">\begin[bib:latex]{bib}</code>
+<code class="doc_src_line">&#8;egin[bib:latex]{bib}</code>
 <code class="doc_src_line">\who{Leslie Lamport}</code>
 <code class="doc_src_line">\what{LaTeX: a Document Preparation System (2\sup{nd} edition)}</code>
 <code class="doc_src_line">\where{Addison-Wesley Professional, 1994, ISBN 0-201-52983-1}</code>
 <code class="doc_src_line">\end{bib}</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1911,12 +2043,18 @@ rspace="0.222em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">\newmacro{author}{0}{John McAuthor, of the small-ended approach,}</code>
-<code class="doc_src_line">\newmacro{greet}{2}{Greetings \bold{\arg{1}} and welcome to \arg{2}}</code>
+
+<code class="doc_src_line"></code>
+<code class="doc_src_line">
+ewmacro{author}{0}{John McAuthor, of the small-ended approach,}</code>
+<code class="doc_src_line">
+ewmacro{greet}{2}{Greetings &#8;old{\arg{1}} and welcome to \arg{2}}</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">It was then that \author reached his destination.  The gatekeeper said,</code>
 <code class="doc_src_line">``\greet{\author}{this land}'', and there was much rejoicing.</code>
+
+<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1955,11 +2093,11 @@ rspace="0.222em"
           </div>
         </div>
       </div>
-      <p class="doc_par">Two other things stand out in the figure. The first is that blocks are grouped into two broad categories: composition blocks (in green) and manuscript blocks (in blue). Though not relevant to a discussion concerning structure, this categorisation serves as a good, graphical reminder of which block types are allowed for composition and manuscript document types. Second, there is a list attached to each of the block types. This list indicates the actual document blocks that belong to that type. A <i class="doc_emph">textual block</i>, for example, can be either a paragraph, an itemize, enumerate, or description list, a verse block, or a block containing mathematics. Notice that many blocks have a <i class="doc_emph"><tt class="doc_code">of</tt> ...</i> declaration after their name; these blocks — termed <i class="doc_emph">recursive blocks</i> — are those whose contents are other blocks.
+      <p class="doc_par">Two other things stand out in the figure. The first is that blocks are grouped into two broad categories: composition blocks (in green) and manuscript blocks (in blue). Though not relevant to a discussion concerning structure, this categorisation serves as a good, graphical reminder of which block types are allowed for composition and manuscript document types. Second, there is a list attached to each of the block types. This list indicates the actual document blocks that belong to that type. An <i class="doc_emph">embeddable block</i>, for example, can be either a paragraph, an itemize, enumerate, or description list, a verse block, a block containing mathematics, etc. Notice that many blocks have a <i class="doc_emph"><tt class="doc_code">of</tt> ...</i> declaration after their name; these blocks — termed <i class="doc_emph">recursive blocks</i> — are those whose contents are other blocks.
       </p>
       <p class="doc_par">If a <span class="doc_caps">lambtex</span> document were unconstrained, one would expect a recursive block to be composed of a list of super blocks. Because super blocks sit at the top of the hierarchy, <b class="doc_bold">any</b> block can be used where a super block is allowed. Therefore, in an unconstrained scenario, it would be perfectly legal for a quotation block to be the parent of a section, or for an abstract block to include another. Needless to say, an unconstrained document would accommodate for pathological situations bearing no resemblance to any reasonable real-world documents. It is for this reason that a <span class="doc_caps">lambtex</span> document has a few constraints in place. As you shall see, these constraints are however fairly minor and still allow for very flexible documents.
       </p>
-      <p class="doc_par">In basic terms, documents are constrained by limiting the types of blocks accepted as children of recursive blocks. The exact subtype allowed for each recursive block is shown in the figure as an <i class="doc_emph"><tt class="doc_code">of</tt> ...</i> declaration after the block name. Let us consider, for example, a quote block. It only allows a list of <i class="doc_emph">embeddable blocks</i> as children. This means that you cannot quote a figure nor an abstract, but you can do so with any of the embeddable blocks or subtypes (<i class="doc_emph">textual blocks</i>, namely). Furthermore, these rules apply to the entire descendant tree. This means that if an itemize block is the child of a quote block, then the most restricted rules of the parent apply also to the child's descendants. In this case that would mean that the itemize block would also only accept embeddable blocks as children instead of its usually more permissive allowance of any <i class="doc_emph">listable block</i>. The exception to this rule is the <tt class="doc_code">subpage</tt> block, which resets the hierarchy.
+      <p class="doc_par">In basic terms, documents are constrained by limiting the types of blocks accepted as children of recursive blocks. The exact subtype allowed for each recursive block is shown in the figure as an <i class="doc_emph"><tt class="doc_code">of</tt> ...</i> declaration after the block name. Let us consider, for example, a quote block. It only allows a list of <i class="doc_emph">quotable blocks</i> as children. This means that you cannot quote a figure nor an abstract, but you can do so with any of the quotable blocks or subtypes (<i class="doc_emph">embeddable blocks</i>, namely). Furthermore, these rules apply to the entire descendant tree. This means that if an itemize block is the child of a quote block, then the most restricted rules of the parent apply also to the child's descendants. In this case that would mean that the itemize block would also only accept quotable blocks as children instead of its usually more permissive allowance of any <i class="doc_emph">listable block</i>. The exception to this rule is the <tt class="doc_code">subpage</tt> block, which resets the hierarchy.
       </p>
       <h1 id="doc:u:sec:synonyms" class="doc_sec">B.&ensp;<span>Command synonyms</span>
       </h1>
@@ -2097,37 +2235,37 @@ rspace="0.222em"
               </thead>
               <tbody class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_c">≈
+                  <td class="doc_cell_c"><span class="doc_span_optional">≈</span>
                   </td>
                   <td class="doc_cell_l">The parameter is optional, but may not be empty if present.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_c">≈<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_c"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span>
                   </td>
                   <td class="doc_cell_l">The parameter is optional, and may be empty.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_c">✔
+                  <td class="doc_cell_c"><span class="doc_span_mandatory">✔</span>
                   </td>
                   <td class="doc_cell_l">The parameter is mandatory, and it may not be empty.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_c">✔<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_c"><span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span>
                   </td>
                   <td class="doc_cell_l">The parameter is mandatory, but it may be empty.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_c">✘
+                  <td class="doc_cell_c"><span class="doc_span_forbidden">✘</span>
                   </td>
                   <td class="doc_cell_l">The parameter is altogether forbidden.
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_c">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_c"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                   <td class="doc_cell_l">The parameter is forbidden, unless it is empty.
                   </td>
@@ -2167,391 +2305,401 @@ rspace="0.222em"
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\answer</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\appendix</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\bibliography</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\body</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\bold</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\br</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\caps</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\cite</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\code</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\del</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\foot</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\head</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\image</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">frame</tt>, <tt class="doc_code">width</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">frame</tt>, <tt class="doc_code">width</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\ins</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\item</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\link</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\mbox</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"><tt class="doc_code">\span</tt>
+                  </td>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
+                  </td>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
+                  </td>
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">class</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\mref</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\notes</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\paragraph</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">initial</tt>, <tt class="doc_code">indent</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">initial</tt>, <tt class="doc_code">indent</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\part</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘<sub class="doc_sub">ø</sub>/✔<sub class="doc_sub">ø</sub></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\question</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\ranswer</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\ref</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\rquestion</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\rule</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\section</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘<sub class="doc_sub">ø</sub>/✔<sub class="doc_sub">ø</sub></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\see</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\sref</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\sub</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\subsection</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘<sub class="doc_sub">ø</sub>/✔<sub class="doc_sub">ø</sub></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\subsubsection</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘<sub class="doc_sub">ø</sub>/✔<sub class="doc_sub">ø</sub></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\subtitle</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\sup</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\title</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\toc</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\what</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\where</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\who</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
               </tbody>
@@ -2559,231 +2707,231 @@ rspace="0.222em"
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">abstract</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">bib</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code"><i class="doc_emph">boxout</i></tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘<sub class="doc_sub">ø</sub>/✔<sub class="doc_sub">ø</sub></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">decor</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">description</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">enumerate</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">bul</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">bul</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">equation</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘/✔</a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">figure</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘/✔</a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">itemize</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">num</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">num</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">mathml</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">mathtex</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">note</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">quote</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">printout</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘/✔</a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">pull</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">qanda</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">source</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">box</tt>, <tt class="doc_code">linenums</tt>, <tt class="doc_code">zebra</tt>, <tt class="doc_code">lang</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">box</tt>, <tt class="doc_code">linenums</tt>, <tt class="doc_code">zebra</tt>, <tt class="doc_code">lang</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">subpage</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">table</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘/✔</a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">tabular</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code"><i class="doc_emph">theorem</i></tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order">✘<sub class="doc_sub">ø</sub>/✔<sub class="doc_sub">ø</sub></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
-                  <td class="doc_cell_l">≈
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">verbatim</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">≈<sub class="doc_sub">ø</sub> (<tt class="doc_code">mult</tt>)
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">mult</tt>)
                   </td>
                 </tr>
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">verse</tt>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l">✘<sub class="doc_sub">ø</sub>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
                   </td>
                 </tr>
               </tbody>
@@ -2835,7 +2983,7 @@ rspace="0.222em"
             <table>
               <thead class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_r">Command
+                  <td class="doc_cell_r">Parameter
                   </td>
                   <td class="doc_cell_l">Accepted values
                   </td>
@@ -2906,6 +3054,12 @@ rspace="0.222em"
                   <td class="doc_cell_r"><tt class="doc_code">float</tt>
                   </td>
                   <td class="doc_cell_l">Discrete values: <tt class="doc_code">center</tt>, <tt class="doc_code">left</tt>, <tt class="doc_code">right</tt>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"><tt class="doc_code">class</tt>
+                  </td>
+                  <td class="doc_cell_l">A class name specification
                   </td>
                 </tr>
                 <tr>
