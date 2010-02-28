@@ -23,10 +23,10 @@ type processor_t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let string_of_xhtml xhtml =
+let string_of_xhtml the_title xhtml =
 	let page = (html
 			(head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]
-				(title (pcdata "Lambdoc document"))
+				(title (pcdata the_title))
 				[
 				meta ~a:[a_http_equiv "content-type"] ~content:"text/html; charset=utf-8" ();
 				link ~a:[a_href (uri_of_string "css/lambdoc.css"); a_rel [`Stylesheet]; a_media [`All]; a_title "Default"] ();
@@ -44,7 +44,7 @@ let get_processor options = match options.category with
 			| `Sexp	    -> (fun str -> Lambdoc_core.Ambivalent.deserialize_manuscript str)
 		and writer = match options.output_markup with
 			| `Sexp  -> Lambdoc_core.Ambivalent.serialize_manuscript
-			| `Xhtml -> (fun doc -> string_of_xhtml (Lambdoc_write_xhtml.Main.write_ambivalent_manuscript doc))
+			| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_manuscript doc))
 		in Manuscript_io (reader, writer)
 	| `Composition ->
 		let reader = match options.input_markup with
@@ -54,7 +54,7 @@ let get_processor options = match options.category with
 			| `Sexp	    -> (fun str -> Lambdoc_core.Ambivalent.deserialize_composition str)
 		and writer = match options.output_markup with
 			| `Sexp  -> Lambdoc_core.Ambivalent.serialize_composition
-			| `Xhtml -> (fun doc -> string_of_xhtml (Lambdoc_write_xhtml.Main.write_ambivalent_composition doc))
+			| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_composition doc))
 		in Composition_io (reader, writer)
 
 

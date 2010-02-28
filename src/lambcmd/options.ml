@@ -16,6 +16,7 @@ open OptParse
 type t =
 	{
 	debug: bool;
+	title: string;
 	category: Category.t;
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
@@ -31,6 +32,7 @@ type t =
 (********************************************************************************)
 
 let debug_opt = StdOpt.store_true ()
+let title_opt = StdOpt.str_option ~default:"Lambdoc document" ()
 let category_opt = Opt.value_option "CATEGORY" (Some `Manuscript) Category.of_string (fun exn str -> "Unknown category '" ^ str ^ "'")
 let input_markup_opt = Opt.value_option "MARKUP" (Some `Lambtex) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
 let output_markup_opt = Opt.value_option "MARKUP" (Some `Xhtml) Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
@@ -45,6 +47,7 @@ let file = OptParser.add_group options "Definition of I/O files"
 
 let () =
 	OptParser.add options ~group:general ~short_name:'v' ~long_name:"debug" ~help:"Show debug information" debug_opt;
+	OptParser.add options ~group:general ~short_name:'e' ~long_name:"title" ~help:"Document title" title_opt;
 	OptParser.add options ~group:markup ~short_name:'c' ~long_name:"category" ~help:"Document category (assume 'manuscript' if not specified)" category_opt;
 	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (assume 'lambtex' if not specified)" input_markup_opt;
 	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (assume 'xhtml' if not specified)" output_markup_opt;
@@ -66,6 +69,7 @@ let parse () = match OptParser.parse_argv options with
 			| None	    -> (Pervasives.stdout, fun _ -> ())
 		in	{
 			debug = Opt.get debug_opt;
+			title = Opt.get title_opt;
 			category = Opt.get category_opt;
 			input_markup = Opt.get input_markup_opt;
 			output_markup = Opt.get output_markup_opt;

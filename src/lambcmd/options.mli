@@ -13,6 +13,7 @@
 type t =
 	{
 	debug: bool;
+	title: string;
 	category: Category.t;
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
