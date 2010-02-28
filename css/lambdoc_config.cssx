@@ -86,7 +86,7 @@
 /********************************************************************************/
 
 #define Family_body	Font_stack_serif
-#define Family_heading	Font_stack_sans
+#define Family_heading	Font_stack_serif
 #define Family_mono	Font_stack_mono
 
 
@@ -116,8 +116,13 @@
 /* Spacing.									*/
 /********************************************************************************/
 
+/* Good values for Verdana */
 #define Heading_word_spacing	0.1em
 #define Heading_letter_spacing	0.01em
+
+/* Good values for Georgia */
+#define Heading_word_spacing	0.1em
+#define Heading_letter_spacing	0
 
 #define Vmargin_short		0.25em
 #define Vmargin_par		0.5em

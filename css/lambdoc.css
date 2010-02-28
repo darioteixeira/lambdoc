@@ -510,7 +510,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #999;}
  -moz-border-radius-topleft: 6px;
  -moz-border-radius-topright: 6px;
  text-align: center;
- font-family: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
+ font-family: "Georgia", "DejaVu Serif", serif;
  font-size: 1.5em;
  font-variant: small-caps;
  font-weight: bold;
@@ -602,7 +602,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: 1px dotted #999;}
 .doc_title
  {
  clear: both;
- font-family: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
+ font-family: "Georgia", "DejaVu Serif", serif;
  font-weight: bold;
  font-variant: small-caps;
  text-transform: capitalize;
@@ -619,23 +619,23 @@ h2.doc_title {font-size: 1.8em;}
  padding: 0.25em 0;
  border-top: 1px solid #501;
  border-bottom: 1px solid #501;
- font-family: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
+ font-family: "Georgia", "DejaVu Serif", serif;
  font-weight: bold;
  font-size: 1.8em;
  text-transform: capitalize;
  text-align: center;
  word-spacing: 0.1em;
- letter-spacing: 0.01em;
+ letter-spacing: 0;
  color: #501;
  }
 
 .doc_sec
  {
  clear: both;
- font-family: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
+ font-family: "Georgia", "DejaVu Serif", serif;
  font-weight: bold;
  word-spacing: 0.1em;
- letter-spacing: 0.01em;
+ letter-spacing: 0;
  color: #501;
  }
 
