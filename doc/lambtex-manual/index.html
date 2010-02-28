@@ -6,7 +6,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 
 <html>
   <head profile="http://www.w3.org/2005/11/profile">
-    <title>Lambdoc document</title>
+    <title>The Lambtex Manual</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type" />
     <link href="css/lambdoc.css" rel="stylesheet" media="all" title="Default" />
   </head>
@@ -125,7 +125,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">Inline-level elements are declared by <i class="doc_emph">simple</i> commands, while block-level elements may be declared by either simple or <i class="doc_emph">environment</i> commands<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:commands">1</a>)</span>. The former take the generic shape <tt class="doc_code">\<i class="doc_emph">command</i>{...}</tt>, where the content inside the curly brackets constitutes the parameters to the command. Note that some simple commands may take more than one parameter (in which case more than one set of curly brackets is used), while others exist that take no parameters at all. As for environment commands, they are composed of two parts: an initial and a final tag, which together delineate the contents of the environment. The initial tag takes the form <tt class="doc_code">\begin{<i class="doc_emph">command</i>}</tt>, while the final tag is <tt class="doc_code">\end{<i class="doc_emph">command</i>}</tt>.
       </p>
-      <p class="doc_par">Besides the (normally mandatory) primary parameters, many simple and environment commands accept other classes of parameters, typically optional. In total there are three of these other classes: order parameters, label parameters, and extra parameters. The first are enclosed by round brackets and are used to override the automatic ordering associated with blocks such as sections and equations. The second are enclosed by square brackets and are used for assigning a label to any block that may be referenced from somewhere else in the document. Finally, extra parameters are enclosed between angle brackets and are used to customise command specific settings. For the sake of reference, <a class="doc_lnk" href="#doc:u:tab:parameters">Tab.&nbsp;1</a> lists all the classes of parameters and the characters used for enclosing them.
+      <p class="doc_par">Besides the (normally mandatory) primary parameters, many simple and environment commands accept other classes of parameters, typically optional<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:optional">2</a>)</span>. In total there are three of these other classes: order parameters, label parameters, and extra parameters. The first are enclosed by round brackets and are used to override the automatic ordering associated with blocks such as sections and equations. The second are enclosed by square brackets and are used for assigning a label to any block that may be referenced from somewhere else in the document. Finally, extra parameters are enclosed between angle brackets and are used to customise command specific settings. For the sake of reference, <a class="doc_lnk" href="#doc:u:tab:parameters">Tab.&nbsp;1</a> lists all the classes of parameters and the characters used for enclosing them.
       </p>
       <p class="doc_par">Not all of the optional parameters are available for all commands. There are in fact many commands for which none is applicable. Moreover, for those commands where one or more optional arguments are accepted, they may be specified in any order as long as they appear before any of the primary (curly bracketed) parameters.
       </p>
@@ -189,7 +189,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           <div>
             <h1>Tab.&nbsp;1:
             </h1>
-            <p>The four classes of parameters that may be given to <span class="doc_caps">lambtex</span> commands. Primary parameters are typically mandatory and are enclosed by curly brackets; order, label, and extra parameters are usually optional and are enclosed by round, square, and angle brackets, respectively.
+            <p>The four classes of parameters that may be given to <span class="doc_caps">lambtex</span> commands. Primary parameters are typically mandatory and are enclosed by curly brackets. Order, label, and extra parameters are usually optional and are enclosed by round, square, and angle brackets, respectively.
             </p>
           </div>
         </div>
@@ -202,22 +202,18 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">This is the first example of a paragraph.  Note that</code>
 <code class="doc_src_line">it is composed of inline text.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">Lines can be broken at any point, because a paragraph</code>
-<code class="doc_src_line">is only terminated by a blank line. &#8;r</code>
+<code class="doc_src_line">is only terminated by a blank line. \br</code>
 <code class="doc_src_line">It is however possible to manually insert a line break</code>
 <code class="doc_src_line">without terminating the paragraph.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\p{There is also a simple command that allows the</code>
 <code class="doc_src_line">explicit declaration of a paragraph.}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -331,9 +327,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </div>
         </div>
       </div>
-      <p class="doc_par">While most commands listed in the table above should have a straightforward application, a few clarifying words concerning <tt class="doc_code">\span</tt> are in order. This command translates directly into an <span class="doc_caps">xhtml</span> <tt class="doc_code">span</tt> element; moreover, it accepts a class name declaration via the optional extra parameter <tt class="doc_code">class</tt>. In <span class="doc_caps">lambdoc</span>'s default configuration, this class name is prepended by `<tt class="doc_code">doc_span_</tt>' and output as the <tt class="doc_code">span</tt> element's own class name in the <span class="doc_caps">xhtml</span> output. Combined with a suitable <span class="doc_caps">css</span> declaration, this allows the definition of custom formatting for certain passages.
-      </p>
-      <p class="doc_par">To conclude, note that the class name has two constraints. First, the allowed character set is limited to lowercase roman letters, digits, and the characters '<tt class="doc_code">.</tt>' (period), '<tt class="doc_code">:</tt>' (colon), '<tt class="doc_code">-</tt>' (dash), and '<tt class="doc_code">_</tt>' (underscore). Second, the first character must be a letter.
+      <p class="doc_par">While most commands listed in the table above should have a straightforward application, a few clarifying words concerning <tt class="doc_code">\span</tt> are in order. This command translates directly into an <span class="doc_caps">xhtml</span> <tt class="doc_code">span</tt> element; moreover, it accepts a class name declaration via the optional extra parameter <tt class="doc_code">class</tt>. In <span class="doc_caps">lambdoc</span>'s default configuration, this class name is prepended by '<tt class="doc_code">doc_span_</tt>' and output as the <tt class="doc_code">span</tt> element's own class name in the <span class="doc_caps">xhtml</span> output. Combined with a suitable <span class="doc_caps">css</span> declaration, this allows the definition of custom formatting for certain passages. Note, however, that the class name has two constraints. First, the allowed character set is limited to lowercase roman letters, digits, and the characters '<tt class="doc_code">.</tt>' (period), '<tt class="doc_code">:</tt>' (colon), '<tt class="doc_code">-</tt>' (dash), and '<tt class="doc_code">_</tt>' (underscore). Second, the first character must be a letter.
       </p>
       <h1 id="doc:a:2" class="doc_sec">4.&ensp;<span>Special characters</span>
       </h1>
@@ -365,7 +359,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </table>
         </div>
       </div>
-      <p class="doc_par">The reader will have noted that <span class="doc_caps">lambtex</span> must interpret the character '<tt class="doc_code">&amp;</tt>' (ampersand) differently, and therefore you need a workaround if you want to input an actual ampersand. In fact, there are other characters besides the ampersand that are interpreted differently by <span class="doc_caps">lambtex</span>, and as such also require a special escaping sequence. These characters are '<tt class="doc_code">\</tt>' (backslash), '<tt class="doc_code">{</tt>' (opening curly bracket), and '<tt class="doc_code">}</tt>' (closing curly bracket). The character used for escaping is the backslash, which means that displaying an ampersand, for example, is achieved with <tt class="doc_code">\&amp;</tt>. Another option in this particular case is of course to use the <tt class="doc_code">amp</tt> <span class="doc_caps">html</span> entity<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:ampersand">2</a>)</span>.
+      <p class="doc_par">The reader will have noted that <span class="doc_caps">lambtex</span> must interpret the character '<tt class="doc_code">&amp;</tt>' (ampersand) differently, and therefore you need a workaround if you want to input an actual ampersand. In fact, there are other characters besides the ampersand that are interpreted differently by <span class="doc_caps">lambtex</span>, and as such also require a special escaping sequence. These characters are '<tt class="doc_code">\</tt>' (backslash), '<tt class="doc_code">{</tt>' (opening curly bracket), and '<tt class="doc_code">}</tt>' (closing curly bracket). The character used for escaping is the backslash, which means that displaying an ampersand, for example, is achieved with <tt class="doc_code">\&amp;</tt>. Another option in this particular case is of course to use the <tt class="doc_code">amp</tt> <span class="doc_caps">html</span> entity<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:ampersand">3</a>)</span>.
       </p>
       <p class="doc_par">Besides individual characters, there are also some multi-character sequences that are interpreted differently by <span class="doc_caps">lambtex</span>. <a class="doc_lnk" href="#doc:u:tab:seq">Tab.&nbsp;3</a> lists all of them. Remember to use the escape character if you wish to input any of these sequences literally.
       </p>
@@ -447,7 +441,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <h1 id="doc:a:3" class="doc_sec">5.&ensp;<span>Hyperlinks to external resources</span>
       </h1>
-      <p class="doc_par">The simple command <tt class="doc_code">\link</tt> (or its synonym <tt class="doc_code">\a</tt>) allows the creation of hyperlinks into any external resource. It takes the form <tt class="doc_code">\link{<i class="doc_emph">uri</i>}{<i class="doc_emph">inline</i>}</tt>, where <tt class="doc_code"><i class="doc_emph">uri</i></tt> is the raw text containing the address (<span class="doc_caps">uri</span>) of the target, and <tt class="doc_code"><i class="doc_emph">inline</i></tt> is the sequence of inline text that will actually be displayed. Should the two be the same, you may ommit the second parameter altogether. Moreover, note that in no circumstances may you nest a link inside another!<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:links">3</a>)</span>
+      <p class="doc_par">The simple command <tt class="doc_code">\link</tt> (or its synonym <tt class="doc_code">\a</tt>) allows the creation of hyperlinks into any external resource. It takes the form <tt class="doc_code">\link{<i class="doc_emph">uri</i>}{<i class="doc_emph">inline</i>}</tt>, where <tt class="doc_code"><i class="doc_emph">uri</i></tt> is the raw text containing the address (<span class="doc_caps">uri</span>) of the target, and <tt class="doc_code"><i class="doc_emph">inline</i></tt> is the sequence of inline text that will actually be displayed. Should the two be the same, you may ommit the second parameter altogether. Moreover, note that in no circumstances may you nest a link inside another!<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:links">4</a>)</span>
       </p>
       <p class="doc_par">Note that in the preceeding paragraph, the sequence <tt class="doc_code"><i class="doc_emph">uri</i></tt> is described as <i class="doc_emph">raw</i> text, not an inline sequence. In brief, a raw sequence is one whose contents are parsed verbatim, without (almost) any attempt to expand special characters and where inline formatting commands do not apply. In similarity to their inline counterparts, raw sequences are delimited by curly brackets. Therefore, the end of sequence character '<tt class="doc_code">}</tt>' is interpreted specially. Escaping is also possible, and thus the backslash character is also special.
       </p>
@@ -461,27 +455,23 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">Here is a list of small furry mammals:</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{itemize}</code>
+<code class="doc_src_line">\begin{itemize}</code>
 <code class="doc_src_line">\item Cat</code>
 <code class="doc_src_line">\item Some dog breeds:</code>
-<code class="doc_src_line">	&#8;egin{description}</code>
+<code class="doc_src_line">	\begin{description}</code>
 <code class="doc_src_line">	\item{poodle:} Small dogs kept for company</code>
 <code class="doc_src_line">	\item{greyhound:} Running dogs</code>
 <code class="doc_src_line">	\end{description}</code>
 <code class="doc_src_line">\item Various rodents ordered by abundance:</code>
-<code class="doc_src_line">	&#8;egin{enumerate}</code>
+<code class="doc_src_line">	\begin{enumerate}</code>
 <code class="doc_src_line">	\item Rat</code>
 <code class="doc_src_line">	\item Hamster</code>
 <code class="doc_src_line">	\item Capivara</code>
 <code class="doc_src_line">	\end{enumerate}</code>
 <code class="doc_src_line">\end{itemize}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -653,9 +643,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{qanda}</code>
+<code class="doc_src_line">\begin{qanda}</code>
 <code class="doc_src_line">\question{Egg Gazette:}</code>
 <code class="doc_src_line">On which side of the egg opening debate are you?</code>
 
@@ -673,15 +661,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
 <code class="doc_src_line">Sheer madness!</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">question</code>
+<code class="doc_src_line">\rquestion</code>
 <code class="doc_src_line">Could you elaborate?</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">answer</code>
+<code class="doc_src_line">\ranswer</code>
 <code class="doc_src_line">I don't believe that to be necessary; the reasons are self-evident.</code>
 <code class="doc_src_line">\end{qanda}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -723,25 +709,21 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{verse}</code>
-<code class="doc_src_line">Arma virumque cano, Troiae qui primus ab oris &#8;r</code>
-<code class="doc_src_line">Italiam, fato profugus, Laviniaque venit &#8;r</code>
-<code class="doc_src_line">litora, multum ille et terris iactatus et alto &#8;r</code>
-<code class="doc_src_line">vi superum saevae memorem Iunonis ob iram; &#8;r</code>
-<code class="doc_src_line">multa quoque et bello passus, dum conderet urbem, &#8;r</code>
-<code class="doc_src_line">inferretque deos Latio, genus unde Latinum, &#8;r</code>
+<code class="doc_src_line">\begin{verse}</code>
+<code class="doc_src_line">Arma virumque cano, Troiae qui primus ab oris \br</code>
+<code class="doc_src_line">Italiam, fato profugus, Laviniaque venit \br</code>
+<code class="doc_src_line">litora, multum ille et terris iactatus et alto \br</code>
+<code class="doc_src_line">vi superum saevae memorem Iunonis ob iram; \br</code>
+<code class="doc_src_line">multa quoque et bello passus, dum conderet urbem, \br</code>
+<code class="doc_src_line">inferretque deos Latio, genus unde Latinum, \br</code>
 <code class="doc_src_line">Albanique patres, atque altae moenia Romae.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">Musa, mihi causas memora, quo numine laeso, &#8;r</code>
-<code class="doc_src_line">quidve dolens, regina deum tot volvere casus &#8;r</code>
-<code class="doc_src_line">insignem pietate virum, tot adire labores &#8;r</code>
-<code class="doc_src_line">impulerit.  Tantaene animis caelestibus irae? &#8;r</code>
+<code class="doc_src_line">Musa, mihi causas memora, quo numine laeso, \br</code>
+<code class="doc_src_line">quidve dolens, regina deum tot volvere casus \br</code>
+<code class="doc_src_line">insignem pietate virum, tot adire labores \br</code>
+<code class="doc_src_line">impulerit.  Tantaene animis caelestibus irae? \br</code>
 <code class="doc_src_line">\end{verse}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -775,17 +757,13 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">This is what you said:</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{quote}</code>
+<code class="doc_src_line">\begin{quote}</code>
 <code class="doc_src_line">Eggs should be opened by their large end.  Any other method is heresy.</code>
 <code class="doc_src_line">It is therefore my opinion that John McAuthor is a heretic.</code>
 <code class="doc_src_line">\end{quote}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -809,8 +787,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <div class="doc_verb">
         <div>
-          <pre class="doc_mult0">
-             N
+          <pre class="doc_mult0">             N
             /|\
            / | \
           /  |  \
@@ -824,8 +801,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
   /   |   \         |
  L   '+'   L       '3'
  |         |
-'1'       '2'
-</pre>
+'1'       '2'</pre>
         </div>
       </div>
       <p class="doc_par">We say there is <i class="doc_emph">almost</i> no interpretation of the contents of the verbatim environment because there is one exception. The string <tt class="doc_code">\end{verbatim}</tt> is used as the end marker, and therefore the <span class="doc_caps">lambtex</span> scanner will exit the environment if it encounters this string. This raises the obvious question of how one can insert that string itself within a verbatim context without triggering the termination of the environment. The solution used by <span class="doc_caps">lambtex</span> is reminescent of the <a class="doc_lnk" href="http://en.wikipedia.org/wiki/Here_document"><span class="doc_caps">heredoc</span></a> approach used by other languages. Basically, the markers that delimit verbatim environments need only use <tt class="doc_code">verbatim</tt> as a prefix. The only condition for termination is that the end marker matches the begin marker. Therefore, to include the string <tt class="doc_code">\end{verbatim}</tt> within a verbatim environment, you can simply delimitate that environment with, for example, <tt class="doc_code">\begin{verbatim1}</tt> and <tt class="doc_code">\end{verbatim1}</tt>. Note that only numbers and lowercase letters may be used as suffix characters.
@@ -850,9 +826,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
       </p>
       <div class="doc_verb">
         <div>
-          <pre class="doc_mult7">
-☃
-</pre>
+          <pre class="doc_mult7">☃</pre>
         </div>
       </div>
       <h1 id="doc:u:sec:code" class="doc_sec">11.&ensp;<span>Presenting source-code</span>
@@ -863,9 +837,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin&lt;lang=ocaml&gt;{source}</code>
+<code class="doc_src_line">\begin&lt;lang=ocaml&gt;{source}</code>
 <code class="doc_src_line">type 'a tree =</code>
 <code class="doc_src_line">	| Leaf of 'a</code>
 <code class="doc_src_line">	| Node of 'a tree * 'a tree</code>
@@ -875,8 +847,6 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 <code class="doc_src_line">	| Leaf _	-&gt; 1</code>
 <code class="doc_src_line">	| Node (a, b)	-&gt; (count_leaves a) + (count_leaves b)</code>
 <code class="doc_src_line">\end{source}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -893,15 +863,11 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 <code class="doc_src_line">5</code>
 <code class="doc_src_line">6</code>
 <code class="doc_src_line">7</code>
-<code class="doc_src_line">8</code>
-<code class="doc_src_line">9</code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line"><span class="doc_src_Kwd">type</span> 'a tree <span class="doc_src_Sym">=</span></code>
 <code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Leaf</span> <span class="doc_src_Kwd">of</span> 'a</code>
 <code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Node</span> <span class="doc_src_Kwd">of</span> 'a tree <span class="doc_src_Sym">*</span> 'a tree</code>
@@ -910,8 +876,6 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 <code class="doc_src_line"><span class="doc_src_Kwd">let</span> <span class="doc_src_Kwd">rec</span> count_leaves <span class="doc_src_Sym">=</span> <span class="doc_src_Kwd">function</span></code>
 <code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Leaf</span> _	<span class="doc_src_Sym">-&gt;</span> <span class="doc_src_Num">1</span></code>
 <code class="doc_src_line">	<span class="doc_src_Sym">|</span> <span class="doc_src_Type">Node</span> <span class="doc_src_Sym">(</span>a<span class="doc_src_Sym">,</span> b<span class="doc_src_Sym">)</span>	<span class="doc_src_Sym">-&gt;</span> <span class="doc_src_Sym">(</span>count_leaves a<span class="doc_src_Sym">)</span> <span class="doc_src_Sym">+</span> <span class="doc_src_Sym">(</span>count_leaves b<span class="doc_src_Sym">)</span></code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1051,7 +1015,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
           </div>
         </div>
       </div>
-      <p class="doc_par">Inside a tabular environment, rows are terminated with the '<tt class="doc_code">|</tt>' character; within each row, cells must also be prefixed by the '<tt class="doc_code">|</tt>' character. This means that inside a tabular environment — but here only! — you'll need to escape this character if you want to display an actual pipe character.
+      <p class="doc_par">Inside a tabular environment, a row is terminated when the character '<tt class="doc_code">|</tt>' is the last on a line of text; within each row, cells must also be prefixed by the '<tt class="doc_code">|</tt>' character. This means that inside a tabular environment — but here only! — you'll need to escape this character if you want to display an actual pipe character.
       </p>
       <p class="doc_par">There are three different classes of rows available: header, body, and footer rows. Besides formatting each one differently, smart enough browsers will know that table headers are to be repeated if the tabular environment spans more than one printed page. The parameterless simple commands <tt class="doc_code">\head</tt>, <tt class="doc_code">\body</tt>, and <tt class="doc_code">\foot</tt> are used inside a tabular environment to mark the beginning of each class. Note that header and footer rows are optional (in which case the <tt class="doc_code">\body</tt> marker is also optional, since rows are assumed by default to be body rows). Moreover, you can declare more than one group of body rows, and the default <span class="doc_caps">css</span> stylesheet will visibly separate each group.
       </p>
@@ -1061,19 +1025,15 @@ xmlns="http://www.w3.org/1998/Math/MathML"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{tabular}{lll}</code>
+<code class="doc_src_line">\begin{tabular}{lll}</code>
 <code class="doc_src_line">\head</code>
 <code class="doc_src_line">| Name		| Phone			| Address	|</code>
-<code class="doc_src_line">&#8;ody</code>
+<code class="doc_src_line">\body</code>
 <code class="doc_src_line">| John		| 123456		| London	|</code>
 <code class="doc_src_line">| Mary		| 234567		| Paris		|</code>
 <code class="doc_src_line">| Mark		| 345678		| Moscow	|</code>
 <code class="doc_src_line">| Jane		| 456789		| Sydney	|</code>
 <code class="doc_src_line">\end{tabular}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1087,17 +1047,15 @@ xmlns="http://www.w3.org/1998/Math/MathML"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{tabular}{rll}</code>
+<code class="doc_src_line">\begin{tabular}{rll}</code>
 <code class="doc_src_line">\head</code>
 <code class="doc_src_line">|		|{2c_} Scientific name			|</code>
 <code class="doc_src_line">| Common name	| Genus			| Species	|</code>
-<code class="doc_src_line">&#8;ody</code>
+<code class="doc_src_line">\body</code>
 <code class="doc_src_line">| Wolf		| \emph{Canis}		| \emph{lupus}	|</code>
 <code class="doc_src_line">| Cat		| \emph{Felis}		| \emph{catus}	|</code>
 <code class="doc_src_line">| Lion		| \emph{Panthera}	| \emph{leo}	|</code>
-<code class="doc_src_line">&#8;ody</code>
+<code class="doc_src_line">\body</code>
 <code class="doc_src_line">| English oak	| \emph{Quercus}	| \emph{robur}	|</code>
 <code class="doc_src_line">| Cork oak	| \emph{Quercus}	| \emph{suber}	|</code>
 <code class="doc_src_line">| European yew	| \emph{Taxus}		| \emph{baccata}|</code>
@@ -1105,8 +1063,6 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 <code class="doc_src_line">| Common name	| Genus			| Species	|</code>
 <code class="doc_src_line">|		|{2c^} Scientific name			|</code>
 <code class="doc_src_line">\end{tabular}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1261,13 +1217,9 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{mathtex}</code>
+<code class="doc_src_line">\begin{mathtex}</code>
 <code class="doc_src_line">x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}</code>
 <code class="doc_src_line">\end{mathtex}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1277,9 +1229,7 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{mathml}</code>
+<code class="doc_src_line">\begin{mathml}</code>
 <code class="doc_src_line">&lt;math&gt;</code>
 <code class="doc_src_line">	&lt;mrow&gt;</code>
 <code class="doc_src_line">	    &lt;mi&gt;x&lt;/mi&gt;</code>
@@ -1311,8 +1261,6 @@ rspace="0.278em"
 <code class="doc_src_line">	&lt;/mrow&gt;</code>
 <code class="doc_src_line">&lt;/math&gt;</code>
 <code class="doc_src_line">\end{mathml}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1385,11 +1333,7 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">\image{circle.png}{This is a circle}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1409,15 +1353,13 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{subpage}</code>
+<code class="doc_src_line">\begin{subpage}</code>
 <code class="doc_src_line">This is the first example of a paragraph.  Note that</code>
 <code class="doc_src_line">it is composed of inline text.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">Lines can be broken at any point, because a paragraph</code>
-<code class="doc_src_line">is only terminated by a blank line. &#8;r</code>
+<code class="doc_src_line">is only terminated by a blank line. \br</code>
 <code class="doc_src_line">It is however possible to manually insert a line break</code>
 <code class="doc_src_line">without terminating the paragraph.</code>
 
@@ -1425,8 +1367,6 @@ width="0"
 <code class="doc_src_line">\p{There is also a simple command that allows the</code>
 <code class="doc_src_line">explicit declaration of a paragraph.}</code>
 <code class="doc_src_line">\end{subpage}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1486,15 +1426,13 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">\part{Prelude}</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\section{Introduction}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">For more details, please check Section ef{sec:details}.</code>
+<code class="doc_src_line">For more details, please check Section \ref{sec:details}.</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">\subsection[sec:details]{This is a sub-section}</code>
@@ -1504,8 +1442,6 @@ width="0"
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">The quick brown fox jumps over the lazy brown dog.</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1535,28 +1471,24 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">You can easily insert a link into an external resource such</code>
 <code class="doc_src_line">as \link{http://www.wikipedia.com/}{Wikipedia}.  Internal</code>
 <code class="doc_src_line">links come into several guises: they can be references to</code>
 <code class="doc_src_line">notes\see{note:meta}; bibliographic references like those</code>
 <code class="doc_src_line">available in \caps{LaTeX}\cite{bib:latex}; pointers to</code>
 <code class="doc_src_line">labelled figures, tables, printouts, equations, or sections</code>
-<code class="doc_src_line">such as \mbox{Section ef{sec:anatomy}}; smart references to</code>
+<code class="doc_src_line">such as \mbox{Section \ref{sec:anatomy}}; smart references to</code>
 <code class="doc_src_line">those same elements such as \sref{sec:anatomy}; and finally,</code>
 <code class="doc_src_line">references where the order is not automatically added (for</code>
 <code class="doc_src_line">example, you may refer yet again \mref{sec:anatomy}{to that</code>
 <code class="doc_src_line">same section}).</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
       <p class="doc_par">The corresponding output of the composer is the following:
       </p>
       <div class="doc_subpage">
-        <p class="doc_par">You can easily insert a link into an external resource such as <a class="doc_lnk" href="http://www.wikipedia.com/">Wikipedia</a>. Internal links come into several guises: they can be references to notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:meta">4</a>)</span>; bibliographic references like those available in <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">1</a>]</span>; pointers to labelled figures, tables, printouts, equations, or sections such as <span class="doc_mbox">Section <a class="doc_lnk" href="#doc:u:sec:anatomy">1</a></span>; smart references to those same elements such as <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>; and finally, references where the order is not automatically added (for example, you may refer yet again <a class="doc_lnk" href="#doc:u:sec:anatomy">to that same section</a>). 
+        <p class="doc_par">You can easily insert a link into an external resource such as <a class="doc_lnk" href="http://www.wikipedia.com/">Wikipedia</a>. Internal links come into several guises: they can be references to notes<span class="doc_see">(<a class="doc_lnk" href="#doc:u:note:meta">5</a>)</span>; bibliographic references like those available in <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">1</a>]</span>; pointers to labelled figures, tables, printouts, equations, or sections such as <span class="doc_mbox">Section <a class="doc_lnk" href="#doc:u:sec:anatomy">1</a></span>; smart references to those same elements such as <a class="doc_lnk" href="#doc:u:sec:anatomy">Section&nbsp;1</a>; and finally, references where the order is not automatically added (for example, you may refer yet again <a class="doc_lnk" href="#doc:u:sec:anatomy">to that same section</a>). 
         </p>
       </div>
       <p class="doc_par">Bear in mind that the use of the smart references offered by command <tt class="doc_code">\sref</tt> is strongly recommended over the manual references provided by command <tt class="doc_code">\ref</tt>. The reason is three-fold. First, because smart references ensure the consistent use of one naming scheme over an entire document and across several documents. Second, because smart references automatically make sure that a non-breaking space is inserted between the element name and its ordering number, thus preventing their separation by a line break (to achieve the same effect with manual references, the user must explicitly place both elements inside an <tt class="doc_code">\mbox</tt> command, or use the <tt class="doc_code">nbsp</tt> <span class="doc_caps">html</span> entity). Third and last, because smart references will make a hyperlink of both the name and the ordering, which is friendlier for mouse clicking and arguably esthetically more pleasant.
@@ -1643,15 +1575,11 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{pull}{Homer Simpson}</code>
+<code class="doc_src_line">\begin{pull}{Homer Simpson}</code>
 <code class="doc_src_line">Weaseling out of things is important to learn:</code>
 <code class="doc_src_line">it's what separates us from the animals.</code>
 <code class="doc_src_line">Except the weasel.</code>
 <code class="doc_src_line">\end{pull}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1679,18 +1607,13 @@ width="0"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">\newboxout{warning}{Warning}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">
-ewboxout{warning}{Warning}</code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{warning}{Boxout overload}</code>
+<code class="doc_src_line">\begin{warning}{Boxout overload}</code>
 <code class="doc_src_line">Boxouts are like quotation blocks:</code>
 <code class="doc_src_line">they are most effective when not abused!</code>
 <code class="doc_src_line">\end{warning}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1708,20 +1631,15 @@ ewboxout{warning}{Warning}</code>
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
+<code class="doc_src_line">\newtheorem{theorem}{Theorem}{cnt:theorem}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">
-ewtheorem{theorem}{Theorem}{cnt:theorem}</code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{theorem}{John McAuthor}</code>
+<code class="doc_src_line">\begin{theorem}{John McAuthor}</code>
 <code class="doc_src_line">Let an egg be defined as an ellipsoid whose radii across the [$x$],</code>
 <code class="doc_src_line">[$y$], and [$z$] axes are respectively [$a$], [$b$], and [$c$].</code>
 <code class="doc_src_line">Furthermore, the egg satisfies the scalene condition, and therefore</code>
 <code class="doc_src_line">[$a &gt; b &gt; c$].  All such eggs are optimally opened by their small-end.</code>
 <code class="doc_src_line">\end{theorem}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1814,13 +1732,9 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin[fig:example]{figure}{This is the figure's caption.}</code>
+<code class="doc_src_line">\begin[fig:example]{figure}{This is the figure's caption.}</code>
 <code class="doc_src_line">\image{circle.png}{This is a circle}</code>
 <code class="doc_src_line">\end{figure}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1875,20 +1789,16 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">	itle{Small-endian vs big-endian: the solution}</code>
+<code class="doc_src_line">\title{Small-endian vs big-endian: the solution}</code>
 <code class="doc_src_line">\subtitle{John McAuthor}</code>
 <code class="doc_src_line">\subtitle{February 2009}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin{abstract}</code>
+<code class="doc_src_line">\begin{abstract}</code>
 <code class="doc_src_line">This paper presents an irrefutable solution to the age-old question</code>
 <code class="doc_src_line">of whether eggs should be opened by the small-end or the big-end.</code>
 <code class="doc_src_line">Many insightful arguments shall be presented. (...)</code>
 <code class="doc_src_line">\end{abstract}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1918,17 +1828,13 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">This is a paragraph.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">ule</code>
+<code class="doc_src_line">\rule</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">This is another paragraph.</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1955,22 +1861,17 @@ rspace="0.278em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">This is a normal\see{note:example} paragraph that references</code>
 <code class="doc_src_line">an end-document note.  You may read all notes declared in the</code>
 <code class="doc_src_line">document \mref{sec:notes}{in this section}.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin[note:example]{note}</code>
+<code class="doc_src_line">\begin[note:example]{note}</code>
 <code class="doc_src_line">And by 'normal' we mean 'not normal'.</code>
 <code class="doc_src_line">\end{note}</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">
-otes[sec:notes]</code>
-
-<code class="doc_src_line"></code>
+<code class="doc_src_line">\notes[sec:notes]</code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -1984,18 +1885,14 @@ otes[sec:notes]</code>
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
 <code class="doc_src_line">\caps{lambtex} is largely inspired by LaTeX\cite{bib:latex}.</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line">&#8;egin[bib:latex]{bib}</code>
+<code class="doc_src_line">\begin[bib:latex]{bib}</code>
 <code class="doc_src_line">\who{Leslie Lamport}</code>
 <code class="doc_src_line">\what{LaTeX: a Document Preparation System (2\sup{nd} edition)}</code>
 <code class="doc_src_line">\where{Addison-Wesley Professional, 1994, ISBN 0-201-52983-1}</code>
 <code class="doc_src_line">\end{bib}</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -2043,18 +1940,12 @@ rspace="0.222em"
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-
-<code class="doc_src_line"></code>
-<code class="doc_src_line">
-ewmacro{author}{0}{John McAuthor, of the small-ended approach,}</code>
-<code class="doc_src_line">
-ewmacro{greet}{2}{Greetings &#8;old{\arg{1}} and welcome to \arg{2}}</code>
+<code class="doc_src_line">\newmacro{author}{0}{John McAuthor, of the small-ended approach,}</code>
+<code class="doc_src_line">\newmacro{greet}{2}{Greetings \bold{\arg{1}} and welcome to \arg{2}}</code>
 
 <code class="doc_src_line"></code>
 <code class="doc_src_line">It was then that \author reached his destination.  The gatekeeper said,</code>
 <code class="doc_src_line">``\greet{\author}{this land}'', and there was much rejoicing.</code>
-
-<code class="doc_src_line"></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
@@ -2473,16 +2364,6 @@ ewmacro{greet}{2}{Greetings &#8;old{\arg{1}} and welcome to \arg{2}}</code>
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">\span</tt>
-                  </td>
-                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
-                  </td>
-                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
-                  </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">class</tt>)
-                  </td>
-                </tr>
-                <tr>
                   <td class="doc_cell_r"><tt class="doc_code">\mref</tt>
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
@@ -2590,6 +2471,16 @@ ewmacro{greet}{2}{Greetings &#8;old{\arg{1}} and welcome to \arg{2}}</code>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"><tt class="doc_code">\span</tt>
+                  </td>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
+                  </td>
+                  <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
+                  </td>
+                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">class</tt>)
                   </td>
                 </tr>
                 <tr>
@@ -3120,19 +3011,25 @@ ewmacro{greet}{2}{Greetings &#8;old{\arg{1}} and welcome to \arg{2}}</code>
             </ul>
           </div>
         </li>
-        <li id="doc:u:note:ampersand"><span>(2)</span>
+        <li id="doc:u:note:optional"><span>(2)</span>
+          <div>
+            <p class="doc_par">While the qualifier <i class="doc_emph">typically</i> implies a degree of uncertainty concerning the optionality of these parameters, in practice you may treat them as truly optional. The qualifier exists because there is one (and only one!) exception, which applies to environments not normally used in regular documents. Namely, inside sub-pages the order parameter is mandatory for a number of blocks (see <a class="doc_lnk" href="#doc:u:sec:order">Appendix&nbsp;D</a> for details). 
+            </p>
+          </div>
+        </li>
+        <li id="doc:u:note:ampersand"><span>(3)</span>
           <div>
             <p class="doc_par">Note that in most practical situations you can get away with inputting an ampersand directly without escaping. This is because the scanner will only interpret an ampersand as the beginning of an entity declaration if it is immediately followed by an alphabetic or numeric sequence terminated by a semicolon. If it is not, then the ampersand is interpreted as plain text. 
             </p>
           </div>
         </li>
-        <li id="doc:u:note:links"><span>(3)</span>
+        <li id="doc:u:note:links"><span>(4)</span>
           <div>
             <p class="doc_par">The <span class="doc_caps">xhtml</span> standard forbids nested links. Curiously enough, however, the <span class="doc_caps">w3c</span>'s own famous <a class="doc_lnk" href="http://validator.w3.org/">validator</a> is unable to detect such violations of the specification. 
             </p>
           </div>
         </li>
-        <li id="doc:u:note:meta"><span>(4)</span>
+        <li id="doc:u:note:meta"><span>(5)</span>
           <div>
             <p class="doc_par">This is a meta-note, a note about notes. It is used to demonstrate the declaration of notes. 
             </p>

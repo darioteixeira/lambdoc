@@ -87,15 +87,23 @@ only for those commands that satisfied at least one of the two following conditi
 \end{note}
 
 Besides the (normally mandatory) primary parameters, many simple and environment
-commands accept other classes of parameters, typically optional.  In total there
-are three of these other classes: order parameters, label parameters, and extra
-parameters.  The first are enclosed by round brackets and are used to override the
+commands accept other classes of parameters, typically optional\see{note:optional}.
+In total there are three of these other classes: order parameters, label parameters, and
+extra parameters.  The first are enclosed by round brackets and are used to override the
 automatic ordering associated with blocks such as sections and equations.  The second
 are enclosed by square brackets and are used for assigning a label to any block that
 may be referenced from somewhere else in the document.  Finally, extra parameters are
 enclosed between angle brackets and are used to customise command specific settings.
 For the sake of reference, \sref{tab:parameters} lists all the classes of parameters
 and the characters used for enclosing them.
+
+\begin[note:optional]{note}
+While the qualifier \emph{typically} implies a degree of uncertainty concerning the
+optionality of these parameters, in practice you may treat them as truly optional.
+The qualifier exists because there is one (and only one!) exception, which applies
+to environments not normally used in regular documents.  Namely, inside sub-pages the
+order parameter is mandatory for a number of blocks (see \sref{sec:order} for details).
+\end{note}
 
 Not all of the optional parameters are available for all commands.  There are in fact
 many commands for which none is applicable.  Moreover, for those commands where one
@@ -104,8 +112,8 @@ as they appear before any of the primary (curly bracketed) parameters.
 
 \begin[tab:parameters]{table}
 {The four classes of parameters that may be given to \lambtex commands.
-Primary parameters are typically mandatory and are enclosed by curly brackets;
-order, label, and extra parameters are usually optional and are enclosed by
+Primary parameters are typically mandatory and are enclosed by curly brackets.
+Order, label, and extra parameters are usually optional and are enclosed by
 round, square, and angle brackets, respectively.}
 \begin{tabular}{ccc}
 \head
@@ -219,15 +227,13 @@ While most commands listed in the table above should have a straightforward appl
 a few clarifying words concerning \code{\\span} are in order.  This command translates
 directly into an \caps{xhtml} \code{span} element; moreover, it accepts a class name
 declaration via the optional extra parameter \code{class}.  In \lambdoc's default
-configuration, this class name is prepended by `\code{doc_span_}' and output as the
+configuration, this class name is prepended by '\code{doc_span_}' and output as the
 \code{span} element's own class name in the \caps{xhtml} output.  Combined with a
 suitable \caps{css} declaration, this allows the definition of custom formatting for
-certain passages.
-
-To conclude, note that the class name has two constraints.  First, the allowed character
-set is limited to lowercase roman letters, digits, and the characters '\code{.}'
-(period), '\code{:}' (colon), '\code{-}' (dash), and '\code{_}' (underscore).  Second,
-the first character must be a letter.
+certain passages.  Note, however, that the class name has two constraints.  First,
+the allowed character set is limited to lowercase roman letters, digits, and the
+characters '\code{.}' (period), '\code{:}' (colon), '\code{-}' (dash), and '\code{_}'
+(underscore).  Second, the first character must be a letter.
 
 
 \section{Special characters}
@@ -742,10 +748,10 @@ A specifier tells \lambtex how each column should be formatted.}
 \end{tabular}
 \end{table}
 
-Inside a tabular environment, rows are terminated with the '\code{|}' character;
-within each row, cells must also be prefixed by the '\code{|}' character.  This means
-that inside a tabular environment --- but here only! --- you'll need to escape this
-character if you want to display an actual pipe character.
+Inside a tabular environment, a row is terminated when the character '\code{|}' is the
+last on a line of text; within each row, cells must also be prefixed by the '\code{|}'
+character.  This means that inside a tabular environment --- but here only! --- you'll
+need to escape this character if you want to display an actual pipe character.
 
 There are three different classes of rows available: header, body, and footer rows.
 Besides formatting each one differently, smart enough browsers will know that table
@@ -1931,7 +1937,6 @@ and \code{\emph{theorem}} are shown in italics because the actual command name i
 | \code{\\item}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\link}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\mbox}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\span}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{class}) |
 | \code{\\mref}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\notes}		| \forbidden					| \optional	| \forbidden0 |
 | \code{\\paragraph}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{initial}, \code{indent}) |
@@ -1943,6 +1948,7 @@ and \code{\emph{theorem}} are shown in italics because the actual command name i
 | \code{\\rule}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\section}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
 | \code{\\see}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\span}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{class}) |
 | \code{\\sref}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\sub}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\subsection}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
