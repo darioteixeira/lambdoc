@@ -343,6 +343,21 @@ end
 
 
 (********************************************************************************)
+(**	{2 Verbatim values}							*)
+(********************************************************************************)
+
+module Verbatim_input =
+struct
+	let trim =
+		let left_rex = Pcre.regexp "^(\\s*[\n\r]+)*(.)"
+		and right_rex = Pcre.regexp "(\\s*[\n\r]+)*\\s*$"
+		in fun str ->
+			let left_trimmed = Pcre.replace_first ~rex:left_rex ~templ:"$2" str
+			in Pcre.replace_first ~rex:right_rex ~templ:"" left_trimmed
+end
+
+
+(********************************************************************************)
 (**	{2 Tabular values}							*)
 (********************************************************************************)
 

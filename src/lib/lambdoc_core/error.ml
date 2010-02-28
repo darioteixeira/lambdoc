@@ -120,6 +120,8 @@ type error_msg_t =
 	| Wrong_target of Ident.t option * Ref.t * target_t * target_t
 	| Undefined_target of Ident.t option * Ref.t
 
+	| Empty_source of Ident.t option
+	| Empty_verbatim of Ident.t option
 	| Empty_list of Ident.t option
 	| Empty_sequence of Ident.t option
 	| Empty_fragment of Ident.t option
