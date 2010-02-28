@@ -11,4 +11,5 @@
 #include "lambdoc_common.cssx"
 #include "lambdoc_valid.cssx"
 #include "lambdoc_invalid.cssx"
+#include "lambdoc_custom.cssx"
 

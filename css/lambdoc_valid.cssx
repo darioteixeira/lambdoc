@@ -116,8 +116,6 @@
 /* Q&A environments.								*/
 /********************************************************************************/
 
-.doc_qanda {margin: 0 Hmargin_inset;}
-
 .doc_qanda > dt
 	{
 	display: block;
@@ -256,18 +254,45 @@
 .doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomright: Box_radius;}
 .doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomleft: Box_radius;}
 
-.doc_src_num	{color: #606; font-weight: bold;}
-.doc_src_esc	{color: #f06; font-weight: bold;}
-.doc_src_str	{color: #c33;}
-.doc_src_dstr	{color: #0ff;}
-.doc_src_slc	{color: #669; font-style: italic;}
-.doc_src_com	{color: #669; font-style: italic;}
-.doc_src_dir	{color: #600;}
-.doc_src_sym	{color: #060;}
-.doc_src_kwa	{color: #960; font-weight: bold;}
-.doc_src_kwb	{color: #006;}
-.doc_src_kwc	{color: #03c;}
-.doc_src_kwd	{color: #090; font-weight: bold;}
+.doc_src_Kwd	{color: #0000ff; font-weight: bold;}
+.doc_src_Type	{color: #007f00;}
+.doc_src_Utyp	{color: #007f7f;}
+.doc_src_Str	{color: #ff0000;}
+.doc_src_Rex	{color: #ff9f00;}
+.doc_src_Sch	{color: #ffbfcf;}
+.doc_src_Com	{color: #9f2f2f; font-style: italic;}
+.doc_src_Num	{color: #7f007f;}
+.doc_src_Prep	{color: #00007f; font-weight: bold;}
+.doc_src_Sym	{color: #7f0000;}
+.doc_src_Fun	{color: #000000; font-weight: bold;}
+.doc_src_Cbrk	{color: #ff0000;}
+.doc_src_Pvar	{color: #00007f;}
+.doc_src_Pfun	{color: #00007f; font-weight: bold;}
+.doc_src_Clas	{color: #007f7f;}
+.doc_src_Line	{color: #000000;}
+.doc_src_Url	{color: #0000ff; text-decoration: underline;}
+.doc_src_Date	{color: #0000ff; font-weight: bold;}
+.doc_src_Time	{color: #00007f; font-weight: bold;}
+.doc_src_File	{color: #00007f; font-weight: bold;}
+.doc_src_Ip	{color: #007f00;}
+.doc_src_Name	{color: #007f00;}
+.doc_src_Var	{color: #007f00;}
+.doc_src_Ital	{color: #007f00; font-style: italic;}
+.doc_src_Bold	{color: #007f00; font-weight: bold;}
+.doc_src_Undr	{color: #007f00; text-decoration: underline;}
+.doc_src_Fixd	{color: #00ff00;}
+.doc_src_Arg	{color: #007f00;}
+.doc_src_Oarg	{color: #7f007f;}
+.doc_src_Math	{color: #ff9f00;}
+.doc_src_Bibx	{color: #0000ff;}
+.doc_src_Old	{color: #ff9f00;}
+.doc_src_New	{color: #007f00;}
+.doc_src_Diff	{color: #0000ff;}
+.doc_src_Sel	{color: #7f007f;}
+.doc_src_Prop	{color: #0000ff;}
+.doc_src_Val	{color: #007f00;}
+.doc_src_Atom	{color: #ff9f00;}
+.doc_src_Meta	{color: #000000; font-style: italic;}
 
 .doc_src_main:not(:first-child) {margin-top: Vmargin_hybrid;}
 .doc_src_main:not(:last-child) {margin-bottom: Vmargin_hybrid;}
@@ -436,7 +461,6 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	{
 	display: inline-block;
 	font-size: Size_pull;
-	font-style: italic;
 	font-weight: bold;
 	quotes: "\201c" "\201d";
 	color: Colour_pulltext;
@@ -500,31 +524,13 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 
 
 /********************************************************************************/
-/* Sample configuration of some common boxouts.					*/
-/********************************************************************************/
-
-.doc_boxout_env_warning {background: #fffcf0;}
-.doc_boxout_env_warning > .doc_boxout_head
-	{
-	padding-left: 28px;
-	color: #ff9;
-	background: #b30 url('boxout-warning.png') no-repeat 6px center;
-	}
-
-.doc_boxout_env_tip {background: #f7fcff;}
-.doc_boxout_env_tip > .doc_boxout_head
-	{
-	padding-left: 28px;
-	color: #fff;
-	background: #06c url('boxout-tip.png') no-repeat 6px center;
-	}
-
-
-/********************************************************************************/
 /* Theorem environments.							*/
 /********************************************************************************/
 
-.doc_theorem {margin: 0 Hmargin_inset;}
+.doc_theorem
+	{
+	margin: 0 Hmargin_inset;
+	}
 
 .doc_theorem_head
 	{
@@ -616,7 +622,6 @@ h2.doc_title {font-size: Size_title2;}
 	font-family: Family_heading;
 	font-weight: bold;
 	font-size: Size_part;
-	font-variant: small-caps;
 	text-transform: capitalize;
 	text-align: center;
 	word-spacing: Heading_word_spacing;

@@ -19,7 +19,7 @@
 #define Colour_shadow		#666
 #define Colour_question		Colour_forefancy
 #define Colour_answer		Colour_body
-#define Colour_pulltext		#333
+#define Colour_pulltext		#555
 #define Colour_pullhead		Colour_forefancy
 
 #define Background_src		#f3f6f9
