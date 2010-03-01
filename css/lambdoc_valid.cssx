@@ -599,6 +599,9 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 /* Document titles and headings.						*/
 /********************************************************************************/
 
+.doc_order {margin-right: Hmargin_inline_large;}
+.doc_part > .doc_order {text-decoration: underline;}
+
 .doc_title
 	{
 	clear: both;

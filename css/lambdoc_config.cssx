@@ -117,8 +117,10 @@
 /********************************************************************************/
 
 /* Good values for Verdana */
+/*
 #define Heading_word_spacing	0.1em
 #define Heading_letter_spacing	0.01em
+*/
 
 /* Good values for Georgia */
 #define Heading_word_spacing	0.1em
