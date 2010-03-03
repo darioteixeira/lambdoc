@@ -56,8 +56,21 @@ type name_t =
 
 
 (********************************************************************************)
-(**	{1 Private functions}							*)
+(**	{1 Private functions and values}					*)
 (********************************************************************************)
+
+(********************************************************************************)
+(**	{2 Document classname prefix}						*)
+(********************************************************************************)
+
+let doc_prefix = "doc"
+
+
+let (!!) str = "doc_" ^ str
+
+
+let (^^) s1 s2 = "doc_" ^ s1 ^ s2
+
 
 (********************************************************************************)
 (**	{2 Helper functions}							*)
@@ -69,7 +82,7 @@ let make_label = function
 
 
 let make_link ?classname lnk content =
-	let class_attr = a_class ("doc_lnk" :: match classname with None -> [] | Some x -> [x]) in
+	let class_attr = a_class (!!"lnk" :: match classname with None -> [] | Some x -> [x]) in
 	let attr = class_attr :: [a_href (uri_of_string lnk)]
 	in XHTML.M.a ~a:attr content
 
@@ -93,7 +106,7 @@ let class_of_level = function
 	| `Level3 -> "level3"
 
 
-let make_floatation floatation = ["doc_float_" ^ (Basic_output.string_of_floatation floatation)]
+let make_floatation floatation = ["float_" ^^ (Basic_output.string_of_floatation floatation)]
 	
 
 let make_heading cons label orderlst classname content =
@@ -101,15 +114,15 @@ let make_heading cons label orderlst classname content =
 
 
 let make_sectional level label orderlst content =
-	make_heading (cons_of_level level) label orderlst "doc_sec" content
+	make_heading (cons_of_level level) label orderlst !!"sec" content
 
 
 (********************************************************************************)
 (**	{2 Converters}								*)
 (********************************************************************************)
 
-let listify_order ?(spanify = false) ?(prespace = false) ?prefix order =
-	let content = match (prefix, order) with
+let listify_order ?(spanify = false) ?(prespace = false) ?order_prefix order =
+	let content = match (order_prefix, order) with
 		| (Some p, Some o) -> Some (p ^ o)
 		| (None, Some o)   -> Some o
 		| _		   -> None in
@@ -119,7 +132,7 @@ let listify_order ?(spanify = false) ?(prespace = false) ?prefix order =
 		| (None, _)	  -> []
 	in match (bundle, spanify) with
 		| ([], _)    -> []
-		| (b, true)  -> [span ~a:[a_class ["doc_order"]] b]
+		| (b, true)  -> [span ~a:[a_class [!!"order"]] b]
 		| (b, false) -> b
 
 
@@ -133,7 +146,7 @@ let section_conv ?spanify ?prespace location order =
 	in listify_order ?spanify ?prespace (Order_output.maybe_string_of_hierarchical conv order)
 
 
-let boxout_conv ?prespace order = listify_order ?prespace ~prefix:"#" (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
+let boxout_conv ?prespace order = listify_order ?prespace ~order_prefix:"#" (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
 
 
 let theorem_conv ?prespace order = listify_order ?prespace (Order_output.maybe_string_of_ordinal Order_output.format_arabic order)
@@ -152,7 +165,7 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 (**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) classname doc =
+let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]) classname doc =
 
 	(************************************************************************)
 	(* Predefined sequences with last question and answer.			*)
@@ -196,37 +209,37 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 
 		| `Math math ->
 			let xhtml : [> `Span ] XHTML.M.elt = XHTML.M.unsafe_data (Math_output.get_mathml math)
-			in XHTML.M.span ~a:[a_class ["doc_mathinl"]] [xhtml]
+			in XHTML.M.span ~a:[a_class [!!"mathinl"]] [xhtml]
 
 		| `Bold seq ->
-			XHTML.M.b ~a:[a_class ["doc_bold"]] (write_seq seq)
+			XHTML.M.b ~a:[a_class [!!"bold"]] (write_seq seq)
 
 		| `Emph seq ->
-			XHTML.M.i ~a:[a_class ["doc_emph"]] (write_seq seq)
+			XHTML.M.i ~a:[a_class [!!"emph"]] (write_seq seq)
 
 		| `Code seq ->
-			XHTML.M.tt ~a:[a_class ["doc_code"]] (write_seq seq)
+			XHTML.M.tt ~a:[a_class [!!"code"]] (write_seq seq)
 
 		| `Caps seq ->
-			XHTML.M.span ~a:[a_class ["doc_caps"]] (write_seq seq)
+			XHTML.M.span ~a:[a_class [!!"caps"]] (write_seq seq)
 
 		| `Ins seq ->
-			XHTML.M.ins ~a:[a_class ["doc_ins"]] (write_seq seq)
+			XHTML.M.ins ~a:[a_class [!!"ins"]] (write_seq seq)
 
 		| `Del seq ->
-			XHTML.M.del ~a:[a_class ["doc_del"]] (write_seq seq)
+			XHTML.M.del ~a:[a_class [!!"del"]] (write_seq seq)
 
 		| `Sup seq ->
-			XHTML.M.sup ~a:[a_class ["doc_sup"]] (write_seq seq)
+			XHTML.M.sup ~a:[a_class [!!"sup"]] (write_seq seq)
 
 		| `Sub seq ->
-			XHTML.M.sub ~a:[a_class ["doc_sub"]] (write_seq seq)
+			XHTML.M.sub ~a:[a_class [!!"sub"]] (write_seq seq)
 
 		| `Mbox seq ->
-			XHTML.M.span ~a:[a_class ["doc_mbox"]] (write_seq seq)
+			XHTML.M.span ~a:[a_class [!!"mbox"]] (write_seq seq)
 
 		| `Span (classname, seq) ->
-			let a = maybe (fun x -> [a_class ["doc_span_" ^ x]]) classname
+			let a = maybe (fun x -> [a_class ["span_" ^^ x]]) classname
 			in XHTML.M.span ?a (write_seq seq)
 
 		| `Link (lnk, None) ->
@@ -243,7 +256,7 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 					| Target.Note_target order -> make_internal_link label (note_conv order)
 					| _			   -> raise (Command_see_with_non_note target)) in
 			let commafy ref = [pcdata ","; link_maker ref]
-			in XHTML.M.span ~a:[a_class ["doc_see"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
+			in XHTML.M.span ~a:[a_class [!!"see"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
 
 		| `Cite (hd, tl) ->
 			let link_maker ref =
@@ -253,7 +266,7 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 					| Target.Bib_target order -> make_internal_link label (bib_conv order)
 					| _			  -> raise (Command_cite_with_non_bib target) in
 			let commafy ref = [pcdata ","; link_maker ref]
-			in XHTML.M.span ~a:[a_class ["doc_cite"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
+			in XHTML.M.span ~a:[a_class [!!"cite"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
 
 		| `Ref ref ->
 			let label = `User_label ref in
@@ -339,10 +352,10 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 		let write_cell ord (maybe_cellspec, maybe_seq) =
 			let ((alignment, weight), maybe_colspan, overline, underline) = match maybe_cellspec with
 				| Some (spec, span, overline, underline) -> (spec, Some span, overline, underline)
-				| None			   -> (Array.get tab.Tabular.tcols (ord+1), None, false, false) in
-			let cell_class = ["doc_cell_" ^ Tabular_output.string_of_alignment alignment]
-			and oline_class = if overline then ["doc_oline"] else []
-			and uline_class = if underline then ["doc_uline"] else [] in
+				| None					 -> (Array.get tab.Tabular.tcols (ord+1), None, false, false) in
+			let cell_class = ["cell_" ^^ Tabular_output.string_of_alignment alignment]
+			and oline_class = if overline then [!!"oline"] else []
+			and uline_class = if underline then [!!"uline"] else [] in
 			let a_hd = a_class (cell_class @ oline_class @ uline_class)
 			and a_tl = match maybe_colspan with Some n -> [a_colspan n] | None -> []
 			and out_seq = match maybe_seq with Some seq -> (write_seq seq) | None -> []
@@ -360,20 +373,20 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 
 		let thead = match tab.Tabular.thead with
 			| None		-> None
-			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.thead ~a:[a_class ["doc_tgroup"]] hd tl)
+			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.thead ~a:[a_class [!!"tgroup"]] hd tl)
 
 		and (tbody_hd, tbody_tl) =
 			let write_tbody grp =
 				let (hd, tl) = write_group grp
-				in XHTML.M.tbody ~a:[a_class ["doc_tgroup"]] hd tl in
+				in XHTML.M.tbody ~a:[a_class [!!"tgroup"]] hd tl in
 			let (hd, tl) = tab.Tabular.tbodies
 			in (write_tbody hd, List.map write_tbody tl)
 
 		and tfoot = match tab.Tabular.tfoot with
 			| None		-> None
-			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot ~a:[a_class ["doc_tgroup"]] hd tl)
+			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot ~a:[a_class [!!"tgroup"]] hd tl)
 
-		in XHTML.M.div ~a:[a_class ["doc_tab"]] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
+		in XHTML.M.div ~a:[a_class [!!"tab"]] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
 
 
 	(************************************************************************)
@@ -388,23 +401,23 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 	and write_block = function
 
 		| `Paragraph (initial, indent, seq) ->
-			let style_initial = if initial then ["doc_initial"] else []
+			let style_initial = if initial then [!!"initial"] else []
 			and style_indent = match indent with
-				| Some true  -> ["doc_indent"]
-				| Some false -> ["doc_noindent"]
+				| Some true  -> [!!"indent"]
+				| Some false -> [!!"noindent"]
 				| None	     -> [] in
 			let style = style_initial @ style_indent
-			in [XHTML.M.p ~a:[a_class ("doc_par" :: style)] (write_seq seq)]
+			in [XHTML.M.p ~a:[a_class (!!"par" :: style)] (write_seq seq)]
 
 		| `Itemize (bul, frags) ->
 			let (hd, tl) = nemap (fun frag -> XHTML.M.li (write_frag frag)) frags
-			and style = ["doc_style_" ^ (Basic_output.string_of_bullet bul)]
-			in [XHTML.M.ul ~a:[a_class ("doc_itemize" :: style)] hd tl]
+			and style = ["style_" ^^ (Basic_output.string_of_bullet bul)]
+			in [XHTML.M.ul ~a:[a_class (!!"itemize" :: style)] hd tl]
 
 		| `Enumerate (num, frags) ->
 			let (hd, tl) = nemap (fun frag -> XHTML.M.li (write_frag frag)) frags
-			and style = ["doc_style_" ^ (Basic_output.string_of_numbering num)]
-			in [XHTML.M.ol ~a:[a_class ("doc_enumerate" :: style)] hd tl]
+			and style = ["style_" ^^ (Basic_output.string_of_numbering num)]
+			in [XHTML.M.ol ~a:[a_class (!!"enumerate" :: style)] hd tl]
 
 		| `Description frags ->
 			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
@@ -412,20 +425,20 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			let (new_hd, new_tl) =
 				let (first, second) = hd
 				in (first, second :: (List.flatten (List.map (fun (x, y) -> [x; y]) tl)))
-			in [XHTML.M.dl ~a:[a_class ["doc_description"]] new_hd new_tl]
+			in [XHTML.M.dl ~a:[a_class [!!"description"]] new_hd new_tl]
 
 		| `Qanda pairs ->
 			let write_frag ~qora (maybe_maybe_seq, frag) =
 				let qora_class = match qora with
-					| `Question -> "doc_question"
-					| `Answer   -> "doc_answer" in
+					| `Question -> !!"question"
+					| `Answer   -> !!"answer" in
 				let maybe_seq = match (maybe_maybe_seq, qora) with
 					| (Some maybe_seq, `Question)	-> last_question_seq := maybe_seq; maybe_seq
 					| (Some maybe_seq, `Answer)	-> last_answer_seq := maybe_seq; maybe_seq
 					| (None, `Question)		-> !last_question_seq
 					| (None, `Answer)		-> !last_answer_seq in
 				let (outseq, empty_class) = match maybe_seq with
-					| Some seq -> (write_seq seq, ["doc_empty"])
+					| Some seq -> (write_seq seq, [!!"empty"])
 					| None	   -> ([], [])
 				in (XHTML.M.dt ~a:[a_class (qora_class::empty_class)] outseq, XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
 			let write_pair (q, a) = (write_frag ~qora:`Question q, write_frag ~qora:`Answer a) in
@@ -433,50 +446,50 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			let (new_hd, new_tl) =
 				let ((first, second), (third, fourth)) = hd
 				in (first, second :: third :: fourth :: (List.flatten (List.map (fun ((q1, q2), (a1, a2)) -> [q1; q2; a1; a2]) tl)))
-			in [XHTML.M.dl ~a:[a_class ["doc_qanda"]] new_hd new_tl]
+			in [XHTML.M.dl ~a:[a_class [!!"qanda"]] new_hd new_tl]
 
 		| `Verse frag ->
-			[XHTML.M.div ~a:[a_class ["doc_verse"]] [XHTML.M.div (write_frag frag)]]
+			[XHTML.M.div ~a:[a_class [!!"verse"]] [XHTML.M.div (write_frag frag)]]
 
 		| `Quote frag ->
-			[XHTML.M.blockquote ~a:[a_class ["doc_quote"]] (write_frag frag)]
+			[XHTML.M.blockquote ~a:[a_class [!!"quote"]] (write_frag frag)]
 
 		| `Math math ->
 			let xhtml : [> `Div ] XHTML.M.elt = XHTML.M.unsafe_data (Math_output.get_mathml math)
-			in [XHTML.M.div ~a:[a_class ["doc_mathblk"]] [xhtml]]
+			in [XHTML.M.div ~a:[a_class [!!"mathblk"]] [xhtml]]
 
 		| `Source src ->
-			let extra_classes = (if src.box then ["doc_src_box"] else []) @ (if src.zebra then ["doc_src_zebra"] else [])
-			in [Camlhighlight_write_xhtml.write ~class_prefix:"doc_src_" ~extra_classes ~dummy_lines:src.box ~linenums:src.linenums src.hilite]
+			let extra_classes = (if src.box then [!!"src_box"] else []) @ (if src.zebra then [!!"src_zebra"] else [])
+			in [Camlhighlight_write_xhtml.write ~class_prefix:!!"src_" ~extra_classes ~dummy_lines:src.box ~linenums:src.linenums src.hilite]
 
 		| `Tabular tab ->
 			[write_tabular tab]
 
 		| `Verbatim (mult, txt) ->
-			[XHTML.M.div ~a:[a_class ["doc_verb"]] [XHTML.M.div [XHTML.M.pre ~a:[a_class ["doc_mult" ^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
+			[XHTML.M.div ~a:[a_class [!!"verb"]] [XHTML.M.div [XHTML.M.pre ~a:[a_class ["mult" ^^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
 
 		| `Image image ->
-			let style = if image.frame then ["doc_image_frame"] else [] in
+			let style = if image.frame then [!!"image_frame"] else [] in
 			let attrs = match image.width with
 				| Some w -> [a_width (`Percent w)]
 				| None	 -> [] in
 			let uri = settings.image_lookup image.alias in
 			let img = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
-			in [XHTML.M.div ~a:[a_class ("doc_image" :: style)] [img]]
+			in [XHTML.M.div ~a:[a_class (!!"image" :: style)] [img]]
 
 		| `Subpage frag ->
-			[XHTML.M.div ~a:[a_class ["doc_subpage"]] (write_frag frag)]
+			[XHTML.M.div ~a:[a_class [!!"subpage"]] (write_frag frag)]
 
 		| `Decor (floatation, blk) ->
 			let style = make_floatation floatation
-			in [XHTML.M.div ~a:[a_class ("doc_decor" :: style)] (write_block blk)]
+			in [XHTML.M.div ~a:[a_class (!!"decor" :: style)] (write_block blk)]
 
 		| `Pullquote (floatation, maybe_seq, frag) ->
 			let style = make_floatation floatation
 			and head = match maybe_seq with
-				| Some seq -> [XHTML.M.h1 ~a:[a_class ["doc_pullhead"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
+				| Some seq -> [XHTML.M.h1 ~a:[a_class [!!"pullhead"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
 				| None	   -> []
-			in [XHTML.M.div ~a:[a_class ("doc_pull" :: style)] [XHTML.M.div ((write_frag frag) @ head)]]
+			in [XHTML.M.div ~a:[a_class (!!"pull" :: style)] [XHTML.M.div ((write_frag frag) @ head)]]
 
 		| `Boxout (floatation, data, maybe_seq, frag) ->
 			let formatter = function
@@ -492,7 +505,7 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 					seq2
 				| _ ->
 					[]
-			in [write_custom (Some floatation) data maybe_seq frag "doc_boxout" formatter]
+			in [write_custom (Some floatation) data maybe_seq frag !!"boxout" formatter]
 
 		| `Theorem (data, maybe_seq, frag) ->
 			let formatter triple =
@@ -509,45 +522,45 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 						([], []) in
 				let caphead = match hd with
 					| [] -> []
-					| x  -> [span ~a:[a_class ["doc_thmname"]] x]
+					| x  -> [span ~a:[a_class [!!"thmname"]] x]
 				and capbody = match bd with
 					| [] -> []
-					| x  -> [span ~a:[a_class ["doc_thmextra"]] x]
+					| x  -> [span ~a:[a_class [!!"thmextra"]] x]
 				in caphead @ capbody
-			in [write_custom None (data :> Custom.t) maybe_seq frag "doc_theorem" formatter]
+			in [write_custom None (data :> Custom.t) maybe_seq frag !!"theorem" formatter]
 
 		| `Equation (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk "doc_equation" Name_equation]
+			[write_wrapper floatation wrapper maybe_seq blk !!"equation" Name_equation]
 
 		| `Printout (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk "doc_printout" Name_printout]
+			[write_wrapper floatation wrapper maybe_seq blk !!"printout" Name_printout]
 
 		| `Table (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk "doc_table" Name_table]
+			[write_wrapper floatation wrapper maybe_seq blk !!"table" Name_table]
 
 		| `Figure (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk "doc_figure" Name_figure]
+			[write_wrapper floatation wrapper maybe_seq blk !!"figure" Name_figure]
 
 		| `Heading heading ->
 			write_heading_block heading
 
 		| `Title (level, seq) ->
-			[(cons_of_level level) ~a:[a_class ["doc_title"]] (write_seq seq)]
+			[(cons_of_level level) ~a:[a_class [!!"title"]] (write_seq seq)]
 
 		| `Abstract frag ->
-			[XHTML.M.div ~a:[a_class ["doc_abs"]] ((XHTML.M.h1 ~a:[a_class ["doc_sec"]] [pcdata "Abstract"]) :: (write_frag frag))]
+			[XHTML.M.div ~a:[a_class [!!"abstract"]] ((XHTML.M.h1 ~a:[a_class [!!"sec"]] [pcdata "Abstract"]) :: (write_frag frag))]
 
 		| `Rule ->
-			[XHTML.M.hr ~a:[a_class ["doc_rule"]] ()]
+			[XHTML.M.hr ~a:[a_class [!!"rule"]] ()]
 
 
 	and write_heading_block = function
 
 		| `Part (label, order, `Custom seq) ->
-			[make_heading XHTML.M.h1 label (part_conv ~spanify:true order) "doc_part" (write_seq seq)]
+			[make_heading XHTML.M.h1 label (part_conv ~spanify:true order) !!"part" (write_seq seq)]
 
 		| `Part (label, order, `Appendix) ->
-			[make_heading XHTML.M.h1 label (part_conv ~spanify:true order) "doc_part" (write_name Name_appendix)]
+			[make_heading XHTML.M.h1 label (part_conv ~spanify:true order) !!"part" (write_name Name_appendix)]
 
 		| `Section (label, order, location, level, `Custom seq) ->
 			[make_sectional level label (section_conv ~spanify:true location order) (write_seq seq)]
@@ -556,14 +569,14 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			let title = make_sectional level label (section_conv ~spanify:true location order) (write_name Name_bibliography) in
 			let bibs = match bibs with
 				| []	   -> []
-				| hd :: tl -> let (hd, tl) = nemap write_bib (hd, tl) in [XHTML.M.ol ~a:[a_class ["doc_bibs"]] hd tl]
+				| hd :: tl -> let (hd, tl) = nemap write_bib (hd, tl) in [XHTML.M.ol ~a:[a_class [!!"bibs"]] hd tl]
 			in title::bibs
 
 		| `Section (label, order, location, level, `Notes) ->
 			let title = make_sectional level label (section_conv ~spanify:true location order) (write_name Name_notes) in
 			let notes = match notes with
 				| []	   -> []
-				| hd :: tl -> let (hd, tl) = nemap write_note (hd, tl) in [XHTML.M.ol ~a:[a_class ["doc_notes"]] hd tl]
+				| hd :: tl -> let (hd, tl) = nemap write_note (hd, tl) in [XHTML.M.ol ~a:[a_class [!!"notes"]] hd tl]
 			in title::notes
 
 		| `Section (label, order, location, level, `Toc) ->
@@ -571,7 +584,7 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			let entries = List.filter_map write_toc_entry toc in
 			let toc_xhtml = match entries with
 				| []	   -> []
-				| hd :: tl -> [XHTML.M.ul ~a:[a_class ["doc_toc"]] hd tl]
+				| hd :: tl -> [XHTML.M.ul ~a:[a_class [!!"toc"]] hd tl]
 			in title::toc_xhtml
 
 
@@ -599,8 +612,8 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			let (length, caption_head, caption_body) = match maybe_seq with
 				| Some seq -> ("long", XHTML.M.h1 (headcore @ [pcdata ":"]), [XHTML.M.p (write_seq seq)])
 				| None	   -> ("short", XHTML.M.h1 ([pcdata "("] @ headcore @ [pcdata ")"]), [])
-			in XHTML.M.div ~a:[a_class ["doc_caption"; "doc_caption_" ^ length]] [XHTML.M.div (caption_head :: caption_body)] in
-		let classnames = ["doc_wrapper"; classname] @ (make_floatation floatation)
+			in XHTML.M.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [XHTML.M.div (caption_head :: caption_body)] in
+		let classnames = [!!"wrapper"; classname] @ (make_floatation floatation)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption]
 
 
@@ -622,9 +635,9 @@ let write_valid_document settings ?(default_classnames = ["doc"; "doc_valid"]) c
 			XHTML.M.span (pcdata "[" :: (bib_conv bib.Bib.order) @ [pcdata "]"]);
 			XHTML.M.p
 				[
-				XHTML.M.span ~a:[a_class ["doc_bib_author"]] (write_seq bib.Bib.author);
-				XHTML.M.span ~a:[a_class ["doc_bib_title"]] (write_seq bib.Bib.title);
-				XHTML.M.span ~a:[a_class ["doc_bib_resource"]] (write_seq bib.Bib.resource);
+				XHTML.M.span ~a:[a_class [!!"bib_author"]] (write_seq bib.Bib.author);
+				XHTML.M.span ~a:[a_class [!!"bib_title"]] (write_seq bib.Bib.title);
+				XHTML.M.span ~a:[a_class [!!"bib_resource"]] (write_seq bib.Bib.resource);
 				]
 			]
 
@@ -664,31 +677,31 @@ let write_error (maybe_error_context, error_msg) =
 			let show_line classname delta line =
 				XHTML.M.li ~a:[a_class [classname]]
 					[
-					span ~a:[a_class ["doc_error_linenum"]] [pcdata (sprintf "%03d" (line_number + delta))];
-					span ~a:[a_class ["doc_error_linestr"]] [pcdata line]
+					span ~a:[a_class [!!"error_linenum"]] [pcdata (sprintf "%03d" (line_number + delta))];
+					span ~a:[a_class [!!"error_linestr"]] [pcdata line]
 					] in
 			let show_line_around delta line =
-				show_line "doc_error_around" delta line
+				show_line !!"error_around" delta line
 			and show_line_actual =
-				show_line "doc_error_actual" 0 line_actual in
+				show_line !!"error_actual" 0 line_actual in
 			let lines =
 				(List.mapi (fun ord line -> show_line_around (ord - (List.length line_before)) line) line_before) @
 				[show_line_actual] @
 				(List.mapi (fun ord line -> show_line_around (ord+1) line) line_after)
 			in	[
-				XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata (sprintf "Error in line %d:" line_number)];
-				XHTML.M.ul ~a:[a_class ["doc_error_lines"]] (List.hd lines) (List.tl lines);
+				XHTML.M.h1 ~a:[a_class [!!"error_head"]] [pcdata (sprintf "Error in line %d:" line_number)];
+				XHTML.M.ul ~a:[a_class [!!"error_lines"]] (List.hd lines) (List.tl lines);
 				]
 		| None ->
-			[XHTML.M.h1 ~a:[a_class ["doc_error_head"]] [pcdata "Global error:"]]
+			[XHTML.M.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]]
 	and explanation_doc = Valid.make_composition (Block.paragraph false None (Explanations.explain error_msg), []) [] in
-	let explanation_out = [write_valid_document Settings.default ~default_classnames:[] "doc_error_msg" explanation_doc]
-	in XHTML.M.li ~a:[a_class ["doc_error"]] (context @ explanation_out)
+	let explanation_out = [write_valid_document Settings.default ~default_classnames:[] !!"error_msg" explanation_doc]
+	in XHTML.M.li ~a:[a_class [!!"error"]] (context @ explanation_out)
 
 
-let write_invalid_document ?(default_classnames = ["doc"; "doc_invalid"]) classname errors =
+let write_invalid_document ?(default_classnames = [doc_prefix; !!"invalid"]) classname errors =
 	let (hd, tl) = nemap write_error errors
-	in div ~a:[a_class (classname :: default_classnames)] [ul ~a:[a_class ["doc_errors"]] hd tl]
+	in div ~a:[a_class (classname :: default_classnames)] [ul ~a:[a_class [!!"errors"]] hd tl]
 
 
 (********************************************************************************)
@@ -700,10 +713,10 @@ let write_ambivalent_document settings classname = function
 	| `Invalid doc	-> write_invalid_document classname doc
 
 
-let manuscript_classname = "doc_manuscript"
+let manuscript_classname = !!"manuscript"
 
 
-let composition_classname = "doc_composition"
+let composition_classname = !!"composition"
 
 
 (********************************************************************************)

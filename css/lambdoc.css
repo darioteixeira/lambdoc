@@ -661,9 +661,9 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 
 
 
-.doc_abs {margin: Vmargin_floater 1em;}
+.doc_abstract {margin: 2em 1em;}
 
-.doc_abs > .doc_sec {text-align: center;}
+.doc_abstract > .doc_sec {text-align: center;}
 
 
 

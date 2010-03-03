@@ -661,9 +661,9 @@ h2.doc_title + h2.doc_title {margin-top: Vmargin_title_intra;}
 /* Abstract.									*/
 /********************************************************************************/
 
-.doc_abs {margin: Vmargin_floater Hmargin_inset;}
+.doc_abstract {margin: Vmargin_boxish Hmargin_inset;}
 
-.doc_abs > .doc_sec {text-align: center;}
+.doc_abstract > .doc_sec {text-align: center;}
 
 
 /********************************************************************************/
