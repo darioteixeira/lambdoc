@@ -12,7 +12,7 @@
 
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
-\subtitle{January 2010}
+\subtitle{March 2010}
 
 \toc[sec:toc]
 
@@ -28,10 +28,10 @@ section headings, quotation blocks, boxouts, or images.  \lambtex was especially
 to be used in web applications, and as such it supports fully hyperlinked documents.
 Moreover, its syntax is simple, consistent, and designed with brevity in mind.}
 
-This manual is divided into two main parts plus an appendix.  The \mref{part:basic}{first
-part} introduces the basic principles of the language; these allow you to describe
-simple documents with formatted text, paragraphs, ordered and unordered lists,
-tabular environments, and other features.  \sref{part:advanced} describes the advanced
+This manual is divided into two main parts plus an appendix.  \sref{part:basic}
+introduces the basic principles of the language; these allow you to describe simple
+documents with formatted text, paragraphs, ordered and unordered lists, tabular
+environments, and other features.  \sref{part:advanced} describes the advanced
 features of the language; these enable documents to have internal links, sectioning,
 a bibliography, notes, etc.  Finally, there is an \mref{part:theappendix}{appendix}
 providing reference information concerning miscelaneous issues which do not fit into
