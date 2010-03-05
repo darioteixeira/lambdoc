@@ -1914,14 +1914,16 @@ macros.  A practical application of this feature is described in \sref{sec:macro
 (order, label, and extra) of optional arguments.  In the case of extra parameters, the options
 available for each command are also displayed.  Note that simple commands are shown prefixed
 with a backslash, whereas environment commands are enclosed inside brackets.  Within each
-category, commands are shown alphabetically.  Furthermore, the commands \code{\emph{boxout}}
-and \code{\emph{theorem}} are shown in italics because the actual command name is user-defined.}
+category, commands are shown alphabetically.  Furthermore, the commands \code{\emph{\\macro}},
+\code{\emph{boxout}} and \code{\emph{theorem}} are shown in italics because the actual command
+name is user-defined.}
 \begin{tabular}{rlll}
 \head
 | Command			| Order						| Label		| Extra |
 \body
 | \code{\\answer}		| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\appendix}		| \forbidden					| \optional	| \forbidden0 |
+| \code{\\arg}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\bibliography}		| \forbidden					| \optional	| \forbidden0 |
 | \code{\\body}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\bold}			| \forbidden					| \forbidden	| \forbidden0 |
@@ -1936,6 +1938,7 @@ and \code{\emph{theorem}} are shown in italics because the actual command name i
 | \code{\\ins}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\item}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\link}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\emph{\\macro}}		| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\mbox}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\mref}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\\notes}		| \forbidden					| \optional	| \forbidden0 |
@@ -1978,7 +1981,7 @@ and \code{\emph{theorem}} are shown in italics because the actual command name i
 | \code{pull}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
 | \code{qanda}			| \forbidden					| \forbidden	| \forbidden0 |
 | \code{source}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{box}, \code{linenums}, \code{zebra}, \code{lang}) |
-| \code{subpage}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
+| \code{subpage}		| \forbidden					| \forbidden	| \forbidden0 |
 | \code{table}			| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \forbidden0 |
 | \code{tabular}		| \forbidden					| \forbidden	| \forbidden0 |
 | \code{\emph{theorem}}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
