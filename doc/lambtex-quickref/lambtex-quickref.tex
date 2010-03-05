@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass[9pt]{extarticle}
 
 \usepackage{geometry}                           % To define page size, margins, etc.
 \usepackage[pdftex]{hyperref}                   % For hyper-references in the generated PDF.
@@ -26,34 +26,33 @@
 \usepackage[nottoc]{tocbibind}                  % To put the Bibliography in the TOC.
 \usepackage{units}                              % To typeset units.
 
-\geometry{dvipdfm,a4paper,landscape,centering,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
+\geometry{dvipdfm,a4paper,landscape,centering,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,nomarginpar}
 
-\definecolor{codefront}{rgb}{0,0,0}
-\definecolor{codeback}{rgb}{1,1,0.8}
-\definecolor{codeframe}{rgb}{0,0,0}
-\definecolor{Brick}{HTML}{7B0C00}
-\definecolor{RoyalBlue}{cmyk}{1,0.50,0,0}
+\definecolor{ins}{rgb}{0.0,0.5,0.0}
+\definecolor{del}{rgb}{0.5,0.0,0.0}
 
 \definecolor{no}{rgb}{0.9,0.8,0.8}
 \definecolor{opt}{rgb}{0,0.5,0}
 \definecolor{dep}{rgb}{0.8,0.4,0}
 
+\definecolor{rex}{rgb}{1.0,0.2,0.2}
+
 \definecolor{composition}{rgb}{0,0.3,0}
 \definecolor{manuscript}{rgb}{0,0,0.3}
 
 \hypersetup{%
-        linkcolor=RoyalBlue,
-        urlcolor=RoyalBlue,
-        plainpages=false,
-        pdfpagelabels,
-        hyperindex,
-        colorlinks=true}
+	linkcolor=RoyalBlue,
+	urlcolor=RoyalBlue,
+	plainpages=false,
+	pdfpagelabels,
+	hyperindex,
+	colorlinks=true}
 
 \hypersetup{%
-        pdftitle={Asymptote and LaTeX: An Integration Guide},
-        pdfauthor={Dario Teixeira (dario.teixeira@yahoo.com)},
-        pdfsubject={asymptote},
-        pdfkeywords={typesetting, mathematical illustrations, asymptote, latex}}
+	pdftitle={Lambtex Quick Reference},
+	pdfauthor={Dario Teixeira (dario.teixeira@yahoo.com)},
+	pdfsubject={lambtex},
+	pdfkeywords={lambtex, lambdoc}}
 
 \begin{document}
 
@@ -67,226 +66,284 @@
 
 \newcommand{\op}[1]{\textbf{#1}}
 \newcommand{\hd}[1]{\textbf{#1}}
+\newcommand{\ins}[1]{\textcolor{ins}{#1}}
+\newcommand{\del}[1]{\textcolor{del}{#1}}
 \newcommand{\simc}[1]{\textcolor{composition}{\texttt{\bfseries$\backslash$#1}}}
 \newcommand{\simm}[1]{\textcolor{manuscript}{\texttt{\bfseries$\backslash$#1}}}
 \newcommand{\envc}[1]{\textcolor{composition}{\texttt{\bfseries#1}}}
 \newcommand{\envm}[1]{\textcolor{manuscript}{\texttt{\bfseries#1}}}
 \newcommand{\textsubscript}[1]{\ensuremath{_{\textrm{#1}}}}
 
-\begin{tabular}{rlcllllp{30em}}
+\newcommand{\param}[1]{\textsc{\{\emph{#1}\}}}
+\newcommand{\inline}[0]{\param{inline}}
+\newcommand{\thelabel}[0]{\param{label}}
+\newcommand{\raw}[0]{\param{raw}}
+
+\newcommand{\rexoper}[1]{\textcolor{rex}{\textbf{#1}}}
+\newcommand{\rexgroup}[2]{\,\rexoper{[}#1\rexoper{]}\textsuperscript{\rexoper{#2}}\,}
+\newcommand{\rexo}[1]{\rexgroup{#1}{?}}
+\newcommand{\rexp}[1]{\rexgroup{#1}{+}}
+
+\newcommand{\ex}[1]{\small\texttt{#1}}
+
+\begin{tabular}{rlllllcl}
 
 \toprule
 
-			&				&	& \multicolumn{4}{c}{\hd{Parameters}} & \\
+			&				& \multicolumn{4}{c}{\hd{Parameters}}							& & \\
 
-\cmidrule{4-7}\\
+\cmidrule{3-6}\\
 
-\hd{Command}		& \hd{Synonyms}			& \hd{T}& \hd{Mandatory}		& \hd{Order}	& \hd{Label}	& \hd{Extra}
+\hd{Command}		& \hd{Synonyms}			& \hd{Primary}				& \hd{Order}	& \hd{Label}	& \hd{Extra}	& \hd{T}
 & \hd{Description}\\
 
 \midrule
 
-\simc{br}		& \no				& \C	& \no				& \no		& \no		& \no
+\simc{br}		& \no				& \no					& \no		& \no		& \no		& \C
 & Inserts a line break within the same paragraph.\\
 
-\simc{bold}		& \simc{b}, \simc{strong}	& \C	& \{inline\}			& \no		& \no		& \no
+\simc{bold}		& \simc{b}, \simc{strong}	& \inline				& \no		& \no		& \no		& \C
 & Sets the inline parameter in \textbf{bold} font.\\
 
-\simc{emph}		& \simc{i}, \simc{em}		& \C	& \{inline\}			& \no		& \no		& \no
+\simc{emph}		& \simc{i}, \simc{em}		& \inline				& \no		& \no		& \no		& \C
 & Sets the inline parameter in \emph{emphasised} font.\\
 
-\simc{mono}		& \simc{m}, \simc{tt}		& \C	& \{inline\}			& \no		& \no		& \no
+\simc{code}		& \simc{tt}			& \inline				& \no		& \no		& \no		& \C
 & Sets the inline parameter in \texttt{monospaced} (teletype) font.\\
 
-\simc{caps}		& \no				& \C	& \{inline\}			& \no		& \no		& \no
+\simc{caps}		& \no				& \inline				& \no		& \no		& \no		& \C
 & Sets the inline parameter in \textsc{small caps}.\\
 
-\simc{thru}		& \no				& \C	& \{inline\}			& \no		& \no		& \no
-& Sets the inline parameter in \st{strike-throuh} style.\\
+\simc{ins}		& \no				& \inline				& \no		& \no		& \no		& \C
+& The inline parameter indicates \ins{inserted} text.\\
 
-\simc{sup}		& \no				& \C	& \{inline\}			& \no		& \no		& \no
+\simc{del}		& \no				& \inline				& \no		& \no		& \no		& \C
+& The inline parameter indicates \del{deleted} text.\\
+
+\simc{sup}		& \no				& \inline				& \no		& \no		& \no		& \C
 & Sets the inline parameter as \textsuperscript{superscript} text.\\
 
-\simc{sub}		& \no				& \C	& \{inline\}			& \no		& \no		& \no
+\simc{sub}		& \no				& \inline				& \no		& \no		& \no		& \C
 & Sets the inline parameter as \textsubscript{subscript} text.\\
 
-\simc{mbox}		& \no				& \C	& \{inline\}			& \no		& \no		& \no
+\simc{mbox}		& \no				& \inline				& \no		& \no		& \no		& \C
 & Specifies that the inline parameter should not be split across lines.\\
 
-\simc{link}		& \simc{a}			& \C	& \{uri\}\{inline\op{?}\}	& \no		& \no		& \no
-& Creates a link to the specified \textsc{URI} using the inline text for display.\\
+\simc{span}		& \no				& \inline				& \no		& \no		& \ex{class}	& \C
+& Definition of spans of inline text with a custom \textsc{xhtml} class name.\\
 
-\simm{cite}		& \no				& \M	& \{label\}			& \no		& \no		& \no
+\simc{link}		& \simc{a}			& \raw\rexo{\inline}			& \no		& \no		& \no		& \C
+& Creates a link to the specified \textsc{uri} using the inline text for display.\\
+
+\simm{cite}		& \no				& \thelabel				& \no		& \no		& \no		& \M
 & Creates a link to the specified entry in the bibliography.\\
 
-\simm{see}		& \no				& \M	& \{label\}			& \no		& \no		& \no
+\simm{see}		& \no				& \thelabel				& \no		& \no		& \no		& \M
 & Creates a link to the specified document note.\\
 
-\simm{ref}		& \no				& \M	& \{label\}			& \no		& \no		& \no
+\simm{ref}		& \no				& \thelabel				& \no		& \no		& \no		& \M
 & Creates a manual reference to the specified element.\\
 
-\simm{sref}		& \no				& \M	& \{label\}			& \no		& \no		& \no
+\simm{sref}		& \no				& \thelabel				& \no		& \no		& \no		& \M
 & Creates an automatic reference to the specified element.\\
 
-\simm{mref}		& \no				& \M	& \{label\}\{inline\}		& \no		& \no		& \no
+\simm{mref}		& \no				& \thelabel\inline			& \no		& \no		& \no		& \M
 & Creates a reference to the specified element using the custom inline text for display.\\
 
 \bottomrule
 
 \end{tabular}
 
-\begin{tabular}{rlcllllp{30em}}
+\begin{tabular}{rlllllcl}
 
 \toprule
 
-			&				&	& \multicolumn{4}{c}{\hd{Parameters}} & \\
+			&				& \multicolumn{4}{c}{\hd{Parameters}} 									& & \\
 
-\cmidrule{4-7}\\
+\cmidrule{3-6}\\
 
-\hd{Command}		& \hd{Synonyms}			& \hd{T}& \hd{Mandatory}		& \hd{Order}	& \hd{Label}	& \hd{Extra}
+\hd{Command}		& \hd{Synonyms}			& \hd{Primary}				& \hd{Order}	& \hd{Label}	& \hd{Extra}			&\hd{T}
 & \hd{Description}\\
 
 \midrule
 
-\simc{item}		& \simc{li}			& \C	& \no				& \no		& \no		& \no
-& Declares a new item in an ordered or unordered list.\\
+\simc{paragraph}	& \simc{p}			& \inline				& \no		& \no		& \ex{initial}, \ex{indent}	& \C
+& Declares a paragraph of text.\\
 
-\simc{describe}		& \simc{dt}			& \C	& \{inline\}			& \no		& \no		& \no
-& Declares the header for a new item in a description list.\\
+\envc{itemize}		& \envc{ul}, \envc{itemise}	& \no					& \no		& \no		& \ex{bul}			& \C
+& Declares an unordered list.\\
 
-\simc{bitmap}		& \no				& \C	& \{label\}\{raw\}		& \no		& \no		& align, frame, width
-& Inserts a bitmap image.\\
+\envc{enumerate}	& \envc{ol}			& \no					& \no		& \no		& \ex{num}			& \C
+& Declares an ordered list.\\
 
-\simc{head}		& \no				& \C	& \no				& \no		& \no		& \no
-& Declares the start of the head rows in a tabular environment.\\
+\envc{description}	& \envc{dl}			& \no					& \no		& \no		& \no				& \C
+& Declares a description list.\\
 
-\simc{body}		& \no				& \C	& \no				& \no		& \no		& \no
-& Declares the start of a block of body rows in a tabular environment.\\
+\envc{qanda}		& \no				& \no					& \no		& \no		& \no				& \C
+& Declares a Q\&A (interview) environment.\\
 
-\simc{foot}		& \no				& \C	& \no				& \no		& \no		& \no
-& Declares the start of the foot rows in a tabular environment.\\
+\envc{verse}		& \no				& \no					& \no		& \no		& \no				& \C
+& Declares a verse block.\\
 
-\simm{caption}		& \no				& \M	& \{inline\}			& \no		& \no		& \no
-& Declares the caption for a wrapper (equation, printout, table, or figure).\\
+\envc{quote}		& \no				& \no					& \no		& \no		& \no				& \C
+& Declares a quotation block.\\
 
-\simm{who}		& \no				& \M	& \{inline\}			& \no		& \no		& \no
-& Declares the author in a bibliography entry.\\
+\envc{mathtex}		& \no				& \no					& \no		& \no		& \no				& \C
+& Declares a math block in \TeX format.\\
 
-\simm{what}		& \no				& \M	& \{inline\}			& \no		& \no		& \no
-& Declares the title in a bibliography entry.\\
+\envc{mathml}		& \no				& \no					& \no		& \no		& \no				& \C
+& Declares a math block in \textsc{MathML} format.\\
 
-\simm{where}		& \no				& \M	& \{inline\}			& \no		& \no		& \no
-& Declares the resource where the bibliography entry may be located.\\
+\envc{source}		& \no				& \no					& \no		& \no		& \ex{box}, \ex{nums}, \ex{zebra}, \ex{lang}& \C
+& Declares a verbatim block containing source-code.\\
 
-\simm{part}		& \no				& \M	& \{inline\}			& \depz		& \opt		& \no
+\envc{tabular}		& \no				& \raw					& \no		& \no		& \no				& \C
+& Declares a tabular environment.\\
+
+\envc{verbatim}		& \envc{pre}			& \no					& \no		& \no		& \ex{mult}			& \C
+& Declares a verbatim block with \textsc{ascii}-art.\\
+
+\simc{image}		& \no				& \thelabel\raw				& \no		& \no		& \ex{frame}, \ex{width}	& \C
+& Inserts an image.\\
+
+\envc{subpage}		& \no				& \no					& \no		& \no		& \no				& \C
+& Declares a sub-page containing a child document.\\
+
+\envm{decor}		& \no				& \no					& \no		& \no		& \ex{float}			& \M
+& Declares a decoration.\\
+
+\envm{pull}		& \no				& \rexo{\inline}			& \no		& \no		& \ex{float}			& \M
+& Declares a pull-quote.\\
+
+\envm{equation}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
+& Declares a wrapper around a \texttt{mathtex} or \texttt{mathml} block.\\
+
+\envm{printout}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
+& Declares a wrapper around a \texttt{source} block.\\
+
+\envm{table}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
+& Declares a wrapper around a \texttt{tabular} block.\\
+
+\envm{figure}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
+& Declares a wrapper around a \texttt{verbatim}, \texttt{image}, or \texttt{subpage} block.\\
+
+\simm{part}		& \no				& \inline				& \depz		& \opt		& \no				& \M
 & Declares a document part (the highest level division).\\
 
-\simm{appendix}		& \no				& \M	& \no				& \no		& \opt		& \no
+\simm{appendix}		& \no				& \no					& \no		& \opt		& \no				& \M
 & Declares the beginning of the document's appendix.\\
 
-\simm{section}		& \simm{h1}			& \M	& \{inline\}			& \depz		& \opt		& \no
+\simm{section}		& \simm{h1}			& \inline				& \depz		& \opt		& \no				& \M
 & Declares a new document section.\\
 
-\simm{subsection}	& \simm{h2}			& \M	& \{inline\}			& \depz		& \opt		& \no
+\simm{subsection}	& \simm{h2}			& \inline				& \depz		& \opt		& \no				& \M
 & Declares a new document sub-section.\\
 
-\simm{subsubsection}	& \simm{h3}			& \M	& \{inline\}			& \depz		& \opt		& \no
+\simm{subsubsection}	& \simm{h3}			& \inline				& \depz		& \opt		& \no				& \M
 & Declares a new document sub-sub-section.\\
 
-\simm{bibliography}	& \no				& \M	& \no				& \no		& \opt		& \no
+\simm{bibliography}	& \no				& \no					& \no		& \opt		& \no				& \M
 & Inserts all bibliography entries.\\
 
-\simm{notes}		&\no				& \M	& \no				& \no		& \opt		& \no
+\simm{notes}		&\no				& \no					& \no		& \opt		& \no				& \M
 & Inserts all document notes.\\
 
-\simm{toc}		& \no				& \M	& \no				& \no		& \opt		& \no
+\simm{toc}		& \no				& \no					& \no		& \opt		& \no				& \M
 & Inserts the document's table of contents.\\
 
-\simm{title}		& \no				& \M	& \{inline\}			& \no		& \no		& \no
+\simm{title}		& \no				& \inline				& \no		& \no		& \no				& \M
 & Declares the document title.\\
 
-\simm{subtitle}		& \no				& \M	& \{inline\}			& \no		& \no		& \no
+\simm{subtitle}		& \no				& \inline				& \no		& \no		& \no				& \M
 & Declares a document subtitle.\\
 
-\simm{rule}		& \simm{hr}			& \M	& \no				& \no		& \no		& \no
+\envm{abstract}		& \no				& \no					& \no		& \no		& \no				& \M
+& Declares a block of text to be the document's abstract.\\
+
+\simm{rule}		& \simm{hr}			& \no					& \no		& \no		& \no				& \M
 & Inserts an horizontal separator.\\
+
+\envm{bib}		& \no				& \no					& \no		& \no		& \no				& \M
+& Declares a bibliography entry.\\
+
+\envm{note}		& \no				& \no					& \no		& \no		& \no				& \M
+& Declares a document note.\\
+
+\envm{macrodef}		& \no				& \raw\raw\inline			& \no		& \no		& \no				& \M
+& Macro definition.\\
+
+\envm{boxoutdef}	& \no				& \raw\rexo{\inline\rexo{\raw}}		& \no		& \no		& \no				& \M
+& Boxout definition.\\
+
+\envm{theoremdef}	& \no				& \raw\inline\rexo{\raw}		& \no		& \no		& \no				& \M
+& Theorem definition.\\
 
 \bottomrule
 
 \end{tabular}
 
-\begin{tabular}{rlcllllp{35em}}
+
+
+\begin{tabular}{rlllllcl}
 
 \toprule
 
-			&				&	& \multicolumn{4}{c}{\hd{Parameters}} & \\
+			&				& \multicolumn{4}{c}{\hd{Parameters}}						& & \\
 
-\cmidrule{4-7}\\
+\cmidrule{3-6}\\
 
-\hd{Command}		& \hd{Synonyms}			& \hd{T}& \hd{Mandatory}		& \hd{Order}	& \hd{Label}	& \hd{Extra}
+\hd{Command}		& \hd{Synonyms}			& \hd{Primary}			& \hd{Order}	& \hd{Label}	& \hd{Extra}	& \hd{T}
 & \hd{Description}\\
 
 \midrule
 
-\envc{itemize}		& \envc{ul}			& \C	& \no				& \no		& \no		& bul
-& Declares an unordered list.\\
+\simc{item}		& \simc{li}			& \no				& \no		& \no		& \no		& \C
+& Declares a new item in an ordered or unordered list.\\
 
-\envc{enumerate}	& \envc{ol}			& \C	& \no				& \no		& \no		& num
-& Declares an ordered list.\\
+\simc{item}		& \simc{li}			& \inline			& \no		& \no		& \no		& \C
+& Declares a new item in a description list.\\
 
-\envc{description}	& \envc{dl}			& \C	& \no				& \no		& \no		& \no
-& Declares a description list.\\
+\simc{question}		& \no				& \rexo{\inline}		& \no		& \no		& \no		& \C
+& Declares a new custom question in a \texttt{qanda} block.\\
 
-\envc{verse}		& \no				& \C	& \no				& \no		& \no		& \no
-& Declares a verse block.\\
+\simc{rquestion}	& \no				& \no				& \no		& \no		& \no		& \C
+& Declares a new repeated question in a \texttt{qanda} block.\\
 
-\envc{quote}		& \no				& \C	& \no				& \no		& \no		& \no
-& Declares a quotation block.\\
+\simc{answer}		& \no				& \rexo{\inline}		& \no		& \no		& \no		& \C
+& Declares a new custom answer in a \texttt{qanda} block.\\
 
-\envc{mathtex}		& \no				& \C	& \no				& \no		& \no		& align
-& Declares a math block in \TeX format.\\
+\simc{ranswer}		& \no				& \no				& \no		& \no		& \no		& \C
+& Declares a new repeated answer in a \texttt{qanda} block.\\
 
-\envc{mathml}		& \no				& \C	& \no				& \no		& \no		& align
-& Declares a math block in \textsc{MathML} format.\\
+\simc{head}		& \no				& \no				& \no		& \no		& \no		& \C
+& Declares the start of the head rows in a tabular environment.\\
 
-\envc{code}		& \no				& \C	& \no				& \no		& \no		& align
-& Declares a verbatim block containing source-code.\\
+\simc{body}		& \no				& \no				& \no		& \no		& \no		& \C
+& Declares the start of a block of body rows in a tabular environment.\\
 
-\envc{tabular}		& \no				& \C	& \{raw\}			& \no		& \no		& align
-& Declares a tabular environment.\\
+\simc{foot}		& \no				& \no				& \no		& \no		& \no		& \C
+& Declares the start of the foot rows in a tabular environment.\\
 
-\envc{verbatim}		& \no				& \C	& \no				& \no		& \no		& align
-& Declares a verbatim block with \textsc{ascii}-art.\\
+\simm{who}		& \no				& \inline			& \no		& \no		& \no		& \M
+& Declares the author in a bibliography entry.\\
 
-\envc{subpage}		& \no				& \C	& \no				& \no		& \no		& align
-& Declares a sub-page containing a child document.\\
+\simm{what}		& \no				& \inline			& \no		& \no		& \no		& \M
+& Declares the title in a bibliography entry.\\
 
-\envm{pull}		& \no				& \M	& \no				& \no		& \no		& align
-& Declares a pull-quote.\\
+\simm{where}		& \no				& \inline			& \no		& \no		& \no		& \M
+& Declares the resource where the bibliography entry may be located.\\
 
-\envm{boxout}		& \no				& \M	& \{inline\op{?}\}		& \no		& \no		& align
-& Declares a boxout with some inline text as title.\\
+\simm{\emph{macro}}	& \no				& \rexp{\inline}		& \no		& \no		& \no		& \M
+& Invokes a macro.\\
 
-\envm{equation}		& \no				& \M	& \no				& \opt		& \dep		& \no
-& Declares a numbered wrapper around a math block.\\
+\simm{arg}		& \no				& \raw				& \no		& \no		& \no		& \M
+& Argument reference in macro definition.\\
 
-\envm{printout}		& \no				& \M	& \no				& \opt		& \dep		& \no
-& Declares a numbered wrapper around a code block.\\
+\envm{\emph{boxout}}	& \no				& \rexo{\inline}		& \no		& \no		& \ex{float}	& \M
+& Declares a boxout.\\
 
-\envm{table}		& \no				& \M	& \no				& \opt		& \dep		& \no
-& Declares a numbered wrapper around a tabular environment.\\
-
-\envm{figure}		& \no				& \M	& \no				& \opt		& \dep		& \no
-& Declares a numbered wrapper around a verbatim, bitmap, or sub-page figure.\\
-
-\envm{bib}		& \no				& \M	& \no				& \no		& \no		& \no
-& Declares a bibliography entry.\\
-
-\envm{note}		& \no				& \M	& \no				& \no		& \no		& \no
-& Declares a document note.\\
-
-\envm{abstract}		& \no				& \M	& \no				& \no		& \no		& \no
-& Declares a block of text to be the document's abstract.\\
+\envm{\emph{theorem}}	& \no				& \rexo{\inline}		& \no		& \no		& \ex{float}	& \M
+& Declares a theorem.\\
 
 \bottomrule
 
