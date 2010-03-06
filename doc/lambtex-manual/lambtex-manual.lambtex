@@ -2062,7 +2062,7 @@ accepted for each command.}
 | \code{initial}	| Boolean |
 | \code{indent}		| Boolean or \code{auto} |
 | \code{box}		| Boolean |
-| \code{linenums}	| Boolean |
+| \code{nums}		| Boolean |
 | \code{zebra}		| Boolean |
 | \code{mult}		| Integer between 0 and 9 (inclusive) |
 | \code{frame}		| Boolean |

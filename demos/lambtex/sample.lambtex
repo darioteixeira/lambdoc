@@ -665,7 +665,7 @@ let rec count = function
 
 \p{\lorem}
 \begin<left>{printout}{\fox}
-\begin<ocaml,!linenums>{source}
+\begin<ocaml,!nums>{source}
 type t =
     | Foo of int
     | Bar of float
@@ -682,7 +682,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<right>{printout}{\fox}
-\begin<ocaml,!linenums>{source}
+\begin<ocaml,!nums>{source}
 type t =
     | Foo of int
     | Bar of float

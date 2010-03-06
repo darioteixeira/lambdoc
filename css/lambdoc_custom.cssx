@@ -6,8 +6,8 @@
 /* Configure optional/mandatory/forbidden spans.				*/
 /********************************************************************************/
 
-.doc_span_optional	{color: #d06010; font-weight: bold; font-size: 1.154em;}
 .doc_span_mandatory	{color: #006400; font-size: 1.154em;}
+.doc_span_optional	{color: #d06010; font-weight: bold; font-size: 1.154em;}
 .doc_span_forbidden	{color: #8b0000; font-size: 1.154em;}
 
 

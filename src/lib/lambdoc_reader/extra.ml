@@ -133,7 +133,7 @@ let id_of_handle = function
 	| Initial_hnd	 -> ("initial", Boolean_kind, false)
 	| Indent_hnd	 -> ("indent", Boolean_kind, true)
 	| Box_hnd	 -> ("box", Boolean_kind, false)
-	| Linenums_hnd	 -> ("linenums", Boolean_kind, false)
+	| Linenums_hnd	 -> ("nums", Boolean_kind, false)
 	| Zebra_hnd	 -> ("zebra", Boolean_kind, false)
 	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9), false)
 	| Frame_hnd	 -> ("frame", Boolean_kind, false)
