@@ -1,6 +1,5 @@
 \newmacro{lambtex}{0}{\caps{lambtex}}
 \newmacro{lambdoc}{0}{\caps{lambdoc}}
-\newmacro{thicksp}{0}{&emsp;}
 
 \newmacro{optional}{0}{\span<optional>{≈}}
 \newmacro{optional0}{0}{\span<optional>{≈\sub{ø}}}
@@ -8,6 +7,8 @@
 \newmacro{mandatory0}{0}{\span<mandatory>{✔\sub{ø}}}
 \newmacro{forbidden}{0}{\span<forbidden>{✘}}
 \newmacro{forbidden0}{0}{\span<forbidden>{✘\sub{ø}}}
+\newmacro{depends}{0}{\mref{sec:order}{\forbidden/\mandatory}}
+\newmacro{depends0}{0}{\mref{sec:order}{\forbidden0/\mandatory0}}
 
 
 \title{The \lambtex Manual}
@@ -684,16 +685,16 @@ let rec count_leaves = function
 	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
 \end{source}
 
-Code environments offer three more customisation options via extra parameters.
-First, the boolean parameter \code{box} indicates whether the source should be
-displayed inside a box, as in the examples above.  This is the default, though you
-may want to set this option to \code{false} if you have short code segments that
-you wish to integrate more tightly with the flow of the document text.  Second, the
-boolean parameter \code{linenums} indicates whether line numbers should be added to
-the listing.  Its default is \code{true} if the source language was specified and the
-source is shown inside a box; otherwise it is \code{false}.  Finally, the also boolean
-parameter \code{zebra} controls the printing of the zebra stripes.  Its default value
-is \code{true} if the source lies inside a box, and \code{false} otherwise.
+Code environments offer three more customisation options via extra parameters.  First,
+the boolean parameter \code{box} indicates whether the source should be displayed
+inside a box, as in the examples above.  This is the default, though you may want
+to set this option to \code{false} if you have short code segments that you wish to
+integrate more tightly with the flow of the document text.  Second, the boolean parameter
+\code{nums} indicates whether line numbers should be added to the listing.  Its default
+is \code{true} if the source language was specified and the source is shown inside a
+box; otherwise it is \code{false}.  Finally, the also boolean parameter \code{zebra}
+controls the printing of the zebra stripes.  Its default value is \code{true} if the
+source lies inside a box, and \code{false} otherwise.
 
 To conclude, note that \lambtex offers also the possibility for code environments to
 be numbered and referenced from anywhere in the document.  This can be done by wrapping
@@ -1919,74 +1920,74 @@ category, commands are shown alphabetically.  Furthermore, the commands \code{\e
 name is user-defined.}
 \begin{tabular}{rlll}
 \head
-| Command			| Order						| Label		| Extra |
+| Command			| Order		| Label		| Extra |
 \body
-| \code{\\answer}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\appendix}		| \forbidden					| \optional	| \forbidden0 |
-| \code{\\arg}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\bibliography}		| \forbidden					| \optional	| \forbidden0 |
-| \code{\\body}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\bold}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\br}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\caps}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\cite}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\code}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\del}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\foot}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\head}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\image}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{frame}, \code{width}) |
-| \code{\\ins}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\item}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\link}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\emph{\\macro}}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\mbox}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\mref}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\notes}		| \forbidden					| \optional	| \forbidden0 |
-| \code{\\paragraph}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{initial}, \code{indent}) |
-| \code{\\part}			| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
-| \code{\\question}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\ranswer}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\ref}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\rquestion}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\rule}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\section}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
-| \code{\\see}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\span}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{class}) |
-| \code{\\sref}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\sub}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\subsection}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
-| \code{\\subsubsection}	| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
-| \code{\\subtitle}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\sup}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\title}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\toc}			| \forbidden					| \optional	| \forbidden0 |
-| \code{\\what}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\where}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\\who}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{\\answer}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\appendix}		| \forbidden	| \optional	| \forbidden0 |
+| \code{\\arg}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\bibliography}		| \forbidden	| \optional	| \forbidden0 |
+| \code{\\body}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\bold}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\br}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\caps}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\cite}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\code}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\del}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\foot}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\head}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\image}		| \forbidden	| \forbidden	| \code{frame}, \code{width} |
+| \code{\\ins}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\item}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\link}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\emph{\\macro}}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\mbox}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\mref}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\notes}		| \forbidden	| \optional	| \forbidden0 |
+| \code{\\paragraph}		| \forbidden	| \forbidden	| \code{initial}, \code{indent} |
+| \code{\\part}			| \depends0	| \optional	| \forbidden0 |
+| \code{\\question}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\ranswer}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\ref}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\rquestion}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\rule}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\section}		| \depends0	| \optional	| \forbidden0 |
+| \code{\\see}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\span}			| \forbidden	| \forbidden	| \code{class} |
+| \code{\\sref}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\sub}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\subsection}		| \depends0	| \optional	| \forbidden0 |
+| \code{\\subsubsection}	| \depends0	| \optional	| \forbidden0 |
+| \code{\\subtitle}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\sup}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\title}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\toc}			| \forbidden	| \optional	| \forbidden0 |
+| \code{\\what}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\where}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\who}			| \forbidden	| \forbidden	| \forbidden0 |
 \body
-| \code{abstract}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{bib}			| \forbidden					| \optional	| \forbidden0 |
-| \code{\emph{boxout}}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \optional0\thicksp\(\code{float}) |
-| \code{decor}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
-| \code{description}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{enumerate}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{bul}) |
-| \code{equation}		| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \optional0\thicksp\(\code{float}) |
-| \code{figure}			| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \optional0\thicksp\(\code{float}) |
-| \code{itemize}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{num}) |
-| \code{mathml}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{mathtex}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{note}			| \forbidden					| \optional	| \forbidden0 |
-| \code{quote}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{printout}		| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \optional0\thicksp\(\code{float}) |
-| \code{pull}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{float}) |
-| \code{qanda}			| \forbidden					| \forbidden	| \forbidden0 |
-| \code{source}			| \forbidden					| \forbidden	| \optional0\thicksp\(\code{box}, \code{linenums}, \code{zebra}, \code{lang}) |
-| \code{subpage}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{table}			| \mref{sec:order}{\forbidden/\mandatory}	| \optional	| \forbidden0 |
-| \code{tabular}		| \forbidden					| \forbidden	| \forbidden0 |
-| \code{\emph{theorem}}		| \mref{sec:order}{\forbidden0/\mandatory0}	| \optional	| \forbidden0 |
-| \code{verbatim}		| \forbidden					| \forbidden	| \optional0\thicksp\(\code{mult}) |
-| \code{verse}			| \forbidden					| \forbidden	| \forbidden0 |
+| \code{abstract}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{bib}			| \forbidden	| \optional	| \forbidden0 |
+| \code{\emph{boxout}}		| \depends0	| \optional	| \code{float} |
+| \code{decor}			| \forbidden	| \forbidden	| \code{float} |
+| \code{description}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{enumerate}		| \forbidden	| \forbidden	| \code{bul} |
+| \code{equation}		| \depends	| \optional	| \code{float} |
+| \code{figure}			| \depends	| \optional	| \code{float} |
+| \code{itemize}		| \forbidden	| \forbidden	| \code{num} |
+| \code{mathml}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{mathtex}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{note}			| \forbidden	| \optional	| \forbidden0 |
+| \code{quote}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{printout}		| \depends	| \optional	| \code{float} |
+| \code{pull}			| \forbidden	| \forbidden	| \code{float} |
+| \code{qanda}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{source}			| \forbidden	| \forbidden	| \code{box}, \code{nums}, \code{zebra}, \code{lang} |
+| \code{subpage}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{table}			| \depends	| \optional	| \forbidden0 |
+| \code{tabular}		| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\emph{theorem}}		| \depends0	| \optional	| \forbidden0 |
+| \code{verbatim}		| \forbidden	| \forbidden	| \code{mult} |
+| \code{verse}			| \forbidden	| \forbidden	| \forbidden0 |
 \end{tabular}
 \end{table}
 

@@ -879,7 +879,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">Code environments offer three more customisation options via extra parameters. First, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the examples above. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">linenums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box; otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if the source lies inside a box, and <tt class="doc_code">false</tt> otherwise.
+      <p class="doc_par">Code environments offer three more customisation options via extra parameters. First, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the examples above. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">nums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box; otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if the source lies inside a box, and <tt class="doc_code">false</tt> otherwise.
       </p>
       <p class="doc_par">To conclude, note that <span class="doc_caps">lambtex</span> offers also the possibility for code environments to be numbered and referenced from anywhere in the document. This can be done by wrapping them inside a <tt class="doc_code">printout</tt> environment, and is part of the advanced features of the language discussed in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>.
       </p>
@@ -2330,7 +2330,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">frame</tt>, <tt class="doc_code">width</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">frame</tt>, <tt class="doc_code">width</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2410,7 +2410,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">initial</tt>, <tt class="doc_code">indent</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">initial</tt>, <tt class="doc_code">indent</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2500,7 +2500,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">class</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">class</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2642,7 +2642,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">float</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2652,7 +2652,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">float</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2672,7 +2672,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">bul</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">bul</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2682,7 +2682,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">float</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2692,7 +2692,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">float</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2702,7 +2702,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">num</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">num</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2752,7 +2752,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">float</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2762,7 +2762,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">float</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">float</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2782,7 +2782,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">box</tt>, <tt class="doc_code">linenums</tt>, <tt class="doc_code">zebra</tt>, <tt class="doc_code">lang</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">box</tt>, <tt class="doc_code">nums</tt>, <tt class="doc_code">zebra</tt>, <tt class="doc_code">lang</tt>
                   </td>
                 </tr>
                 <tr>
@@ -2832,7 +2832,7 @@ rspace="0.222em"
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_forbidden">✘</span>
                   </td>
-                  <td class="doc_cell_l"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span> (<tt class="doc_code">mult</tt>)
+                  <td class="doc_cell_l"><tt class="doc_code">mult</tt>
                   </td>
                 </tr>
                 <tr>
