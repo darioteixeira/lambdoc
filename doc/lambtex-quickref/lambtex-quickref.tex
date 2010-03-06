@@ -13,9 +13,10 @@
 \usepackage{mathptmx}                           % For Type 1 "Times Roman" serif text and math.
 \usepackage[scaled=0.92]{helvet}                % For Type 1 "Helvetica" sans serif text.
 \usepackage{courier}                            % For Type 1 "Courier" monospaced text.
+\usepackage{pifont}				% For dingbat symbols.
 \usepackage{xspace}                             % For automatic handling of spaces after macros.
-\usepackage{booktabs}				% For better tables.
 \usepackage{multirow}				% For merging rows.
+\usepackage{colortbl}
 \usepackage{soul}				% For strike-through.
 \usepackage[titles]{tocloft}                    % For Table of Contents customisation.
 \usepackage{subfig}                             % For subfigures.
@@ -26,19 +27,21 @@
 \usepackage[nottoc]{tocbibind}                  % To put the Bibliography in the TOC.
 \usepackage{units}                              % To typeset units.
 
-\geometry{dvipdfm,a4paper,landscape,centering,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,nomarginpar}
+\geometry{dvipdfm,a4paper,portrait,centering,tmargin=1.5cm,bmargin=1.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
 
-\definecolor{ins}{rgb}{0.0,0.5,0.0}
-\definecolor{del}{rgb}{0.5,0.0,0.0}
+\definecolor{ins}{RGB}{0,100,0}
+\definecolor{del}{RGB}{139,0,0}
 
-\definecolor{no}{rgb}{0.9,0.8,0.8}
-\definecolor{opt}{rgb}{0,0.5,0}
-\definecolor{dep}{rgb}{0.8,0.4,0}
+\definecolor{muss}{RGB}{0,100,0}
+\definecolor{darf}{RGB}{208,96,16}
+\definecolor{nein}{RGB}{139,0,0}
 
 \definecolor{rex}{rgb}{1.0,0.2,0.2}
+\definecolor{no}{gray}{0.5}
 
 \definecolor{composition}{rgb}{0,0.3,0}
 \definecolor{manuscript}{rgb}{0,0,0.3}
+
 
 \hypersetup{%
 	linkcolor=RoyalBlue,
@@ -54,18 +57,25 @@
 	pdfsubject={lambtex},
 	pdfkeywords={lambtex, lambdoc}}
 
+\pagestyle{empty}
+
 \begin{document}
 
+\newcommand{\muss}[0]{\textcolor{muss}{\ding{52}}}
+\newcommand{\mussz}[0]{\textcolor{muss}{\ding{52}$_{\emptyset}$}}
+\newcommand{\darf}[0]{\textcolor{darf}{$\approx$}}
+\newcommand{\darfz}[0]{\textcolor{darf}{$\approx_{\emptyset}$}}
+\newcommand{\nein}[0]{\textcolor{nein}{\ding{56}}}
+\newcommand{\neinz}[0]{\textcolor{nein}{\ding{56}$_{\emptyset}$}}
+\newcommand{\dep}[0]{\nein\textbf{/}\muss}
+\newcommand{\depz}[0]{\neinz\textbf{/}\mussz}
 \newcommand{\no}[0]{\textcolor{no}{---}}
-\newcommand{\opt}[0]{\textcolor{opt}{opt}}
-\newcommand{\dep}[0]{\textcolor{dep}{dep\textsuperscript{1}}}
-\newcommand{\depz}[0]{\textcolor{dep}{dep\textsuperscript{2}}}
 
 \newcommand{\C}[0]{\textcolor{composition}{C}}
 \newcommand{\M}[0]{\textcolor{manuscript}{M}}
 
 \newcommand{\op}[1]{\textbf{#1}}
-\newcommand{\hd}[1]{\textbf{#1}}
+\newcommand{\hd}[1]{\bfseries\textsc{#1}}
 \newcommand{\ins}[1]{\textcolor{ins}{#1}}
 \newcommand{\del}[1]{\textcolor{del}{#1}}
 \newcommand{\simc}[1]{\textcolor{composition}{\texttt{\bfseries$\backslash$#1}}}
@@ -86,268 +96,123 @@
 
 \newcommand{\ex}[1]{\small\texttt{#1}}
 
-\begin{tabular}{rlllllcl}
+\renewcommand{\arraystretch}{1.05}
+\setlength{\arrayrulewidth}{0.6pt}
 
-\toprule
+\begin{center}
+\noindent{\Large\bfseries\textsc{Lambtex Quick Reference}}\\
+\vspace*{0.25cm}
+\noindent{\large\textsc{Dario Teixeira}}
+\end{center}
 
-			&				& \multicolumn{4}{c}{\hd{Parameters}}							& & \\
+\begin{center}
+\small
+\begin{tabular}{|r|rlllllc|}
 
-\cmidrule{3-6}\\
+\hline
 
-\hd{Command}		& \hd{Synonyms}			& \hd{Primary}				& \hd{Order}	& \hd{Label}	& \hd{Extra}	& \hd{T}
-& \hd{Description}\\
+\rule{0ex}{2.6ex} & 			&		& \multicolumn{4}{c}{\hd{Parameters}}							& \\[0.2ex]
 
-\midrule
+\cline{4-7}
 
-\simc{br}		& \no				& \no					& \no		& \no		& \no		& \C
-& Inserts a line break within the same paragraph.\\
+\rule{0ex}{2.6ex} & \hd{Command}	& \hd{Synonyms}	& \hd{Primary}			& \hd{Order}	& \hd{Label}	& \hd{Extra}		& \hd{T} \\[0.2ex]
 
-\simc{bold}		& \simc{b}, \simc{strong}	& \inline				& \no		& \no		& \no		& \C
-& Sets the inline parameter in \textbf{bold} font.\\
+\hline
 
-\simc{emph}		& \simc{i}, \simc{em}		& \inline				& \no		& \no		& \no		& \C
-& Sets the inline parameter in \emph{emphasised} font.\\
+\multirow{19}{*}{\rotatebox{90}{\hd{Inline commands}}}
 
-\simc{code}		& \simc{tt}			& \inline				& \no		& \no		& \no		& \C
-& Sets the inline parameter in \texttt{monospaced} (teletype) font.\\
+& \simc{br}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \rule{0ex}{2.6ex}\\
+& \simc{bold}		& \simc{b}, \simc{strong}	& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{emph}		& \simc{i}, \simc{em}		& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{code}		& \simc{tt}			& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{caps}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{ins}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{del}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{sup}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{sub}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{mbox}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{span}		& \no				& \inline			& \nein		& \nein		& \ex{class}		& \C \\
+& \simc{link}		& \simc{a}			& \raw\rexo{\inline}		& \nein		& \nein		& \neinz		& \C \\
+& \simm{cite}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
+& \simm{see}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
+& \simm{ref}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
+& \simm{sref}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
+& \simm{mref}		& \no				& \thelabel\inline		& \nein		& \nein		& \neinz		& \M \\
+& \simm{\emph{macro}}	& \no				& \rexp{\inline}		& \nein		& \nein		& \neinz		& \M \\
+& \simm{arg}		& \no				& \raw				& \nein		& \nein		& \neinz		& \M \\[0.2ex]
 
-\simc{caps}		& \no				& \inline				& \no		& \no		& \no		& \C
-& Sets the inline parameter in \textsc{small caps}.\\
+\hline
 
-\simc{ins}		& \no				& \inline				& \no		& \no		& \no		& \C
-& The inline parameter indicates \ins{inserted} text.\\
+\multirow{39}{*}{\rotatebox{90}{\hd{Block commands}}}
 
-\simc{del}		& \no				& \inline				& \no		& \no		& \no		& \C
-& The inline parameter indicates \del{deleted} text.\\
+& \simc{paragraph}	& \simc{p}			& \inline			& \nein		& \nein		& \ex{initial}, \ex{indent} & \C \rule{0ex}{2.6ex}\\
+& \envc{itemize}	& \envc{ul}, \envc{itemise}	& \no				& \nein		& \nein		& \ex{bul}		& \C \\
+& \envc{enumerate}	& \envc{ol}			& \no				& \nein		& \nein		& \ex{num}		& \C \\
+& \envc{description}	& \envc{dl}			& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envc{qanda}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envc{verse}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envc{quote}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envc{mathtex}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envc{mathml}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envc{source}		& \no				& \no				& \nein		& \nein		& \ex{box}, \ex{nums}, \ex{zebra}, \ex{lang}& \C \\
+& \envc{tabular}	& \no				& \raw				& \nein		& \nein		& \neinz		& \C \\
+& \envc{verbatim}	& \envc{pre}			& \no				& \nein		& \nein		& \ex{mult}		& \C \\
+& \simc{image}		& \no				& \thelabel\raw			& \nein		& \nein		& \ex{frame}, \ex{width}& \C \\
+& \envc{subpage}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \envm{decor}		& \no				& \no				& \nein		& \nein		& \ex{float}		& \M \\
+& \envm{pull}		& \no				& \rexo{\inline}		& \nein		& \nein		& \ex{float}		& \M \\
+& \envm{\emph{boxout}}	& \no				& \rexo{\inline}		& \depz		& \nein		& \ex{float}		& \M \\
+& \envm{\emph{theorem}}	& \no				& \rexo{\inline}		& \depz		& \nein		& \ex{float}		& \M \\
+& \envm{equation}	& \no				& \rexo{\inline}		& \dep		& \darf		& \ex{float}		& \M \\
+& \envm{printout}	& \no				& \rexo{\inline}		& \dep		& \darf		& \ex{float}		& \M \\
+& \envm{table}		& \no				& \rexo{\inline}		& \dep		& \darf		& \ex{float}		& \M \\
+& \envm{figure}		& \no				& \rexo{\inline}		& \dep		& \darf		& \ex{float}		& \M \\
+& \simm{part}		& \no				& \inline			& \depz		& \darf		& \neinz		& \M \\
+& \simm{appendix}	& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
+& \simm{section}	& \simm{h1}			& \inline			& \depz		& \darf		& \neinz		& \M \\
+& \simm{subsection}	& \simm{h2}			& \inline			& \depz		& \darf		& \neinz		& \M \\
+& \simm{subsubsection}	& \simm{h3}			& \inline			& \depz		& \darf		& \neinz		& \M \\
+& \simm{bibliography}	& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
+& \simm{notes}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
+& \simm{toc}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
+& \simm{title}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
+& \simm{subtitle}	& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
+& \envm{abstract}	& \no				& \no				& \nein		& \nein		& \neinz		& \M \\
+& \simm{rule}		& \simm{hr}			& \no				& \nein		& \nein		& \neinz		& \M \\
+& \envm{bib}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
+& \envm{note}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
+& \envm{macrodef}	& \no				& \raw\raw\inline		& \nein		& \nein		& \neinz		& \M \\
+& \envm{boxoutdef}	& \no				& \raw\rexo{\inline\rexo{\raw}}	& \nein		& \nein		& \neinz		& \M \\
+& \envm{theoremdef}	& \no				& \raw\inline\rexo{\raw}	& \nein		& \nein		& \neinz		& \M \\[0.2ex]
 
-\simc{sup}		& \no				& \inline				& \no		& \no		& \no		& \C
-& Sets the inline parameter as \textsuperscript{superscript} text.\\
+\hline
 
-\simc{sub}		& \no				& \inline				& \no		& \no		& \no		& \C
-& Sets the inline parameter as \textsubscript{subscript} text.\\
+\multirow{12}{*}{\rotatebox{90}{\hd{Auxiliary commands}}}
 
-\simc{mbox}		& \no				& \inline				& \no		& \no		& \no		& \C
-& Specifies that the inline parameter should not be split across lines.\\
-
-\simc{span}		& \no				& \inline				& \no		& \no		& \ex{class}	& \C
-& Definition of spans of inline text with a custom \textsc{xhtml} class name.\\
-
-\simc{link}		& \simc{a}			& \raw\rexo{\inline}			& \no		& \no		& \no		& \C
-& Creates a link to the specified \textsc{uri} using the inline text for display.\\
-
-\simm{cite}		& \no				& \thelabel				& \no		& \no		& \no		& \M
-& Creates a link to the specified entry in the bibliography.\\
-
-\simm{see}		& \no				& \thelabel				& \no		& \no		& \no		& \M
-& Creates a link to the specified document note.\\
-
-\simm{ref}		& \no				& \thelabel				& \no		& \no		& \no		& \M
-& Creates a manual reference to the specified element.\\
-
-\simm{sref}		& \no				& \thelabel				& \no		& \no		& \no		& \M
-& Creates an automatic reference to the specified element.\\
-
-\simm{mref}		& \no				& \thelabel\inline			& \no		& \no		& \no		& \M
-& Creates a reference to the specified element using the custom inline text for display.\\
-
-\bottomrule
+& \simc{item}		& \simc{li}			& \no				& \nein		& \nein		& \neinz		& \C \rule{0ex}{2.6ex}\\
+& \simc{item}		& \simc{li}			& \inline			& \nein		& \nein		& \neinz		& \C \\
+& \simc{question}	& \no				& \rexo{\inline}		& \nein		& \nein		& \neinz		& \C \\
+& \simc{rquestion}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \simc{answer}		& \no				& \rexo{\inline}		& \nein		& \nein		& \neinz		& \C \\
+& \simc{ranswer}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \simc{head}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \simc{body}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \simc{foot}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
+& \simm{who}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
+& \simm{what}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
+& \simm{where}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\[0.2ex]
+ 
+\hline
 
 \end{tabular}
+\end{center}
 
-\begin{tabular}{rlllllcl}
+\clearpage
 
-\toprule
-
-			&				& \multicolumn{4}{c}{\hd{Parameters}} 									& & \\
-
-\cmidrule{3-6}\\
-
-\hd{Command}		& \hd{Synonyms}			& \hd{Primary}				& \hd{Order}	& \hd{Label}	& \hd{Extra}			&\hd{T}
-& \hd{Description}\\
-
-\midrule
-
-\simc{paragraph}	& \simc{p}			& \inline				& \no		& \no		& \ex{initial}, \ex{indent}	& \C
-& Declares a paragraph of text.\\
-
-\envc{itemize}		& \envc{ul}, \envc{itemise}	& \no					& \no		& \no		& \ex{bul}			& \C
-& Declares an unordered list.\\
-
-\envc{enumerate}	& \envc{ol}			& \no					& \no		& \no		& \ex{num}			& \C
-& Declares an ordered list.\\
-
-\envc{description}	& \envc{dl}			& \no					& \no		& \no		& \no				& \C
-& Declares a description list.\\
-
-\envc{qanda}		& \no				& \no					& \no		& \no		& \no				& \C
-& Declares a Q\&A (interview) environment.\\
-
-\envc{verse}		& \no				& \no					& \no		& \no		& \no				& \C
-& Declares a verse block.\\
-
-\envc{quote}		& \no				& \no					& \no		& \no		& \no				& \C
-& Declares a quotation block.\\
-
-\envc{mathtex}		& \no				& \no					& \no		& \no		& \no				& \C
-& Declares a math block in \TeX format.\\
-
-\envc{mathml}		& \no				& \no					& \no		& \no		& \no				& \C
-& Declares a math block in \textsc{MathML} format.\\
-
-\envc{source}		& \no				& \no					& \no		& \no		& \ex{box}, \ex{nums}, \ex{zebra}, \ex{lang}& \C
-& Declares a verbatim block containing source-code.\\
-
-\envc{tabular}		& \no				& \raw					& \no		& \no		& \no				& \C
-& Declares a tabular environment.\\
-
-\envc{verbatim}		& \envc{pre}			& \no					& \no		& \no		& \ex{mult}			& \C
-& Declares a verbatim block with \textsc{ascii}-art.\\
-
-\simc{image}		& \no				& \thelabel\raw				& \no		& \no		& \ex{frame}, \ex{width}	& \C
-& Inserts an image.\\
-
-\envc{subpage}		& \no				& \no					& \no		& \no		& \no				& \C
-& Declares a sub-page containing a child document.\\
-
-\envm{decor}		& \no				& \no					& \no		& \no		& \ex{float}			& \M
-& Declares a decoration.\\
-
-\envm{pull}		& \no				& \rexo{\inline}			& \no		& \no		& \ex{float}			& \M
-& Declares a pull-quote.\\
-
-\envm{equation}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
-& Declares a wrapper around a \texttt{mathtex} or \texttt{mathml} block.\\
-
-\envm{printout}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
-& Declares a wrapper around a \texttt{source} block.\\
-
-\envm{table}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
-& Declares a wrapper around a \texttt{tabular} block.\\
-
-\envm{figure}		& \no				& \rexo{\inline}			& \opt		& \dep		& \ex{float}			& \M
-& Declares a wrapper around a \texttt{verbatim}, \texttt{image}, or \texttt{subpage} block.\\
-
-\simm{part}		& \no				& \inline				& \depz		& \opt		& \no				& \M
-& Declares a document part (the highest level division).\\
-
-\simm{appendix}		& \no				& \no					& \no		& \opt		& \no				& \M
-& Declares the beginning of the document's appendix.\\
-
-\simm{section}		& \simm{h1}			& \inline				& \depz		& \opt		& \no				& \M
-& Declares a new document section.\\
-
-\simm{subsection}	& \simm{h2}			& \inline				& \depz		& \opt		& \no				& \M
-& Declares a new document sub-section.\\
-
-\simm{subsubsection}	& \simm{h3}			& \inline				& \depz		& \opt		& \no				& \M
-& Declares a new document sub-sub-section.\\
-
-\simm{bibliography}	& \no				& \no					& \no		& \opt		& \no				& \M
-& Inserts all bibliography entries.\\
-
-\simm{notes}		&\no				& \no					& \no		& \opt		& \no				& \M
-& Inserts all document notes.\\
-
-\simm{toc}		& \no				& \no					& \no		& \opt		& \no				& \M
-& Inserts the document's table of contents.\\
-
-\simm{title}		& \no				& \inline				& \no		& \no		& \no				& \M
-& Declares the document title.\\
-
-\simm{subtitle}		& \no				& \inline				& \no		& \no		& \no				& \M
-& Declares a document subtitle.\\
-
-\envm{abstract}		& \no				& \no					& \no		& \no		& \no				& \M
-& Declares a block of text to be the document's abstract.\\
-
-\simm{rule}		& \simm{hr}			& \no					& \no		& \no		& \no				& \M
-& Inserts an horizontal separator.\\
-
-\envm{bib}		& \no				& \no					& \no		& \no		& \no				& \M
-& Declares a bibliography entry.\\
-
-\envm{note}		& \no				& \no					& \no		& \no		& \no				& \M
-& Declares a document note.\\
-
-\envm{macrodef}		& \no				& \raw\raw\inline			& \no		& \no		& \no				& \M
-& Macro definition.\\
-
-\envm{boxoutdef}	& \no				& \raw\rexo{\inline\rexo{\raw}}		& \no		& \no		& \no				& \M
-& Boxout definition.\\
-
-\envm{theoremdef}	& \no				& \raw\inline\rexo{\raw}		& \no		& \no		& \no				& \M
-& Theorem definition.\\
-
-\bottomrule
-
-\end{tabular}
-
-
-
-\begin{tabular}{rlllllcl}
-
-\toprule
-
-			&				& \multicolumn{4}{c}{\hd{Parameters}}						& & \\
-
-\cmidrule{3-6}\\
-
-\hd{Command}		& \hd{Synonyms}			& \hd{Primary}			& \hd{Order}	& \hd{Label}	& \hd{Extra}	& \hd{T}
-& \hd{Description}\\
-
-\midrule
-
-\simc{item}		& \simc{li}			& \no				& \no		& \no		& \no		& \C
-& Declares a new item in an ordered or unordered list.\\
-
-\simc{item}		& \simc{li}			& \inline			& \no		& \no		& \no		& \C
-& Declares a new item in a description list.\\
-
-\simc{question}		& \no				& \rexo{\inline}		& \no		& \no		& \no		& \C
-& Declares a new custom question in a \texttt{qanda} block.\\
-
-\simc{rquestion}	& \no				& \no				& \no		& \no		& \no		& \C
-& Declares a new repeated question in a \texttt{qanda} block.\\
-
-\simc{answer}		& \no				& \rexo{\inline}		& \no		& \no		& \no		& \C
-& Declares a new custom answer in a \texttt{qanda} block.\\
-
-\simc{ranswer}		& \no				& \no				& \no		& \no		& \no		& \C
-& Declares a new repeated answer in a \texttt{qanda} block.\\
-
-\simc{head}		& \no				& \no				& \no		& \no		& \no		& \C
-& Declares the start of the head rows in a tabular environment.\\
-
-\simc{body}		& \no				& \no				& \no		& \no		& \no		& \C
-& Declares the start of a block of body rows in a tabular environment.\\
-
-\simc{foot}		& \no				& \no				& \no		& \no		& \no		& \C
-& Declares the start of the foot rows in a tabular environment.\\
-
-\simm{who}		& \no				& \inline			& \no		& \no		& \no		& \M
-& Declares the author in a bibliography entry.\\
-
-\simm{what}		& \no				& \inline			& \no		& \no		& \no		& \M
-& Declares the title in a bibliography entry.\\
-
-\simm{where}		& \no				& \inline			& \no		& \no		& \no		& \M
-& Declares the resource where the bibliography entry may be located.\\
-
-\simm{\emph{macro}}	& \no				& \rexp{\inline}		& \no		& \no		& \no		& \M
-& Invokes a macro.\\
-
-\simm{arg}		& \no				& \raw				& \no		& \no		& \no		& \M
-& Argument reference in macro definition.\\
-
-\envm{\emph{boxout}}	& \no				& \rexo{\inline}		& \no		& \no		& \ex{float}	& \M
-& Declares a boxout.\\
-
-\envm{\emph{theorem}}	& \no				& \rexo{\inline}		& \no		& \no		& \ex{float}	& \M
-& Declares a theorem.\\
-
-\bottomrule
-
-\end{tabular}
+\begin{center}
+\centering
+\includegraphics[height=25cm]{hierarchy.pdf}
+\end{center}
 
 \end{document}
 
