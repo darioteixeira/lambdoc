@@ -26,8 +26,8 @@ type manuscript_payload_t =
 	m_accept_list: Features.manuscript_feature_t list option;
 	m_deny_list: Features.manuscript_feature_t list option;
 	m_default: Features.default_t option;
-	m_source: string;
 	m_markup: markup_t;
+	m_source: string;
 	}
 
 
@@ -38,8 +38,8 @@ type composition_payload_t =
 	c_accept_list: Features.composition_feature_t list option;
 	c_deny_list: Features.composition_feature_t list option;
 	c_default: Features.default_t option;
-	c_source: string;
 	c_markup: markup_t;
+	c_source: string;
 	}
 
 

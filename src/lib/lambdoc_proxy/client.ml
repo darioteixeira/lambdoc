@@ -45,7 +45,7 @@ let communicate request =
 (*	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source markup =
+let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default markup source =
 	let payload =
 		{
 		m_verify_utf8 = verify_utf8;
@@ -53,14 +53,14 @@ let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list
 		m_accept_list = accept_list;
 		m_deny_list = deny_list;
 		m_default = default;
-		m_source = source;
 		m_markup = markup;
+		m_source = source;
 		} in
 	communicate (Read_manuscript payload) >>= fun (reply : Ambivalent.manuscript_t) ->
 	Lwt.return reply
 
 
-let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default source markup =
+let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default markup source =
 	let payload =
 		{
 		c_verify_utf8 = verify_utf8;
@@ -68,8 +68,8 @@ let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept_lis
 		c_accept_list = accept_list;
 		c_deny_list = deny_list;
 		c_default = default;
-		c_source = source;
 		c_markup = markup;
+		c_source = source;
 		} in
 	communicate (Read_composition payload) >>= fun (reply : Ambivalent.composition_t) ->
 	Lwt.return reply

@@ -26,8 +26,8 @@ val ambivalent_manuscript_from_string:
 	?accept_list: Features.manuscript_feature_t list ->
 	?deny_list: Features.manuscript_feature_t list ->
 	?default: Features.default_t ->
-	string ->
 	Protocol.markup_t ->
+	string ->
 	Lambdoc_core.Ambivalent.manuscript_t Lwt.t
 
 
@@ -37,7 +37,7 @@ val ambivalent_composition_from_string:
 	?accept_list: Features.composition_feature_t list ->
 	?deny_list: Features.composition_feature_t list ->
 	?default: Features.default_t ->
-	string ->
 	Protocol.markup_t ->
+	string ->
 	Lambdoc_core.Ambivalent.composition_t Lwt.t
 
