@@ -22,10 +22,10 @@ open Lambdoc_core
 *)
 module type SOCKET =
 sig
-	val sockaddr: Unix.sockaddr
-	val sockdomain: Unix.socket_domain
-	val socktype: Unix.socket_type
-	val sockproto: int
+	val sockaddr: unit -> Unix.sockaddr
+	val sockdomain: unit -> Unix.socket_domain
+	val socktype: unit -> Unix.socket_type
+	val sockproto: unit -> int
 end
 
 
@@ -68,8 +68,8 @@ end
 module Make (Socket: SOCKET): S =
 struct
 	let communicate request =
-		let addr = Socket.sockaddr
-		and sock = Lwt_unix.socket Socket.sockdomain Socket.socktype Socket.sockproto in
+		let addr = Socket.sockaddr ()
+		and sock = Lwt_unix.socket (Socket.sockdomain ()) (Socket.socktype ()) (Socket.sockproto ()) in
 		Lwt_unix.connect sock addr >>= fun () ->
 		let in_channel = Lwt_chan.in_channel_of_descr sock
 		and out_channel = Lwt_chan.out_channel_of_descr sock in
