@@ -207,7 +207,7 @@
 	font-family: Family_mono;
 	line-height: Line_height_src;
 	overflow: auto;
-	color: Color_body;
+	color: Colour_body;
 	}
 
 .doc_src_box
@@ -590,7 +590,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	color: Colour_forefancy;
 	}
 
-.doc_caption_long > div > h1 {margin-right: Hmargin_inline_small}
+.doc_caption_long > div > h1 {margin-right: Hmargin_inline_small;}
 
 .doc_caption_long > div > p {display: inline;}
 
