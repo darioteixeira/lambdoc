@@ -1,18 +1,3 @@
-body
-	{
-	font-size: 16px;
-	}
-
-.doc
-	{
-	margin: 1em auto;
-	width: 46em;
-	font-family: "Georgia", "DejaVu Serif", serif;
-	font-size: 0.625em;
-	line-height: 1.6em;
-	color: #000;
-	}
-
 .doc_bold
 	{
 	font-weight: bold;

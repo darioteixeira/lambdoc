@@ -40,21 +40,6 @@ caption, th, td
 	font-weight: normal;
 	}
 
-body
-	{
-	font-size: 16px;
-	}
-
-.doc
-	{
-	margin: 1em auto;
-	width: 46em;
-	font-family: "Georgia", "DejaVu Serif", serif;
-	font-size: 0.625em;
-	line-height: 1.6em;
-	color: #000;
-	}
-
 .doc_bold
 	{
 	font-weight: bold;
@@ -1455,5 +1440,20 @@ h2.doc_title + h2.doc_title
 	padding-left: 28px;
 	color: #fff;
 	background: #06c url("boxout-tip.png") no-repeat 6px center;
+	}
+
+body
+	{
+	font-size: 16px;
+	}
+
+.doc
+	{
+	margin: 1em auto;
+	width: 46em;
+	font-family: "Georgia", "DejaVu Serif", serif;
+	font-size: 0.625em;
+	line-height: 1.6em;
+	color: #000;
 	}
 
