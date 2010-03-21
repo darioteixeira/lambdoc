@@ -32,7 +32,7 @@ produces '&euro;'), by decimal code point (\code{\&#8364;} produces '&#8364;'),
 or by hexadecimal code point (\code{\&#x20ac;} produces '&#x20ac;').  You can
 also enter en-dashes (\code{\-\-} produces '--'), em-dashes (\code{\-\-\-}
 produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
-\caps{unicode}, so you can --- for example --- enter Japanese characters directly:
+\caps{utf-8}, so you can --- for example --- enter Japanese characters directly:
 おなかがいっぱいですからなにもたべたくないです.
 
 Here is a link to section number \ref{sec:foobar} or smartly,

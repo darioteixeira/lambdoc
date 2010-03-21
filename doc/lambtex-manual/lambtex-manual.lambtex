@@ -22,7 +22,7 @@
 \p<initial>{\lambtex is a document description language.  It is largely inspired by
 \caps{LaTeX}\cite{bib:latex}, both in its syntax and in the approach taken for the
 description of documents.  In basic terms, the source for a \lambtex document is composed
-only of text, but annotated with special commands that attach a precise semantical
+of \caps{utf-8} text annotated with special commands that attach a precise semantical
 meaning to elements.  There are commands that format passages in a special manner
 (emphasised, superscript, etc), and commands that declare high-level constructs such as
 section headings, quotation blocks, boxouts, or images.  \lambtex was especially designed
