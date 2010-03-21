@@ -1,14 +1,14 @@
 =========================================================================
-| README for Lambdoc 0.7						|
+| README for Lambdoc 0.8						|
 |									|
 | Dario Teixeira (dario.teixeira@yahoo.com)				|
-| November 2009								|
+| March 2010								|
 =========================================================================
 
 1. Overview
 ===========
 
-Ocamldoc is a library providing support for semantically rich documents in
+Lambdoc is a library providing support for semantically rich documents in
 Ocsigen web applications.  It includes parsers for three different markup
 languages: Lambtex, Lambhtml, and Lamblite.  The first is inspired by LaTeX,
 the second is inspired by HTML, and the last is a lightweight markup language
