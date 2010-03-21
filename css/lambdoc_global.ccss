@@ -15,9 +15,9 @@ body
 	{
 	margin: Vmargin_doc auto;
 	width: Width_doc;
-	font-family: Family_body;
+	font-family: Family_doc;
 	font-size: 0.625em;		/* For default of 16 * 0.625 = 10px */
-	line-height: Line_height_body;
-	color: Colour_body;
+	line-height: Line_height_doc;
+	color: Colour_doc;
 	}
 

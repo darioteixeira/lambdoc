@@ -208,7 +208,7 @@
 	font-family: Family_mono;
 	line-height: Line_height_src;
 	overflow: auto;
-	color: Colour_body;
+	color: Colour_doc;
 	}
 
 .doc_src_box
@@ -317,7 +317,7 @@
 .doc_tab_aux
 	{
 	display: inline-block;
-	line-height: Line_height_body;
+	line-height: Line_height_doc;
 	}
 
 .doc_tab_aux > table
