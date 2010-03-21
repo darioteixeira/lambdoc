@@ -6,10 +6,13 @@ to typeset ordinals such as 1^^st^^, 2^^nd^^, etc.  Subscripts also have practic
 applications: how else would you typeset H,,2,,O?  You may also enter links: please
 check [[http://localhost:8080/]] or [[http://localhost:8080/|Localhost]] now.
 
-It is possible to enter ((HTML)) entities either by name ({{\&euro;}} produces '&euro;'),
-by decimal code point ({{\&#8364;}} produces '&#8364;'), or by hexadecimal code point
-({{\&#x20ac;}} produces '&#x20ac;').  You can also enter en-dashes ({{\-\-}} produces
-'--'), em-dashes ({{\-\-\-}} produces '---'), and proper double quotes (ex: ``hello'').
+It is possible to enter ((HTML)) entities either by name ({{\&euro;}} produces
+'&euro;'), by decimal code point ({{\&#8364;}} produces '&#8364;'), or by
+hexadecimal code point ({{\&#x20ac;}} produces '&#x20ac;').  You can also enter
+en-dashes ({{\-\-}} produces '--'), em-dashes ({{\-\-\-}} produces '---'), and
+proper double quotes (ex: ``hello'').  The input charset is ((unicode)),
+so you can --- for example --- enter Japanese characters directly:
+おなかがいっぱいですからなにもたべたくないです.
 
 = Lists
 

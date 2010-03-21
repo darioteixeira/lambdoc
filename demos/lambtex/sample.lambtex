@@ -22,11 +22,18 @@
 
 \p<initial>{\lorem}
 
-You can declare HTML entities by name (ex: &euro;), by decimal code point (ex:
-&#8364;), or by hexadecimal code point (ex: &#x20ac;).  Here we have examples of text in
-\bold{bold} and \emph{emphasised} and \code{monospaced} and in \caps{small-caps} and with
-\sup{superscripts} and \sub{subscripts}. You may also correct \del{perfect}\ins{broken}
-text.  Also, \mbox{\emph{all of this emphasised text should appear on the same line.}}
+Here we have examples of text in \bold{bold} and \emph{emphasised} and \code{monospaced}
+and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You may also
+correct \del{perfect}\ins{broken} text.  Also, \mbox{\emph{all of this emphasised text
+should appear on the same line.}}
+
+It is possible to enter \caps{HTML} entities either by name (\code{\&euro;}
+produces '&euro;'), by decimal code point (\code{\&#8364;} produces '&#8364;'),
+or by hexadecimal code point (\code{\&#x20ac;} produces '&#x20ac;').  You can
+also enter en-dashes (\code{\-\-} produces '--'), em-dashes (\code{\-\-\-}
+produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
+\caps{unicode}, so you can --- for example --- enter Japanese characters directly:
+おなかがいっぱいですからなにもたべたくないです.
 
 Here is a link to section number \ref{sec:foobar} or smartly,
 \sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
