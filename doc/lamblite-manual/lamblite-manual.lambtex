@@ -16,10 +16,11 @@
 It is inspired by \caps{markdown}\cite{bib:markdown} and \caps{creole}\cite{bib:creole},
 and remains for the most part compatible with the latter. Similarly to other lightweight
 markup languages, \lamblite is targeted at the description of documents consisting
-largely of text, and where syntactic annotations match traditional conventions used
-in email.  While not as powerful and flexible as a full-featured markup language like
-\caps{LaTeX}\cite{bib:latex} or \lambtex\cite{bib:lambtex}, the lightweight markup
-used by \lamblite should be sufficient to describe most simple documents.}
+largely of text (whose input encoding must be \caps{utf-8}), and where syntactic
+annotations match traditional conventions used in email.  While not as powerful
+and flexible as a full-featured markup language like \caps{LaTeX}\cite{bib:latex}
+or \lambtex\cite{bib:lambtex}, the lightweight markup used by \lamblite should be
+sufficient to describe most simple documents.}
 
 \lamblite is part of the family of markup languages supported by the \lambdoc
 library\cite{bib:lambdoc}.  \lambdoc distinguishes between two classes of documents
@@ -40,11 +41,10 @@ a richer set of semantic elements, you should consider using instead a full-fled
 \lambdoc language like \lambtex.
 
 \begin[fig:features]{figure}
+{Representation of the set of features supported by \lamblite contrasted with the overall
+features of the \lambdoc library.  It should be salient that even though \lamblite
+does support both composition and manuscript features, it covers only a subset of both.}
 \image{features.png}{Features}
-\caption{Representation of the set of features supported by \lamblite contrasted
-with the overall features of the \lambdoc library.  It should be salient that even
-though \lamblite does support both composition and manuscript features, it covers
-only a subset of both.}
 \end{figure}
 
 
@@ -67,6 +67,9 @@ begin/end markers used for each.  Note that in many cases the begin marker is id
 to the end marker.  Also, bear in mind that nesting formatting directives is not allowed.
 
 \begin[tab:format]{table}
+{Text formatting annotations.  Simply wrap between the begin and end markers the passage
+of text you wish to format.  Note that in many cases the end marker is identical to
+the begin marker.}
 \begin{tabular}{ccc}
 \head
 | Begin marker		| End marker		| Example					|
@@ -78,9 +81,6 @@ to the end marker.  Also, bear in mind that nesting formatting directives is not
 | \marker{^}		| \marker{^}		| The 1\sup{st} of January has a superscript.	|
 | \marker{,}		| \marker{,}		| H\sub{2}O requires a subscript.		|
 \end{tabular}
-\caption{Text formatting annotations.  Simply wrap between the begin and end markers
-the passage of text you wish to format.  Note that in many cases the end marker is
-identical to the begin marker.}
 \end{table}
 
 \lamblite supports also hyperlinks into external
@@ -167,6 +167,10 @@ Remember to use the escape character if you wish to input any of these sequences
 literally.
 
 \begin[tab:seq]{table}
+{Special character sequences and their \lamblite interpretation.  Remember to use
+the backslash for escaping if you wish to input any of these sequences verbatim.
+Note that using dash(es) at the start of a line is the marker for unordered lists
+(see \mref{sec:lists}{the next section} for details).}
 \begin{tabular}{cl}
 \head
 | Sequence		| Translation |
@@ -176,10 +180,6 @@ literally.
 | \code{\`\`}		| Opening double quotes |
 | \code{\'\'}		| Closing double quotes |
 \end{tabular}
-\caption{Special character sequences and their \lamblite interpretation.  Remember to use
-the backslash for escaping if you wish to input any of these sequences verbatim.  Note
-that using dash(es) at the start of a line is the marker for unordered lists (see
-\mref{sec:lists}{the next section} for details).}
 \end{table}
 
 
@@ -382,18 +382,18 @@ should take value \code{\emph{value}} is \code{\emph{key}=\emph{value}}.  Howeve
 if there is no chance of ambiguity then a shorthand notation may be used (see
 \sref{sec:extra} for details).
 
-As for the accepted configuration options, the most important is undoubtedly
-\code{lang}, which sets the rules used for syntax highlighting.  The remaining three
-options are used to tweak the manner in which the source code is to be displayed.
-First among them, the boolean parameter \code{box} indicates whether the source
-should be displayed inside a box, as in the example below.  This is the default,
-though you may want to set this option to \code{false} if you have short code segments
-that you wish to integrate more tightly with the flow of the document text.  Second,
-the boolean parameter \code{linenums} indicates whether line numbers should be added
-to the listing.  Its default is \code{true} if the source language was specified and
-the source is shown inside a box.  Otherwise it is \code{false}.  Finally, the also
-boolean parameter \code{zebra} controls the printing of the zebra stripes.  Its default
-value is \code{true} if the source lies inside a box, and \code{false} otherwise.
+As for the accepted configuration options, the most important is undoubtedly \code{lang},
+which sets the rules used for syntax highlighting.  The remaining three options are used
+to tweak the manner in which the source code is to be displayed.  First among them,
+the boolean parameter \code{box} indicates whether the source should be displayed
+inside a box, as in the example below.  This is the default, though you may want
+to set this option to \code{false} if you have short code segments that you wish to
+integrate more tightly with the flow of the document text.  Second, the boolean parameter
+\code{nums} indicates whether line numbers should be added to the listing.  Its default
+is \code{true} if the source language was specified and the source is shown inside
+a box.  Otherwise it is \code{false}.  Finally, the also boolean parameter \code{zebra}
+controls the printing of the zebra stripes.  Its default value is \code{true} if the
+source lies inside a box, and \code{false} otherwise.
 
 The obligatory example, showing an \caps{ocaml} source-code fragment:
 
@@ -479,17 +479,17 @@ Should the command accept multiple parameters, these can be separated by inserti
 extra parameters together with the accepted values for each.
 
 \begin[tab:extradesc]{table}
+{List of all existing extra parameters and associated range of values.}
 \begin{tabular}{rl}
 \head
 | Command		| Accepted values |
 \body
 | \code{box}		| Boolean |
-| \code{linenums}	| Boolean |
+| \code{nums}		| Boolean |
 | \code{zebra}		| Boolean |
 | \code{mult}		| Integer between 0 and 9 (inclusive) |
 | \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
 \end{tabular}
-\caption{List of all existing extra parameters and associated range of values.}
 \end{table}
 
 

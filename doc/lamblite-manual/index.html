@@ -11,7 +11,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
     <link href="css/lambdoc.css" rel="stylesheet" media="all" title="Default" />
   </head>
   <body>
-    <div class="doc doc_valid doc_manuscript">
+    <div class="doc_manuscript doc doc_valid">
       <h1 class="doc_title">The <span class="doc_caps">lamblite</span> Manual
       </h1>
       <h2 class="doc_title">Dario Teixeira
@@ -21,50 +21,50 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <h1 id="doc:a:1" class="doc_sec"><span>Table of Contents</span>
       </h1>
       <ul class="doc_toc">
-        <li class="level1"><a class="doc_lnk" href="#doc:a:2">1.&ensp;Paragraphs and text formatting</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:a:2"><span class="doc_order">1</span>Paragraphs and text formatting</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:3">2.&ensp;Special characters</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:a:3"><span class="doc_order">2</span>Special characters</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:lists">3.&ensp;Lists</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:u:sec:lists"><span class="doc_order">3</span>Lists</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:4">4.&ensp;Quotations</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:a:4"><span class="doc_order">4</span>Quotations</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:verbatim">5.&ensp;Verbatim blocks</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:u:sec:verbatim"><span class="doc_order">5</span>Verbatim blocks</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:source">6.&ensp;Source-code blocks</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:u:sec:source"><span class="doc_order">6</span>Source-code blocks</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:sectioning">7.&ensp;Sectioning</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:u:sec:sectioning"><span class="doc_order">7</span>Sectioning</a>
         </li>
-        <li class="level0"><a class="doc_lnk" href="#doc:a:8">Appendix</a>
+        <li class="doc_item doc_level0"><a class="doc_lnk" href="#doc:a:8">Appendix</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:u:sec:extra">A.&ensp;How extra parameters are parsed</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:u:sec:extra"><span class="doc_order">A</span>How extra parameters are parsed</a>
         </li>
-        <li class="level0"><a class="doc_lnk" href="#doc:a:9">Backmatter</a>
+        <li class="doc_item doc_level0"><a class="doc_lnk" href="#doc:a:9">Backmatter</a>
         </li>
-        <li class="level1"><a class="doc_lnk" href="#doc:a:10">Bibliography</a>
+        <li class="doc_item doc_level1"><a class="doc_lnk" href="#doc:a:10">Bibliography</a>
         </li>
       </ul>
       <hr class="doc_rule" />
-      <p class="doc_par doc_initial"><span class="doc_caps">lamblite</span> is a lightweight markup language for the description of documents. It is inspired by <span class="doc_caps">markdown</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:markdown">1</a>]</span> and <span class="doc_caps">creole</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:creole">2</a>]</span>, and remains for the most part compatible with the latter. Similarly to other lightweight markup languages, <span class="doc_caps">lamblite</span> is targeted at the description of documents consisting largely of text, and where syntactic annotations match traditional conventions used in email. While not as powerful and flexible as a full-featured markup language like <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">3</a>]</span> or <span class="doc_caps">lambtex</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:lambtex">4</a>]</span>, the lightweight markup used by <span class="doc_caps">lamblite</span> should be sufficient to describe most simple documents.
+      <p class="doc_par doc_initial"><span class="doc_caps">lamblite</span> is a lightweight markup language for the description of documents. It is inspired by <span class="doc_caps">markdown</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:markdown">1</a>]</span> and <span class="doc_caps">creole</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:creole">2</a>]</span>, and remains for the most part compatible with the latter. Similarly to other lightweight markup languages, <span class="doc_caps">lamblite</span> is targeted at the description of documents consisting largely of text (whose input encoding must be <span class="doc_caps">utf-8</span>), and where syntactic annotations match traditional conventions used in email. While not as powerful and flexible as a full-featured markup language like <span class="doc_caps">LaTeX</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:latex">3</a>]</span> or <span class="doc_caps">lambtex</span><span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:lambtex">4</a>]</span>, the lightweight markup used by <span class="doc_caps">lamblite</span> should be sufficient to describe most simple documents.
       </p>
       <p class="doc_par"><span class="doc_caps">lamblite</span> is part of the family of markup languages supported by the <span class="doc_caps">lambdoc</span> library<span class="doc_cite">[<a class="doc_lnk" href="#doc:u:bib:lambdoc">5</a>]</span>. <span class="doc_caps">lambdoc</span> distinguishes between two classes of documents — <i class="doc_emph">manuscripts</i> and <i class="doc_emph">compositions</i> — and <span class="doc_caps">lamblite</span> may be used for writing either. A manuscript may make use of sectioning, internal links, and other advanced features of the library such as pull-quotes and decorations. A composition, on the other hand, is a simpler kind of document which neither makes use of internal links nor some of the other advanced features of <span class="doc_caps">lambdoc</span>. Note that compositions are a proper subset of manuscripts.
       </p>
       <p class="doc_par">With one exception, all the elements supported by <span class="doc_caps">lamblite</span> are part of the feature set of compositions. The exception consists of the sectioning specifiers described in <a class="doc_lnk" href="#doc:u:sec:sectioning">Section&nbsp;7</a>. Therefore, documents making use of this feature are necessarily manuscripts, while those that do not may be either compositions or manuscripts. It also follows that <span class="doc_caps">lamblite</span> supports only a limited subset of all the features available in <span class="doc_caps">lambdoc</span>, as <a class="doc_lnk" href="#doc:u:fig:features">Fig.&nbsp;1</a> illustrates. If your document requires a richer set of semantic elements, you should consider using instead a full-fledged <span class="doc_caps">lambdoc</span> language like <span class="doc_caps">lambtex</span>.
       </p>
       <div id="doc:u:fig:features" class="doc_wrapper doc_figure doc_float_center">
-        <div class="doc_image"><a href="features.png">
+        <div class="doc_image"><a href="features.png" class="doc_image_lnk">
 <img src="features.png" alt="Features" /></a>
         </div>
         <div class="doc_caption doc_caption_long">
-          <div>
-            <h1>Fig.&nbsp;1:
+          <div class="doc_caption_aux">
+            <h1 class="doc_caption_head">Fig.&nbsp;1:
             </h1>
-            <p>Representation of the set of features supported by <span class="doc_caps">lamblite</span> contrasted with the overall features of the <span class="doc_caps">lambdoc</span> library. It should be salient that even though <span class="doc_caps">lamblite</span> does support both composition and manuscript features, it covers only a subset of both.
+            <p class="doc_caption_body">Representation of the set of features supported by <span class="doc_caps">lamblite</span> contrasted with the overall features of the <span class="doc_caps">lambdoc</span> library. It should be salient that even though <span class="doc_caps">lamblite</span> does support both composition and manuscript features, it covers only a subset of both.
             </p>
           </div>
         </div>
       </div>
-      <h1 id="doc:a:2" class="doc_sec">1.&ensp;<span>Paragraphs and text formatting</span>
+      <h1 id="doc:a:2" class="doc_sec"><span class="doc_order">1</span><span>Paragraphs and text formatting</span>
       </h1>
       <p class="doc_par">A <span class="doc_caps">lamblite</span> document is composed of a sequence of blocks. Examples of blocks include paragraphs of text, quotes, and source-code listings. Blocks occupy the entire width of the page, and are vertically separated from other blocks by a small margin.
       </p>
@@ -74,7 +74,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <div id="doc:u:tab:format" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
-          <div>
+          <div class="doc_tab_aux">
             <table>
               <thead class="doc_tgroup">
                 <tr>
@@ -140,10 +140,10 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </div>
         </div>
         <div class="doc_caption doc_caption_long">
-          <div>
-            <h1>Tab.&nbsp;1:
+          <div class="doc_caption_aux">
+            <h1 class="doc_caption_head">Tab.&nbsp;1:
             </h1>
-            <p>Text formatting annotations. Simply wrap between the begin and end markers the passage of text you wish to format. Note that in many cases the end marker is identical to the begin marker.
+            <p class="doc_caption_body">Text formatting annotations. Simply wrap between the begin and end markers the passage of text you wish to format. Note that in many cases the end marker is identical to the begin marker.
             </p>
           </div>
         </div>
@@ -187,12 +187,12 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <p class="doc_par">Adding a hyperlink into the <a class="doc_lnk" href="http://www.wikipedia.org/">Wikipedia</a> is easy. Here's another one: <a class="doc_lnk" href="http://www.wikipedia.org/">http://www.wikipedia.org/</a>. 
         </p>
       </div>
-      <h1 id="doc:a:3" class="doc_sec">2.&ensp;<span>Special characters</span>
+      <h1 id="doc:a:3" class="doc_sec"><span class="doc_order">2</span><span>Special characters</span>
       </h1>
       <p class="doc_par"><span class="doc_caps">lamblite</span> allows the direct use of <span class="doc_caps">html</span> entities via the same notation used in <span class="doc_caps">html</span>. More precisely, entities are to be enclosed between the characters '<tt class="doc_code">&amp;</tt>' (ampersand) and '<tt class="doc_code">;</tt>' (semicolon), and may be specified by name or by <span class="doc_caps">unicode</span> code point in decimal or hexadecimal notation. As an example, if the <span class="doc_caps">euro</span> symbol '<tt class="doc_code">€</tt>' is not readily available in your keyboard, you may enter it in either of the following three manners:
       </p>
       <div class="doc_tab">
-        <div>
+        <div class="doc_tab_aux">
           <table>
             <thead class="doc_tgroup">
               <tr>
@@ -225,7 +225,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <div id="doc:u:tab:seq" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
-          <div>
+          <div class="doc_tab_aux">
             <table>
               <thead class="doc_tgroup">
                 <tr>
@@ -267,15 +267,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </div>
         </div>
         <div class="doc_caption doc_caption_long">
-          <div>
-            <h1>Tab.&nbsp;2:
+          <div class="doc_caption_aux">
+            <h1 class="doc_caption_head">Tab.&nbsp;2:
             </h1>
-            <p>Special character sequences and their <span class="doc_caps">lamblite</span> interpretation. Remember to use the backslash for escaping if you wish to input any of these sequences verbatim. Note that using dash(es) at the start of a line is the marker for unordered lists (see <a class="doc_lnk" href="#doc:u:sec:lists">the next section</a> for details).
+            <p class="doc_caption_body">Special character sequences and their <span class="doc_caps">lamblite</span> interpretation. Remember to use the backslash for escaping if you wish to input any of these sequences verbatim. Note that using dash(es) at the start of a line is the marker for unordered lists (see <a class="doc_lnk" href="#doc:u:sec:lists">the next section</a> for details).
             </p>
           </div>
         </div>
       </div>
-      <h1 id="doc:u:sec:lists" class="doc_sec">3.&ensp;<span>Lists</span>
+      <h1 id="doc:u:sec:lists" class="doc_sec"><span class="doc_order">3</span><span>Lists</span>
       </h1>
       <p class="doc_par">Lists in <span class="doc_caps">lamblite</span> come in two varieties: ordered and unordered. The former are denoted my prefixing each list item with the character '<tt class="doc_code">#</tt>', whereas in the latter case the prefix is '<tt class="doc_code">-</tt>'. Declaring sub-lists (ie, lists within lists) is also possible: simply repeat either '<tt class="doc_code">#</tt>' or '<tt class="doc_code">-</tt>' a number of times in accordance to the depth of the sub-list. These marker characters may be indented, as long as they are the first non-whitespace character in the line.
       </p>
@@ -315,39 +315,39 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <p class="doc_par">The reasons are four:
         </p>
         <ol class="doc_enumerate doc_style_decimal">
-          <li>
+          <li class="doc_item">
             <p class="doc_par">This is the first reason; 
             </p>
           </li>
-          <li>
+          <li class="doc_item">
             <p class="doc_par">This is the second reason; it is okay to break a line within each item. 
             </p>
           </li>
-          <li>
+          <li class="doc_item">
             <p class="doc_par">The third reason has a number of sub-clauses: 
             </p>
             <ul class="doc_itemize doc_style_disc">
-              <li>
+              <li class="doc_item">
                 <p class="doc_par">Alpha 
                 </p>
               </li>
-              <li>
+              <li class="doc_item">
                 <p class="doc_par">Beta 
                 </p>
               </li>
-              <li>
+              <li class="doc_item">
                 <p class="doc_par">Gamma 
                 </p>
               </li>
             </ul>
           </li>
-          <li>
+          <li class="doc_item">
             <p class="doc_par">And here is the fourth and final reason. 
             </p>
           </li>
         </ol>
       </div>
-      <h1 id="doc:a:4" class="doc_sec">4.&ensp;<span>Quotations</span>
+      <h1 id="doc:a:4" class="doc_sec"><span class="doc_order">4</span><span>Quotations</span>
       </h1>
       <p class="doc_par">Quotations in <span class="doc_caps">lamblite</span> follow the email tradition of prefixing each quoted line with the character '<tt class="doc_code">&gt;</tt>' (the greater-than sign). Following this marker you may have a normal paragraph or a list definition, as the example below illustrates:
       </p>
@@ -380,15 +380,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           <p class="doc_par">Eggs should be opened by their large end. Opening them by their small end is heresy. Here are three reasons why: 
           </p>
           <ol class="doc_enumerate doc_style_decimal">
-            <li>
+            <li class="doc_item">
               <p class="doc_par">First; 
               </p>
             </li>
-            <li>
+            <li class="doc_item">
               <p class="doc_par">Second; 
               </p>
             </li>
-            <li>
+            <li class="doc_item">
               <p class="doc_par">Third. 
               </p>
             </li>
@@ -427,11 +427,45 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </blockquote>
         </blockquote>
       </div>
-      <h1 id="doc:u:sec:verbatim" class="doc_sec">5.&ensp;<span>Verbatim blocks</span>
+      <h1 id="doc:u:sec:verbatim" class="doc_sec"><span class="doc_order">5</span><span>Verbatim blocks</span>
       </h1>
       <p class="doc_par">A verbatim block denotes a fragment of text where linebreaks are significant and the text is to be rendered using a monospaced font. The primary application of verbatim blocks is to display <span class="doc_caps">ascii</span>-art diagrams. In <span class="doc_caps">lamblite</span>, the beginning of a verbatim block is denoted by a line consisting entirely of the characters '<tt class="doc_code">(((</tt>' (plus optional extra specifiers, described below), and its termination by a line consisting only of the characters '<tt class="doc_code">)))</tt>'. There is no attempt at interpreting the characters inside a verbatim block; in other words, escaping is not possible, and neither is the input of <span class="doc_caps">html</span> entities using the ampersand operator.
       </p>
-      <p class="doc_par">Verbatim environments accept a limited form of configuration. In the same line and immediately after the begin marker you may specify an optional scaling factor for the environment. In the general case, this takes the form <tt class="doc_code">mult=<i class="doc_emph">n</i></tt>, where <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></span> is an integer between 0 and 9 (inclusive). The actual scaling is given by the formula <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><msup><msqrt><mn>2</mn></msqrt><mi>n</mi></msup></math></span>, which means that setting <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></span> to 0 will result in a figure shown in normal size (this is the default), while <span class="doc_mathinl"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>n</mi><mo lspace="0.278em" rspace="0.278em">=</mo><mn>9</mn></mrow></math></span> results in a figure 22.6 times larger than normal. Note that the prefix <tt class="doc_code">mult=</tt> is optional, and therefore the integer factor may appear on its own after the '<tt class="doc_code">(((</tt>' sequence.
+      <p class="doc_par">Verbatim environments accept a limited form of configuration. In the same line and immediately after the begin marker you may specify an optional scaling factor for the environment. In the general case, this takes the form <tt class="doc_code">mult=<i class="doc_emph">n</i></tt>, where <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>n</mi
+></math
+></span> is an integer between 0 and 9 (inclusive). The actual scaling is given by the formula <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><msup
+><msqrt
+><mn
+>2</mn
+></msqrt
+><mi
+>n</mi
+></msup
+></math
+></span>, which means that setting <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mi
+>n</mi
+></math
+></span> to 0 will result in a figure shown in normal size (this is the default), while <span class="doc_mathinl"><math
+xmlns="http://www.w3.org/1998/Math/MathML"
+><mrow
+><mi
+>n</mi
+><mo
+lspace="0.278em"
+rspace="0.278em"
+>=</mo
+><mn
+>9</mn
+></mrow
+></math
+></span> results in a figure 22.6 times larger than normal. Note that the prefix <tt class="doc_code">mult=</tt> is optional, and therefore the integer factor may appear on its own after the '<tt class="doc_code">(((</tt>' sequence.
       </p>
       <p class="doc_par">Consider thus the following <span class="doc_caps">lamblite</span> source-code fragment:
       </p>
@@ -465,31 +499,27 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <p class="doc_par">Here's a box: 
         </p>
         <div class="doc_verb">
-          <div>
-            <pre class="doc_mult0">
----------
+          <div class="doc_verb_aux">
+            <pre class="doc_mult0">---------
 |  Box  |
----------
-</pre>
+---------</pre>
           </div>
         </div>
         <p class="doc_par">And here's a snowman shown with a multiplication factor of 7, corresponding to a font 11.3 times larger than normal: 
         </p>
         <div class="doc_verb">
-          <div>
-            <pre class="doc_mult7">
-☃
-</pre>
+          <div class="doc_verb_aux">
+            <pre class="doc_mult7">☃</pre>
           </div>
         </div>
       </div>
-      <h1 id="doc:u:sec:source" class="doc_sec">6.&ensp;<span>Source-code blocks</span>
+      <h1 id="doc:u:sec:source" class="doc_sec"><span class="doc_order">6</span><span>Source-code blocks</span>
       </h1>
       <p class="doc_par">While nothing prevents you from using the aforedescribed verbatim blocks for displaying source-code listings, <span class="doc_caps">lamblite</span> does have a dedicated facility for this purpose, with a number of advantages. Source-code blocks are declared in much the same way as verbatim blocks, but use '<tt class="doc_code">{{{</tt>' and '<tt class="doc_code">}}}</tt>' as delimiter characters instead. Moreover, they also accept — albeit different — configuration options.
       </p>
       <p class="doc_par">Similarly to verbatim blocks, the configuration of a source-code environment is to be placed immediately after the '<tt class="doc_code">{{{</tt>' sequence that signals the beginning of the block (whitespace is optional both before and after, but the configuration must be on the same line). Because multiple configuration options are allowed, these should be separated by commas. The canonical form for specifying that an option <tt class="doc_code"><i class="doc_emph">key</i></tt> should take value <tt class="doc_code"><i class="doc_emph">value</i></tt> is <tt class="doc_code"><i class="doc_emph">key</i>=<i class="doc_emph">value</i></tt>. However, if there is no chance of ambiguity then a shorthand notation may be used (see <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;A</a> for details).
       </p>
-      <p class="doc_par">As for the accepted configuration options, the most important is undoubtedly <tt class="doc_code">lang</tt>, which sets the rules used for syntax highlighting. The remaining three options are used to tweak the manner in which the source code is to be displayed. First among them, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the example below. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">linenums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box. Otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if the source lies inside a box, and <tt class="doc_code">false</tt> otherwise.
+      <p class="doc_par">As for the accepted configuration options, the most important is undoubtedly <tt class="doc_code">lang</tt>, which sets the rules used for syntax highlighting. The remaining three options are used to tweak the manner in which the source code is to be displayed. First among them, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the example below. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">nums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box. Otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if the source lies inside a box, and <tt class="doc_code">false</tt> otherwise.
       </p>
       <p class="doc_par">The obligatory example, showing an <span class="doc_caps">ocaml</span> source-code fragment:
       </p>
@@ -528,18 +558,18 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line"><span class="doc_src_kwa">type</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">=</span></code>
-<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span></code>
-<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_kwa">of</span> <span class="doc_src_kwb">'a</span> <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree <span class="doc_src_sym">*</span> <span class="doc_src_kwb">'a</span> tree</code>
+<code class="doc_src_line"><span class="doc_src_Kwd">type</span> 'a tree <span class="doc_src_Sym">=</span></code>
+<code class="doc_src_line">    <span class="doc_src_Sym">|</span> <span class="doc_src_Type">Leaf</span></code>
+<code class="doc_src_line">    <span class="doc_src_Sym">|</span> <span class="doc_src_Type">Node</span> <span class="doc_src_Kwd">of</span> 'a <span class="doc_src_Sym">*</span> 'a tree <span class="doc_src_Sym">*</span> 'a tree</code>
 
 <code class="doc_src_line"></code>
-<code class="doc_src_line"><span class="doc_src_kwa">let rec</span> count <span class="doc_src_sym">=</span> <span class="doc_src_kwa">function</span></code>
-<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Leaf</span>                     <span class="doc_src_sym">-&gt;</span> <span class="doc_src_num">0</span></code>
-<code class="doc_src_line">    <span class="doc_src_sym">|</span> <span class="doc_src_kwd">Node</span> <span class="doc_src_sym">(</span>node<span class="doc_src_sym">,</span> left<span class="doc_src_sym">,</span> right<span class="doc_src_sym">) -&gt;</span> <span class="doc_src_num">1</span> <span class="doc_src_sym">+ (</span>count left<span class="doc_src_sym">) + (</span>count right<span class="doc_src_sym">)</span></code>
+<code class="doc_src_line"><span class="doc_src_Kwd">let</span> <span class="doc_src_Kwd">rec</span> count <span class="doc_src_Sym">=</span> <span class="doc_src_Kwd">function</span></code>
+<code class="doc_src_line">    <span class="doc_src_Sym">|</span> <span class="doc_src_Type">Leaf</span>                     <span class="doc_src_Sym">-&gt;</span> <span class="doc_src_Num">0</span></code>
+<code class="doc_src_line">    <span class="doc_src_Sym">|</span> <span class="doc_src_Type">Node</span> <span class="doc_src_Sym">(</span>node<span class="doc_src_Sym">,</span> left<span class="doc_src_Sym">,</span> right<span class="doc_src_Sym">)</span> <span class="doc_src_Sym">-&gt;</span> <span class="doc_src_Num">1</span> <span class="doc_src_Sym">+</span> <span class="doc_src_Sym">(</span>count left<span class="doc_src_Sym">)</span> <span class="doc_src_Sym">+</span> <span class="doc_src_Sym">(</span>count right<span class="doc_src_Sym">)</span></code>
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <h1 id="doc:u:sec:sectioning" class="doc_sec">7.&ensp;<span>Sectioning</span>
+      <h1 id="doc:u:sec:sectioning" class="doc_sec"><span class="doc_order">7</span><span>Sectioning</span>
       </h1>
       <p class="doc_par"><span class="doc_caps">lamblite</span> supports up to three levels of sectioning headers, designated as <i class="doc_emph">sections</i>, <i class="doc_emph">sub-sections</i>, and <i class="doc_emph">sub-sub-sections</i>. These map directly to <span class="doc_caps">html</span>'s <tt class="doc_code">h1</tt>, <tt class="doc_code">h2</tt>, and <tt class="doc_code">h3</tt> elements, respectively. The declaration of a header is done by prefixing the header text with one, two, or three times the character '<tt class="doc_code">=</tt>', where the number of equal signs corresponds to the sectioning level. Note that whitespace between the equal sign(s) and the header text is optional, and is discarded if present.
       </p>
@@ -571,28 +601,28 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">Below is the result as produced by the <span class="doc_caps">lamblite</span> composer. Note that the numbering is automatically assigned.
       </p>
       <div class="doc_subpage">
-        <h1 id="doc:a:5" class="doc_sec">1.&ensp;<span>This is a section</span>
+        <h1 id="doc:a:5" class="doc_sec"><span class="doc_order">1</span><span>This is a section</span>
         </h1>
         <p class="doc_par">Lorem ipsum dolor sit amet.
         </p>
-        <h2 id="doc:a:6" class="doc_sec">1.1.&ensp;<span>This is a sub-section</span>
+        <h2 id="doc:a:6" class="doc_sec"><span class="doc_order">1.1</span><span>This is a sub-section</span>
         </h2>
         <p class="doc_par">Lorem ipsum dolor sit amet.
         </p>
-        <h3 id="doc:a:7" class="doc_sec">1.1.1.&ensp;<span>This is a sub-subsection</span>
+        <h3 id="doc:a:7" class="doc_sec"><span class="doc_order">1.1.1</span><span>This is a sub-subsection</span>
         </h3>
         <p class="doc_par">Lorem ipsum dolor sit amet. 
         </p>
       </div>
       <h1 id="doc:a:8" class="doc_part"><span>Appendix</span>
       </h1>
-      <h1 id="doc:u:sec:extra" class="doc_sec">A.&ensp;<span>How extra parameters are parsed</span>
+      <h1 id="doc:u:sec:extra" class="doc_sec"><span class="doc_order">A</span><span>How extra parameters are parsed</span>
       </h1>
       <p class="doc_par">Both <a class="doc_lnk" href="#doc:u:sec:verbatim">verbatim</a> and <a class="doc_lnk" href="#doc:u:sec:source">source-code</a> blocks may be given some extra configuration options. Canonically, specifying that a parameter <tt class="doc_code">alpha</tt> should have a value <tt class="doc_code">x</tt> is done by declaring <tt class="doc_code">alpha=x</tt> as the extra parameter. Should the command accept multiple parameters, these can be separated by inserting a '<tt class="doc_code">,</tt>' (comma) between them. <a class="doc_lnk" href="#doc:u:tab:extradesc">Tab.&nbsp;3</a> below lists all the existing extra parameters together with the accepted values for each.
       </p>
       <div id="doc:u:tab:extradesc" class="doc_wrapper doc_table doc_float_center">
         <div class="doc_tab">
-          <div>
+          <div class="doc_tab_aux">
             <table>
               <thead class="doc_tgroup">
                 <tr>
@@ -610,7 +640,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
                   </td>
                 </tr>
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">linenums</tt>
+                  <td class="doc_cell_r"><tt class="doc_code">nums</tt>
                   </td>
                   <td class="doc_cell_l">Boolean
                   </td>
@@ -638,10 +668,10 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
           </div>
         </div>
         <div class="doc_caption doc_caption_long">
-          <div>
-            <h1>Tab.&nbsp;3:
+          <div class="doc_caption_aux">
+            <h1 class="doc_caption_head">Tab.&nbsp;3:
             </h1>
-            <p>List of all existing extra parameters and associated range of values.
+            <p class="doc_caption_body">List of all existing extra parameters and associated range of values.
             </p>
           </div>
         </div>
@@ -649,15 +679,15 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <p class="doc_par">Note that for brevity sake, <span class="doc_caps">lamblite</span> allows shorthand forms to be specified instead of the canonical form. The shorthand pre-conditions are as follows:
       </p>
       <ol class="doc_enumerate doc_style_decimal">
-        <li>
+        <li class="doc_item">
           <p class="doc_par">It suffices to declare a value if there is no ambiguity as to which parameter it belongs to. In the example above this means declaring simply <tt class="doc_code">x</tt> instead of <tt class="doc_code">alpha=x</tt>.
           </p>
         </li>
-        <li>
+        <li class="doc_item">
           <p class="doc_par">Boolean parameters may be set by specifying the parameter name. Therefore, if parameter <tt class="doc_code">beta</tt> is boolean, you may set it to true by declaring either <tt class="doc_code">beta</tt>, <tt class="doc_code">beta=true</tt>, <tt class="doc_code">beta=y</tt>, or if there are no other boolean parameters accepted for the command, just <tt class="doc_code">true</tt> or <tt class="doc_code">y</tt>. Similarly, a boolean parameter may be unset by prefixing it with '<tt class="doc_code">!</tt>'. Therefore, setting <tt class="doc_code">beta</tt> to false can be done by declaring either <tt class="doc_code">!beta</tt>, <tt class="doc_code">beta=false</tt>, <tt class="doc_code">beta=n</tt>, or if there is no chance of conflict, just <tt class="doc_code">false</tt> or <tt class="doc_code">n</tt>.
           </p>
         </li>
-        <li>
+        <li class="doc_item">
           <p class="doc_par">When setting multiple extra parameters, if one of the settings is provided in canonical form or as a boolean parameter name, then it can be used to constrain an otherwise ambiguous declaration. Consider thus a command that takes two boolean extra parameters, <tt class="doc_code">alpha</tt> and <tt class="doc_code">beta</tt>. Only providing the sequence <tt class="doc_code">true</tt> is ambiguous, because <span class="doc_caps">lamblite</span> has no way of knowing to which parameter it refers. However, specifying <tt class="doc_code">!alpha,true</tt> is not ambiguous, because this can only be interpreted as setting parameter <tt class="doc_code">alpha</tt> to <tt class="doc_code">false</tt>, and the remaining parameter — which can only be <tt class="doc_code">beta</tt> — to <tt class="doc_code">true</tt>.
           </p>
         </li>
@@ -669,24 +699,24 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       <h1 id="doc:a:10" class="doc_sec"><span>Bibliography</span>
       </h1>
       <ol class="doc_bibs">
-        <li id="doc:u:bib:markdown"><span>[1]</span>
-          <p><span class="doc_bib_author">John Gruber and Aaron Swartz</span><span class="doc_bib_title"><span class="doc_caps">markdown</span> homepage</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://daringfireball.net/projects/markdown/">http://daringfireball.net/projects/markdown/</a></span>
+        <li id="doc:u:bib:markdown" class="doc_bib"><span class="doc_bib_head">[1]</span>
+          <p class="doc_bib_body"><span class="doc_bib_author">John Gruber and Aaron Swartz</span><span class="doc_bib_title"><span class="doc_caps">markdown</span> homepage</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://daringfireball.net/projects/markdown/">http://daringfireball.net/projects/markdown/</a></span>
           </p>
         </li>
-        <li id="doc:u:bib:creole"><span>[2]</span>
-          <p><span class="doc_bib_author">Various</span><span class="doc_bib_title"><span class="doc_caps">creole</span> homepage</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://www.wikicreole.org/">http://www.wikicreole.org/</a></span>
+        <li id="doc:u:bib:creole" class="doc_bib"><span class="doc_bib_head">[2]</span>
+          <p class="doc_bib_body"><span class="doc_bib_author">Various</span><span class="doc_bib_title"><span class="doc_caps">creole</span> homepage</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://www.wikicreole.org/">http://www.wikicreole.org/</a></span>
           </p>
         </li>
-        <li id="doc:u:bib:latex"><span>[3]</span>
-          <p><span class="doc_bib_author">Leslie Lamport</span><span class="doc_bib_title">LaTeX: a Document Preparation System (2<sup class="doc_sup">nd</sup> edition)</span><span class="doc_bib_resource">Addison-Wesley Professional, 1994. ISBN 0-201-52983-1.</span>
+        <li id="doc:u:bib:latex" class="doc_bib"><span class="doc_bib_head">[3]</span>
+          <p class="doc_bib_body"><span class="doc_bib_author">Leslie Lamport</span><span class="doc_bib_title">LaTeX: a Document Preparation System (2<sup class="doc_sup">nd</sup> edition)</span><span class="doc_bib_resource">Addison-Wesley Professional, 1994. ISBN 0-201-52983-1.</span>
           </p>
         </li>
-        <li id="doc:u:bib:lambtex"><span>[4]</span>
-          <p><span class="doc_bib_author">Dario Teixeira</span><span class="doc_bib_title"><span class="doc_caps">lambtex</span> manual</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://lambdoc.forge.ocamlcore.org/">http://lambdoc.forge.ocamlcore.org/</a></span>
+        <li id="doc:u:bib:lambtex" class="doc_bib"><span class="doc_bib_head">[4]</span>
+          <p class="doc_bib_body"><span class="doc_bib_author">Dario Teixeira</span><span class="doc_bib_title"><span class="doc_caps">lambtex</span> manual</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://lambdoc.forge.ocamlcore.org/">http://lambdoc.forge.ocamlcore.org/</a></span>
           </p>
         </li>
-        <li id="doc:u:bib:lambdoc"><span>[5]</span>
-          <p><span class="doc_bib_author">Dario Teixeira</span><span class="doc_bib_title"><span class="doc_caps">lambdoc</span> homepage</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://lambdoc.forge.ocamlcore.org/">http://lambdoc.forge.ocamlcore.org/</a></span>
+        <li id="doc:u:bib:lambdoc" class="doc_bib"><span class="doc_bib_head">[5]</span>
+          <p class="doc_bib_body"><span class="doc_bib_author">Dario Teixeira</span><span class="doc_bib_title"><span class="doc_caps">lambdoc</span> homepage</span><span class="doc_bib_resource"><a class="doc_lnk" href="http://lambdoc.forge.ocamlcore.org/">http://lambdoc.forge.ocamlcore.org/</a></span>
           </p>
         </li>
       </ol>
