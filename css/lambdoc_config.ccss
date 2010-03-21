@@ -12,6 +12,7 @@ Colour_ins:		#090;
 Colour_del:		#900;
 Colour_lnk:		#009;
 Colour_forefancy:	#501;
+Colour_weakfancy:	#baa;
 Colour_backfancy:	#ccc;
 Colour_ghostly:		#333;
 Colour_watery:		#666;
@@ -38,18 +39,20 @@ Border_src:		1px solid Colour_watery;
 Border_tabular_outter:	2px solid Colour_watery;
 Border_tabular_inner:	1px solid Colour_watery;
 Border_tabular_body:	1px dotted Colour_weak;
-Border_box:		1px solid Colour_ghostly;
 Border_rule:		1px dotted Colour_forefancy;
 Border_hline:		1px solid Colour_body;
 Border_part:		1px solid Colour_forefancy;
+Border_pull:		2px solid Colour_weakfancy;
 
 
 /********************************************************************************/
 /* Box configuration.								*/
 /********************************************************************************/
 
-Box_radius:	6px;
-Box_shadow:	3px 3px 3px Colour_shadow;
+Radius_box:	6px;
+Shadow_box:	3px 3px 3px Colour_shadow;
+Border_box:	1px solid Colour_ghostly;
+Padding_box:	1em;
 
 
 /********************************************************************************/
@@ -147,8 +150,7 @@ Hmargin_indent:		1em;
 Hmargin_ghost_text:	3em;
 Width_ghost_num:	2.5em;
 
-Padding_box:		1em;
-Padding_box_title:	0.3em;
+Padding_boxout_title:	0.3em;
 Padding_htab:		1em;
 Padding_vtabin:		0.1em;
 Padding_vtabout:	0.4em;
@@ -163,5 +165,5 @@ Line_height_verb:	1em;
 /* Globals.									*/
 /********************************************************************************/
 
-Body_width:		46em;
+Width_doc:	46em;
 

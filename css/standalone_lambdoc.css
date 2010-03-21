@@ -166,12 +166,12 @@ caption, th, td
 	list-style: decimal outside;
 	}
 
-.doc_itemize > li, .doc_enumerate > li
+.doc_itemize > .doc_item, .doc_enumerate > .doc_item
 	{
 	margin: 0.5em 0;
 	}
 
-.doc_description > dt
+.doc_description > .doc_item
 	{
 	margin: 0.5em 0 0.25em;
 	}
@@ -221,7 +221,7 @@ caption, th, td
 	list-style-type: upper-alpha;
 	}
 
-.doc_description > dt
+.doc_description > .doc_item
 	{
 	margin-left: -1.5em;
 	font-size: 1.4em;
@@ -239,7 +239,7 @@ caption, th, td
 	margin-bottom: 1em;
 	}
 
-.doc_qanda > dt
+.doc_qanda > dt.doc_question, .doc_qanda > dt.doc_answer
 	{
 	display: block;
 	float: left;
@@ -286,13 +286,13 @@ caption, th, td
 	text-align: center;
 	}
 
-.doc_verse > div
+.doc_verse_aux
 	{
 	display: inline-block;
 	font-style: italic;
 	}
 
-.doc_verse > div > .doc_par
+.doc_verse_aux > .doc_par
 	{
 	text-indent: 0 !important;
 	}
@@ -667,13 +667,13 @@ caption, th, td
 	line-height: 0;
 	}
 
-.doc_tab > div
+.doc_tab_aux
 	{
 	display: inline-block;
 	line-height: 1.6em;
 	}
 
-.doc_tab > div > table
+.doc_tab_aux > table
 	{
 	font-size: 1.3em;
 	border-collapse: collapse;
@@ -681,14 +681,14 @@ caption, th, td
 	border-bottom: 2px solid #666;
 	}
 
-.doc_tab > div > table > thead
+.doc_tab_aux > table > thead
 	{
 	vertical-align: bottom;
 	font-weight: bold;
 	border-bottom: 1px solid #666;
 	}
 
-.doc_tab > div > table > tfoot
+.doc_tab_aux > table > tfoot
 	{
 	vertical-align: bottom;
 	font-weight: bold;
@@ -796,12 +796,12 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	line-height: 0;
 	}
 
-.doc_verb > div
+.doc_verb_aux
 	{
 	display: inline-block;
 	}
 
-.doc_verb > div > pre
+.doc_verb_aux > pre
 	{
 	display: block;
 	overflow: hidden;
@@ -884,20 +884,20 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	line-height: 0;
 	}
 
-.doc_image > a
+.doc_image_lnk
 	{
 	display: inline-block;
 	width: 100%;
 	}
 
-.doc_image > a > img
+.doc_image_lnk > img
 	{
 	display: inline;
 	max-width: 100%;
 	border: none;
 	}
 
-.doc_image_frame > a > img
+.doc_image_frame > .doc_image_lnk > img
 	{
 	-moz-box-shadow: 3px 3px 3px #666;
 	}
@@ -946,20 +946,22 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_pull
 	{
 	margin: 0 1em;
-	padding-left: 2.75em;
 	text-align: center;
 	}
 
-.doc_pull > div
+.doc_pull_aux
 	{
 	display: inline-block;
+	padding: 1em 0.5em 1em 3.25em;
+	border-top: 2px solid #baa;
+	border-bottom: 2px solid #baa;
 	font-size: 1.071em;
 	font-weight: bold;
-	quotes: "201c" "201d";
+	quotes: "\201c" "\201d";
 	color: #555;
 	}
 
-.doc_pull > div > .doc_pullhead
+.doc_pullhead
 	{
 	text-align: right;
 	font-size: small;
@@ -968,7 +970,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	color: #501;
 	}
 
-.doc_pull > div:before
+.doc_pull_aux:before
 	{
 	float: left;
 	display: block;
@@ -993,7 +995,6 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_boxout_head
 	{
 	padding: 0.3em;
-	border-bottom: 1px solid #333;
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 6px;
 	text-align: center;
@@ -1095,26 +1096,26 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	text-align: right;
 	}
 
-.doc_caption > div
+.doc_caption_aux
 	{
 	display: inline-block;
 	font-size: 1.2em;
 	text-align: justify;
 	}
 
-.doc_caption > div > h1
+.doc_caption_head
 	{
 	display: inline;
 	font-weight: bold;
 	color: #501;
 	}
 
-.doc_caption_long > div > h1
+.doc_caption_long > .doc_caption_aux > .doc_caption_head
 	{
 	margin-right: 0.25em;
 	}
 
-.doc_caption_long > div > p
+.doc_caption_body
 	{
 	display: inline;
 	}
@@ -1260,12 +1261,12 @@ h2.doc_title + h2.doc_title
 	font-size: 1.4em;
 	}
 
-.doc_toc > li
+.doc_toc > .doc_item
 	{
 	margin-left: 0.5em;
 	}
 
-.doc_toc > li.level0
+.doc_level0
 	{
 	text-decoration: underline;
 	margin: 0.25em 0;
@@ -1278,12 +1279,12 @@ h2.doc_title + h2.doc_title
 	list-style-type: none;
 	}
 
-.doc_bibs > li
+.doc_bib
 	{
 	margin-top: 0.75em;
 	}
 
-.doc_bibs > li > span
+.doc_bib_head
 	{
 	width: 2.5em;
 	float: left;
@@ -1291,7 +1292,7 @@ h2.doc_title + h2.doc_title
 	text-align: right;
 	}
 
-.doc_bibs > li > p
+.doc_bib_body
 	{
 	margin-left: 3em;
 	}
@@ -1324,12 +1325,12 @@ h2.doc_title + h2.doc_title
 	list-style-type: none;
 	}
 
-.doc_notes > li
+.doc_note
 	{
 	margin-top: 0.75em;
 	}
 
-.doc_notes > li > span
+.doc_note_head
 	{
 	width: 2.5em;
 	float: left;
@@ -1337,7 +1338,7 @@ h2.doc_title + h2.doc_title
 	text-align: right;
 	}
 
-.doc_notes > li > div
+.doc_note_body
 	{
 	margin-left: 3em;
 	}

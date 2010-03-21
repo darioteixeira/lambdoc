@@ -100,10 +100,10 @@ let cons_of_level = function
 
 
 let class_of_level = function
-	| `Level0 -> "level0"
-	| `Level1 -> "level1"
-	| `Level2 -> "level2"
-	| `Level3 -> "level3"
+	| `Level0 -> !!"level0"
+	| `Level1 -> !!"level1"
+	| `Level2 -> !!"level2"
+	| `Level3 -> !!"level3"
 
 
 let make_floatation floatation = ["float_" ^^ (Basic_output.string_of_floatation floatation)]
@@ -386,7 +386,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 			| None		-> None
 			| Some grp	-> let (hd, tl) = write_group grp in Some (XHTML.M.tfoot ~a:[a_class [!!"tgroup"]] hd tl)
 
-		in XHTML.M.div ~a:[a_class [!!"tab"]] [XHTML.M.div [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
+		in XHTML.M.div ~a:[a_class [!!"tab"]] [XHTML.M.div ~a:[a_class [!!"tab_aux"]]  [XHTML.M.tablex ?thead ?tfoot tbody_hd tbody_tl]] in
 
 
 	(************************************************************************)
@@ -410,17 +410,17 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 			in [XHTML.M.p ~a:[a_class (!!"par" :: style)] (write_seq seq)]
 
 		| `Itemize (bul, frags) ->
-			let (hd, tl) = nemap (fun frag -> XHTML.M.li (write_frag frag)) frags
+			let (hd, tl) = nemap (fun frag -> XHTML.M.li ~a:[a_class [!!"item"]] (write_frag frag)) frags
 			and style = ["style_" ^^ (Basic_output.string_of_bullet bul)]
 			in [XHTML.M.ul ~a:[a_class (!!"itemize" :: style)] hd tl]
 
 		| `Enumerate (num, frags) ->
-			let (hd, tl) = nemap (fun frag -> XHTML.M.li (write_frag frag)) frags
+			let (hd, tl) = nemap (fun frag -> XHTML.M.li ~a:[a_class [!!"item"]] (write_frag frag)) frags
 			and style = ["style_" ^^ (Basic_output.string_of_numbering num)]
 			in [XHTML.M.ol ~a:[a_class (!!"enumerate" :: style)] hd tl]
 
 		| `Description frags ->
-			let write_frag (seq, frag) = (XHTML.M.dt (write_seq seq), XHTML.M.dd (write_frag frag)) in
+			let write_frag (seq, frag) = (XHTML.M.dt ~a:[a_class [!!"item"]] (write_seq seq), XHTML.M.dd (write_frag frag)) in
 			let (hd, tl) = nemap write_frag frags in
 			let (new_hd, new_tl) =
 				let (first, second) = hd
@@ -440,7 +440,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 				let (outseq, empty_class) = match maybe_seq with
 					| Some seq -> (write_seq seq, [!!"empty"])
 					| None	   -> ([], [])
-				in (XHTML.M.dt ~a:[a_class (qora_class::empty_class)] outseq, XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
+				in (XHTML.M.dt ~a:[a_class (qora_class :: empty_class)] outseq, XHTML.M.dd ~a:[a_class [qora_class]] (write_frag frag)) in
 			let write_pair (q, a) = (write_frag ~qora:`Question q, write_frag ~qora:`Answer a) in
 			let (hd, tl) = nemap write_pair pairs in
 			let (new_hd, new_tl) =
@@ -449,7 +449,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 			in [XHTML.M.dl ~a:[a_class [!!"qanda"]] new_hd new_tl]
 
 		| `Verse frag ->
-			[XHTML.M.div ~a:[a_class [!!"verse"]] [XHTML.M.div (write_frag frag)]]
+			[XHTML.M.div ~a:[a_class [!!"verse"]] [XHTML.M.div ~a:[a_class [!!"verse_aux"]] (write_frag frag)]]
 
 		| `Quote frag ->
 			[XHTML.M.blockquote ~a:[a_class [!!"quote"]] (write_frag frag)]
@@ -466,7 +466,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 			[write_tabular tab]
 
 		| `Verbatim (mult, txt) ->
-			[XHTML.M.div ~a:[a_class [!!"verb"]] [XHTML.M.div [XHTML.M.pre ~a:[a_class ["mult" ^^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
+			[XHTML.M.div ~a:[a_class [!!"verb"]] [XHTML.M.div ~a:[a_class [!!"verb_aux"]] [XHTML.M.pre ~a:[a_class ["mult" ^^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
 
 		| `Image image ->
 			let style = if image.frame then [!!"image_frame"] else [] in
@@ -474,7 +474,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 				| Some w -> [a_width (`Percent w)]
 				| None	 -> [] in
 			let uri = settings.image_lookup image.alias in
-			let img = XHTML.M.a ~a:[a_href uri] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
+			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"image_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"image" :: style)] [img]]
 
 		| `Subpage frag ->
@@ -489,7 +489,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 			and head = match maybe_seq with
 				| Some seq -> [XHTML.M.h1 ~a:[a_class [!!"pullhead"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
 				| None	   -> []
-			in [XHTML.M.div ~a:[a_class (!!"pull" :: style)] [XHTML.M.div ((write_frag frag) @ head)]]
+			in [XHTML.M.div ~a:[a_class (!!"pull" :: style)] [XHTML.M.div ~a:[a_class [!!"pull_aux"]] ((write_frag frag) @ head)]]
 
 		| `Boxout (floatation, data, maybe_seq, frag) ->
 			let formatter = function
@@ -610,9 +610,19 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 		let caption =
 			let headcore = (write_name name) @ (wrapper_conv ~prespace:true order) in
 			let (length, caption_head, caption_body) = match maybe_seq with
-				| Some seq -> ("long", XHTML.M.h1 (headcore @ [pcdata ":"]), [XHTML.M.p (write_seq seq)])
-				| None	   -> ("short", XHTML.M.h1 ([pcdata "("] @ headcore @ [pcdata ")"]), [])
-			in XHTML.M.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [XHTML.M.div (caption_head :: caption_body)] in
+				| Some seq ->
+					(
+					"long",
+					XHTML.M.h1 ~a:[a_class [!!"caption_head"]] (headcore @ [pcdata ":"]),
+					[XHTML.M.p ~a:[a_class [!!"caption_body"]] (write_seq seq)]
+					)
+				| None ->
+					(
+					"short",
+					XHTML.M.h1 ~a:[a_class [!!"caption_head"]] ([pcdata "("] @ headcore @ [pcdata ")"]),
+					[]
+					)
+			in XHTML.M.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [XHTML.M.div ~a:[a_class [!!"caption_aux"]] (caption_head :: caption_body)] in
 		let classnames = [!!"wrapper"; classname] @ (make_floatation floatation)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption]
 
@@ -622,18 +632,18 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 	(************************************************************************)
 
 	and write_note note =
-		XHTML.M.li ~a:[a_id (make_label note.Note.label)]
+		XHTML.M.li ~a:[a_id (make_label note.Note.label); a_class [!!"note"]]
 			[
-			XHTML.M.span (pcdata "(" :: (note_conv note.Note.order) @ [pcdata ")"]);
-			XHTML.M.div (write_frag note.Note.content);
+			XHTML.M.span ~a:[a_class [!!"note_head"]] (pcdata "(" :: (note_conv note.Note.order) @ [pcdata ")"]);
+			XHTML.M.div ~a:[a_class [!!"note_body"]] (write_frag note.Note.content);
 			]
 
 
 	and write_bib bib =
-		XHTML.M.li ~a:[a_id (make_label bib.Bib.label)]
+		XHTML.M.li ~a:[a_id (make_label bib.Bib.label); a_class [!!"bib"]]
 			[
-			XHTML.M.span (pcdata "[" :: (bib_conv bib.Bib.order) @ [pcdata "]"]);
-			XHTML.M.p
+			XHTML.M.span ~a:[a_class [!!"bib_head"]] (pcdata "[" :: (bib_conv bib.Bib.order) @ [pcdata "]"]);
+			XHTML.M.p ~a:[a_class [!!"bib_body"]]
 				[
 				XHTML.M.span ~a:[a_class [!!"bib_author"]] (write_seq bib.Bib.author);
 				XHTML.M.span ~a:[a_class [!!"bib_title"]] (write_seq bib.Bib.title);
@@ -644,7 +654,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 
 	and write_toc_entry sec =
 		let make_toc_entry label classname orderlst content =
-		        Some (XHTML.M.li ~a:[a_class [classname]] [make_internal_link label (orderlst @ (Obj.magic content))])
+		        Some (XHTML.M.li ~a:[a_class [!!"item"; classname]] [make_internal_link label (orderlst @ (Obj.magic content))])
 		in match sec with
 			| `Part (label, order, `Custom seq) ->
 				make_toc_entry label (class_of_level `Level0) (part_conv ~spanify:true order) (write_seq seq)

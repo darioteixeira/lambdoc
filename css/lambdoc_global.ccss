@@ -14,7 +14,7 @@ body
 .doc
 	{
 	margin: Vmargin_doc auto;
-	width: Body_width;
+	width: Width_doc;
 	font-family: Family_body;
 	font-size: 0.625em;		/* For default of 16 * 0.625 = 10px */
 	line-height: Line_height_body;
