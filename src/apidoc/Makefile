@@ -1,5 +1,5 @@
-all: lambdoc.png
+all: lambdoc-arch.png
 
-lambdoc.png: lambdoc.svg
+lambdoc-arch.png: lambdoc-arch.svg
 	inkscape -D -f $< -e $@ -w 800
 
