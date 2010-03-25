@@ -70,7 +70,7 @@ to the end marker.  Also, bear in mind that nesting formatting directives is not
 {Text formatting annotations.  Simply wrap between the begin and end markers the passage
 of text you wish to format.  Note that in many cases the end marker is identical to
 the begin marker.}
-\begin{tabular}{ccc}
+\begin{tabular}{ccl}
 \head
 | Begin marker		| End marker		| Example					|
 \body
