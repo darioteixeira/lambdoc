@@ -10,7 +10,7 @@
 
 .doc_code
 	{
-	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
 	font-weight: bold;
 	color: #444;
 	}
@@ -311,7 +311,7 @@
 	clear: both;
 	margin: 0 1em;
 	font-size: 1.2em;
-	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
 	line-height: 1.8em;
 	overflow: auto;
 	color: #000;
@@ -766,7 +766,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	white-space: pre;
 	line-height: 1em;
 	text-align: left;
-	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
 	}
 
 .doc_mult0
@@ -956,7 +956,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 6px;
 	text-align: center;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Arial", "Helvetica", "Liberation Sans", sans-serif;
 	font-size: 1.5em;
 	font-variant: small-caps;
 	font-weight: bold;
@@ -1091,7 +1091,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_title
 	{
 	clear: both;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Arial", "Helvetica", "Liberation Sans", sans-serif;
 	font-weight: bold;
 	font-variant: small-caps;
 	text-transform: capitalize;
@@ -1115,7 +1115,7 @@ h2.doc_title
 	padding: 0.25em 0;
 	border-top: 1px solid #501;
 	border-bottom: 1px solid #501;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Arial", "Helvetica", "Liberation Sans", sans-serif;
 	font-weight: bold;
 	font-size: 1.8em;
 	text-transform: capitalize;
@@ -1128,7 +1128,7 @@ h2.doc_title
 .doc_sec
 	{
 	clear: both;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Arial", "Helvetica", "Liberation Sans", sans-serif;
 	font-weight: bold;
 	word-spacing: 0.1em;
 	letter-spacing: 0;

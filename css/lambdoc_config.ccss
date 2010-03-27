@@ -69,25 +69,24 @@ Font_stack_mono: "Courier New", "Courier", "DejaVu Mono", monospace;
 
 /* Narrow stack: */
 
-/*
 Font_stack_serif: "Times New Roman", "Times", "Liberation Serif", serif;
 Font_stack_sans: "Arial", "Helvetica", "Liberation Sans", sans-serif;
 Font_stack_mono: "Courier New", "Courier", "Liberation Mono", monospace;
-*/
 
 /* Wide stack: */
-
+/*
 Font_stack_serif: "Georgia", "DejaVu Serif", serif;
 Font_stack_sans: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
 Font_stack_mono: "Courier New", "Courier", "DejaVu Mono", monospace;
+*/
 
 
 /********************************************************************************/
 /* Font families.								*/
 /********************************************************************************/
 
-Family_doc:	Font_stack_serif;
-Family_heading:	Font_stack_serif;
+Family_doc:	Font_stack_sans;
+Family_heading:	Font_stack_sans;
 Family_mono:	Font_stack_mono;
 
 

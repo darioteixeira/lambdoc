@@ -10,10 +10,10 @@
 .doc_emph {font-style: italic;}
 .doc_code {font-family: Family_mono; font-weight: bold; color: Colour_code;}
 .doc_caps {font-variant: small-caps;}
-.doc_ins {text-decoration: underline; color: Colour_ins;}
-.doc_del {text-decoration: line-through; color: Colour_del;}
-.doc_sup {vertical-align: 0.3em;}
-.doc_sub {vertical-align: -0.1em;}
+.doc_ins  {text-decoration: underline; color: Colour_ins;}
+.doc_del  {text-decoration: line-through; color: Colour_del;}
+.doc_sup  {vertical-align: 0.3em;}
+.doc_sub  {vertical-align: -0.1em;}
 .doc_mbox {white-space: nowrap;}
 
 
