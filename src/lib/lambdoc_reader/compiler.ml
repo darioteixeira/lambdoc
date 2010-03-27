@@ -1064,21 +1064,23 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 	error message and an error line, and produces a proper error message
 	where the actual source lines are displayed.
 *)
-let collate_errors source errors =
-	let source_lines = Array.of_list (String.nsplit source "\n") in
-	let format_error (error_linenum, error_msg) =
-		let error_context = match error_linenum with
-			| Some num ->
-				Some	{
-					Error.error_line_number = num;
-					Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
-					Error.error_line_actual = source_lines.(num - 1);
-					Error.error_line_after = if num < (Array.length source_lines) then [source_lines.(num)] else []
-					}
-			| None ->
-				None
-		in (error_context, error_msg)
-	in List.map format_error errors
+let collate_errors =
+	let rex = Pcre.regexp "\\r\\n|\\n"
+	in fun source errors ->
+		let source_lines = Pcre.asplit ~rex ~max:(-1) source in
+		let format_error (error_linenum, error_msg) =
+			let error_context = match error_linenum with
+				| Some num ->
+					Some	{
+						Error.error_line_number = num;
+						Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
+						Error.error_line_actual = source_lines.(num - 1);
+						Error.error_line_after = if num < (Array.length source_lines) then [source_lines.(num)] else []
+						}
+				| None ->
+					None
+			in (error_context, error_msg)
+		in List.map format_error errors
 
 
 (********************************************************************************)

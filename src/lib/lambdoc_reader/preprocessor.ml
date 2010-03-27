@@ -46,35 +46,35 @@ let verify_utf8 s =
 		if i >= String.length s then Buffer.contents buf else
 		let n = Char.code (String.unsafe_get s i) in
 		if n < 0x80
-		then			(* one-byte character *)
-			let () = if n = 0x0a then incr (line)
+		then			(* One-byte character *)
+			let () = if n = 0x0a then incr (line)	(* We expect lines to be terminated with '\r\n' or just '\n' *)
 			in (add_valid i 1; main (i + 1))
 		else if n < 0xc2
 		then
 			(add_invalid (); main (i + 1))
 		else if n <= 0xdf
-		then			(* two-byte character *)
+		then			(* Two-byte character *)
 			let () =
 				try if trail 1 (i + 1) (n - 0xc0) < 0x80 then add_invalid () else add_valid i 2
 				with Malformed_code_point -> add_invalid ()
 			in main (i + 2)
 		else if n <= 0xef
-		then			(* three-byte character *)
+		then			(* Three-byte character *)
 			let () =
 				try if trail 2 (i + 1) (n - 0xe0) < 0x800 then add_invalid () else add_valid i 3
 				with Malformed_code_point -> add_invalid ()
 			in main (i + 3)
 		else if n <= 0xf7
-		then			(* four-byte character *)
+		then			(* Four-byte character *)
 			let () =
 				try if trail 3 (i + 1) (n - 0xf0) < 0x10000 then add_invalid () else add_valid i 4
 				with Malformed_code_point -> add_invalid ()
 			in main (i + 4)
 		else if n <= 0xfb
-		then			(* five-byte character: invalid as per RFC 3629 *)
+		then			(* Five-byte character: invalid as per RFC 3629 *)
 			(add_invalid (); main (i + 5))
 		else if n <= 0xfd
-		then			(* six-byte character: invalid as per RFC 3629 *)
+		then			(* Six-byte character: invalid as per RFC 3629 *)
 			(add_invalid (); main (i + 6))
 		else
 			(add_invalid (); main (i + 1))

@@ -38,8 +38,10 @@ type context_t =
 (*	{1 Tokenizer class}							*)
 (********************************************************************************)
 
-class tokenizer str =
-let lines = Array.of_list (String.nsplit str "\n")
+class tokenizer =
+let rex = Pcre.regexp "\\r\\n|\\n"	(* We expect lines to be terminated with '\r\n' or just '\n' *)
+in fun str ->
+let lines = Pcre.asplit ~rex ~max:(-1) str
 in object (self)
 
 	val lines = lines
@@ -152,7 +154,6 @@ in object (self)
 			| x, Some (kind, level) when level <= List.length x ->
 				begin
 					self#unset_par;
-					self#unset_par;
 					self#unwind_list level;
 					match list_state with
 						| top::tl when top = kind ->
@@ -196,6 +197,7 @@ in object (self)
 		let () =
 			if line_counter >= Array.length lines
 			then begin
+				self#unset_par;
 				self#unwind_list 0;
 				productions <- productions @ [EOF]
 			end else

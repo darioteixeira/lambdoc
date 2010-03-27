@@ -111,13 +111,14 @@ let regexp simple_comm = '\\' ident optional
 let regexp env_begin = "\\begin" optional primary
 let regexp env_end = "\\end" primary
 
+let regexp newline = "\r\n" | '\n'
 let regexp space = [' ' '\t']
 let regexp escape = '\\'
-let regexp eol = space* '\n' space*
+let regexp eol = space* newline space*
 let regexp parbreak = eol eol+
 
 let regexp cell_mark = space* '|' space*
-let regexp row_end = space* '|' space* '\n'
+let regexp row_end = space* '|' space* newline
 
 let regexp entity = '&' '#'? (alpha | deci)+ ';'
 let regexp endash = "--"
@@ -131,7 +132,7 @@ let regexp quote_close = "''"
 (********************************************************************************)
 
 let count_lines lexbuf =
-	let adder acc el = if el = 10 then acc+1 else acc in
+	let adder acc el = if el = 0x0a then acc+1 else acc in	(* We expect lines to be terminated with '\r\n' or just '\n' *)
 	let lexeme = Ulexing.lexeme lexbuf
 	in Array.fold_left adder 0 lexeme
 

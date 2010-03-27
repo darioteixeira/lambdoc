@@ -11,14 +11,18 @@ open Protocol
 
 
 (********************************************************************************)
+(**	{1 Module initialisation}						*)
+(********************************************************************************)
 
 let () = Blahcaml.init_dtd ()
 
 
+(********************************************************************************)
+(**	{1 Classes}								*)
+(********************************************************************************)
+
 class processor : Netplex_types.processor =
-
-	let empty_hooks = new Netplex_kit.empty_processor_hooks () in
-
+let empty_hooks = new Netplex_kit.empty_processor_hooks () in
 object (self)
 
 	inherit Netplex_kit.processor_base empty_hooks
@@ -61,8 +65,6 @@ object (self)
 	method supported_ptypes = [ `Multi_processing; `Multi_threading ]
 end
 
-
-(********************************************************************************)
 
 class processor_factory : Netplex_types.processor_factory =
 object (self)
