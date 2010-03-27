@@ -33,7 +33,7 @@ val ambivalent_manuscript_from_string:
 	?deny_list: Features.manuscript_feature_t list ->
 	?default: Features.default_t ->
 	socket: socket_t ->
-	markup: Protocol.markup_t ->
+	markup: Markup.t ->
 	string ->
 	Lambdoc_core.Ambivalent.manuscript_t Lwt.t
 
@@ -45,7 +45,7 @@ val ambivalent_composition_from_string:
 	?deny_list: Features.composition_feature_t list ->
 	?default: Features.default_t ->
 	socket: socket_t ->
-	markup: Protocol.markup_t ->
+	markup: Markup.t ->
 	string ->
 	Lambdoc_core.Ambivalent.composition_t Lwt.t
 
