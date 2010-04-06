@@ -76,6 +76,13 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
+	(* Declaration of the local modules used in the function.		*)
+	(************************************************************************)
+
+	let module ImageSet = Set.Make (struct type t = Alias.t let compare = Pervasives.compare end) in
+
+
+	(************************************************************************)
 	(* Declaration of the mutable values used in the function.		*)
 	(************************************************************************)
 
@@ -83,7 +90,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 	and bibs = DynArray.create ()
 	and notes = DynArray.create ()
 	and toc = DynArray.create ()
-	and images = DynArray.create ()
+	and images = ref ImageSet.empty
         and labels = Hashtbl.create 10
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
@@ -604,7 +611,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				let frame = Extra.get_boolean ~default:false extra Frame_hnd
 				and width = Extra.get_maybe_numeric ~default:None extra Width_hnd in
 				let image = Image.make frame width alias alt in
-				DynArray.add images alias;
+				images := ImageSet.add alias !images;
 				[Block.image image]
 			in check_block_comm `Feature_image comm elem
 
@@ -1053,7 +1060,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 	let contents = convert_frag document_ast in
 	let custom = filter_customisations () in
 	let () = filter_references ()
-	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, DynArray.to_list images, labels, custom, DynArray.to_list errors)
+	in (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, ImageSet.elements !images, labels, custom, DynArray.to_list errors)
 
 
 (********************************************************************************)
