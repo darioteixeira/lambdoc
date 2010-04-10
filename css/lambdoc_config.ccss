@@ -34,7 +34,7 @@ Background_boxout:	#fffcf0;
 /* Configuration of various borders.						*/
 /********************************************************************************/
 
-Border_quote:		2px solid Colour_watery;
+Border_quote:		3px solid Colour_weakfancy;
 Border_src:		1px solid Colour_watery;
 Border_tabular_outter:	2px solid Colour_watery;
 Border_tabular_inner:	1px solid Colour_watery;
@@ -49,8 +49,8 @@ Border_pull:		2px solid Colour_weakfancy;
 /* Box configuration.								*/
 /********************************************************************************/
 
-Radius_box:	6px;
-Shadow_box:	3px 3px 3px Colour_shadow;
+Radius_box:	5px;
+Shadow_box:	2px 2px 2px Colour_shadow;
 Border_box:	1px solid Colour_ghostly;
 Padding_box:	1em;
 
@@ -68,25 +68,24 @@ Font_stack_mono: "Courier New", "Courier", "DejaVu Mono", monospace;
 */
 
 /* Narrow stack: */
-
+/*
 Font_stack_serif: "Times New Roman", "Times", "Liberation Serif", serif;
 Font_stack_sans: "Arial", "Helvetica", "Liberation Sans", sans-serif;
 Font_stack_mono: "Courier New", "Courier", "Liberation Mono", monospace;
-
+*/
 /* Wide stack: */
-/*
+
 Font_stack_serif: "Georgia", "DejaVu Serif", serif;
 Font_stack_sans: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
 Font_stack_mono: "Courier New", "Courier", "DejaVu Mono", monospace;
-*/
 
 
 /********************************************************************************/
 /* Font families.								*/
 /********************************************************************************/
 
-Family_doc:	Font_stack_sans;
-Family_heading:	Font_stack_sans;
+Family_doc:	Font_stack_serif;
+Family_heading:	Font_stack_serif;
 Family_mono:	Font_stack_mono;
 
 
@@ -125,7 +124,7 @@ Vmargin_textual:	1em;
 Vmargin_hybrid:		1.5em;
 Vmargin_boxish:		2em;
 Vmargin_wrapper:	2.5em;
-Vmargin_caption_long:	1.5em;
+Vmargin_caption_long:	1em;
 Vmargin_caption_short:	0.5em;
 Vmargin_doc:		1em;
 
