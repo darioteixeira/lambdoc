@@ -209,13 +209,13 @@ let match_numeric v low high =
 let matcher errors comm key kind auto field = match (key, kind, auto, field) with
 
 	| (key, Boolean_kind, a, Boolean_field (Some k, v)) when k = key ->
-		if a then Positive (Boolean_auto_data (Some v)) else Positive (Boolean_data v)
+		Positive (if a then Boolean_auto_data (Some v) else Boolean_data v)
 	| (key, Boolean_kind, a, Boolean_field (None, v)) ->
-		if a then Undecided (Boolean_auto_data (Some v)) else Undecided (Boolean_data v)
+		Undecided (if a then Boolean_auto_data (Some v) else Boolean_data v)
 	| (key, Boolean_kind, true, Unnamed_field v) when v = "auto" ->
 		Undecided (Boolean_auto_data None)
 	| (key, Boolean_kind, a, Unnamed_field k) when k = key ->
-		if a then Positive (Boolean_auto_data (Some true)) else Positive (Boolean_data true)
+		Positive (if a then Boolean_auto_data (Some true) else Boolean_data true)
 	| (key, Boolean_kind, true, Keyvalue_field (k, v)) when k = key && v = "auto" ->
 		Positive (Boolean_auto_data None)
 	| (key, Boolean_kind, _, Keyvalue_field (k, v)) when k = key ->
@@ -466,8 +466,9 @@ let get_classname ~default extra handle = match Hashtbl.find extra handle with
 
 
 let get_lang ~default extra handle = match Hashtbl.find extra handle with
-	| Some (Lang_data x) -> Some x
-	| _		     -> default
+	| Some x when x = dummy_lang_data -> default
+	| Some (Lang_data x)		  -> Some x
+	| _				  -> default
 
 
 (********************************************************************************)
