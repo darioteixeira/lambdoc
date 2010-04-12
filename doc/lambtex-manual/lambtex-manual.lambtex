@@ -716,12 +716,12 @@ record will be shown in a different row.  In brief, a table just like the one be
 
 \begin{tabular}{lll}
 \head
-| Name		| Phone			| Address	|
+| Name		| Phone		| Address	|
 \body
-| John		| 123456		| London	|
-| Mary		| 234567		| Paris		|
-| Mark		| 345678		| Moscow	|
-| Jane		| 456789		| Sydney	|
+| John		| 123456	| London	|
+| Mary		| 234567	| Paris		|
+| Mark		| 345678	| Moscow	|
+| Jane		| 456789	| Sydney	|
 \end{tabular}
 
 The tabular environment has one mandatory primary parameter: a string indicating the
