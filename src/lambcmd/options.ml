@@ -17,6 +17,7 @@ type t =
 	{
 	debug: bool;
 	title: string;
+	language: Language.t;
 	category: Category.t;
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
@@ -33,9 +34,10 @@ type t =
 
 let debug_opt = StdOpt.store_true ()
 let title_opt = StdOpt.str_option ~default:"Lambdoc document" ()
-let category_opt = Opt.value_option "CATEGORY" (Some `Manuscript) Category.of_string (fun exn str -> "Unknown category '" ^ str ^ "'")
-let input_markup_opt = Opt.value_option "MARKUP" (Some `Lambtex) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
-let output_markup_opt = Opt.value_option "MARKUP" (Some `Xhtml) Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
+let language_opt = Opt.value_option "LANGUAGE" (Some Language.default) Language.of_string (fun exn str -> "Unknown language '" ^ str ^ "'")
+let category_opt = Opt.value_option "CATEGORY" (Some Category.default) Category.of_string (fun exn str -> "Unknown category '" ^ str ^ "'")
+let input_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_input) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
+let output_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_output) Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
 let input_file_opt = StdOpt.str_option ~metavar:"FILE" ()
 let output_file_opt = StdOpt.str_option ~metavar:"FILE" ()
 
@@ -48,9 +50,10 @@ let file = OptParser.add_group options "Definition of I/O files"
 let () =
 	OptParser.add options ~group:general ~short_name:'v' ~long_name:"debug" ~help:"Show debug information" debug_opt;
 	OptParser.add options ~group:general ~short_name:'e' ~long_name:"title" ~help:"Document title" title_opt;
-	OptParser.add options ~group:markup ~short_name:'c' ~long_name:"category" ~help:"Document category (assume 'manuscript' if not specified)" category_opt;
-	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (assume 'lambtex' if not specified)" input_markup_opt;
-	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (assume 'xhtml' if not specified)" output_markup_opt;
+	OptParser.add options ~group:general ~short_name:'l' ~long_name:"lang" ~help:"Language for I18N of document elements (either 'en', 'fr', or 'pt'; assume 'en' if not specified)" language_opt;
+	OptParser.add options ~group:markup ~short_name:'c' ~long_name:"category" ~help:"Document category (either 'manuscript' or 'composition'; assume 'manuscript' if not specified)" category_opt;
+	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambhtml', 'lamblite', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
+	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; assume 'xhtml' if not specified)" output_markup_opt;
 	OptParser.add options ~group:file ~short_name:'i' ~long_name:"in" ~help:"Input file name (read from STDIN if not specified)" input_file_opt;
 	OptParser.add options ~group:file ~short_name:'o' ~long_name:"out" ~help:"Output file name (write to STDOUT if not specified)" output_file_opt
 
@@ -70,6 +73,7 @@ let parse () = match OptParser.parse_argv options with
 		in	{
 			debug = Opt.get debug_opt;
 			title = Opt.get title_opt;
+			language = Opt.get language_opt;
 			category = Opt.get category_opt;
 			input_markup = Opt.get input_markup_opt;
 			output_markup = Opt.get output_markup_opt;

@@ -40,3 +40,9 @@ let to_string = function
 	| `Sexp     -> "Sexp"
 	| `Xhtml    -> "Xhtml"
 
+
+let default_input = `Lambtex
+
+
+let default_output = `Sexp
+

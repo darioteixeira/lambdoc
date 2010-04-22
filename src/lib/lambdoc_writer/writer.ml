@@ -22,13 +22,13 @@ module type S =
 sig
 	type t
 
-	val write_valid_manuscript: ?settings:Settings.t -> Valid.manuscript_t -> t
-	val write_valid_composition: ?settings:Settings.t -> Valid.composition_t -> t
+	val write_ambivalent_manuscript: ?translations:Translations.t -> ?settings:Settings.t -> Ambivalent.manuscript_t -> t
+	val write_ambivalent_composition: ?translations:Translations.t -> ?settings:Settings.t -> Ambivalent.composition_t -> t
+
+	val write_valid_manuscript: ?translations:Translations.t -> ?settings:Settings.t -> Valid.manuscript_t -> t
+	val write_valid_composition: ?translations:Translations.t -> ?settings:Settings.t -> Valid.composition_t -> t
 
 	val write_invalid_manuscript: Invalid.manuscript_t -> t
 	val write_invalid_composition: Invalid.composition_t -> t
-
-	val write_ambivalent_manuscript: ?settings:Settings.t -> Ambivalent.manuscript_t -> t
-	val write_ambivalent_composition: ?settings:Settings.t -> Ambivalent.composition_t -> t
 end
 

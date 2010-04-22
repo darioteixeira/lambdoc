@@ -25,6 +25,7 @@ open Valid
 open Lambdoc_writer
 open Writeconv
 open Settings
+open Translations
 
 
 (********************************************************************************)
@@ -48,11 +49,12 @@ type name_t =
 	| Name_table
 	| Name_figure
 	| Name_part
-	| Name_section
 	| Name_appendix
+	| Name_section
 	| Name_bibliography
 	| Name_notes
 	| Name_toc
+	| Name_abstract
 
 
 (********************************************************************************)
@@ -165,7 +167,7 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 (**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]) classname doc =
+let write_valid_document ?(translations = Translations.default) ?(settings = Settings.default) ?(default_classnames = [doc_prefix; !!"valid"]) classname doc =
 
 	(************************************************************************)
 	(* Predefined sequences with last question and answer.			*)
@@ -306,8 +308,8 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 					make_sref (write_name Name_part) (part_conv ~prespace:true order)
 				| Target.Visible_target (Target.Section_target (location, order)) ->
 					let name = match location with
-						| `Mainbody	-> Name_section
-						| `Appendixed	-> Name_appendix
+						| `Mainbody   -> Name_section
+						| `Appendixed -> Name_appendix
 					in make_sref (write_name name) (section_conv ~prespace:true location order)
 				| _ ->
 					raise (Command_sref_with_non_visible_block target))
@@ -323,21 +325,21 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 	and write_name =
 		let cache = Hashtbl.create (Hashtbl.length custom)
 		in fun name ->
-			try
-				Hashtbl.find cache name
+			try Hashtbl.find cache name
 			with Not_found ->
 				let seq = match name with
 					| Name_custom env   -> Hashtbl.find custom env
-					| Name_equation	    -> settings.names.equation_name
-					| Name_printout	    -> settings.names.printout_name
-					| Name_table	    -> settings.names.table_name
-					| Name_figure	    -> settings.names.figure_name
-					| Name_part	    -> settings.names.part_name
-					| Name_section	    -> settings.names.section_name
-					| Name_appendix	    -> settings.names.appendix_name
-					| Name_bibliography -> settings.names.bibliography_name
-					| Name_notes	    -> settings.names.notes_name
-					| Name_toc	    -> settings.names.toc_name in
+					| Name_equation	    -> translations.equation
+					| Name_printout	    -> translations.printout
+					| Name_table	    -> translations.table
+					| Name_figure	    -> translations.figure
+					| Name_part	    -> translations.part
+					| Name_appendix	    -> translations.appendix
+					| Name_section	    -> translations.section
+					| Name_bibliography -> translations.bibliography
+					| Name_notes	    -> translations.notes
+					| Name_toc	    -> translations.toc
+					| Name_abstract     -> translations.abstract in
 				let value = write_seq seq in
 				Hashtbl.add cache name value;
 				value in
@@ -548,7 +550,7 @@ let write_valid_document settings ?(default_classnames = [doc_prefix; !!"valid"]
 			[(cons_of_level level) ~a:[a_class [!!"title"]] (write_seq seq)]
 
 		| `Abstract frag ->
-			[XHTML.M.div ~a:[a_class [!!"abstract"]] ((XHTML.M.h1 ~a:[a_class [!!"sec"]] [pcdata "Abstract"]) :: (write_frag frag))]
+			[XHTML.M.div ~a:[a_class [!!"abstract"]] ((XHTML.M.h1 ~a:[a_class [!!"sec"]] (write_name Name_abstract)) :: (write_frag frag))]
 
 		| `Rule ->
 			[XHTML.M.hr ~a:[a_class [!!"rule"]] ()]
@@ -705,7 +707,7 @@ let write_error (maybe_error_context, error_msg) =
 		| None ->
 			[XHTML.M.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]]
 	and explanation_doc = Valid.make_composition (Block.paragraph false None (Explanations.explain error_msg), []) [] in
-	let explanation_out = [write_valid_document Settings.default ~default_classnames:[] !!"error_msg" explanation_doc]
+	let explanation_out = [write_valid_document ~default_classnames:[] !!"error_msg" explanation_doc]
 	in XHTML.M.li ~a:[a_class [!!"error"]] (context @ explanation_out)
 
 
@@ -718,8 +720,8 @@ let write_invalid_document ?(default_classnames = [doc_prefix; !!"invalid"]) cla
 (**	{2 High-level interface}						*)
 (********************************************************************************)
 
-let write_ambivalent_document settings classname = function
-	| `Valid doc	-> write_valid_document settings classname doc
+let write_ambivalent_document ?translations ?settings classname = function
+	| `Valid doc	-> write_valid_document ?translations ?settings classname doc
 	| `Invalid doc	-> write_invalid_document classname doc
 
 
@@ -739,21 +741,21 @@ let composition_classname = !!"composition"
 
 type t = [ `Div ] XHTML.M.elt
 
-let write_valid_manuscript ?(settings = Settings.default) doc =
-	write_valid_document settings manuscript_classname doc
+let write_ambivalent_manuscript ?translations ?settings doc =
+	write_ambivalent_document ?translations ?settings manuscript_classname doc
 
-let write_valid_composition ?(settings = Settings.default) doc =
-	write_valid_document settings composition_classname doc
+let write_ambivalent_composition ?translations ?settings doc =
+	write_ambivalent_document ?translations ?settings composition_classname doc
+
+let write_valid_manuscript ?translations ?settings doc =
+	write_valid_document ?translations ?settings manuscript_classname doc
+
+let write_valid_composition ?translations ?settings doc =
+	write_valid_document ?translations ?settings composition_classname doc
 
 let write_invalid_manuscript doc =
 	write_invalid_document manuscript_classname doc
 
 let write_invalid_composition doc =
 	write_invalid_document composition_classname doc
-
-let write_ambivalent_manuscript ?(settings = Settings.default) doc =
-	write_ambivalent_document settings manuscript_classname doc
-
-let write_ambivalent_composition ?(settings = Settings.default) doc =
-	write_ambivalent_document settings composition_classname doc
 

@@ -22,3 +22,5 @@ let of_string x = match String.lowercase x with
 	| "composition" -> `Composition
 	| _		-> invalid_arg "Category.of_string"
 
+
+let default = `Manuscript
