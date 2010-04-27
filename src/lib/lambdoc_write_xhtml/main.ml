@@ -166,7 +166,7 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 (**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document ?(translations = Translations.default) ?(settings = Settings.default) ?(default_classnames = [doc_prefix; !!"valid"]) classname doc =
+let write_valid_document ?(translations = Translations.default) ?(settings = Settings.default) ?(lookup = XHTML.M.uri_of_string) ?(default_classnames = [doc_prefix; !!"valid"]) classname doc =
 
 	(************************************************************************)
 	(* Predefined sequences with last question and answer.			*)
@@ -213,7 +213,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			in XHTML.M.span ~a:[a_class [!!"mathinl"]] [xhtml]
 
 		| `Glyph (alias, alt) ->
-			XHTML.M.img ~a:[a_class [!!"glyph"]] ~src:(settings.lookup alias) ~alt ()
+			XHTML.M.img ~a:[a_class [!!"glyph"]] ~src:(lookup alias) ~alt ()
 
 		| `Bold seq ->
 			XHTML.M.b ~a:[a_class [!!"bold"]] (write_seq seq)
@@ -477,7 +477,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let attrs = match width with
 				| Some w -> [a_width (`Percent w)]
 				| None	 -> [] in
-			let uri = settings.lookup alias in
+			let uri = lookup alias in
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
@@ -722,8 +722,8 @@ let write_invalid_document ?(default_classnames = [doc_prefix; !!"invalid"]) cla
 (**	{2 High-level interface}						*)
 (********************************************************************************)
 
-let write_ambivalent_document ?translations ?settings classname = function
-	| `Valid doc	-> write_valid_document ?translations ?settings classname doc
+let write_ambivalent_document ?translations ?settings ?lookup classname = function
+	| `Valid doc	-> write_valid_document ?translations ?settings ?lookup classname doc
 	| `Invalid doc	-> write_invalid_document classname doc
 
 
@@ -743,17 +743,17 @@ let composition_classname = !!"composition"
 
 type t = [ `Div ] XHTML.M.elt
 
-let write_ambivalent_manuscript ?translations ?settings doc =
-	write_ambivalent_document ?translations ?settings manuscript_classname doc
+let write_ambivalent_manuscript ?translations ?settings ?lookup doc =
+	write_ambivalent_document ?translations ?settings ?lookup manuscript_classname doc
 
-let write_ambivalent_composition ?translations ?settings doc =
-	write_ambivalent_document ?translations ?settings composition_classname doc
+let write_ambivalent_composition ?translations ?settings ?lookup doc =
+	write_ambivalent_document ?translations ?settings ?lookup composition_classname doc
 
-let write_valid_manuscript ?translations ?settings doc =
-	write_valid_document ?translations ?settings manuscript_classname doc
+let write_valid_manuscript ?translations ?settings ?lookup doc =
+	write_valid_document ?translations ?settings ?lookup manuscript_classname doc
 
-let write_valid_composition ?translations ?settings doc =
-	write_valid_document ?translations ?settings composition_classname doc
+let write_valid_composition ?translations ?settings ?lookup doc =
+	write_valid_document ?translations ?settings ?lookup composition_classname doc
 
 let write_invalid_manuscript doc =
 	write_invalid_document manuscript_classname doc

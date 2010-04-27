@@ -21,7 +21,6 @@ type t =
 	{
 	default_bullet: Bullet.t;
 	default_numbering: Numbering.t;
-	lookup: Alias.t -> XHTML.M.uri;
 	}
 
 
@@ -29,13 +28,12 @@ type t =
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let make bullet numbering lookup =
+let make bullet numbering =
 	{
 	default_bullet = bullet;
 	default_numbering = numbering;
-	lookup = lookup;
 	}
 
 
-let default = make Bullet.Disc Numbering.Decimal XHTML.M.uri_of_string
+let default = make Bullet.Disc Numbering.Decimal
 
