@@ -13,7 +13,7 @@
 
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
-\subtitle{March 2010}
+\subtitle{April 2010}
 
 \toc[sec:toc]
 
@@ -24,10 +24,11 @@
 description of documents.  In basic terms, the source for a \lambtex document is composed
 of \caps{utf-8} text annotated with special commands that attach a precise semantical
 meaning to elements.  There are commands that format passages in a special manner
-(emphasised, superscript, etc), and commands that declare high-level constructs such as
-section headings, quotation blocks, boxouts, or images.  \lambtex was especially designed
-to be used in web applications, and as such it supports fully hyperlinked documents.
-Moreover, its syntax is simple, consistent, and designed with brevity in mind.}
+(emphasised, superscript, etc), and commands that declare high-level constructs such
+as section headings, quotation blocks, boxouts, or pictures.  \lambtex was especially
+designed to be used in web applications, and as such it supports fully hyperlinked
+documents.  Moreover, its syntax is simple, consistent, and designed with brevity
+in mind.}
 
 This manual is divided into two main parts plus an appendix.  \sref{part:basic}
 introduces the basic principles of the language; these allow you to describe simple
@@ -296,6 +297,9 @@ verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
 \end{tabular}
 \end{table}
 
+What if the glyph you wish to enter is not part of the \caps{unicode} character set?
+The solution in this case is to declare an inline image; this feature is covered in
+detail in \sref{sec:glyphs}.
 
 
 \section{Hyperlinks to external resources}
@@ -935,42 +939,69 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 
 \section{Images}
 
-The simple command \code{\\image} is used for inserting an image into the
-document.  It takes the form \code{\\image\{\emph{identifier}\}\{\emph{alt}\}},
-where \code{\emph{identifier}} is the name of the image (typically the filename),
-and \code{\emph{alt}} is the alternative text to be displayed if the browser cannot
-or is not configured to display images.  Both parameters consist of raw text and
-are mandatory.  The bitmap below illustrates the use of a image block; the image
-is shown in its default centered position, though facilities exist for placing it
-on the left or right of the page and embedded within the flow of the paragraph text
-(see \sref{sec:decor} for details).
+\lambtex allows the insertion of images either in inline contexts or in block contexts.
+In the former case, the image is typically the representation of a character which is
+unavailable in the \caps{unicode} set, and is for this reason denoted as a \emph{glyph}.
+The latter case includes images used as illustrations, diagrams, photographs, etc.
+These are known as \emph{pictures}.
 
-\image{circle.png}{This is a circle}
+
+\subsection[sec:glyphs]{Glyphs}
+
+The simple command \code{\\glyph} is used for inserting an image into an inline
+context.  It takes the form \code{\\glyph\{\emph{identifier}\}\{\emph{alt}\}},
+where \code{\emph{identifier}} is the name of the glyph (typically the filename), and
+\code{\emph{alt}} is the alternative text to be displayed if the browser cannot or is
+not configured to display images.  Both parameters consist of raw text and are mandatory.
+
+Because glyphs are embedded into a paragraph or other inline context, the image should
+be of comparable size to the text.  This is simply a recommendation, however, as it
+is not enforced.
+
+
+\subsection{Pictures}
+
+The insertion of block images into a document is done via the
+simple command \code{\\picture}, which in its basic usage is identical
+to the afore described \code{\\glyph}.  Namely, it takes the form
+\code{\\picture\{\emph{identifier}\}\{\emph{alt}\}}, where \code{\emph{identifier}} is the
+name of the picture (typically the filename), and \code{\emph{alt}} is the alternative
+text to be displayed if the browser cannot or is not configured to display images.
+Both parameters consist of raw text and are mandatory.  It differs from \code{\\glyph}
+in that it must be used in a block context and that it supports some additional
+configuration via extra parameters, described below.
+
+The bitmap below illustrates the use of a image block.  The picture is shown in its
+default centered position, though facilities exist for placing it on the left or right
+of the page and embedded within the flow of the paragraph text (see \sref{sec:decor}
+for details).
+
+\picture{circle.png}{This is a circle}
 
 Note that in most browsers you cannot see the alternative text unless the browser is
-configured not to display images.  As for the code that produced the image, it is as
+configured not to display images.  As for the code that produced the picture, it is as
 simple as this:
 
 \begin{source}
-\image{circle.png}{This is a circle}
+\picture{circle.png}{This is a circle}
 \end{source}
 
-There are additional configuration options for images, all set via optional extra
+There are additional configuration options for pictures, all set via optional extra
 parameters.  Like its name suggests, the boolean parameter \code{frame} adds a small
-framed shadow to the image.  It is off by default, and esthetically it is more sensible
-for rectangular images such as photographs.  The size of the image can be controlled
-by the parameter \code{width}.  Its value is either \code{auto} or an integer between 1
-and 100 (inclusive), indicating the percentage of the total width of the page that the
-image should occupy (minus a small margin common to all non-text blocks).  The default
-is \code{auto}, which translates into an image occupying its natural width in pixels
-(up to the maximum width of the page).  Note that images are always clickable and that
-the target \caps{uri} is that of the image itself.  This is useful, for example, for
-seeing at their full size images that were scaled down with the \code{width} parameter
-or that did not fit into the width of the page.
+framed shadow to the picture.  It is off by default, and esthetically it is more
+sensible for rectangular pictures such as photographs.  The size of the picture can
+be controlled by the parameter \code{width}.  Its value is either \code{auto} or an
+integer between 1 and 100 (inclusive), indicating the percentage of the total width of
+the page that the picture should occupy (minus a small margin common to all non-text
+blocks).  The default is \code{auto}, which translates into a picture occupying its
+natural width in pixels (up to the maximum width of the page).  Note that block images
+are always clickable and that the target \caps{uri} is that of the picture itself.
+This is useful, for example, for seeing at their full size pictures that were scaled
+down with the \code{width} parameter or that did not fit into the width of the page.
 
-It is a common practice to add a numbered caption to an image.  To achieve this in
-\lambtex you must wrap the \code{image} block inside a \code{figure}, as described
-in \sref{sec:wrappers}.  Images may also be used strictly for decorative purposes, in
+It is a common practice to add a numbered caption to a picture.  To achieve this in
+\lambtex you must wrap the \code{picture} block inside a \code{figure}, as described
+in \sref{sec:wrappers}.  Pictures may also be used strictly for decorative purposes, in
 which case they may be floated to the left or right of the page.  This is however part
 of the advanced features of the language and is discussed only in \sref{sec:floaters}.
 
@@ -1053,7 +1084,7 @@ individually in the sections that follow.
 	a caption to the block.
 
 \item	Enables pull-quotes, boxouts, and wrappers to be \mref{sec:floaters}{floated
-	to the left or right} of the page.  Furthermore, images and verbatim environments
+	to the left or right} of the page.  Furthermore, pictures and verbatim environments
 	may be placed inside \mref{sec:decor}{decorative} blocks, allowing them to
 	also be floated.
 
@@ -1379,12 +1410,12 @@ Furthermore, the egg satisfies the scalene condition, and therefore
 \section[sec:wrappers]{Wrappers}
 
 As discussed in \sref{part:basic}, \lambdoc allows compositions to declare document
-blocks beyond simple paragraphs of text.  Tabular environments, images, mathematics,
+blocks beyond simple paragraphs of text.  Tabular environments, pictures, mathematics,
 or source-code listings, for example.  All of these are anonymous blocks, in the sense
 they do not have an associated label and therefore cannot be referenced from elsewhere
 in the document (remember that internal references are not allowed in compositions).
-When writing a manuscript, however, there are valid reasons why you may want to
-reference an image or a source-code listing, or to provide these elements with a caption.
+When writing a manuscript, however, there are valid reasons why you may want to reference
+a picture or a source-code listing, or to provide these elements with a caption.
 It it for this motive that \lambtex also offers blocks that may be given a caption, an
 ordering, and may be referred from anywhere.  These blocks are called \emph{wrappers},
 and as their name implies, are essentially just a wrapper around other blocks such
@@ -1412,7 +1443,7 @@ There are four different classes of wrappers available:
 
 	Finally, figures are declared with the environment command
 	\code{figure}, and may be used for wrapping \code{verbatim},
-	\code{image}, and \code{subpage} blocks.
+	\code{picture}, and \code{subpage} blocks.
 
 \end{description}
 
@@ -1421,11 +1452,11 @@ class has an associated counter that is automatically incremented whenever a new
 wrapper is declared.  Moreover, wrappers always have an associated ordering, and
 thus requesting an empty ordering with \code{()} is not allowed.  Note also that the
 wrapper itself may be labelled.  The code below illustrates the use of a \code{figure}
-wrapper around a \code{image} block:
+wrapper around a \code{picture} block:
 
 \begin{source}
 \begin[fig:example]{figure}{This is the figure's caption.}
-\image{circle.png}{This is a circle}
+\picture{circle.png}{This is a circle}
 \end{figure}
 \end{source}
 
@@ -1437,7 +1468,7 @@ label \code{fig:example} with any of the simple commands \code{\\ref}, \code{\\s
 and \code{\\mref}.  The resulting figure (\sref{fig:example}) is shown below:
 
 \begin[fig:example]{figure}{This is the figure's caption.}
-\image{circle.png}{This is a circle}
+\picture{circle.png}{This is a circle}
 \end{figure}
 
 
@@ -1477,24 +1508,24 @@ an advice that in general applies to all floating blocks.
 
 \section[sec:decor]{Decorations}
 
-The case can be made that images are often used for purely decorative purposes, and
+The case can be made that pictures are often used for purely decorative purposes, and
 should therefore be allowed to float even when not located inside a figure wrapper.
 A straightforward solution would therefore allow the specification of the \code{float}
-extra parameter also in unwrapped images.  This approach would, however, run afoul of
+extra parameter also in unwrapped picture.  This approach would, however, run afoul of
 the strict demarcation between compositions and manuscripts espoused by the \lambdoc
-library, since floating elements should only be allowed in manuscripts but images are
-composition blocks.
+library, since floating elements should only be allowed in manuscripts but pictures
+are composition blocks.
 
 The solution ultimately chosen hinges on the decorative nature of isolated floating
-images, which should therefore be semantically marked as such by wrapping them inside
+pictures, which should therefore be semantically marked as such by wrapping them inside
 \code{decor} environments.  This type of block is reserved for manuscripts and may be
 floated via the extra parameter \code{float}.  \lambdoc principles are thus preserved
-and manuscripts gain floating images as an additional feature.
+and manuscripts gain floating pictures as an additional feature.
 
 Note that being decorative in nature, \code{decor} blocks may not be labelled and are
 thus unreferenceable.  Moreover, because the \code{verbatim} environment is typically
-used for \caps{ascii}-art and therefore can be said to also produce images, the block
-wrapped inside a decoration may be either an \code{image} or \code{verbatim}.
+used for \caps{ascii}-art and therefore can be said to also produce pictures, the
+block wrapped inside a decoration may be either an \code{picture} or \code{verbatim}.
 
 
 \section[sec:frontmatter]{Frontmatter: title, abstract, and table of contents}
@@ -1799,7 +1830,7 @@ block to a target block indicates that the source is a subtype of the target and
 is therefore accepted in any circumstances where the target would be accepted.
 Compositions may use only blocks printed in green, whereas manuscripts may use
 both green and blue blocks.}
-\image{hierarchy.png}{Hierarchy}
+\picture{hierarchy.png}{Hierarchy}
 \end{figure}
 
 
@@ -1934,8 +1965,8 @@ name is user-defined.}
 | \code{\\code}			| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\del}			| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\foot}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\glyph}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\head}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\image}		| \forbidden	| \forbidden	| \code{frame}, \code{width} |
 | \code{\\ins}			| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\item}			| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\link}			| \forbidden	| \forbidden	| \forbidden0 |
@@ -1945,6 +1976,7 @@ name is user-defined.}
 | \code{\\notes}		| \forbidden	| \optional	| \forbidden0 |
 | \code{\\paragraph}		| \forbidden	| \forbidden	| \code{initial}, \code{indent} |
 | \code{\\part}			| \depends0	| \optional	| \forbidden0 |
+| \code{\\picture}		| \forbidden	| \forbidden	| \code{frame}, \code{width} |
 | \code{\\question}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\ranswer}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\\ref}			| \forbidden	| \forbidden	| \forbidden0 |

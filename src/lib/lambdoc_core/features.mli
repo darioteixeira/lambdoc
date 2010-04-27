@@ -17,7 +17,7 @@
 
 type composition_inline_feature_t =
 	[ `Feature_plain | `Feature_entity | `Feature_linebreak
-	| `Feature_mathtex_inl | `Feature_mathml_inl
+	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
 	| `Feature_mbox | `Feature_span | `Feature_link ]
@@ -32,7 +32,7 @@ type composition_block_feature_t =
 	| `Feature_itemize | `Feature_enumerate | `Feature_description
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_source
-	| `Feature_tabular | `Feature_verbatim | `Feature_image | `Feature_subpage ]
+	| `Feature_tabular | `Feature_verbatim | `Feature_picture | `Feature_subpage ]
 
 
 type manuscript_block_feature_t =

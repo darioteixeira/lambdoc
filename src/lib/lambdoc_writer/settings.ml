@@ -21,7 +21,7 @@ type t =
 	{
 	default_bullet: Bullet.t;
 	default_numbering: Numbering.t;
-	image_lookup: Alias.t -> XHTML.M.uri;
+	lookup: Alias.t -> XHTML.M.uri;
 	}
 
 
@@ -29,11 +29,11 @@ type t =
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let make bullet numbering image_lookup =
+let make bullet numbering lookup =
 	{
 	default_bullet = bullet;
 	default_numbering = numbering;
-	image_lookup = image_lookup;
+	lookup = lookup;
 	}
 
 

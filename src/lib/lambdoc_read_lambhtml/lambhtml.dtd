@@ -13,7 +13,7 @@
 	| itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
 	| mathtexblk | mathmlblk
-	| source | tabular | verbatim | pre | image | subpage
+	| source | tabular | verbatim | pre | picture | subpage
 	| decor | pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix
@@ -24,7 +24,7 @@
 	| newmacro | newboxout | newtheorem">
 
 <!ENTITY % Node
-	" entity | br | mathtexinl | mathmlinl
+	" entity | br | mathtexinl | mathmlinl | glyph
 	| bold | strong | b | emph | em | i | code | tt | caps
 	| ins | del | sup | sub | mbox | span | link | a
 	| see | cite | ref | sref | mref
@@ -96,8 +96,8 @@
 <!ELEMENT pre (#PCDATA)>
 <!ATTLIST pre %Common;>
 
-<!ELEMENT image EMPTY>
-<!ATTLIST image %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
+<!ELEMENT picture EMPTY>
+<!ATTLIST picture %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
 <!ELEMENT subpage %Frag;>
 <!ATTLIST subpage %Common;>
@@ -257,6 +257,9 @@
 
 <!ELEMENT mathmlinl (#PCDATA)>
 <!ATTLIST mathmlinl %Common; idx CDATA #REQUIRED>
+
+<!ELEMENT glyph EMPTY>
+<!ATTLIST glyph %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
 <!ELEMENT bold %Inline;>
 <!ATTLIST bold %Common;>

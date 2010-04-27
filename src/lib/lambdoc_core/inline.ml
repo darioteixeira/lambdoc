@@ -21,6 +21,7 @@ type 'a inline_t =
 	| `Entity of Entity.t
 	| `Linebreak
 	| `Math of Math.t
+	| `Glyph of Alias.t * string
 	| `Bold of 'a nelist
 	| `Emph of 'a nelist
 	| `Code of 'a nelist
@@ -53,6 +54,7 @@ let plain txt = `Plain txt
 let entity ent = `Entity ent
 let linebreak () = `Linebreak
 let math data = `Math data
+let glyph alias alt = `Glyph (alias, alt)
 let bold seq = `Bold seq
 let emph seq = `Emph seq
 let code seq = `Code seq

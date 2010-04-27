@@ -44,7 +44,7 @@ a richer set of semantic elements, you should consider using instead a full-fled
 {Representation of the set of features supported by \lamblite contrasted with the overall
 features of the \lambdoc library.  It should be salient that even though \lamblite
 does support both composition and manuscript features, it covers only a subset of both.}
-\image{features.png}{Features}
+\picture{features.png}{Features}
 \end{figure}
 
 

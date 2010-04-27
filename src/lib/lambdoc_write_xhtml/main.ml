@@ -20,7 +20,6 @@ open Lambdoc_core
 open Prelude
 open Basic
 open Source
-open Image
 open Valid
 open Lambdoc_writer
 open Writeconv
@@ -212,6 +211,9 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		| `Math math ->
 			let xhtml : [> `Span ] XHTML.M.elt = XHTML.M.unsafe_data (Math_output.get_mathml math)
 			in XHTML.M.span ~a:[a_class [!!"mathinl"]] [xhtml]
+
+		| `Glyph (alias, alt) ->
+			XHTML.M.img ~a:[a_class [!!"glyph"]] ~src:(settings.lookup alias) ~alt ()
 
 		| `Bold seq ->
 			XHTML.M.b ~a:[a_class [!!"bold"]] (write_seq seq)
@@ -470,14 +472,14 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		| `Verbatim (mult, txt) ->
 			[XHTML.M.div ~a:[a_class [!!"verb"]] [XHTML.M.div ~a:[a_class [!!"verb_aux"]] [XHTML.M.pre ~a:[a_class ["mult" ^^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
 
-		| `Image image ->
-			let style = if image.frame then [!!"image_frame"] else [] in
-			let attrs = match image.width with
+		| `Picture (frame, width, alias, alt) ->
+			let style = if frame then [!!"pic_frame"] else [] in
+			let attrs = match width with
 				| Some w -> [a_width (`Percent w)]
 				| None	 -> [] in
-			let uri = settings.image_lookup image.alias in
-			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"image_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt:image.alt ()]
-			in [XHTML.M.div ~a:[a_class (!!"image" :: style)] [img]]
+			let uri = settings.lookup alias in
+			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
+			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
 		| `Subpage frag ->
 			[XHTML.M.div ~a:[a_class [!!"subpage"]] (write_frag frag)]

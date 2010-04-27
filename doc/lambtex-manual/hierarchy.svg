@@ -346,9 +346,9 @@
      objecttolerance="20"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.0989583"
-     inkscape:cx="258"
-     inkscape:cy="288"
+     inkscape:zoom="3.1083235"
+     inkscape:cx="138.13825"
+     inkscape:cy="69.182881"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -717,15 +717,13 @@
          y="507">- verbatim</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#006000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#006000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        x="228"
        y="516"
        id="text2588"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3907"
-         x="228"
-         y="516">- image</tspan></text>
+         id="tspan3010">- picture</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#006000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -935,15 +933,13 @@
          y="207">of tabular</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:7px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Italic"
+       style="font-size:7px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial Italic"
        x="111.75"
        y="216"
        id="text3646"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3005"
-         x="111.75"
-         y="216">of verbatim | image | subpage</tspan></text>
+         id="tspan3014">of verbatim | picture | subpage</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:9px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Bold"
@@ -1155,15 +1151,13 @@
          y="525">- decor</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:7px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"
+       style="font-size:7px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial Italic"
        x="255"
        y="525"
        id="text3646-2"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3850"
-         x="255"
-         y="525">of verbatim | image</tspan></text>
+         id="tspan3012">of verbatim | picture</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#0000c0;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"

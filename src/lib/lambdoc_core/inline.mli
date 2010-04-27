@@ -22,6 +22,7 @@ type 'a inline_t =
 	| `Entity of Entity.t
 	| `Linebreak
 	| `Math of Math.t
+	| `Glyph of Alias.t * string
 	| `Bold of 'a nelist
 	| `Emph of 'a nelist
 	| `Code of 'a nelist
@@ -54,6 +55,7 @@ val plain: Ustring.t -> ([> `Composition ], [> `Nonlink ]) t
 val entity: Entity.t -> ([> `Composition ], [> `Nonlink ]) t
 val linebreak: unit -> ([> `Composition ], [> `Nonlink ]) t
 val math: Math.t -> ([> `Composition ], [> `Nonlink ]) t
+val glyph: Alias.t -> string -> ([> `Composition ], [> `Nonlink ]) t
 val bold: ('a, 'b) t nelist -> ('a, 'b) t
 val emph: ('a, 'b) t nelist -> ('a, 'b) t
 val code: ('a, 'b) t nelist -> ('a, 'b) t

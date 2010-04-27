@@ -70,7 +70,7 @@ let (!!) = Lazy.force
 
 let inline_elems =
 	[
-	"entity"; "br"; "mathtexinl"; "mathmlinl";
+	"entity"; "br"; "mathtexinl"; "mathmlinl"; "glyph";
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
 	"mbox"; "span"; "link"; "a";
@@ -132,6 +132,10 @@ and process_inline store node =
 		| T_element "mathmlinl" ->
 			let math = process_math store node
 			in (!!comm, Ast.Mathml_inl math)
+		| T_element "glyph" ->
+			let src = node#required_string_attribute "src"
+			and alt = node#required_string_attribute "alt"
+			in (!!comm, Ast.Glyph (src, alt))
 		| T_element "bold"
 		| T_element "strong"
 		| T_element "b" ->
@@ -239,10 +243,10 @@ and process_block store node =
 		| T_element "verbatim"
 		| T_element "pre" ->
 			(!!comm, Ast.Verbatim node#data)
-		| T_element "image" ->
+		| T_element "picture" ->
 			let src = node#required_string_attribute "src"
 			and alt = node#required_string_attribute "alt"
-			in (!!comm, Ast.Image (src, alt))
+			in (!!comm, Ast.Picture (src, alt))
 		| T_element "subpage" ->
 			(!!comm, Ast.Subpage (process_frag store node))
 		| T_element "decor" ->

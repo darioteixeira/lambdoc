@@ -255,6 +255,12 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () = convert_mathml Inline.math comm txt
 			in check_inline_comm `Feature_mathml_inl comm elem
 
+		| (_, (comm, Ast.Glyph (alias, alt))) ->
+			let elem () =
+				images := ImageSet.add alias !images;
+				[Inline.glyph alias alt]
+			in check_inline_comm `Feature_glyph comm elem
+
 		| (x, (comm, Ast.Bold astseq)) ->
 			let elem () = [Inline.bold (convert_seq_aux ~comm ~args x astseq)]
 			in check_inline_comm `Feature_bold comm elem
@@ -603,17 +609,16 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in [Block.verbatim mult trimmed]
 			in check_block_comm `Feature_verbatim comm elem
 
-		| (_, _, _, `Decor_blk, (comm, Ast.Image (alias, alt)))
-		| (_, _, _, `Figure_blk, (comm, Ast.Image (alias, alt)))
-		| (_, _, _, `Any_blk, (comm, Ast.Image (alias, alt))) ->
+		| (_, _, _, `Decor_blk, (comm, Ast.Picture (alias, alt)))
+		| (_, _, _, `Figure_blk, (comm, Ast.Picture (alias, alt)))
+		| (_, _, _, `Any_blk, (comm, Ast.Picture (alias, alt))) ->
 			let elem () =
 				let extra = Extra.parse comm errors [Frame_hnd; Width_hnd] in
 				let frame = Extra.get_boolean ~default:false extra Frame_hnd
 				and width = Extra.get_maybe_numeric ~default:None extra Width_hnd in
-				let image = Image.make frame width alias alt in
 				images := ImageSet.add alias !images;
-				[Block.image image]
-			in check_block_comm `Feature_image comm elem
+				[Block.picture frame width alias alt]
+			in check_block_comm `Feature_picture comm elem
 
 		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
 		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->

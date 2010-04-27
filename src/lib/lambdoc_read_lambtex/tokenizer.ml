@@ -148,6 +148,7 @@ let issue_simple_command raw_comm position =
 	let command = build_command ("\\" ^ simple) simple_rex subs position in
 	let (context, token) = match simple with
 		| "br"			-> (Inl, LINEBREAK command)
+		| "glyph"		-> (Inl, GLYPH command)
 		| "bold"
 		| "strong"
 		| "b"			-> (Inl, BOLD command)
@@ -172,7 +173,7 @@ let issue_simple_command raw_comm position =
 		| "mref"		-> (Inl, MREF command)
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
-		| "image"		-> (Blk, IMAGE command)
+		| "picture"		-> (Blk, PICTURE command)
 		| "part"		-> (Blk, PART command)
 		| "appendix"		-> (Blk, APPENDIX command)
 		| "section"

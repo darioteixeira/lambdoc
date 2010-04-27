@@ -47,6 +47,12 @@ emphasised text should appear on the same line.</i></mbox>
 </p>
 
 <p>
+<call name="short"/>
+It is possible to embed images like <glyph src="circle-tiny.png" alt="o"/> into an inline context.
+<call name="short"/>
+</p>
+
+<p>
 Here is a link to section number <ref href="sec:foobar"/> or smartly, <sref
 href="sec:foobar"/>.  And here is a link to <mref href="sec:foobar">that same
 section</mref>.  You can also link to Tip <ref href="tip:one"/>, or smarly <sref
@@ -397,10 +403,10 @@ let rec count = function
 
 
 <!-- ****************************************************************** -->
-<h1>Images</h1>
+<h1>Pictures</h1>
 
 <p><call name="lorem"/></p>
-<image src="foobar.png" alt="Foobar"/>
+<picture src="circle-small.png" alt="Small Circle"/>
 <p><call name="lorem"/></p>
 
 
@@ -420,7 +426,7 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <decor extra="left">
-	<image src="foobar.png" alt="Foobar"/>
+	<picture src="circle-small.png" alt="Small Circle"/>
 </decor>
 <p><call name="lorem"/></p>
 
@@ -537,7 +543,7 @@ let rec count = function
 <p><call name="lorem"/></p>
 <figure>
 	<caption><call name="short"/></caption>
-	<image src="foobar.png" alt="Foobar"/>
+	<picture src="circle-small.png" alt="Small Circle"/>
 </figure>
 <p><call name="lorem"/></p>
 

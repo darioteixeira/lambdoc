@@ -128,6 +128,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_linebreak	-> forbidden_class
 		| `Feature_mathtex_inl	-> forbidden_class
 		| `Feature_mathml_inl	-> forbidden_class
+		| `Feature_glyph	-> forbidden_class
 		| `Feature_bold		-> forbidden_class
 		| `Feature_emph		-> forbidden_class
 		| `Feature_code		-> forbidden_class
@@ -160,7 +161,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_source	-> extra_class
 		| `Feature_tabular	-> forbidden_class
 		| `Feature_verbatim	-> extra_class
-		| `Feature_image	-> extra_class
+		| `Feature_picture	-> extra_class
 		| `Feature_subpage	-> forbidden_class
 
 	and manuscript_block_feature_set = function

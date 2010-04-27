@@ -18,7 +18,7 @@
 
 \toc
 
-\part(){Inline features}
+\part[part:inline]{Inline features}
 
 \p<initial>{\lorem}
 
@@ -35,7 +35,12 @@ produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
 \caps{utf-8}, so you can --- for example --- enter Japanese characters directly:
 おなかがいっぱいですからなにもたべたくないです.
 
-Here is a link to section number \ref{sec:foobar} or smartly,
+\short
+It is possible to embed images like \glyph{circle-tiny.png}{o} into an inline context.
+\short
+
+Here is a link to part number \ref{part:inline}, or smartly, \sref{part:inline}.
+Similarly, here is a link to section number \ref{sec:foobar}, or smartly,
 \sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
 section}.  You can also link to Tip \ref{tip:one}, or smarly \sref{tip:one},
 or a link to \mref{tip:one}{that same tip}. The bibliography is at the
@@ -44,7 +49,7 @@ citations in the same square brackets\cite{bib:bib1}{bib:bib2}{bib:bib3}. There 
 also\see{note:note1} a list\see{note:note2} of notes\see{note:note3}, which if you prefer
 you can reference them with a single command\see{note:note1}{note:note2}{note:note3}.
 
-\part(){Block features}
+\part{Block features}
 
 \section[sec:foobar]{Text paragraphs}
 
@@ -342,14 +347,14 @@ let rec count = function
 \p{\lorem}
 
 
-\section{Images}
+\section{Pictures}
 
 \p{\lorem}
-\image{circle-big.png}{Big Circle}
+\picture{circle-big.png}{Big Circle}
 \p{\lorem}
-\image<frame>{square-big.png}{Big Square}
+\picture<frame>{square-big.png}{Big Square}
 \p{\lorem}
-\image{triangle-huge.png}{Huge Triangle}
+\picture{triangle-huge.png}{Huge Triangle}
 \p{\lorem}
 
 
@@ -368,14 +373,14 @@ let rec count = function
 \subsection{Centered}
 \p{\lorem}
 \begin{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \p{\lorem}
 
 \subsection{Floating left}
 \p{\lorem}
 \begin<left>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \p{\lorem}
 \p{\lorem}
@@ -383,7 +388,7 @@ let rec count = function
 \subsection{Floating right}
 \p{\lorem}
 \begin<right>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \p{\lorem}
 \p{\lorem}
@@ -391,10 +396,10 @@ let rec count = function
 \subsection{Floating left and right}
 \p{\lorem}
 \begin<left>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \begin<right>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \p{\lorem}
 \p{\lorem}
@@ -402,10 +407,10 @@ let rec count = function
 \subsection{Floating left and left}
 \p{\lorem}
 \begin<left>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \begin<left>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \p{\lorem}
 \p{\lorem}
@@ -413,10 +418,10 @@ let rec count = function
 \subsection{Floating right and right}
 \p{\lorem}
 \begin<right>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \begin<right>{decor}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{decor}
 \p{\lorem}
 \p{\lorem}
@@ -843,7 +848,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin{figure}{\fox}
-\image{circle-big.png}{Big Circle}
+\picture{circle-big.png}{Big Circle}
 \end{figure}
 \p{\lorem}
 
@@ -851,7 +856,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<left>{figure}{\fox}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -860,7 +865,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<right>{figure}{\fox}
-\image{circle-small.png}{Small Circle}
+\picture{circle-small.png}{Small Circle}
 \end{figure}
 \p{\lorem}
 \p{\lorem}
@@ -952,7 +957,7 @@ let is_foo = function
 \p{\lorem}
 
 
-\part(){Sectioning}
+\part{Sectioning}
 
 \section{Introduction}
 \p{\lorem}
@@ -962,7 +967,7 @@ let is_foo = function
 \p{\lorem}
 
 
-\part(){Backmatter}
+\part{Backmatter}
 
 \bibliography
 

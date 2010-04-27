@@ -1,7 +1,7 @@
 open Lambdoc_reader
 
 let doc =
-	let src = IO.read_all (IO.input_channel (open_in "sample.ltex")) in
+	let src = IO.read_all (IO.input_channel (open_in "sample.lambtex")) in
 	let accept_list = [ ] in
 	let deny_list = [ ] in
 	let default = `Accept

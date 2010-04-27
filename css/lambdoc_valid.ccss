@@ -407,10 +407,10 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 
 
 /********************************************************************************/
-/* Image environments.			 					*/
+/* Picture environments.							*/
 /********************************************************************************/
 
-.doc_image
+.doc_pic
 	{
 	clear: both;
 	margin: 0 Hmargin_inset;
@@ -418,13 +418,13 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	line-height: 0;
 	}
 
-.doc_image_lnk				{display: inline-block; width: 100%;}
-.doc_image_lnk > img			{display: inline; max-width: 100%; border: none;}
-.doc_image_frame > .doc_image_lnk > img	{-moz-box-shadow: Shadow_box;}
+.doc_pic_lnk				{display: inline-block; width: 100%;}
+.doc_pic_lnk > img			{display: inline; max-width: 100%; border: none;}
+.doc_pic_frame > .doc_pic_lnk > img	{-moz-box-shadow: Shadow_box;}
 
-.doc_image:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_image:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_wrapper > .doc_image {margin: 0;}
+.doc_pic:not(:first-child)	{margin-top: Vmargin_boxish;}
+.doc_pic:not(:last-child)	{margin-bottom: Vmargin_boxish;}
+.doc_wrapper > .doc_pic		{margin: 0;}
 
 
 /********************************************************************************/

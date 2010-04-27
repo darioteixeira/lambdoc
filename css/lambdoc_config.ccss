@@ -133,7 +133,7 @@ Vmargin_title_bottom:	1.5em;
 Vmargin_title_intra:	-1em;
 Vmargin_part_top:	2em;
 Vmargin_part_bottom:	1.5em;
-Vmargin_sec_top:	2em;
+Vmargin_sec_top:	1.5em;
 Vmargin_sec_bottom:	0.5em;
 Vmargin_ghost_entry:	0.75em;
 

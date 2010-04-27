@@ -43,6 +43,7 @@ type seq_t = inline_t list
 	| Linebreak
 	| Mathtex_inl of string
 	| Mathml_inl of string
+	| Glyph of string * string
 	| Bold of seq_t
 	| Emph of seq_t
 	| Code of seq_t
@@ -102,7 +103,7 @@ type frag_t = block_t list
 	| Source of string
 	| Tabular of string * tabular_t
 	| Verbatim of string
-	| Image of string * string
+	| Picture of string * string
 	| Subpage of frag_t
 	| Decor of block_t
 	| Pullquote of seq_t option * frag_t

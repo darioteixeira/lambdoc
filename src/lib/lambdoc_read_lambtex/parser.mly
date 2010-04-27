@@ -83,6 +83,7 @@ let the comm = match comm.Ast.comm_tag with
 /********************************************************************************/
 
 %token <Lambdoc_reader.Ast.command_t> LINEBREAK
+%token <Lambdoc_reader.Ast.command_t> GLYPH
 %token <Lambdoc_reader.Ast.command_t> BOLD
 %token <Lambdoc_reader.Ast.command_t> EMPH
 %token <Lambdoc_reader.Ast.command_t> CODE
@@ -101,7 +102,7 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> MREF
 
 %token <Lambdoc_reader.Ast.command_t> PARAGRAPH
-%token <Lambdoc_reader.Ast.command_t> IMAGE
+%token <Lambdoc_reader.Ast.command_t> PICTURE
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
 %token <Lambdoc_reader.Ast.command_t> SECTION
@@ -174,7 +175,7 @@ block:
 
 simple_block:
 	| PARAGRAPH inline_bundle						{($1, Ast.Paragraph $2)}
-	| IMAGE raw_bundle raw_bundle						{($1, Ast.Image ($2, $3))}
+	| PICTURE raw_bundle raw_bundle						{($1, Ast.Picture ($2, $3))}
 	| PART inline_bundle							{($1, Ast.Part $2)}
 	| APPENDIX								{($1, Ast.Appendix)}
 	| SECTION inline_bundle							{($1, Ast.Section (`Level1, $2))}
@@ -275,6 +276,7 @@ inline:
 	| LINEBREAK									{($1, Ast.Linebreak)}
 	| BEGIN_MATHTEX_INL push(mathtex_inl) OPEN_DUMMY RAW pop_brk END_MATHTEX_INL	{($1, Ast.Mathtex_inl $4)}
 	| BEGIN_MATHML_INL push(mathml_inl) OPEN_DUMMY RAW pop_brk END_MATHML_INL	{($1, Ast.Mathml_inl $4)}
+	| GLYPH raw_bundle raw_bundle							{($1, Ast.Glyph ($2, $3))}
 	| BOLD inline_bundle								{($1, Ast.Bold $2)}
 	| EMPH inline_bundle								{($1, Ast.Emph $2)}
 	| CODE inline_bundle								{($1, Ast.Code $2)}
