@@ -694,8 +694,8 @@ integrate more tightly with the flow of the document text.  Second, the boolean 
 \code{nums} indicates whether line numbers should be added to the listing.  Its default
 is \code{true} if the source language was specified and the source is shown inside a
 box; otherwise it is \code{false}.  Finally, the also boolean parameter \code{zebra}
-controls the printing of the zebra stripes.  Its default value is \code{true} if the
-source lies inside a box, and \code{false} otherwise.
+controls the printing of the zebra stripes.  Its default value is \code{true} if line
+numbers are displayed, and \code{false} otherwise.
 
 To conclude, note that \lambtex offers also the possibility for code environments to
 be numbered and referenced from anywhere in the document.  This can be done by wrapping

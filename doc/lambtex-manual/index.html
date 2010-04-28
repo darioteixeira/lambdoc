@@ -202,7 +202,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">Paragraphs are the simplest of all blocks, typically being composed of just a sequence of inline text terminated by a blank line. It is however also possible to declare a paragraph via the simple command <tt class="doc_code">\paragraph</tt> or its synonym <tt class="doc_code">\p</tt>. Should you choose the simple command, the paragraph contents are to be specified inside the mandatory curly brackets. Consider thus the following <span class="doc_caps">lambtex</span> source fragment:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -457,7 +457,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">All the commands we have seen so far are simple commands, and therefore the declaration of lists will provide us with the first example of environment commands. Lists in <span class="doc_caps">lambtex</span> come in three varieties: ordered, unordered, and description lists. These are declared using the environment commands <tt class="doc_code">enumerate</tt>, <tt class="doc_code">itemize</tt>, and <tt class="doc_code">description</tt>, respectively. As shown by the following <span class="doc_caps">lambtex</span> source, items in ordered and unordered lists must be preceded by the parameterless simple command <tt class="doc_code">\item</tt>. As for description lists, each item must be preceded also by the simple command <tt class="doc_code">\item</tt>. However, in this latter case the command takes a mandatory inline sequence as parameter. Finally, lists may be nested, and each item may itself be composed of several blocks (see <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> for a detailed description concerning the structure of <span class="doc_caps">lambtex</span> documents). Consider thus the following source:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -645,7 +645,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">Somewhat related to lists, Q&amp;A environments are used to mark a sequence of questions and accompanying answers, as typically found in interviews. The environment is bounded by the start/end tag <tt class="doc_code">qanda</tt>, and expects an alternating sequence of question and answer blocks, delimited by the simple commands <tt class="doc_code">\question</tt> and <tt class="doc_code">\answer</tt>, respectively. The latter commands accept an inline sequence delimited by curly brackets as optional parameter. If present, this sequence indicates the text that should appear before the actual question or answer; it is used to indicate the name of the interviewer or the interviewee, respectively. Should this sequence be fixed for the entire length of the Q&amp;A, there is an alternative to repeating it with each <tt class="doc_code">\question</tt> and<tt class="doc_code">\answer</tt> pair: you may instead use the parameterless simple commands <tt class="doc_code">\rquestion</tt> and <tt class="doc_code">\ranswer</tt>. These simply reuse the sequence declared in the previous question or answer. The following example illustrates the pattern:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -711,7 +711,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">The environment <tt class="doc_code">verse</tt> is used to typeset poetry, music lyrics, or any other content where conventional typographic rules for verses apply. Inside the environment only paragraph blocks are accepted; each paragraph corresponds to a stanza, and each verse should be terminated by the line break marker <tt class="doc_code">\br</tt>. Therefore, if you wished to typeset the first couple of stanzas from Virgil's <i class="doc_emph">Aeneid</i>, this would be the <span class="doc_caps">lambtex</span> source:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -759,7 +759,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">Quotation blocks are typically used for including an excerpt from an external source into your document. You may be quoting what someone said in an interview, or providing context when replying to a comment, for example. Quotation bloks are delimited by the <tt class="doc_code">quote</tt> environment, and may enclose not only plain text paragraphs, but also lists or any of the so-called <i class="doc_emph">quotable blocks</i>, as <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> describes in greater detail. Consider thus the following <span class="doc_caps">lambtex</span> source:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -839,7 +839,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
       </h1>
       <p class="doc_par">While it is of course possible to input source code listings using the above discussed verbatim environment, <span class="doc_caps">lambtex</span> has a dedicated facility with a number of advantages. This new environment is named <tt class="doc_code">source</tt>, and offers the possibility of adding line numbers to the code listing and highlighting the source according to the syntax of most popular languages. You have in fact already encountered this environment multiple times in this document: it has been used for formatting <span class="doc_caps">lambtex</span> source code, albeit without line numbers or syntax highlighting. Suppose thus you wish to pretty-print an <a class="doc_lnk" href="http://caml.inria.fr/"><span class="doc_caps">ocaml</span></a> fragment. You can declare a source-code environment the following way:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -885,7 +885,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">Code environments offer three more customisation options via extra parameters. First, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the examples above. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">nums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box; otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if the source lies inside a box, and <tt class="doc_code">false</tt> otherwise.
+      <p class="doc_par">Code environments offer three more customisation options via extra parameters. First, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the examples above. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">nums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box; otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if line numbers are displayed, and <tt class="doc_code">false</tt> otherwise.
       </p>
       <p class="doc_par">To conclude, note that <span class="doc_caps">lambtex</span> offers also the possibility for code environments to be numbered and referenced from anywhere in the document. This can be done by wrapping them inside a <tt class="doc_code">printout</tt> environment, and is part of the advanced features of the language discussed in <a class="doc_lnk" href="#doc:u:sec:wrappers">Section&nbsp;23</a>.
       </p>
@@ -1027,7 +1027,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
       </p>
       <p class="doc_par">The code below is the source for the tabular environment listed above. Note the use of the <tt class="doc_code">\head</tt> and <tt class="doc_code">\body</tt> commands to delineate row classes, and how the character '<tt class="doc_code">|</tt>' is used to separate cells and rows.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1049,7 +1049,7 @@ xmlns="http://www.w3.org/1998/Math/MathML"
       </p>
       <p class="doc_par">This discussion would not be complete without the presentation of a complete example illustrating the application of advanced cell formatting. Consider thus the <span class="doc_caps">lambtex</span> fragment below, whose output is displayed in <a class="doc_lnk" href="#doc:u:tab:species">Tab.&nbsp;7</a>. Besides the use of header, footer, and multiple body rows, also noteworthy are the cell configuration expressions <tt class="doc_code">2c_</tt> and <tt class="doc_code">2c^</tt>, which configure their corresponding cells to span two columns, be centered, and show a horizontal line below and above, respectively.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1219,7 +1219,7 @@ rspace="0.278em"
       </p>
       <p class="doc_par"><span class="doc_caps">TeX</span> and <span class="doc_caps">MathML</span> mathematical expressions in a block context are specified via the <tt class="doc_code">mathtex</tt> and <tt class="doc_code">mathml</tt> environments, respectively. Furthermore, because both these environments expect their content to be raw text that should be parsed verbatim, they accept the <span class="doc_caps">heredoc</span> technique for delimiting the environment. Suppose thus you wished to enter a math block containing the quadratic formula that solves the equation listed above. Specified in the <span class="doc_caps">TeX</span> format, the code would be the following:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1231,7 +1231,7 @@ rspace="0.278em"
       </div>
       <p class="doc_par">The equivalent Presentation <span class="doc_caps">MathML</span> markup is listed below. Note that it is also acceptable to provide Content <span class="doc_caps">MathML</span> instead of Presentation <span class="doc_caps">MathML</span>. In either case, just make sure the markup conforms to version 2.0 of the <span class="doc_caps">MathML</span> standard, and that the <tt class="doc_code">math</tt> top-level element that wraps the <span class="doc_caps">MathML</span> contents is provided as part of the markup. These requirements also apply to the <span class="doc_caps">MathML</span> markup specified in an inline context. On the other hand, giving an explicit namespace to the <span class="doc_caps">MathML</span> markup is <b class="doc_bold">not</b> necessary, since namespacing requirements are automatically taken care of.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1347,7 +1347,7 @@ width="0"
       </div>
       <p class="doc_par">Note that in most browsers you cannot see the alternative text unless the browser is configured not to display images. As for the code that produced the picture, it is as simple as this:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1367,7 +1367,7 @@ width="0"
       </p>
       <p class="doc_par">You have already encountered several examples of sub-pages while reading this document, as they have been used to illustrate the output of the composer in association with each code sample. The example below is the code that was used to produce the very first sub-page you have encountered in this document, back in the <a class="doc_lnk" href="#doc:u:sec:paragraphs">section on paragraph blocks</a>.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1440,7 +1440,7 @@ width="0"
       </p>
       <p class="doc_par">Another common requirement associated with sectioning is the ability to refer to a given part or section in a document. With that in mind, <span class="doc_caps">lambtex</span> allows you to label a given part or section declaration, and as described in the <a class="doc_lnk" href="#doc:u:sec:intlinks">following section</a>, provides also a set of commands that create hyperlinks to a given label. The label parameter is always optional and is enclosed in square brackets:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1485,7 +1485,7 @@ width="0"
       </h1>
       <p class="doc_par"><span class="doc_caps">lambtex</span> supports hyperlinks both to external resources and into targets in the same document. The former is provided by the already described simple command <tt class="doc_code">\link</tt>, whereas the latter relies on a set of different simple commands, each one tailored for a different use and/or kind of target. <a class="doc_lnk" href="#doc:u:tab:hyperlinks">Tab.&nbsp;8</a> lists all available hyperlinks commands, and the following source illustrates their use:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1589,7 +1589,7 @@ width="0"
       </p>
       <p class="doc_par">This block type is declared using the <tt class="doc_code">pull</tt> environment command, and accepts an optional primary parameter consisting of an inline sequence specifying the authorship of the quote. Therefore, to produce a pull-quote like the one that opens this section, you can simply provide the following code:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1621,7 +1621,7 @@ width="0"
       </p>
       <p class="doc_par">Suppose thus you wished to display a warning boxout like the one that opens this section. It makes sense to name it <tt class="doc_code">warning</tt>, and for each instance of the boxout to include the generic title <i class="doc_emph">“Warning”</i>. Moreover, you do not wish for warnings to be numbered, so you should not assign a counter to it. As for this particular instance of the boxout, you wish the extra title <i class="doc_emph">“Boxout overload”</i> to be appended to the generic title (note that the colon separating the generic and instance-specific titles is automatically inserted as needed, so you do not need to include it manually). All these considerations can be realised with the following code:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1645,7 +1645,7 @@ width="0"
       </p>
       <p class="doc_par">Suppose thus you wish to create a theorem named <tt class="doc_code">theorem</tt>, and whose title is, unsurprisingly, <i class="doc_emph">“Theorem”</i>. Moreover, you want the theorem to be numbered, and its counter to be called <tt class="doc_code">cnt:theorem</tt>. One particular instantiation of this theorem has the extra title <i class="doc_emph">“John McAuthor”</i>, reflecting its authorship. This is the <span class="doc_caps">lambtex</span> source you may use:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1746,7 +1746,7 @@ rspace="0.278em"
       </dl>
       <p class="doc_par">All these classes have two features in common: they may all be captioned, and each class has an associated counter that is automatically incremented whenever a new ordered wrapper is declared. Note also that the wrapper itself may be labelled, as illustrated by the code below, which shows the use of a <tt class="doc_code">figure</tt> wrapper around a <tt class="doc_code">picture</tt> block:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1805,7 +1805,7 @@ rspace="0.278em"
       </p>
       <p class="doc_par">Abstracts are commonly found on scientific papers, and <span class="doc_caps">lambtex</span> supports them as well. An abstract is declared by enclosing one or more embeddable blocks within an <tt class="doc_code">abstract</tt> environment. Please consult <a class="doc_lnk" href="#doc:u:sec:structure">Appendix&nbsp;A</a> for more details on what constitutes a <i class="doc_emph">embeddable block</i>, and note the source fragment below for an example of the various frontmatter blocks.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1844,7 +1844,7 @@ rspace="0.278em"
       </h1>
       <p class="doc_par">A typographic rule is commonly used in fiction pieces to clearly separate unrelated paragraphs. For the sake of completeness, <span class="doc_caps">lambtex</span> supports also this feature. You may declare it using the <tt class="doc_code">\rule</tt> simple command, or its synonym <tt class="doc_code">\hr</tt>. These commands are completely parameterless, as the code sample below demonstrates:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1877,7 +1877,7 @@ rspace="0.278em"
       </p>
       <p class="doc_par">The sample code below illustrates a note being referenced inside a paragraph and being defined afterwards. The example concludes with the simple command <tt class="doc_code">\notes</tt> requesting the printing of the homonymous section together with the defined note.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1901,7 +1901,7 @@ rspace="0.278em"
       </p>
       <p class="doc_par">The code below illustrates the declaration of a bibliographic entry. Note that the entry is referenced by the simple command <tt class="doc_code">\cite</tt>. Also, and in similarity to the command <tt class="doc_code">\see</tt>, it is possible to reference multiple entries with a single invocation of <tt class="doc_code">\cite</tt>, since this command accepts multiple primary parameters.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -1956,7 +1956,7 @@ rspace="0.222em"
       </p>
       <p class="doc_par">Let us now consider a full example of macro declaration. We wish to define a macro <tt class="doc_code">author</tt> that when invoked expands to the full name of an author. We also define a macro named <tt class="doc_code">greet</tt> that takes two arguments and produces a greeting. These two macros are then used in a small sample document. This is the <span class="doc_caps">lambtex</span> source:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_box doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
