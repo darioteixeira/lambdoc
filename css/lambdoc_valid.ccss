@@ -488,7 +488,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	margin-left: -0.7em;
 	height: 0;
 	line-height: 0.75em;
-	color: Colour_backfancy;
+	color: Colour_pullquote;
 	}
 
 

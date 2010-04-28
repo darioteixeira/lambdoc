@@ -312,7 +312,7 @@ caption, th, td
 	clear: both;
 	margin: 0 1em;
 	padding-left: 0.75em;
-	border-left: 3px solid #baa;
+	border-left: 3px solid #a88;
 	color: #333;
 	}
 
@@ -364,7 +364,7 @@ caption, th, td
 	border: 1px solid #333;
 	-moz-box-shadow: 2px 2px 2px #666;
 	-moz-border-radius: 5px;
-	background: #f3f6f9;
+	background: #f8f9fc;
 	}
 
 .doc_src_nums
@@ -953,8 +953,8 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	{
 	display: inline-block;
 	padding: 1em 0.5em 1em 3.25em;
-	border-top: 2px solid #baa;
-	border-bottom: 2px solid #baa;
+	border-top: 2px solid #a88;
+	border-bottom: 2px solid #a88;
 	font-size: 1.071em;
 	font-weight: bold;
 	quotes: "\201c" "\201d";
@@ -980,7 +980,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	margin-left: -0.7em;
 	height: 0;
 	line-height: 0.75em;
-	color: #ccc;
+	color: #a88;
 	}
 
 .doc_boxout
