@@ -2,12 +2,9 @@
 \newmacro{lambdoc}{0}{\caps{lambdoc}}
 
 \newmacro{optional}{0}{\span<optional>{≈}}
-\newmacro{optional0}{0}{\span<optional>{≈\sub{ø}}}
-\newmacro{mandatory}{0}{\span<mandatory>{✔}}
 \newmacro{mandatory0}{0}{\span<mandatory>{✔\sub{ø}}}
 \newmacro{forbidden}{0}{\span<forbidden>{✘}}
 \newmacro{forbidden0}{0}{\span<forbidden>{✘\sub{ø}}}
-\newmacro{depends}{0}{\mref{sec:order}{\forbidden/\mandatory}}
 \newmacro{depends0}{0}{\mref{sec:order}{\forbidden0/\mandatory0}}
 
 
@@ -969,7 +966,7 @@ name of the picture (typically the filename), and \code{\emph{alt}} is the alter
 text to be displayed if the browser cannot or is not configured to display images.
 Both parameters consist of raw text and are mandatory.  It differs from \code{\\glyph}
 in that it must be used in a block context and that it supports some additional
-configuration via extra parameters, described below.
+configuration via extra parameters, described further on.
 
 The bitmap below illustrates the use of a image block.  The picture is shown in its
 default centered position, though facilities exist for placing it on the left or right
@@ -1449,10 +1446,9 @@ There are four different classes of wrappers available:
 
 All these classes have two features in common: they may all be captioned, and each
 class has an associated counter that is automatically incremented whenever a new
-wrapper is declared.  Moreover, wrappers always have an associated ordering, and
-thus requesting an empty ordering with \code{()} is not allowed.  Note also that the
-wrapper itself may be labelled.  The code below illustrates the use of a \code{figure}
-wrapper around a \code{picture} block:
+ordered wrapper is declared.  Note also that the wrapper itself may be labelled, as
+illustrated by the code below, which shows the use of a \code{figure} wrapper around
+a \code{picture} block:
 
 \begin{source}
 \begin[fig:example]{figure}{This is the figure's caption.}
@@ -1460,16 +1456,22 @@ wrapper around a \code{picture} block:
 \end{figure}
 \end{source}
 
-Remember that captioning is optional.  When present, the caption is an inline sequence
-declared as a primary parameter of the wrapper environment.  Should it not be given, the
-counter associated with the wrapper is displayed between parentheses below the wrapped
-block.  Also, you can refer to this figure from anywhere in the document by using the
+You can refer to the above declared figure from anywhere in the document by using the
 label \code{fig:example} with any of the simple commands \code{\\ref}, \code{\\sref},
 and \code{\\mref}.  The resulting figure (\sref{fig:example}) is shown below:
 
 \begin[fig:example]{figure}{This is the figure's caption.}
 \picture{circle.png}{This is a circle}
 \end{figure}
+
+Remember that captioning is optional.  When present, the caption is an inline sequence
+declared as a primary parameter of the wrapper environment.  Should it not be given,
+the counter associated with the wrapper is displayed between parentheses below the
+wrapped block.  However, note that a caption-less wrapper must have an associated order,
+and therefore if you declare the wrapper to have an empty ordering via the \code{()}
+specification, then you must provide it with a caption.  This restriction is in place
+so that every wrapper has some form of context, either in the form of an ordering or
+a caption.
 
 
 \section[sec:floaters]{Floating blocks left or right}
@@ -1928,8 +1930,6 @@ in \sref{tab:permdesc}.
 | Permission		| Definition							|
 \body
 | \optional		| The parameter is optional, but may not be empty if present.	|
-| \optional0		| The parameter is optional, and may be empty.			|
-| \mandatory		| The parameter is mandatory, and it may not be empty.		|
 | \mandatory0		| The parameter is mandatory, but it may be empty.		|
 | \forbidden		| The parameter is altogether forbidden.			|
 | \forbidden0		| The parameter is forbidden, unless it is empty.		|
@@ -2003,19 +2003,19 @@ name is user-defined.}
 | \code{decor}			| \forbidden	| \forbidden	| \code{float} |
 | \code{description}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{enumerate}		| \forbidden	| \forbidden	| \code{bul} |
-| \code{equation}		| \depends	| \optional	| \code{float} |
-| \code{figure}			| \depends	| \optional	| \code{float} |
+| \code{equation}		| \depends0	| \optional	| \code{float} |
+| \code{figure}			| \depends0	| \optional	| \code{float} |
 | \code{itemize}		| \forbidden	| \forbidden	| \code{num} |
 | \code{mathml}			| \forbidden	| \forbidden	| \forbidden0 |
 | \code{mathtex}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{note}			| \forbidden	| \optional	| \forbidden0 |
 | \code{quote}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{printout}		| \depends	| \optional	| \code{float} |
+| \code{printout}		| \depends0	| \optional	| \code{float} |
 | \code{pull}			| \forbidden	| \forbidden	| \code{float} |
 | \code{qanda}			| \forbidden	| \forbidden	| \forbidden0 |
 | \code{source}			| \forbidden	| \forbidden	| \code{box}, \code{nums}, \code{zebra}, \code{lang} |
 | \code{subpage}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{table}			| \depends	| \optional	| \forbidden0 |
+| \code{table}			| \depends0	| \optional	| \forbidden0 |
 | \code{tabular}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{\emph{theorem}}		| \depends0	| \optional	| \forbidden0 |
 | \code{verbatim}		| \forbidden	| \forbidden	| \code{mult} |
@@ -2025,15 +2025,14 @@ name is user-defined.}
 
 \section[sec:order]{Notes on ordering in the context of sub-pages}
 
-This section applies to those blocks that have an associated ordering, namely wrapper
-blocks, sectional blocks, and the custom blocks (boxouts and theorems).  Recall that a
-wrapper is essentially a floater element with a caption and an order associated with it.
-There are four elements in \lambtex that fit into this category: equations, printouts,
-tables, and figures.  As for sectional blocks, these are the ones that produce parts,
-sections, sub-sections, and sub-sub-sections.  There are some special --- though as
-you shall see based on common sense --- rules that must be followed concerning the
-order parameter and the hyperlinking of blocks with associated ordering, particularly
-in the context of sub-pages.  The rules are as follows:
+This section applies to those blocks that may have an associated ordering, namely
+wrapper blocks, sectional blocks, and the custom blocks (boxouts and theorems).
+Recall that there are four elements in \lambtex that are categorised as wrappers:
+equations, printouts, tables, and figures.  As for sectional blocks, these are the
+ones that produce parts, sections, sub-sections, and sub-sub-sections.  There are
+some special --- though as you shall see based on common sense --- rules that must be
+followed concerning the order parameter and the hyperlinking of blocks with associated
+ordering, particularly in the context of sub-pages.  The rules are as follows:
 
 \begin{enumerate}
 
@@ -2042,14 +2041,14 @@ in the context of sub-pages.  The rules are as follows:
 	commands:
 
 	\p<!indent>{Unless the user explicitly demanded an empty ordering, sectional
-	commands have by default a number.  As for wrappers, they always have an
-	associated order.  In the case of custom environments, the situation varies.}
+	commands and wrappers have by default a number.  In the case of custom
+	environments, the situation varies.}
 
-	It makes sense that the hyperlinking commands that are supposed to produce a
-	number should only be used with wrappers, numbered sectional blocks, or numbered
-	custom environments.  These commands are \code{\\ref} and \code{\\sref}.
-	On the other hand, because \code{\\mref} does not output a number, it is
-	always allowed.
+	It makes sense that the hyperlinking commands that are supposed to produce
+	a number should only be used with numbered wrappers, numbered sectional
+	blocks, or numbered custom environments.  These commands are \code{\\ref}
+	and \code{\\sref}.  On the other hand, because \code{\\mref} does not output
+	a number, it is always allowed.
 
 \item
 	You must explicitly provide a manual ordering for sub-paged wrappers, sectional
@@ -2058,9 +2057,8 @@ in the context of sub-pages.  The rules are as follows:
 	\p<!indent>{A sub-paged element is one that is declared inside a \code{subpage}
 	block (see \sref{sec:subpage}).  Because they lie outside the main flow of the
 	document, these elements are not automatically numbered.  You must therefore
-	explicitly provide them with an ordering parameter.  This is done by inserting
-	the numbering between parentheses.  Note that in the case of sectional commands
-	or custom blocks an empty ordering is allowed.}
+	explicitly provide them with an ordering parameter by inserting the numbering
+	between parentheses.  Specifying an empty ordering is of course also allowed.}
 
 \item
 	You may not provide a manual ordering for wrappers, sectional blocks, or custom
@@ -2069,10 +2067,10 @@ in the context of sub-pages.  The rules are as follows:
 	\p<!indent>{This rule is complementary to the previous one.  Because these
 	blocks are numbered automatically by \lambtex when present in the main document,
 	you may not interfere with that automatism by providing an explicit ordering.
-	Note, however, that an empty ordering is always allowed for sectional commands
-	or custom blocks.}
+	Note, however, that an empty ordering is always allowed.}
 
 \end{enumerate}
+
 
 \section[sec:extra]{Extra parameters}
 

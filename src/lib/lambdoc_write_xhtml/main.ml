@@ -533,17 +533,17 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				in caphead @ capbody
 			in [write_custom None (data :> Custom.t) maybe_seq frag !!"theorem" formatter]
 
-		| `Equation (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk !!"equation" Name_equation]
+		| `Equation (floatation, wrapper, blk) ->
+			[write_wrapper floatation wrapper blk !!"equation" Name_equation]
 
-		| `Printout (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk !!"printout" Name_printout]
+		| `Printout (floatation, wrapper, blk) ->
+			[write_wrapper floatation wrapper blk !!"printout" Name_printout]
 
-		| `Table (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk !!"table" Name_table]
+		| `Table (floatation, wrapper, blk) ->
+			[write_wrapper floatation wrapper blk !!"table" Name_table]
 
-		| `Figure (floatation, wrapper, maybe_seq, blk) ->
-			[write_wrapper floatation wrapper maybe_seq blk !!"figure" Name_figure]
+		| `Figure (floatation, wrapper, blk) ->
+			[write_wrapper floatation wrapper blk !!"figure" Name_figure]
 
 		| `Heading heading ->
 			write_heading_block heading
@@ -607,26 +607,19 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		in XHTML.M.div ~a:[a_id (make_label label); a_class (classname :: (classname ^ "_env_"  ^ env) :: style)] content
 
 
-	and write_wrapper floatation (label, order) maybe_seq blk classname name =
+	and write_wrapper floatation wrapper blk classname name =
 		let wrapper_content = match write_block blk with
 			| [b] -> b
 			| _   -> failwith "write_wrapper" in
-		let caption =
-			let headcore = (write_name name) @ (wrapper_conv ~prespace:true order) in
-			let (length, caption_head, caption_body) = match maybe_seq with
-				| Some seq ->
-					(
-					"long",
-					XHTML.M.h1 ~a:[a_class [!!"caption_head"]] (headcore @ [pcdata ":"]),
-					[XHTML.M.p ~a:[a_class [!!"caption_body"]] (write_seq seq)]
-					)
-				| None ->
-					(
-					"short",
-					XHTML.M.h1 ~a:[a_class [!!"caption_head"]] ([pcdata "("] @ headcore @ [pcdata ")"]),
-					[]
-					)
-			in XHTML.M.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [XHTML.M.div ~a:[a_class [!!"caption_aux"]] (caption_head :: caption_body)] in
+		let (length, label, caption_content) = match wrapper with
+			| Wrapper.Ordered (label, order, maybe_seq) ->
+				let headcore = (write_name name) @ (wrapper_conv ~prespace:true order)
+				in (match maybe_seq with
+					| Some seq -> ("long", label, [XHTML.M.h1 ~a:[a_class [!!"caption_head"]] (headcore @ [pcdata ":"]); XHTML.M.p ~a:[a_class [!!"caption_body"]] (write_seq seq)])
+					| None	   -> ("short", label, [XHTML.M.h1 ~a:[a_class [!!"caption_head"]] ([pcdata "("] @ headcore @ [pcdata ")"])]))
+			| Wrapper.Unordered (label, seq) ->
+				("long", label, [XHTML.M.p ~a:[a_class [!!"caption_body"]] (write_seq seq)]) in
+		let caption = XHTML.M.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [XHTML.M.div ~a:[a_class [!!"caption_aux"]] caption_content] in
 		let classnames = [!!"wrapper"; classname] @ (make_floatation floatation)
 		in XHTML.M.div ~a:[a_id (make_label label); a_class classnames] [wrapper_content; caption]
 

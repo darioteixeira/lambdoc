@@ -105,6 +105,8 @@ type error_msg_t =
 	| Duplicate_custom of Ident.t option * Ref.t
 	| Undefined_custom of Ident.t option * Ref.t
 
+	| Invalid_wrapper of Ident.t option * Wrapper.kind_t
+
 	| Invalid_counter of Ident.t option * Ref.t
 	| Mismatched_counter of Ident.t option * Ref.t
 	| Unexpected_counter of Ident.t option * Ref.t

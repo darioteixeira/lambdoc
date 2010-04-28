@@ -35,10 +35,10 @@ type 'a block_t =
 	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
 	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a nelist
-	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
-	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
-	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
-	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Equation of Floatation.t * Wrapper.t * 'a
+	| `Printout of Floatation.t * Wrapper.t * 'a
+	| `Table of Floatation.t * Wrapper.t * 'a
+	| `Figure of Floatation.t * Wrapper.t * 'a
 	| `Heading of Heading.heading_t
 	| `Title of Level.title_t * Inline.seq_t
 	| `Abstract of 'a nelist
@@ -123,16 +123,16 @@ val boxout: Floatation.t -> Custom.Boxout.t -> (_, _) Inline.t nelist option -> 
 val theorem: Custom.Theorem.t -> (_, _) Inline.t nelist option -> (_, [< `Listable ], [< `Quotable ], [< `Embeddable ], _) t nelist ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Theorem_blk ]) t
 
-val equation: Floatation.t -> Wrapper.t -> (_, _) Inline.t nelist option -> (_, _, _, _, [< `Mathblk_blk ]) t ->
+val equation: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Mathblk_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Equation_blk ]) t
 
-val printout: Floatation.t -> Wrapper.t -> (_, _) Inline.t nelist option -> (_, _, _, _, [< `Source_blk ]) t ->
+val printout: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Source_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Printout_blk ]) t
 
-val table: Floatation.t -> Wrapper.t -> (_, _) Inline.t nelist option -> (_, _, _, _, [< `Tabular_blk ]) t ->
+val table: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Tabular_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Table_blk ]) t
 
-val figure: Floatation.t -> Wrapper.t -> (_, _) Inline.t nelist option -> (_, _, _, _, [< `Subpage_blk | `Verbatim_blk | `Picture_blk ]) t ->
+val figure: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Subpage_blk | `Verbatim_blk | `Picture_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Figure_blk ]) t
 
 val heading: ('a, 'b, 'c, 'd, 'e) Heading.t ->

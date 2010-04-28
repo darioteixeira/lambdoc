@@ -343,6 +343,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
+					| Target.Visible_target (Target.Wrapper_target (_, `None_given))
 					| Target.Visible_target (Target.Part_target `None_given)
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
@@ -355,6 +356,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
+					| Target.Visible_target (Target.Wrapper_target (_, `None_given))
 					| Target.Visible_target (Target.Part_target `None_given)
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
@@ -687,30 +689,30 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
+				let (floatation, wrapper) = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
 				let blk = Obj.magic (convert_block ~minipaged true true true `Equation_blk astblk)
-				in perhaps (Block.equation floatation wrapper maybe_seq) blk
+				in perhaps (Block.equation floatation wrapper) blk
 			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq
+				let (floatation, wrapper) = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq
 				and blk = Obj.magic (convert_block ~minipaged true true true `Printout_blk astblk)
-				in perhaps (Block.printout floatation wrapper maybe_seq) blk
+				in perhaps (Block.printout floatation wrapper) blk
 			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm table_counter Wrapper.Table maybe_astseq
+				let (floatation, wrapper) = convert_wrapper comm table_counter Wrapper.Table maybe_astseq
 				and blk = Obj.magic (convert_block ~minipaged true true true `Table_blk astblk)
-				in perhaps (Block.table floatation wrapper maybe_seq) blk
+				in perhaps (Block.table floatation wrapper) blk
 			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astseq, astblk))) ->
 			let elem () =
-				let (floatation, wrapper, maybe_seq) = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq
+				let (floatation, wrapper) = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq
 				and blk = Obj.magic (convert_block ~minipaged true true true `Figure_blk astblk)
-				in perhaps (Block.figure floatation wrapper maybe_seq) blk
+				in perhaps (Block.figure floatation wrapper) blk
 			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Part astseq)) ->
@@ -885,10 +887,21 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 		let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 		let order = match comm.comm_order with
 			| None	     -> Order_input.auto_ordinal counter
+			| Some ""    -> Order_input.no_order ()
 			| Some thing -> make_user_ordinal comm thing in
 		let label = make_label comm (Target.wrapper kind order) in
-		let maybe_seq = maybe (convert_seq ~comm) maybe_astseq
-		in (floatation, (label, order), maybe_seq)
+		let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
+		let wrapper = match (order, maybe_seq) with
+			| (`None_given, None) ->
+				let msg = Error.Invalid_wrapper (comm.comm_tag, kind) in
+				DynArray.add errors (Some comm.comm_linenum, msg);
+				Wrapper.Unordered (label, Inline.get_seq (dummy_inline, []))
+			| (`None_given, Some seq) ->
+				Wrapper.Unordered (label, Inline.get_seq seq)
+			| (`Auto_given _ as o, maybe_seq)
+			| (`User_given _ as o, maybe_seq) ->
+				Wrapper.Ordered (label, o, maybe Inline.get_seq maybe_seq)
+		in (floatation, wrapper)
 
 
 	and convert_customdef comm env kind maybe_caption maybe_counter_name =

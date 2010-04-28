@@ -15,6 +15,8 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+
 type kind_t =
 	| Printout
 	| Equation
@@ -22,7 +24,8 @@ type kind_t =
 	| Table
 	with sexp
 
-type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t ]) Order.t with sexp
-
-type t = Label.t * order_t with sexp
+type t =
+	| Ordered of  Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t ]) Order.t * Inline.seq_t option
+	| Unordered of Label.t * Inline.seq_t
+	with sexp
 

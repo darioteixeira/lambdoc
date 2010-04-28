@@ -34,10 +34,10 @@ type 'a block_t =
 	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
 	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a nelist
-	| `Equation of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
-	| `Printout of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
-	| `Table of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
-	| `Figure of Floatation.t * Wrapper.t * Inline.seq_t option * 'a
+	| `Equation of Floatation.t * Wrapper.t * 'a
+	| `Printout of Floatation.t * Wrapper.t * 'a
+	| `Table of Floatation.t * Wrapper.t * 'a
+	| `Figure of Floatation.t * Wrapper.t * 'a
 	| `Heading of Heading.heading_t
 	| `Title of Level.title_t * Inline.seq_t
 	| `Abstract of 'a nelist
@@ -107,17 +107,17 @@ let boxout floatation data maybe_seq frag =
 let theorem data maybe_seq frag =
 	`Theorem (data, (maybe Inline.get_seq maybe_seq), frag)
 
-let equation floatation wrapper maybe_seq blk =
-	`Equation (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
+let equation floatation wrapper blk =
+	`Equation (floatation, wrapper, blk)
 
-let printout floatation wrapper maybe_seq blk =
-	`Printout (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
+let printout floatation wrapper blk =
+	`Printout (floatation, wrapper, blk)
 
-let table floatation wrapper maybe_seq blk =
-	`Table (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
+let table floatation wrapper blk =
+	`Table (floatation, wrapper, blk)
 
-let figure floatation wrapper maybe_seq blk =
-	`Figure (floatation, wrapper, (maybe Inline.get_seq maybe_seq), blk)
+let figure floatation wrapper blk =
+	`Figure (floatation, wrapper, blk)
 
 let heading data =
 	`Heading (Heading.get_heading data)

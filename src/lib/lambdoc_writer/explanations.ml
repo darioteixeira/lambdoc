@@ -33,11 +33,11 @@ let explain_nesting blk =
 		| `Quotable_blk	  -> "a quotable block (or sub-types)"
 		| `Embeddable_blk -> "an embeddable block"
 		| `Paragraph_blk  -> "a 'paragraph' block"
-		| `Decor_blk	  -> "an 'image' or 'verbatim' block"
+		| `Decor_blk	  -> "a 'picture' or 'verbatim' block"
 		| `Equation_blk	  -> "a 'mathtex' or 'mathml' block"
 		| `Printout_blk	  -> "a 'source' block"
 		| `Table_blk	  -> "a 'tabular' block"
-		| `Figure_blk	  -> "an 'image', 'verbatim', or 'subpage' block"
+		| `Figure_blk	  -> "a 'picture', 'verbatim', or 'subpage' block"
 	in "The document nesting rules expect " ^ which ^ " in this location"
 
 
@@ -69,6 +69,13 @@ let explain_level = function
 	| `Level1 -> 1
 	| `Level2 -> 2
 	| `Level3 -> 3
+
+
+let explain_wrapper = function
+	| Wrapper.Equation -> "an equation"
+	| Wrapper.Printout -> "a printout"
+	| Wrapper.Table    -> "a table"
+	| Wrapper.Figure   -> "a figure"
 
 
 let explain_error = function
@@ -172,6 +179,9 @@ let explain_error = function
 
 	| Error.Undefined_custom (tag, env) ->
 		sprintf "The environment '#%s#' used in %s has not been defined yet." (escape env) (explain_tag tag)
+
+	| Error. Invalid_wrapper (tag, kind) ->
+		sprintf "In %s, you provided an empty ordering for %s without a caption.  You must either discard the empty ordering specification or provide a caption." (explain_tag tag) (explain_wrapper kind)
 
 	| Error.Invalid_counter (tag, counter) ->
 		sprintf "Invalid name '#%s#' for counter in %s. %s." (escape counter) (explain_tag tag) (explain_ident "A counter")

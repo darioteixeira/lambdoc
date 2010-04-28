@@ -620,6 +620,41 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \p{\lorem}
 
 
+\section{Equation environments without ordering}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin(){equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin()<left>{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin()<right>{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+
 \section{Equation environments without caption}
 
 \subsection{Centered}

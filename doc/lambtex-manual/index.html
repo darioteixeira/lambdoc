@@ -1338,7 +1338,7 @@ width="0"
       </p>
       <h2 id="doc:a:7" class="doc_sec"><span class="doc_order">14.2</span><span>Pictures</span>
       </h2>
-      <p class="doc_par">The insertion of block images into a document is done via the simple command <tt class="doc_code">\picture</tt>, which in its basic usage is identical to the afore described <tt class="doc_code">\glyph</tt>. Namely, it takes the form <tt class="doc_code">\picture{<i class="doc_emph">identifier</i>}{<i class="doc_emph">alt</i>}</tt>, where <tt class="doc_code"><i class="doc_emph">identifier</i></tt> is the name of the picture (typically the filename), and <tt class="doc_code"><i class="doc_emph">alt</i></tt> is the alternative text to be displayed if the browser cannot or is not configured to display images. Both parameters consist of raw text and are mandatory. It differs from <tt class="doc_code">\glyph</tt> in that it must be used in a block context and that it supports some additional configuration via extra parameters, described below.
+      <p class="doc_par">The insertion of block images into a document is done via the simple command <tt class="doc_code">\picture</tt>, which in its basic usage is identical to the afore described <tt class="doc_code">\glyph</tt>. Namely, it takes the form <tt class="doc_code">\picture{<i class="doc_emph">identifier</i>}{<i class="doc_emph">alt</i>}</tt>, where <tt class="doc_code"><i class="doc_emph">identifier</i></tt> is the name of the picture (typically the filename), and <tt class="doc_code"><i class="doc_emph">alt</i></tt> is the alternative text to be displayed if the browser cannot or is not configured to display images. Both parameters consist of raw text and are mandatory. It differs from <tt class="doc_code">\glyph</tt> in that it must be used in a block context and that it supports some additional configuration via extra parameters, described further on.
       </p>
       <p class="doc_par">The bitmap below illustrates the use of a image block. The picture is shown in its default centered position, though facilities exist for placing it on the left or right of the page and embedded within the flow of the paragraph text (see <a class="doc_lnk" href="#doc:u:sec:decor">Section&nbsp;25</a> for details).
       </p>
@@ -1744,7 +1744,7 @@ rspace="0.278em"
           </p>
         </dd>
       </dl>
-      <p class="doc_par">All these classes have two features in common: they may all be captioned, and each class has an associated counter that is automatically incremented whenever a new wrapper is declared. Moreover, wrappers always have an associated ordering, and thus requesting an empty ordering with <tt class="doc_code">()</tt> is not allowed. Note also that the wrapper itself may be labelled. The code below illustrates the use of a <tt class="doc_code">figure</tt> wrapper around a <tt class="doc_code">picture</tt> block:
+      <p class="doc_par">All these classes have two features in common: they may all be captioned, and each class has an associated counter that is automatically incremented whenever a new ordered wrapper is declared. Note also that the wrapper itself may be labelled, as illustrated by the code below, which shows the use of a <tt class="doc_code">figure</tt> wrapper around a <tt class="doc_code">picture</tt> block:
       </p>
       <div class="doc_src_box doc_src_zebra doc_src_main">
         <pre class="doc_src_code">
@@ -1756,7 +1756,7 @@ rspace="0.278em"
 
 <code class="doc_src_line doc_src_dummy"></code></pre>
       </div>
-      <p class="doc_par">Remember that captioning is optional. When present, the caption is an inline sequence declared as a primary parameter of the wrapper environment. Should it not be given, the counter associated with the wrapper is displayed between parentheses below the wrapped block. Also, you can refer to this figure from anywhere in the document by using the label <tt class="doc_code">fig:example</tt> with any of the simple commands <tt class="doc_code">\ref</tt>, <tt class="doc_code">\sref</tt>, and <tt class="doc_code">\mref</tt>. The resulting figure (<a class="doc_lnk" href="#doc:u:fig:example">Fig.&nbsp;1</a>) is shown below:
+      <p class="doc_par">You can refer to the above declared figure from anywhere in the document by using the label <tt class="doc_code">fig:example</tt> with any of the simple commands <tt class="doc_code">\ref</tt>, <tt class="doc_code">\sref</tt>, and <tt class="doc_code">\mref</tt>. The resulting figure (<a class="doc_lnk" href="#doc:u:fig:example">Fig.&nbsp;1</a>) is shown below:
       </p>
       <div id="doc:u:fig:example" class="doc_wrapper doc_figure doc_float_center">
         <div class="doc_pic"><a href="circle.png" class="doc_pic_lnk">
@@ -1771,6 +1771,8 @@ rspace="0.278em"
           </div>
         </div>
       </div>
+      <p class="doc_par">Remember that captioning is optional. When present, the caption is an inline sequence declared as a primary parameter of the wrapper environment. Should it not be given, the counter associated with the wrapper is displayed between parentheses below the wrapped block. However, note that a caption-less wrapper must have an associated order, and therefore if you declare the wrapper to have an empty ordering via the <tt class="doc_code">()</tt> specification, then you must provide it with a caption. This restriction is in place so that every wrapper has some form of context, either in the form of an ordering or a caption.
+      </p>
       <h1 id="doc:u:sec:floaters" class="doc_sec"><span class="doc_order">24</span><span>Floating blocks left or right</span>
       </h1>
       <p class="doc_par">In all the examples presented so far, blocks have been centered and shown occupying the entire width of the page. For reasons of style this method of presentation is not always optimal, however. Instead, it is often preferable for blocks to be embedded within the flow of the text. With this in mind, pull-quotes, boxouts, wrappers, and decoration blocks (see <a class="doc_lnk" href="#doc:u:sec:decor">next section</a>) all accept an optional extra parameter named <tt class="doc_code">float</tt> that tells <span class="doc_caps">lambtex</span> whether the block should be placed in the <tt class="doc_code">center</tt> (the default), or at the <tt class="doc_code">left</tt> or <tt class="doc_code">right</tt> of the page. These blocks are collectively known as <i class="doc_emph">floaters</i>.
@@ -2147,18 +2149,6 @@ rspace="0.222em"
                   <td class="doc_cell_c"><span class="doc_span_optional">≈</span>
                   </td>
                   <td class="doc_cell_l">The parameter is optional, but may not be empty if present.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="doc_cell_c"><span class="doc_span_optional">≈<sub class="doc_sub">ø</sub></span>
-                  </td>
-                  <td class="doc_cell_l">The parameter is optional, and may be empty.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="doc_cell_c"><span class="doc_span_mandatory">✔</span>
-                  </td>
-                  <td class="doc_cell_l">The parameter is mandatory, and it may not be empty.
                   </td>
                 </tr>
                 <tr>
@@ -2706,7 +2696,7 @@ rspace="0.222em"
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">equation</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
@@ -2716,7 +2706,7 @@ rspace="0.222em"
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">figure</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
@@ -2776,7 +2766,7 @@ rspace="0.222em"
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">printout</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
@@ -2826,7 +2816,7 @@ rspace="0.222em"
                 <tr>
                   <td class="doc_cell_r"><tt class="doc_code">table</tt>
                   </td>
-                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘</span>/<span class="doc_span_mandatory">✔</span></a>
+                  <td class="doc_cell_l"><a class="doc_lnk" href="#doc:u:sec:order"><span class="doc_span_forbidden">✘<sub class="doc_sub">ø</sub></span>/<span class="doc_span_mandatory">✔<sub class="doc_sub">ø</sub></span></a>
                   </td>
                   <td class="doc_cell_l"><span class="doc_span_optional">≈</span>
                   </td>
@@ -2888,27 +2878,27 @@ rspace="0.222em"
       </div>
       <h1 id="doc:u:sec:order" class="doc_sec"><span class="doc_order">D</span><span>Notes on ordering in the context of sub-pages</span>
       </h1>
-      <p class="doc_par">This section applies to those blocks that have an associated ordering, namely wrapper blocks, sectional blocks, and the custom blocks (boxouts and theorems). Recall that a wrapper is essentially a floater element with a caption and an order associated with it. There are four elements in <span class="doc_caps">lambtex</span> that fit into this category: equations, printouts, tables, and figures. As for sectional blocks, these are the ones that produce parts, sections, sub-sections, and sub-sub-sections. There are some special — though as you shall see based on common sense — rules that must be followed concerning the order parameter and the hyperlinking of blocks with associated ordering, particularly in the context of sub-pages. The rules are as follows:
+      <p class="doc_par">This section applies to those blocks that may have an associated ordering, namely wrapper blocks, sectional blocks, and the custom blocks (boxouts and theorems). Recall that there are four elements in <span class="doc_caps">lambtex</span> that are categorised as wrappers: equations, printouts, tables, and figures. As for sectional blocks, these are the ones that produce parts, sections, sub-sections, and sub-sub-sections. There are some special — though as you shall see based on common sense — rules that must be followed concerning the order parameter and the hyperlinking of blocks with associated ordering, particularly in the context of sub-pages. The rules are as follows:
       </p>
       <ol class="doc_enumerate doc_style_decimal">
         <li class="doc_item">
           <p class="doc_par">Only numbered elements may be referred to using <tt class="doc_code">\ref</tt> and <tt class="doc_code">\sref</tt> commands:
           </p>
-          <p class="doc_par doc_noindent">Unless the user explicitly demanded an empty ordering, sectional commands have by default a number. As for wrappers, they always have an associated order. In the case of custom environments, the situation varies.
+          <p class="doc_par doc_noindent">Unless the user explicitly demanded an empty ordering, sectional commands and wrappers have by default a number. In the case of custom environments, the situation varies.
           </p>
-          <p class="doc_par">It makes sense that the hyperlinking commands that are supposed to produce a number should only be used with wrappers, numbered sectional blocks, or numbered custom environments. These commands are <tt class="doc_code">\ref</tt> and <tt class="doc_code">\sref</tt>. On the other hand, because <tt class="doc_code">\mref</tt> does not output a number, it is always allowed.
+          <p class="doc_par">It makes sense that the hyperlinking commands that are supposed to produce a number should only be used with numbered wrappers, numbered sectional blocks, or numbered custom environments. These commands are <tt class="doc_code">\ref</tt> and <tt class="doc_code">\sref</tt>. On the other hand, because <tt class="doc_code">\mref</tt> does not output a number, it is always allowed.
           </p>
         </li>
         <li class="doc_item">
           <p class="doc_par">You must explicitly provide a manual ordering for sub-paged wrappers, sectional blocks, or custom blocks:
           </p>
-          <p class="doc_par doc_noindent">A sub-paged element is one that is declared inside a <tt class="doc_code">subpage</tt> block (see <a class="doc_lnk" href="#doc:u:sec:subpage">Section&nbsp;15</a>). Because they lie outside the main flow of the document, these elements are not automatically numbered. You must therefore explicitly provide them with an ordering parameter. This is done by inserting the numbering between parentheses. Note that in the case of sectional commands or custom blocks an empty ordering is allowed.
+          <p class="doc_par doc_noindent">A sub-paged element is one that is declared inside a <tt class="doc_code">subpage</tt> block (see <a class="doc_lnk" href="#doc:u:sec:subpage">Section&nbsp;15</a>). Because they lie outside the main flow of the document, these elements are not automatically numbered. You must therefore explicitly provide them with an ordering parameter by inserting the numbering between parentheses. Specifying an empty ordering is of course also allowed.
           </p>
         </li>
         <li class="doc_item">
           <p class="doc_par">You may not provide a manual ordering for wrappers, sectional blocks, or custom blocks defined outside a sub-page:
           </p>
-          <p class="doc_par doc_noindent">This rule is complementary to the previous one. Because these blocks are numbered automatically by <span class="doc_caps">lambtex</span> when present in the main document, you may not interfere with that automatism by providing an explicit ordering. Note, however, that an empty ordering is always allowed for sectional commands or custom blocks.
+          <p class="doc_par doc_noindent">This rule is complementary to the previous one. Because these blocks are numbered automatically by <span class="doc_caps">lambtex</span> when present in the main document, you may not interfere with that automatism by providing an explicit ordering. Note, however, that an empty ordering is always allowed.
           </p>
         </li>
       </ol>
