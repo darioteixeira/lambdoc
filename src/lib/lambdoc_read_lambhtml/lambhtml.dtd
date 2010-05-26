@@ -12,8 +12,8 @@
 	" paragraph | p
 	| itemize | ul | enumerate | ol | description | dl
 	| qanda | verse | quote
-	| mathtexblk | mathmlblk
-	| source | tabular | verbatim | pre | picture | subpage
+	| mathtexblk | mathmlblk | source | tabular
+	| console | verbatim | pre | picture | subpage
 	| decor | pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix
@@ -89,6 +89,9 @@
 
 <!ELEMENT tabular (thead?, tbody*, tfoot?)>
 <!ATTLIST tabular %Common; cols CDATA #REQUIRED>
+
+<!ELEMENT console (#PCDATA)>
+<!ATTLIST console %Common;>
 
 <!ELEMENT verbatim (#PCDATA)>
 <!ATTLIST verbatim %Common;>

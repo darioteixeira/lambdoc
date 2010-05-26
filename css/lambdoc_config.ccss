@@ -19,10 +19,12 @@ Colour_weak:		#999;
 Colour_shadow:		#666;
 Colour_question:	Colour_forefancy;
 Colour_answer:		Colour_doc;
+Colour_cons:		#ffe790;
 Colour_pulltext:	#555;
 Colour_pullhead:	Colour_forefancy;
 Colour_pullquote:	Colour_weakfancy;
 
+Background_cons:	#000;
 Background_src:		#f8f9fc;
 Background_src_odd:	#f3f6fc;
 Background_src_even:	#f9f9f9;
@@ -35,6 +37,7 @@ Background_boxout:	#fffcf0;
 /********************************************************************************/
 
 Border_quote:		3px solid Colour_weakfancy;
+Border_cons:		1px solid #ffb720;
 Border_src:		1px solid Colour_watery;
 Border_tabular_outter:	2px solid Colour_watery;
 Border_tabular_inner:	1px solid Colour_watery;
@@ -154,7 +157,7 @@ Padding_vtabout:	0.4em;
 Padding_part:		0.25em;
 
 Line_height_doc:	1.6em;
-Line_height_src:	1.8em;
+Line_height_pre:	1.8em;
 Line_height_verb:	1em;
 
 Width_ghost_num:	2.5em;

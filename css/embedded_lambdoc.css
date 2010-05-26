@@ -309,11 +309,11 @@
 .doc_src_main
 	{
 	clear: both;
+	overflow: auto;
 	margin: 0 1em;
 	font-size: 1.2em;
 	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
 	line-height: 1.8em;
-	overflow: auto;
 	color: #000;
 	}
 
@@ -742,6 +742,43 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	}
 
 .doc_wrapper > .doc_tab
+	{
+	margin: 0;
+	}
+
+.doc_cons
+	{
+	clear: both;
+	line-height: 0;
+	margin: 0 1em;
+	padding: 1em;
+	border: 1px solid #ffb720;
+	-moz-box-shadow: 2px 2px 2px #666;
+	-moz-border-radius: 5px;
+	background: #000;
+	color: #ffe790;
+	}
+
+.doc_cons > pre
+	{
+	font-size: 1.2em;
+	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-weight: bold;
+	white-space: pre;
+	line-height: 1.8em;
+	}
+
+.doc_cons:not(:first-child)
+	{
+	margin-top: 2em;
+	}
+
+.doc_cons:not(:last-child)
+	{
+	margin-bottom: 2em;
+	}
+
+.doc_wrapper > .doc_cons
 	{
 	margin: 0;
 	}

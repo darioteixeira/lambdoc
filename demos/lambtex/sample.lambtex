@@ -317,6 +317,17 @@ let rec count = function
 \p{\lorem}
 
 
+\section{Console environments}
+
+\p{\lorem}
+\begin{console}
+user@localhost:~$ make
+lambcmd.native -f lambtex -t xhtml -i sample.lambtex -o index.html
+user@localhost:~$
+\end{console}
+\p{\lorem}
+
+
 \section{Verbatim environments}
 
 \p{\lorem}
@@ -797,6 +808,46 @@ let is_foo = function
 \end{tabular}
 \end{table}
 \p{\lorem}
+\p{\lorem}
+
+
+\section{Figure environments around console blocks}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{figure}{\fox}
+\begin{console}
+user@localhost:~$ make
+lambcmd.native -f lambtex -t xhtml -i sample.lambtex -o index.html
+user@localhost:~$
+\end{console}
+\end{figure}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{figure}{\fox}
+\begin{console}
+user@localhost:~$ make
+lambcmd.native -i sample.lambtex -o index.html
+user@localhost:~$
+\end{console}
+\end{figure}
+\p{\lorem}
+
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{figure}{\fox}
+\begin{console}
+user@localhost:~$ make
+lambcmd.native -i sample.lambtex -o index.html
+user@localhost:~$
+\end{console}
+\end{figure}
 \p{\lorem}
 
 

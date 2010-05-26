@@ -240,6 +240,8 @@ and process_block store node =
 		| T_element "tabular" ->
 			let (cols, tabular) = process_tabular store node
 			in (!!comm, Ast.Tabular (cols, tabular))
+		| T_element "console" ->
+			(!!comm, Ast.Console node#data)
 		| T_element "verbatim"
 		| T_element "pre" ->
 			(!!comm, Ast.Verbatim node#data)

@@ -28,6 +28,7 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
+	| `Console of string
 	| `Verbatim of int * string
 	| `Picture of bool * int option * Alias.t * string
 	| `Subpage of 'a nelist
@@ -102,6 +103,9 @@ val source: Source.t ->
 val tabular: 'a Tabular.t ->
 	('a, [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Tabular_blk ]) t
 
+val console: string ->
+	([> `Composition ], [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Console_blk ]) t
+
 val verbatim: int -> string ->
 	([> `Composition ], [> `Listable ], [> `Quotable], [> `Embeddable ], [> `Verbatim_blk ]) t
 
@@ -132,7 +136,7 @@ val printout: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Source_blk ]) t ->
 val table: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Tabular_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Table_blk ]) t
 
-val figure: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Subpage_blk | `Verbatim_blk | `Picture_blk ]) t ->
+val figure: Floatation.t -> Wrapper.t -> (_, _, _, _, [< `Console_blk | `Verbatim_blk | `Picture_blk | `Subpage_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Figure_blk ]) t
 
 val heading: ('a, 'b, 'c, 'd, 'e) Heading.t ->

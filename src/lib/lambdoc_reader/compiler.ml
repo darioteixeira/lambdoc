@@ -589,7 +589,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				let box = Extra.get_boolean ~default:true extra Box_hnd in
 				let linenums = Extra.get_boolean ~default:(box && (match lang with Some _ -> true | _ -> false)) extra Linenums_hnd in
 				let zebra = Extra.get_boolean ~default:linenums extra Zebra_hnd in
-				let trimmed = Verbatim_input.trim txt in
+				let trimmed = Literal_input.trim txt in
 				let hilite = Camlhighlight_parser.from_string ?lang trimmed in
 				let src = Source.make lang box linenums zebra hilite in
 				let () = if trimmed = "" then DynArray.add errors (Some comm.comm_linenum, Error.Empty_source comm.comm_tag)
@@ -601,12 +601,20 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () = [Block.tabular (convert_tabular comm tcols tab)]
 			in check_block_comm `Feature_tabular comm elem
 
+		| (_, _, _, `Figure_blk, (comm, Ast.Console txt))
+		| (_, _, _, `Any_blk, (comm, Ast.Console txt)) ->
+			let elem () =
+				let trimmed = Literal_input.trim txt in
+				let () = if trimmed = "" then DynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag)
+				in [Block.console trimmed]
+			in check_block_comm `Feature_console comm elem
+
 		| (_, _, _, `Decor_blk, (comm, Ast.Verbatim txt))
 		| (_, _, _, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Verbatim txt)) ->
 			let elem () =
 				let mult = Extra.fetch_numeric ~default:0 comm errors Mult_hnd
-				and trimmed = Verbatim_input.trim txt in
+				and trimmed = Literal_input.trim txt in
 				let () = if trimmed = "" then DynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag)
 				in [Block.verbatim mult trimmed]
 			in check_block_comm `Feature_verbatim comm elem

@@ -27,6 +27,7 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
+	| `Console of string
 	| `Verbatim of int * string
 	| `Picture of bool * int option * Alias.t * string
 	| `Subpage of 'a nelist
@@ -85,6 +86,9 @@ let source data =
 
 let tabular data =
 	`Tabular (Tabular.get_tabular data)
+
+let console data =
+	`Console data
 
 let verbatim mult data =
 	`Verbatim (mult, data)

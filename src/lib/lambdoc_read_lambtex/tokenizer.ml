@@ -107,6 +107,8 @@ let issue_begin_command raw_comm position =
 		then BEGIN_MATHTEX_BLK primary
 		else if String.starts_with primary "mathml"
 		then BEGIN_MATHML_BLK primary
+		else if String.starts_with primary "console"
+		then BEGIN_CONSOLE primary
 		else if String.starts_with primary "verbatim"
 		then BEGIN_VERBATIM primary
 		else if String.starts_with primary "pre"

@@ -469,6 +469,9 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		| `Tabular tab ->
 			[write_tabular tab]
 
+		| `Console txt ->
+			[XHTML.M.div ~a:[a_class [!!"cons"]] [XHTML.M.pre [XHTML.M.pcdata txt]]]
+
 		| `Verbatim (mult, txt) ->
 			[XHTML.M.div ~a:[a_class [!!"verb"]] [XHTML.M.div ~a:[a_class [!!"verb_aux"]] [XHTML.M.pre ~a:[a_class ["mult" ^^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
 
