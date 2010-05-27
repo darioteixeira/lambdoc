@@ -203,11 +203,11 @@
 .doc_src_main
 	{
 	clear: both;
-	overflow: auto;
 	margin: 0 Hmargin_inset;
 	font-size: Size_pre;
 	font-family: Family_mono;
-	line-height: Line_height_pre;
+	line-height: Line_height_src;
+	overflow: auto;
 	color: Colour_doc;
 	}
 
@@ -237,7 +237,7 @@
 	{
 	display: block;
 	white-space: pre;
-	height: Line_height_pre;
+	height: Line_height_src;
 	padding: 0 1em;
 	}
 
@@ -364,37 +364,6 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 .doc_tab:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_tab:not(:last-child) {margin-bottom: Vmargin_boxish;}
 .doc_wrapper > .doc_tab {margin: 0;}
-
-
-/********************************************************************************/
-/* Console environments.							*/
-/********************************************************************************/
-
-.doc_cons
-	{
-	clear: both;
-	line-height: 0;
-	margin: 0 Hmargin_inset;
-	padding: Padding_box;
-	border: Border_cons;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
-	background: Background_cons;
-	color: Colour_cons;
-	}
-
-.doc_cons > pre
-	{
-	font-size: Size_pre;
-	font-family: Family_mono;
-	font-weight: bold;
-	white-space: pre;
-	line-height: Line_height_pre;
-	}
-
-.doc_cons:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_cons:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_wrapper > .doc_cons {margin: 0;}
 
 
 /********************************************************************************/

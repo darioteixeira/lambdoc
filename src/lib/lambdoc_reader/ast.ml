@@ -102,7 +102,6 @@ type frag_t = block_t list
 	| Mathml_blk of string
 	| Source of string
 	| Tabular of string * tabular_t
-	| Console of string
 	| Verbatim of string
 	| Picture of string * string
 	| Subpage of frag_t

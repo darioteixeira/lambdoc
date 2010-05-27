@@ -62,7 +62,6 @@ let the comm = match comm.Ast.comm_tag with
 %token <string> BEGIN_MATHML_BLK
 %token <string> BEGIN_SOURCE
 %token <string> BEGIN_TABULAR
-%token <string> BEGIN_CONSOLE
 %token <string> BEGIN_VERBATIM
 %token <string> BEGIN_SUBPAGE
 %token <string> BEGIN_DECOR
@@ -203,7 +202,6 @@ env_block:
 	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk $2)}
 	| begin_block(blk_source) RAW end_block					{($1, Ast.Source $2)}
 	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
-	| begin_block(blk_console) RAW end_block				{($1, Ast.Console $2)}
 	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
 	| begin_block(blk_subpage) block* end_block				{($1, Ast.Subpage $2)}
 	| begin_block(blk_decor) block end_block				{($1, Ast.Decor $2)}
@@ -339,7 +337,6 @@ blk_mathtex_blk:	BEGIN_MATHTEX_BLK					{(Some $1, Literal $1)}
 blk_mathml_blk:		BEGIN_MATHML_BLK					{(Some $1, Literal $1)}
 blk_source:		BEGIN_SOURCE						{(Some $1, Literal $1)}
 blk_tabular:		BEGIN_TABULAR						{(Some $1, Tabular)}
-blk_console:		BEGIN_CONSOLE						{(Some $1, Literal $1)}
 blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Literal $1)}
 blk_subpage:		BEGIN_SUBPAGE						{(Some $1, General)}
 blk_decor:		BEGIN_DECOR						{(Some $1, General)}

@@ -668,8 +668,8 @@ let rec count_leaves = function
 
 Note that the source language is specified via an optional extra parameter \code{lang}.
 In most cases the prefix \code{lang=} can be ommited and the language name may appear
-by itself, since there is little chance for conflict with other extra parameters
-(see \sref{sec:extra} for a more detailed discussion).  Also, the same \caps{heredoc}
+by itself, since there is little chance for conflict with other extra parameters (see
+\sref{sec:extra} for a more detailed discussion).  Also, the same \caps{heredoc}-like
 technique used for verbatim environments can be used in a source environment if you
 wish to include the string \code{\\end\{source\}} itself.  The astute reader will have
 noticed that this trick must have been used in the source for this manual to display the
@@ -701,30 +701,6 @@ To conclude, note that \lambtex offers also the possibility for code environment
 be numbered and referenced from anywhere in the document.  This can be done by wrapping
 them inside a \code{printout} environment, and is part of the advanced features of
 the language discussed in \sref{sec:wrappers}.
-
-
-\section{Mimicking the console}
-
-The block command \code{console} completes the trilogy of verbatim-like environments.
-As its name suggests, it should be used to format a passage of text that reproduces
-the output from the command line console.  The following example illustrates one such
-console session:
-
-\begin{console}
-dario@localhost:~/lambtex-manual$ make
-lambcmd -f lambtex -t xhtml -i lambtex-manual.lambtex -o index.html
-
-dario@localhost:~/lambtex-manual$ file index.html
-index.html: HTML document text
-\end{console}
-
-Similarly to \code{verbatim} and \code{source} environments, a \code{console} block
-may use the \caps{heredoc} technique to declare a console fragment that includes the
-sequence \code{\\end\{console\}}.  Moreover, it does not accept any extra parameters.
-
-To conclude, note a console block may be placed inside a \code{figure} wrapper
-if you wish to give it a label and reference it from anywhere in the document.
-\sref{sec:wrappers} has more details.
 
 
 \section{Tabular environments}
@@ -1101,7 +1077,7 @@ individually in the sections that follow.
 	\mref{sec:theorems}{theorem-like environments}.
 
 \item	May use \mref{sec:wrappers}{wrappers} around basic blocks such as mathematics,
-	verbatim environments, or pictures.  A wrapper allows you to give a label and
+	verbatim environments, or figures.  A wrapper allows you to give a label and
 	a caption to the block.
 
 \item	Enables pull-quotes, boxouts, and wrappers to be \mref{sec:floaters}{floated
@@ -1463,8 +1439,8 @@ There are four different classes of wrappers available:
 \item{Figures}
 
 	Finally, figures are declared with the environment command
-	\code{figure}, and may be used for wrapping \code{console},
-	\code{verbatim}, \code{picture}, and \code{subpage} blocks.
+	\code{figure}, and may be used for wrapping \code{verbatim},
+	\code{picture}, and \code{subpage} blocks.
 
 \end{description}
 
@@ -2024,7 +2000,6 @@ name is user-defined.}
 | \code{abstract}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{bib}			| \forbidden	| \optional	| \forbidden0 |
 | \code{\emph{boxout}}		| \depends0	| \optional	| \code{float} |
-| \code{console}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{decor}			| \forbidden	| \forbidden	| \code{float} |
 | \code{description}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{enumerate}		| \forbidden	| \forbidden	| \code{bul} |

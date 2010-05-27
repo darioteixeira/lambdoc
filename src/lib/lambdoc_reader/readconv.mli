@@ -33,10 +33,10 @@ end
 
 
 (********************************************************************************)
-(**	{2 Literal values (source, console, verbatim)}				*)
+(**	{2 Verbatim values}							*)
 (********************************************************************************)
 
-module Literal_input:
+module Verbatim_input:
 sig
 	val trim: string -> string
 end

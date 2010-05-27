@@ -343,10 +343,10 @@ end
 
 
 (********************************************************************************)
-(**	{2 Literal values (source, console, verbatim)}				*)
+(**	{2 Verbatim values}							*)
 (********************************************************************************)
 
-module Literal_input =
+module Verbatim_input =
 struct
 	let trim =
 		let left_rex = Pcre.regexp "^(\\s*[\n\r]+)*(.)"
