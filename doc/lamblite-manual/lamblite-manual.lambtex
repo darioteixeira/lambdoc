@@ -6,7 +6,7 @@
 
 \title{The \lamblite Manual}
 \subtitle{Dario Teixeira}
-\subtitle{March 2010}
+\subtitle{May 2010}
 
 \toc
 
@@ -383,22 +383,17 @@ if there is no chance of ambiguity then a shorthand notation may be used (see
 \sref{sec:extra} for details).
 
 As for the accepted configuration options, the most important is undoubtedly \code{lang},
-which sets the rules used for syntax highlighting.  The remaining three options are used
-to tweak the manner in which the source code is to be displayed.  First among them,
-the boolean parameter \code{box} indicates whether the source should be displayed
-inside a box, as in the example below.  This is the default, though you may want
-to set this option to \code{false} if you have short code segments that you wish to
-integrate more tightly with the flow of the document text.  Second, the boolean parameter
-\code{nums} indicates whether line numbers should be added to the listing.  Its default
-is \code{true} if the source language was specified and the source is shown inside
-a box.  Otherwise it is \code{false}.  Finally, the also boolean parameter \code{zebra}
-controls the printing of the zebra stripes.  Its default value is \code{true} if the
-source lies inside a box, and \code{false} otherwise.
+which sets the rules used for syntax highlighting.  The remaining two options are
+used to tweak the manner in which the source code is to be displayed.  First, the
+parameter \code{style} indicates the overall style for displaying the code block.
+It accepts the values \code{plain}, \code{boxed}, \code{zebra}, and \code{console},
+with the default being \code{boxed}.  Second, the boolean parameter \code{nums}
+indicates whether line numbers should be added to the listing.  Its default is false.
 
 The obligatory example, showing an \caps{ocaml} source-code fragment:
 
 \begin{source}
-{{{lang=ocaml
+{{{lang=ocaml,style=zebra,nums=true
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -412,7 +407,7 @@ let rec count = function
 The result as produced from the composer is shown below.  Note the syntax-highlighting
 following \caps{ocaml} conventions, the zebra lines, and the display of line numbers:
 
-\begin<lang=ocaml>{source}
+\begin<lang=ocaml,style=zebra,nums=true>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -484,11 +479,10 @@ extra parameters together with the accepted values for each.
 \head
 | Command		| Accepted values |
 \body
-| \code{box}		| Boolean |
 | \code{nums}		| Boolean |
-| \code{zebra}		| Boolean |
 | \code{mult}		| Integer between 0 and 9 (inclusive) |
 | \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
+| \code{style}		| Discrete values: \code{plain}, \code{boxed}, \code{zebra}, \code{console} |
 \end{tabular}
 \end{table}
 

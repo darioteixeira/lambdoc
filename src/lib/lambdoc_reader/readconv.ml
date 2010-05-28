@@ -343,6 +343,23 @@ end
 
 
 (********************************************************************************)
+(**	{2 Source values}							*)
+(********************************************************************************)
+
+module Source_input =
+struct
+	open Source
+
+	let style_of_string = function
+		| "plain"   -> Plain
+		| "boxed"   -> Boxed
+		| "zebra"   -> Zebra
+		| "console" -> Console
+		| _	    -> invalid_arg "style_of_string"
+end
+
+
+(********************************************************************************)
 (**	{2 Literal values (verbatim and source environments)}			*)
 (********************************************************************************)
 

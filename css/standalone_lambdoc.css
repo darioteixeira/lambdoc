@@ -356,15 +356,29 @@ caption, th, td
 	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
 	line-height: 1.8em;
 	overflow: auto;
+	}
+
+.doc_src_plain
+	{
 	color: #000;
 	}
 
-.doc_src_box
+.doc_src_boxed, .doc_src_zebra
 	{
 	border: 1px solid #333;
 	-moz-box-shadow: 2px 2px 2px #666;
 	-moz-border-radius: 5px;
 	background: #f8f9fc;
+	color: #000;
+	}
+
+.doc_src_console
+	{
+	border: 1px solid #ffb720;
+	-moz-box-shadow: 2px 2px 2px #666;
+	-moz-border-radius: 5px;
+	background: #000;
+	color: #ffe790;
 	}
 
 .doc_src_nums
@@ -374,6 +388,11 @@ caption, th, td
 	border-right: 1px solid #666;
 	white-space: normal;
 	font-weight: bold;
+	}
+
+.doc_src_console > .doc_src_nums
+	{
+	border-right: 1px solid #ffb720;
 	}
 
 .doc_src_code
@@ -634,22 +653,42 @@ caption, th, td
 	font-style: italic;
 	}
 
-.doc_src_main:not(:first-child)
+.doc_src_plain:not(:first-child)
 	{
 	margin-top: 1.5em;
 	}
 
-.doc_src_main:not(:last-child)
+.doc_src_plain:not(:last-child)
 	{
 	margin-bottom: 1.5em;
 	}
 
-.doc_src_box:not(:first-child)
+.doc_src_boxed:not(:first-child)
 	{
 	margin-top: 2em;
 	}
 
-.doc_src_box:not(:last-child)
+.doc_src_boxed:not(:last-child)
+	{
+	margin-bottom: 2em;
+	}
+
+.doc_src_zebra:not(:first-child)
+	{
+	margin-top: 2em;
+	}
+
+.doc_src_zebra:not(:last-child)
+	{
+	margin-bottom: 2em;
+	}
+
+.doc_src_console:not(:first-child)
+	{
+	margin-top: 2em;
+	}
+
+.doc_src_console:not(:last-child)
 	{
 	margin-bottom: 2em;
 	}

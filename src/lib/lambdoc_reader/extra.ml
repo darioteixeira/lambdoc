@@ -45,6 +45,7 @@ type property_kind_t =
 	| Floatation_kind
 	| Classname_kind
 	| Lang_kind
+	| Style_kind
 
 
 type property_id_t = string * property_kind_t
@@ -60,6 +61,7 @@ type property_data_t =
 	| Floatation_data of Floatation.t
 	| Classname_data of Classname.t
 	| Lang_data of Camlhighlight_core.lang_t
+	| Style_data of Source.style_t
 
 
 type field_t =
@@ -88,9 +90,7 @@ type solution_t =
 type handle_t =
 	| Initial_hnd
 	| Indent_hnd
-	| Box_hnd
 	| Linenums_hnd
-	| Zebra_hnd
 	| Mult_hnd
 	| Frame_hnd
 	| Width_hnd
@@ -99,6 +99,7 @@ type handle_t =
 	| Floatation_hnd
 	| Classname_hnd
 	| Lang_hnd
+	| Style_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
 
@@ -120,6 +121,7 @@ let dummy_numbering_data = Numbering_data Numbering.None
 let dummy_floatation_data = Floatation_data Floatation.Center
 let dummy_classname_data = Classname_data ""
 let dummy_lang_data = Lang_data ""
+let dummy_style_data = Style_data Source.Boxed
 
 
 (********************************************************************************)
@@ -132,9 +134,7 @@ let dummy_lang_data = Lang_data ""
 let id_of_handle = function
 	| Initial_hnd	 -> ("initial", Boolean_kind, false)
 	| Indent_hnd	 -> ("indent", Boolean_kind, true)
-	| Box_hnd	 -> ("box", Boolean_kind, false)
 	| Linenums_hnd	 -> ("nums", Boolean_kind, false)
-	| Zebra_hnd	 -> ("zebra", Boolean_kind, false)
 	| Mult_hnd	 -> ("mult", Numeric_kind (0, 9), false)
 	| Frame_hnd	 -> ("frame", Boolean_kind, false)
 	| Width_hnd	 -> ("width", Numeric_kind (1, 100), true)
@@ -143,6 +143,7 @@ let id_of_handle = function
 	| Floatation_hnd -> ("float", Floatation_kind, false)
 	| Classname_hnd	 -> ("class", Classname_kind, false)
 	| Lang_hnd	 -> ("lang", Lang_kind, false)
+	| Style_hnd	 -> ("style", Style_kind, false)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -256,7 +257,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
-			Positive (dummy_bullet_data))
+			Positive (dummy_numbering_data))
 
 	| (key, Floatation_kind, false, Unnamed_field v) ->
 		(try Undecided (Floatation_data (Basic_input.floatation_of_string v)) with Invalid_argument _ -> Negative)
@@ -288,6 +289,15 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_lang_data)
+
+	| (key, Style_kind, false, Unnamed_field v) ->
+		(try Undecided (Style_data (Source_input.style_of_string v)) with Invalid_argument _ -> Negative)
+	| (key, Style_kind, false, Keyvalue_field (k, v)) when k = key ->
+		(try Positive (Style_data (Source_input.style_of_string v))
+		with Invalid_argument _ ->
+			let msg = Error.Invalid_extra_style_parameter (comm.comm_tag, key, v) in
+			DynArray.add errors (Some comm.comm_linenum, msg);
+			Positive (dummy_style_data))
 
 	| _ ->
 		Negative
@@ -471,6 +481,11 @@ let get_lang ~default extra handle = match Hashtbl.find extra handle with
 	| _				  -> default
 
 
+let get_style ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Style_data x) -> x
+	| _		      -> default
+
+
 (********************************************************************************)
 (**	{2 Parsing a single handle}						*)
 (********************************************************************************)
@@ -488,4 +503,5 @@ let fetch_numbering = fetcher get_numbering
 let fetch_floatation = fetcher get_floatation
 let fetch_classname = fetcher get_classname
 let fetch_lang = fetcher get_lang
+let fetch_style = fetcher get_style
 

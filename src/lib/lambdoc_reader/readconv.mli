@@ -31,6 +31,15 @@ sig
 	val floatation_of_string: string -> Floatation.t
 end
 
+(********************************************************************************)
+(**	{2 Source values}							*)
+(********************************************************************************)
+
+module Source_input:
+sig
+	val style_of_string: string -> Source.style_t
+end
+
 
 (********************************************************************************)
 (**	{2 Literal values (verbatim and source environments)}			*)

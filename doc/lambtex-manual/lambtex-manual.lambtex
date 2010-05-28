@@ -10,7 +10,7 @@
 
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
-\subtitle{April 2010}
+\subtitle{May 2010}
 
 \toc[sec:toc]
 
@@ -103,6 +103,12 @@ The qualifier exists because there is one (and only one!) exception, which appli
 to environments not normally used in regular documents.  Namely, inside sub-pages the
 order parameter is mandatory for a number of blocks (see \sref{sec:order} for details).
 \end{note}
+
+In the case of order and label parameters, the attributed value is necessarily singular,
+as it makes no sense to give multiple orderings to the same command nor it is possible
+to assign multiple labels to one command.  In the case of extra parameters, however,
+there are commands for which multiple extra options may be set.  In those cases,
+attributions must be separated by the insertion of a '\code{,}' (comma) between them.
 
 Not all of the optional parameters are available for all commands.  There are in fact
 many commands for which none is applicable.  Moreover, for those commands where one
@@ -645,7 +651,8 @@ to a font size 11.3 times larger than normal:
 \section[sec:code]{Presenting source-code}
 
 While it is of course possible to input source code listings using the above discussed
-verbatim environment, \lambtex has a dedicated facility with a number of advantages.
+verbatim environment, \lambtex features a dedicated facility that semantically
+speaking is more appropriate and has in addition a number of tricks up its sleave.
 This new environment is named \code{source}, and offers the possibility of adding line
 numbers to the code listing and highlighting the source according to the syntax of most
 popular languages.  You have in fact already encountered this environment multiple
@@ -674,9 +681,27 @@ technique used for verbatim environments can be used in a source environment if 
 wish to include the string \code{\\end\{source\}} itself.  The astute reader will have
 noticed that this trick must have been used in the source for this manual to display the
 code above (this manual is itself written in \lambtex --- we do eat our own dog food).
-Finally, the example above produces the following output:
 
-\begin<lang=ocaml>{source}
+Source environments offer two more customisation options via extra parameters.  First,
+the parameter \code{style} indicates the overall style for displaying the code block.
+It accepts the values \code{plain}, \code{boxed}, \code{zebra}, and \code{console},
+with the default being \code{boxed} (\sref{fig:styles} below illustrates the effect
+of each of these styles).  Second, the boolean parameter \code{nums} indicates whether
+line numbers should be added to the listing.  Its default is false.
+
+To conclude, note that \lambtex offers also the possibility for code environments to
+be numbered and referenced from anywhere in the document.  This can be done by wrapping
+them inside a \code{printout} environment, and is part of the advanced features of
+the language discussed in \sref{sec:wrappers}.
+
+\begin[fig:styles]{figure}
+{The various style options available for \code{source} environments.}
+\begin{subpage}
+
+\begin(){printout}
+{The \code{plain} style uses no decorations at all, and is better suited for source-code
+fragments that one wishes to integrate tightly with the flow of the document.}
+\begin<ocaml,plain>{source}
 type 'a tree =
 	| Leaf of 'a
 	| Node of 'a tree * 'a tree
@@ -685,22 +710,54 @@ let rec count_leaves = function
 	| Leaf _	-> 1
 	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
 \end{source}
+\end{printout}
 
-Code environments offer three more customisation options via extra parameters.  First,
-the boolean parameter \code{box} indicates whether the source should be displayed
-inside a box, as in the examples above.  This is the default, though you may want
-to set this option to \code{false} if you have short code segments that you wish to
-integrate more tightly with the flow of the document text.  Second, the boolean parameter
-\code{nums} indicates whether line numbers should be added to the listing.  Its default
-is \code{true} if the source language was specified and the source is shown inside a
-box; otherwise it is \code{false}.  Finally, the also boolean parameter \code{zebra}
-controls the printing of the zebra stripes.  Its default value is \code{true} if line
-numbers are displayed, and \code{false} otherwise.
+\rule
 
-To conclude, note that \lambtex offers also the possibility for code environments to
-be numbered and referenced from anywhere in the document.  This can be done by wrapping
-them inside a \code{printout} environment, and is part of the advanced features of
-the language discussed in \sref{sec:wrappers}.
+\begin(){printout}
+{The \code{boxed} style is the default.  It places the source-code inside a decorative box.}
+\begin<ocaml,boxed>{source}
+type 'a tree =
+	| Leaf of 'a
+	| Node of 'a tree * 'a tree
+
+let rec count_leaves = function
+	| Leaf _	-> 1
+	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+\end{source}
+\end{printout}
+
+\rule
+
+\begin(){printout}{Besides placing the source-code inside a decorative box, the \code{zebra}
+style will in addition give a different background to even and odd numbered rows.}
+\begin<ocaml,zebra>{source}
+type 'a tree =
+	| Leaf of 'a
+	| Node of 'a tree * 'a tree
+
+let rec count_leaves = function
+	| Leaf _	-> 1
+	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+\end{source}
+\end{printout}
+
+\rule
+
+\begin(){printout}
+{The \code{console} style is appropriate if the code block should actually mimick
+the output from a command line console.}
+\begin<console>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+\end{source}
+\end{printout}
+
+\end{subpage}
+\end{figure}
 
 
 \section{Tabular environments}
@@ -2013,7 +2070,7 @@ name is user-defined.}
 | \code{printout}		| \depends0	| \optional	| \code{float} |
 | \code{pull}			| \forbidden	| \forbidden	| \code{float} |
 | \code{qanda}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{source}			| \forbidden	| \forbidden	| \code{box}, \code{nums}, \code{zebra}, \code{lang} |
+| \code{source}			| \forbidden	| \forbidden	| \code{lang}, \code{style}, \code{nums} |
 | \code{subpage}		| \forbidden	| \forbidden	| \forbidden0 |
 | \code{table}			| \depends0	| \optional	| \forbidden0 |
 | \code{tabular}		| \forbidden	| \forbidden	| \forbidden0 |
@@ -2091,9 +2148,7 @@ accepted for each command.}
 \body
 | \code{initial}	| Boolean |
 | \code{indent}		| Boolean or \code{auto} |
-| \code{box}		| Boolean |
 | \code{nums}		| Boolean |
-| \code{zebra}		| Boolean |
 | \code{mult}		| Integer between 0 and 9 (inclusive) |
 | \code{frame}		| Boolean |
 | \code{width}		| Integer between 1 and 100 (inclusive), or \code{auto} |
@@ -2105,6 +2160,7 @@ accepted for each command.}
 | \code{float}		| Discrete values: \code{center}, \code{left}, \code{right} |
 | \code{class}		| A class name specification |
 | \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
+| \code{style}		| Discrete values: \code{plain}, \code{boxed}, \code{zebra}, \code{console} |
 \end{tabular}
 \end{table}
 
@@ -2119,7 +2175,7 @@ instead of the canonical form.  The shorthand pre-conditions are as follows:
 	instead of \code{alpha=x}. Because \lambtex knows which values are valid
 	for each parameter, and because there are practically no overlaps in the existing
 	set of commands, this condition applies almost always.	The notable exception
-	is the environment command \code{source}, which accepts three different boolean
+	is the simple command \code{paragraph}, which accepts two different boolean
 	parameters (see \sref{tab:permlist}).
 
 \item	Boolean parameters may be set by specifying the parameter name.  Therefore, if

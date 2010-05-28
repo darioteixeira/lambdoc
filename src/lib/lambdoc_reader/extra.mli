@@ -20,9 +20,7 @@ open Basic
 type handle_t =
 	| Initial_hnd
 	| Indent_hnd
-	| Box_hnd
 	| Linenums_hnd
-	| Zebra_hnd
 	| Mult_hnd
 	| Frame_hnd
 	| Width_hnd
@@ -31,6 +29,7 @@ type handle_t =
 	| Floatation_hnd
 	| Classname_hnd
 	| Lang_hnd
+	| Style_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
 
@@ -56,6 +55,7 @@ val get_numbering: default:Numbering.t -> extra_t -> handle_t -> Numbering.t
 val get_floatation: default:Floatation.t -> extra_t -> handle_t -> Floatation.t
 val get_classname: default:Classname.t option -> extra_t -> handle_t -> Classname.t option
 val get_lang: default:Camlhighlight_core.lang_t option -> extra_t -> handle_t -> Camlhighlight_core.lang_t option
+val get_style: default:Source.style_t -> extra_t -> handle_t -> Source.style_t
 
 
 (********************************************************************************)
@@ -71,4 +71,5 @@ val fetch_numbering: default:Numbering.t -> Ast.command_t -> error_t -> handle_t
 val fetch_floatation: default:Floatation.t -> Ast.command_t -> error_t -> handle_t -> Floatation.t
 val fetch_classname: default:Classname.t option -> Ast.command_t -> error_t -> handle_t -> Classname.t option
 val fetch_lang: default:Camlhighlight_core.lang_t option -> Ast.command_t -> error_t -> handle_t -> Camlhighlight_core.lang_t option
+val fetch_style: default:Source.style_t -> Ast.command_t -> error_t -> handle_t -> Source.style_t
 

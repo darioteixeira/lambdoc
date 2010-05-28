@@ -249,10 +249,10 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \p{\lorem}
 
 
-\section{Boxed source environments with syntax highlighting, line numbers, and zebra stripes}
+\section{Source environment: plain with syntax highlighting}
 
 \p{\lorem}
-\begin<ocaml>{source}
+\begin<ocaml,plain>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -264,10 +264,10 @@ let rec count = function
 \p{\lorem}
 
 
-\section{Boxed source environments with no syntax highlighting, no line numbers, and no zebra stripes}
+\section{Source environment: plain with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<!zebra>{source}
+\begin<ocaml,plain,nums>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -279,10 +279,10 @@ let rec count = function
 \p{\lorem}
 
 
-\section{Unboxed source environments with syntax highlighting, but neither line numbers nor zebra stripes}
+\section{Source environment: boxed with syntax highlighting}
 
 \p{\lorem}
-\begin<ocaml,!box>{source}
+\begin<ocaml,boxed>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -290,6 +290,77 @@ type 'a tree =
 let rec count = function
     | Leaf		       -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: boxed with syntax highlighting and line numbers}
+
+\p{\lorem}
+\begin<ocaml,boxed,nums>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: zebra with syntax highlighting}
+
+\p{\lorem}
+\begin<ocaml,zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: zebra with syntax highlighting and line numbers}
+
+\p{\lorem}
+\begin<ocaml,zebra,nums>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + (count left) + (count right);;
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: console}
+
+\p{\lorem}
+\begin<console>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: console with line numbers}
+
+\p{\lorem}
+\begin<console,nums>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
 \end{source}
 \p{\lorem}
 

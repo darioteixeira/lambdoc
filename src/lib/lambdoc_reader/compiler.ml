@@ -584,14 +584,13 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 		| (_, _, _, `Printout_blk, (comm, Ast.Source txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Source txt)) ->
 			let elem () =
-				let extra = Extra.parse comm errors [Lang_hnd; Box_hnd; Linenums_hnd; Zebra_hnd] in
+				let extra = Extra.parse comm errors [Lang_hnd; Style_hnd; Linenums_hnd] in
 				let lang = Extra.get_lang ~default:None extra Lang_hnd in
-				let box = Extra.get_boolean ~default:true extra Box_hnd in
-				let linenums = Extra.get_boolean ~default:(box && (match lang with Some _ -> true | _ -> false)) extra Linenums_hnd in
-				let zebra = Extra.get_boolean ~default:linenums extra Zebra_hnd in
+				let style = Extra.get_style ~default:Source.Boxed extra Style_hnd in
+				let linenums = Extra.get_boolean ~default:false extra Linenums_hnd in
 				let trimmed = Literal_input.trim txt in
 				let hilite = Camlhighlight_parser.from_string ?lang trimmed in
-				let src = Source.make lang box linenums zebra hilite in
+				let src = Source.make lang hilite style linenums in
 				let () = if trimmed = "" then DynArray.add errors (Some comm.comm_linenum, Error.Empty_source comm.comm_tag)
 				in [Block.source src]
 			in check_block_comm `Feature_source comm elem

@@ -463,8 +463,9 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			in [XHTML.M.div ~a:[a_class [!!"mathblk"]] [xhtml]]
 
 		| `Source src ->
-			let extra_classes = (if src.box then [!!"src_box"] else []) @ (if src.zebra then [!!"src_zebra"] else [])
-			in [Camlhighlight_write_xhtml.write ~class_prefix:!!"src_" ~extra_classes ~dummy_lines:src.box ~linenums:src.linenums src.hilite]
+			let dummy_lines = src.style <> Source.Plain
+			and extra_classes = [!!("src_" ^ (Writeconv.Source_output.string_of_style src.style))]
+			in [Camlhighlight_write_xhtml.write ~class_prefix:!!"src_" ~extra_classes ~dummy_lines ~linenums:src.linenums src.hilite]
 
 		| `Tabular tab ->
 			[write_tabular tab]

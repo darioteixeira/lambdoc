@@ -16,7 +16,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <h2 class="doc_title">Dario Teixeira
       </h2>
-      <h2 class="doc_title">March 2010
+      <h2 class="doc_title">May 2010
       </h2>
       <h1 id="doc:a:1" class="doc_sec"><span>Table of Contents</span>
       </h1>
@@ -152,7 +152,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">The following source-code fragment illustrates the declaration of paragraphs in <span class="doc_caps">lamblite</span>, text formatting commands, and the use of hyperlinks:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -283,7 +283,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </p>
       <p class="doc_par">The following sample illustrates lists in <span class="doc_caps">lamblite</span>. Note the flexible use of blank lines and whitespace for indentation.
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -351,7 +351,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </h1>
       <p class="doc_par">Quotations in <span class="doc_caps">lamblite</span> follow the email tradition of prefixing each quoted line with the character '<tt class="doc_code">&gt;</tt>' (the greater-than sign). Following this marker you may have a normal paragraph or a list definition, as the example below illustrates:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -399,7 +399,7 @@ See http://www.ocsigen.org and http://caml.inria.fr for information -->
       </div>
       <p class="doc_par">Quotations within quotations are also legal. The quotation level is indicated by the number of '<tt class="doc_code">&gt;</tt>' characters that prefix the line. Whitespace between the '<tt class="doc_code">&gt;</tt>' characters is optional. Consider thus the following <span class="doc_caps">lamblite</span> source:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -469,7 +469,7 @@ rspace="0.278em"
       </p>
       <p class="doc_par">Consider thus the following <span class="doc_caps">lamblite</span> source-code fragment:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -519,15 +519,15 @@ rspace="0.278em"
       </p>
       <p class="doc_par">Similarly to verbatim blocks, the configuration of a source-code environment is to be placed immediately after the '<tt class="doc_code">{{{</tt>' sequence that signals the beginning of the block (whitespace is optional both before and after, but the configuration must be on the same line). Because multiple configuration options are allowed, these should be separated by commas. The canonical form for specifying that an option <tt class="doc_code"><i class="doc_emph">key</i></tt> should take value <tt class="doc_code"><i class="doc_emph">value</i></tt> is <tt class="doc_code"><i class="doc_emph">key</i>=<i class="doc_emph">value</i></tt>. However, if there is no chance of ambiguity then a shorthand notation may be used (see <a class="doc_lnk" href="#doc:u:sec:extra">Appendix&nbsp;A</a> for details).
       </p>
-      <p class="doc_par">As for the accepted configuration options, the most important is undoubtedly <tt class="doc_code">lang</tt>, which sets the rules used for syntax highlighting. The remaining three options are used to tweak the manner in which the source code is to be displayed. First among them, the boolean parameter <tt class="doc_code">box</tt> indicates whether the source should be displayed inside a box, as in the example below. This is the default, though you may want to set this option to <tt class="doc_code">false</tt> if you have short code segments that you wish to integrate more tightly with the flow of the document text. Second, the boolean parameter <tt class="doc_code">nums</tt> indicates whether line numbers should be added to the listing. Its default is <tt class="doc_code">true</tt> if the source language was specified and the source is shown inside a box. Otherwise it is <tt class="doc_code">false</tt>. Finally, the also boolean parameter <tt class="doc_code">zebra</tt> controls the printing of the zebra stripes. Its default value is <tt class="doc_code">true</tt> if the source lies inside a box, and <tt class="doc_code">false</tt> otherwise.
+      <p class="doc_par">As for the accepted configuration options, the most important is undoubtedly <tt class="doc_code">lang</tt>, which sets the rules used for syntax highlighting. The remaining two options are used to tweak the manner in which the source code is to be displayed. First, the parameter <tt class="doc_code">style</tt> indicates the overall style for displaying the code block. It accepts the values <tt class="doc_code">plain</tt>, <tt class="doc_code">boxed</tt>, <tt class="doc_code">zebra</tt>, and <tt class="doc_code">console</tt>, with the default being <tt class="doc_code">boxed</tt>. Second, the boolean parameter <tt class="doc_code">nums</tt> indicates whether line numbers should be added to the listing. Its default is false.
       </p>
       <p class="doc_par">The obligatory example, showing an <span class="doc_caps">ocaml</span> source-code fragment:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
-<code class="doc_src_line">{{{lang=ocaml</code>
+<code class="doc_src_line">{{{lang=ocaml,style=zebra,nums=true</code>
 <code class="doc_src_line">type 'a tree =</code>
 <code class="doc_src_line">    | Leaf</code>
 <code class="doc_src_line">    | Node of 'a * 'a tree * 'a tree</code>
@@ -542,7 +542,7 @@ rspace="0.278em"
       </div>
       <p class="doc_par">The result as produced from the composer is shown below. Note the syntax-highlighting following <span class="doc_caps">ocaml</span> conventions, the zebra lines, and the display of line numbers:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_zebra doc_src_main">
         <pre class="doc_src_nums">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -575,7 +575,7 @@ rspace="0.278em"
       </p>
       <p class="doc_par">Consider thus the following <span class="doc_caps">lamblite</span> fragment:
       </p>
-      <div class="doc_src_box doc_src_zebra doc_src_main">
+      <div class="doc_src_boxed doc_src_main">
         <pre class="doc_src_code">
 
 <code class="doc_src_line doc_src_dummy"></code>
@@ -634,19 +634,7 @@ rspace="0.278em"
               </thead>
               <tbody class="doc_tgroup">
                 <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">box</tt>
-                  </td>
-                  <td class="doc_cell_l">Boolean
-                  </td>
-                </tr>
-                <tr>
                   <td class="doc_cell_r"><tt class="doc_code">nums</tt>
-                  </td>
-                  <td class="doc_cell_l">Boolean
-                  </td>
-                </tr>
-                <tr>
-                  <td class="doc_cell_r"><tt class="doc_code">zebra</tt>
                   </td>
                   <td class="doc_cell_l">Boolean
                   </td>
@@ -661,6 +649,12 @@ rspace="0.278em"
                   <td class="doc_cell_r"><tt class="doc_code">lang</tt>
                   </td>
                   <td class="doc_cell_l">Discrete values: <tt class="doc_code">ocaml</tt>, <tt class="doc_code">c</tt>, <tt class="doc_code">java</tt>, etc (any value accepted by the <a class="doc_lnk" href="http://camlhighlight.forge.ocamlcore.org/"><span class="doc_caps">camlhighlight</span></a> library)
+                  </td>
+                </tr>
+                <tr>
+                  <td class="doc_cell_r"><tt class="doc_code">style</tt>
+                  </td>
+                  <td class="doc_cell_l">Discrete values: <tt class="doc_code">plain</tt>, <tt class="doc_code">boxed</tt>, <tt class="doc_code">zebra</tt>, <tt class="doc_code">console</tt>
                   </td>
                 </tr>
               </tbody>
