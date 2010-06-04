@@ -44,5 +44,5 @@ let to_string = function
 let default_input = `Lambtex
 
 
-let default_output = `Sexp
+let default_output = `Xhtml
 
