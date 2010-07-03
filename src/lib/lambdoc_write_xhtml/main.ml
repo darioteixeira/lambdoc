@@ -492,7 +492,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		| `Pullquote (floatation, maybe_seq, frag) ->
 			let style = make_floatation floatation
 			and head = match maybe_seq with
-				| Some seq -> [XHTML.M.h1 ~a:[a_class [!!"pullhead"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
+				| Some seq -> [XHTML.M.h1 ~a:[a_class [!!"pull_head"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
 				| None	   -> []
 			in [XHTML.M.div ~a:[a_class (!!"pull" :: style)] [XHTML.M.div ~a:[a_class [!!"pull_aux"]] ((write_frag frag) @ head)]]
 

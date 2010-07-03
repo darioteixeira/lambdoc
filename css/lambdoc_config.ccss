@@ -6,8 +6,8 @@
 /* Colours.									*/
 /********************************************************************************/
 
-Colour_normal:	#333;
-Colour_faded:	#444;
+Colour_normal:	#222;
+Colour_faded:	#333;
 Colour_fancy:	#501;
 
 
@@ -16,27 +16,33 @@ Colour_fancy:	#501;
 /* A font stack consists of a set of serif/sans/mono font lists where the	*/
 /* fonts in each list have similar metrics, and the sets go well together.	*/
 /* (Note that only one of these stacks is actually later selected).		*/
+/*										*/
+/* Within each list fonts are listed by order of subjective prettyness, at	*/
+/* least as far as a standard X installation is concerned.  Note also that	*/
+/* each list should contain at least one font which is standard in Linux,	*/
+/* Windows, and Mac systems.							*/
 /********************************************************************************/
 
-/* Linux Libertine stack: */
+/* Stack with wide and large-looking fonts (works well with a base of 13px): */
 
-Stack_libertine_serif:	"Linux Libertine O", serif;
-Stack_libertine_sans:	"Linux Biolinum O", sans-serif;
-Stack_libertine_mono:	"Courier New", "Courier", "DejaVu Mono", monospace;
-
-
-/* Narrow stack: */
-
-Stack_narrow_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
-Stack_narrow_sans:	"Helvetica", "Arial", "Liberation Sans", sans-serif;
-Stack_narrow_mono:	"Courier New", "Courier", "Liberation Mono", monospace;
+Stack_wide13_serif:	"DejaVu Serif", serif;
+Stack_wide13_sans:	"DejaVu Sans", "Verdana", "Geneva", sans-serif;
+Stack_wide13_mono:	"DejaVu Sans Mono", "Courier New", "Courier", monospace;
 
 
-/* Wide stack: */
+/* Stack with wide and small-looking fonts (works well with a base of 14px): */
 
-Stack_wide_serif:	"Georgia", "DejaVu Serif", serif;
-Stack_wide_sans:	"Verdana", "Geneva", "DejaVu Sans", sans-serif;
-Stack_wide_mono:	"Courier New", "Courier", "DejaVu Mono", monospace;
+Stack_wide14_serif:	"Georgia", serif;
+
+
+/* Stack with narrow and small-looking fonts (works well with a base of 14px): */
+
+Stack_narrow14_sans:	"Helvetica", "Liberation Sans", "Arial", sans-serif;
+
+
+/* Stack with narrow and very small-looking fonts (works well with a base of 15px): */
+
+Stack_narrow15_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
 
 
 /********************************************************************************/
@@ -44,29 +50,30 @@ Stack_wide_mono:	"Courier New", "Courier", "DejaVu Mono", monospace;
 /* Here we select one of the declared font stacks.				*/
 /********************************************************************************/
 
-Family_doc:		Stack_narrow_sans;
-Family_heading:		Stack_narrow_sans;
-Family_mono:		Stack_narrow_mono;
+Family_doc:		Stack_wide13_sans;
+Family_heading:		Stack_wide13_sans;
+Family_mono:		Stack_wide13_mono;
 
 
 /********************************************************************************/
 /* Font sizes.									*/
 /********************************************************************************/
 
-Size_doc:	14px;
-Size_note:	(12px ÷ Size_doc) * 1em;
-Size_pre:	(12px ÷ Size_doc) * 1em;
-Size_caption:	(13px ÷ Size_doc) * 1em;
-Size_small:	(13px ÷ Size_doc) * 1em;
-Size_large:	(15px ÷ Size_doc) * 1em;
-Size_title1:	(22px ÷ Size_doc) * 1em;
-Size_title2:	(18px ÷ Size_doc) * 1em;
-Size_part:	(18px ÷ Size_doc) * 1em;
-Size_h1:	(17px ÷ Size_doc) * 1em;
-Size_h2:	(16px ÷ Size_doc) * 1em;
-Size_h3:	(15px ÷ Size_doc) * 1em;
-Size_pull:	(15px ÷ Size_doc) * 1em;
-Size_pullhead:	(13 ÷ 15) * 1em;
+Size_doc:	13px;	/* Base for all other values */
+
+Size_note:	((Size_doc - 2px) ÷ Size_doc) * 1em;
+Size_pre:	((Size_doc - 2px) ÷ Size_doc) * 1em;
+Size_caption:	((Size_doc - 1px) ÷ Size_doc) * 1em;
+Size_small:	((Size_doc - 1px) ÷ Size_doc) * 1em;
+Size_large:	((Size_doc + 1px) ÷ Size_doc) * 1em;
+Size_title1:	((Size_doc + 8px) ÷ Size_doc) * 1em;
+Size_title2:	((Size_doc + 6px) ÷ Size_doc) * 1em;
+Size_part:	((Size_doc + 4px) ÷ Size_doc) * 1em;
+Size_h1:	((Size_doc + 3px) ÷ Size_doc) * 1em;
+Size_h2:	((Size_doc + 2px) ÷ Size_doc) * 1em;
+Size_h3:	((Size_doc + 1px) ÷ Size_doc) * 1em;
+Size_pull:	((Size_doc + 1px) ÷ Size_doc) * 1em;
+Size_pull_head:	(1em ÷ Size_pull) * 1em;
 
 Line_height_doc: 1.4em;
 

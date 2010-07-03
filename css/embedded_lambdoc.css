@@ -10,9 +10,9 @@
 
 .doc_code
 	{
-	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
+	font-family: "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 	font-weight: bold;
-	color: #444;
+	color: #333;
 	}
 
 .doc_caps
@@ -57,7 +57,7 @@
 	{
 	margin-left: 0.25em;
 	vertical-align: 0.3em;
-	font-size: 0.8571em;
+	font-size: 0.8462em;
 	color: #009;
 	}
 
@@ -77,7 +77,7 @@
 	float: left;
 	margin-right: 0.15em;
 	font-weight: bold;
-	font-size: 48px;
+	font-size: 3.5em;
 	text-transform: capitalize;
 	color: #501;
 	}
@@ -322,8 +322,8 @@ dd.doc_answer
 	{
 	clear: both;
 	margin: 0 1em;
-	font-size: 0.8571em;
-	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
+	font-size: 0.8462em;
+	font-family: "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 	line-height: 1.8em;
 	overflow: auto;
 	}
@@ -678,7 +678,7 @@ dd.doc_answer
 
 .doc_tab_aux > table
 	{
-	font-size: 0.9286em;
+	font-size: 0.9231em;
 	border-collapse: collapse;
 	border-top: 2px solid #666;
 	border-bottom: 2px solid #666;
@@ -811,7 +811,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	white-space: pre;
 	line-height: 1em;
 	text-align: left;
-	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
+	font-family: "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 	}
 
 .doc_mult0
@@ -958,7 +958,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	padding: 1em 0.5em 1em 2.5em;
 	border-top: 2px dotted #501;
 	border-bottom: 2px dotted #501;
-	font-size: 1.071em;
+	font-size: 1.077em;
 	font-weight: bold;
 	color: #555;
 	}
@@ -977,10 +977,10 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	color: #501;
 	}
 
-.doc_pullhead
+.doc_pull_head
 	{
 	text-align: right;
-	font-size: 0.8667em;
+	font-size: 0.9286em;
 	font-style: normal;
 	font-weight: normal;
 	color: #501;
@@ -1001,8 +1001,8 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 	text-align: center;
-	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
-	font-size: 1.071em;
+	font-family: "DejaVu Sans", "Verdana", "Geneva", sans-serif;
+	font-size: 1.077em;
 	font-variant: small-caps;
 	font-weight: bold;
 	color: #501;
@@ -1103,7 +1103,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_caption_aux
 	{
 	display: inline-block;
-	font-size: 0.9286em;
+	font-size: 0.9231em;
 	text-align: justify;
 	}
 
@@ -1137,7 +1137,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_title
 	{
 	clear: both;
-	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
+	font-family: "DejaVu Sans", "Verdana", "Geneva", sans-serif;
 	font-weight: bold;
 	font-variant: small-caps;
 	text-transform: capitalize;
@@ -1147,12 +1147,12 @@ tbody.doc_tgroup + tbody.doc_tgroup
 
 h1.doc_title
 	{
-	font-size: 1.571em;
+	font-size: 1.615em;
 	}
 
 h2.doc_title
 	{
-	font-size: 1.286em;
+	font-size: 1.462em;
 	}
 
 .doc_part
@@ -1161,9 +1161,9 @@ h2.doc_title
 	padding: 0.25em 0;
 	border-top: 1px solid #501;
 	border-bottom: 1px solid #501;
-	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
+	font-family: "DejaVu Sans", "Verdana", "Geneva", sans-serif;
 	font-weight: bold;
-	font-size: 1.286em;
+	font-size: 1.308em;
 	text-transform: capitalize;
 	text-align: center;
 	word-spacing: 0.1em;
@@ -1174,7 +1174,7 @@ h2.doc_title
 .doc_sec
 	{
 	clear: both;
-	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
+	font-family: "DejaVu Sans", "Verdana", "Geneva", sans-serif;
 	font-weight: bold;
 	word-spacing: 0.1em;
 	letter-spacing: 0;
@@ -1183,17 +1183,17 @@ h2.doc_title
 
 h1.doc_sec
 	{
-	font-size: 1.214em;
+	font-size: 1.231em;
 	}
 
 h2.doc_sec
 	{
-	font-size: 1.143em;
+	font-size: 1.154em;
 	}
 
 h3.doc_sec
 	{
-	font-size: 1.071em;
+	font-size: 1.077em;
 	}
 
 .doc_title:not(:first-child)

@@ -60,7 +60,7 @@ Hmargin_indent: 1em;
 	float: left;
 	margin-right: 0.15em;
 	font-weight: bold;
-	font-size: 48px;
+	font-size: 3.5em;
 	text-transform: capitalize;
 	color: Colour_fancy;
 	}
@@ -537,10 +537,10 @@ Border_pull: 2px dotted Colour_fancy;
 	color: Colour_fancy;
 	}
 
-.doc_pullhead
+.doc_pull_head
 	{
 	text-align: right;
-	font-size: Size_pullhead;
+	font-size: Size_pull_head;
 	font-style: normal;
 	font-weight: normal;
 	color: Colour_fancy;

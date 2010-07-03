@@ -9,7 +9,7 @@
 .doc
 	{
 	margin: 1em auto;
-	width: 40em;
+	width: 44em;
 	font-family: Family_doc;
 	font-size: Size_doc;
 	line-height: Line_height_doc;
