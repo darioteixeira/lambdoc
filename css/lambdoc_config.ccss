@@ -6,48 +6,69 @@
 /* Colours.									*/
 /********************************************************************************/
 
-Colour_doc:		#000;
-Colour_code:		#444;
-Colour_ins:		#090;
-Colour_del:		#900;
-Colour_lnk:		#009;
-Colour_forefancy:	#501;
-Colour_weakfancy:	#a88;
-Colour_ghostly:		#333;
-Colour_watery:		#666;
-Colour_weak:		#999;
-Colour_shadow:		#666;
-Colour_question:	Colour_forefancy;
-Colour_answer:		Colour_doc;
-Colour_console:		#ffe790;
-Colour_pulltext:	#555;
-Colour_pullhead:	Colour_forefancy;
-Colour_pullquote:	Colour_weakfancy;
-
-Background_src_boxed:	#f8f9fc;
-Background_src_console:	#000;
-Background_src_odd:	#f3f6fc;
-Background_src_even:	#f9f9f9;
-Background_subpage:	#f9f9f9;
-Background_boxout:	#fffcf0;
+Colour_normal:	#333;
+Colour_faded:	#444;
+Colour_fancy:	#501;
 
 
 /********************************************************************************/
-/* Configuration of various borders.						*/
+/* Font stacks.									*/
+/* A font stack consists of a set of serif/sans/mono font lists where the	*/
+/* fonts in each list have similar metrics, and the sets go well together.	*/
+/* (Note that only one of these stacks is actually later selected).		*/
 /********************************************************************************/
 
-Border_quote:		3px solid Colour_weakfancy;
-Border_src_boxed:	1px solid Colour_watery;
-Border_src_console:	1px solid #ffb720;
-Border_src_nums:	1px solid Colour_watery;
-Border_src_consnums:	1px solid #ffb720;
-Border_tabular_outter:	2px solid Colour_watery;
-Border_tabular_inner:	1px solid Colour_watery;
-Border_tabular_body:	1px dotted Colour_weak;
-Border_rule:		1px dotted Colour_forefancy;
-Border_hline:		1px solid Colour_doc;
-Border_part:		1px solid Colour_forefancy;
-Border_pull:		2px solid Colour_weakfancy;
+/* Linux Libertine stack: */
+
+Stack_libertine_serif:	"Linux Libertine O", serif;
+Stack_libertine_sans:	"Linux Biolinum O", sans-serif;
+Stack_libertine_mono:	"Courier New", "Courier", "DejaVu Mono", monospace;
+
+
+/* Narrow stack: */
+
+Stack_narrow_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
+Stack_narrow_sans:	"Helvetica", "Arial", "Liberation Sans", sans-serif;
+Stack_narrow_mono:	"Courier New", "Courier", "Liberation Mono", monospace;
+
+
+/* Wide stack: */
+
+Stack_wide_serif:	"Georgia", "DejaVu Serif", serif;
+Stack_wide_sans:	"Verdana", "Geneva", "DejaVu Sans", sans-serif;
+Stack_wide_mono:	"Courier New", "Courier", "DejaVu Mono", monospace;
+
+
+/********************************************************************************/
+/* Font families.								*/
+/* Here we select one of the declared font stacks.				*/
+/********************************************************************************/
+
+Family_doc:		Stack_narrow_sans;
+Family_heading:		Stack_narrow_sans;
+Family_mono:		Stack_narrow_mono;
+
+
+/********************************************************************************/
+/* Font sizes.									*/
+/********************************************************************************/
+
+Size_doc:	14px;
+Size_note:	(12px ÷ Size_doc) * 1em;
+Size_pre:	(12px ÷ Size_doc) * 1em;
+Size_caption:	(13px ÷ Size_doc) * 1em;
+Size_small:	(13px ÷ Size_doc) * 1em;
+Size_large:	(15px ÷ Size_doc) * 1em;
+Size_title1:	(22px ÷ Size_doc) * 1em;
+Size_title2:	(18px ÷ Size_doc) * 1em;
+Size_part:	(18px ÷ Size_doc) * 1em;
+Size_h1:	(17px ÷ Size_doc) * 1em;
+Size_h2:	(16px ÷ Size_doc) * 1em;
+Size_h3:	(15px ÷ Size_doc) * 1em;
+Size_pull:	(15px ÷ Size_doc) * 1em;
+Size_pullhead:	(13 ÷ 15) * 1em;
+
+Line_height_doc: 1.4em;
 
 
 /********************************************************************************/
@@ -55,73 +76,14 @@ Border_pull:		2px solid Colour_weakfancy;
 /********************************************************************************/
 
 Radius_box:	5px;
-Shadow_box:	2px 2px 2px Colour_shadow;
-Border_box:	1px solid Colour_ghostly;
+Shadow_box:	2px 2px 2px #666;
+Border_box:	1px solid #333;
 Padding_box:	1em;
-
-
-/********************************************************************************/
-/* Font stacks.									*/
-/********************************************************************************/
-
-/* Linux Libertine stack: */
-
-/*
-Font_stack_serif: "Linux Libertine O", serif;
-Font_stack_sans: "Linux Biolinum O", sans-serif;
-Font_stack_mono: "Courier New", "Courier", "DejaVu Mono", monospace;
-*/
-
-/* Narrow stack: */
-/*
-Font_stack_serif: "Times New Roman", "Times", "Liberation Serif", serif;
-Font_stack_sans: "Arial", "Helvetica", "Liberation Sans", sans-serif;
-Font_stack_mono: "Courier New", "Courier", "Liberation Mono", monospace;
-*/
-/* Wide stack: */
-
-Font_stack_serif: "Georgia", "DejaVu Serif", serif;
-Font_stack_sans: "Verdana", "Geneva", "DejaVu Sans", sans-serif;
-Font_stack_mono: "Courier New", "Courier", "DejaVu Mono", monospace;
-
-
-/********************************************************************************/
-/* Font families.								*/
-/********************************************************************************/
-
-Family_doc:	Font_stack_serif;
-Family_heading:	Font_stack_serif;
-Family_mono:	Font_stack_mono;
-
-
-/********************************************************************************/
-/* Font sizes.									*/
-/********************************************************************************/
-
-Size_pre:	1.2em;
-Size_caption:	1.2em;
-Size_small:	1.3em;
-Size_normal:	1.4em;
-Size_large:	1.5em;
-
-Size_title1:	2.2em;
-Size_title2:	1.8em;
-Size_part:	1.8em;
-Size_h1:	1.7em;
-Size_h2:	1.6em;
-Size_h3:	1.5em;
-
-Size_pull:	(1.5em ÷ Size_normal) * 1em;		// Relative to Size_normal: 14 * 1.071 = 15px
-Size_pullhead:	(Size_normal ÷ 1.5em) * 1em;		// Relative to Size_pull: 15 * 0.933 = 14px
-Size_note:	(1.2em ÷ Size_normal) * 1em;		// Relative to Size_normal: 14 * 0.857 = 12px
 
 
 /********************************************************************************/
 /* Spacing.									*/
 /********************************************************************************/
-
-Heading_word_spacing:	0.1em;
-Heading_letter_spacing:	0;
 
 Vmargin_short:		0.25em;
 Vmargin_par:		0.5em;
@@ -129,39 +91,12 @@ Vmargin_textual:	1em;
 Vmargin_hybrid:		1.5em;
 Vmargin_boxish:		2em;
 Vmargin_wrapper:	2.5em;
-Vmargin_caption_long:	1em;
-Vmargin_caption_short:	0.5em;
-Vmargin_doc:		1em;
 
-Vmargin_title_top:	2em;
-Vmargin_title_bottom:	1.5em;
-Vmargin_title_intra:	-1em;
-Vmargin_part_top:	2em;
-Vmargin_part_bottom:	1.5em;
-Vmargin_sec_top:	1.5em;
-Vmargin_sec_bottom:	0.5em;
-Vmargin_ghost_entry:	0.75em;
-
-Hmargin_list:		2em;
-Hmargin_dt:		-1 * (Hmargin_list - 0.5em);
 Hmargin_inset:		1em;
 Hmargin_inline_small:	0.25em;
 Hmargin_inline_large:	0.5em;
-Hmargin_quote:		0.75em;
-Hmargin_src:		1em;
-Hmargin_indent:		1em;
+
+Vmargin_ghost_entry:	0.75em;
 Hmargin_ghost_text:	3em;
-
-Padding_boxout_title:	0.3em;
-Padding_htab:		1em;
-Padding_vtabin:		0.1em;
-Padding_vtabout:	0.4em;
-Padding_part:		0.25em;
-
-Line_height_doc:	1.6em;
-Line_height_src:	1.8em;
-Line_height_verb:	1em;
-
 Width_ghost_num:	2.5em;
-Width_doc:		46em;
 

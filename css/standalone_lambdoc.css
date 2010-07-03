@@ -52,7 +52,7 @@ caption, th, td
 
 .doc_code
 	{
-	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
 	font-weight: bold;
 	color: #444;
 	}
@@ -112,7 +112,6 @@ caption, th, td
 .doc_par
 	{
 	text-align: justify;
-	font-size: 1.4em;
 	}
 
 .doc_initial:first-letter
@@ -120,9 +119,8 @@ caption, th, td
 	float: left;
 	margin-right: 0.15em;
 	font-weight: bold;
-	font-size: 3.5em;
+	font-size: 48px;
 	text-transform: capitalize;
-	text-shadow: #666 1px 1px 2px;
 	color: #501;
 	}
 
@@ -224,7 +222,6 @@ caption, th, td
 .doc_description > .doc_item
 	{
 	margin-left: -1.5em;
-	font-size: 1.4em;
 	font-weight: bold;
 	color: #501;
 	}
@@ -239,34 +236,49 @@ caption, th, td
 	margin-bottom: 1em;
 	}
 
-.doc_qanda > dt.doc_question, .doc_qanda > dt.doc_answer
+dt.doc_question, dt.doc_answer
 	{
 	display: block;
 	float: left;
-	padding: 0 0.5em 0 0;
-	font-size: 1.4em;
+	margin-right: 0.5em;
 	font-weight: bold;
 	font-variant: small-caps;
 	}
 
-.doc_qanda > .doc_question
+dt.doc_answer
 	{
+	margin-left: 1.5em;
+	}
+
+dt.doc_answer:before
+	{
+	display: block;
+	float: left;
+	margin-left: -0.8em;
+	height: 0;
+	line-height: 30px;
+	font-family: "Georgia", serif;
+	font-weight: bold;
+	font-variant: normal;
+	font-size: 24px;
+	quotes: "\201c" "\201d";
+	content: open-quote;
 	color: #501;
 	}
 
-.doc_qanda > .doc_answer
-	{
-	color: #000;
-	}
-
-.doc_qanda > dd.doc_question
+dd.doc_question
 	{
 	margin: 0.5em 0;
 	}
 
-.doc_qanda > dd.doc_answer
+dd.doc_answer
 	{
-	margin: 0.5em 0 1em;
+	margin: 0.5em 0 1em 1.5em;
+	}
+
+.doc_question
+	{
+	color: #501;
 	}
 
 .doc_qanda:not(:first-child)
@@ -312,8 +324,8 @@ caption, th, td
 	clear: both;
 	margin: 0 1em;
 	padding-left: 0.75em;
-	border-left: 3px solid #a88;
-	color: #333;
+	border-left: 2px dotted #501;
+	color: #444;
 	}
 
 .doc_quote:not(:first-child)
@@ -352,15 +364,10 @@ caption, th, td
 	{
 	clear: both;
 	margin: 0 1em;
-	font-size: 1.2em;
-	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-size: 0.8571em;
+	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
 	line-height: 1.8em;
 	overflow: auto;
-	}
-
-.doc_src_plain
-	{
-	color: #000;
 	}
 
 .doc_src_boxed, .doc_src_zebra
@@ -369,7 +376,6 @@ caption, th, td
 	-moz-box-shadow: 2px 2px 2px #666;
 	-moz-border-radius: 5px;
 	background: #f8f9fc;
-	color: #000;
 	}
 
 .doc_src_console
@@ -709,12 +715,12 @@ caption, th, td
 .doc_tab_aux
 	{
 	display: inline-block;
-	line-height: 1.6em;
+	line-height: 1.4em;
 	}
 
 .doc_tab_aux > table
 	{
-	font-size: 1.3em;
+	font-size: 0.9286em;
 	border-collapse: collapse;
 	border-top: 2px solid #666;
 	border-bottom: 2px solid #666;
@@ -847,7 +853,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	white-space: pre;
 	line-height: 1em;
 	text-align: left;
-	font-family: "Courier New", "Courier", "DejaVu Mono", monospace;
+	font-family: "Courier New", "Courier", "Liberation Mono", monospace;
 	}
 
 .doc_mult0
@@ -991,22 +997,12 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_pull_aux
 	{
 	display: inline-block;
-	padding: 1em 0.5em 1em 3.25em;
-	border-top: 2px solid #a88;
-	border-bottom: 2px solid #a88;
+	padding: 1em 0.5em 1em 2.5em;
+	border-top: 2px dotted #501;
+	border-bottom: 2px dotted #501;
 	font-size: 1.071em;
 	font-weight: bold;
-	quotes: "\201c" "\201d";
 	color: #555;
-	}
-
-.doc_pullhead
-	{
-	text-align: right;
-	font-size: small;
-	font-style: normal;
-	font-weight: normal;
-	color: #501;
 	}
 
 .doc_pull_aux:before
@@ -1014,12 +1010,22 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	float: left;
 	display: block;
 	font-family: "Georgia", serif;
-	font-size: 5em;
+	font-size: 3em;
+	quotes: "\201c" "\201d";
 	content: open-quote;
 	margin-left: -0.7em;
 	height: 0;
 	line-height: 0.75em;
-	color: #a88;
+	color: #501;
+	}
+
+.doc_pullhead
+	{
+	text-align: right;
+	font-size: 0.8667em;
+	font-style: normal;
+	font-weight: normal;
+	color: #501;
 	}
 
 .doc_boxout
@@ -1037,8 +1043,8 @@ tbody.doc_tgroup + tbody.doc_tgroup
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 	text-align: center;
-	font-family: "Georgia", "DejaVu Serif", serif;
-	font-size: 1.5em;
+	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
+	font-size: 1.071em;
 	font-variant: small-caps;
 	font-weight: bold;
 	color: #501;
@@ -1057,6 +1063,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_theorem_head
 	{
 	float: left;
+	height: 1.4em;
 	margin-right: 0.5em;
 	}
 
@@ -1138,7 +1145,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_caption_aux
 	{
 	display: inline-block;
-	font-size: 1.2em;
+	font-size: 0.9286em;
 	text-align: justify;
 	}
 
@@ -1172,7 +1179,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_title
 	{
 	clear: both;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
 	font-weight: bold;
 	font-variant: small-caps;
 	text-transform: capitalize;
@@ -1182,12 +1189,12 @@ tbody.doc_tgroup + tbody.doc_tgroup
 
 h1.doc_title
 	{
-	font-size: 2.2em;
+	font-size: 1.571em;
 	}
 
 h2.doc_title
 	{
-	font-size: 1.8em;
+	font-size: 1.286em;
 	}
 
 .doc_part
@@ -1196,9 +1203,9 @@ h2.doc_title
 	padding: 0.25em 0;
 	border-top: 1px solid #501;
 	border-bottom: 1px solid #501;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
 	font-weight: bold;
-	font-size: 1.8em;
+	font-size: 1.286em;
 	text-transform: capitalize;
 	text-align: center;
 	word-spacing: 0.1em;
@@ -1209,7 +1216,7 @@ h2.doc_title
 .doc_sec
 	{
 	clear: both;
-	font-family: "Georgia", "DejaVu Serif", serif;
+	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
 	font-weight: bold;
 	word-spacing: 0.1em;
 	letter-spacing: 0;
@@ -1218,17 +1225,17 @@ h2.doc_title
 
 h1.doc_sec
 	{
-	font-size: 1.7em;
+	font-size: 1.214em;
 	}
 
 h2.doc_sec
 	{
-	font-size: 1.6em;
+	font-size: 1.143em;
 	}
 
 h3.doc_sec
 	{
-	font-size: 1.5em;
+	font-size: 1.071em;
 	}
 
 .doc_title:not(:first-child)
@@ -1297,7 +1304,6 @@ h2.doc_title + h2.doc_title
 	list-style-type: none;
 	margin-top: 1em;
 	padding-left: 0;
-	font-size: 1.4em;
 	}
 
 .doc_toc > .doc_item
@@ -1329,6 +1335,7 @@ h2.doc_title + h2.doc_title
 	float: left;
 	font-weight: bold;
 	text-align: right;
+	color: #501;
 	}
 
 .doc_bib_body
@@ -1375,6 +1382,7 @@ h2.doc_title + h2.doc_title
 	float: left;
 	font-weight: bold;
 	text-align: right;
+	color: #501;
 	}
 
 .doc_note_body
@@ -1482,18 +1490,13 @@ h2.doc_title + h2.doc_title
 	background: #06c url("boxout-tip.png") no-repeat 6px center;
 	}
 
-body
-	{
-	font-size: 16px;
-	}
-
 .doc
 	{
 	margin: 1em auto;
-	width: 46em;
-	font-family: "Georgia", "DejaVu Serif", serif;
-	font-size: 0.625em;
-	line-height: 1.6em;
-	color: #000;
+	width: 40em;
+	font-family: "Helvetica", "Arial", "Liberation Sans", sans-serif;
+	font-size: 14px;
+	line-height: 1.4em;
+	color: #333;
 	}
 
