@@ -74,8 +74,9 @@ Size_h2:	((Size_doc + 2px) ÷ Size_doc) * 1em;
 Size_h3:	((Size_doc + 1px) ÷ Size_doc) * 1em;
 Size_pull:	((Size_doc + 1px) ÷ Size_doc) * 1em;
 Size_pull_head:	(1em ÷ Size_pull) * 1em;
+Size_error_head:((Size_doc + 1px) ÷ Size_doc) * 1em;
 
-Line_height_doc: 1.4em;
+Line_height_doc: 1.5em;
 
 
 /********************************************************************************/

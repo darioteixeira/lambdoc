@@ -138,13 +138,13 @@ dt.doc_answer:before
 	{
 	display: block;
 	float: left;
-	margin-left: -0.8em;
+	margin-left: -0.75em;
 	height: 0;
-	line-height: 30px;
+	line-height: 1em;
 	font-family: "Georgia", serif;
 	font-weight: bold;
 	font-variant: normal;
-	font-size: 24px;
+	font-size: 1.8em;
 	quotes: "\201c" "\201d";
 	content: open-quote;
 	color: Colour_fancy;

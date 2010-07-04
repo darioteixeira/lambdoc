@@ -6,22 +6,22 @@
 /* High-level document CSS.							*/
 /********************************************************************************/
 
-.doc_error
+.doc_error + .doc_error
 	{
-	margin: 1em 0;
+	margin-top: Vmargin_boxish;
 	}
+
 
 .doc_error_head
 	{
-	font-size: 1.071em;		/* For size of 14 * 1.071 = 15px */
+	font-size: Size_error_head;
 	}
 
 .doc_error_lines
 	{
-	padding: 0;
 	border: 1px dotted #666;
 	list-style-type: none;
-	font-size: 0.857em;		/* For size of 14 * 0.857 = 12px */
+	font-size: Size_pre;
 	font-family: monospace;
 	background: #ffc;
 	}

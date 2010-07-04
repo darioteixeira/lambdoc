@@ -212,13 +212,13 @@ dt.doc_answer:before
 	{
 	display: block;
 	float: left;
-	margin-left: -0.8em;
+	margin-left: -0.75em;
 	height: 0;
-	line-height: 30px;
+	line-height: 1em;
 	font-family: "Georgia", serif;
 	font-weight: bold;
 	font-variant: normal;
-	font-size: 24px;
+	font-size: 1.8em;
 	quotes: "\201c" "\201d";
 	content: open-quote;
 	color: #501;
@@ -673,7 +673,7 @@ dd.doc_answer
 .doc_tab_aux
 	{
 	display: inline-block;
-	line-height: 1.4em;
+	line-height: 1.5em;
 	}
 
 .doc_tab_aux > table
@@ -1021,7 +1021,7 @@ tbody.doc_tgroup + tbody.doc_tgroup
 .doc_theorem_head
 	{
 	float: left;
-	height: 1.4em;
+	height: 1.5em;
 	margin-right: 0.5em;
 	}
 
@@ -1348,22 +1348,21 @@ h2.doc_title + h2.doc_title
 	margin-left: 3em;
 	}
 
-.doc_error
+.doc_error + .doc_error
 	{
-	margin: 1em 0;
+	margin-top: 2em;
 	}
 
 .doc_error_head
 	{
-	font-size: 1.071em;
+	font-size: 1.077em;
 	}
 
 .doc_error_lines
 	{
-	padding: 0;
 	border: 1px dotted #666;
 	list-style-type: none;
-	font-size: 0.857em;
+	font-size: 0.8462em;
 	font-family: monospace;
 	background: #ffc;
 	}
