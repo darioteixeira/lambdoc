@@ -33,7 +33,7 @@ Colour_lnk: #009;
 	{
 	margin-left: Hmargin_inline_small;
 	vertical-align: 0.3em;
-	font-size: Size_note;
+	font-size: Fsize_note;
 	color: Colour_lnk;
 	}
 
@@ -230,7 +230,7 @@ Border_src_consnums:    1px solid #ffb720;
 	{
 	clear: both;
 	margin: 0 Hmargin_inset;
-	font-size: Size_pre;
+	font-size: Fsize_pre;
 	font-family: Family_mono;
 	line-height: Line_height_src;
 	overflow: auto;
@@ -375,7 +375,7 @@ Padding_vtabout:	0.4em;
 
 .doc_tab_aux > table
 	{
-	font-size: Size_small;
+	font-size: Fsize_small;
 	border-collapse: collapse;
 	border-top: Border_tabular_outter;
 	border-bottom: Border_tabular_outter;
@@ -518,7 +518,7 @@ Border_pull: 2px dotted Colour_fancy;
 	padding: 1em 0.5em 1em 2.5em;
 	border-top: Border_pull;
 	border-bottom: Border_pull;
-	font-size: Size_pull;
+	font-size: Fsize_pull;
 	font-weight: bold;
 	color: #555;
 	}
@@ -540,7 +540,7 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_pull_head
 	{
 	text-align: right;
-	font-size: Size_pull_head;
+	font-size: Fsize_pull_head;
 	font-style: normal;
 	font-weight: normal;
 	color: Colour_fancy;
@@ -567,7 +567,7 @@ Border_pull: 2px dotted Colour_fancy;
 	-moz-border-radius-topright: Radius_box;
 	text-align: center;
 	font-family: Family_heading;
-	font-size: Size_large;
+	font-size: Fsize_large;
 	font-variant: small-caps;
 	font-weight: bold;
 	color: Colour_fancy;
@@ -636,7 +636,7 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_caption_aux
 	{
 	display: inline-block;
-	font-size: Size_caption;
+	font-size: Fsize_caption;
 	text-align: justify;
 	}
 
@@ -674,8 +674,8 @@ Border_part:		1px solid Colour_fancy;
 	color: Colour_fancy;
 	}
 
-h1.doc_title {font-size: Size_title1;}
-h2.doc_title {font-size: Size_title2;}
+h1.doc_title {font-size: Fsize_title1;}
+h2.doc_title {font-size: Fsize_title2;}
 
 .doc_part
 	{
@@ -685,7 +685,7 @@ h2.doc_title {font-size: Size_title2;}
 	border-bottom: Border_part;
 	font-family: Family_heading;
 	font-weight: bold;
-	font-size: Size_part;
+	font-size: Fsize_part;
 	text-transform: capitalize;
 	text-align: center;
 	word-spacing: Heading_word_spacing;
@@ -703,9 +703,9 @@ h2.doc_title {font-size: Size_title2;}
 	color: Colour_fancy;
 	}
 
-h1.doc_sec {font-size: Size_h1;}
-h2.doc_sec {font-size: Size_h2;}
-h3.doc_sec {font-size: Size_h3;}
+h1.doc_sec {font-size: Fsize_h1;}
+h2.doc_sec {font-size: Fsize_h2;}
+h3.doc_sec {font-size: Fsize_h3;}
 
 .doc_title:not(:first-child) {margin-top: 2em;}
 .doc_part:not(:first-child) {margin-top: 2em;}

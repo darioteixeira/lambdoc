@@ -11,7 +11,7 @@
 	margin: 1em auto;
 	width: 44em;
 	font-family: Family_doc;
-	font-size: Size_doc;
+	font-size: Fsize_doc;
 	line-height: Line_height_doc;
 	color: Colour_normal;
 	}

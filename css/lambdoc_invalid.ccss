@@ -14,14 +14,14 @@
 
 .doc_error_head
 	{
-	font-size: Size_error_head;
+	font-size: Fsize_error_head;
 	}
 
 .doc_error_lines
 	{
 	border: 1px dotted #666;
 	list-style-type: none;
-	font-size: Size_pre;
+	font-size: Fsize_pre;
 	font-family: monospace;
 	background: #ffc;
 	}

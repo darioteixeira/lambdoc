@@ -59,22 +59,22 @@ Family_mono:		Stack_wide13_mono;
 /* Font sizes.									*/
 /********************************************************************************/
 
-Size_doc:	13px;	/* Base for all other values */
+Fsize_doc:		13px;	/* Base for all other values */
 
-Size_note:	((Size_doc - 2px) ÷ Size_doc) * 1em;
-Size_pre:	((Size_doc - 2px) ÷ Size_doc) * 1em;
-Size_caption:	((Size_doc - 1px) ÷ Size_doc) * 1em;
-Size_small:	((Size_doc - 1px) ÷ Size_doc) * 1em;
-Size_large:	((Size_doc + 1px) ÷ Size_doc) * 1em;
-Size_title1:	((Size_doc + 8px) ÷ Size_doc) * 1em;
-Size_title2:	((Size_doc + 6px) ÷ Size_doc) * 1em;
-Size_part:	((Size_doc + 4px) ÷ Size_doc) * 1em;
-Size_h1:	((Size_doc + 3px) ÷ Size_doc) * 1em;
-Size_h2:	((Size_doc + 2px) ÷ Size_doc) * 1em;
-Size_h3:	((Size_doc + 1px) ÷ Size_doc) * 1em;
-Size_pull:	((Size_doc + 1px) ÷ Size_doc) * 1em;
-Size_pull_head:	(1em ÷ Size_pull) * 1em;
-Size_error_head:((Size_doc + 1px) ÷ Size_doc) * 1em;
+Fsize_note:		((Fsize_doc - 2px) ÷ Fsize_doc) * 1em;
+Fsize_pre:		((Fsize_doc - 2px) ÷ Fsize_doc) * 1em;
+Fsize_caption:		((Fsize_doc - 1px) ÷ Fsize_doc) * 1em;
+Fsize_small:		((Fsize_doc - 1px) ÷ Fsize_doc) * 1em;
+Fsize_large:		((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
+Fsize_title1:		((Fsize_doc + 8px) ÷ Fsize_doc) * 1em;
+Fsize_title2:		((Fsize_doc + 6px) ÷ Fsize_doc) * 1em;
+Fsize_part:		((Fsize_doc + 4px) ÷ Fsize_doc) * 1em;
+Fsize_h1:		((Fsize_doc + 3px) ÷ Fsize_doc) * 1em;
+Fsize_h2:		((Fsize_doc + 2px) ÷ Fsize_doc) * 1em;
+Fsize_h3:		((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
+Fsize_pull:		((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
+Fsize_pull_head:	(1em ÷ Fsize_pull) * 1em;
+Fsize_error_head:	((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
 
 Line_height_doc: 1.5em;
 
