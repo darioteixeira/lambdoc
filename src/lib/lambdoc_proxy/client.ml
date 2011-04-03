@@ -30,14 +30,14 @@ type socket_t =
 
 let communicate socket request =
 	let sock = Lwt_unix.socket socket.sockdomain socket.socktype socket.sockproto in
-	Lwt_unix.connect sock socket.sockaddr >>= fun () ->
+	Lwt_unix.connect sock socket.sockaddr >>
 	let in_channel = Lwt_chan.in_channel_of_descr sock
 	and out_channel = Lwt_chan.out_channel_of_descr sock in
-	Lwt_chan.output_value out_channel request >>= fun () ->
-	Lwt_chan.flush out_channel >>= fun () ->
+	Lwt_chan.output_value out_channel request >>
+	Lwt_chan.flush out_channel >>
 	Lwt_chan.input_value in_channel >>= fun reply ->
 	Lwt_unix.shutdown sock Unix.SHUTDOWN_ALL;
-	Lwt_unix.close sock;
+	Lwt_unix.close sock >>
 	Lwt.return reply
 
 

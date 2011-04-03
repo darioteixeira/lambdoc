@@ -1,1 +1,4 @@
 <*.cmx>: for-pack(Lambdoc_proxy)
+
+<client.ml>: pkg_lwt.syntax, syntax_camlp4o
+
