@@ -1127,8 +1127,8 @@ let process_errors ~sort source errors =
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile_manuscript ~expand_entities ~accept ~deny ~default ~source document_ast =
-	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accept ~deny ~default in
+let compile_manuscript ~expand_entities ~accepted ~denied ~default ~source document_ast =
+	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accepted ~denied ~default in
 	let (contents, bibs, notes, toc, images, labels, custom, errors) = compile_document ~expand_entities ~idiosyncrasies document_ast
 	in match errors with
 		| [] -> Ambivalent.make_valid_manuscript contents bibs notes toc images labels custom
@@ -1137,8 +1137,8 @@ let compile_manuscript ~expand_entities ~accept ~deny ~default ~source document_
 
 (**	Compile a document AST into a composition.
 *)
-let compile_composition ~expand_entities ~accept ~deny ~default ~source document_ast =
-	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accept ~deny ~default in
+let compile_composition ~expand_entities ~accepted ~denied ~default ~source document_ast =
+	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accepted ~denied ~default in
 	let (contents, _, _, _, images, _, _, errors) = compile_document ~expand_entities ~idiosyncrasies document_ast
 	in match errors with
 		| [] -> Ambivalent.make_valid_composition (Obj.magic contents) images

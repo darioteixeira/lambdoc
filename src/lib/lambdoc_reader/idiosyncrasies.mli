@@ -21,13 +21,13 @@ type t
 (********************************************************************************)
 
 val make_composition_idiosyncrasies:
-	accept: Features.composition_feature_t list ->
-	deny: Features.composition_feature_t list ->
+	accepted: Features.composition_feature_t list ->
+	denied: Features.composition_feature_t list ->
 	default: Features.default_t -> t
 
 val make_manuscript_idiosyncrasies:
-	accept: Features.manuscript_feature_t list ->
-	deny: Features.manuscript_feature_t list ->
+	accepted: Features.manuscript_feature_t list ->
+	denied: Features.manuscript_feature_t list ->
 	default: Features.default_t -> t
 
 val check_feature: Features.feature_t -> t -> bool
