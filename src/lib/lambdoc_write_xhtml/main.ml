@@ -166,7 +166,7 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 (**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document ?(translations = Translations.default) ?(settings = Settings.default) ?(lookup = XHTML.M.uri_of_string) ?(default_classnames = [doc_prefix; !!"valid"]) classname doc =
+let write_valid_document ?(translations = Translations.default) ?(settings = Settings.default) ?(lookup = XHTML.M.uri_of_string) ?(base_classes = [doc_prefix; !!"valid"]) ?(extra_classes = []) doc =
 
 	(************************************************************************)
 	(* Predefined sequences with last question and answer.			*)
@@ -668,7 +668,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				make_toc_entry label (class_of_level level) (section_conv ~spanify:true location order) (write_name Name_toc)
 
 
-	in XHTML.M.div ~a:[a_class (classname :: default_classnames)] (write_frag content)
+	in XHTML.M.div ~a:[a_class (base_classes @ extra_classes)] (write_frag content)
 
 
 (********************************************************************************)
@@ -703,22 +703,22 @@ let write_error (maybe_error_context, error_msg) =
 		| None ->
 			[XHTML.M.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]]
 	and explanation_doc = Valid.make_composition (Block.paragraph false None (Explanations.explain error_msg), []) [] in
-	let explanation_out = [write_valid_document ~default_classnames:[] !!"error_msg" explanation_doc]
+	let explanation_out = [write_valid_document ~base_classes:[] ~extra_classes:[!!"error_msg"] explanation_doc]
 	in XHTML.M.li ~a:[a_class [!!"error"]] (context @ explanation_out)
 
 
-let write_invalid_document ?(default_classnames = [doc_prefix; !!"invalid"]) classname errors =
+let write_invalid_document ?(base_classes = [doc_prefix; !!"invalid"]) ?(extra_classes = []) errors =
 	let (hd, tl) = nemap write_error errors
-	in div ~a:[a_class (classname :: default_classnames)] [ul ~a:[a_class [!!"errors"]] hd tl]
+	in div ~a:[a_class (base_classes @ extra_classes)] [ul ~a:[a_class [!!"errors"]] hd tl]
 
 
 (********************************************************************************)
 (**	{2 High-level interface}						*)
 (********************************************************************************)
 
-let write_ambivalent_document ?translations ?settings ?lookup classname = function
-	| `Valid doc	-> write_valid_document ?translations ?settings ?lookup classname doc
-	| `Invalid doc	-> write_invalid_document classname doc
+let write_ambivalent_document ?translations ?settings ?lookup ~extra_classes = function
+	| `Valid doc	-> write_valid_document ?translations ?settings ?lookup ~extra_classes doc
+	| `Invalid doc	-> write_invalid_document ~extra_classes doc
 
 
 let manuscript_classname = !!"manuscript"
@@ -737,21 +737,21 @@ let composition_classname = !!"composition"
 
 type t = [ `Div ] XHTML.M.elt
 
-let write_ambivalent_manuscript ?translations ?settings ?lookup doc =
-	write_ambivalent_document ?translations ?settings ?lookup manuscript_classname doc
+let write_ambivalent_manuscript ?translations ?settings ?lookup ?(extra_classes = []) doc =
+	write_ambivalent_document ?translations ?settings ?lookup ~extra_classes:(manuscript_classname :: extra_classes)  doc
 
-let write_ambivalent_composition ?translations ?settings ?lookup doc =
-	write_ambivalent_document ?translations ?settings ?lookup composition_classname doc
+let write_ambivalent_composition ?translations ?settings ?lookup ?(extra_classes = []) doc =
+	write_ambivalent_document ?translations ?settings ?lookup ~extra_classes:(composition_classname :: extra_classes) doc
 
-let write_valid_manuscript ?translations ?settings ?lookup doc =
-	write_valid_document ?translations ?settings ?lookup manuscript_classname doc
+let write_valid_manuscript ?translations ?settings ?lookup ?(extra_classes = []) doc =
+	write_valid_document ?translations ?settings ?lookup ~extra_classes:(manuscript_classname :: extra_classes) doc
 
-let write_valid_composition ?translations ?settings ?lookup doc =
-	write_valid_document ?translations ?settings ?lookup composition_classname doc
+let write_valid_composition ?translations ?settings ?lookup ?(extra_classes = []) doc =
+	write_valid_document ?translations ?settings ?lookup ~extra_classes:(composition_classname :: extra_classes) doc
 
-let write_invalid_manuscript doc =
-	write_invalid_document manuscript_classname doc
+let write_invalid_manuscript ?(extra_classes = []) doc =
+	write_invalid_document ~extra_classes:(manuscript_classname :: extra_classes) doc
 
-let write_invalid_composition doc =
-	write_invalid_document composition_classname doc
+let write_invalid_composition ?(extra_classes = []) doc =
+	write_invalid_document ~extra_classes:(composition_classname :: extra_classes) doc
 

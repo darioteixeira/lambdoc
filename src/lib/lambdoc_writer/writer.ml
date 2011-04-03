@@ -28,13 +28,13 @@ module type S =
 sig
 	type t
 
-	val write_ambivalent_manuscript: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> Ambivalent.manuscript_t -> t
-	val write_ambivalent_composition: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> Ambivalent.composition_t -> t
+	val write_ambivalent_manuscript: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> ?extra_classes:XHTML.M.nmtokens -> Ambivalent.manuscript_t -> t
+	val write_ambivalent_composition: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> ?extra_classes:XHTML.M.nmtokens -> Ambivalent.composition_t -> t
 
-	val write_valid_manuscript: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> Valid.manuscript_t -> t
-	val write_valid_composition: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> Valid.composition_t -> t
+	val write_valid_manuscript: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> ?extra_classes:XHTML.M.nmtokens -> Valid.manuscript_t -> t
+	val write_valid_composition: ?translations:Translations.t -> ?settings:Settings.t -> ?lookup:lookup_t -> ?extra_classes:XHTML.M.nmtokens -> Valid.composition_t -> t
 
-	val write_invalid_manuscript: Invalid.manuscript_t -> t
-	val write_invalid_composition: Invalid.composition_t -> t
+	val write_invalid_manuscript: ?extra_classes:XHTML.M.nmtokens -> Invalid.manuscript_t -> t
+	val write_invalid_composition: ?extra_classes:XHTML.M.nmtokens -> Invalid.composition_t -> t
 end
 
