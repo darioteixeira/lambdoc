@@ -24,7 +24,7 @@ type t = bool Feature_map.t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make_idiosyncrasies feature_set accept_list deny_list default =
+let make_idiosyncrasies feature_set accept deny default =
 	let base_map =
 		let features = (Features.available_internal_features :> Features.feature_t list) in
 		let adder m x = Feature_map.add x true m
@@ -32,9 +32,9 @@ let make_idiosyncrasies feature_set accept_list deny_list default =
 	let default_bool =
 		(default = `Accept) in
 	let is_accepted feature =
-		if List.mem feature deny_list
+		if List.mem feature deny
 		then false
-		else	 if List.mem feature accept_list
+		else	 if List.mem feature accept
 			then true
 			else	if List.mem feature feature_set
 				then default_bool
@@ -44,18 +44,18 @@ let make_idiosyncrasies feature_set accept_list deny_list default =
 	in List.fold_left make_feature base_map (Features.available_manuscript_features :> Features.feature_t list)
 
 
-let make_composition_idiosyncrasies ~accept_list ~deny_list ~default =
+let make_composition_idiosyncrasies ~accept ~deny ~default =
 	let composition_features = (Features.available_composition_features :> Features.feature_t list)
-	and accept_list = (accept_list :> Features.feature_t list)
-	and deny_list = (deny_list :> Features.feature_t list)
-	in make_idiosyncrasies composition_features accept_list deny_list default
+	and accept = (accept :> Features.feature_t list)
+	and deny = (deny :> Features.feature_t list)
+	in make_idiosyncrasies composition_features accept deny default
 
 
-let make_manuscript_idiosyncrasies ~accept_list ~deny_list ~default =
+let make_manuscript_idiosyncrasies ~accept ~deny ~default =
 	let manuscript_features = (Features.available_manuscript_features :> Features.feature_t list)
-	and accept_list = (accept_list :> Features.feature_t list)
-	and deny_list = (deny_list :> Features.feature_t list)
-	in make_idiosyncrasies manuscript_features accept_list deny_list default
+	and accept = (accept :> Features.feature_t list)
+	and deny = (deny :> Features.feature_t list)
+	in make_idiosyncrasies manuscript_features accept deny default
 
 
 let check_feature feature map =

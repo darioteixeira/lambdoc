@@ -17,8 +17,8 @@ type manuscript_payload_t =
 	{
 	m_verify_utf8: bool option;
 	m_expand_entities: bool option;
-	m_accept_list: Features.manuscript_feature_t list option;
-	m_deny_list: Features.manuscript_feature_t list option;
+	m_accept: Features.manuscript_feature_t list option;
+	m_deny: Features.manuscript_feature_t list option;
 	m_default: Features.default_t option;
 	m_markup: Markup.t;
 	m_source: string;
@@ -29,8 +29,8 @@ type composition_payload_t =
 	{
 	c_verify_utf8: bool option;
 	c_expand_entities: bool option;
-	c_accept_list: Features.composition_feature_t list option;
-	c_deny_list: Features.composition_feature_t list option;
+	c_accept: Features.composition_feature_t list option;
+	c_deny: Features.composition_feature_t list option;
 	c_default: Features.default_t option;
 	c_markup: Markup.t;
 	c_source: string;

@@ -29,8 +29,8 @@ type socket_t =
 val ambivalent_manuscript_from_string:
 	?verify_utf8: bool ->
 	?expand_entities: bool ->
-	?accept_list: Features.manuscript_feature_t list ->
-	?deny_list: Features.manuscript_feature_t list ->
+	?accept: Features.manuscript_feature_t list ->
+	?deny: Features.manuscript_feature_t list ->
 	?default: Features.default_t ->
 	socket: socket_t ->
 	markup: Markup.t ->
@@ -41,8 +41,8 @@ val ambivalent_manuscript_from_string:
 val ambivalent_composition_from_string:
 	?verify_utf8: bool ->
 	?expand_entities: bool ->
-	?accept_list: Features.composition_feature_t list ->
-	?deny_list: Features.composition_feature_t list ->
+	?accept: Features.composition_feature_t list ->
+	?deny: Features.composition_feature_t list ->
 	?default: Features.default_t ->
 	socket: socket_t ->
 	markup: Markup.t ->

@@ -45,13 +45,13 @@ let communicate socket request =
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default ~socket ~markup source =
+let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept ?deny ?default ~socket ~markup source =
 	let payload =
 		{
 		m_verify_utf8 = verify_utf8;
 		m_expand_entities = expand_entities;
-		m_accept_list = accept_list;
-		m_deny_list = deny_list;
+		m_accept = accept;
+		m_deny = deny;
 		m_default = default;
 		m_markup = markup;
 		m_source = source;
@@ -60,13 +60,13 @@ let ambivalent_manuscript_from_string ?verify_utf8 ?expand_entities ?accept_list
 	Lwt.return reply
 
 
-let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept_list ?deny_list ?default ~socket ~markup source =
+let ambivalent_composition_from_string ?verify_utf8 ?expand_entities ?accept ?deny ?default ~socket ~markup source =
 	let payload =
 		{
 		c_verify_utf8 = verify_utf8;
 		c_expand_entities = expand_entities;
-		c_accept_list = accept_list;
-		c_deny_list = deny_list;
+		c_accept = accept;
+		c_deny = deny;
 		c_default = default;
 		c_markup = markup;
 		c_source = source;

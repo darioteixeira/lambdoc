@@ -7,8 +7,6 @@
 (********************************************************************************)
 
 let () =
-	Netplex_log.debug_scheduling := false;
-	Netplex_log.debug_containers := true;
 	Sys.set_signal Sys.sigpipe Sys.Signal_ignore;
 	Blahcaml.init_dtd ();
 	let (opt_list, cmdline_cfg) = Netplex_main.args () in

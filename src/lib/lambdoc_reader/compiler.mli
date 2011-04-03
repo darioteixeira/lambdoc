@@ -26,8 +26,8 @@ val process_errors:
 
 val compile_manuscript:
 	expand_entities: bool ->
-	accept_list: Features.manuscript_feature_t list ->
-	deny_list: Features.manuscript_feature_t list ->
+	accept: Features.manuscript_feature_t list ->
+	deny: Features.manuscript_feature_t list ->
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
@@ -35,8 +35,8 @@ val compile_manuscript:
 
 val compile_composition:
 	expand_entities: bool ->
-	accept_list: Features.composition_feature_t list ->
-	deny_list: Features.composition_feature_t list ->
+	accept: Features.composition_feature_t list ->
+	deny: Features.composition_feature_t list ->
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
