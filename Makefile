@@ -7,10 +7,11 @@
 #
 
 PKG_NAME=lambdoc
-LIB_DIR=_build/lib
-OCAMLBUILD_OPTS=
+SRC_DIR=src
+LIB_DIR=$(SRC_DIR)/_build/lib
+OCAMLBUILD_OPTS=-use-ocamlfind -build-dir _build
 
-LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.a
+LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.cmxs lambdoc.a
 COMPONENTS=lambdoc_core lambdoc_reader lambdoc_writer lambdoc_proxy lambdoc_read_lambhtml lambdoc_read_lamblite lambdoc_read_lambtex lambdoc_write_xhtml
 COMPONENTS_CMI=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmi)
 COMPONENTS_CMO=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmo)
@@ -26,10 +27,10 @@ FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
 #
 
 all:
-	ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
 
 apidoc:
-	ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
 install: all
 	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
@@ -42,5 +43,5 @@ reinstall: all
 	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
 
 clean:
-	ocamlbuild $(OCAMLBUILD_OPTS) -clean
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) -clean
 

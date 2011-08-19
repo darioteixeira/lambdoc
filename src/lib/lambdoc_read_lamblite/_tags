@@ -1,2 +1,2 @@
-<scanner.ml>: pkg_ulex, syntax_camlp4o
+<scanner.ml>: package(ulex), syntax(camlp4o)
 <*.cmx>: for-pack(Lambdoc_read_lamblite)

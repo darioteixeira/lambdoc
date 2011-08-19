@@ -1,8 +1,8 @@
 =========================================================================
-| README for Lambdoc 0.8.4						|
+| README for Lambdoc 0.8.5						|
 |									|
 | Dario Teixeira (dario.teixeira@yahoo.com)				|
-| April 2011								|
+| August 2011								|
 =========================================================================
 
 1. Overview
@@ -20,15 +20,15 @@ possibility of outputing any Lambdoc document as an Ocsigen XHTML.M value.
 ===============
 
 Lambdoc requires Ocsigen [1], Ulex [2], Menhir [3], ExtLib [4], Sexplib [5],
-Pcre-ocaml [6], PXP [7], Lwt [8], Blahcaml [9], and Camlhighlight [10].
+Pcre-ocaml [6], PXP [7], Lwt [8], Ocamlnet [9], Blahcaml [10], and Camlhighlight [11].
 
 
 3. Building and installing
 ==========================
 
-Go to the 'src' directory and run 'make'.  To perform a Findlib installation
-issue 'make install' or 'make reinstall'.  To remove the package issue
-'make uninstall'.  The API documentation can be built with 'make apidoc'.
+To build the library and binaries simply run 'make'.  To perform a Findlib
+installation issue 'make install' or 'make reinstall'.  To remove the package
+issue 'make uninstall'.  The API documentation can be built with 'make apidoc'.
 
 
 4. License
@@ -65,6 +65,7 @@ References
  [6] http://www.ocaml.info/home/ocaml_sources.html#pcre-ocaml
  [7] http://projects.camlcity.org/projects/pxp.html
  [8] http://www.ocsigen.org/lwt
- [9] http://blahcaml.forge.ocamlcore.org/
-[10] http://camlhighlight.forge.ocamlcore.org/
+ [9] http://projects.camlcity.org/projects/ocamlnet.html
+[10] http://blahcaml.forge.ocamlcore.org/
+[11] http://camlhighlight.forge.ocamlcore.org/
 
