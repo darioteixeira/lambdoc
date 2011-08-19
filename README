@@ -26,9 +26,9 @@ Pcre-ocaml [6], PXP [7], Lwt [8], Ocamlnet [9], Blahcaml [10], and Camlhighlight
 3. Building and installing
 ==========================
 
-To build the library and binaries simply run 'make'.  To perform a Findlib
-installation issue 'make install' or 'make reinstall'.  To remove the package
-issue 'make uninstall'.  The API documentation can be built with 'make apidoc'.
+To build the library and binaries run 'make build'.  To perform a Findlib
+installation run 'make install' or 'make reinstall'.  To remove the package
+run 'make uninstall'.  The API documentation can be built with 'make apidoc'.
 
 
 4. License
