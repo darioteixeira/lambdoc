@@ -392,6 +392,16 @@ index.html: HTML document text
 \p{\lorem}
 
 
+\section{Subpage environments}
+
+\p{\lorem}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\p{\lorem}
+
+
 \section{Verbatim environments}
 
 \p{\lorem}
@@ -433,13 +443,12 @@ index.html: HTML document text
 \p{\lorem}
 
 
-\section{Subpage environments}
+\section{Books}
 
 \p{\lorem}
-\begin{subpage}
-\section(){Introduction}
+\book{1853267805}
 \p{\lorem}
-\end{subpage}
+\book<5>{978-1853267802}
 \p{\lorem}
 
 

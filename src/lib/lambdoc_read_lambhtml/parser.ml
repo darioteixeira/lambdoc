@@ -165,7 +165,7 @@ and process_inline store node =
 		| T_element "a" ->
 			(!!comm, Ast.Uref (node#required_string_attribute "href", process_maybe_seq store node))
 		| T_element "bref" ->
-			(!!comm, Ast.Bref (node#required_string_attribute "href", process_maybe_seq store node))
+			(!!comm, Ast.Bref (node#required_string_attribute "isbn", process_maybe_seq store node))
 		| T_element "see" ->
 			(!!comm, Ast.Nref (node#required_list_attribute "href"))
 		| T_element "cite" ->
@@ -242,6 +242,8 @@ and process_block store node =
 		| T_element "tabular" ->
 			let (cols, tabular) = process_tabular store node
 			in (!!comm, Ast.Tabular (cols, tabular))
+		| T_element "subpage" ->
+			(!!comm, Ast.Subpage (process_frag store node))
 		| T_element "verbatim"
 		| T_element "pre" ->
 			(!!comm, Ast.Verbatim node#data)
@@ -249,8 +251,8 @@ and process_block store node =
 			let src = node#required_string_attribute "src"
 			and alt = node#required_string_attribute "alt"
 			in (!!comm, Ast.Picture (src, alt))
-		| T_element "subpage" ->
-			(!!comm, Ast.Subpage (process_frag store node))
+		| T_element "book" ->
+			(!!comm, Ast.Book (node#required_string_attribute "isbn"))
 		| T_element "decor" ->
 			(!!comm, Ast.Decor (process_unifrag store node))
 		| T_element "pull" ->

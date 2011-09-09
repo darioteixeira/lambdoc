@@ -27,9 +27,10 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
+	| `Subpage of 'a nelist
 	| `Verbatim of int * string
 	| `Picture of bool * int option * Alias.t * string
-	| `Subpage of 'a nelist
+	| `Book of Isbn.t * int option
 	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
@@ -86,14 +87,17 @@ let source data =
 let tabular data =
 	`Tabular (Tabular.get_tabular data)
 
+let subpage frag =
+	`Subpage frag
+
 let verbatim mult data =
 	`Verbatim (mult, data)
 
 let picture frame width alias alt =
 	`Picture (frame, width, alias, alt)
 
-let subpage frag =
-	`Subpage frag
+let book isbn maybe_rating=
+	`Book (isbn, maybe_rating)
 
 let decor floatation blk =
 	`Decor (floatation, blk)

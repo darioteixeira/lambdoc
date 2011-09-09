@@ -175,6 +175,7 @@ let issue_simple_command raw_comm position =
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
 		| "picture"		-> (Blk, PICTURE command)
+		| "book"		-> (Blk, BOOK command)
 		| "part"		-> (Blk, PART command)
 		| "appendix"		-> (Blk, APPENDIX command)
 		| "section"

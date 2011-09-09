@@ -379,6 +379,17 @@ let rec count = function
 
 
 <!-- ****************************************************************** -->
+<h1>Subpages</h1>
+
+<p><call name="lorem"/></p>
+<subpage>
+	<h1 order="">Title in subpage</h1>
+	<p><call name="lorem"/></p>
+</subpage>
+<p><call name="lorem"/></p>
+
+
+<!-- ****************************************************************** -->
 <h1>Verbatim environments</h1>
 
 <p><call name="lorem"/></p>
@@ -411,13 +422,12 @@ let rec count = function
 
 
 <!-- ****************************************************************** -->
-<h1>Subpages</h1>
+<h1>Books</h1>
 
 <p><call name="lorem"/></p>
-<subpage>
-	<h1 order="">Title in subpage</h1>
-	<p><call name="lorem"/></p>
-</subpage>
+<book isbn="1853267805"/>
+<p><call name="lorem"/></p>
+<book isbn="978-1853267802" extra="5"/>
 <p><call name="lorem"/></p>
 
 

@@ -31,8 +31,9 @@ type composition_block_feature_t =
 	[ `Feature_paragraph
 	| `Feature_itemize | `Feature_enumerate | `Feature_description
 	| `Feature_qanda | `Feature_verse | `Feature_quote
-	| `Feature_mathtex_blk | `Feature_mathml_blk | `Feature_source
-	| `Feature_tabular | `Feature_verbatim | `Feature_picture | `Feature_subpage ]
+	| `Feature_mathtex_blk | `Feature_mathml_blk 
+	| `Feature_source | `Feature_tabular 
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_book ]
 
 
 type manuscript_block_feature_t =
@@ -106,8 +107,9 @@ let composition_block_features =
 	`Feature_paragraph;
 	`Feature_itemize; `Feature_enumerate; `Feature_description;
 	`Feature_qanda; `Feature_verse; `Feature_quote;
-	`Feature_mathtex_blk; `Feature_mathml_blk; `Feature_source;
-	`Feature_tabular; `Feature_verbatim; `Feature_picture; `Feature_subpage;
+	`Feature_mathtex_blk; `Feature_mathml_blk;
+	`Feature_source; `Feature_tabular;
+	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_book;
 	]
 
 
@@ -179,9 +181,10 @@ let describe_composition_block_feature = function
 	| `Feature_mathml_blk	-> "MathML block"
 	| `Feature_source	-> "source-code block"
 	| `Feature_tabular	-> "tabular"
+	| `Feature_subpage	-> "subpage block"
 	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_picture	-> "image block"
-	| `Feature_subpage	-> "subpage block"
+	| `Feature_book		-> "book block"
 
 
 let describe_manuscript_block_feature = function

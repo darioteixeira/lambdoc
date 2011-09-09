@@ -481,6 +481,9 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		| `Tabular tab ->
 			[write_tabular tab]
 
+		| `Subpage frag ->
+			[XHTML.M.div ~a:[a_class [!!"subpage"]] (write_frag frag)]
+
 		| `Verbatim (mult, txt) ->
 			[XHTML.M.div ~a:[a_class [!!"verb"]] [XHTML.M.div ~a:[a_class [!!"verb_aux"]] [XHTML.M.pre ~a:[a_class ["mult" ^^ (string_of_int mult)]] [XHTML.M.pcdata txt]]]]
 
@@ -493,8 +496,8 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
-		| `Subpage frag ->
-			[XHTML.M.div ~a:[a_class [!!"subpage"]] (write_frag frag)]
+		| `Book (isbn, maybe_rating) ->
+			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata (Isbn.to_string isbn)]]
 
 		| `Decor (floatation, blk) ->
 			let style = make_floatation floatation

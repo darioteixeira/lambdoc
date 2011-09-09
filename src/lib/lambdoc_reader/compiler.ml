@@ -613,6 +613,13 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			let elem () = [Block.tabular (convert_tabular comm tcols tab)]
 			in check_block_comm `Feature_tabular comm elem
 
+		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
+		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
+			let elem () =
+				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged:true true true true `Any_blk astfrag)
+				in [Block.subpage frag]
+			in check_block_comm `Feature_subpage comm elem
+
 		| (_, _, _, `Decor_blk, (comm, Ast.Verbatim txt))
 		| (_, _, _, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Verbatim txt)) ->
@@ -634,12 +641,13 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				[Block.picture frame width alias alt]
 			in check_block_comm `Feature_picture comm elem
 
-		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
-		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
+		| (_, _, _, `Decor_blk, (comm, Ast.Book raw_isbn))
+		| (_, _, _, `Any_blk, (comm, Ast.Book raw_isbn)) ->
 			let elem () =
-				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged:true true true true `Any_blk astfrag)
-				in [Block.subpage frag]
-			in check_block_comm `Feature_subpage comm elem
+				let isbn = Isbn.of_string raw_isbn
+				and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd
+				in [Block.book isbn maybe_rating]
+			in check_block_comm `Feature_book comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Decor astblk)) ->
 			let elem () =

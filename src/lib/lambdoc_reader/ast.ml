@@ -103,9 +103,10 @@ type frag_t = block_t list
 	| Mathml_blk of string
 	| Source of string
 	| Tabular of string * tabular_t
+	| Subpage of frag_t
 	| Verbatim of string
 	| Picture of string * string
-	| Subpage of frag_t
+	| Book of string
 	| Decor of block_t
 	| Pullquote of seq_t option * frag_t
 	| Custom of Custom.kind_t option * string * seq_t option * frag_t

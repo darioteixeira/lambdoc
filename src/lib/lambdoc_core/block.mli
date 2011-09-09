@@ -28,9 +28,10 @@ type 'a block_t =
 	| `Math of Math.t
 	| `Source of Source.t
 	| `Tabular of Tabular.tabular_t
+	| `Subpage of 'a nelist
 	| `Verbatim of int * string
 	| `Picture of bool * int option * Alias.t * string
-	| `Subpage of 'a nelist
+	| `Book of Isbn.t * int option
 	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
@@ -102,16 +103,19 @@ val source: Source.t ->
 val tabular: 'a Tabular.t ->
 	('a, [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Tabular_blk ]) t
 
+val subpage: ('a, _, _, _, _) t nelist ->
+	('a, [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Subpage_blk ]) t
+
 val verbatim: int -> string ->
 	([> `Composition ], [> `Listable ], [> `Quotable], [> `Embeddable ], [> `Verbatim_blk ]) t
 
 val picture: bool -> int option -> Alias.t -> string ->
 	([> `Composition ], [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Picture_blk ]) t
 
-val subpage: ('a, _, _, _, _) t nelist ->
-	('a, [> `Listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Subpage_blk ]) t
+val book: Isbn.t -> int option ->
+	([> `Composition ], [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Book_blk ]) t
 
-val decor: Floatation.t -> (_, _, _, _, [< `Verbatim_blk | `Picture_blk ]) t ->
+val decor: Floatation.t -> (_, _, _, _, [< `Verbatim_blk | `Picture_blk | `Book_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Quotable], [> `Embeddable ], [> `Decor_blk ]) t
 
 val pullquote: Floatation.t -> (_, _) Inline.t nelist option -> (_, [< `Listable ], [< `Quotable ], [< `Embeddable ], _) t nelist ->

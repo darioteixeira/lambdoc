@@ -161,9 +161,10 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_mathml_blk	-> forbidden_class
 		| `Feature_source	-> extra_class
 		| `Feature_tabular	-> forbidden_class
+		| `Feature_subpage	-> forbidden_class
 		| `Feature_verbatim	-> extra_class
 		| `Feature_picture	-> extra_class
-		| `Feature_subpage	-> forbidden_class
+		| `Feature_book		-> extra_class
 
 	and manuscript_block_feature_set = function
 		| `Feature_decor	-> extra_class
