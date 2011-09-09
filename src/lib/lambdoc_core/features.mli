@@ -20,11 +20,11 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_link ]
+	| `Feature_mbox | `Feature_span | `Feature_uref | `Feature_bref ]
 
 
 type manuscript_inline_feature_t =
-	[ `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref | `Feature_mref ]
+	[ `Feature_nref | `Feature_cref | `Feature_dref | `Feature_sref | `Feature_mref ]
 
 
 type composition_block_feature_t =

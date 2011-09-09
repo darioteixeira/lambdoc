@@ -33,12 +33,13 @@ type 'a inline_t =
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
-	| `Link of Uri.t * 'a nelist option
-	| `See of Ref.t nelist
-	| `Cite of Ref.t nelist
-	| `Ref of Ref.t
-	| `Sref of Ref.t
-	| `Mref of Ref.t * 'a nelist
+	| `Uref of Uri.t * 'a nelist option			(* Reference to an external URI *)
+	| `Bref of Isbn.t * 'a nelist option * int option	(* Reference to a book via its ISBN *)
+	| `Nref of Ref.t nelist					(* Reference to an end note *)
+	| `Cref of Ref.t nelist					(* Citation of a bibliography entry *)
+	| `Dref of Ref.t					(* "Dumb" reference to an internal element *)
+	| `Sref of Ref.t					(* Smart reference to an internal element *)
+	| `Mref of Ref.t * 'a nelist				(* Manual reference to an internal element *)
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -66,10 +67,11 @@ val sup: ('a, 'b) t nelist -> ('a, 'b) t
 val sub: ('a, 'b) t nelist -> ('a, 'b) t
 val mbox: ('a, 'b) t nelist -> ('a, 'b) t
 val span: Classname.t option -> ('a, 'b) t nelist -> ('a, 'b) t
-val link: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
-val see: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val cite: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val ref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
+val uref: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
+val bref: Isbn.t -> ('a, [< `Nonlink ]) t nelist option -> int option -> ('a, [> `Link ]) t
+val nref: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val cref: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val dref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
 val sref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
 val mref: Ref.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
 

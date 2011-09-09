@@ -20,11 +20,11 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_link ]
+	| `Feature_mbox | `Feature_span | `Feature_uref | `Feature_bref ]
 
 
 type manuscript_inline_feature_t =
-	[ `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref | `Feature_mref ]
+	[ `Feature_nref | `Feature_cref | `Feature_dref | `Feature_sref | `Feature_mref ]
 
 
 type composition_block_feature_t =
@@ -91,13 +91,13 @@ let composition_inline_features =
 	`Feature_mathtex_inl; `Feature_mathml_inl; `Feature_glyph;
 	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
 	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
-	`Feature_mbox; `Feature_span; `Feature_link;
+	`Feature_mbox; `Feature_span; `Feature_uref; `Feature_bref;
 	]
 
 
 let manuscript_inline_features =
 	[
-	`Feature_see; `Feature_cite; `Feature_ref; `Feature_sref; `Feature_mref;
+	`Feature_nref; `Feature_cref; `Feature_dref; `Feature_sref; `Feature_mref;
 	]
 
 
@@ -155,13 +155,14 @@ let describe_composition_inline_feature = function
 	| `Feature_sub		-> "subscript text"
 	| `Feature_mbox		-> "non-breakable text"
 	| `Feature_span		-> "custom span"
-	| `Feature_link		-> "external link"
+	| `Feature_uref		-> "link to external resource"
+	| `Feature_bref		-> "book reference"
 
 
 let describe_manuscript_inline_feature = function
-	| `Feature_see		-> "link to note"
-	| `Feature_cite		-> "bibliography citation"
-	| `Feature_ref		-> "internal link"
+	| `Feature_nref		-> "link to note"
+	| `Feature_cref		-> "bibliography citation"
+	| `Feature_dref		-> "internal link"
 	| `Feature_sref		-> "smart internal link"
 	| `Feature_mref		-> "internal link with custom text"
 

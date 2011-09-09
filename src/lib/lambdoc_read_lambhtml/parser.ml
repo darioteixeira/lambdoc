@@ -73,7 +73,7 @@ let inline_elems =
 	"entity"; "br"; "mathtexinl"; "mathmlinl"; "glyph";
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
-	"mbox"; "span"; "link"; "a";
+	"mbox"; "span"; "link"; "a"; "bref";
 	"see"; "cite"; "ref"; "sref"; "mref";
 	"arg"; "call";
 	]
@@ -163,13 +163,15 @@ and process_inline store node =
 			(!!comm, Ast.Span (process_seq store node))
 		| T_element "link"
 		| T_element "a" ->
-			(!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq store node))
+			(!!comm, Ast.Uref (node#required_string_attribute "href", process_maybe_seq store node))
+		| T_element "bref" ->
+			(!!comm, Ast.Bref (node#required_string_attribute "href", process_maybe_seq store node))
 		| T_element "see" ->
-			(!!comm, Ast.See (node#required_list_attribute "href"))
+			(!!comm, Ast.Nref (node#required_list_attribute "href"))
 		| T_element "cite" ->
-			(!!comm, Ast.Cite (node#required_list_attribute "href"))
+			(!!comm, Ast.Cref (node#required_list_attribute "href"))
 		| T_element "ref" ->
-			(!!comm, Ast.Ref (node#required_string_attribute "href"))
+			(!!comm, Ast.Dref (node#required_string_attribute "href"))
 		| T_element "sref" ->
 			(!!comm, Ast.Sref (node#required_string_attribute "href"))
 		| T_element "mref" ->

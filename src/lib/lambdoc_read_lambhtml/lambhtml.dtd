@@ -26,7 +26,7 @@
 <!ENTITY % Node
 	" entity | br | mathtexinl | mathmlinl | glyph
 	| bold | strong | b | emph | em | i | code | tt | caps
-	| ins | del | sup | sub | mbox | span | link | a
+	| ins | del | sup | sub | mbox | span | link | a | bref
 	| see | cite | ref | sref | mref
 	| arg | call">
 
@@ -311,6 +311,9 @@
 
 <!ELEMENT a %Inline;>
 <!ATTLIST a %Common; href CDATA #REQUIRED>
+
+<!ELEMENT bref %Inline;>
+<!ATTLIST bref %Common; href CDATA #REQUIRED>
 
 <!ELEMENT see EMPTY>
 <!ATTLIST see %Common; href NMTOKENS #REQUIRED>

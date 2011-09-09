@@ -31,9 +31,9 @@ open Translations
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Command_see_with_non_note of Target.t
-exception Command_cite_with_non_bib of Target.t
-exception Command_ref_with_non_visible_block of Target.t
+exception Command_nref_with_non_note of Target.t
+exception Command_cref_with_non_bib of Target.t
+exception Command_dref_with_non_visible_block of Target.t
 exception Command_sref_with_non_visible_block of Target.t
 
 
@@ -92,6 +92,9 @@ let make_external_link = make_link
 
 
 let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
+
+
+let make_book_link isbn content = XHTML.M.a ~a:[a_href (uri_of_string (Isbn.to_string isbn))] content
 
 
 let cons_of_level = function
@@ -246,33 +249,41 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let a = maybe (fun x -> [a_class ["span_" ^^ x]]) classname
 			in XHTML.M.span ?a (write_seq seq)
 
-		| `Link (lnk, None) ->
-			make_external_link lnk (Obj.magic (write_seq (`Plain lnk, [])))
+		| `Uref (uri, None) ->
+			let seq = (`Plain uri, [])
+			in make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Link (lnk, Some seq) ->
-			make_external_link lnk (Obj.magic (write_seq seq))
+		| `Uref (uri, Some seq) ->
+			make_external_link uri (Obj.magic (write_seq seq))
 
-		| `See (hd, tl) ->
+		| `Bref (isbn, None, maybe_rating) ->
+			let seq = (`Emph (`Plain (Isbn.to_string isbn), []), [])
+			in make_book_link isbn (Obj.magic (write_seq seq))
+
+		| `Bref (isbn, Some seq, maybe_rating) ->
+			make_book_link isbn (Obj.magic (write_seq seq))
+
+		| `Nref (hd, tl) ->
 			let link_maker ref =
 				let label = `User_label ref in
 				let target = Hashtbl.find labels label
 				in (match target with
 					| Target.Note_target order -> make_internal_link label (note_conv order)
-					| _			   -> raise (Command_see_with_non_note target)) in
+					| _			   -> raise (Command_nref_with_non_note target)) in
 			let commafy ref = [pcdata ","; link_maker ref]
-			in XHTML.M.span ~a:[a_class [!!"see"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
+			in XHTML.M.span ~a:[a_class [!!"nref"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
 
-		| `Cite (hd, tl) ->
+		| `Cref (hd, tl) ->
 			let link_maker ref =
 				let label = `User_label ref in
 				let target = Hashtbl.find labels label
 				in match target with
 					| Target.Bib_target order -> make_internal_link label (bib_conv order)
-					| _			  -> raise (Command_cite_with_non_bib target) in
+					| _			  -> raise (Command_cref_with_non_bib target) in
 			let commafy ref = [pcdata ","; link_maker ref]
-			in XHTML.M.span ~a:[a_class [!!"cite"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
+			in XHTML.M.span ~a:[a_class [!!"cref"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
 
-		| `Ref ref ->
+		| `Dref ref ->
 			let label = `User_label ref in
 			let target = Hashtbl.find labels label
 			in (match target with
@@ -287,7 +298,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				| Target.Visible_target (Target.Section_target (location, order)) ->
 					make_internal_link label (section_conv location order)
 				| _ ->
-					raise (Command_ref_with_non_visible_block target))
+					raise (Command_dref_with_non_visible_block target))
 
 		| `Sref ref ->
 			let target = Hashtbl.find labels (`User_label ref) in

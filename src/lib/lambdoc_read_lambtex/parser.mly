@@ -94,10 +94,11 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> SUB
 %token <Lambdoc_reader.Ast.command_t> MBOX
 %token <Lambdoc_reader.Ast.command_t> SPAN
-%token <Lambdoc_reader.Ast.command_t> LINK
-%token <Lambdoc_reader.Ast.command_t> SEE
-%token <Lambdoc_reader.Ast.command_t> CITE
-%token <Lambdoc_reader.Ast.command_t> REF
+%token <Lambdoc_reader.Ast.command_t> UREF
+%token <Lambdoc_reader.Ast.command_t> BREF
+%token <Lambdoc_reader.Ast.command_t> NREF
+%token <Lambdoc_reader.Ast.command_t> CREF
+%token <Lambdoc_reader.Ast.command_t> DREF
 %token <Lambdoc_reader.Ast.command_t> SREF
 %token <Lambdoc_reader.Ast.command_t> MREF
 
@@ -287,10 +288,11 @@ inline:
 	| SUB inline_bundle								{($1, Ast.Sub $2)}
 	| MBOX inline_bundle								{($1, Ast.Mbox $2)}
 	| SPAN inline_bundle								{($1, Ast.Span $2)}
-	| LINK raw_bundle inline_bundle?						{($1, Ast.Link ($2, $3))}
-	| SEE raw_bundle*								{($1, Ast.See $2)}
-	| CITE raw_bundle*								{($1, Ast.Cite $2)}
-	| REF raw_bundle								{($1, Ast.Ref $2)}
+	| UREF raw_bundle inline_bundle?						{($1, Ast.Uref ($2, $3))}
+	| BREF raw_bundle inline_bundle?						{($1, Ast.Bref ($2, $3))}
+	| NREF raw_bundle*								{($1, Ast.Nref $2)}
+	| CREF raw_bundle*								{($1, Ast.Cref $2)}
+	| DREF raw_bundle								{($1, Ast.Dref $2)}
 	| SREF raw_bundle								{($1, Ast.Sref $2)}
 	| MREF raw_bundle inline_bundle							{($1, Ast.Mref ($2, $3))}
 	| MACROARG raw_bundle								{($1, Ast.Macroarg $2)}

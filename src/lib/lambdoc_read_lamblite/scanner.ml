@@ -30,7 +30,7 @@ type text_t =
 	| Sub_mark
 	| Begin_caps | End_caps
 	| Begin_code | End_code
-	| Begin_link | End_link | Link_sep
+	| Begin_uref | End_uref | Uref_sep
 
 type line_t =
 	| Begin_source of string | End_source
@@ -73,9 +73,9 @@ let regexp begin_caps = "(("
 let regexp end_caps = "))"
 let regexp begin_code = "{{"
 let regexp end_code = "}}"
-let regexp begin_link = "[["
-let regexp end_link = "]]"
-let regexp link_sep = "|"
+let regexp begin_uref = "[["
+let regexp end_uref = "]]"
+let regexp uref_sep = "|"
 
 let regexp entity = '&' '#'? (alpha | deci)+ ';'
 let regexp endash = "--"
@@ -108,21 +108,21 @@ let text_scanner lexbuf =
 		| end_caps		-> main_scanner (End_caps :: accum) lexbuf
 		| begin_code		-> main_scanner (Begin_code :: accum) lexbuf
 		| end_code		-> main_scanner (End_code :: accum) lexbuf
-		| begin_link		-> link_scanner (Begin_link :: accum) lexbuf
-		| end_link		-> main_scanner (End_link :: accum) lexbuf
-		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
+		| begin_uref		-> uref_scanner (Begin_uref :: accum) lexbuf
+		| end_uref		-> main_scanner (End_uref :: accum) lexbuf
+		| uref_sep		-> main_scanner (Uref_sep :: accum) lexbuf
 		| entity		-> main_scanner (Entity (rtrim_lexbuf ~first:1 lexbuf) :: accum) lexbuf
 		| endash		-> main_scanner (Entity "ndash" :: accum) lexbuf
 		| emdash		-> main_scanner (Entity "mdash" :: accum) lexbuf
 		| quote_open		-> main_scanner (Entity "ldquo" :: accum) lexbuf
 		| quote_close		-> main_scanner (Entity "rdquo" :: accum) lexbuf
 		| _			-> main_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
-	and link_scanner accum = lexer
+	and uref_scanner accum = lexer
 		| eof			-> accum
-		| escape _		-> link_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
-		| end_link		-> main_scanner (End_link :: accum) lexbuf
-		| link_sep		-> main_scanner (Link_sep :: accum) lexbuf
-		| _			-> link_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
+		| escape _		-> uref_scanner (coalesce accum (Ulexing.utf8_sub_lexeme lexbuf 1 1)) lexbuf
+		| end_uref		-> main_scanner (End_uref :: accum) lexbuf
+		| uref_sep		-> main_scanner (Uref_sep :: accum) lexbuf
+		| _			-> uref_scanner (coalesce accum (Ulexing.utf8_lexeme lexbuf)) lexbuf
 	in List.rev (main_scanner [] lexbuf)
 
 

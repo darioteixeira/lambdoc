@@ -54,10 +54,11 @@ type seq_t = inline_t list
 	| Sub of seq_t
 	| Mbox of seq_t
 	| Span of seq_t
-	| Link of string * seq_t option
-	| See of string	list
-	| Cite of string list
-	| Ref of string
+	| Uref of string * seq_t option
+	| Bref of string * seq_t option
+	| Nref of string list
+	| Cref of string list
+	| Dref of string
 	| Sref of string
 	| Mref of string * seq_t
 	| Macroarg of string

@@ -165,10 +165,11 @@ let issue_simple_command raw_comm position =
 		| "mbox"		-> (Inl, MBOX command)
 		| "span"		-> (Inl, SPAN command)
 		| "link"
-		| "a"			-> (Inl, LINK command)
-		| "see"			-> (Inl, SEE command)
-		| "cite"		-> (Inl, CITE command)
-		| "ref"			-> (Inl, REF command)
+		| "a"			-> (Inl, UREF command)
+		| "bref"		-> (Inl, BREF command)
+		| "see"			-> (Inl, NREF command)
+		| "cite"		-> (Inl, CREF command)
+		| "ref"			-> (Inl, DREF command)
 		| "sref"		-> (Inl, SREF command)
 		| "mref"		-> (Inl, MREF command)
 		| "paragraph"

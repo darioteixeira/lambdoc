@@ -139,12 +139,13 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_sub		-> forbidden_class
 		| `Feature_mbox		-> forbidden_class
 		| `Feature_span		-> extra_class
-		| `Feature_link		-> forbidden_class
+		| `Feature_uref		-> forbidden_class
+		| `Feature_bref		-> extra_class
 
 	and manuscript_inline_feature_set = function
-		| `Feature_see		-> forbidden_class
-		| `Feature_cite		-> forbidden_class
-		| `Feature_ref		-> forbidden_class
+		| `Feature_nref		-> forbidden_class
+		| `Feature_cref		-> forbidden_class
+		| `Feature_dref		-> forbidden_class
 		| `Feature_sref		-> forbidden_class
 		| `Feature_mref		-> forbidden_class
 

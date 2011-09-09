@@ -100,6 +100,7 @@ type handle_t =
 	| Classname_hnd
 	| Lang_hnd
 	| Style_hnd
+	| Rating_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
 
@@ -144,6 +145,7 @@ let id_of_handle = function
 	| Classname_hnd	 -> ("class", Classname_kind, false)
 	| Lang_hnd	 -> ("lang", Lang_kind, false)
 	| Style_hnd	 -> ("style", Style_kind, false)
+	| Rating_hnd	 -> ("rating", Numeric_kind (1, 5), false)
 
 
 (**	This function does the low-level, regular-expression based parsing

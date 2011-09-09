@@ -92,9 +92,9 @@ in object (self)
 			| End_caps		-> END_CAPS self#op
 			| Begin_code		-> BEGIN_CODE self#op
 			| End_code		-> END_CODE self#op
-			| Begin_link		-> BEGIN_LINK self#op
-			| End_link		-> END_LINK self#op
-			| Link_sep		-> LINK_SEP self#op
+			| Begin_uref		-> BEGIN_UREF self#op
+			| End_uref		-> END_UREF self#op
+			| Uref_sep		-> UREF_SEP self#op
 		in List.map conv text_list
 
 

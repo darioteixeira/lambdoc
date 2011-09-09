@@ -32,10 +32,11 @@ type 'a inline_t =
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
-	| `Link of Uri.t * 'a nelist option
-	| `See of Ref.t nelist
-	| `Cite of Ref.t nelist
-	| `Ref of Ref.t
+	| `Uref of Uri.t * 'a nelist option
+	| `Bref of Isbn.t * 'a nelist option * int option
+	| `Nref of Ref.t nelist
+	| `Cref of Ref.t nelist
+	| `Dref of Ref.t
 	| `Sref of Ref.t
 	| `Mref of Ref.t * 'a nelist
 	] with sexp
@@ -65,10 +66,11 @@ let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq
 let span classname seq = `Span (classname, seq)
-let link uri maybe_seq = `Link (uri, maybe_seq)
-let see (hd, tl) = `See (hd, tl)
-let cite (hd, tl) = `Cite (hd, tl)
-let ref ref = `Ref ref
+let uref uri maybe_seq = `Uref (uri, maybe_seq)
+let bref isbn maybe_seq maybe_rating = `Bref (isbn, maybe_seq, maybe_rating)
+let nref (hd, tl) = `Nref (hd, tl)
+let cref (hd, tl) = `Cref (hd, tl)
+let dref ref = `Dref ref
 let sref ref = `Sref ref
 let mref ref seq = `Mref (ref, seq)
 

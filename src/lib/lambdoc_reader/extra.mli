@@ -30,6 +30,7 @@ type handle_t =
 	| Classname_hnd
 	| Lang_hnd
 	| Style_hnd
+	| Rating_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
 

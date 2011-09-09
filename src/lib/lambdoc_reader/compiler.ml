@@ -231,7 +231,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			| None	 -> [dummy_inline] in
 
 
-	let rec convert_inline ~args is_link inline = match (is_link, inline) with
+	let rec convert_inline ~args is_ref inline = match (is_ref, inline) with
 
 		| (_, (comm, Ast.Plain ustr)) ->
 			let elem () = [Inline.plain ustr]
@@ -303,13 +303,26 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in [Inline.span classname (convert_seq_aux ~comm ~args x astseq)]
 			in check_inline_comm `Feature_span comm elem
 
-		| (false, (comm, Ast.Link (lnk, maybe_astseq))) ->
+		| (false, (comm, Ast.Uref (uri, maybe_astseq))) ->
 			let elem () =
 				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
-				in [Inline.link lnk (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_link comm elem
+				in [Inline.uref uri (Obj.magic maybe_seq)]
+			in check_inline_comm `Feature_uref comm elem
 
-		| (false, (comm, Ast.See refs)) ->
+		| (false, (comm, Ast.Bref (raw_isbn, maybe_astseq))) ->
+			let elem () =
+				try
+					let isbn = Isbn.of_string raw_isbn
+					and maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
+					and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd
+					in [Inline.bref isbn (Obj.magic maybe_seq) maybe_rating]
+				with Invalid_argument _ ->
+					let msg = Error.Malformed_isbn (comm.comm_tag, raw_isbn) in
+					DynArray.add errors (Some comm.comm_linenum, msg);
+					[]
+			in check_inline_comm `Feature_bref comm elem
+
+		| (false, (comm, Ast.Nref refs)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
@@ -317,14 +330,14 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in List.iter (add_reference target_checker comm) refs;
 				match refs with
 					| hd::tl ->
-						[Inline.see (hd, tl)]
+						[Inline.nref (hd, tl)]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
 						DynArray.add errors (Some comm.comm_linenum, msg);
 						[]
-			in check_inline_comm `Feature_see comm elem
+			in check_inline_comm `Feature_nref comm elem
 
-		| (false, (comm, Ast.Cite refs)) ->
+		| (false, (comm, Ast.Cref refs)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
@@ -332,14 +345,14 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in List.iter (add_reference target_checker comm) refs;
 				match refs with
 					| hd::tl ->
-						[Inline.cite (hd, tl)]
+						[Inline.cref (hd, tl)]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
 						DynArray.add errors (Some comm.comm_linenum, msg);
 						[]
-			in check_inline_comm `Feature_cite comm elem
+			in check_inline_comm `Feature_cref comm elem
 
-		| (false, (comm, Ast.Ref ref)) ->
+		| (false, (comm, Ast.Dref ref)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -349,8 +362,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
 				in add_reference target_checker comm ref;
-				[Inline.ref ref]
-			in check_inline_comm `Feature_ref comm elem
+				[Inline.dref ref]
+			in check_inline_comm `Feature_dref comm elem
 
 		| (false, (comm, Ast.Sref ref)) ->
 			let elem () =
@@ -416,7 +429,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			in DynArray.add errors (Some comm.comm_linenum, msg);
 			[]
 
-	and convert_inline_list ~comm ~args is_link astseq =
+	and convert_inline_list ~comm ~args is_ref astseq =
 		let coalesce_plain seq =
 			let rec coalesce_plain_aux accum = function
 				| (`Plain txt1) :: (`Plain txt2) :: tl ->
@@ -427,7 +440,7 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				| [] ->
 					accum
 			in List.rev (coalesce_plain_aux [] (Inline.get_inlines seq)) in
-		let seq = flatten_map (convert_inline ~args is_link) astseq in
+		let seq = flatten_map (convert_inline ~args is_ref) astseq in
 		let new_seq = if macros_authorised || expand_entities then Obj.magic (coalesce_plain seq) else seq
 		in match new_seq with
 			| [] ->
@@ -437,8 +450,8 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 			| xs ->
 				xs
 
-	and convert_seq_aux ~comm ~args is_link astseq =
-		let seq = convert_inline_list ~comm ~args is_link astseq
+	and convert_seq_aux ~comm ~args is_ref astseq =
+		let seq = convert_inline_list ~comm ~args is_ref astseq
 		in (List.hd seq, List.tl seq) in
 
 	let convert_seq ~comm ?args seq =
