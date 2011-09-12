@@ -11,21 +11,8 @@
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-module type S =
-sig
-	type t =
-		| Lambtex
-		| Lambhtml
-		| Lamblite
-end
-
-module M : S =
-struct
-	type t =
-		| Lambtex
-		| Lambhtml
-		| Lamblite
-end
-
-include M
+type t =
+	| Lambtex
+	| Lambhtml
+	| Lamblite
 
