@@ -84,6 +84,7 @@ type error_msg_t =
 	| Invalid_extra_classname_parameter of Ident.t option * string * string
 	| Invalid_extra_lang_parameter of Ident.t option * string * string
 	| Invalid_extra_style_parameter of Ident.t option * string * string
+	| Invalid_extra_cover_parameter of Ident.t option * string * string
 	| Invalid_extra_unknown_parameter of Ident.t option * int * string
 	| Invalid_extra_no_solutions of Ident.t option * string
 	| Invalid_extra_multiple_solutions of Ident.t option * string
@@ -137,6 +138,7 @@ type error_msg_t =
 	| Malformed_code_point
 	| Reading_error of string
 	| Unavailable_feature of Ident.t option * string
+	| Unavailable_book_maker of Ident.t option * string
 
 	with sexp
 

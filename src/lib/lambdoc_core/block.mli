@@ -31,7 +31,7 @@ type 'a block_t =
 	| `Subpage of 'a nelist
 	| `Verbatim of int * string
 	| `Picture of bool * int option * Alias.t * string
-	| `Book of Isbn.t * int option
+	| `Bookimg of Book.info_t * Book.cover_t
 	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
@@ -112,10 +112,10 @@ val verbatim: int -> string ->
 val picture: bool -> int option -> Alias.t -> string ->
 	([> `Composition ], [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Picture_blk ]) t
 
-val book: Isbn.t -> int option ->
-	([> `Composition ], [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Book_blk ]) t
+val bookimg: Book.info_t -> Book.cover_t ->
+	([> `Composition ], [> `Listable ], [> `Quotable ], [> `Embeddable ], [> `Bookimg_blk ]) t
 
-val decor: Floatation.t -> (_, _, _, _, [< `Verbatim_blk | `Picture_blk | `Book_blk ]) t ->
+val decor: Floatation.t -> (_, _, _, _, [< `Verbatim_blk | `Picture_blk | `Bookimg_blk ]) t ->
 	([> `Manuscript ], [> `Listable ], [> `Quotable], [> `Embeddable ], [> `Decor_blk ]) t
 
 val pullquote: Floatation.t -> (_, _) Inline.t nelist option -> (_, [< `Listable ], [< `Quotable ], [< `Embeddable ], _) t nelist ->

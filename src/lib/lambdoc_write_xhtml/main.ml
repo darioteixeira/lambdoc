@@ -94,7 +94,7 @@ let make_external_link = make_link
 let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
 
 
-let make_book_link isbn content = XHTML.M.a ~a:[a_href (uri_of_string (Isbn.to_string isbn))] content
+let make_book_link isbn content = XHTML.M.a ~a:[a_href (uri_of_string (Book_output.string_of_isbn isbn))] content
 
 
 let cons_of_level = function
@@ -249,19 +249,19 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let a = maybe (fun x -> [a_class ["span_" ^^ x]]) classname
 			in XHTML.M.span ?a (write_seq seq)
 
-		| `Uref (uri, None) ->
+		| `Uri (uri, None) ->
 			let seq = (`Plain uri, [])
 			in make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Uref (uri, Some seq) ->
+		| `Uri (uri, Some seq) ->
 			make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Bref (isbn, None, maybe_rating) ->
-			let seq = (`Emph (`Plain (Isbn.to_string isbn), []), [])
-			in make_book_link isbn (Obj.magic (write_seq seq))
+		| `Book (bookinfo, None) ->
+			let seq = (`Emph ((`Plain bookinfo.Book.title), []), [])
+			in make_book_link bookinfo.Book.isbn (Obj.magic (write_seq seq))
 
-		| `Bref (isbn, Some seq, maybe_rating) ->
-			make_book_link isbn (Obj.magic (write_seq seq))
+		| `Book (bookinfo, Some seq) ->
+			make_book_link bookinfo.Book.isbn (Obj.magic (write_seq seq))
 
 		| `Nref (hd, tl) ->
 			let link_maker ref =
@@ -496,8 +496,8 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
-		| `Book (isbn, maybe_rating) ->
-			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata (Isbn.to_string isbn)]]
+		| `Bookimg (bookinfo, cover) ->
+			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata bookinfo.Book.title]]
 
 		| `Decor (floatation, blk) ->
 			let style = make_floatation floatation

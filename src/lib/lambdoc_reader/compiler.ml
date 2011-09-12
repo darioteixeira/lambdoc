@@ -28,6 +28,7 @@ open Extra
 (**	{2 Exceptions}								*)
 (********************************************************************************)
 
+exception Unavailable_book_maker
 exception Mismatched_custom of Custom.kind_t * Custom.kind_t
 
 
@@ -61,7 +62,7 @@ let perhaps f = function
 	and possible errors are also returned.  Note that because Ocaml does not
 	yet support true GADTs, this function has to rely on Obj.magic.
 *)
-let compile_document ~expand_entities ~idiosyncrasies document_ast =
+let compile_document ?book_maker ~expand_entities ~idiosyncrasies document_ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -219,6 +220,24 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 
 
 	(************************************************************************)
+	(* Compilation functions for books.					*)
+	(************************************************************************)
+
+	let convert_book feature comm raw_isbn maybe_rating =
+		try match book_maker with
+			| Some f -> Some (f raw_isbn maybe_rating)
+			| None	 -> raise Unavailable_book_maker
+		with exc ->
+			let msg = match exc with
+				| Unavailable_book_maker  -> Error.Unavailable_book_maker (comm.comm_tag, Features.describe feature)
+				| Book.Malformed_isbn _	  -> Error.Malformed_isbn (comm.comm_tag, raw_isbn)
+				| Book.Unknown_isbn _	  -> Error.Unknown_isbn (comm.comm_tag, raw_isbn)
+				| exc			  -> raise exc
+			in	DynArray.add errors (Some comm.comm_linenum, msg);
+				None in
+
+
+	(************************************************************************)
 	(* Compilation functions for inline context.				*)
 	(************************************************************************)
 
@@ -303,24 +322,20 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				in [Inline.span classname (convert_seq_aux ~comm ~args x astseq)]
 			in check_inline_comm `Feature_span comm elem
 
-		| (false, (comm, Ast.Uref (uri, maybe_astseq))) ->
+		| (false, (comm, Ast.Uri (uri, maybe_astseq))) ->
 			let elem () =
 				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
-				in [Inline.uref uri (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_uref comm elem
+				in [Inline.uri uri (Obj.magic maybe_seq)]
+			in check_inline_comm `Feature_uri comm elem
 
-		| (false, (comm, Ast.Bref (raw_isbn, maybe_astseq))) ->
+		| (false, (comm, Ast.Book (raw_isbn, maybe_astseq))) ->
 			let elem () =
-				try
-					let isbn = Isbn.of_string raw_isbn
-					and maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
-					and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd
-					in [Inline.bref isbn (Obj.magic maybe_seq) maybe_rating]
-				with Invalid_argument _ ->
-					let msg = Error.Malformed_isbn (comm.comm_tag, raw_isbn) in
-					DynArray.add errors (Some comm.comm_linenum, msg);
-					[]
-			in check_inline_comm `Feature_bref comm elem
+				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
+				and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd in
+				match convert_book `Feature_book comm raw_isbn maybe_rating with
+					| Some bookinfo -> [Inline.book bookinfo (Obj.magic maybe_seq)]
+					| None		-> []
+			in check_inline_comm `Feature_book comm elem
 
 		| (false, (comm, Ast.Nref refs)) ->
 			let elem () =
@@ -641,13 +656,16 @@ let compile_document ~expand_entities ~idiosyncrasies document_ast =
 				[Block.picture frame width alias alt]
 			in check_block_comm `Feature_picture comm elem
 
-		| (_, _, _, `Decor_blk, (comm, Ast.Book raw_isbn))
-		| (_, _, _, `Any_blk, (comm, Ast.Book raw_isbn)) ->
+		| (_, _, _, `Decor_blk, (comm, Ast.Bookimg raw_isbn))
+		| (_, _, _, `Any_blk, (comm, Ast.Bookimg raw_isbn)) ->
 			let elem () =
-				let isbn = Isbn.of_string raw_isbn
-				and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd
-				in [Block.book isbn maybe_rating]
-			in check_block_comm `Feature_book comm elem
+				let extra = Extra.parse comm errors [Rating_hnd; Cover_hnd] in
+				let maybe_rating = Extra.get_maybe_numeric ~default:None extra Rating_hnd
+				and cover = Extra.get_cover ~default:Book.Medium extra Cover_hnd in
+				match convert_book `Feature_bookimg comm raw_isbn maybe_rating with
+					| Some bookinfo -> [Block.bookimg bookinfo cover]
+					| None		-> []
+			in check_block_comm `Feature_bookimg comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Decor astblk)) ->
 			let elem () =
@@ -1148,9 +1166,9 @@ let process_errors ~sort source errors =
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile_manuscript ~expand_entities ~accepted ~denied ~default ~source document_ast =
+let compile_manuscript ?book_maker ~expand_entities ~accepted ~denied ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accepted ~denied ~default in
-	let (contents, bibs, notes, toc, images, labels, custom, errors) = compile_document ~expand_entities ~idiosyncrasies document_ast
+	let (contents, bibs, notes, toc, images, labels, custom, errors) = compile_document ?book_maker ~expand_entities ~idiosyncrasies document_ast
 	in match errors with
 		| [] -> Ambivalent.make_valid_manuscript contents bibs notes toc images labels custom
 		| xs -> Ambivalent.make_invalid_manuscript (process_errors ~sort:true source errors)
@@ -1158,9 +1176,9 @@ let compile_manuscript ~expand_entities ~accepted ~denied ~default ~source docum
 
 (**	Compile a document AST into a composition.
 *)
-let compile_composition ~expand_entities ~accepted ~denied ~default ~source document_ast =
+let compile_composition ?book_maker ~expand_entities ~accepted ~denied ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accepted ~denied ~default in
-	let (contents, _, _, _, images, _, _, errors) = compile_document ~expand_entities ~idiosyncrasies document_ast
+	let (contents, _, _, _, images, _, _, errors) = compile_document ?book_maker ~expand_entities ~idiosyncrasies document_ast
 	in match errors with
 		| [] -> Ambivalent.make_valid_composition (Obj.magic contents) images
 		| xs -> Ambivalent.make_invalid_composition (process_errors ~sort:true source errors)

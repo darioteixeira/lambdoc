@@ -1,36 +1,47 @@
 (********************************************************************************)
-(*	Idiosyncrasies.mli
+(*	Book.ml
 	Copyright (c) 2009-2010 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-open Lambdoc_core
+(**	Definitions concerning books.
+*)
+
+(********************************************************************************)
+(**	{1 Exceptions}								*)
+(********************************************************************************)
+
+exception Malformed_isbn
+exception Unknown_isbn
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type t
+type isbn_t =
+	| Only10 of string
+	| Only13 of string
+	| Both of string * string
+	with sexp
 
+type info_t =
+	{
+	title: string;
+	author: string;
+	publisher: string;
+	year: int;
+	isbn: isbn_t;
+	rating: int option;
+	} with sexp
 
-(********************************************************************************)
-(**	{1 Public functions and values}						*)
-(********************************************************************************)
+type cover_t =
+	| Small
+	| Medium
+	| Large
+	with sexp
 
-val make_composition_idiosyncrasies:
-	accepted: Features.composition_feature_t list ->
-	denied: Features.composition_feature_t list ->
-	default: Features.default_t -> 
-	t
-
-val make_manuscript_idiosyncrasies:
-	accepted: Features.manuscript_feature_t list ->
-	denied: Features.manuscript_feature_t list ->
-	default: Features.default_t ->
-	t
-
-val check_feature: Features.feature_t -> t -> bool
+type maker_t = string -> int option -> info_t
 

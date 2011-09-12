@@ -14,7 +14,7 @@
 	| qanda | verse | quote
 	| mathtexblk | mathmlblk
 	| source | tabular 
-	| subpage | verbatim | pre | picture | book
+	| subpage | verbatim | pre | picture | bookimg
 	| decor | pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix
@@ -27,7 +27,7 @@
 <!ENTITY % Node
 	" entity | br | mathtexinl | mathmlinl | glyph
 	| bold | strong | b | emph | em | i | code | tt | caps
-	| ins | del | sup | sub | mbox | span | link | a | bref
+	| ins | del | sup | sub | mbox | span | uri | a | book
 	| see | cite | ref | sref | mref
 	| arg | call">
 
@@ -103,8 +103,8 @@
 <!ELEMENT picture EMPTY>
 <!ATTLIST picture %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
-<!ELEMENT book EMPTY>
-<!ATTLIST book %Common; isbn CDATA #REQUIRED>
+<!ELEMENT bookimg EMPTY>
+<!ATTLIST bookimg %Common; isbn CDATA #REQUIRED>
 
 <!ELEMENT decor (%Block;)>
 <!ATTLIST decor %Common;>
@@ -310,29 +310,29 @@
 <!ELEMENT span %Inline;>
 <!ATTLIST span %Common;>
 
-<!ELEMENT link %Inline;>
-<!ATTLIST link %Common; href CDATA #REQUIRED>
+<!ELEMENT uri %Inline;>
+<!ATTLIST uri %Common; href CDATA #REQUIRED>
 
 <!ELEMENT a %Inline;>
 <!ATTLIST a %Common; href CDATA #REQUIRED>
 
-<!ELEMENT bref %Inline;>
-<!ATTLIST bref %Common; isbn CDATA #REQUIRED>
+<!ELEMENT book %Inline;>
+<!ATTLIST book %Common; isbn CDATA #REQUIRED>
 
 <!ELEMENT see EMPTY>
-<!ATTLIST see %Common; href NMTOKENS #REQUIRED>
+<!ATTLIST see %Common; ref NMTOKENS #REQUIRED>
 
 <!ELEMENT cite EMPTY>
-<!ATTLIST cite %Common; href NMTOKENS #REQUIRED>
+<!ATTLIST cite %Common; ref NMTOKENS #REQUIRED>
 
 <!ELEMENT ref EMPTY>
-<!ATTLIST ref %Common; href NMTOKEN #REQUIRED>
+<!ATTLIST ref %Common; ref NMTOKEN #REQUIRED>
 
 <!ELEMENT sref EMPTY>
-<!ATTLIST sref %Common; href NMTOKEN #REQUIRED>
+<!ATTLIST sref %Common; ref NMTOKEN #REQUIRED>
 
 <!ELEMENT mref %Inline;>
-<!ATTLIST mref %Common; href NMTOKEN #REQUIRED>
+<!ATTLIST mref %Common; ref NMTOKEN #REQUIRED>
 
 <!ELEMENT arg EMPTY>
 <!ATTLIST arg %Common; num CDATA #REQUIRED>

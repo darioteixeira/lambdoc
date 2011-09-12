@@ -24,7 +24,7 @@ type t = bool Feature_map.t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make_idiosyncrasies feature_set accepted denied default =
+let make_idiosyncrasies ~accepted ~denied ~default feature_set =
 	let base_map =
 		let features = (Features.available_internal_features :> Features.feature_t list) in
 		let adder m x = Feature_map.add x true m
@@ -48,14 +48,14 @@ let make_composition_idiosyncrasies ~accepted ~denied ~default =
 	let composition_features = (Features.available_composition_features :> Features.feature_t list)
 	and accepted = (accepted :> Features.feature_t list)
 	and denied = (denied :> Features.feature_t list)
-	in make_idiosyncrasies composition_features accepted denied default
+	in make_idiosyncrasies ~accepted ~denied ~default composition_features
 
 
 let make_manuscript_idiosyncrasies ~accepted ~denied ~default =
 	let manuscript_features = (Features.available_manuscript_features :> Features.feature_t list)
 	and accepted = (accepted :> Features.feature_t list)
 	and denied = (denied :> Features.feature_t list)
-	in make_idiosyncrasies manuscript_features accepted denied default
+	in make_idiosyncrasies ~accepted ~denied ~default manuscript_features
 
 
 let check_feature feature map =

@@ -20,7 +20,7 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_uref | `Feature_bref ]
+	| `Feature_mbox | `Feature_span | `Feature_uri | `Feature_book ]
 
 
 type manuscript_inline_feature_t =
@@ -33,7 +33,7 @@ type composition_block_feature_t =
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk 
 	| `Feature_source | `Feature_tabular 
-	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_book ]
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookimg ]
 
 
 type manuscript_block_feature_t =

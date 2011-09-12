@@ -1,3 +1,3 @@
-true: use_menhir, use_thread, package(unix), package(ulex), package(menhirLib), package(extlib), package(pcre), package(sexplib), package(pxp-engine), package(pxp-ulex-utf8), package(lwt), package(lwt.unix), package(ocsigen.xhtml), package(blahcaml), package(camlhighlight), package(bookaml), package(netplex)
+true: use_menhir, use_thread, package(unix), package(ulex), package(menhirLib), package(extlib), package(pcre), package(sexplib), package(pxp-engine), package(pxp-ulex-utf8), package(lwt), package(lwt.unix), package(ocsigen.xhtml), package(blahcaml), package(camlhighlight), package(netplex)
 <lib>: include
 

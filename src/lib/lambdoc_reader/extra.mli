@@ -31,6 +31,7 @@ type handle_t =
 	| Lang_hnd
 	| Style_hnd
 	| Rating_hnd
+	| Cover_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
 
@@ -57,6 +58,7 @@ val get_floatation: default:Floatation.t -> extra_t -> handle_t -> Floatation.t
 val get_classname: default:Classname.t option -> extra_t -> handle_t -> Classname.t option
 val get_lang: default:Camlhighlight_core.lang_t option -> extra_t -> handle_t -> Camlhighlight_core.lang_t option
 val get_style: default:Source.style_t -> extra_t -> handle_t -> Source.style_t
+val get_cover: default:Book.cover_t -> extra_t -> handle_t -> Book.cover_t
 
 
 (********************************************************************************)
@@ -73,4 +75,5 @@ val fetch_floatation: default:Floatation.t -> Ast.command_t -> error_t -> handle
 val fetch_classname: default:Classname.t option -> Ast.command_t -> error_t -> handle_t -> Classname.t option
 val fetch_lang: default:Camlhighlight_core.lang_t option -> Ast.command_t -> error_t -> handle_t -> Camlhighlight_core.lang_t option
 val fetch_style: default:Source.style_t -> Ast.command_t -> error_t -> handle_t -> Source.style_t
+val fetch_cover: default:Book.cover_t -> Ast.command_t -> error_t -> handle_t -> Book.cover_t
 

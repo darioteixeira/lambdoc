@@ -25,6 +25,7 @@ val process_errors:
 	Error.t nelist
 
 val compile_manuscript:
+	?book_maker: Book.maker_t ->
 	expand_entities: bool ->
 	accepted: Features.manuscript_feature_t list ->
 	denied: Features.manuscript_feature_t list ->
@@ -34,6 +35,7 @@ val compile_manuscript:
 	Ambivalent.manuscript_t
 
 val compile_composition:
+	?book_maker: Book.maker_t ->
 	expand_entities: bool ->
 	accepted: Features.composition_feature_t list ->
 	denied: Features.composition_feature_t list ->
