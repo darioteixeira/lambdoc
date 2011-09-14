@@ -39,7 +39,7 @@ sig
 		?denied: Features.manuscript_feature_t list ->
 		?default: Features.default_t ->
 		string ->
-		Ambivalent.manuscript_t
+		Ambivalent.manuscript_t Lwt.t
 
 	val ambivalent_composition_from_string:
 		?book_maker: Book.maker_t ->
@@ -49,7 +49,7 @@ sig
 		?denied: Features.composition_feature_t list ->
 		?default: Features.default_t ->
 		string ->
-		Ambivalent.composition_t
+		Ambivalent.composition_t Lwt.t
 end
 
 
@@ -79,10 +79,10 @@ struct
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
 					let errors = Compiler.process_errors ~sort:false sane_str msgs
-					in invalid_maker errors
+					in Lwt.return (invalid_maker errors)
 				| Reader.Reading_error (line, msg) ->
 					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)]
-					in invalid_maker errors
+					in Lwt.return (invalid_maker errors)
 
 	let ambivalent_manuscript_from_string ?book_maker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
 		let valid_compiler = Compiler.compile_manuscript

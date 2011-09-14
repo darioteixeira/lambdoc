@@ -233,10 +233,10 @@ let explain_error = function
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '#%s#' in %s." (escape label) (explain_tag tag)
 
-	| Error.Malformed_isbn (tag, isbn) ->
+	| Error.Malformed_ISBN (tag, isbn) ->
 		sprintf "The string '#%s#' in %s is not a valid ISBN." (escape isbn) (explain_tag tag)
 
-	| Error.Unknown_isbn (tag, isbn) ->
+	| Error.Unknown_ISBN (tag, isbn) ->
 		sprintf "Cannot find book with ISBN '#%s#' in %s." (escape isbn) (explain_tag tag)
 
 	| Error.Empty_source tag ->

@@ -54,12 +54,7 @@ end
 
 module Book_output =
 struct
-	open Book
-
-	let string_of_isbn = function
-		| Only10 isbn10		-> isbn10
-		| Only13 isbn13		-> isbn13
-		| Both (isbn10, isbn13) -> isbn13
+	external string_of_isbn: Book.isbn_t -> string = "%identity"
 end
 
 

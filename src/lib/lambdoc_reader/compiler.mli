@@ -32,7 +32,7 @@ val compile_manuscript:
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
-	Ambivalent.manuscript_t
+	Ambivalent.manuscript_t Lwt.t
 
 val compile_composition:
 	?book_maker: Book.maker_t ->
@@ -42,5 +42,5 @@ val compile_composition:
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
-	Ambivalent.composition_t
+	Ambivalent.composition_t Lwt.t
 

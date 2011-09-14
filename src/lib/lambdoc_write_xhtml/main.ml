@@ -256,12 +256,12 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 		| `Uri (uri, Some seq) ->
 			make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Book (bookinfo, None) ->
-			let seq = (`Emph ((`Plain bookinfo.Book.title), []), [])
-			in make_book_link bookinfo.Book.isbn (Obj.magic (write_seq seq))
+		| `Book (isbn, maybe_rating, None) ->
+			let seq = (`Emph ((`Plain isbn), []), [])
+			in make_book_link isbn (Obj.magic (write_seq seq))
 
-		| `Book (bookinfo, Some seq) ->
-			make_book_link bookinfo.Book.isbn (Obj.magic (write_seq seq))
+		| `Book (isbn, maybe_rating, Some seq) ->
+			make_book_link isbn (Obj.magic (write_seq seq))
 
 		| `Nref (hd, tl) ->
 			let link_maker ref =
@@ -496,8 +496,8 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
-		| `Bookimg (bookinfo, cover) ->
-			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata bookinfo.Book.title]]
+		| `Bookimg (isbn, maybe_rating, cover) ->
+			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata isbn]]
 
 		| `Decor (floatation, blk) ->
 			let style = make_floatation floatation
@@ -716,7 +716,7 @@ let write_error (maybe_error_context, error_msg) =
 				]
 		| None ->
 			[XHTML.M.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]]
-	and explanation_doc = Valid.make_composition (Block.paragraph false None (Explanations.explain error_msg), []) [] in
+	and explanation_doc = Valid.make_composition (Block.paragraph false None (Explanations.explain error_msg), []) [] (Hashtbl.create 0) in
 	let explanation_out = [write_valid_document ~base_classes:[] ~extra_classes:[!!"error_msg"] explanation_doc]
 	in XHTML.M.li ~a:[a_class [!!"error"]] (context @ explanation_out)
 

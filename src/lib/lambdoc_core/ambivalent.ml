@@ -33,11 +33,11 @@ type composition_t =
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-let make_valid_manuscript content bibs notes toc images labels custom =
-	`Valid (Valid.make_manuscript content bibs notes toc images labels custom)
+let make_valid_manuscript content bibs notes toc images books labels custom =
+	`Valid (Valid.make_manuscript content bibs notes toc images books labels custom)
 
-let make_valid_composition content images =
-	`Valid (Valid.make_composition content images)
+let make_valid_composition content images books =
+	`Valid (Valid.make_composition content images books)
 
 let make_invalid_manuscript errors =
 	`Invalid (Invalid.make_manuscript errors)

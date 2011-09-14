@@ -13,28 +13,24 @@
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Malformed_isbn
-exception Unknown_isbn
+exception Malformed_ISBN of string
+exception Unknown_ISBN of string
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type isbn_t =
-	| Only10 of string
-	| Only13 of string
-	| Both of string * string
-	with sexp
+type isbn_t = string with sexp
 
-type info_t =
+type rating_t = int with sexp
+
+type data_t =
 	{
 	title: string;
 	author: string;
 	publisher: string;
 	year: int;
-	isbn: isbn_t;
-	rating: int option;
 	} with sexp
 
 type cover_t =
@@ -43,5 +39,5 @@ type cover_t =
 	| Large
 	with sexp
 
-type maker_t = string -> int option -> info_t
+type maker_t = isbn_t -> (isbn_t * data_t) Lwt.t
 

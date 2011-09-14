@@ -43,6 +43,7 @@ val make_valid_manuscript:
 	Note.t list ->
 	Heading.heading_t list ->
 	Alias.t list ->
+	Valid.books_t ->
 	Valid.labels_t ->
 	Custom.dict_t ->
 	manuscript_t
@@ -50,6 +51,7 @@ val make_valid_manuscript:
 val make_valid_composition:
 	([< `Composition ], _, _, _, _) Block.t nelist ->
 	Alias.t list ->
+	Valid.books_t ->
 	composition_t
 
 val make_invalid_manuscript: Error.t nelist -> manuscript_t

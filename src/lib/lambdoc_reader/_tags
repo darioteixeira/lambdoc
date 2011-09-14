@@ -1,1 +1,2 @@
 <*.cmx>: for-pack(Lambdoc_reader)
+<compiler.*>: package(lwt.syntax), syntax(camlp4o)

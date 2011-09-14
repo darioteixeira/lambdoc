@@ -38,3 +38,13 @@ let maybe f = function
 	| Some x	-> Some (f x)
 	| None		-> None
 
+
+(**	Identity function.
+*)
+external identity: 'a -> 'a = "%identity"
+
+
+(**	Pipe operator.
+*)
+let (|>) x f = f x
+

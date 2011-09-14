@@ -33,7 +33,7 @@ type 'a inline_t =
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
 	| `Uri of Uri.t * 'a nelist option
-	| `Book of Book.info_t * 'a nelist option
+	| `Book of Book.isbn_t * Book.rating_t option * 'a nelist option
 	| `Nref of Ref.t nelist
 	| `Cref of Ref.t nelist
 	| `Dref of Ref.t
@@ -67,7 +67,7 @@ let sub seq = `Sub seq
 let mbox seq = `Mbox seq
 let span classname seq = `Span (classname, seq)
 let uri uri maybe_seq = `Uri (uri, maybe_seq)
-let book info maybe_seq = `Book (info, maybe_seq)
+let book isbn maybe_rating maybe_seq = `Book (isbn, maybe_rating, maybe_seq)
 let nref (hd, tl) = `Nref (hd, tl)
 let cref (hd, tl) = `Cref (hd, tl)
 let dref ref = `Dref ref

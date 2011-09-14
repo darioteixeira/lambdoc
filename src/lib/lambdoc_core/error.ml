@@ -124,8 +124,8 @@ type error_msg_t =
 	| Wrong_target of Ident.t option * Ref.t * target_t * target_t
 	| Undefined_target of Ident.t option * Ref.t
 
-	| Malformed_isbn of Ident.t option * string
-	| Unknown_isbn of Ident.t option * string
+	| Malformed_ISBN of Ident.t option * string
+	| Unknown_ISBN of Ident.t option * string
 
 	| Empty_source of Ident.t option
 	| Empty_verbatim of Ident.t option

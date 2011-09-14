@@ -18,6 +18,8 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+type books_t = (Book.isbn_t, Book.data_t) Hashtbl.t with sexp
+
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
 
 type 'a document_t =
@@ -27,6 +29,7 @@ type 'a document_t =
 	notes: Note.t list;
 	toc: Heading.heading_t list;
 	images: Alias.t list;
+	books: books_t;
 	labels: labels_t;
 	custom: Custom.dict_t;
 	} with sexp
@@ -43,24 +46,26 @@ type composition_t = [ `Composition ] document_t with sexp
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-let make_manuscript content bibs notes toc images labels custom =
+let make_manuscript content bibs notes toc images books labels custom =
 	{
 	content = Block.get_frag content;
 	bibs = bibs;
 	notes = notes;
 	toc = toc;
 	images = images;
+	books = books;
 	labels = labels;
 	custom = custom;
 	}
 
-let make_composition content images =
+let make_composition content images books =
 	{
 	content = Block.get_frag content;
 	bibs = [];
 	notes = [];
 	toc = [];
 	images = images;
+	books = books;
 	labels = Hashtbl.create 0;
 	custom = Hashtbl.create 0;
 	}
