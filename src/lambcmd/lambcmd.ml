@@ -15,13 +15,32 @@ open Options
 (********************************************************************************)
 
 type processor_t =
-	| Manuscript_io of (string -> Lambdoc_core.Ambivalent.manuscript_t) * (Lambdoc_core.Ambivalent.manuscript_t -> string)
-	| Composition_io of (string -> Lambdoc_core.Ambivalent.composition_t) * (Lambdoc_core.Ambivalent.composition_t -> string)
+	| Manuscript_io of (string -> Lambdoc_core.Ambivalent.manuscript_t Lwt.t) * (Lambdoc_core.Ambivalent.manuscript_t -> string)
+	| Composition_io of (string -> Lambdoc_core.Ambivalent.composition_t Lwt.t) * (Lambdoc_core.Ambivalent.composition_t -> string)
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
+
+let book_maker ~associate_tag ~access_key ~secret_key ~locale raw_isbn =
+	try_lwt
+		lwt isbn = try Lwt.return (ISBN.of_string raw_isbn) with exc -> Lwt.fail exc in
+		lwt book = Bookaml_amazon.book_from_isbn_exn ~associate_tag ~access_key ~secret_key ~locale isbn in
+		let data =
+			{
+			Lambdoc_core.Book.title = book.Bookaml_amazon.title;
+			Lambdoc_core.Book.author = book.Bookaml_amazon.author;
+			Lambdoc_core.Book.publisher = book.Bookaml_amazon.publisher;
+			Lambdoc_core.Book.year = book.Bookaml_amazon.year;
+			}
+		in Lwt.return (raw_isbn, data)
+	with
+		| ISBN.Bad_ISBN_length _
+		| ISBN.Bad_ISBN_checksum _
+		| ISBN.Bad_ISBN_character _ -> Lwt.fail (Lambdoc_core.Book.Malformed_ISBN raw_isbn)
+		| Bookaml_amazon.No_match _ -> Lwt.fail (Lambdoc_core.Book.Unknown_ISBN raw_isbn)
+
 
 let string_of_xhtml the_title xhtml =
 	let page = (html
@@ -35,43 +54,52 @@ let string_of_xhtml the_title xhtml =
 	in Xhtmlpretty.xhtml_print page
 
 
-let get_processor options = match options.category with
-	| `Manuscript ->
-		let reader = match options.input_markup with
-			| `Lambtex  -> (fun str -> Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string str)
-			| `Lamblite -> (fun str -> Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string str)
-			| `Lambhtml -> (fun str -> Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string str)
-			| `Sexp	    -> (fun str -> Lambdoc_core.Ambivalent.deserialize_manuscript str)
-		and writer = match options.output_markup with
-			| `Sexp  -> Lambdoc_core.Ambivalent.serialize_manuscript
-			| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_manuscript ~translations:options.language doc))
-		in Manuscript_io (reader, writer)
-	| `Composition ->
-		let reader = match options.input_markup with
-			| `Lambtex  -> (fun str -> Lambdoc_read_lambtex.Main.ambivalent_composition_from_string str)
-			| `Lamblite -> (fun str -> Lambdoc_read_lamblite.Main.ambivalent_composition_from_string str)
-			| `Lambhtml -> (fun str -> Lambdoc_read_lambhtml.Main.ambivalent_composition_from_string str)
-			| `Sexp	    -> (fun str -> Lambdoc_core.Ambivalent.deserialize_composition str)
-		and writer = match options.output_markup with
-			| `Sexp  -> Lambdoc_core.Ambivalent.serialize_composition
-			| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_composition ~translations:options.language doc))
-		in Composition_io (reader, writer)
+let get_processor options =
+	let book_maker = match (options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key, options.amazon_locale) with
+		| (Some associate_tag, Some access_key, Some secret_key, Some locale) -> Some (book_maker ~associate_tag ~access_key ~secret_key ~locale)
+		| _								      -> None
+	in match options.category with
+		| `Manuscript ->
+			let reader = match options.input_markup with
+				| `Lambtex  -> (fun str -> Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string ?book_maker str)
+				| `Lamblite -> (fun str -> Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string ?book_maker str)
+				| `Lambhtml -> (fun str -> Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string ?book_maker str)
+				| `Sexp	    -> (fun str -> Lwt.return (Lambdoc_core.Ambivalent.deserialize_manuscript str))
+			and writer = match options.output_markup with
+				| `Sexp  -> Lambdoc_core.Ambivalent.serialize_manuscript
+				| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_manuscript ~translations:options.language doc))
+			in Manuscript_io (reader, writer)
+		| `Composition ->
+			let reader = match options.input_markup with
+				| `Lambtex  -> (fun str -> Lambdoc_read_lambtex.Main.ambivalent_composition_from_string ?book_maker str)
+				| `Lamblite -> (fun str -> Lambdoc_read_lamblite.Main.ambivalent_composition_from_string ?book_maker str)
+				| `Lambhtml -> (fun str -> Lambdoc_read_lambhtml.Main.ambivalent_composition_from_string ?book_maker str)
+				| `Sexp	    -> (fun str -> Lwt.return (Lambdoc_core.Ambivalent.deserialize_composition str))
+			and writer = match options.output_markup with
+				| `Sexp  -> Lambdoc_core.Ambivalent.serialize_composition
+				| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_composition ~translations:options.language doc))
+			in Composition_io (reader, writer)
 
 
-let () =
+let main () =
 	let options = Options.parse () in
 	let input_str = Std.input_all options.input_chan in
 	let processor = get_processor options in
-	let (output_str, is_valid) = match processor with
+	lwt (output_str, is_valid) = match processor with
 		| Manuscript_io (reader, writer) ->
-			let doc = reader input_str
-			in (writer doc, match doc with `Valid _ -> true | _ -> false)
+			lwt doc = reader input_str
+			in Lwt.return (writer doc, match doc with `Valid _ -> true | _ -> false)
 		| Composition_io (reader, writer) ->
-			let doc = reader input_str
-			in (writer doc, match doc with `Valid _ -> true | _ -> false)
+			lwt doc = reader input_str
+			in Lwt.return (writer doc, match doc with `Valid _ -> true | _ -> false)
 	in
 		output_string options.output_chan output_str;
 		options.input_cleaner options.input_chan;
 		options.output_cleaner options.output_chan;
-		exit (if is_valid then 0 else 3)
+		Lwt.return (if is_valid then 0 else 3)
+
+
+let () =
+	let status = Lwt_main.run (main ()) in
+	exit status
 

@@ -24,13 +24,13 @@ let input_of_string x = match String.lowercase x with
 	| "lamblite" -> `Lamblite
 	| "lambhtml" -> `Lambhtml
 	| "sexp"     -> `Sexp
-	| _	     -> invalid_arg x
+	| _	     -> invalid_arg ("Markup.input_of_string: " ^ x)
 
 
 let output_of_string x = match String.lowercase x with
 	| "sexp"  -> `Sexp
 	| "xhtml" -> `Xhtml
-	| _	  -> invalid_arg x
+	| x	  -> invalid_arg ("Markup.output_of_string: " ^ x)
 
 
 let to_string = function

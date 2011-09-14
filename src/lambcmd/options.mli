@@ -15,9 +15,16 @@ type t =
 	debug: bool;
 	title: string;
 	language: Language.t;
+
+	amazon_associate_tag: string option;
+	amazon_access_key: string option;
+	amazon_secret_key: string option;
+	amazon_locale: Bookaml_amazon.Locale.t option;
+
 	category: Category.t;
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
+
 	input_chan: Pervasives.in_channel;
 	output_chan: Pervasives.out_channel;
 	input_cleaner: Pervasives.in_channel -> unit;

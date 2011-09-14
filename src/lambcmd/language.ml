@@ -24,7 +24,7 @@ let of_string x = match String.lowercase x with
 	| "en" -> Translations.english_names
 	| "fr" -> Translations.french_names
 	| "pt" -> Translations.portuguese_names
-	| _    -> invalid_arg "Language.of_string"
+	| x    -> invalid_arg ("Language.of_string: " ^ x)
 
 
 let default = Translations.english_names

@@ -20,7 +20,7 @@ type t = [ `Manuscript | `Composition ]
 let of_string x = match String.lowercase x with
 	| "manuscript" -> `Manuscript
 	| "composition" -> `Composition
-	| _		-> invalid_arg "Category.of_string"
+	| x		-> invalid_arg ("Category.of_string: " ^ x)
 
 
 let default = `Manuscript
