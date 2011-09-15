@@ -17,7 +17,7 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type books_t = (Book.isbn_t, Book.data_t) Hashtbl.t with sexp
+type books_t = (Book.isbn_t, Book.t) Hashtbl.t with sexp
 
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
 

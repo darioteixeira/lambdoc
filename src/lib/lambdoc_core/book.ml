@@ -25,19 +25,19 @@ type isbn_t = string with sexp
 
 type rating_t = int with sexp
 
-type data_t =
-	{
-	title: string;
-	author: string;
-	publisher: string;
-	year: int;
-	} with sexp
-
 type cover_t =
 	| Small
 	| Medium
 	| Large
 	with sexp
 
-type maker_t = isbn_t -> (isbn_t * data_t) Lwt.t
+type t =
+	{
+	title: string;
+	author: string;
+	publisher: string;
+	pubdate: string;
+	} with sexp
+
+type maker_t = isbn_t -> t Lwt.t
 

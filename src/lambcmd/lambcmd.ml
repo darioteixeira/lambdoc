@@ -27,14 +27,14 @@ let book_maker ~associate_tag ~access_key ~secret_key ~locale raw_isbn =
 	try_lwt
 		let isbn = ISBN.of_string raw_isbn in
 		lwt book = Bookaml_amazon.book_from_isbn_exn ~associate_tag ~access_key ~secret_key ~locale isbn in
-		let data =
+		let book' =
 			{
 			Lambdoc_core.Book.title = book.Bookaml_amazon.title;
 			Lambdoc_core.Book.author = book.Bookaml_amazon.author;
 			Lambdoc_core.Book.publisher = book.Bookaml_amazon.publisher;
-			Lambdoc_core.Book.year = book.Bookaml_amazon.year;
+			Lambdoc_core.Book.pubdate = book.Bookaml_amazon.pubdate;
 			}
-		in Lwt.return (raw_isbn, data)
+		in Lwt.return book'
 	with
 		| ISBN.Bad_ISBN_length _
 		| ISBN.Bad_ISBN_checksum _

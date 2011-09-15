@@ -1106,7 +1106,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 		let make_book (comm, feature, isbn) =
 			try_lwt
 				book_maker isbn >>= fun book ->
-				Lwt.return (Some book)
+				Lwt.return (Some (isbn, book))
 			with exc ->
 				let msg = match exc with
 					| Unavailable_book_maker -> Error.Unavailable_book_maker (comm.comm_tag, Features.describe feature)
