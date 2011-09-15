@@ -33,13 +33,13 @@ type 'a inline_t =
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
-	| `Uri of Uri.t * 'a nelist option					(* Link to an external URI *)
-	| `Book of Book.isbn_t * Book.rating_t option * 'a nelist option	(* Link to a book *)
-	| `Nref of Ref.t nelist							(* Reference to an end note *)
-	| `Cref of Ref.t nelist							(* Citation of a bibliography entry *)
-	| `Dref of Ref.t							(* "Dumb" reference to an internal element *)
-	| `Sref of Ref.t							(* Smart reference to an internal element *)
-	| `Mref of Ref.t * 'a nelist						(* Manual reference to an internal element *)
+	| `Uref of Uri.t * 'a nelist option					(* Reference to an external URI *)
+	| `Bref of Book.isbn_t * Book.rating_t option * 'a nelist option	(* Reference to a book via its ISBN *)
+	| `Nref of Anchor.t nelist						(* Reference to an end note *)
+	| `Cref of Anchor.t nelist						(* Citation of a bibliography entry *)
+	| `Dref of Anchor.t							(* "Dumb" reference to an internal element *)
+	| `Sref of Anchor.t							(* Smart reference to an internal element *)
+	| `Mref of Anchor.t * 'a nelist						(* Manual reference to an internal element *)
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -67,13 +67,13 @@ val sup: ('a, 'b) t nelist -> ('a, 'b) t
 val sub: ('a, 'b) t nelist -> ('a, 'b) t
 val mbox: ('a, 'b) t nelist -> ('a, 'b) t
 val span: Classname.t option -> ('a, 'b) t nelist -> ('a, 'b) t
-val uri: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
-val book: Book.isbn_t -> Book.rating_t option -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
-val nref: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val cref: Ref.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val dref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
-val sref: Ref.t -> ([> `Manuscript ], [> `Link ]) t
-val mref: Ref.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
+val uref: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
+val bref: Book.isbn_t -> Book.rating_t option -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
+val nref: Anchor.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val cref: Anchor.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val dref: Anchor.t -> ([> `Manuscript ], [> `Link ]) t
+val sref: Anchor.t -> ([> `Manuscript ], [> `Link ]) t
+val mref: Anchor.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
 
 val get_seq: (_, _) t nelist -> seq_t
 val get_inlines: (_, _) t list -> raw_inline_t list

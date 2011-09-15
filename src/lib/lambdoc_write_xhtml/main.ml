@@ -78,8 +78,8 @@ let (^^) s1 s2 = "doc_" ^ s1 ^ s2
 (********************************************************************************)
 
 let make_label = function
-	| `Auto_label ref -> "doc:a:" ^ ref
-	| `User_label ref -> "doc:u:" ^ ref
+	| `Auto_label anchor -> "doc:a:" ^ anchor
+	| `User_label anchor -> "doc:u:" ^ anchor
 
 
 let make_link ?classname lnk content =
@@ -91,7 +91,7 @@ let make_link ?classname lnk content =
 let make_external_link = make_link
 
 
-let make_internal_link ?classname ref content = make_link ?classname ("#" ^ (make_label ref)) content
+let make_internal_link ?classname anchor content = make_link ?classname ("#" ^ (make_label anchor)) content
 
 
 let make_book_link isbn content = XHTML.M.a ~a:[a_href (uri_of_string (Book_output.string_of_isbn isbn))] content
@@ -249,42 +249,42 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let a = maybe (fun x -> [a_class ["span_" ^^ x]]) classname
 			in XHTML.M.span ?a (write_seq seq)
 
-		| `Uri (uri, None) ->
+		| `Uref (uri, None) ->
 			let seq = (`Plain uri, [])
 			in make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Uri (uri, Some seq) ->
+		| `Uref (uri, Some seq) ->
 			make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Book (isbn, maybe_rating, None) ->
+		| `Bref (isbn, maybe_rating, None) ->
 			let seq = (`Emph ((`Plain isbn), []), [])
 			in make_book_link isbn (Obj.magic (write_seq seq))
 
-		| `Book (isbn, maybe_rating, Some seq) ->
+		| `Bref (isbn, maybe_rating, Some seq) ->
 			make_book_link isbn (Obj.magic (write_seq seq))
 
 		| `Nref (hd, tl) ->
-			let link_maker ref =
-				let label = `User_label ref in
+			let link_maker anchor =
+				let label = `User_label anchor in
 				let target = Hashtbl.find labels label
 				in (match target with
 					| Target.Note_target order -> make_internal_link label (note_conv order)
 					| _			   -> raise (Command_nref_with_non_note target)) in
-			let commafy ref = [pcdata ","; link_maker ref]
+			let commafy anchor = [pcdata ","; link_maker anchor]
 			in XHTML.M.span ~a:[a_class [!!"nref"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
 
 		| `Cref (hd, tl) ->
-			let link_maker ref =
-				let label = `User_label ref in
+			let link_maker anchor =
+				let label = `User_label anchor in
 				let target = Hashtbl.find labels label
 				in match target with
 					| Target.Bib_target order -> make_internal_link label (bib_conv order)
 					| _			  -> raise (Command_cref_with_non_bib target) in
-			let commafy ref = [pcdata ","; link_maker ref]
+			let commafy anchor = [pcdata ","; link_maker anchor]
 			in XHTML.M.span ~a:[a_class [!!"cref"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
 
-		| `Dref ref ->
-			let label = `User_label ref in
+		| `Dref anchor ->
+			let label = `User_label anchor in
 			let target = Hashtbl.find labels label
 			in (match target with
 				| Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
@@ -300,10 +300,10 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				| _ ->
 					raise (Command_dref_with_non_visible_block target))
 
-		| `Sref ref ->
-			let target = Hashtbl.find labels (`User_label ref) in
+		| `Sref anchor ->
+			let target = Hashtbl.find labels (`User_label anchor) in
 			let make_sref wseq order =
-				make_internal_link (`User_label ref) (Obj.magic (wseq @ order))
+				make_internal_link (`User_label anchor) (Obj.magic (wseq @ order))
 			in (match target with
 				| Target.Visible_target (Target.Custom_target (env, Custom.Boxout, order)) ->
 					make_sref (write_name (Name_custom env)) (boxout_conv ~prespace:true order)
@@ -327,8 +327,8 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				| _ ->
 					raise (Command_sref_with_non_visible_block target))
 
-		| `Mref (ref, seq) ->
-			make_internal_link (`User_label ref) (Obj.magic (write_seq seq))
+		| `Mref (anchor, seq) ->
+			make_internal_link (`User_label anchor) (Obj.magic (write_seq seq))
 
 
 	(************************************************************************)
@@ -496,7 +496,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
-		| `Bookimg (isbn, maybe_rating, cover) ->
+		| `Bookcover (isbn, maybe_rating, cover) ->
 			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata isbn]]
 
 		| `Decor (floatation, blk) ->

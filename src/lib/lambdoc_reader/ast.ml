@@ -24,7 +24,7 @@ open Basic
 type command_t =
 	{
 	comm_tag: Ident.t option;
-	comm_label: Ref.t option;
+	comm_label: Anchor.t option;
 	comm_order: string option;
 	comm_extra: string option;
 	comm_linenum: int;
@@ -54,8 +54,8 @@ type seq_t = inline_t list
 	| Sub of seq_t
 	| Mbox of seq_t
 	| Span of seq_t
-	| Uri of string * seq_t option
-	| Book of string * seq_t option
+	| Uref of string * seq_t option
+	| Bref of string * seq_t option
 	| Nref of string list
 	| Cref of string list
 	| Dref of string
@@ -106,7 +106,7 @@ type frag_t = block_t list
 	| Subpage of frag_t
 	| Verbatim of string
 	| Picture of string * string
-	| Bookimg of string
+	| Bookcover of string
 	| Decor of block_t
 	| Pullquote of seq_t option * frag_t
 	| Custom of Custom.kind_t option * string * seq_t option * frag_t

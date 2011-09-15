@@ -42,10 +42,11 @@ let _ = dispatch begin function
 		(* Flag Ocamldoc options. *)
 		flag ["ocaml"; "doc"] ocamldoc_opts;
 
+		(* Other miscelaneous custom options. *)
 		flag ["ocaml"; "use_thread"; "compile"] (S[A "-thread"]);
 		flag ["ocaml"; "use_thread"; "link"] (S[A "-thread"]);
-		flag ["ocaml"; "use_thread"; "infer_interface"] (S[A "-thread"])
-
+		flag ["ocaml"; "use_thread"; "infer_interface"] (S[A "-thread"]);
+		flag ["ocaml"; "use_nocommandline"; "link"] (S[A "-predicates"; A "nocommandline"]);
 	| _ -> ()
 end
 

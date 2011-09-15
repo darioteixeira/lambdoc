@@ -53,15 +53,15 @@ It is possible to embed images like <glyph src="circle-tiny.png" alt="o"/> into 
 </p>
 
 <p>
-Here is a link to section number <ref ref="sec:foobar"/> or smartly, <sref
-ref="sec:foobar"/>.  And here is a link to <mref ref="sec:foobar">that same
-section</mref>.  You can also link to Tip <ref ref="tip:one"/>, or smarly <sref
-ref="tip:one"/>, or a link to <mref ref="tip:one"> that same tip</mref>. The
-bibliography is at the end<cite ref="bib:one"/><cite ref="bib:two"/><cite
-ref="bib:three"/>.  You can also place multiple citations in the same square
-brackets<cite ref="bib:one bib:two bib:three"/>.  There is also<see ref="note:one"/>
-a list<see ref="note:two"/> of notes<see ref="note:three"/>, which if you prefer you
-can reference them with a single command<see ref="note:one note:two note:three"/>.
+Here is a link to section number <ref href="sec:foobar"/> or smartly, <sref
+href="sec:foobar"/>.  And here is a link to <mref href="sec:foobar">that same
+section</mref>.  You can also link to Tip <ref href="tip:one"/>, or smarly <sref
+href="tip:one"/>, or a link to <mref href="tip:one"> that same tip</mref>. The
+bibliography is at the end<cite href="bib:one"/><cite href="bib:two"/><cite
+href="bib:three"/>.  You can also place multiple citations in the same square
+brackets<cite href="bib:one bib:two bib:three"/>.  There is also<see href="note:one"/>
+a list<see href="note:two"/> of notes<see href="note:three"/>, which if you prefer you
+can reference them with a single command<see href="note:one note:two note:three"/>.
 </p>
 
 
@@ -418,16 +418,6 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <picture src="circle-small.png" alt="Small Circle"/>
-<p><call name="lorem"/></p>
-
-
-<!-- ****************************************************************** -->
-<h1>Books</h1>
-
-<p><call name="lorem"/></p>
-<bookimg isbn="1853267805"/>
-<p><call name="lorem"/></p>
-<bookimg isbn="978-1853267802" extra="5,large"/>
 <p><call name="lorem"/></p>
 
 

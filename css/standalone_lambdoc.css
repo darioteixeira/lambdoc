@@ -95,7 +95,7 @@ caption, th, td
 	color: #009;
 	}
 
-.doc_see
+.doc_nref
 	{
 	margin-left: 0.25em;
 	vertical-align: 0.3em;
@@ -103,7 +103,7 @@ caption, th, td
 	color: #009;
 	}
 
-.doc_cite
+.doc_cref
 	{
 	margin-left: 0.25em;
 	color: #009;

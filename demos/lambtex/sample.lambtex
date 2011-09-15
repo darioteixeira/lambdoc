@@ -6,7 +6,7 @@
 
 \newmacro{elwho}{0}{John McAuthor}
 \newmacro{elwhat}{0}{Title of the article}
-\newmacro{elwhere}{0}{\uri{http://www.wikipedia.org/}}
+\newmacro{elwhere}{0}{\uref{http://www.wikipedia.org/}}
 
 \title{A complete sample of \caps{Lambtex}}
 \subtitle{Dario Teixeira}
@@ -48,10 +48,6 @@ end\cite{bib:bib1}\cite{bib:bib2}\cite{bib:bib3}.  You can also place multiple
 citations in the same square brackets\cite{bib:bib1}{bib:bib2}{bib:bib3}. There is
 also\see{note:note1} a list\see{note:note2} of notes\see{note:note3}, which if you prefer
 you can reference them with a single command\see{note:note1}{note:note2}{note:note3}.
-Finally, it is also possible to make links to a book such as \book{978-1853267802},
-using either its \caps{ISBN-10} or its \caps{ISBN-13}.  You may also include a rating
-and a custom title when referencing the book; for example: \book<5>{1853267805}{Darwin's
-\emph{The Origin of Species}}.
 
 \part{Block features}
 
@@ -440,15 +436,6 @@ index.html: HTML document text
 \picture<frame>{square-big.png}{Big Square}
 \p{\lorem}
 \picture{triangle-huge.png}{Huge Triangle}
-\p{\lorem}
-
-
-\section{Books}
-
-\p{\lorem}
-\bookimg{1853267805}
-\p{\lorem}
-\bookimg<5,large>{978-1853267802}
 \p{\lorem}
 
 

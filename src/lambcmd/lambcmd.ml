@@ -25,7 +25,7 @@ type processor_t =
 
 let book_maker ~associate_tag ~access_key ~secret_key ~locale raw_isbn =
 	try_lwt
-		lwt isbn = try Lwt.return (ISBN.of_string raw_isbn) with exc -> Lwt.fail exc in
+		let isbn = ISBN.of_string raw_isbn in
 		lwt book = Bookaml_amazon.book_from_isbn_exn ~associate_tag ~access_key ~secret_key ~locale isbn in
 		let data =
 			{

@@ -88,7 +88,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 	(* Declaration of the mutable values used in the function.		*)
 	(************************************************************************)
 
-	let references = DynArray.create ()
+	let anchors = DynArray.create ()
 	and bibs = DynArray.create ()
 	and notes = DynArray.create ()
 	and toc = DynArray.create ()
@@ -169,20 +169,20 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 				Order_input.user_hierarchical `Level1 "0"
 
 
-	(*	Adds a new ISBN to the array of referrenced books.
+	(*	Adds a new ISBN to the array of referenced books.
 	*)
 	and add_isbn comm feature isbn =
 		DynArray.add isbns (comm, feature, isbn)
 
 
-	(*	Adds a new reference to the dictionary.
+	(*	Adds a new anchor to the dictionary.
 	*)
-	and add_reference target_checker comm ref =
-		if Basic_input.matches_ident ref
+	and add_anchor target_checker comm anchor =
+		if Basic_input.matches_ident anchor
 		then
-			DynArray.add references (target_checker, comm, ref)
+			DynArray.add anchors (target_checker, comm, anchor)
 		else
-			let msg = Error.Invalid_label (comm.comm_tag, ref)
+			let msg = Error.Invalid_label (comm.comm_tag, anchor)
 			in DynArray.add errors (Some comm.comm_linenum, msg)
 
 
@@ -312,26 +312,26 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 				in [Inline.span classname (convert_seq_aux ~comm ~args x astseq)]
 			in check_inline_comm `Feature_span comm elem
 
-		| (false, (comm, Ast.Uri (uri, maybe_astseq))) ->
+		| (false, (comm, Ast.Uref (uri, maybe_astseq))) ->
 			let elem () =
 				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
-				in [Inline.uri uri (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_uri comm elem
+				in [Inline.uref uri (Obj.magic maybe_seq)]
+			in check_inline_comm `Feature_uref comm elem
 
-		| (false, (comm, Ast.Book (isbn, maybe_astseq))) ->
+		| (false, (comm, Ast.Bref (isbn, maybe_astseq))) ->
 			let elem () =
 				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
 				and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd in
-				add_isbn comm `Feature_book isbn;
-				[Inline.book isbn maybe_rating (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_book comm elem
+				add_isbn comm `Feature_bref isbn;
+				[Inline.bref isbn maybe_rating (Obj.magic maybe_seq)]
+			in check_inline_comm `Feature_bref comm elem
 
 		| (false, (comm, Ast.Nref refs)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_note
-				in List.iter (add_reference target_checker comm) refs;
+				in List.iter (add_anchor target_checker comm) refs;
 				match refs with
 					| hd::tl ->
 						[Inline.nref (hd, tl)]
@@ -346,7 +346,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_bib
-				in List.iter (add_reference target_checker comm) refs;
+				in List.iter (add_anchor target_checker comm) refs;
 				match refs with
 					| hd::tl ->
 						[Inline.cref (hd, tl)]
@@ -356,7 +356,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 						[]
 			in check_inline_comm `Feature_cref comm elem
 
-		| (false, (comm, Ast.Dref ref)) ->
+		| (false, (comm, Ast.Dref anchor)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -365,11 +365,11 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
-				in add_reference target_checker comm ref;
-				[Inline.dref ref]
+				in add_anchor target_checker comm anchor;
+				[Inline.dref anchor]
 			in check_inline_comm `Feature_dref comm elem
 
-		| (false, (comm, Ast.Sref ref)) ->
+		| (false, (comm, Ast.Sref anchor)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -378,17 +378,17 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
-				in add_reference target_checker comm ref;
-				[Inline.sref ref]
+				in add_anchor target_checker comm anchor;
+				[Inline.sref anchor]
 			in check_inline_comm `Feature_sref comm elem
 
-		| (false, (comm, Ast.Mref (ref, astseq))) ->
+		| (false, (comm, Ast.Mref (anchor, astseq))) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target _ -> `Valid_target
 					| _			  -> `Wrong_target Error.Target_label
-				in add_reference target_checker comm ref;
-				[Inline.mref ref (Obj.magic (convert_seq_aux ~comm ~args true astseq))]
+				in add_anchor target_checker comm anchor;
+				[Inline.mref anchor (Obj.magic (convert_seq_aux ~comm ~args true astseq))]
 			in check_inline_comm `Feature_mref comm elem
 
 		| (_, (comm, Ast.Macroarg raw_num)) ->
@@ -645,15 +645,15 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 				[Block.picture frame width alias alt]
 			in check_block_comm `Feature_picture comm elem
 
-		| (_, _, _, `Decor_blk, (comm, Ast.Bookimg isbn))
-		| (_, _, _, `Any_blk, (comm, Ast.Bookimg isbn)) ->
+		| (_, _, _, `Decor_blk, (comm, Ast.Bookcover isbn))
+		| (_, _, _, `Any_blk, (comm, Ast.Bookcover isbn)) ->
 			let elem () =
 				let extra = Extra.parse comm errors [Rating_hnd; Cover_hnd] in
 				let maybe_rating = Extra.get_maybe_numeric ~default:None extra Rating_hnd
 				and cover = Extra.get_cover ~default:Book.Medium extra Cover_hnd in
-				add_isbn comm `Feature_bookimg isbn;
-				[Block.bookimg isbn maybe_rating cover]
-			in check_block_comm `Feature_bookimg comm elem
+				add_isbn comm `Feature_bookcover isbn;
+				[Block.bookcover isbn maybe_rating cover]
+			in check_block_comm `Feature_bookcover comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Decor astblk)) ->
 			let elem () =
@@ -1055,11 +1055,11 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 
 
 	(************************************************************************)
-	(* Filtering of references.						*)
+	(* Filtering of anchors.						*)
 	(************************************************************************)
 
-	let filter_references () =
-		let filter_reference (target_checker, comm, label) =
+	let filter_anchors () =
+		let filter_anchor (target_checker, comm, label) =
 			try
 				let target = Hashtbl.find labels (`User_label label) in
 				match target_checker target with
@@ -1080,7 +1080,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 					let msg = Error.Undefined_target (comm.comm_tag, label) in
 					DynArray.add errors (Some comm.comm_linenum, msg)
 		in
-		DynArray.iter filter_reference references in
+		DynArray.iter filter_anchor anchors in
 
 
 	(************************************************************************)
@@ -1126,7 +1126,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 
 	let contents = convert_frag document_ast in
 	let custom = filter_customisations () in
-	let () = filter_references () in
+	let () = filter_anchors () in
 	retrieve_books () >>= fun books ->
 	Lwt.return (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, ImageSet.elements !images, books, labels, custom, DynArray.to_list errors)
 

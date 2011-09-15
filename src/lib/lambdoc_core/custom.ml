@@ -23,7 +23,7 @@ type kind_t =
 	| Theorem
 	with sexp
 
-type key_t = Ref.t with sexp
+type key_t = Anchor.t with sexp
 
 type dict_t = (key_t, Inline.seq_t) Hashtbl.t with sexp
 

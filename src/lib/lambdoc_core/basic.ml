@@ -89,12 +89,12 @@ end
 
 
 (********************************************************************************)
-(**	{2 Ref module}								*)
+(**	{2 Anchor module}							*)
 (********************************************************************************)
 
-(**	The type of internal references.
+(**	The type of anchors (internal references).
 *)
-module Ref =
+module Anchor =
 struct
 	type t = string with sexp
 end

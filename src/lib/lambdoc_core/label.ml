@@ -23,8 +23,8 @@ open Basic
 	by the user).
 *)
 type t =
-	[ `Auto_label of Ref.t
-	| `User_label of Ref.t
+	[ `Auto_label of Anchor.t
+	| `User_label of Anchor.t
 	] with sexp
 
 

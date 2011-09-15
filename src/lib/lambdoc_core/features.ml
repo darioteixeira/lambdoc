@@ -20,7 +20,7 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_uri | `Feature_book ]
+	| `Feature_mbox | `Feature_span | `Feature_uref | `Feature_bref ]
 
 
 type manuscript_inline_feature_t =
@@ -33,7 +33,7 @@ type composition_block_feature_t =
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk 
 	| `Feature_source | `Feature_tabular 
-	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookimg ]
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookcover ]
 
 
 type manuscript_block_feature_t =
@@ -92,7 +92,7 @@ let composition_inline_features =
 	`Feature_mathtex_inl; `Feature_mathml_inl; `Feature_glyph;
 	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
 	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
-	`Feature_mbox; `Feature_span; `Feature_uri; `Feature_book;
+	`Feature_mbox; `Feature_span; `Feature_uref; `Feature_bref;
 	]
 
 
@@ -109,7 +109,7 @@ let composition_block_features =
 	`Feature_qanda; `Feature_verse; `Feature_quote;
 	`Feature_mathtex_blk; `Feature_mathml_blk;
 	`Feature_source; `Feature_tabular;
-	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_bookimg;
+	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_bookcover;
 	]
 
 
@@ -157,8 +157,8 @@ let describe_composition_inline_feature = function
 	| `Feature_sub		-> "subscript text"
 	| `Feature_mbox		-> "non-breakable text"
 	| `Feature_span		-> "custom span"
-	| `Feature_uri		-> "link to external resource"
-	| `Feature_book		-> "book reference"
+	| `Feature_uref		-> "link to external resource"
+	| `Feature_bref		-> "book reference"
 
 
 let describe_manuscript_inline_feature = function
@@ -184,7 +184,7 @@ let describe_composition_block_feature = function
 	| `Feature_subpage	-> "subpage block"
 	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_picture	-> "image block"
-	| `Feature_bookimg	-> "book block"
+	| `Feature_bookcover	-> "book cover block"
 
 
 let describe_manuscript_block_feature = function

@@ -32,13 +32,13 @@ type 'a inline_t =
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
-	| `Uri of Uri.t * 'a nelist option
-	| `Book of Book.isbn_t * Book.rating_t option * 'a nelist option
-	| `Nref of Ref.t nelist
-	| `Cref of Ref.t nelist
-	| `Dref of Ref.t
-	| `Sref of Ref.t
-	| `Mref of Ref.t * 'a nelist
+	| `Uref of Uri.t * 'a nelist option
+	| `Bref of Book.isbn_t * Book.rating_t option * 'a nelist option
+	| `Nref of Anchor.t nelist
+	| `Cref of Anchor.t nelist
+	| `Dref of Anchor.t
+	| `Sref of Anchor.t
+	| `Mref of Anchor.t * 'a nelist
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -66,13 +66,13 @@ let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq
 let span classname seq = `Span (classname, seq)
-let uri uri maybe_seq = `Uri (uri, maybe_seq)
-let book isbn maybe_rating maybe_seq = `Book (isbn, maybe_rating, maybe_seq)
+let uref uri maybe_seq = `Uref (uri, maybe_seq)
+let bref isbn maybe_rating maybe_seq = `Bref (isbn, maybe_rating, maybe_seq)
 let nref (hd, tl) = `Nref (hd, tl)
 let cref (hd, tl) = `Cref (hd, tl)
-let dref ref = `Dref ref
-let sref ref = `Sref ref
-let mref ref seq = `Mref (ref, seq)
+let dref anchor = `Dref anchor
+let sref anchor = `Sref anchor
+let mref anchor seq = `Mref (anchor, seq)
 
 let get_seq seq = seq
 let get_inlines xs = xs

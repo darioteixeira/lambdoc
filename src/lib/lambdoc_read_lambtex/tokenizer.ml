@@ -164,9 +164,9 @@ let issue_simple_command raw_comm position =
 		| "sub"			-> (Inl, SUB command)
 		| "mbox"		-> (Inl, MBOX command)
 		| "span"		-> (Inl, SPAN command)
-		| "uri"
-		| "a"			-> (Inl, URI command)
-		| "book"		-> (Inl, BOOK command)
+		| "uref"
+		| "a"			-> (Inl, UREF command)
+		| "bref"		-> (Inl, BREF command)
 		| "see"			-> (Inl, NREF command)
 		| "cite"		-> (Inl, CREF command)
 		| "ref"			-> (Inl, DREF command)
@@ -175,7 +175,7 @@ let issue_simple_command raw_comm position =
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
 		| "picture"		-> (Blk, PICTURE command)
-		| "bookimg"		-> (Blk, BOOKIMG command)
+		| "bookcover"		-> (Blk, BOOKCOVER command)
 		| "part"		-> (Blk, PART command)
 		| "appendix"		-> (Blk, APPENDIX command)
 		| "section"
