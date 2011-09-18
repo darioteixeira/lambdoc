@@ -9,7 +9,7 @@
 (**	Definitions pertaining to document ordering.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 
 
 (********************************************************************************)

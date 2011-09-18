@@ -9,7 +9,7 @@
 (**	Definition of the module that encodes document math.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 
 
 (********************************************************************************)

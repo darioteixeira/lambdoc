@@ -9,7 +9,7 @@
 (**	Definitions concerning valid documents.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 open Basic
 
 

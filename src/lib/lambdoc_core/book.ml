@@ -9,7 +9,7 @@
 (**	Definitions concerning books.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 
 
 (********************************************************************************)

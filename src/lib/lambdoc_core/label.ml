@@ -9,7 +9,7 @@
 (**	Definitions pertaining to document labels.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 open Basic
 
 

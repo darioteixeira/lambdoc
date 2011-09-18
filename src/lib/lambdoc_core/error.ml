@@ -9,7 +9,7 @@
 (**	Definition of document errors.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 open Basic
 
 

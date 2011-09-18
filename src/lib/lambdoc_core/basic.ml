@@ -9,7 +9,7 @@
 (**	Definition of the basic data types used in documents.
 *)
 
-open Sexplib.Conv
+open Sexplib.Std
 
 
 (********************************************************************************)
