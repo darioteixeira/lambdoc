@@ -9,7 +9,7 @@
 (**	Definitions pertaining to document ordering.
 *)
 
-TYPE_CONV_PATH "Order"
+open Sexplib.Conv
 
 
 (********************************************************************************)

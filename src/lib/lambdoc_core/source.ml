@@ -9,7 +9,7 @@
 (**	Definition of highlighted source code.
 *)
 
-TYPE_CONV_PATH "Source"
+open Sexplib.Conv
 
 
 (********************************************************************************)

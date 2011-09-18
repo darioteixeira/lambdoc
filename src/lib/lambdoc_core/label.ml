@@ -9,8 +9,7 @@
 (**	Definitions pertaining to document labels.
 *)
 
-TYPE_CONV_PATH "Label"
-
+open Sexplib.Conv
 open Basic
 
 
@@ -23,8 +22,8 @@ open Basic
 	by the user).
 *)
 type t =
-	[ `Auto_label of Anchor.t
-	| `User_label of Anchor.t
+	[ `Auto_label of Pointer.t
+	| `User_label of Pointer.t
 	] with sexp
 
 

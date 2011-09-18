@@ -24,7 +24,7 @@ open Basic
 type command_t =
 	{
 	comm_tag: Ident.t option;
-	comm_label: Anchor.t option;
+	comm_label: Pointer.t option;
 	comm_order: string option;
 	comm_extra: string option;
 	comm_linenum: int;

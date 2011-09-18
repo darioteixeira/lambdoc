@@ -9,8 +9,7 @@
 (**	Definition of document errors.
 *)
 
-TYPE_CONV_PATH "Error"
-
+open Sexplib.Conv
 open Basic
 
 
@@ -73,7 +72,7 @@ type error_msg_t =
 	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
 	| Misplaced_extra_parameter of Ident.t option * invalid_parameter_reason_t
 
-	| Invalid_label of Ident.t option * Anchor.t
+	| Invalid_label of Ident.t option * Pointer.t
 	| Invalid_order_format of Ident.t option * string
 	| Invalid_order_levels of Ident.t option * string * Level.hierarchical_t * int
 	| Invalid_extra_boolean_parameter of Ident.t option * string * string
@@ -93,25 +92,25 @@ type error_msg_t =
 	| Invalid_entity_deci of string
 	| Invalid_entity_hexa of string
 
-	| Invalid_macro_nargs of Anchor.t * string
+	| Invalid_macro_nargs of Pointer.t * string
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int
-	| Invalid_macro_call of Anchor.t * int * int
+	| Invalid_macro_call of Pointer.t * int * int
 
-	| Invalid_macro of Ident.t option * Anchor.t
-	| Duplicate_macro of Ident.t option * Anchor.t
-	| Undefined_macro of Ident.t option * Anchor.t
+	| Invalid_macro of Ident.t option * Pointer.t
+	| Duplicate_macro of Ident.t option * Pointer.t
+	| Undefined_macro of Ident.t option * Pointer.t
 
-	| Invalid_custom of Ident.t option * Anchor.t
-	| Mismatched_custom of Ident.t option * Anchor.t * Custom.kind_t * Custom.kind_t
-	| Duplicate_custom of Ident.t option * Anchor.t
-	| Undefined_custom of Ident.t option * Anchor.t
+	| Invalid_custom of Ident.t option * Pointer.t
+	| Mismatched_custom of Ident.t option * Pointer.t * Custom.kind_t * Custom.kind_t
+	| Duplicate_custom of Ident.t option * Pointer.t
+	| Undefined_custom of Ident.t option * Pointer.t
 
 	| Invalid_wrapper of Ident.t option * Wrapper.kind_t
 
-	| Invalid_counter of Ident.t option * Anchor.t
-	| Mismatched_counter of Ident.t option * Anchor.t
-	| Unexpected_counter of Ident.t option * Anchor.t
+	| Invalid_counter of Ident.t option * Pointer.t
+	| Mismatched_counter of Ident.t option * Pointer.t
+	| Unexpected_counter of Ident.t option * Pointer.t
 
 	| Invalid_mathtex of Ident.t option * string
 	| Invalid_mathml of Ident.t option * string
@@ -119,10 +118,10 @@ type error_msg_t =
 	| Invalid_column_specifier of Ident.t option * string
 	| Invalid_cell_specifier of Ident.t option * string
 
-	| Duplicate_target of Ident.t option * Anchor.t
-	| Empty_target of Ident.t option * Anchor.t
-	| Wrong_target of Ident.t option * Anchor.t * target_t * target_t
-	| Undefined_target of Ident.t option * Anchor.t
+	| Duplicate_target of Ident.t option * Pointer.t
+	| Empty_target of Ident.t option * Pointer.t
+	| Wrong_target of Ident.t option * Pointer.t * target_t * target_t
+	| Undefined_target of Ident.t option * Pointer.t
 
 	| Malformed_ISBN of Ident.t option * string
 	| Unknown_ISBN of Ident.t option * string

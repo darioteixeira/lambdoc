@@ -9,7 +9,7 @@
 (**	Definition of the basic data types used in documents.
 *)
 
-TYPE_CONV_PATH "Basic"
+open Sexplib.Conv
 
 
 (********************************************************************************)
@@ -89,12 +89,12 @@ end
 
 
 (********************************************************************************)
-(**	{2 Anchor module}							*)
+(**	{2 Pointer module}							*)
 (********************************************************************************)
 
-(**	The type of anchors (internal references).
+(**	The type of pointers (internal references).
 *)
-module Anchor =
+module Pointer =
 struct
 	type t = string with sexp
 end

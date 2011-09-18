@@ -9,8 +9,7 @@
 (**	Custom document blocks.
 *)
 
-TYPE_CONV_PATH "Custom"
-
+open Sexplib.Conv
 open Basic
 
 
@@ -23,7 +22,7 @@ type kind_t =
 	| Theorem
 	with sexp
 
-type key_t = Anchor.t with sexp
+type key_t = Pointer.t with sexp
 
 type dict_t = (key_t, Inline.seq_t) Hashtbl.t with sexp
 

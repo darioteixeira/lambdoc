@@ -6,8 +6,7 @@
 *)
 (********************************************************************************)
 
-TYPE_CONV_PATH "Block"
-
+open Sexplib.Conv
 open Prelude
 open Basic
 

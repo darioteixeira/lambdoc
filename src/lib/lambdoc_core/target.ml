@@ -9,8 +9,7 @@
 (**	Definitions concerning document targets.
 *)
 
-TYPE_CONV_PATH "Target"
-
+open Sexplib.Conv
 open Basic
 
 

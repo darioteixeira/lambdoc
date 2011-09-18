@@ -6,8 +6,7 @@
 *)
 (********************************************************************************)
 
-TYPE_CONV_PATH "Tabular"
-
+open Sexplib.Conv
 open Prelude
 open Basic
 

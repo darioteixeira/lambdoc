@@ -9,7 +9,7 @@
 (**	Definition of the module that encodes document math.
 *)
 
-TYPE_CONV_PATH "Math"
+open Sexplib.Conv
 
 
 (********************************************************************************)

@@ -88,7 +88,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 	(* Declaration of the mutable values used in the function.		*)
 	(************************************************************************)
 
-	let anchors = DynArray.create ()
+	let pointers = DynArray.create ()
 	and bibs = DynArray.create ()
 	and notes = DynArray.create ()
 	and toc = DynArray.create ()
@@ -175,14 +175,14 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 		DynArray.add isbns (comm, feature, isbn)
 
 
-	(*	Adds a new anchor to the dictionary.
+	(*	Adds a new pointer to the dictionary.
 	*)
-	and add_anchor target_checker comm anchor =
-		if Basic_input.matches_ident anchor
+	and add_pointer target_checker comm pointer =
+		if Basic_input.matches_ident pointer
 		then
-			DynArray.add anchors (target_checker, comm, anchor)
+			DynArray.add pointers (target_checker, comm, pointer)
 		else
-			let msg = Error.Invalid_label (comm.comm_tag, anchor)
+			let msg = Error.Invalid_label (comm.comm_tag, pointer)
 			in DynArray.add errors (Some comm.comm_linenum, msg)
 
 
@@ -331,7 +331,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_note
-				in List.iter (add_anchor target_checker comm) refs;
+				in List.iter (add_pointer target_checker comm) refs;
 				match refs with
 					| hd::tl ->
 						[Inline.nref (hd, tl)]
@@ -346,7 +346,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
 					| _			-> `Wrong_target Error.Target_bib
-				in List.iter (add_anchor target_checker comm) refs;
+				in List.iter (add_pointer target_checker comm) refs;
 				match refs with
 					| hd::tl ->
 						[Inline.cref (hd, tl)]
@@ -356,7 +356,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 						[]
 			in check_inline_comm `Feature_cref comm elem
 
-		| (false, (comm, Ast.Dref anchor)) ->
+		| (false, (comm, Ast.Dref pointer)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -365,11 +365,11 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
-				in add_anchor target_checker comm anchor;
-				[Inline.dref anchor]
+				in add_pointer target_checker comm pointer;
+				[Inline.dref pointer]
 			in check_inline_comm `Feature_dref comm elem
 
-		| (false, (comm, Ast.Sref anchor)) ->
+		| (false, (comm, Ast.Sref pointer)) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -378,17 +378,17 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label
-				in add_anchor target_checker comm anchor;
-				[Inline.sref anchor]
+				in add_pointer target_checker comm pointer;
+				[Inline.sref pointer]
 			in check_inline_comm `Feature_sref comm elem
 
-		| (false, (comm, Ast.Mref (anchor, astseq))) ->
+		| (false, (comm, Ast.Mref (pointer, astseq))) ->
 			let elem () =
 				let target_checker = function
 					| Target.Visible_target _ -> `Valid_target
 					| _			  -> `Wrong_target Error.Target_label
-				in add_anchor target_checker comm anchor;
-				[Inline.mref anchor (Obj.magic (convert_seq_aux ~comm ~args true astseq))]
+				in add_pointer target_checker comm pointer;
+				[Inline.mref pointer (Obj.magic (convert_seq_aux ~comm ~args true astseq))]
 			in check_inline_comm `Feature_mref comm elem
 
 		| (_, (comm, Ast.Macroarg raw_num)) ->
@@ -1055,11 +1055,11 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 
 
 	(************************************************************************)
-	(* Filtering of anchors.						*)
+	(* Filtering of pointers.						*)
 	(************************************************************************)
 
-	let filter_anchors () =
-		let filter_anchor (target_checker, comm, label) =
+	let filter_pointers () =
+		let filter_pointer (target_checker, comm, label) =
 			try
 				let target = Hashtbl.find labels (`User_label label) in
 				match target_checker target with
@@ -1080,7 +1080,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 					let msg = Error.Undefined_target (comm.comm_tag, label) in
 					DynArray.add errors (Some comm.comm_linenum, msg)
 		in
-		DynArray.iter filter_anchor anchors in
+		DynArray.iter filter_pointer pointers in
 
 
 	(************************************************************************)
@@ -1126,7 +1126,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 
 	let contents = convert_frag document_ast in
 	let custom = filter_customisations () in
-	let () = filter_anchors () in
+	let () = filter_pointers () in
 	retrieve_books () >>= fun books ->
 	Lwt.return (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, ImageSet.elements !images, books, labels, custom, DynArray.to_list errors)
 

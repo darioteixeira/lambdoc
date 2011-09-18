@@ -9,8 +9,7 @@
 (**	Definitions concerning valid documents.
 *)
 
-TYPE_CONV_PATH "Valid"
-
+open Sexplib.Conv
 open Basic
 
 

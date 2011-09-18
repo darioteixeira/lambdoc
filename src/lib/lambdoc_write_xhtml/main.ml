@@ -78,8 +78,8 @@ let (^^) s1 s2 = "doc_" ^ s1 ^ s2
 (********************************************************************************)
 
 let make_label = function
-	| `Auto_label anchor -> "doc:a:" ^ anchor
-	| `User_label anchor -> "doc:u:" ^ anchor
+	| `Auto_label pointer -> "doc:a:" ^ pointer
+	| `User_label pointer -> "doc:u:" ^ pointer
 
 
 let make_link ?classname lnk content =
@@ -91,7 +91,7 @@ let make_link ?classname lnk content =
 let make_external_link = make_link
 
 
-let make_internal_link ?classname anchor content = make_link ?classname ("#" ^ (make_label anchor)) content
+let make_internal_link ?classname pointer content = make_link ?classname ("#" ^ (make_label pointer)) content
 
 
 let make_book_link isbn content = XHTML.M.a ~a:[a_href (uri_of_string (Book_output.string_of_isbn isbn))] content
@@ -264,27 +264,27 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			make_book_link isbn (Obj.magic (write_seq seq))
 
 		| `Nref (hd, tl) ->
-			let link_maker anchor =
-				let label = `User_label anchor in
+			let link_maker pointer =
+				let label = `User_label pointer in
 				let target = Hashtbl.find labels label
 				in (match target with
 					| Target.Note_target order -> make_internal_link label (note_conv order)
 					| _			   -> raise (Command_nref_with_non_note target)) in
-			let commafy anchor = [pcdata ","; link_maker anchor]
+			let commafy pointer = [pcdata ","; link_maker pointer]
 			in XHTML.M.span ~a:[a_class [!!"nref"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
 
 		| `Cref (hd, tl) ->
-			let link_maker anchor =
-				let label = `User_label anchor in
+			let link_maker pointer =
+				let label = `User_label pointer in
 				let target = Hashtbl.find labels label
 				in match target with
 					| Target.Bib_target order -> make_internal_link label (bib_conv order)
 					| _			  -> raise (Command_cref_with_non_bib target) in
-			let commafy anchor = [pcdata ","; link_maker anchor]
+			let commafy pointer = [pcdata ","; link_maker pointer]
 			in XHTML.M.span ~a:[a_class [!!"cref"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
 
-		| `Dref anchor ->
-			let label = `User_label anchor in
+		| `Dref pointer ->
+			let label = `User_label pointer in
 			let target = Hashtbl.find labels label
 			in (match target with
 				| Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
@@ -300,10 +300,10 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				| _ ->
 					raise (Command_dref_with_non_visible_block target))
 
-		| `Sref anchor ->
-			let target = Hashtbl.find labels (`User_label anchor) in
+		| `Sref pointer ->
+			let target = Hashtbl.find labels (`User_label pointer) in
 			let make_sref wseq order =
-				make_internal_link (`User_label anchor) (Obj.magic (wseq @ order))
+				make_internal_link (`User_label pointer) (Obj.magic (wseq @ order))
 			in (match target with
 				| Target.Visible_target (Target.Custom_target (env, Custom.Boxout, order)) ->
 					make_sref (write_name (Name_custom env)) (boxout_conv ~prespace:true order)
@@ -327,8 +327,8 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 				| _ ->
 					raise (Command_sref_with_non_visible_block target))
 
-		| `Mref (anchor, seq) ->
-			make_internal_link (`User_label anchor) (Obj.magic (write_seq seq))
+		| `Mref (pointer, seq) ->
+			make_internal_link (`User_label pointer) (Obj.magic (write_seq seq))
 
 
 	(************************************************************************)

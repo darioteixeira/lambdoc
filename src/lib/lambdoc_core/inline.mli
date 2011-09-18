@@ -35,11 +35,11 @@ type 'a inline_t =
 	| `Span of Classname.t option * 'a nelist
 	| `Uref of Uri.t * 'a nelist option					(* Reference to an external URI *)
 	| `Bref of Book.isbn_t * Book.rating_t option * 'a nelist option	(* Reference to a book via its ISBN *)
-	| `Nref of Anchor.t nelist						(* Reference to an end note *)
-	| `Cref of Anchor.t nelist						(* Citation of a bibliography entry *)
-	| `Dref of Anchor.t							(* "Dumb" reference to an internal element *)
-	| `Sref of Anchor.t							(* Smart reference to an internal element *)
-	| `Mref of Anchor.t * 'a nelist						(* Manual reference to an internal element *)
+	| `Nref of Pointer.t nelist						(* Reference to an end note *)
+	| `Cref of Pointer.t nelist						(* Citation of a bibliography entry *)
+	| `Dref of Pointer.t							(* "Dumb" reference to an internal element *)
+	| `Sref of Pointer.t							(* Smart reference to an internal element *)
+	| `Mref of Pointer.t * 'a nelist					(* Manual reference to an internal element *)
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -69,11 +69,11 @@ val mbox: ('a, 'b) t nelist -> ('a, 'b) t
 val span: Classname.t option -> ('a, 'b) t nelist -> ('a, 'b) t
 val uref: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
 val bref: Book.isbn_t -> Book.rating_t option -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
-val nref: Anchor.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val cref: Anchor.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val dref: Anchor.t -> ([> `Manuscript ], [> `Link ]) t
-val sref: Anchor.t -> ([> `Manuscript ], [> `Link ]) t
-val mref: Anchor.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
+val nref: Pointer.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val cref: Pointer.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val dref: Pointer.t -> ([> `Manuscript ], [> `Link ]) t
+val sref: Pointer.t -> ([> `Manuscript ], [> `Link ]) t
+val mref: Pointer.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
 
 val get_seq: (_, _) t nelist -> seq_t
 val get_inlines: (_, _) t list -> raw_inline_t list

@@ -10,7 +10,7 @@
 	in Pervasives, probably should.
 *)
 
-TYPE_CONV_PATH "Prelude"
+open Sexplib.Conv
 
 
 (********************************************************************************)
