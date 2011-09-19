@@ -15,11 +15,11 @@ open Printf
 open ExtList
 open ExtString
 open XHTML.M
-
 open Lambdoc_core
 open Prelude
 open Basic
 open Source
+open Book
 open Valid
 open Lambdoc_writer
 open Writeconv
@@ -169,7 +169,15 @@ let note_conv order = listify_order (Order_output.maybe_string_of_ordinal Order_
 (**	{2 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid_document ?(translations = Translations.default) ?(settings = Settings.default) ?(lookup = XHTML.M.uri_of_string) ?(base_classes = [doc_prefix; !!"valid"]) ?(extra_classes = []) doc =
+let write_valid_document
+	?(translations = Translations.default)
+	?(settings = Settings.default)
+	?(book_lookup = fun isbn -> uri_of_string ("isbn:" ^ (Book_output.string_of_isbn isbn)))
+	?(cover_lookup = fun isbn cover -> uri_of_string (Book_output.string_of_isbn isbn))
+	?(image_lookup = XHTML.M.uri_of_string)
+	?(base_classes = [doc_prefix; !!"valid"])
+	?(extra_classes = [])
+	doc =
 
 	(************************************************************************)
 	(* Predefined sequences with last question and answer.			*)
@@ -187,6 +195,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 	and bibs = doc.Valid.bibs
 	and notes = doc.Valid.notes
 	and toc = doc.Valid.toc
+	and books = doc.Valid.books
 	and labels = doc.Valid.labels
 	and custom = doc.Valid.custom in
 
@@ -216,7 +225,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			in XHTML.M.span ~a:[a_class [!!"mathinl"]] [xhtml]
 
 		| `Glyph (alias, alt) ->
-			XHTML.M.img ~a:[a_class [!!"glyph"]] ~src:(lookup alias) ~alt ()
+			XHTML.M.img ~a:[a_class [!!"glyph"]] ~src:(image_lookup alias) ~alt ()
 
 		| `Bold seq ->
 			XHTML.M.b ~a:[a_class [!!"bold"]] (write_seq seq)
@@ -249,19 +258,18 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let a = maybe (fun x -> [a_class ["span_" ^^ x]]) classname
 			in XHTML.M.span ?a (write_seq seq)
 
-		| `Link (uri, None) ->
-			let seq = (`Plain uri, [])
+		| `Link (uri, maybe_seq) ->
+			let seq = match maybe_seq with
+				| Some seq -> seq
+				| None	   -> (`Plain uri, [])
 			in make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Link (uri, Some seq) ->
-			make_external_link uri (Obj.magic (write_seq seq))
-
-		| `Booklink (isbn, maybe_rating, None) ->
-			let seq = (`Emph ((`Plain isbn), []), [])
-			in make_book_link isbn (Obj.magic (write_seq seq))
-
-		| `Booklink (isbn, maybe_rating, Some seq) ->
-			make_book_link isbn (Obj.magic (write_seq seq))
+		| `Booklink (isbn, maybe_rating, maybe_seq) ->
+			let book = Hashtbl.find books isbn in
+			let seq = match maybe_seq with
+				| Some seq -> seq
+				| None	   -> (`Emph ((`Plain book.title), []), [])
+			in XHTML.M.a ~a:[a_class [!!"booklink"]; a_href (book_lookup isbn)] (Obj.magic (write_seq seq))
 
 		| `See (hd, tl) ->
 			let link_maker pointer =
@@ -494,12 +502,23 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let attrs = match width with
 				| Some w -> [a_width (`Percent w)]
 				| None	 -> [] in
-			let uri = lookup alias in
+			let uri = image_lookup alias in
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
 		| `Bookpic (isbn, maybe_rating, cover) ->
-			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata isbn]]
+			let book = Hashtbl.find books isbn in
+			let alt = "ISBN " ^ isbn in
+			let book_uri = book_lookup isbn in
+			let cover_uri = cover_lookup isbn cover in
+			[XHTML.M.div ~a:[a_class [!!"bookpic"]]
+				[
+				XHTML.M.a ~a:[a_href book_uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~src:cover_uri ~alt ()];
+				p [i [pcdata book.title]];
+				p [pcdata book.author];
+				p [pcdata (book.publisher ^ " (" ^ book.pubdate ^ ")")];
+				p [pcdata alt];
+				]]
 
 		| `Decor (floatation, blk) ->
 			let style = make_floatation floatation
@@ -732,8 +751,8 @@ let write_invalid_document ?(base_classes = [doc_prefix; !!"invalid"]) ?(extra_c
 (**	{2 High-level interface}						*)
 (********************************************************************************)
 
-let write_ambivalent_document ?translations ?settings ?lookup ~extra_classes = function
-	| `Valid doc	-> write_valid_document ?translations ?settings ?lookup ~extra_classes doc
+let write_ambivalent_document ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ~extra_classes = function
+	| `Valid doc	-> write_valid_document ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ~extra_classes doc
 	| `Invalid doc	-> write_invalid_document ~extra_classes doc
 
 
@@ -753,17 +772,17 @@ let composition_classname = !!"composition"
 
 type t = [ `Div ] XHTML.M.elt
 
-let write_ambivalent_manuscript ?translations ?settings ?lookup ?(extra_classes = []) doc =
-	write_ambivalent_document ?translations ?settings ?lookup ~extra_classes:(manuscript_classname :: extra_classes)  doc
+let write_ambivalent_manuscript ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ?(extra_classes = []) doc =
+	write_ambivalent_document ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ~extra_classes:(manuscript_classname :: extra_classes)  doc
 
-let write_ambivalent_composition ?translations ?settings ?lookup ?(extra_classes = []) doc =
-	write_ambivalent_document ?translations ?settings ?lookup ~extra_classes:(composition_classname :: extra_classes) doc
+let write_ambivalent_composition ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ?(extra_classes = []) doc =
+	write_ambivalent_document ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ~extra_classes:(composition_classname :: extra_classes) doc
 
-let write_valid_manuscript ?translations ?settings ?lookup ?(extra_classes = []) doc =
-	write_valid_document ?translations ?settings ?lookup ~extra_classes:(manuscript_classname :: extra_classes) doc
+let write_valid_manuscript ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ?(extra_classes = []) doc =
+	write_valid_document ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ~extra_classes:(manuscript_classname :: extra_classes) doc
 
-let write_valid_composition ?translations ?settings ?lookup ?(extra_classes = []) doc =
-	write_valid_document ?translations ?settings ?lookup ~extra_classes:(composition_classname :: extra_classes) doc
+let write_valid_composition ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ?(extra_classes = []) doc =
+	write_valid_document ?translations ?settings ?book_lookup ?cover_lookup ?image_lookup ~extra_classes:(composition_classname :: extra_classes) doc
 
 let write_invalid_manuscript ?(extra_classes = []) doc =
 	write_invalid_document ~extra_classes:(manuscript_classname :: extra_classes) doc
