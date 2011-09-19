@@ -33,13 +33,12 @@ type 'a inline_t =
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
-	| `Uref of Uri.t * 'a nelist option					(* Reference to an external URI *)
-	| `Bref of Book.isbn_t * Book.rating_t option * 'a nelist option	(* Reference to a book via its ISBN *)
-	| `Nref of Pointer.t nelist						(* Reference to an end note *)
-	| `Cref of Pointer.t nelist						(* Citation of a bibliography entry *)
-	| `Dref of Pointer.t							(* "Dumb" reference to an internal element *)
+	| `Link of Uri.t * 'a nelist option					(* Reference to an external URI *)
+	| `Booklink of Book.isbn_t * Book.rating_t option * 'a nelist option	(* Reference to a book via its ISBN *)
+	| `See of Pointer.t nelist						(* Reference to an end note *)
+	| `Cite of Pointer.t nelist						(* Citation of a bibliography entry *)
+	| `Ref of Pointer.t * 'a nelist option					(* Dumb or manual reference to an internal element *)
 	| `Sref of Pointer.t							(* Smart reference to an internal element *)
-	| `Mref of Pointer.t * 'a nelist					(* Manual reference to an internal element *)
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -67,13 +66,12 @@ val sup: ('a, 'b) t nelist -> ('a, 'b) t
 val sub: ('a, 'b) t nelist -> ('a, 'b) t
 val mbox: ('a, 'b) t nelist -> ('a, 'b) t
 val span: Classname.t option -> ('a, 'b) t nelist -> ('a, 'b) t
-val uref: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
-val bref: Book.isbn_t -> Book.rating_t option -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
-val nref: Pointer.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val cref: Pointer.t nelist -> ([> `Manuscript ], [> `Link ]) t
-val dref: Pointer.t -> ([> `Manuscript ], [> `Link ]) t
+val link: Uri.t -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
+val booklink: Book.isbn_t -> Book.rating_t option -> ('a, [< `Nonlink ]) t nelist option -> ('a, [> `Link ]) t
+val see: Pointer.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val cite: Pointer.t nelist -> ([> `Manuscript ], [> `Link ]) t
+val ref: Pointer.t -> (_, [< `Nonlink ]) t nelist option -> ([> `Manuscript ], [> `Link ]) t
 val sref: Pointer.t -> ([> `Manuscript ], [> `Link ]) t
-val mref: Pointer.t -> (_, [< `Nonlink ]) t nelist -> ([> `Manuscript ], [> `Link ]) t
 
 val get_seq: (_, _) t nelist -> seq_t
 val get_inlines: (_, _) t list -> raw_inline_t list

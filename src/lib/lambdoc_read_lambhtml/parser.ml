@@ -73,8 +73,8 @@ let inline_elems =
 	"entity"; "br"; "mathtexinl"; "mathmlinl"; "glyph";
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
-	"mbox"; "span"; "uref"; "a"; "bref";
-	"see"; "cite"; "ref"; "sref"; "mref";
+	"mbox"; "span"; "link"; "a"; "booklink";
+	"see"; "cite"; "ref"; "sref";
 	"arg"; "call";
 	]
 
@@ -161,21 +161,19 @@ and process_inline store node =
 			(!!comm, Ast.Mbox (process_seq store node))
 		| T_element "span" ->
 			(!!comm, Ast.Span (process_seq store node))
-		| T_element "uref"
+		| T_element "link"
 		| T_element "a" ->
-			(!!comm, Ast.Uref (node#required_string_attribute "href", process_maybe_seq store node))
-		| T_element "bref" ->
-			(!!comm, Ast.Bref (node#required_string_attribute "isbn", process_maybe_seq store node))
+			(!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq store node))
+		| T_element "booklink" ->
+			(!!comm, Ast.Booklink (node#required_string_attribute "isbn", process_maybe_seq store node))
 		| T_element "see" ->
-			(!!comm, Ast.Nref (node#required_list_attribute "href"))
+			(!!comm, Ast.See (node#required_list_attribute "href"))
 		| T_element "cite" ->
-			(!!comm, Ast.Cref (node#required_list_attribute "href"))
+			(!!comm, Ast.Cite (node#required_list_attribute "href"))
 		| T_element "ref" ->
-			(!!comm, Ast.Dref (node#required_string_attribute "href"))
+			(!!comm, Ast.Ref (node#required_string_attribute "href", process_maybe_seq store node))
 		| T_element "sref" ->
 			(!!comm, Ast.Sref (node#required_string_attribute "href"))
-		| T_element "mref" ->
-			(!!comm, Ast.Mref (node#required_string_attribute "href", process_seq store node))
 		| T_element "arg" ->
 			(!!comm, Ast.Macroarg (node#required_string_attribute "num"))
 		| T_element "call" ->
@@ -251,8 +249,8 @@ and process_block store node =
 			let src = node#required_string_attribute "src"
 			and alt = node#required_string_attribute "alt"
 			in (!!comm, Ast.Picture (src, alt))
-		| T_element "bookcover" ->
-			(!!comm, Ast.Bookcover (node#required_string_attribute "isbn"))
+		| T_element "bookpic" ->
+			(!!comm, Ast.Bookpic (node#required_string_attribute "isbn"))
 		| T_element "decor" ->
 			(!!comm, Ast.Decor (process_unifrag store node))
 		| T_element "pull" ->

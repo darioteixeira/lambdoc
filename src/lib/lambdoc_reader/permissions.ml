@@ -139,15 +139,14 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_sub		-> forbidden_class
 		| `Feature_mbox		-> forbidden_class
 		| `Feature_span		-> extra_class
-		| `Feature_uref		-> forbidden_class
-		| `Feature_bref		-> extra_class
+		| `Feature_link		-> forbidden_class
+		| `Feature_booklink	-> extra_class
 
 	and manuscript_inline_feature_set = function
-		| `Feature_nref		-> forbidden_class
-		| `Feature_cref		-> forbidden_class
-		| `Feature_dref		-> forbidden_class
+		| `Feature_see		-> forbidden_class
+		| `Feature_cite		-> forbidden_class
+		| `Feature_ref		-> forbidden_class
 		| `Feature_sref		-> forbidden_class
-		| `Feature_mref		-> forbidden_class
 
 	and composition_block_feature_set = function
 		| `Feature_paragraph	-> extra_class
@@ -164,7 +163,7 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_subpage	-> forbidden_class
 		| `Feature_verbatim	-> extra_class
 		| `Feature_picture	-> extra_class
-		| `Feature_bookcover	-> extra_class
+		| `Feature_bookpic	-> extra_class
 
 	and manuscript_block_feature_set = function
 		| `Feature_decor	-> extra_class

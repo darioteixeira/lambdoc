@@ -164,18 +164,17 @@ let issue_simple_command raw_comm position =
 		| "sub"			-> (Inl, SUB command)
 		| "mbox"		-> (Inl, MBOX command)
 		| "span"		-> (Inl, SPAN command)
-		| "uref"
-		| "a"			-> (Inl, UREF command)
-		| "bref"		-> (Inl, BREF command)
-		| "see"			-> (Inl, NREF command)
-		| "cite"		-> (Inl, CREF command)
-		| "ref"			-> (Inl, DREF command)
+		| "link"
+		| "a"			-> (Inl, LINK command)
+		| "booklink"		-> (Inl, BOOKLINK command)
+		| "see"			-> (Inl, SEE command)
+		| "cite"		-> (Inl, CITE command)
+		| "ref"			-> (Inl, REF command)
 		| "sref"		-> (Inl, SREF command)
-		| "mref"		-> (Inl, MREF command)
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
 		| "picture"		-> (Blk, PICTURE command)
-		| "bookcover"		-> (Blk, BOOKCOVER command)
+		| "bookpic"		-> (Blk, BOOKPIC command)
 		| "part"		-> (Blk, PART command)
 		| "appendix"		-> (Blk, APPENDIX command)
 		| "section"

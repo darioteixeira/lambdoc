@@ -29,9 +29,9 @@ open Lambdoc_reader
 %token <Lambdoc_reader.Ast.command_t> END_CAPS
 %token <Lambdoc_reader.Ast.command_t> BEGIN_CODE
 %token <Lambdoc_reader.Ast.command_t> END_CODE
-%token <Lambdoc_reader.Ast.command_t> BEGIN_UREF
-%token <Lambdoc_reader.Ast.command_t> END_UREF
-%token <Lambdoc_reader.Ast.command_t> UREF_SEP
+%token <Lambdoc_reader.Ast.command_t> BEGIN_LINK
+%token <Lambdoc_reader.Ast.command_t> END_LINK
+%token <Lambdoc_reader.Ast.command_t> LINK_SEP
 
 %token <Lambdoc_reader.Ast.command_t> BEGIN_PAR
 %token <Lambdoc_reader.Ast.command_t> END_PAR
@@ -103,8 +103,8 @@ inline:
 	| SUB_MARK plain SUB_MARK			{($1, Ast.Sub [$2])}
 	| BEGIN_CAPS plain END_CAPS			{($1, Ast.Caps [$2])}
 	| BEGIN_CODE plain END_CODE			{($1, Ast.Code [$2])}
-	| BEGIN_UREF raw END_UREF			{($1, Ast.Uref ($2, None))}
-	| BEGIN_UREF raw UREF_SEP plain END_UREF	{($1, Ast.Uref ($2, Some [$4]))}
+	| BEGIN_LINK raw END_LINK			{($1, Ast.Link ($2, None))}
+	| BEGIN_LINK raw LINK_SEP plain END_LINK	{($1, Ast.Link ($2, Some [$4]))}
 
 plain:
 	| PLAIN						{let (comm, txt) = $1 in (comm, Ast.Plain txt)}

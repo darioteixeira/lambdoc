@@ -20,11 +20,11 @@ type composition_inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_uref | `Feature_bref ]
+	| `Feature_mbox | `Feature_span | `Feature_link | `Feature_booklink ]
 
 
 type manuscript_inline_feature_t =
-	[ `Feature_nref | `Feature_cref | `Feature_dref | `Feature_sref | `Feature_mref ]
+	[ `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref ]
 
 
 type composition_block_feature_t =
@@ -33,7 +33,7 @@ type composition_block_feature_t =
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk 
 	| `Feature_source | `Feature_tabular 
-	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookcover ]
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookpic ]
 
 
 type manuscript_block_feature_t =
@@ -92,13 +92,13 @@ let composition_inline_features =
 	`Feature_mathtex_inl; `Feature_mathml_inl; `Feature_glyph;
 	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
 	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
-	`Feature_mbox; `Feature_span; `Feature_uref; `Feature_bref;
+	`Feature_mbox; `Feature_span; `Feature_link; `Feature_booklink;
 	]
 
 
 let manuscript_inline_features =
 	[
-	`Feature_nref; `Feature_cref; `Feature_dref; `Feature_sref; `Feature_mref;
+	`Feature_see; `Feature_cite; `Feature_ref; `Feature_sref;
 	]
 
 
@@ -109,7 +109,7 @@ let composition_block_features =
 	`Feature_qanda; `Feature_verse; `Feature_quote;
 	`Feature_mathtex_blk; `Feature_mathml_blk;
 	`Feature_source; `Feature_tabular;
-	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_bookcover;
+	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_bookpic;
 	]
 
 
@@ -157,16 +157,15 @@ let describe_composition_inline_feature = function
 	| `Feature_sub		-> "subscript text"
 	| `Feature_mbox		-> "non-breakable text"
 	| `Feature_span		-> "custom span"
-	| `Feature_uref		-> "link to external resource"
-	| `Feature_bref		-> "book reference"
+	| `Feature_link		-> "link to external resource"
+	| `Feature_booklink	-> "book reference"
 
 
 let describe_manuscript_inline_feature = function
-	| `Feature_nref		-> "link to note"
-	| `Feature_cref		-> "bibliography citation"
-	| `Feature_dref		-> "internal link"
+	| `Feature_see		-> "link to note"
+	| `Feature_cite		-> "bibliography citation"
+	| `Feature_ref		-> "internal link"
 	| `Feature_sref		-> "smart internal link"
-	| `Feature_mref		-> "internal link with custom text"
 
 
 let describe_composition_block_feature = function
@@ -184,7 +183,7 @@ let describe_composition_block_feature = function
 	| `Feature_subpage	-> "subpage block"
 	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_picture	-> "image block"
-	| `Feature_bookcover	-> "book cover block"
+	| `Feature_bookpic	-> "book block"
 
 
 let describe_manuscript_block_feature = function

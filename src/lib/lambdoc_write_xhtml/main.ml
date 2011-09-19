@@ -31,9 +31,9 @@ open Translations
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Command_nref_with_non_note of Target.t
-exception Command_cref_with_non_bib of Target.t
-exception Command_dref_with_non_visible_block of Target.t
+exception Command_see_with_non_note of Target.t
+exception Command_cite_with_non_bib of Target.t
+exception Command_ref_with_non_visible_block of Target.t
 exception Command_sref_with_non_visible_block of Target.t
 
 
@@ -249,62 +249,66 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let a = maybe (fun x -> [a_class ["span_" ^^ x]]) classname
 			in XHTML.M.span ?a (write_seq seq)
 
-		| `Uref (uri, None) ->
+		| `Link (uri, None) ->
 			let seq = (`Plain uri, [])
 			in make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Uref (uri, Some seq) ->
+		| `Link (uri, Some seq) ->
 			make_external_link uri (Obj.magic (write_seq seq))
 
-		| `Bref (isbn, maybe_rating, None) ->
+		| `Booklink (isbn, maybe_rating, None) ->
 			let seq = (`Emph ((`Plain isbn), []), [])
 			in make_book_link isbn (Obj.magic (write_seq seq))
 
-		| `Bref (isbn, maybe_rating, Some seq) ->
+		| `Booklink (isbn, maybe_rating, Some seq) ->
 			make_book_link isbn (Obj.magic (write_seq seq))
 
-		| `Nref (hd, tl) ->
+		| `See (hd, tl) ->
 			let link_maker pointer =
 				let label = `User_label pointer in
 				let target = Hashtbl.find labels label
-				in (match target with
+				in match target with
 					| Target.Note_target order -> make_internal_link label (note_conv order)
-					| _			   -> raise (Command_nref_with_non_note target)) in
+					| _			   -> raise (Command_see_with_non_note target) in
 			let commafy pointer = [pcdata ","; link_maker pointer]
-			in XHTML.M.span ~a:[a_class [!!"nref"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
+			in XHTML.M.span ~a:[a_class [!!"see"]] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
 
-		| `Cref (hd, tl) ->
+		| `Cite (hd, tl) ->
 			let link_maker pointer =
 				let label = `User_label pointer in
 				let target = Hashtbl.find labels label
 				in match target with
 					| Target.Bib_target order -> make_internal_link label (bib_conv order)
-					| _			  -> raise (Command_cref_with_non_bib target) in
+					| _			  -> raise (Command_cite_with_non_bib target) in
 			let commafy pointer = [pcdata ","; link_maker pointer]
-			in XHTML.M.span ~a:[a_class [!!"cref"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
+			in XHTML.M.span ~a:[a_class [!!"cite"]] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
 
-		| `Dref pointer ->
+		| `Ref (pointer, maybe_seq) ->
 			let label = `User_label pointer in
-			let target = Hashtbl.find labels label
-			in (match target with
-				| Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
-					make_internal_link label (boxout_conv order)
-				| Target.Visible_target (Target.Custom_target (_, Custom.Theorem, order)) ->
-					make_internal_link label (theorem_conv order)
-				| Target.Visible_target (Target.Wrapper_target (_, order)) ->
-					make_internal_link label (wrapper_conv order)
-				| Target.Visible_target (Target.Part_target order) ->
-					make_internal_link label (part_conv order)
-				| Target.Visible_target (Target.Section_target (location, order)) ->
-					make_internal_link label (section_conv location order)
-				| _ ->
-					raise (Command_dref_with_non_visible_block target))
+			begin match maybe_seq with
+				| Some seq ->
+					make_internal_link label (Obj.magic (write_seq seq))
+				| None ->
+					let target = Hashtbl.find labels label in
+					match target with
+						| Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
+							make_internal_link label (boxout_conv order)
+						| Target.Visible_target (Target.Custom_target (_, Custom.Theorem, order)) ->
+							make_internal_link label (theorem_conv order)
+						| Target.Visible_target (Target.Wrapper_target (_, order)) ->
+							make_internal_link label (wrapper_conv order)
+						| Target.Visible_target (Target.Part_target order) ->
+							make_internal_link label (part_conv order)
+						| Target.Visible_target (Target.Section_target (location, order)) ->
+							make_internal_link label (section_conv location order)
+						| _ ->
+							raise (Command_ref_with_non_visible_block target)
+			end
 
 		| `Sref pointer ->
 			let target = Hashtbl.find labels (`User_label pointer) in
-			let make_sref wseq order =
-				make_internal_link (`User_label pointer) (Obj.magic (wseq @ order))
-			in (match target with
+			let make_sref wseq order = make_internal_link (`User_label pointer) (Obj.magic (wseq @ order)) in
+			begin match target with
 				| Target.Visible_target (Target.Custom_target (env, Custom.Boxout, order)) ->
 					make_sref (write_name (Name_custom env)) (boxout_conv ~prespace:true order)
 				| Target.Visible_target (Target.Custom_target (env, Custom.Theorem, order)) ->
@@ -325,10 +329,8 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 						| `Appendixed -> Name_appendix
 					in make_sref (write_name name) (section_conv ~prespace:true location order)
 				| _ ->
-					raise (Command_sref_with_non_visible_block target))
-
-		| `Mref (pointer, seq) ->
-			make_internal_link (`User_label pointer) (Obj.magic (write_seq seq))
+					raise (Command_sref_with_non_visible_block target)
+			end
 
 
 	(************************************************************************)
@@ -496,7 +498,7 @@ let write_valid_document ?(translations = Translations.default) ?(settings = Set
 			let img = XHTML.M.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~a:attrs ~src:uri ~alt ()]
 			in [XHTML.M.div ~a:[a_class (!!"pic" :: style)] [img]]
 
-		| `Bookcover (isbn, maybe_rating, cover) ->
+		| `Bookpic (isbn, maybe_rating, cover) ->
 			[XHTML.M.p ~a:[a_class [!!"book"]] [pcdata isbn]]
 
 		| `Decor (floatation, blk) ->

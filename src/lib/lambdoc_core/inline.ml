@@ -31,13 +31,12 @@ type 'a inline_t =
 	| `Sub of 'a nelist
 	| `Mbox of 'a nelist
 	| `Span of Classname.t option * 'a nelist
-	| `Uref of Uri.t * 'a nelist option
-	| `Bref of Book.isbn_t * Book.rating_t option * 'a nelist option
-	| `Nref of Pointer.t nelist
-	| `Cref of Pointer.t nelist
-	| `Dref of Pointer.t
+	| `Link of Uri.t * 'a nelist option
+	| `Booklink of Book.isbn_t * Book.rating_t option * 'a nelist option
+	| `See of Pointer.t nelist
+	| `Cite of Pointer.t nelist
+	| `Ref of Pointer.t * 'a nelist option
 	| `Sref of Pointer.t
-	| `Mref of Pointer.t * 'a nelist
 	] with sexp
 
 type raw_inline_t = raw_inline_t inline_t with sexp
@@ -65,13 +64,12 @@ let sup seq = `Sup seq
 let sub seq = `Sub seq
 let mbox seq = `Mbox seq
 let span classname seq = `Span (classname, seq)
-let uref uri maybe_seq = `Uref (uri, maybe_seq)
-let bref isbn maybe_rating maybe_seq = `Bref (isbn, maybe_rating, maybe_seq)
-let nref (hd, tl) = `Nref (hd, tl)
-let cref (hd, tl) = `Cref (hd, tl)
-let dref pointer = `Dref pointer
+let link uri maybe_seq = `Link (uri, maybe_seq)
+let booklink isbn maybe_rating maybe_seq = `Booklink (isbn, maybe_rating, maybe_seq)
+let see (hd, tl) = `See (hd, tl)
+let cite (hd, tl) = `Cite (hd, tl)
+let ref pointer maybe_seq = `Ref (pointer, maybe_seq)
 let sref pointer = `Sref pointer
-let mref pointer seq = `Mref (pointer, seq)
 
 let get_seq seq = seq
 let get_inlines xs = xs
