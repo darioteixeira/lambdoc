@@ -29,7 +29,7 @@ Colour_lnk: #009;
 	color: Colour_lnk;
 	}
 
-.doc_nref
+.doc_see
 	{
 	margin-left: Hmargin_inline_small;
 	vertical-align: 0.3em;
@@ -37,7 +37,7 @@ Colour_lnk: #009;
 	color: Colour_lnk;
 	}
 
-.doc_cref
+.doc_cite
 	{
 	margin-left: Hmargin_inline_small;
 	color: Colour_lnk;
