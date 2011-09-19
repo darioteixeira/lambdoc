@@ -9,7 +9,7 @@
 PKG_NAME=lambdoc
 SRC_DIR=src
 LIB_DIR=$(SRC_DIR)/_build/lib
-OCAMLBUILD_OPTS=-use-ocamlfind -build-dir _build
+OCAMLBUILD_OPTS=-use-ocamlfind -no-links
 
 LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.cmxs lambdoc.a
 COMPONENTS=lambdoc_core lambdoc_reader lambdoc_writer lambdoc_proxy lambdoc_read_lambhtml lambdoc_read_lamblite lambdoc_read_lambtex lambdoc_write_xhtml
@@ -26,6 +26,9 @@ FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
 # Rules.
 #
 
+build:
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget lambcmd.otarget parserver.otarget
+
 lib:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget
 
@@ -34,9 +37,6 @@ lambcmd:
 
 parserver:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) parserver.otarget
-
-build:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
 
 apidoc:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
