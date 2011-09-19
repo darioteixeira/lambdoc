@@ -26,19 +26,28 @@ FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
 # Rules.
 #
 
+lib:
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget
+
+lambcmd:
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambcmd.otarget
+
+parserver:
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) parserver.otarget
+
 build:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) all.otarget
 
 apidoc:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
-install: build
+install: lib
 	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
 
 uninstall:
 	ocamlfind remove $(PKG_NAME)
 
-reinstall: build
+reinstall: lib
 	ocamlfind remove $(PKG_NAME)
 	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
 
