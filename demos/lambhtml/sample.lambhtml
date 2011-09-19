@@ -54,9 +54,9 @@ It is possible to embed images like <glyph src="circle-tiny.png" alt="o"/> into 
 
 <p>
 Here is a link to section number <ref href="sec:foobar"/> or smartly, <sref
-href="sec:foobar"/>.  And here is a link to <mref href="sec:foobar">that same
-section</mref>.  You can also link to Tip <ref href="tip:one"/>, or smarly <sref
-href="tip:one"/>, or a link to <mref href="tip:one"> that same tip</mref>. The
+href="sec:foobar"/>.  And here is a link to <ref href="sec:foobar">that same
+section</ref>.  You can also link to Tip <ref href="tip:one"/>, or smarly <sref
+href="tip:one"/>, or a link to <ref href="tip:one"> that same tip</ref>. The
 bibliography is at the end<cite href="bib:one"/><cite href="bib:two"/><cite
 href="bib:three"/>.  You can also place multiple citations in the same square
 brackets<cite href="bib:one bib:two bib:three"/>.  There is also<see href="note:one"/>

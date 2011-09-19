@@ -6,7 +6,7 @@
 
 \newmacro{elwho}{0}{John McAuthor}
 \newmacro{elwhat}{0}{Title of the article}
-\newmacro{elwhere}{0}{\uref{http://www.wikipedia.org/}}
+\newmacro{elwhere}{0}{\link{http://www.wikipedia.org/}}
 
 \title{A complete sample of \caps{Lambtex}}
 \subtitle{Dario Teixeira}
@@ -41,9 +41,9 @@ It is possible to embed images like \glyph{circle-tiny.png}{o} into an inline co
 
 Here is a link to part number \ref{part:inline}, or smartly, \sref{part:inline}.
 Similarly, here is a link to section number \ref{sec:foobar}, or smartly,
-\sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
+\sref{sec:foobar}.  And here is a link to \ref{sec:foobar}{that same
 section}.  You can also link to Tip \ref{tip:one}, or smarly \sref{tip:one},
-or a link to \mref{tip:one}{that same tip}. The bibliography is at the
+or a link to \ref{tip:one}{that same tip}. The bibliography is at the
 end\cite{bib:bib1}\cite{bib:bib2}\cite{bib:bib3}.  You can also place multiple
 citations in the same square brackets\cite{bib:bib1}{bib:bib2}{bib:bib3}. There is
 also\see{note:note1} a list\see{note:note2} of notes\see{note:note3}, which if you prefer
