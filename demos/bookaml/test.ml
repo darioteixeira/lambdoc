@@ -8,30 +8,35 @@
 
 open XHTML.M
 open Eliom_parameters
-open Lambdoc_core
-open Features
 open Bookaml_amazon
 
 
 (********************************************************************************)
 
-let book_maker ~associate_tag ~access_key ~secret_key ~locale raw_isbn =
-	try_lwt
-		let isbn = ISBN.of_string raw_isbn in
-		lwt book = Bookaml_amazon.book_from_isbn_exn ~associate_tag ~access_key ~secret_key ~locale isbn in
-		let book' =
-			{
-			Lambdoc_core.Book.title = book.Bookaml_amazon.title;
-			Lambdoc_core.Book.author = book.Bookaml_amazon.author;
-			Lambdoc_core.Book.publisher = book.Bookaml_amazon.publisher;
-			Lambdoc_core.Book.pubdate = book.Bookaml_amazon.pubdate;
-			}
-		in Lwt.return book'
-	with
-		| ISBN.Bad_ISBN_length _
-		| ISBN.Bad_ISBN_checksum _
-		| ISBN.Bad_ISBN_character _ -> Lwt.fail (Lambdoc_core.Book.Malformed_ISBN raw_isbn)
-		| Bookaml_amazon.No_match _ -> Lwt.fail (Lambdoc_core.Book.Unknown_ISBN raw_isbn)
+let make_page sp content =
+	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"]
+	in (XHTML.M.html
+		(XHTML.M.head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]
+			(XHTML.M.title (pcdata "Lambdoc + Ocsigen"))
+			[
+			XHTML.M.meta ~a: [a_http_equiv "content-type"] ~content: "text/html; charset=utf-8" ();
+			Eliom_predefmod.Xhtml.css_link ~a:[(a_media [`All]); (a_title "Default")] ~uri:css_uri ()
+			])
+		(XHTML.M.body content))
+
+
+(********************************************************************************)
+
+let book_handler sp (isbn, page) () =
+	let content = [p [a ~a:[a_href page] [pcdata ("ISBN " ^ isbn)]]] in
+	Lwt.return (make_page sp content)
+
+
+let book_service =
+	Eliom_predefmod.Xhtml.register_new_service 
+		~path: ["book"]
+		~get_params: (Eliom_parameters.string "isbn" ** Eliom_parameters.user_type uri_of_string string_of_uri "page")
+		book_handler
 
 
 (********************************************************************************)
@@ -52,22 +57,10 @@ let string_of_markup = function
 
 (********************************************************************************)
 
-let make_page sp content =
-	let css_uri = Eliom_predefmod.Xhtml.make_uri (Eliom_services.static_dir sp) sp ["css"; "lambdoc.css"]
-	in (XHTML.M.html
-		(XHTML.M.head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]
-			(XHTML.M.title (pcdata "Lambdoc + Ocsigen"))
-			[
-			XHTML.M.meta ~a: [a_http_equiv "content-type"] ~content: "text/html; charset=utf-8" ();
-			Eliom_predefmod.Xhtml.css_link ~a:[(a_media [`All]); (a_title "Default")] ~uri:css_uri ()
-			])
-		(XHTML.M.body content))
-
-
-(********************************************************************************)
-
-let show_handler sp (markup, (associate_tag, (access_key, (secret_key, locale)))) () =
-	let book_maker = book_maker ~associate_tag ~access_key ~secret_key ~locale in
+let show_handler sp (markup, (locale, (associate_tag, (access_key, secret_key)))) () =
+	let lookup isbn page =
+		Eliom_predefmod.Xhtml.make_uri book_service sp (isbn, page) in
+	let (book_maker, book_lookup, cover_lookup) = Bookaml_lambdoc.make_helpers ~locale ~associate_tag ~access_key ~secret_key ~lookup ~sp in
 	let (file, reader) = match markup with
 		| None
 		| Some Lambtex  -> ("sample.lambtex", Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string ~book_maker)
@@ -76,7 +69,7 @@ let show_handler sp (markup, (associate_tag, (access_key, (secret_key, locale)))
 	let src = Std.input_all chan in
 	let () = close_in chan in
 	lwt doc = reader src in
-	let xhtml = Lambdoc_write_xhtml.Main.write_ambivalent_manuscript doc
+	let xhtml = Lambdoc_write_xhtml.Main.write_ambivalent_manuscript ~book_lookup ~cover_lookup doc
 	in Lwt.return (make_page sp [xhtml])
 
 
@@ -85,14 +78,14 @@ let show_service =
 		~path: ["show"]
 		~get_params:
 			(Eliom_parameters.radio (Eliom_parameters.user_type ~of_string:markup_of_string ~to_string:string_of_markup) "markup" **
+			Eliom_parameters.user_type ~of_string:Locale.of_string ~to_string:Locale.to_string "locale" **
 			Eliom_parameters.string "associate_tag" **
 			Eliom_parameters.string "access_key" **
-			Eliom_parameters.string "secret_key" **
-			Eliom_parameters.user_type ~of_string:Locale.of_string ~to_string:Locale.to_string "locale")
+			Eliom_parameters.string "secret_key")
 		show_handler
 
 
-let show_form (e_markup, (e_associate_tag, (e_access_key, (e_secret_key, e_locale)))) =
+let show_form (e_markup, (e_locale, (e_associate_tag, (e_access_key, e_secret_key)))) =
 	[
 	XHTML.M.fieldset
 		[
@@ -108,6 +101,10 @@ let show_form (e_markup, (e_associate_tag, (e_access_key, (e_secret_key, e_local
 
 		XHTML.M.p [pcdata "Enter your Amazon credentials:"];
 
+		XHTML.M.label ~a:[a_for "e_locale"] [pcdata "Locale:"];
+		Eliom_predefmod.Xhtml.user_type_input Locale.to_string ~a:[a_id "e_locale"] ~input_type:`Text ~name:e_locale ~value:`US ();
+		XHTML.M.br ();
+
 		XHTML.M.label ~a:[a_for "e_associate_tag"] [pcdata "Associate tag:"];
 		Eliom_predefmod.Xhtml.string_input ~a:[a_id "e_associate_tag"] ~input_type:`Text ~name:e_associate_tag ();
 		XHTML.M.br ();
@@ -118,10 +115,6 @@ let show_form (e_markup, (e_associate_tag, (e_access_key, (e_secret_key, e_local
 
 		XHTML.M.label ~a:[a_for "e_secret_key"] [pcdata "Secret key:"];
 		Eliom_predefmod.Xhtml.string_input ~a:[a_id "e_secret_key"] ~input_type:`Text ~name:e_secret_key ();
-		XHTML.M.br ();
-
-		XHTML.M.label ~a:[a_for "e_locale"] [pcdata "Locale:"];
-		Eliom_predefmod.Xhtml.user_type_input Locale.to_string ~a:[a_id "e_locale"] ~input_type:`Text ~name:e_locale ~value:`US ();
 		XHTML.M.br ();
 
 		Eliom_predefmod.Xhtml.string_input ~input_type:`Submit ~value:"Submit" ();
