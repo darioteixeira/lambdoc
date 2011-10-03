@@ -16,3 +16,20 @@ type t =
 	| Lambhtml
 	| Lamblite
 
+
+(********************************************************************************)
+(**	{1 Public functions and values}						*)
+(********************************************************************************)
+
+let of_string = function
+	| "lambtex"  -> Lambtex
+	| "lambhtml" -> Lambhtml
+	| "lamblite" -> Lamblite
+	| x	     -> invalid_arg ("Markup.of_string: " ^ x)
+
+
+let to_string = function
+	| Lambtex  -> "lambtex"
+	| Lambhtml -> "lambhtml"
+	| Lamblite -> "lamblite"
+
