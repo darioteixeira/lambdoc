@@ -640,11 +640,11 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 		| (_, _, _, `Decor_blk, (comm, Ast.Bookpic isbn))
 		| (_, _, _, `Any_blk, (comm, Ast.Bookpic isbn)) ->
 			let elem () =
-				let extra = Extra.parse comm errors [Rating_hnd; Cover_hnd] in
+				let extra = Extra.parse comm errors [Rating_hnd; Coversize_hnd] in
 				let maybe_rating = Extra.get_maybe_numeric ~default:None extra Rating_hnd
-				and cover = Extra.get_cover ~default:Book.Medium extra Cover_hnd in
+				and coversize = Extra.get_coversize ~default:Book.Medium extra Coversize_hnd in
 				add_isbn comm `Feature_bookpic isbn;
-				[Block.bookpic isbn maybe_rating cover]
+				[Block.bookpic isbn maybe_rating coversize]
 			in check_block_comm `Feature_bookpic comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Decor astblk)) ->

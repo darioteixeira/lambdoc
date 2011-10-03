@@ -46,7 +46,7 @@ type property_kind_t =
 	| Classname_kind
 	| Lang_kind
 	| Style_kind
-	| Cover_kind
+	| Coversize_kind
 
 
 type property_id_t = string * property_kind_t
@@ -63,7 +63,7 @@ type property_data_t =
 	| Classname_data of Classname.t
 	| Lang_data of Camlhighlight_core.lang_t
 	| Style_data of Source.style_t
-	| Cover_data of Book.cover_t
+	| Coversize_data of Book.coversize_t
 
 
 type field_t =
@@ -103,7 +103,7 @@ type handle_t =
 	| Lang_hnd
 	| Style_hnd
 	| Rating_hnd
-	| Cover_hnd
+	| Coversize_hnd
 
 type error_t = (int option * Error.error_msg_t) DynArray.t
 
@@ -126,7 +126,7 @@ let dummy_floatation_data = Floatation_data Floatation.Center
 let dummy_classname_data = Classname_data ""
 let dummy_lang_data = Lang_data ""
 let dummy_style_data = Style_data Source.Boxed
-let dummy_cover_data = Cover_data Book.Medium
+let dummy_coversize_data = Coversize_data Book.Medium
 
 
 (********************************************************************************)
@@ -150,7 +150,7 @@ let id_of_handle = function
 	| Lang_hnd	 -> ("lang", Lang_kind, false)
 	| Style_hnd	 -> ("style", Style_kind, false)
 	| Rating_hnd	 -> ("rating", Numeric_kind (1, 5), false)
-	| Cover_hnd	 -> ("cover", Cover_kind, false)
+	| Coversize_hnd	 -> ("size", Coversize_kind, false)
 
 
 (**	This function does the low-level, regular-expression based parsing
@@ -306,14 +306,14 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 			DynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_style_data))
 
-	| (key, Cover_kind, false, Unnamed_field v) ->
-		(try Undecided (Cover_data (Book_input.cover_of_string v)) with Invalid_argument _ -> Negative)
-	| (key, Cover_kind, false, Keyvalue_field (k, v)) when k = key ->
-		(try Positive (Cover_data (Book_input.cover_of_string v))
+	| (key, Coversize_kind, false, Unnamed_field v) ->
+		(try Undecided (Coversize_data (Book_input.coversize_of_string v)) with Invalid_argument _ -> Negative)
+	| (key, Coversize_kind, false, Keyvalue_field (k, v)) when k = key ->
+		(try Positive (Coversize_data (Book_input.coversize_of_string v))
 		with Invalid_argument _ ->
-			let msg = Error.Invalid_extra_cover_parameter (comm.comm_tag, key, v) in
+			let msg = Error.Invalid_extra_coversize_parameter (comm.comm_tag, key, v) in
 			DynArray.add errors (Some comm.comm_linenum, msg);
-			Positive (dummy_cover_data))
+			Positive (dummy_coversize_data))
 
 	| _ ->
 		Negative
@@ -502,8 +502,8 @@ let get_style ~default extra handle = match Hashtbl.find extra handle with
 	| _		      -> default
 
 
-let get_cover ~default extra handle = match Hashtbl.find extra handle with
-	| Some (Cover_data x) -> x
+let get_coversize ~default extra handle = match Hashtbl.find extra handle with
+	| Some (Coversize_data x) -> x
 	| _		      -> default
 
 
@@ -525,5 +525,5 @@ let fetch_floatation = fetcher get_floatation
 let fetch_classname = fetcher get_classname
 let fetch_lang = fetcher get_lang
 let fetch_style = fetcher get_style
-let fetch_cover = fetcher get_cover
+let fetch_coversize = fetcher get_coversize
 

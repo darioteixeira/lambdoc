@@ -29,7 +29,7 @@ type 'a block_t =
 	| `Subpage of 'a nelist
 	| `Verbatim of int * string
 	| `Picture of bool * int option * Alias.t * string
-	| `Bookpic of Book.isbn_t * Book.rating_t option * Book.cover_t
+	| `Bookpic of Book.isbn_t * Book.rating_t option * Book.coversize_t
 	| `Decor of Floatation.t * 'a
 	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
 	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
@@ -95,8 +95,8 @@ let verbatim mult data =
 let picture frame width alias alt =
 	`Picture (frame, width, alias, alt)
 
-let bookpic isbn maybe_rating cover =
-	`Bookpic (isbn, maybe_rating, cover)
+let bookpic isbn maybe_rating coversize =
+	`Bookpic (isbn, maybe_rating, coversize)
 
 let decor floatation blk =
 	`Decor (floatation, blk)

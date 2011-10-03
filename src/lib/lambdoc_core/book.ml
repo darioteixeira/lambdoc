@@ -28,7 +28,7 @@ type isbn_t = string with sexp
 
 type rating_t = int with sexp
 
-type cover_t =
+type coversize_t =
 	| Small
 	| Medium
 	| Large

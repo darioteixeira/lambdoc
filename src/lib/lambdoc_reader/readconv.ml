@@ -350,11 +350,11 @@ module Book_input =
 struct
 	open Book
 
-	let cover_of_string = function
+	let coversize_of_string = function
 		| "small"  -> Small
 		| "medium" -> Medium
 		| "large"  -> Large
-		| _	   -> invalid_arg "cover_of_string"
+		| _	   -> invalid_arg "coversize_of_string"
 end
 
 

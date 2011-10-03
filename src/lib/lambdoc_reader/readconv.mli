@@ -38,7 +38,7 @@ end
 
 module Book_input:
 sig
-	val cover_of_string: string -> Book.cover_t
+	val coversize_of_string: string -> Book.coversize_t
 end
 
 

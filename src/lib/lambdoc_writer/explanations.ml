@@ -125,8 +125,8 @@ let explain_error = function
 	| Error.Invalid_extra_style_parameter (tag, key, value) ->
 		sprintf "In %s, the key '#%s#' expects a style specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
-	| Error.Invalid_extra_cover_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a cover specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
+	| Error.Invalid_extra_coversize_parameter (tag, key, value) ->
+		sprintf "In %s, the key '#%s#' expects a cover size specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
 	| Error.Invalid_extra_unknown_parameter (tag, col, field) ->
 		sprintf "In %s, the value '#%s#' assigned to field %d of the extra parameter cannot be interpreted." (explain_tag tag) (escape field) col

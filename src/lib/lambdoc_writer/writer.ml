@@ -29,7 +29,7 @@ type book_lookup_t = Book.isbn_t -> XHTML.M.uri
 
 (**	Lookup function that converts a book ISBN and cover specification into an actual URI.
 *)
-type cover_lookup_t = Book.isbn_t -> Book.cover_t -> XHTML.M.uri
+type cover_lookup_t = Book.isbn_t -> Book.coversize_t -> XHTML.M.uri
 
 
 (**	The module type that all wannabe document writers must export.
