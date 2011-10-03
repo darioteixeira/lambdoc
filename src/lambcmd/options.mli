@@ -16,10 +16,10 @@ type t =
 	title: string;
 	language: Language.t;
 
+	amazon_locale: Bookaml_amazon.Locale.t option;
 	amazon_associate_tag: string option;
 	amazon_access_key: string option;
 	amazon_secret_key: string option;
-	amazon_locale: Bookaml_amazon.Locale.t option;
 
 	category: Category.t;
 	input_markup: Markup.input_t;

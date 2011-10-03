@@ -8,6 +8,8 @@
 
 open XHTML.M
 open Options
+open Bookaml_amazon
+open Lambdoc_core
 
 
 (********************************************************************************)
@@ -23,23 +25,23 @@ type processor_t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let book_maker ~associate_tag ~access_key ~secret_key ~locale raw_isbn =
+let book_maker ~credential raw_isbn =
 	try_lwt
 		let isbn = ISBN.of_string raw_isbn in
-		lwt book = Bookaml_amazon.book_from_isbn_exn ~associate_tag ~access_key ~secret_key ~locale isbn in
+		lwt book = Bookaml_amazon.book_from_isbn_exn ~credential isbn in
 		let book' =
 			{
-			Lambdoc_core.Book.title = book.Bookaml_amazon.title;
-			Lambdoc_core.Book.author = book.Bookaml_amazon.author;
-			Lambdoc_core.Book.publisher = book.Bookaml_amazon.publisher;
-			Lambdoc_core.Book.pubdate = book.Bookaml_amazon.pubdate;
+			Book.title = book.bk_title;
+			Book.author = book.bk_author;
+			Book.publisher = book.bk_publisher;
+			Book.pubdate = book.bk_pubdate;
 			}
 		in Lwt.return book'
 	with
 		| ISBN.Bad_ISBN_length _
 		| ISBN.Bad_ISBN_checksum _
-		| ISBN.Bad_ISBN_character _ -> Lwt.fail (Lambdoc_core.Book.Malformed_ISBN raw_isbn)
-		| Bookaml_amazon.No_match _ -> Lwt.fail (Lambdoc_core.Book.Unknown_ISBN raw_isbn)
+		| ISBN.Bad_ISBN_character _ -> Lwt.fail (Book.Malformed_ISBN raw_isbn)
+		| Bookaml_amazon.No_match _ -> Lwt.fail (Book.Unknown_ISBN raw_isbn)
 
 
 let string_of_xhtml the_title xhtml =
@@ -55,9 +57,12 @@ let string_of_xhtml the_title xhtml =
 
 
 let get_processor options =
-	let book_maker = match (options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key, options.amazon_locale) with
-		| (Some associate_tag, Some access_key, Some secret_key, Some locale) -> Some (book_maker ~associate_tag ~access_key ~secret_key ~locale)
-		| _								      -> None
+	let book_maker = match (options.amazon_locale, options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key) with
+		| (Some locale, Some associate_tag, Some access_key, Some secret_key) ->
+			let credential = Bookaml_amazon.make_credential ~locale ~associate_tag ~access_key ~secret_key in
+			Some (book_maker ~credential)
+		| _ ->
+			None
 	in match options.category with
 		| `Manuscript ->
 			let reader = match options.input_markup with

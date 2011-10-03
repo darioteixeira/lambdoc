@@ -19,10 +19,10 @@ type t =
 	title: string;
 	language: Language.t;
 
+	amazon_locale: Bookaml_amazon.Locale.t option;
 	amazon_associate_tag: string option;
 	amazon_access_key: string option;
 	amazon_secret_key: string option;
-	amazon_locale: Bookaml_amazon.Locale.t option;
 
 	category: Category.t;
 	input_markup: Markup.input_t;
@@ -43,10 +43,10 @@ let debug_opt = StdOpt.store_true ()
 let title_opt = StdOpt.str_option ~default:"Lambdoc document" ()
 let language_opt = Opt.value_option "LANGUAGE" (Some Language.default) Language.of_string (fun exn str -> "Unknown language '" ^ str ^ "'")
 
+let amazon_locale_opt = Opt.value_option "LOCALE" None Bookaml_amazon.Locale.of_string (fun exn str -> "Unknown locale '" ^ str ^ "'")
 let amazon_associate_tag_opt = StdOpt.str_option ()
 let amazon_access_key_opt = StdOpt.str_option ()
 let amazon_secret_key_opt = StdOpt.str_option ()
-let amazon_locale_opt = Opt.value_option "LOCALE" None Bookaml_amazon.Locale.of_string (fun exn str -> "Unknown locale '" ^ str ^ "'")
 
 let category_opt = Opt.value_option "CATEGORY" (Some Category.default) Category.of_string (fun exn str -> "Unknown category '" ^ str ^ "'")
 let input_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_input) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
@@ -67,10 +67,10 @@ let () =
 	OptParser.add options ~group:general ~short_name:'e' ~long_name:"title" ~help:"Document title" title_opt;
 	OptParser.add options ~group:general ~short_name:'l' ~long_name:"lang" ~help:"Language for I18N of document elements (either 'en', 'fr', or 'pt'; assume 'en' if not specified)" language_opt;
 
+	OptParser.add options ~group:amazon ~long_name:"amazon-locale" ~help:"Amazon Web Services locale" amazon_locale_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-associate-tag" ~help:"Amazon Web Services associate tag" amazon_associate_tag_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-access_key" ~help:"Amazon Web Services access key" amazon_access_key_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-secret_key" ~help:"Amazon Web Services secret key" amazon_secret_key_opt;
-	OptParser.add options ~group:amazon ~long_name:"amazon-locale" ~help:"Amazon Web Services locale" amazon_locale_opt;
 
 	OptParser.add options ~group:markup ~short_name:'c' ~long_name:"category" ~help:"Document category (either 'manuscript' or 'composition'; assume 'manuscript' if not specified)" category_opt;
 	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambhtml', 'lamblite', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
@@ -97,10 +97,10 @@ let parse () = match OptParser.parse_argv options with
 			title = Opt.get title_opt;
 			language = Opt.get language_opt;
 
+			amazon_locale = Opt.opt amazon_locale_opt;
 			amazon_associate_tag = Opt.opt amazon_associate_tag_opt;
 			amazon_access_key = Opt.opt amazon_access_key_opt;
 			amazon_secret_key = Opt.opt amazon_secret_key_opt;
-			amazon_locale = Opt.opt amazon_locale_opt;
 
 			category = Opt.get category_opt;
 			input_markup = Opt.get input_markup_opt;
