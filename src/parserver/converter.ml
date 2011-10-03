@@ -6,6 +6,7 @@
 *)
 (********************************************************************************)
 
+open Lwt
 open Lambdoc_proxy
 open Markup
 open Protocol
@@ -26,7 +27,7 @@ object (self)
 		and out_channel = Unix.out_channel_of_descr fd in
 		Unix.clear_nonblock fd;
 		let request : Protocol.request_t = Marshal.from_channel in_channel in
-		let () = match request with
+		let thread () = match request with
 			| Protocol.Read_manuscript payload ->
 				let verify_utf8 = payload.m_verify_utf8
 				and expand_entities = payload.m_expand_entities
@@ -38,8 +39,9 @@ object (self)
 					| Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string
 					| Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string
 					| Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string in
-				let manuscript = reader ?verify_utf8 ?expand_entities ?accepted ?denied ?default source
-				in Marshal.to_channel out_channel manuscript []
+				reader ?verify_utf8 ?expand_entities ?accepted ?denied ?default source >>= fun manuscript ->
+				let () = Marshal.to_channel out_channel manuscript [] in
+				Lwt.return ()
 			| Protocol.Read_composition payload ->
 				let verify_utf8 = payload.c_verify_utf8
 				and expand_entities = payload.c_expand_entities
@@ -51,10 +53,12 @@ object (self)
 					| Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_composition_from_string
 					| Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_composition_from_string
 					| Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_composition_from_string in
-				let composition = reader ?verify_utf8 ?expand_entities ?accepted ?denied ?default source
-				in Marshal.to_channel out_channel composition [] in
-		let () = close_out out_channel
-		in when_done ()
+				reader ?verify_utf8 ?expand_entities ?accepted ?denied ?default source >>= fun composition ->
+				let () = Marshal.to_channel out_channel composition [] in
+				Lwt.return () in
+		let () = Lwt_main.run (thread ()) in
+		let () = close_out out_channel in
+		when_done ()
 
 	method supported_ptypes = [ `Multi_processing; `Multi_threading ]
 end
