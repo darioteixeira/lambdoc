@@ -17,9 +17,8 @@ open Protocol
 (********************************************************************************)
 
 class processor : Netplex_types.processor =
-let empty_hooks = new Netplex_kit.empty_processor_hooks () in
+	let empty_hooks = new Netplex_kit.empty_processor_hooks () in
 object (self)
-
 	inherit Netplex_kit.processor_base empty_hooks
 
 	method process ~when_done container fd proto_name =
