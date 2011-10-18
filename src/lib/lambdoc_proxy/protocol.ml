@@ -38,6 +38,11 @@ type composition_payload_t =
 
 
 type request_t =
-	| Read_manuscript of manuscript_payload_t
-	| Read_composition of composition_payload_t
+	| Request_manuscript of manuscript_payload_t
+	| Request_composition of composition_payload_t
+
+
+type reply_t =
+	| Reply_manuscript of Ambivalent.manuscript_t
+	| Reply_composition of Ambivalent.composition_t
 

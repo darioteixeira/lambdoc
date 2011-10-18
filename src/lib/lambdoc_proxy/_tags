@@ -1,4 +1,2 @@
 <*.cmx>: for-pack(Lambdoc_proxy)
 
-<client.ml>: package(lwt.syntax), syntax(camlp4o)
-
