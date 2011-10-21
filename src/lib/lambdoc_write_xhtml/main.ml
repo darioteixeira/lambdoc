@@ -516,7 +516,7 @@ let write_valid_document
 				XHTML.M.a ~a:[a_href book_uri; a_class [!!"pic_lnk"]] [XHTML.M.img ~src:cover_uri ~alt ()];
 				p [i [pcdata book.title]];
 				p [pcdata book.author];
-				p [pcdata (book.publisher ^ " (" ^ book.pubdate ^ ")")];
+				p [pcdata (book.publisher ^ (match book.pubdate with Some p -> " (" ^ p ^ ")" | None -> ""))];
 				p [pcdata alt];
 				]]
 

@@ -9,6 +9,7 @@ open Ocamlbuild_plugin
 let menhir_opts = S
 	[
 	(*
+	A"--strict";
 	A"--dump";
 	A"--explain";
 	A"--graph";

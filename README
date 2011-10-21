@@ -2,7 +2,7 @@
 | README for Lambdoc 0.8.5						|
 |									|
 | Dario Teixeira (dario.teixeira@yahoo.com)				|
-| August 2011								|
+| October 2011								|
 =========================================================================
 
 1. Overview
@@ -20,10 +20,9 @@ possibility of outputing any Lambdoc document as an Ocsigen XHTML.M value.
 ===============
 
 Lambdoc requires Ocsigen [1], Ulex [2], Menhir [3], ExtLib [4], Sexplib
-[5], Pcre-ocaml [6], PXP [7], Lwt [8], Ocamlnet [9], Blahcaml [10], and
-Camlhighlight [11].  Some of the demos, the command line utility 'lambcmd',
-and the parsing server 'parserver' also depend on Bookaml [12].  Note that
-this dependency does not apply to the core Lambdoc library.
+[5], Pcre-ocaml [6], PXP [7], Lwt [8], Blahcaml [9], and Camlhighlight [10].
+The command line utility 'lambcmd' and some of the demos also depend on Bookaml
+[11].  Note that this dependency does not apply to the core Lambdoc library.
 
 
 3. Building and installing
@@ -31,12 +30,12 @@ this dependency does not apply to the core Lambdoc library.
 
 To build only the library run 'make lib'.  To perform a Findlib installation
 of the library run 'make install' or 'make reinstall'.  To remove the package
-run 'make uninstall'.  The API documentation can be built with 'make apidoc'.
+run 'make uninstall'.  The API documentation can be built with 'make doc'.
 
-If you also wish to build the lambcmd or parserver binaries, issue 'make
-lambcmd' or 'make parserver', respectively.  Note that these binaries also
-require the Bookaml [12] package.  Finally, if you wish to build everything
-(library + lambcmd + parserver) you may simply run 'make build'.
+If you also wish to build the lambcmd command line utility, issue 'make
+lambcmd'.  Note that this binary also requires the Bookaml [11] package.
+Finally, if you wish to build everything (library + lambcmd) you may simply
+run 'make all' or just 'make'.
 
 
 4. License
@@ -73,8 +72,7 @@ References
  [6] http://www.ocaml.info/home/ocaml_sources.html#pcre-ocaml
  [7] http://projects.camlcity.org/projects/pxp.html
  [8] http://www.ocsigen.org/lwt
- [9] http://projects.camlcity.org/projects/ocamlnet.html
-[10] http://blahcaml.forge.ocamlcore.org/
-[11] http://camlhighlight.forge.ocamlcore.org/
-[12] http://bookaml.forge.ocamlcore.org/
+ [9] http://blahcaml.forge.ocamlcore.org/
+[10] http://camlhighlight.forge.ocamlcore.org/
+[11] http://bookaml.forge.ocamlcore.org/
 

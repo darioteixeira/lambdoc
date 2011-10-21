@@ -26,8 +26,8 @@ FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
 # Rules.
 #
 
-build:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget lambcmd.otarget parserver.otarget
+all:
+	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget lambcmd.otarget
 
 lib:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget
@@ -35,10 +35,7 @@ lib:
 lambcmd:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambcmd.otarget
 
-parserver:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) parserver.otarget
-
-apidoc:
+doc:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
 install: lib

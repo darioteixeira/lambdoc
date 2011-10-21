@@ -39,7 +39,7 @@ type t =
 	title: string;
 	author: string;
 	publisher: string;
-	pubdate: string;
+	pubdate: string option;
 	} with sexp
 
 type maker_t = isbn_t -> t Lwt.t
