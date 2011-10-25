@@ -17,11 +17,6 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Lookup function that converts an image alias into an actual URI.
-*)
-type image_lookup_t = Alias.t -> XHTML.M.uri
-
-
 (**	Lookup function that converts a book ISBN into an actual URI.
 *)
 type book_lookup_t = Book.isbn_t -> XHTML.M.uri
@@ -30,6 +25,11 @@ type book_lookup_t = Book.isbn_t -> XHTML.M.uri
 (**	Lookup function that converts a book ISBN and cover specification into an actual URI.
 *)
 type cover_lookup_t = Book.isbn_t -> Book.coversize_t -> XHTML.M.uri
+
+
+(**	Lookup function that converts an image alias into an actual URI.
+*)
+type image_lookup_t = Alias.t -> XHTML.M.uri
 
 
 (**	The module type that all wannabe document writers must export.
