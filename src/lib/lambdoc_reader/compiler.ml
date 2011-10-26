@@ -1102,8 +1102,9 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 			with exc ->
 				let msg = match exc with
 					| Unavailable_book_maker -> Error.Unavailable_book_maker (comm.comm_tag, Features.describe feature)
-					| Book.Malformed_ISBN _  -> Error.Malformed_ISBN (comm.comm_tag, isbn)
-					| Book.Unknown_ISBN _    -> Error.Unknown_ISBN (comm.comm_tag, isbn)
+					| Book.Maker_error err	 -> Error.Failed_book_maker (comm.comm_tag, Features.describe feature, err)
+					| Book.Malformed_ISBN _	 -> Error.Malformed_ISBN (comm.comm_tag, isbn)
+					| Book.Unknown_ISBN _	 -> Error.Unknown_ISBN (comm.comm_tag, isbn)
 					| exc			 -> raise exc
 				in	DynArray.add errors (Some comm.comm_linenum, msg);
 					Lwt.return None in

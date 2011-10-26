@@ -123,6 +123,8 @@ type error_msg_t =
 	| Wrong_target of Ident.t option * Pointer.t * target_t * target_t
 	| Undefined_target of Ident.t option * Pointer.t
 
+	| Unavailable_book_maker of Ident.t option * string
+	| Failed_book_maker of Ident.t option * string * string
 	| Malformed_ISBN of Ident.t option * string
 	| Unknown_ISBN of Ident.t option * string
 
@@ -137,7 +139,6 @@ type error_msg_t =
 	| Malformed_code_point
 	| Reading_error of string
 	| Unavailable_feature of Ident.t option * string
-	| Unavailable_book_maker of Ident.t option * string
 
 	with sexp
 

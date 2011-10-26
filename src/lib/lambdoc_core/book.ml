@@ -16,6 +16,7 @@ open Sexplib.Std
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
+exception Maker_error of string
 exception Malformed_ISBN of string
 exception Unknown_ISBN of string
 

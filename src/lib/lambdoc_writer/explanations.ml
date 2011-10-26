@@ -233,6 +233,12 @@ let explain_error = function
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '#%s#' in %s." (escape label) (explain_tag tag)
 
+	| Error.Unavailable_book_maker (tag, description) ->
+		sprintf "No book information fetching is available for feature '%s' requested by %s." description (explain_tag tag)
+
+	| Error.Failed_book_maker (tag, description, error) ->
+		sprintf "Failure while fetching book information for feature '%s' requested by %s: %s." description (explain_tag tag) error
+
 	| Error.Malformed_ISBN (tag, isbn) ->
 		sprintf "The string '#%s#' in %s is not a valid ISBN." (escape isbn) (explain_tag tag)
 
@@ -268,9 +274,6 @@ let explain_error = function
 
 	| Error.Unavailable_feature (tag, description) ->
 		sprintf "The feature '%s' requested by %s is unavailable for this document." description (explain_tag tag)
-
-	| Error.Unavailable_book_maker (tag, description) ->
-		sprintf "No book information fetching is available for feature '%s' requested by %s." description (explain_tag tag)
 
 
 (********************************************************************************)
