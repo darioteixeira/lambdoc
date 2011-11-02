@@ -123,8 +123,8 @@ type error_msg_t =
 	| Wrong_target of Ident.t option * Pointer.t * target_t * target_t
 	| Undefined_target of Ident.t option * Pointer.t
 
-	| Unavailable_book_maker of Ident.t option * string
-	| Failed_book_maker of Ident.t option * string * string
+	| Unavailable_bookmaker of Ident.t option * string
+	| Uncapable_bookmaker of Ident.t option * string * string
 	| Malformed_ISBN of Ident.t option * string
 	| Unknown_ISBN of Ident.t option * string
 

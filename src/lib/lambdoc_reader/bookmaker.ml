@@ -1,36 +1,32 @@
 (********************************************************************************)
-(*	Book.ml
+(*	Bookmaker.ml
 	Copyright (c) 2009-2010 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(**	Definitions concerning books.
+(**	Bookmaker
 *)
 
-open Sexplib.Std
+open Lambdoc_core
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type isbn_t = string with sexp
+type failure_t =
+	| Unavailable
+	| Uncapable of string
+	| Malformed_ISBN of string
+	| Unknown_ISBN of string
 
-type rating_t = int with sexp
 
-type coversize_t =
-	| Small
-	| Medium
-	| Large
-	with sexp
+type result_t =
+	| Success of Book.t
+	| Failure of failure_t
 
-type t =
-	{
-	title: string;
-	author: string;
-	publisher: string;
-	pubdate: string option;
-	} with sexp
+
+type t = Book.isbn_t list -> (Book.isbn_t * result_t) list
 

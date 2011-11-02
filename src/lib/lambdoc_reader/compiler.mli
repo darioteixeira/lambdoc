@@ -25,22 +25,22 @@ val process_errors:
 	Error.t nelist
 
 val compile_manuscript:
-	?book_maker: Book.maker_t ->
+	?bookmaker: Bookmaker.t ->
 	expand_entities: bool ->
 	accepted: Features.manuscript_feature_t list ->
 	denied: Features.manuscript_feature_t list ->
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
-	Ambivalent.manuscript_t Lwt.t
+	Ambivalent.manuscript_t
 
 val compile_composition:
-	?book_maker: Book.maker_t ->
+	?bookmaker: Bookmaker.t ->
 	expand_entities: bool ->
 	accepted: Features.composition_feature_t list ->
 	denied: Features.composition_feature_t list ->
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
-	Ambivalent.composition_t Lwt.t
+	Ambivalent.composition_t
 

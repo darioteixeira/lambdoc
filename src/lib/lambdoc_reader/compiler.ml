@@ -12,7 +12,6 @@
 
 open ExtString
 open ExtList
-open Lwt
 open Lambdoc_core
 open Prelude
 open Basic
@@ -29,7 +28,7 @@ open Extra
 (**	{2 Exceptions}								*)
 (********************************************************************************)
 
-exception Unavailable_book_maker
+exception Bookmaker_error of Book.isbn_t
 exception Mismatched_custom of Custom.kind_t * Custom.kind_t
 
 
@@ -53,6 +52,9 @@ let perhaps f = function
 	| [x] -> [f x]
 	| _   -> []
 
+let dummy_bookmaker isbns =
+	List.map (fun isbn -> (isbn, Bookmaker.Failure Bookmaker.Unavailable)) isbns
+
 
 (********************************************************************************)
 (**	{2 Generic document compilation}					*)
@@ -63,7 +65,7 @@ let perhaps f = function
 	and possible errors are also returned.  Note that because Ocaml does not
 	yet support true GADTs, this function has to rely on Obj.magic.
 *)
-let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~expand_entities ~idiosyncrasies document_ast =
+let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncrasies document_ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -82,7 +84,7 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 	(************************************************************************)
 
 	let module ImageSet = Set.Make (struct type t = Alias.t let compare = Pervasives.compare end) in
-
+	let module IsbnSet = Set.Make (struct type t = Book.isbn_t let compare = Pervasives.compare end) in
 
 	(************************************************************************)
 	(* Declaration of the mutable values used in the function.		*)
@@ -93,7 +95,8 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 	and notes = DynArray.create ()
 	and toc = DynArray.create ()
 	and images = ref ImageSet.empty
-	and isbns = DynArray.create ()
+	and isbnrefs = DynArray.create ()
+	and isbns = ref IsbnSet.empty
         and labels = Hashtbl.create 10
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
@@ -172,7 +175,8 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 	(*	Adds a new ISBN to the array of referenced books.
 	*)
 	and add_isbn comm feature isbn =
-		DynArray.add isbns (comm, feature, isbn)
+		DynArray.add isbnrefs (comm, feature, isbn);
+		isbns := IsbnSet.add isbn !isbns
 
 
 	(*	Adds a new pointer to the dictionary.
@@ -1095,22 +1099,26 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 
 	let retrieve_books () =
 		let books = Hashtbl.create 0 in
-		let make_book (comm, feature, isbn) =
-			try_lwt
-				book_maker isbn >>= fun book ->
-				Lwt.return (Some (isbn, book))
-			with exc ->
-				let msg = match exc with
-					| Unavailable_book_maker -> Error.Unavailable_book_maker (comm.comm_tag, Features.describe feature)
-					| Book.Maker_error err	 -> Error.Failed_book_maker (comm.comm_tag, Features.describe feature, err)
-					| Book.Malformed_ISBN _	 -> Error.Malformed_ISBN (comm.comm_tag, isbn)
-					| Book.Unknown_ISBN _	 -> Error.Unknown_ISBN (comm.comm_tag, isbn)
-					| exc			 -> raise exc
-				in	DynArray.add errors (Some comm.comm_linenum, msg);
-					Lwt.return None in
-		Lwt_list.map_s make_book (DynArray.to_list isbns) >>= fun book_list ->
-		List.filter_map identity book_list |> List.iter (fun (isbn, data) -> Hashtbl.add books isbn data);
-		Lwt.return books in
+		if not (IsbnSet.is_empty !isbns)
+		then begin
+			let open Bookmaker in
+			let results = bookmaker (IsbnSet.elements !isbns) in
+			let process_isbnref (comm, feature, isbn) =
+				try match List.assoc isbn results with
+					| Success book ->
+						Hashtbl.add books isbn book
+					| Failure failure ->
+						let msg = match failure with
+							| Unavailable	   -> Error.Unavailable_bookmaker (comm.comm_tag, Features.describe feature)
+							| Uncapable err    -> Error.Uncapable_bookmaker (comm.comm_tag, Features.describe feature, err)
+							| Malformed_ISBN _ -> Error.Malformed_ISBN (comm.comm_tag, isbn)
+							| Unknown_ISBN _   -> Error.Unknown_ISBN (comm.comm_tag, isbn)
+						in DynArray.add errors (Some comm.comm_linenum, msg)
+				with
+					Not_found -> raise (Bookmaker_error isbn)
+			in DynArray.iter process_isbnref isbnrefs
+		end;
+		books in
 
 
 	(************************************************************************)
@@ -1120,8 +1128,8 @@ let compile_document ?(book_maker = fun _ -> Lwt.fail Unavailable_book_maker) ~e
 	let contents = convert_frag document_ast in
 	let custom = filter_customisations () in
 	let () = filter_pointers () in
-	retrieve_books () >>= fun books ->
-	Lwt.return (contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, ImageSet.elements !images, books, labels, custom, DynArray.to_list errors)
+	let books = retrieve_books () in
+	(contents, DynArray.to_list bibs, DynArray.to_list notes, DynArray.to_list toc, ImageSet.elements !images, books, labels, custom, DynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -1160,33 +1168,31 @@ let collate_errors =
 let process_errors ~sort source errors =
 	let compare (a, _) (b, _) =
 		let ord_a = match a with Some x -> x.Error.error_line_number | None -> 0
-		and ord_b = match b with Some x -> x.Error.error_line_number | None -> 0
-		in Pervasives.compare ord_a ord_b in
+		and ord_b = match b with Some x -> x.Error.error_line_number | None -> 0 in
+		Pervasives.compare ord_a ord_b in
 	let collated = collate_errors source errors in
-	let sorted = if sort then List.stable_sort compare collated else collated
-	in match sorted with
+	let sorted = if sort then List.stable_sort compare collated else collated in
+	match sorted with
 		| []	   -> failwith "Compiler.process_errors"
 		| hd :: tl -> (hd, tl)
 
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile_manuscript ?book_maker ~expand_entities ~accepted ~denied ~default ~source document_ast =
+let compile_manuscript ?bookmaker ~expand_entities ~accepted ~denied ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accepted ~denied ~default in
-	compile_document ?book_maker ~expand_entities ~idiosyncrasies document_ast >>= fun (contents, bibs, notes, toc, images, books, labels, custom, errors) ->
-	let doc = match errors with
+	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies document_ast in
+	match errors with
 		| [] -> Ambivalent.make_valid_manuscript contents bibs notes toc images books labels custom
 		| xs -> Ambivalent.make_invalid_manuscript (process_errors ~sort:true source errors)
-	in Lwt.return doc
 
 
 (**	Compile a document AST into a composition.
 *)
-let compile_composition ?book_maker ~expand_entities ~accepted ~denied ~default ~source document_ast =
+let compile_composition ?bookmaker ~expand_entities ~accepted ~denied ~default ~source document_ast =
 	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accepted ~denied ~default in
-	compile_document ?book_maker ~expand_entities ~idiosyncrasies document_ast >>= fun (contents, _, _, _, images, books, _, _, errors) ->
-	let doc = match errors with
+	let (contents, _, _, _, images, books, _, _, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies document_ast in
+	match errors with
 		| [] -> Ambivalent.make_valid_composition (Obj.magic contents) images books
 		| xs -> Ambivalent.make_invalid_composition (process_errors ~sort:true source errors)
-	in Lwt.return doc
 

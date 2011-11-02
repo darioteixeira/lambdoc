@@ -32,24 +32,24 @@ end
 module type S =
 sig
 	val ambivalent_manuscript_from_string:
-		?book_maker: Book.maker_t ->
+		?bookmaker: Bookmaker.t ->
 		?verify_utf8: bool ->
 		?expand_entities: bool ->
 		?accepted: Features.manuscript_feature_t list ->
 		?denied: Features.manuscript_feature_t list ->
 		?default: Features.default_t ->
 		string ->
-		Ambivalent.manuscript_t Lwt.t
+		Ambivalent.manuscript_t
 
 	val ambivalent_composition_from_string:
-		?book_maker: Book.maker_t ->
+		?bookmaker: Bookmaker.t ->
 		?verify_utf8: bool ->
 		?expand_entities: bool ->
 		?accepted: Features.composition_feature_t list ->
 		?denied: Features.composition_feature_t list ->
 		?default: Features.default_t ->
 		string ->
-		Ambivalent.composition_t Lwt.t
+		Ambivalent.composition_t
 end
 
 
@@ -62,7 +62,7 @@ end
 module Make_reader (Reader: READER): S =
 struct
 	let ambivalent_document_from_string
-		?book_maker
+		?bookmaker
 		?(verify_utf8 = true)
 		?(expand_entities = true)
 		?(accepted = [])
@@ -74,24 +74,24 @@ struct
 			try
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let document_ast = Reader.ast_from_string source
-				in valid_compiler ?book_maker ~expand_entities ~accepted ~denied ~default ~source document_ast
+				in valid_compiler ?bookmaker ~expand_entities ~accepted ~denied ~default ~source document_ast
 			with
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
-					let errors = Compiler.process_errors ~sort:false sane_str msgs
-					in Lwt.return (invalid_maker errors)
+					let errors = Compiler.process_errors ~sort:false sane_str msgs in
+					invalid_maker errors
 				| Reader.Reading_error (line, msg) ->
-					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)]
-					in Lwt.return (invalid_maker errors)
+					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)] in
+					invalid_maker errors
 
-	let ambivalent_manuscript_from_string ?book_maker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
+	let ambivalent_manuscript_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
 		let valid_compiler = Compiler.compile_manuscript
 		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?book_maker ?verify_utf8 ?expand_entities ?accepted ?denied ?default ~valid_compiler ~invalid_maker source
+		in ambivalent_document_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default ~valid_compiler ~invalid_maker source
 
-	let ambivalent_composition_from_string ?book_maker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
+	let ambivalent_composition_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
 		let valid_compiler = Compiler.compile_composition
 		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?book_maker ?verify_utf8 ?expand_entities ?accepted ?denied ?default ~valid_compiler ~invalid_maker source
+		in ambivalent_document_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default ~valid_compiler ~invalid_maker source
 end
 
