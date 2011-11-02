@@ -44,7 +44,5 @@ struct
 				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 end
 
-module M = Reader.Make_reader (R)
-
-include M
+include Reader.Make_reader (R)
 

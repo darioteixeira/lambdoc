@@ -44,7 +44,5 @@ struct
 				raise (Failure ("Internal parser error in " ^ msg))
 end
 
-module M = Reader.Make_reader (R)
-
-include M
+include Reader.Make_reader (R)
 
