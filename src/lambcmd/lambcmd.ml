@@ -57,8 +57,10 @@ let string_of_xhtml the_title xhtml =
 				meta ~a:[a_http_equiv "content-type"] ~content:"text/html; charset=utf-8" ();
 				link ~a:[a_href (uri_of_string "css/lambdoc.css"); a_rel [`Stylesheet]; a_media [`All]; a_title "Default"] ();
 				])
-			(body [xhtml]))
-	in Xhtmlpretty.xhtml_print page
+			(body [xhtml])) in
+	let buf = Buffer.create 1024 in
+	XHTML.P.print ~output:(Buffer.add_string buf) page;
+	Buffer.contents buf
 
 
 let get_processor options =

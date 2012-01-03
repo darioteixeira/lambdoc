@@ -44,7 +44,7 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML.M.nmtokens ->
+		?extra_classes:XHTML_types.nmtokens ->
 		Ambivalent.manuscript_t -> t
 
 	val write_ambivalent_composition:
@@ -53,7 +53,7 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML.M.nmtokens ->
+		?extra_classes:XHTML_types.nmtokens ->
 		Ambivalent.composition_t -> t
 
 	val write_valid_manuscript:
@@ -62,7 +62,7 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML.M.nmtokens ->
+		?extra_classes:XHTML_types.nmtokens ->
 		Valid.manuscript_t -> t
 
 	val write_valid_composition:
@@ -71,15 +71,15 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML.M.nmtokens ->
+		?extra_classes:XHTML_types.nmtokens ->
 		Valid.composition_t -> t
 
 	val write_invalid_manuscript:
-		?extra_classes:XHTML.M.nmtokens ->
+		?extra_classes:XHTML_types.nmtokens ->
 		Invalid.manuscript_t -> t
 
 	val write_invalid_composition:
-		?extra_classes:XHTML.M.nmtokens ->
+		?extra_classes:XHTML_types.nmtokens ->
 		Invalid.composition_t -> t
 end
 

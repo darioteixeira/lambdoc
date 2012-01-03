@@ -1,2 +1,2 @@
-true: package(ocsigen.server), package(bookaml.amazon_with_ocsigen), use_nocommandline
+true: package(eliom.server), package(bookaml.amazon_with_ocsigen), use_nocommandline
 <lambcmd.*>: package(lwt.syntax), syntax(camlp4o)
