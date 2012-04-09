@@ -126,7 +126,7 @@ let dummy_floatation_data = Floatation_data Floatation.Center
 let dummy_classname_data = Classname_data ""
 let dummy_lang_data = Lang_data ""
 let dummy_style_data = Style_data Source.Boxed
-let dummy_coversize_data = Coversize_data Book.Medium
+let dummy_coversize_data = Coversize_data `Medium
 
 
 (********************************************************************************)

@@ -646,7 +646,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			let elem () =
 				let extra = Extra.parse comm errors [Rating_hnd; Coversize_hnd] in
 				let maybe_rating = Extra.get_maybe_numeric ~default:None extra Rating_hnd
-				and coversize = Extra.get_coversize ~default:Book.Medium extra Coversize_hnd in
+				and coversize = Extra.get_coversize ~default:`Medium extra Coversize_hnd in
 				add_isbn comm `Feature_bookpic isbn;
 				[Block.bookpic isbn maybe_rating coversize]
 			in check_block_comm `Feature_bookpic comm elem

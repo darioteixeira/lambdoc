@@ -351,9 +351,9 @@ struct
 	open Book
 
 	let coversize_of_string = function
-		| "small"  -> Small
-		| "medium" -> Medium
-		| "large"  -> Large
+		| "small"  -> `Small
+		| "medium" -> `Medium
+		| "large"  -> `Large
 		| _	   -> invalid_arg "coversize_of_string"
 end
 
