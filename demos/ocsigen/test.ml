@@ -57,7 +57,7 @@ let show_handler sp markup () =
 	let src = Std.input_all chan in
 	let () = close_in chan in
 	lwt doc = reader src in
-	let xhtml = Lambdoc_write_xhtml.Main.write_ambivalent_manuscript doc
+	let xhtml = Lambdoc_write_html5.Main.write_ambivalent_manuscript doc
 	in Lwt.return (make_page sp [xhtml])
 
 

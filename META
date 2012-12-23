@@ -84,14 +84,14 @@ package "read_lambtex"
 	archive(plugin,native) = "lambdoc_read_lambtex.cmxs"
 	)
 
-package "write_xhtml"
+package "write_html5"
 	(
-	name = "write_xhtml"
+	name = "write_html5"
 	version = "0.8.5"
-	requires = "extlib, tyxml, camlhighlight.write_xhtml, lambdoc.core, lambdoc.writer"
-	archive(byte) = "lambdoc_write_xhtml.cmo"
-	archive(native) = "lambdoc_write_xhtml.cmx"
-	archive(plugin,byte) = "lambdoc_write_xhtml.cmo"
-	archive(plugin,native) = "lambdoc_write_xhtml.cmxs"
+	requires = "extlib, tyxml, camlhighlight.write_html5, lambdoc.core, lambdoc.writer"
+	archive(byte) = "lambdoc_write_html5.cmo"
+	archive(native) = "lambdoc_write_html5.cmx"
+	archive(plugin,byte) = "lambdoc_write_html5.cmo"
+	archive(plugin,native) = "lambdoc_write_html5.cmxs"
 	)
 

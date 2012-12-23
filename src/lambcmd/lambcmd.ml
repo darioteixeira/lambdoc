@@ -79,7 +79,7 @@ let get_processor options =
 				| `Sexp	    -> (fun str -> Lambdoc_core.Ambivalent.deserialize_manuscript str)
 			and writer = match options.output_markup with
 				| `Sexp  -> Lambdoc_core.Ambivalent.serialize_manuscript
-				| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_manuscript ~translations:options.language doc))
+				| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_html5.Main.write_ambivalent_manuscript ~translations:options.language doc))
 			in Manuscript_io (reader, writer)
 		| `Composition ->
 			let reader = match options.input_markup with
@@ -89,7 +89,7 @@ let get_processor options =
 				| `Sexp	    -> (fun str -> Lambdoc_core.Ambivalent.deserialize_composition str)
 			and writer = match options.output_markup with
 				| `Sexp  -> Lambdoc_core.Ambivalent.serialize_composition
-				| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_xhtml.Main.write_ambivalent_composition ~translations:options.language doc))
+				| `Xhtml -> (fun doc -> string_of_xhtml options.title (Lambdoc_write_html5.Main.write_ambivalent_composition ~translations:options.language doc))
 			in Composition_io (reader, writer)
 
 

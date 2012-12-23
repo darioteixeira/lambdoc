@@ -12,7 +12,7 @@ LIB_DIR=$(SRC_DIR)/_build/lib
 OCAMLBUILD_OPTS=-use-ocamlfind -no-links
 
 LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.cmxs lambdoc.a
-COMPONENTS=lambdoc_core lambdoc_reader lambdoc_writer lambdoc_proxy lambdoc_read_lambhtml lambdoc_read_lamblite lambdoc_read_lambtex lambdoc_write_xhtml
+COMPONENTS=lambdoc_core lambdoc_reader lambdoc_writer lambdoc_proxy lambdoc_read_lambhtml lambdoc_read_lamblite lambdoc_read_lambtex lambdoc_write_html5
 COMPONENTS_CMI=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmi)
 COMPONENTS_CMO=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmo)
 COMPONENTS_CMX=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmx)

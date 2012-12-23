@@ -69,7 +69,7 @@ let show_handler sp (markup, (locale, (associate_tag, (access_key, secret_key)))
 	let src = Std.input_all chan in
 	let () = close_in chan in
 	lwt doc = reader src in
-	let xhtml = Lambdoc_write_xhtml.Main.write_ambivalent_manuscript ~book_lookup ~cover_lookup doc
+	let xhtml = Lambdoc_write_html5.Main.write_ambivalent_manuscript ~book_lookup ~cover_lookup doc
 	in Lwt.return (make_page sp [xhtml])
 
 
