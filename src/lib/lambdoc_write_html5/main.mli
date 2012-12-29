@@ -6,7 +6,8 @@
 *)
 (********************************************************************************)
 
+open Eliom_content
 open Lambdoc_writer
 
-include Writer.S with type t = [ `Div ] XHTML.M.elt
+include Writer.S with type t = [ `Div ] Html5.F.elt
 

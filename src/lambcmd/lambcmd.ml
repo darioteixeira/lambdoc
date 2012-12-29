@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-open XHTML.M
+open Eliom_content.Html5.F
 open Options
 open Bookaml_amazon
 open Lambdoc_core
@@ -51,15 +51,16 @@ let make_bookmaker ~credential raw_isbns =
 
 let string_of_xhtml the_title xhtml =
 	let page = (html
-			(head ~a:[a_profile (uri_of_string "http://www.w3.org/2005/11/profile")]
-				(title (pcdata the_title))
+			(head
+				(title (pcdata the_title)) [])
+				(*
 				[
-				meta ~a:[a_http_equiv "content-type"] ~content:"text/html; charset=utf-8" ();
-				link ~a:[a_href (uri_of_string "css/lambdoc.css"); a_rel [`Stylesheet]; a_media [`All]; a_title "Default"] ();
+				link ~rel:[`Stylesheet] ~href:(Raw.uri_of_string "css/lambdoc.css");
 				])
+				*)
 			(body [xhtml])) in
 	let buf = Buffer.create 1024 in
-	XHTML.P.print ~output:(Buffer.add_string buf) page;
+	Eliom_content.Html5.Printer.print ~output:(Buffer.add_string buf) page;
 	Buffer.contents buf
 
 

@@ -9,6 +9,7 @@
 (**	Document writer.
 *)
 
+open Eliom_content
 open Lambdoc_core
 open Basic
 
@@ -19,17 +20,17 @@ open Basic
 
 (**	Lookup function that converts a book ISBN into an actual URI.
 *)
-type book_lookup_t = Book.isbn_t -> XHTML.M.uri
+type book_lookup_t = Book.isbn_t -> Html5.F.uri
 
 
 (**	Lookup function that converts a book ISBN and cover specification into an actual URI.
 *)
-type cover_lookup_t = Book.isbn_t -> Book.coversize_t -> XHTML.M.uri
+type cover_lookup_t = Book.isbn_t -> Book.coversize_t -> Html5.F.uri
 
 
 (**	Lookup function that converts an image alias into an actual URI.
 *)
-type image_lookup_t = Alias.t -> XHTML.M.uri
+type image_lookup_t = Alias.t -> Html5.F.uri
 
 
 (**	The module type that all wannabe document writers must export.
@@ -44,7 +45,7 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
 		Ambivalent.manuscript_t -> t
 
 	val write_ambivalent_composition:
@@ -53,7 +54,7 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
 		Ambivalent.composition_t -> t
 
 	val write_valid_manuscript:
@@ -62,7 +63,7 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
 		Valid.manuscript_t -> t
 
 	val write_valid_composition:
@@ -71,15 +72,15 @@ sig
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
-		?extra_classes:XHTML_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
 		Valid.composition_t -> t
 
 	val write_invalid_manuscript:
-		?extra_classes:XHTML_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
 		Invalid.manuscript_t -> t
 
 	val write_invalid_composition:
-		?extra_classes:XHTML_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
 		Invalid.composition_t -> t
 end
 

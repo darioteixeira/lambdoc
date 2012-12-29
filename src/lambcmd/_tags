@@ -1,2 +1,3 @@
-true: package(eliom.server), package(bookaml.amazon_with_ocsigen), use_nocommandline
+true: package(ocsigenserver), package(ocsigenserver.ext.ocsipersist-sqlite), package(eliom.server), package(bookaml.ocsigen)
 <lambcmd.*>: package(lwt.syntax), syntax(camlp4o)
+
