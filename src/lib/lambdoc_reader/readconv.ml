@@ -9,7 +9,8 @@
 (**	Utility functions for converting {!Ast} values *to* {!Lambdoc_core} values.
 *)
 
-open ExtString
+module String = struct include String include BatString end
+
 open Lambdoc_core
 
 
@@ -291,7 +292,7 @@ struct
 
 
 	let utf8_of_codepoint num =
-		UTF8.init 1 (fun _ -> UChar.chr num)
+		BatUTF8.of_char (BatCamomile.UChar.chr num)
 
 
 	let expand_entity =

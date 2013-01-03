@@ -87,7 +87,7 @@ let reason_why_invalid perm = function
 
 (*	This function goes through all the command parameters, checking
 	each one individually for correctness.  Any errors found are
-	added to the [errors] [DynArray].
+	added to the [errors] [BatDynArray].
 *)
 let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 
@@ -96,21 +96,21 @@ let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
 			()
 		| Some reason ->
 			let msg = Error.Misplaced_label_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (Some comm.comm_linenum, msg)
+			BatDynArray.add errors (Some comm.comm_linenum, msg)
 
 	and () = match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (Some comm.comm_linenum, msg)
+			BatDynArray.add errors (Some comm.comm_linenum, msg)
 
 	and () = match reason_why_invalid perm_extra comm.comm_extra with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Misplaced_extra_parameter (comm.comm_tag, reason) in
-			DynArray.add errors (Some comm.comm_linenum, msg)
+			BatDynArray.add errors (Some comm.comm_linenum, msg)
 	in ()
 
 

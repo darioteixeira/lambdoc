@@ -1,4 +1,4 @@
 directory = "."
-requires = "extlib, lambdoc, bookaml"
+requires = "batteries, lambdoc, bookaml"
 archive(plugin,byte) = "module.cma"
 archive(plugin,native) = "module.cmxs"

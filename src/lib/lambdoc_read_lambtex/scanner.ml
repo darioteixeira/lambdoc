@@ -9,7 +9,8 @@
 (**	Scanner for the Lambtex reader.
 *)
 
-open ExtString
+module String = struct include String include BatString end
+
 open Parser
 open Lambdoc_reader
 

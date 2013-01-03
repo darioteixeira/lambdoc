@@ -9,7 +9,8 @@
 (**	Utility functions for converting {!Lambdoc_core} values to strings.
 *)
 
-open ExtString
+module String = struct include String include BatString end
+
 open Lambdoc_core
 
 

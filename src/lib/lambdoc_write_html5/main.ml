@@ -11,10 +11,11 @@
 	module's output from within Ocsigen/Eliom applications.
 *)
 
+module List = struct include List include BatList end
+module String = struct include String include BatString end
+
 open Eliom_content
 open Printf
-open ExtList
-open ExtString
 open Html5.F
 open Lambdoc_core
 open Prelude

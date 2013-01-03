@@ -24,7 +24,7 @@ module Basic_input:
 sig
 	open Basic
 
-	val expand_entity: string -> [ `Okay of string * string | `Error of Error.error_msg_t ]
+	val expand_entity: string -> [ `Okay of string * BatUTF8.t | `Error of Error.error_msg_t ]
 	val matches_ident: string -> bool
 	val bullet_of_string: string -> Bullet.t
 	val numbering_of_string: string -> Numbering.t

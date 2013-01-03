@@ -16,7 +16,8 @@
 	appropriate scanner to invoke.
 *)
 
-open ExtString
+module String = struct include String include BatString end
+
 open Lexing
 open Lambdoc_reader
 open Ast

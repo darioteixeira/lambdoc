@@ -19,7 +19,7 @@ open Lambdoc_core
 val check_feature:
 	?maybe_minipaged: bool option ->
 	?maybe_wrapped: bool option ->
-	(int option * Error.error_msg_t) DynArray.t ->
+	(int option * Error.error_msg_t) BatDynArray.t ->
 	Ast.command_t ->
 	Features.feature_t ->
 	unit

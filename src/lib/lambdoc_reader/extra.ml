@@ -6,9 +6,10 @@
 *)
 (********************************************************************************)
 
-open ExtArray
-open ExtList
-open ExtString
+module Array = struct include Array include BatArray end
+module List = struct include List include BatList end
+module String = struct include String include BatString end
+
 open Lambdoc_core
 open Basic
 open Error
@@ -105,7 +106,7 @@ type handle_t =
 	| Rating_hnd
 	| Coversize_hnd
 
-type error_t = (int option * Error.error_msg_t) DynArray.t
+type error_t = (int option * Error.error_msg_t) BatDynArray.t
 
 type extra_t = (handle_t, property_data_t option) Hashtbl.t
 
@@ -228,7 +229,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		Positive (Boolean_auto_data None)
 	| (key, Boolean_kind, _, Keyvalue_field (k, v)) when k = key ->
 		let msg = Error.Invalid_extra_boolean_parameter (comm.comm_tag, key, v) in
-		DynArray.add errors (Some comm.comm_linenum, msg);
+		BatDynArray.add errors (Some comm.comm_linenum, msg);
 		Positive (dummy_boolean_data)
 
 	| (key, Numeric_kind (low, high), true, Unnamed_field v) when v = "auto" ->
@@ -245,7 +246,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 				Positive (if a then Numeric_auto_data (Some data) else Numeric_data data)
 			| None ->
 				let msg = Error.Invalid_extra_numeric_parameter (comm.comm_tag, key, v, low, high) in
-				DynArray.add errors (Some comm.comm_linenum, msg);
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				Positive (dummy_numeric_data))
 
 	| (key, Bullet_kind, false, Unnamed_field v) ->
@@ -254,7 +255,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		(try Positive (Bullet_data (Basic_input.bullet_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_bullet_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_bullet_data))
 
 	| (key, Numbering_kind, false, Unnamed_field v) ->
@@ -263,7 +264,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		(try Positive (Numbering_data (Basic_input.numbering_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_numbering_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_numbering_data))
 
 	| (key, Floatation_kind, false, Unnamed_field v) ->
@@ -272,7 +273,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		(try Positive (Floatation_data (Basic_input.floatation_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_floatation_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_floatation_data))
 
 	| (key, Classname_kind, false, Unnamed_field v) ->
@@ -283,7 +284,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 			Positive (Classname_data v)
 		else
 			let msg = Error.Invalid_extra_classname_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_classname_data)
 
 	| (key, Lang_kind, false, Unnamed_field v) ->
@@ -294,7 +295,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 			Positive (Lang_data v)
 		else
 			let msg = Error.Invalid_extra_lang_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_lang_data)
 
 	| (key, Style_kind, false, Unnamed_field v) ->
@@ -303,7 +304,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		(try Positive (Style_data (Source_input.style_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_style_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_style_data))
 
 	| (key, Coversize_kind, false, Unnamed_field v) ->
@@ -312,7 +313,7 @@ let matcher errors comm key kind auto field = match (key, kind, auto, field) wit
 		(try Positive (Coversize_data (Book_input.coversize_of_string v))
 		with Invalid_argument _ ->
 			let msg = Error.Invalid_extra_coversize_parameter (comm.comm_tag, key, v) in
-			DynArray.add errors (Some comm.comm_linenum, msg);
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			Positive (dummy_coversize_data))
 
 	| _ ->
@@ -374,14 +375,14 @@ let summarise num_fields results =
 	we can be sure the solution is unique.
 *)
 let solve assigned taken undecided =
-	let solutions = DynArray.create () in
+	let solutions = BatDynArray.create () in
 	let last_solution = ref None in
 	let add_solution sol = match !last_solution with
 		| Some x when x = sol ->
 			()
 		| _ ->
 			last_solution := Some sol;
-			DynArray.add solutions sol in
+			BatDynArray.add solutions sol in
 	let rec really_solve assigned taken undecided =
 		let assign (row, col) value = match (assigned.(row), taken.(col)) with
 			| (None, false) ->
@@ -397,7 +398,7 @@ let solve assigned taken undecided =
 			else Undecided.iter assign undecided in
 	let () =
 		really_solve assigned taken undecided
-	in match DynArray.to_list solutions with
+	in match BatDynArray.to_list solutions with
 		| [] ->
 			No_solutions
 		| [(x, y)] ->
@@ -427,16 +428,16 @@ let process comm errors handles =
 						then	()
 						else	(any_untaken := true;
 							let msg = Error.Invalid_extra_unknown_parameter (comm.comm_tag, col, strs.(col))
-							in DynArray.add errors (Some comm.comm_linenum, msg))
+							in BatDynArray.add errors (Some comm.comm_linenum, msg))
 					in	Array.iteri check taken;
 						assigned
 				| No_solutions ->
 					let msg = Error.Invalid_extra_no_solutions (comm.comm_tag, extra)
-					in DynArray.add errors (Some comm.comm_linenum, msg);
+					in BatDynArray.add errors (Some comm.comm_linenum, msg);
 					dummy
 				| Multiple_solutions ->
 					let msg = Error.Invalid_extra_multiple_solutions (comm.comm_tag, extra)
-					in DynArray.add errors (Some comm.comm_linenum, msg);
+					in BatDynArray.add errors (Some comm.comm_linenum, msg);
 					dummy
 
 

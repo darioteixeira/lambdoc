@@ -33,7 +33,7 @@ type handle_t =
 	| Rating_hnd
 	| Coversize_hnd
 
-type error_t = (int option * Error.error_msg_t) DynArray.t
+type error_t = (int option * Error.error_msg_t) BatDynArray.t
 
 type extra_t
 

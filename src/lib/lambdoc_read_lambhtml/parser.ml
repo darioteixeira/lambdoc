@@ -9,8 +9,9 @@
 (**	Parser for the Lambhtml reader.
 *)
 
-open ExtList
-open ExtString
+module List = struct include List include BatList end
+module String = struct include String include BatString end
+
 open Pxp_document
 open Pxp_types
 open Lambdoc_core
@@ -24,9 +25,9 @@ open Ast
 
 module Math_store =
 struct
-	type t = string DynArray.t
+	type t = string BatDynArray.t
 
-	let make () = DynArray.create ()
+	let make () = BatDynArray.create ()
 
 	let count_newlines str =
 		let index from =
@@ -41,15 +42,15 @@ struct
 		let (full, tag, attrs, data) = match Pcre.get_substrings ~full_match:true subs with
 			| [| full; tag1; tag2; attrs; data |] -> (full, tag1 ^ tag2, attrs, data)
 			| _				      -> failwith "Math_store.add" in
-		let idx = DynArray.length store in
+		let idx = BatDynArray.length store in
 		let before = "<math" ^ tag ^ attrs ^ " idx=\"" ^ (string_of_int idx) ^ "\">"
 		and newlines = String.make (count_newlines full) '\n'
 		and after = "</math" ^ tag ^ ">" in
-		DynArray.add store data;
+		BatDynArray.add store data;
 		before ^ newlines ^ after
 
 	let get store idx =
-		DynArray.get store idx
+		BatDynArray.get store idx
 end
 
 
