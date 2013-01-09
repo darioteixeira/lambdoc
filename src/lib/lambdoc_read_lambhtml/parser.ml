@@ -9,14 +9,14 @@
 (**	Parser for the Lambhtml reader.
 *)
 
-module List = struct include List include BatList end
-module String = struct include String include BatString end
-
 open Pxp_document
 open Pxp_types
 open Lambdoc_core
 open Lambdoc_reader
 open Ast
+
+module List = BatList
+module String = BatString
 
 
 (********************************************************************************)

@@ -96,7 +96,7 @@ let get_processor options =
 
 let () =
 	let options = Options.parse () in
-	let input_str = BatStd.input_all options.input_chan in
+	let input_str = BatPervasives.input_all options.input_chan in
 	let processor = get_processor options in
 	let (output_str, is_valid) = match processor with
 		| Manuscript_io (reader, writer) ->

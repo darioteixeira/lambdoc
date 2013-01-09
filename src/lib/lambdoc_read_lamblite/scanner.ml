@@ -9,9 +9,9 @@
 (**	Scanner for Lamblite reader.  We use Ulex for handling the UTF-8 parsing.
 *)
 
-module String = struct include String include BatString end
-
 open Lambdoc_reader
+
+module String = BatString
 
 
 (********************************************************************************)

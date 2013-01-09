@@ -16,14 +16,14 @@
 	appropriate scanner to invoke.
 *)
 
-module String = struct include String include BatString end
-
 open Lexing
 open Lambdoc_reader
 open Ast
 open Globalenv
 open Parser
 open Scanner
+
+module String = BatString
 
 
 (********************************************************************************)

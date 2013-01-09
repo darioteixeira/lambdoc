@@ -10,15 +10,15 @@
 	a document AST into a proper, final, ambivalent document.
 *)
 
-module String = struct include String include BatString end
-module List = struct include List include BatList end
-
 open Lambdoc_core
 open Prelude
 open Basic
 open Ast
 open Readconv
 open Extra
+
+module String = BatString
+module List = BatList
 
 
 (********************************************************************************)

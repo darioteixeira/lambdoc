@@ -9,12 +9,12 @@
 (**	Tokenizer for the Lamblite reader.
 *)
 
-module String = struct include String include BatString end
-
 open Lexing
 open Lambdoc_reader.Ast
 open Scanner
 open Parser
+
+module String = BatString
 
 
 (********************************************************************************)

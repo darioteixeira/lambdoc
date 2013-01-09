@@ -6,15 +6,15 @@
 *)
 (********************************************************************************)
 
-module Array = struct include Array include BatArray end
-module List = struct include List include BatList end
-module String = struct include String include BatString end
-
 open Lambdoc_core
 open Basic
 open Error
 open Ast
 open Readconv
+
+module Array = BatArray
+module List = BatList
+module String = BatString
 
 
 (********************************************************************************)

@@ -9,10 +9,10 @@
 (**	Explains errors.
 *)
 
-module String = struct include String include BatString end
-
 open Printf
 open Lambdoc_core
+
+module String = BatString
 
 
 (********************************************************************************)
