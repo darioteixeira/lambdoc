@@ -133,7 +133,7 @@ let listify_order ?(spanify = false) ?(prespace = false) ?order_prefix order =
 		| (None, Some o)   -> Some o
 		| _		   -> None in
 	let bundle = match (content, prespace) with
-		| (Some c, true)  -> [space (); pcdata c]
+		| (Some c, true)  -> [entity "#xa0"; pcdata c]
 		| (Some c, false) -> [pcdata c]
 		| (None, _)	  -> []
 	in match (bundle, spanify) with
@@ -527,16 +527,16 @@ let write_valid_document
 		| `Pullquote (floatation, maybe_seq, frag) ->
 			let style = make_floatation floatation
 			and head = match maybe_seq with
-				| Some seq -> [Html5.F.h1 ~a:[a_class [!!"pull_head"]] ([entity "mdash"; entity "ensp"] @ (write_seq seq))]
+				| Some seq -> [Html5.F.h1 ~a:[a_class [!!"pull_head"]] ([entity "#x2014"; entity "#x2002"] @ (write_seq seq))]
 				| None	   -> []
 			in [Html5.F.div ~a:[a_class (!!"pull" :: style)] [Html5.F.div ~a:[a_class [!!"pull_aux"]] ((write_frag frag) @ head)]]
 
 		| `Boxout (floatation, data, maybe_seq, frag) ->
 			let formatter = function
 				| Some seq1, Some order, Some seq2 ->
-					seq1 @ (boxout_conv ~prespace:true order) @ [pcdata ":"; space ()] @ seq2
+					seq1 @ (boxout_conv ~prespace:true order) @ [pcdata ":"; entity "#xa0"] @ seq2
 				| Some seq1, None, Some seq2 ->
-					seq1 @ [pcdata ":"; space ()] @ seq2
+					seq1 @ [pcdata ":"; entity "#xa0"] @ seq2
 				| Some seq1, Some order, None ->
 					seq1 @ (boxout_conv ~prespace:true order)
 				| Some seq1, None, None ->
