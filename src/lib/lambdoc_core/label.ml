@@ -6,10 +6,6 @@
 *)
 (********************************************************************************)
 
-(**	Definitions pertaining to document labels.
-*)
-
-open Sexplib.Std
 open Basic
 
 
@@ -17,21 +13,15 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Label identifiers can either be [`Auto_label] (when they're automatically
-	specified by the system) or [`User_label] (when they're manually attributed
-	by the user).
-*)
 type t =
-	[ `Auto_label of Pointer.t
-	| `User_label of Pointer.t
-	] with sexp
+	| Auto of Pointer.t
+	| User of Pointer.t
+	with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-(**	So it satisfies the [Map.OrderedType] signature.
-*)
 let compare = Pervasives.compare
 

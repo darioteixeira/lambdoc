@@ -24,7 +24,6 @@ type t =
 	amazon_access_key: string option;
 	amazon_secret_key: string option;
 
-	category: Category.t;
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
 
@@ -48,7 +47,6 @@ let amazon_associate_tag_opt = StdOpt.str_option ()
 let amazon_access_key_opt = StdOpt.str_option ()
 let amazon_secret_key_opt = StdOpt.str_option ()
 
-let category_opt = Opt.value_option "CATEGORY" (Some Category.default) Category.of_string (fun exn str -> "Unknown category '" ^ str ^ "'")
 let input_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_input) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
 let output_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_output) Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
 
@@ -72,7 +70,6 @@ let () =
 	OptParser.add options ~group:amazon ~long_name:"amazon-access_key" ~help:"Amazon Web Services access key" amazon_access_key_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-secret_key" ~help:"Amazon Web Services secret key" amazon_secret_key_opt;
 
-	OptParser.add options ~group:markup ~short_name:'c' ~long_name:"category" ~help:"Document category (either 'manuscript' or 'composition'; assume 'manuscript' if not specified)" category_opt;
 	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambhtml', 'lamblite', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
 	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; assume 'xhtml' if not specified)" output_markup_opt;
 
@@ -102,7 +99,6 @@ let parse () = match OptParser.parse_argv options with
 			amazon_access_key = Opt.opt amazon_access_key_opt;
 			amazon_secret_key = Opt.opt amazon_secret_key_opt;
 
-			category = Opt.get category_opt;
 			input_markup = Opt.get input_markup_opt;
 			output_markup = Opt.get output_markup_opt;
 

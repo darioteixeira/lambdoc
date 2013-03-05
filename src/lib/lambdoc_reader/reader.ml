@@ -10,7 +10,6 @@
 *)
 
 open Lambdoc_core
-open Basic
 
 
 (********************************************************************************)
@@ -31,25 +30,15 @@ end
 *)
 module type S =
 sig
-	val ambivalent_manuscript_from_string:
+	val ambivalent_from_string:
 		?bookmaker: Bookmaker.t ->
 		?verify_utf8: bool ->
 		?expand_entities: bool ->
-		?accepted: Features.manuscript_feature_t list ->
-		?denied: Features.manuscript_feature_t list ->
+		?accepted: Features.public_feature_t list ->
+		?denied: Features.public_feature_t list ->
 		?default: Features.default_t ->
 		string ->
-		Ambivalent.manuscript_t
-
-	val ambivalent_composition_from_string:
-		?bookmaker: Bookmaker.t ->
-		?verify_utf8: bool ->
-		?expand_entities: bool ->
-		?accepted: Features.composition_feature_t list ->
-		?denied: Features.composition_feature_t list ->
-		?default: Features.default_t ->
-		string ->
-		Ambivalent.composition_t
+		Ambivalent.t
 end
 
 
@@ -61,37 +50,25 @@ end
 *)
 module Make_reader (Reader: READER): S =
 struct
-	let ambivalent_document_from_string
+	let ambivalent_from_string
 		?bookmaker
 		?(verify_utf8 = true)
 		?(expand_entities = true)
 		?(accepted = [])
 		?(denied = [])
 		?(default = `Accept)
-		~valid_compiler
-		~invalid_maker
 		source =
 			try
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
-				let document_ast = Reader.ast_from_string source
-				in valid_compiler ?bookmaker ~expand_entities ~accepted ~denied ~default ~source document_ast
+				let ast = Reader.ast_from_string source in
+				Compiler.compile ?bookmaker ~expand_entities ~accepted ~denied ~default ~source ast
 			with
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
 					let errors = Compiler.process_errors ~sort:false sane_str msgs in
-					invalid_maker errors
+					Ambivalent.make_invalid errors
 				| Reader.Reading_error (line, msg) ->
 					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)] in
-					invalid_maker errors
-
-	let ambivalent_manuscript_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
-		let valid_compiler = Compiler.compile_manuscript
-		and invalid_maker = Ambivalent.make_invalid_manuscript
-		in ambivalent_document_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default ~valid_compiler ~invalid_maker source
-
-	let ambivalent_composition_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default source =
-		let valid_compiler = Compiler.compile_composition
-		and invalid_maker = Ambivalent.make_invalid_composition
-		in ambivalent_document_from_string ?bookmaker ?verify_utf8 ?expand_entities ?accepted ?denied ?default ~valid_compiler ~invalid_maker source
+					Ambivalent.make_invalid errors
 end
 

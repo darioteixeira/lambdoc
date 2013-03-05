@@ -16,14 +16,24 @@ open Prelude
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t = Error.t nelist with sexp
-type composition_t = Error.t nelist with sexp
+type t = Error.t nelist with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val make_manuscript: Error.t nelist -> manuscript_t
-val make_composition: Error.t nelist -> composition_t
+(********************************************************************************)
+(**	{2 Constructors}							*)
+(********************************************************************************)
+
+val make: Error.t nelist -> t
+
+
+(********************************************************************************)
+(**	{2 Serialisation facilities}						*)
+(********************************************************************************)
+
+val serialize: t -> string
+val deserialize: string -> t
 

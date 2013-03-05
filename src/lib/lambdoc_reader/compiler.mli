@@ -24,23 +24,13 @@ val process_errors:
 	(int option * Error.error_msg_t) list ->
 	Error.t nelist
 
-val compile_manuscript:
+val compile:
 	?bookmaker: Bookmaker.t ->
 	expand_entities: bool ->
-	accepted: Features.manuscript_feature_t list ->
-	denied: Features.manuscript_feature_t list ->
+	accepted: Features.public_feature_t list ->
+	denied: Features.public_feature_t list ->
 	default: Features.default_t ->
 	source: string ->
 	Ast.t ->
-	Ambivalent.manuscript_t
-
-val compile_composition:
-	?bookmaker: Bookmaker.t ->
-	expand_entities: bool ->
-	accepted: Features.composition_feature_t list ->
-	denied: Features.composition_feature_t list ->
-	default: Features.default_t ->
-	source: string ->
-	Ast.t ->
-	Ambivalent.composition_t
+	Ambivalent.t
 

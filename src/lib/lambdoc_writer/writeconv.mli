@@ -20,16 +20,6 @@ open Lambdoc_core
 (**	{2 Basic values}							*)
 (********************************************************************************)
 
-module Basic_output:
-sig
-	open Basic
-
-	val string_of_bullet: Bullet.t -> string
-	val string_of_numbering: Numbering.t -> string
-	val string_of_floatation: Floatation.t -> string
-end
-
-
 (********************************************************************************)
 (**	{2 Book values}								*)
 (********************************************************************************)
@@ -39,16 +29,6 @@ sig
 	open Book
 
 	val string_of_isbn: isbn_t -> string
-end
-
-
-(********************************************************************************)
-(**	{2 Source values}							*)
-(********************************************************************************)
-
-module Source_output:
-sig
-	val string_of_style: Source.style_t -> string
 end
 
 

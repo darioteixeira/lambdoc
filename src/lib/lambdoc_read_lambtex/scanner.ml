@@ -9,9 +9,6 @@
 (**	Scanner for the Lambtex reader.
 *)
 
-open Parser
-open Lambdoc_reader
-
 module String = BatString
 
 
@@ -104,8 +101,8 @@ let regexp ident = alpha (alpha | deci)*
 
 let regexp order = '(' [^ ')' '[' ']' '<' '>' '{' '}']* ')'
 let regexp label = '[' [^ ']' '(' ')' '<' '>' '{' '}']* ']'
-let regexp extra = '<' [^ '>' '[' ']' '(' ')' '{' '}']* '>'
-let regexp optional = ( order | label | extra )*
+let regexp style = '<' [^ '>' '[' ']' '(' ')' '{' '}']* '>'
+let regexp optional = ( order | label | style )*
 let regexp primary = '{' ident '}'
 
 let regexp simple_comm = '\\' ident optional
@@ -134,8 +131,8 @@ let regexp quote_close = "''"
 
 let count_lines lexbuf =
 	let adder acc el = if el = 0x0a then acc+1 else acc in	(* We expect lines to be terminated with '\r\n' or just '\n' *)
-	let lexeme = Ulexing.lexeme lexbuf
-	in Array.fold_left adder 0 lexeme
+	let lexeme = Ulexing.lexeme lexbuf in
+	Array.fold_left adder 0 lexeme
 
 let whole_lexbuf lexbuf =
 	Ulexing.utf8_lexeme lexbuf
@@ -250,8 +247,8 @@ let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token_t]) = lexe
 *)
 let literal_scanner terminator : (Ulexing.lexbuf -> int * [> literal_token_t]) = lexer
 	| env_end ->
-		let str = rtrim_lexbuf ~first:5 lexbuf
-		in if str = terminator
+		let str = rtrim_lexbuf ~first:5 lexbuf in
+		if str = terminator
 		then (0, `Tok_env_end (rtrim_lexbuf ~first:5 lexbuf))
 		else (0, `Tok_raw (whole_lexbuf lexbuf))
 	| eof ->

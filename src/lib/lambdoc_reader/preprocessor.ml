@@ -47,8 +47,8 @@ let verify_utf8 s =
 		let n = Char.code (String.unsafe_get s i) in
 		if n < 0x80
 		then			(* One-byte character *)
-			let () = if n = 0x0a then incr (line)	(* We expect lines to be terminated with '\r\n' or just '\n' *)
-			in (add_valid i 1; main (i + 1))
+			let () = if n = 0x0a then incr (line) in	(* We expect lines to be terminated with '\r\n' or just '\n' *)
+			(add_valid i 1; main (i + 1))
 		else if n < 0xc2
 		then
 			(add_invalid (); main (i + 1))
@@ -79,8 +79,8 @@ let verify_utf8 s =
 		else
 			(add_invalid (); main (i + 1))
 	in
-		let sane = main 0
-		in if not (BatDynArray.empty error_lines)
+		let sane = main 0 in
+		if not (BatDynArray.empty error_lines)
 		then raise (Malformed_source (sane, BatDynArray.to_list error_lines))
 		else ()
 

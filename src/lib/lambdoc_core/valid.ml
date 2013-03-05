@@ -21,20 +21,17 @@ type books_t = (Book.isbn_t, Book.t) Hashtbl.t with sexp
 
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
 
-type 'a document_t =
+type t =
 	{
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
-	toc: Heading.heading_t list;
+	toc: Heading.t list;
 	images: Alias.t list;
 	books: books_t;
 	labels: labels_t;
 	custom: Custom.dict_t;
 	} with sexp
-
-type manuscript_t = [ `Manuscript ] document_t with sexp
-type composition_t = [ `Composition ] document_t with sexp
 
 
 (********************************************************************************)
@@ -45,44 +42,17 @@ type composition_t = [ `Composition ] document_t with sexp
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-let make_manuscript content bibs notes toc images books labels custom =
-	{
-	content = Block.get_frag content;
-	bibs = bibs;
-	notes = notes;
-	toc = toc;
-	images = images;
-	books = books;
-	labels = labels;
-	custom = custom;
-	}
-
-let make_composition content images books =
-	{
-	content = Block.get_frag content;
-	bibs = [];
-	notes = [];
-	toc = [];
-	images = images;
-	books = books;
-	labels = Hashtbl.create 0;
-	custom = Hashtbl.create 0;
-	}
+let make content bibs notes toc images books labels custom =
+	{content; bibs; notes; toc; images; books; labels; custom}
 
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-let serialize_manuscript doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_manuscript_t doc)
+let serialize doc =
+	Sexplib.Sexp.to_string_mach (sexp_of_t doc)
 
-let serialize_composition doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_composition_t doc)
-
-let deserialize_manuscript str =
-	manuscript_t_of_sexp (Sexplib.Sexp.of_string str)
-
-let deserialize_composition str =
-	composition_t_of_sexp (Sexplib.Sexp.of_string str)
+let deserialize str =
+	t_of_sexp (Sexplib.Sexp.of_string str)
 

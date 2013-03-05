@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Utility functions for converting {!Ast} values *to* {!Lambdoc_core} values.
+(**	Utility functions for converting {!Ast} values to {!Lambdoc_core} values.
 *)
 
 open Lambdoc_core
@@ -24,9 +24,6 @@ module String = BatString
 
 module Basic_input =
 struct
-	open Basic
-
-
 	let entity_list =
 		[
 		("Aacute",	193);
@@ -296,8 +293,8 @@ struct
 
 
 	let expand_entity =
-		let rex = Pcre.regexp "^(?:(?:#x([a-zA-Z0-9]+))|(?:#([a-zA-Z0-9]+))|([[a-zA-Z0-9]+))$"
-		in fun ent ->
+		let rex = Pcre.regexp "^(?:(?:#x([a-zA-Z0-9]+))|(?:#([a-zA-Z0-9]+))|([[a-zA-Z0-9]+))$" in
+		fun ent ->
 			try match Pcre.get_opt_substrings (Pcre.exec ~rex ent) with
 				| [| _; Some x; None; None |] ->
 					(try `Okay (ent, utf8_of_codepoint (int_of_string ("0x" ^ x))) with _ -> `Error (Error.Invalid_entity_hexa ent))
@@ -313,66 +310,8 @@ struct
 
 
 	let matches_ident =
-		let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9\\.:-_]*$"
-		in fun str -> Pcre.pmatch ~rex str
-	
-
-	let bullet_of_string = function
-		| "disc"   -> Bullet.Disc
-		| "circle" -> Bullet.Circle
-		| "square" -> Bullet.Square
-		| "none"   -> Bullet.None
-		| _	   -> invalid_arg "bullet_of_string"
-
-
-	let numbering_of_string = function
-		| "decimal" | "0"     -> Numbering.Decimal
-		| "lower-roman" | "i" -> Numbering.Lower_roman
-		| "upper-roman" | "I" -> Numbering.Upper_roman
-		| "lower-alpha" | "a" -> Numbering.Lower_alpha
-		| "upper-alpha" | "A" -> Numbering.Upper_alpha
-		| "none"	      -> Numbering.None
-		| _		      -> invalid_arg "numbering_of_string"
-
-
-	let floatation_of_string = function
-		| "center" -> Floatation.Center
-		| "left"   -> Floatation.Left
-		| "right"  -> Floatation.Right
-		| _	   -> invalid_arg "floatation_of_string"
-end
-
-
-(********************************************************************************)
-(**	{2 Book values}								*)
-(********************************************************************************)
-
-module Book_input =
-struct
-	open Book
-
-	let coversize_of_string = function
-		| "small"  -> `Small
-		| "medium" -> `Medium
-		| "large"  -> `Large
-		| _	   -> invalid_arg "coversize_of_string"
-end
-
-
-(********************************************************************************)
-(**	{2 Source values}							*)
-(********************************************************************************)
-
-module Source_input =
-struct
-	open Source
-
-	let style_of_string = function
-		| "plain"   -> Plain
-		| "boxed"   -> Boxed
-		| "zebra"   -> Zebra
-		| "console" -> Console
-		| _	    -> invalid_arg "style_of_string"
+		let rex = Pcre.regexp "^[a-zA-Z][a-zA-Z0-9\\.:-_]*$" in
+		fun str -> Pcre.pmatch ~rex str
 end
 
 
@@ -383,11 +322,11 @@ end
 module Literal_input =
 struct
 	let trim =
-		let left_rex = Pcre.regexp "^(\\s*[\n\r]+)*(.)"
-		and right_rex = Pcre.regexp "(\\s*[\n\r]+)*\\s*$"
-		in fun str ->
-			let left_trimmed = Pcre.replace_first ~rex:left_rex ~templ:"$2" str
-			in Pcre.replace_first ~rex:right_rex ~templ:"" left_trimmed
+		let left_rex = Pcre.regexp "^(\\s*[\n\r]+)*(.)" in
+		let right_rex = Pcre.regexp "(\\s*[\n\r]+)*\\s*$" in
+		fun str ->
+			let left_trimmed = Pcre.replace_first ~rex:left_rex ~templ:"$2" str in
+			Pcre.replace_first ~rex:right_rex ~templ:"" left_trimmed
 end
 
 
@@ -411,8 +350,8 @@ struct
 		| _   -> invalid_arg "colspec_of_string"
 
 	let cellspec_of_string =
-		let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$"
-		in fun str ->
+		let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$" in
+		fun str ->
 			let subs = Pcre.exec ~rex str in
 			let colspan = int_of_string (Pcre.get_named_substring rex "colspan" subs)
 			and colspec = colspec_of_string (Pcre.get_named_substring rex "colspec" subs)
@@ -449,8 +388,8 @@ struct
 
 
 	let auto_ordinal counter =
-		let () = incr counter
-		in `Auto_given !counter
+		let () = incr counter in
+		`Auto_given !counter
 
 
 	let auto_hierarchical level counter =
@@ -458,18 +397,16 @@ struct
 			| (`Level1, (l1, _, _))		-> (l1+1, 0, 0)
 			| (`Level2, (l1, l2, _))	-> (l1, l2+1, 0)
 			| (`Level3, (l1, l2, l3))	-> (l1, l2, l3+1) in
-		let () = counter := (l1, l2, l3)
-		in match level with
+		counter := (l1, l2, l3);
+		match level with
 			| `Level1 -> `Auto_given (Level1_order l1)
 			| `Level2 -> `Auto_given (Level2_order (l1, l2))
 			| `Level3 -> `Auto_given (Level3_order (l1, l2, l3))
 
 
 	let user_ordinal str =
-		try
-			`User_given (int_of_string str)
-		with
-			Failure "int_of_string" -> raise (Invalid_order_format str)
+		try `User_given (int_of_string str)
+		with Failure "int_of_string" -> raise (Invalid_order_format str)
 
 
 	let user_hierarchical level str =
@@ -495,11 +432,11 @@ struct
 	open Math
 
 	let from_mathtex mathtex =
-		let mathml = Blahcaml.safe_mathml_from_tex mathtex
-		in Both (mathtex, mathml)
+		let mathml = Blahcaml.safe_mathml_from_tex mathtex in
+		Both (mathtex, mathml)
 
 	let from_mathml mathml =
-		let sane = Blahcaml.sanitize_mathml mathml
-		in Mathml sane
+		let sane = Blahcaml.sanitize_mathml mathml in
+		Mathml sane
 end
 

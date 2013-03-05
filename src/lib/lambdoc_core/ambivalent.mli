@@ -17,16 +17,10 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t =
-	[ `Valid of Valid.manuscript_t
-	| `Invalid of Invalid.manuscript_t
-	] with sexp
-
-
-type composition_t =
-	[ `Valid of Valid.composition_t
-	| `Invalid of Invalid.composition_t
-	] with sexp
+type t =
+	| Valid of Valid.t
+	| Invalid of Invalid.t
+	with sexp
 
 
 (********************************************************************************)
@@ -37,35 +31,24 @@ type composition_t =
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-val make_valid_manuscript:
-	([< `Composition | `Manuscript ], _, _, _, _) Block.t nelist ->
+val make_valid:
+	Block.frag_t ->
 	Bib.t list ->
 	Note.t list ->
-	Heading.heading_t list ->
+	Heading.t list ->
 	Alias.t list ->
 	Valid.books_t ->
 	Valid.labels_t ->
 	Custom.dict_t ->
-	manuscript_t
+	t
 
-val make_valid_composition:
-	([< `Composition ], _, _, _, _) Block.t nelist ->
-	Alias.t list ->
-	Valid.books_t ->
-	composition_t
-
-val make_invalid_manuscript: Error.t nelist -> manuscript_t
-
-val make_invalid_composition: Error.t nelist -> composition_t
+val make_invalid: Error.t nelist -> t
 
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-val serialize_manuscript: manuscript_t -> string
-val serialize_composition: composition_t -> string
-
-val deserialize_manuscript: string -> manuscript_t
-val deserialize_composition: string -> composition_t
+val serialize: t -> string
+val deserialize: string -> t
 

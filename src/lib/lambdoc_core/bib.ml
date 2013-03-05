@@ -6,9 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
-open Basic
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -31,11 +28,5 @@ type t =
 (********************************************************************************)
 
 let make label order author title resource =
-	{
-	label = label;
-	order = order;
-	author = Inline.get_seq author;
-	title = Inline.get_seq title;
-	resource = Inline.get_seq resource;
-	}
+	{label; order; author; title; resource}
 

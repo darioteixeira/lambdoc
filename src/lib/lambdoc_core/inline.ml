@@ -15,62 +15,61 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type 'a inline_t =
-	[ `Plain of Ustring.t
-	| `Entity of Entity.t
-	| `Linebreak
-	| `Math of Math.t
-	| `Glyph of Alias.t * string
-	| `Bold of 'a nelist
-	| `Emph of 'a nelist
-	| `Code of 'a nelist
-	| `Caps of 'a nelist
-	| `Ins of 'a nelist
-	| `Del of 'a nelist
-	| `Sup of 'a nelist
-	| `Sub of 'a nelist
-	| `Mbox of 'a nelist
-	| `Span of Classname.t option * 'a nelist
-	| `Link of Uri.t * 'a nelist option
-	| `Booklink of Book.isbn_t * Book.rating_t option * 'a nelist option
-	| `See of Pointer.t nelist
-	| `Cite of Pointer.t nelist
-	| `Ref of Pointer.t * 'a nelist option
-	| `Sref of Pointer.t
-	] with sexp
+type inline_t =
+	| Plain of string
+	| Entity of Entity.t
+	| Linebreak
+	| Mathinl of Math.t
+	| Glyph of Alias.t * string
+	| Bold of seq_t
+	| Emph of seq_t
+	| Code of seq_t
+	| Caps of seq_t
+	| Ins of seq_t
+	| Del of seq_t
+	| Sup of seq_t
+	| Sub of seq_t
+	| Mbox of seq_t
+	| Span of seq_t
+	| Link of Uri.t * seq_t option
+	| Booklink of Book.isbn_t * Book.rating_t option * seq_t option
+	| See of Pointer.t nelist
+	| Cite of Pointer.t nelist
+	| Ref of Pointer.t * seq_t option
+	| Sref of Pointer.t
 
-type raw_inline_t = raw_inline_t inline_t with sexp
-type seq_t = raw_inline_t nelist with sexp
+and t =
+	{
+	inline: inline_t;
+	attr: Classname.t list;
+	}
 
-type (+'a, +'b) t = ('a, 'b) t inline_t with sexp
+and seq_t = t nelist with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let plain txt = `Plain txt
-let entity ent = `Entity ent
-let linebreak () = `Linebreak
-let math data = `Math data
-let glyph alias alt = `Glyph (alias, alt)
-let bold seq = `Bold seq
-let emph seq = `Emph seq
-let code seq = `Code seq
-let caps seq = `Caps seq
-let ins seq = `Ins seq
-let del seq = `Del seq
-let sup seq = `Sup seq
-let sub seq = `Sub seq
-let mbox seq = `Mbox seq
-let span classname seq = `Span (classname, seq)
-let link uri maybe_seq = `Link (uri, maybe_seq)
-let booklink isbn maybe_rating maybe_seq = `Booklink (isbn, maybe_rating, maybe_seq)
-let see (hd, tl) = `See (hd, tl)
-let cite (hd, tl) = `Cite (hd, tl)
-let ref pointer maybe_seq = `Ref (pointer, maybe_seq)
-let sref pointer = `Sref pointer
-
-let get_seq seq = seq
-let get_inlines xs = xs
+let plain ?(attr = Attr.default) txt = {inline = Plain txt; attr}
+let entity ?(attr = Attr.default) ent = {inline = Entity ent; attr}
+let linebreak ?(attr = Attr.default) () = {inline = Linebreak; attr}
+let mathinl ?(attr = Attr.default) data = {inline = Mathinl data; attr}
+let glyph ?(attr = Attr.default) alias alt = {inline = Glyph (alias, alt); attr}
+let bold ?(attr = Attr.default) seq = {inline = Bold seq; attr}
+let emph ?(attr = Attr.default) seq = {inline = Emph seq; attr}
+let code ?(attr = Attr.default) seq = {inline = Code seq; attr}
+let caps ?(attr = Attr.default) seq = {inline = Caps seq; attr}
+let ins ?(attr = Attr.default) seq = {inline = Ins seq; attr}
+let del ?(attr = Attr.default) seq = {inline = Del seq; attr}
+let sup ?(attr = Attr.default) seq = {inline = Sup seq; attr}
+let sub ?(attr = Attr.default) seq = {inline = Sub seq; attr}
+let mbox ?(attr = Attr.default) seq = {inline = Mbox seq; attr}
+let span ?(attr = Attr.default) seq = {inline = Span seq; attr}
+let link ?(attr = Attr.default) uri maybe_seq = {inline = Link (uri, maybe_seq); attr}
+let booklink ?(attr = Attr.default) isbn maybe_rating maybe_seq = {inline = Booklink (isbn, maybe_rating, maybe_seq); attr}
+let see ?(attr = Attr.default) (hd, tl) = {inline = See (hd, tl); attr}
+let cite ?(attr = Attr.default) (hd, tl) = {inline = Cite (hd, tl); attr}
+let ref ?(attr = Attr.default) pointer maybe_seq = {inline = Ref (pointer, maybe_seq); attr}
+let sref ?(attr = Attr.default) pointer = {inline = Sref pointer; attr}
 

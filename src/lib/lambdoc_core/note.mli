@@ -30,5 +30,5 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val make: Label.t -> order_t -> (_, _, _, _, _) Block.t nelist -> t
+val make: Label.t -> order_t -> Block.frag_t -> t
 

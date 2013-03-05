@@ -26,7 +26,7 @@ type command_t =
 	comm_tag: Ident.t option;
 	comm_label: Pointer.t option;
 	comm_order: string option;
-	comm_extra: string option;
+	comm_style: string option;
 	comm_linenum: int;
 	}
 
@@ -95,7 +95,7 @@ type frag_t = block_t list
 	| Itemize of (command_t * frag_t) list
 	| Enumerate of (command_t * frag_t) list
 	| Description of (command_t * seq_t * frag_t) list
-	| Qanda of ((command_t * qanda_t * frag_t) * (command_t * qanda_t * frag_t)) list
+	| Qanda of (command_t * qanda_t * frag_t) list
 	| Verse of frag_t
 	| Quote of frag_t
 	| Mathtex_blk of string
@@ -106,7 +106,6 @@ type frag_t = block_t list
 	| Verbatim of string
 	| Picture of string * string
 	| Bookpic of string
-	| Decor of block_t
 	| Pullquote of seq_t option * frag_t
 	| Custom of Custom.kind_t option * string * seq_t option * frag_t
 	| Equation of seq_t option * block_t
@@ -129,8 +128,10 @@ type frag_t = block_t list
 	| Theoremdef of string * seq_t * string option
 
 and qanda_t =
-	| Different of seq_t option
-	| Repeated
+	| New_questioner of seq_t option
+	| New_answerer of seq_t option
+	| Same_questioner
+	| Same_answerer
 
 
 (********************************************************************************)

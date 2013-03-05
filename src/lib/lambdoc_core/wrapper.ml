@@ -7,7 +7,6 @@
 (********************************************************************************)
 
 open Sexplib.Std
-open Basic
 
 
 (********************************************************************************)
@@ -24,7 +23,7 @@ type kind_t =
 	with sexp
 
 type t =
-	| Ordered of  Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t ]) Order.t * Inline.seq_t option
+	| Ordered of Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t ]) Order.t * Inline.seq_t option
 	| Unordered of Label.t * Inline.seq_t
 	with sexp
 

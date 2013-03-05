@@ -26,29 +26,6 @@ sig
 
 	val expand_entity: string -> [ `Okay of string * BatUTF8.t | `Error of Error.error_msg_t ]
 	val matches_ident: string -> bool
-	val bullet_of_string: string -> Bullet.t
-	val numbering_of_string: string -> Numbering.t
-	val floatation_of_string: string -> Floatation.t
-end
-
-
-(********************************************************************************)
-(**	{2 Book values}								*)
-(********************************************************************************)
-
-module Book_input:
-sig
-	val coversize_of_string: string -> Book.coversize_t
-end
-
-
-(********************************************************************************)
-(**	{2 Source values}							*)
-(********************************************************************************)
-
-module Source_input:
-sig
-	val style_of_string: string -> Source.style_t
 end
 
 

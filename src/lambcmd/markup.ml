@@ -10,9 +10,9 @@
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type class_t = [ `Manuscript | `Composition ]
 type input_t = [ `Lambtex | `Lamblite | `Lambhtml | `Sexp ]
-type output_t = [ `Sexp | `Xhtml ]
+
+type output_t = [ `Sexp | `Html5 ]
 
 
 (********************************************************************************)
@@ -26,23 +26,19 @@ let input_of_string x = match String.lowercase x with
 	| "sexp"     -> `Sexp
 	| _	     -> invalid_arg ("Markup.input_of_string: " ^ x)
 
-
 let output_of_string x = match String.lowercase x with
-	| "sexp"  -> `Sexp
-	| "xhtml" -> `Xhtml
-	| x	  -> invalid_arg ("Markup.output_of_string: " ^ x)
-
+	| "sexp" -> `Sexp
+	| "html" -> `Html5
+	| x	 -> invalid_arg ("Markup.output_of_string: " ^ x)
 
 let to_string = function
 	| `Lambtex  -> "Lambtex"
 	| `Lamblite -> "Lamblite"
 	| `Lambhtml -> "Lambhtml"
 	| `Sexp     -> "Sexp"
-	| `Xhtml    -> "Xhtml"
-
+	| `Html5    -> "Html5"
 
 let default_input = `Lambtex
 
-
-let default_output = `Xhtml
+let default_output = `Html5
 

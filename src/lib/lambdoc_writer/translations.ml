@@ -37,20 +37,7 @@ type t =
 (********************************************************************************)
 
 let make equation printout table figure part appendix section bibliography notes toc abstract =
-	{
-	equation = Inline.get_seq equation; 
-	printout = Inline.get_seq printout; 
-	table = Inline.get_seq table; 
-	figure = Inline.get_seq figure; 
-	part = Inline.get_seq part;
-	appendix = Inline.get_seq appendix; 
-	section = Inline.get_seq section; 
-	bibliography = Inline.get_seq bibliography; 
-	notes = Inline.get_seq notes; 
-	toc = Inline.get_seq toc; 
-	abstract = Inline.get_seq abstract; 
-	}
-
+	{equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract}
 
 let english_names = make
 	(Inline.plain "Eq.", [])
@@ -65,7 +52,6 @@ let english_names = make
 	(Inline.plain "Table of Contents", [])
 	(Inline.plain "Abstract", [])
 
-
 let french_names = make
 	(Inline.plain "Eq.", [])
 	(Inline.plain "List.", [])
@@ -79,7 +65,6 @@ let french_names = make
 	(Inline.plain "Index", [])
 	(Inline.plain "Résumé", [])
 
-
 let portuguese_names = make
 	(Inline.plain "Eq.", [])
 	(Inline.plain "List.", [])
@@ -92,7 +77,6 @@ let portuguese_names = make
 	(Inline.plain "Notas", [])
 	(Inline.plain "Índice", [])
 	(Inline.plain "Resumo", [])
-
 
 let default = english_names
 

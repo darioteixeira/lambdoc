@@ -52,6 +52,6 @@ let pop new_name =
 	then raise (Pop_mismatch (string_of_name new_name, string_of_name old_name))
 
 let get_scanner () =
-	let (_, scanner) = Stack.top history
-	in scanner
+	let (_, scanner) = Stack.top history in
+	scanner
 

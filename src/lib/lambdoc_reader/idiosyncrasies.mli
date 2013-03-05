@@ -20,17 +20,7 @@ type t
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val make_composition_idiosyncrasies:
-	accepted: Features.composition_feature_t list ->
-	denied: Features.composition_feature_t list ->
-	default: Features.default_t -> 
-	t
+val make: accepted:Features.public_feature_t list -> denied:Features.public_feature_t list -> default:Features.default_t -> t
 
-val make_manuscript_idiosyncrasies:
-	accepted: Features.manuscript_feature_t list ->
-	denied: Features.manuscript_feature_t list ->
-	default: Features.default_t ->
-	t
-
-val check_feature: Features.feature_t -> t -> bool
+val check: Features.feature_t -> t -> bool
 

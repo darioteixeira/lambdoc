@@ -85,7 +85,7 @@ let command_from_node node =
 	comm_tag = (match node#node_type with T_element tag -> Some tag | _ -> None);
 	comm_label = node#optional_string_attribute "label";
 	comm_order = node#optional_string_attribute "order";
-	comm_extra = node#optional_string_attribute "extra";
+	comm_style = node#optional_string_attribute "style";
 	comm_linenum = let (_, line, _) = node#position in line - 1;
 	}
 
@@ -93,11 +93,11 @@ let command_from_node node =
 let process_math =
 	let expansion_map = [("&amp;", "&"); ("&apos;", "'"); ("&gt;", ">"); ("&lt;", "<"); ("&quot;", "\"")] in
 	let subst str = try List.assoc str expansion_map with Not_found -> str in
-	let rex = Pcre.regexp "&[a-z]+;"
-	in fun ?(expand = false) store node ->
+	let rex = Pcre.regexp "&[a-z]+;" in
+	fun ?(expand = false) store node ->
 		let idx = int_of_string (node#required_string_attribute "idx") in
-		let data = Math_store.get store idx
-		in if expand
+		let data = Math_store.get store idx in
+		if expand
 		then Pcre.substitute ~rex ~subst data
 		else data
 
@@ -119,8 +119,8 @@ and process_macrocall store macro_root =
 
 
 and process_inline store node =
-	let comm = lazy (command_from_node node)
-	in match node#node_type with
+	let comm = lazy (command_from_node node) in
+	match node#node_type with
 		| T_data ->
 			(!!comm, Ast.Plain node#data)
 		| T_element "entity" ->
@@ -128,15 +128,15 @@ and process_inline store node =
 		| T_element "br" ->
 			(!!comm, Ast.Linebreak)
 		| T_element "mathtexinl" ->
-			let math = process_math ~expand:true store node
-			in (!!comm, Ast.Mathtex_inl math)
+			let math = process_math ~expand:true store node in
+			(!!comm, Ast.Mathtex_inl math)
 		| T_element "mathmlinl" ->
-			let math = process_math store node
-			in (!!comm, Ast.Mathml_inl math)
+			let math = process_math store node in
+			(!!comm, Ast.Mathml_inl math)
 		| T_element "glyph" ->
-			let src = node#required_string_attribute "src"
-			and alt = node#required_string_attribute "alt"
-			in (!!comm, Ast.Glyph (src, alt))
+			let src = node#required_string_attribute "src" in
+			let alt = node#required_string_attribute "alt" in
+			(!!comm, Ast.Glyph (src, alt))
 		| T_element "bold"
 		| T_element "strong"
 		| T_element "b" ->
@@ -210,8 +210,8 @@ let rec process_frag ?(flow = false) store frag_root =
 
 
 and process_block store node =
-	let comm = lazy (command_from_node node)
-	in match node#node_type with
+	let comm = lazy (command_from_node node) in
+	match node#node_type with
 		| T_element "paragraph"
 		| T_element "p" ->
 			(!!comm, Ast.Paragraph (process_seq store node))
@@ -231,51 +231,49 @@ and process_block store node =
 		| T_element "quote" ->
 			(!!comm, Ast.Quote (process_frag store node))
 		| T_element "mathtexblk" ->
-			let math = process_math ~expand:true store node
-			in (!!comm, Ast.Mathtex_blk math)
+			let math = process_math ~expand:true store node in
+			(!!comm, Ast.Mathtex_blk math)
 		| T_element "mathmlblk" ->
-			let math = process_math store node
-			in (!!comm, Ast.Mathml_blk math)
+			let math = process_math store node in
+			(!!comm, Ast.Mathml_blk math)
 		| T_element "source" ->
 			(!!comm, Ast.Source node#data)
 		| T_element "tabular" ->
-			let (cols, tabular) = process_tabular store node
-			in (!!comm, Ast.Tabular (cols, tabular))
+			let (cols, tabular) = process_tabular store node in
+			(!!comm, Ast.Tabular (cols, tabular))
 		| T_element "subpage" ->
 			(!!comm, Ast.Subpage (process_frag store node))
 		| T_element "verbatim"
 		| T_element "pre" ->
 			(!!comm, Ast.Verbatim node#data)
 		| T_element "picture" ->
-			let src = node#required_string_attribute "src"
-			and alt = node#required_string_attribute "alt"
-			in (!!comm, Ast.Picture (src, alt))
+			let src = node#required_string_attribute "src" in
+			let alt = node#required_string_attribute "alt" in
+			(!!comm, Ast.Picture (src, alt))
 		| T_element "bookpic" ->
 			(!!comm, Ast.Bookpic (node#required_string_attribute "isbn"))
-		| T_element "decor" ->
-			(!!comm, Ast.Decor (process_unifrag store node))
 		| T_element "pull" ->
 			(!!comm, Ast.Pullquote (None, process_frag store node))
 		| T_element "boxout" ->
-			let name = node#required_string_attribute "name"
-			and (maybe_caption, frag) = process_custom store node
-			in (!!comm, Ast.Custom (Some Custom.Boxout, name, maybe_caption, frag))
+			let name = node#required_string_attribute "name" in
+			let (maybe_caption, frag) = process_custom store node in
+			(!!comm, Ast.Custom (Some Custom.Boxout, name, maybe_caption, frag))
 		| T_element "theorem" ->
-			let name = node#required_string_attribute "name"
-			and (maybe_caption, frag) = process_custom store node
-			in (!!comm, Ast.Custom (Some Custom.Theorem, name, maybe_caption, frag))
+			let name = node#required_string_attribute "name" in
+			let (maybe_caption, frag) = process_custom store node in
+			(!!comm, Ast.Custom (Some Custom.Theorem, name, maybe_caption, frag))
 		| T_element "equation" ->
-			let (maybe_caption, block) = process_wrapper store node
-			in (!!comm, Ast.Equation (maybe_caption, block))
+			let (maybe_caption, block) = process_wrapper store node in
+			(!!comm, Ast.Equation (maybe_caption, block))
 		| T_element "printout" ->
-			let (maybe_caption, block) = process_wrapper store node
-			in (!!comm, Ast.Printout (maybe_caption, block))
+			let (maybe_caption, block) = process_wrapper store node in
+			(!!comm, Ast.Printout (maybe_caption, block))
 		| T_element "table" ->
-			let (maybe_caption, block) = process_wrapper store node
-			in (!!comm, Ast.Table (maybe_caption, block))
+			let (maybe_caption, block) = process_wrapper store node in
+			(!!comm, Ast.Table (maybe_caption, block))
 		| T_element "figure" ->
-			let (maybe_caption, block) = process_wrapper store node
-			in (!!comm, Ast.Figure (maybe_caption, block))
+			let (maybe_caption, block) = process_wrapper store node in
+			(!!comm, Ast.Figure (maybe_caption, block))
 		| T_element "part" ->
 			(!!comm, Ast.Part (process_seq store node))
 		| T_element "appendix" ->
@@ -308,27 +306,27 @@ and process_block store node =
 		| T_element "note" ->
 			(!!comm, Ast.Note (process_frag store node))
 		| T_element "newmacro" ->
-			let name = node#required_string_attribute "name"
-			and nargs = node#required_string_attribute "nargs"
-			in (!!comm, Ast.Macrodef (name, nargs, process_seq store node))
+			let name = node#required_string_attribute "name" in
+			let nargs = node#required_string_attribute "nargs" in
+			(!!comm, Ast.Macrodef (name, nargs, process_seq store node))
 		| T_element "newboxout" ->
-			let name = node#required_string_attribute "name"
-			and maybe_caption = match node#sub_nodes with [] -> None | seq -> Some (process_seq store node)
-			and maybe_counter = node#optional_string_attribute "counter"
-			in (!!comm, Ast.Boxoutdef (name, maybe_caption, maybe_counter))
+			let name = node#required_string_attribute "name" in
+			let maybe_caption = match node#sub_nodes with [] -> None | seq -> Some (process_seq store node) in
+			let maybe_counter = node#optional_string_attribute "counter" in
+			(!!comm, Ast.Boxoutdef (name, maybe_caption, maybe_counter))
 		| T_element "newtheorem" ->
-			let name = node#required_string_attribute "name"
-			and caption = process_seq store node
-			and maybe_counter = node#optional_string_attribute "counter"
-			in (!!comm, Ast.Theoremdef (name, caption, maybe_counter))
+			let name = node#required_string_attribute "name" in
+			let caption = process_seq store node in
+			let maybe_counter = node#optional_string_attribute "counter" in
+			(!!comm, Ast.Theoremdef (name, caption, maybe_counter))
 		| _ ->
 			failwith "process_block"
 
 
 and process_anon_item_frag store frag_root=
 	let process_node node =
-		let comm = lazy (command_from_node node)
-		in match node#node_type with
+		let comm = lazy (command_from_node node) in
+		match node#node_type with
 			| T_element "li" -> (!!comm, process_frag ~flow:true store node)
 			| _		 -> failwith "process_anon_item_frag"
 	in List.map process_node frag_root#sub_nodes
@@ -345,22 +343,22 @@ and process_desc_item_frag store frag_root =
 
 
 and process_qanda_frag store frag_root =
-	let process_different node =
-		let comm = lazy (command_from_node node)
-		in match node#sub_nodes with
-			| [dt; dd] -> (!!comm, Different (Some (process_seq store dt)), process_frag ~flow:true store dd)
-			| [dd]	   -> (!!comm, Different None, process_frag ~flow:true store dd)
+	let process_different cons node =
+		let comm = lazy (command_from_node node) in
+		match node#sub_nodes with
+			| [dt; dd] -> (!!comm, cons (Some (process_seq store dt)), process_frag ~flow:true store dd)
+			| [dd]	   -> (!!comm, cons None, process_frag ~flow:true store dd)
 			| _	   -> failwith "process_different"
-	and process_repeated node =
-		let comm = lazy (command_from_node node)
-		in (!!comm, Repeated, process_frag ~flow:true store node) in
-	let process_group (question, answer) = match (question#node_type, answer#node_type) with
-		| (T_element "question", T_element "answer")	-> (process_different question, process_different answer)
-		| (T_element "question", T_element "ranswer")	-> (process_different question, process_repeated answer)
-		| (T_element "rquestion", T_element "answer")	-> (process_repeated question, process_different answer)
-		| (T_element "rquestion", T_element "ranswer")	-> (process_repeated question, process_repeated answer)
-		| _						-> failwith "process_qanda_frag"
-	in List.rev_map process_group (pairify frag_root#sub_nodes)
+	and process_repeated cons node =
+		let comm = lazy (command_from_node node) in
+		(!!comm, cons, process_frag ~flow:true store node) in
+	let process_node qora = match qora#node_type with
+		| T_element "question"	-> process_different (fun maybe_seq -> New_questioner maybe_seq) qora
+		| T_element "answer"	-> process_different (fun maybe_seq -> New_answerer maybe_seq) qora
+		| T_element "rquestion"	-> process_repeated Same_questioner qora
+		| T_element "ranswer)"	-> process_repeated Same_answerer qora
+		| _			-> failwith "process_qanda_frag"
+	in List.rev_map process_node frag_root#sub_nodes
 
 
 and process_tabular store node =
@@ -369,21 +367,21 @@ and process_tabular store node =
 	and tfoot = ref None
 	and tbodies = ref [] in
 	let process_cell node =
-		let comm = lazy (command_from_node node)
-		and cellspec = node#optional_string_attribute "cell"
-		and maybe_seq = match process_seq store node with [] -> None | x -> Some x
-		in (!!comm, cellspec, maybe_seq) in
+		let comm = lazy (command_from_node node) in
+		let cellspec = node#optional_string_attribute "cell" in
+		let maybe_seq = match process_seq store node with [] -> None | x -> Some x in
+		(!!comm, cellspec, maybe_seq) in
 	let process_row node =
 		(command_from_node node, List.map process_cell node#sub_nodes) in
 	let process_group node =
-		let comm = lazy (command_from_node node)
-		in match node#node_type with
+		let comm = lazy (command_from_node node) in
+		match node#node_type with
 			| T_element "thead" -> thead := Some (Some !!comm, List.map process_row node#sub_nodes)
 			| T_element "tfoot" -> tfoot := Some (Some !!comm, List.map process_row node#sub_nodes)
 			| T_element "tbody" -> tbodies := (Some !!comm, List.map process_row node#sub_nodes) :: !tbodies
 			| _		    -> failwith "process_group" in
-	let () = List.iter process_group node#sub_nodes
-	in (cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
+	List.iter process_group node#sub_nodes;
+	(cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
 
 
 and process_unifrag store node = match node#sub_nodes with
@@ -409,10 +407,10 @@ and process_wrapper store node = match node#sub_nodes with
 
 and process_bib store node = match node#sub_nodes with
 	| [who_node; what_node; where_node] ->
-		let who = (command_from_node who_node, process_seq store who_node)
-		and what = (command_from_node what_node, process_seq store what_node)
-		and where = (command_from_node where_node, process_seq store where_node)
-		in {author = who; title = what; resource = where}
+		let who = (command_from_node who_node, process_seq store who_node) in
+		let what = (command_from_node what_node, process_seq store what_node) in
+		let where = (command_from_node where_node, process_seq store where_node) in
+		{author = who; title = what; resource = where}
 	| _ ->
 		failwith "process_bib"
 
@@ -427,10 +425,10 @@ let process_document store node = match node#node_type with
 (********************************************************************************)
 
 let parse =
-	let math_rex = Pcre.regexp ~flags:[`MULTILINE; `DOTALL] "<math(tex|ml)(inl|blk)\\b([^>]*?)>(.*?)</math\\1\\2>"
-	and entity_rex = Pcre.regexp "&(#?[a-zA-Z0-9]+);"
-	and entity_templ = Pcre.subst "<entity>$1</entity>"
-	in fun str ->
+	let math_rex = Pcre.regexp ~flags:[`MULTILINE; `DOTALL] "<math(tex|ml)(inl|blk)\\b([^>]*?)>(.*?)</math\\1\\2>" in
+	let entity_rex = Pcre.regexp "&(#?[a-zA-Z0-9]+);" in
+	let entity_templ = Pcre.subst "<entity>$1</entity>" in
+	fun str ->
 		let store = Math_store.make () in
 		let str = Pcre.substitute_substrings ~rex:math_rex ~subst:(Math_store.add store) str in
 		let str = Pcre.replace ~rex:entity_rex ~itempl:entity_templ str in
@@ -442,6 +440,6 @@ let parse =
 			} in
 		let spec = Pxp_tree_parser.default_spec in
 		let source = Pxp_types.from_string ("<document>\n" ^ str ^ "</document>") in
-		let tree = Pxp_tree_parser.parse_content_entity config source Dtd.lambhtml_dtd spec
-		in process_document store tree#root
+		let tree = Pxp_tree_parser.parse_content_entity config source Dtd.lambhtml_dtd spec in
+		process_document store tree#root
 

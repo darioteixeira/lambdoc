@@ -15,128 +15,69 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type 'a block_t =
-	[ `Paragraph of bool * bool option * Inline.seq_t
-	| `Itemize of Bullet.t * 'a nelist nelist
-	| `Enumerate of Numbering.t * 'a nelist nelist
-	| `Description of (Inline.seq_t * 'a nelist) nelist
-	| `Qanda of ((Inline.seq_t option option * 'a nelist) * (Inline.seq_t option option * 'a nelist)) nelist
-	| `Verse of 'a nelist
-	| `Quote of 'a nelist
-	| `Math of Math.t
-	| `Source of Source.t
-	| `Tabular of Tabular.tabular_t
-	| `Subpage of 'a nelist
-	| `Verbatim of int * string
-	| `Picture of bool * int option * Alias.t * string
-	| `Bookpic of Book.isbn_t * Book.rating_t option * Book.coversize_t
-	| `Decor of Floatation.t * 'a
-	| `Pullquote of Floatation.t * Inline.seq_t option * 'a nelist
-	| `Boxout of Floatation.t * Custom.Boxout.t * Inline.seq_t option * 'a nelist
-	| `Theorem of Custom.Theorem.t * Inline.seq_t option * 'a nelist
-	| `Equation of Floatation.t * Wrapper.t * 'a
-	| `Printout of Floatation.t * Wrapper.t * 'a
-	| `Table of Floatation.t * Wrapper.t * 'a
-	| `Figure of Floatation.t * Wrapper.t * 'a
-	| `Heading of Heading.heading_t
-	| `Title of Level.title_t * Inline.seq_t
-	| `Abstract of 'a nelist
-	| `Rule
-	] with sexp
+type block_t =
+	| Paragraph of Inline.seq_t
+	| Itemize of frag_t nelist
+	| Enumerate of frag_t nelist
+	| Description of (Inline.seq_t * frag_t) nelist
+	| Qanda of (Qanda.t * frag_t) nelist
+	| Verse of frag_t
+	| Quote of frag_t
+	| Mathblk of Math.t
+	| Source of Source.t
+	| Tabular of Tabular.t
+	| Subpage of frag_t
+	| Verbatim of string
+	| Picture of int option * Alias.t * string
+	| Bookpic of Book.isbn_t * Book.rating_t option * Book.coversize_t
+	| Pullquote of Inline.seq_t option * frag_t
+	| Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
+	| Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
+	| Equation of Wrapper.t * t
+	| Printout of Wrapper.t * t
+	| Table of Wrapper.t * t
+	| Figure of Wrapper.t * t
+	| Heading of Heading.t
+	| Title of Level.title_t * Inline.seq_t
+	| Abstract of frag_t
+	| Rule
 
-type raw_block_t = raw_block_t block_t with sexp
-type frag_t = raw_block_t nelist with sexp
+and t =
+	{
+	block: block_t;
+	attr: Attr.t;
+	}
 
-type (+'a, +'b, +'c, +'d, +'e) t = ('a, 'b, 'c, 'd, 'e) t block_t with sexp
+and frag_t = t nelist with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let paragraph initial indent seq =
-	`Paragraph (initial, indent, Inline.get_seq seq)
-
-let itemize bullet frags =
-	`Itemize (bullet, frags)
-
-let enumerate numbering frags =
-	`Enumerate (numbering, frags)
-
-let description frags =
-	let conv (seq, frag) = (Inline.get_seq seq, frag)
-	in `Description (nemap conv frags)
-
-let qanda frags =
-	let conv ((q_seq, q_frag), (a_seq, a_frag)) = ((maybe (maybe Inline.get_seq) q_seq, q_frag), (maybe (maybe Inline.get_seq) a_seq, a_frag))
-	in `Qanda (nemap conv frags)
-
-let verse frag =
-	`Verse frag
-
-let quote frag =
-	`Quote frag
-
-let math data =
-	`Math data
-
-let source data =
-	`Source data
-
-let tabular data =
-	`Tabular (Tabular.get_tabular data)
-
-let subpage frag =
-	`Subpage frag
-
-let verbatim mult data =
-	`Verbatim (mult, data)
-
-let picture frame width alias alt =
-	`Picture (frame, width, alias, alt)
-
-let bookpic isbn maybe_rating coversize =
-	`Bookpic (isbn, maybe_rating, coversize)
-
-let decor floatation blk =
-	`Decor (floatation, blk)
-
-let pullquote floatation maybe_seq frag =
-	`Pullquote (floatation, (maybe Inline.get_seq maybe_seq), frag)
-
-let boxout floatation data maybe_seq frag =
-	`Boxout (floatation, data, (maybe Inline.get_seq maybe_seq), frag)
-
-let theorem data maybe_seq frag =
-	`Theorem (data, (maybe Inline.get_seq maybe_seq), frag)
-
-let equation floatation wrapper blk =
-	`Equation (floatation, wrapper, blk)
-
-let printout floatation wrapper blk =
-	`Printout (floatation, wrapper, blk)
-
-let table floatation wrapper blk =
-	`Table (floatation, wrapper, blk)
-
-let figure floatation wrapper blk =
-	`Figure (floatation, wrapper, blk)
-
-let heading data =
-	`Heading (Heading.get_heading data)
-
-let title level seq =
-	`Title (level, Inline.get_seq seq)
-
-let abstract frag =
-	`Abstract frag
-
-let rule () =
-	`Rule
-
-let get_frag frag =
-	frag
-
-let get_blocks xs =
-	xs
+let paragraph ?(attr = Attr.default) seq = {block = Paragraph seq; attr}
+let itemize ?(attr = Attr.default) frags = {block = Itemize frags; attr}
+let enumerate ?(attr = Attr.default) frags = {block = Enumerate frags; attr}
+let description ?(attr = Attr.default) dfrags = {block = Description dfrags; attr}
+let qanda ?(attr = Attr.default) qafrags = {block = Qanda qafrags; attr}
+let verse ?(attr = Attr.default) frag = {block = Verse frag; attr}
+let quote ?(attr = Attr.default) frag = {block = Quote frag; attr}
+let mathblk ?(attr = Attr.default) data = {block = Mathblk data; attr}
+let source ?(attr = Attr.default) data = {block = Source data; attr}
+let tabular ?(attr = Attr.default) data = {block = Tabular data; attr}
+let subpage ?(attr = Attr.default) frag = {block = Subpage frag; attr}
+let verbatim ?(attr = Attr.default) txt = {block = Verbatim txt; attr}
+let picture ?(attr = Attr.default) width alias alt = {block = Picture (width, alias, alt); attr}
+let bookpic ?(attr = Attr.default) isbn maybe_rating coversize = {block = Bookpic (isbn, maybe_rating, coversize); attr}
+let pullquote ?(attr = Attr.default) maybe_seq frag = {block = Pullquote (maybe_seq, frag); attr}
+let boxout ?(attr = Attr.default) data maybe_seq frag = {block = Boxout (data, maybe_seq, frag); attr}
+let theorem ?(attr = Attr.default) data maybe_seq frag = {block = Theorem (data, maybe_seq, frag); attr}
+let equation ?(attr = Attr.default) wrapper blk = {block = Equation (wrapper, blk); attr}
+let printout ?(attr = Attr.default) wrapper blk = {block = Printout (wrapper, blk); attr}
+let table ?(attr = Attr.default) wrapper blk = {block = Table (wrapper, blk); attr}
+let figure ?(attr = Attr.default) wrapper blk = {block = Figure (wrapper, blk); attr}
+let heading ?(attr = Attr.default) data = {block = Heading data; attr}
+let title ?(attr = Attr.default) level seq = {block = Title (level, seq); attr}
+let abstract ?(attr = Attr.default) frag = {block = Abstract frag; attr}
+let rule ?(attr = Attr.default) () = {block = Rule; attr}
 

@@ -21,7 +21,6 @@ open Lambdoc_reader
 open Ast
 open Globalenv
 open Parser
-open Scanner
 
 module String = BatString
 
@@ -50,8 +49,8 @@ let pat_primary = "\\{(?<primary>" ^ pat_ident ^ ")\\}"
 
 let pat_order = "(?<order>\\([^)\\[\\]<>\\{\\}]*\\))"
 let pat_label = "(?<label>\\[[^\\]\\(\\)<>\\{\\}]*\\])"
-let pat_extra = "(?<extra><[^>\\[\\]\\(\\)\\{\\}]*>)"
-let pat_optional = "(" ^ pat_order ^ "|" ^ pat_extra ^ "|" ^ pat_label ^")*"
+let pat_style = "(?<style><[^>\\[\\]\\(\\)\\{\\}]*>)"
+let pat_optional = "(" ^ pat_order ^ "|" ^ pat_style ^ "|" ^ pat_label ^")*"
 
 let begin_rex = Pcre.regexp ("^" ^ pat_begin ^ pat_optional ^ pat_primary ^ "$")
 let simple_rex = Pcre.regexp ("^" ^ pat_simple ^ pat_optional ^ "$")
@@ -66,8 +65,8 @@ let simple_rex = Pcre.regexp ("^" ^ pat_simple ^ pat_optional ^ "$")
 *)
 let get_param rex name subs =
 	try
-		let res = Pcre.get_named_substring rex name subs
-		in Some (String.slice ~first:1 ~last:(-1) res)	(* safe because 'res' is Latin1 *)
+		let res = Pcre.get_named_substring rex name subs in
+		Some (String.slice ~first:1 ~last:(-1) res)	(* safe because 'res' is Latin1 *)
 	with
 		_ -> None
 
@@ -79,7 +78,7 @@ let build_command tag rex subs position =
 	comm_tag = Some tag;
 	comm_label = get_param rex "label" subs;
 	comm_order = get_param rex "order" subs;
-	comm_extra = get_param rex "extra" subs;
+	comm_style = get_param rex "style" subs;
 	comm_linenum = position.pos_lnum;
 	}
 
@@ -92,7 +91,7 @@ let build_op position =
 	comm_tag = None;
 	comm_label = None;
 	comm_order = None;
-	comm_extra = None;
+	comm_style = None;
 	comm_linenum = position.pos_lnum;
 	}
 
@@ -128,7 +127,6 @@ let issue_begin_command raw_comm position =
 			| "quote"	-> BEGIN_QUOTE primary
 			| "tabular"	-> BEGIN_TABULAR primary
 			| "subpage"	-> BEGIN_SUBPAGE primary
-			| "decor"	-> BEGIN_DECOR primary
 			| "pull"	-> BEGIN_PULLQUOTE primary
 			| "equation"	-> BEGIN_EQUATION primary
 			| "printout"	-> BEGIN_PRINTOUT primary
@@ -137,8 +135,8 @@ let issue_begin_command raw_comm position =
 			| "bib"		-> BEGIN_BIB primary
 			| "note"	-> BEGIN_NOTE primary
 			| _		-> BEGIN_CUSTOM primary
-	and second_token = BEGIN_DUMMY command
-	in (Set Blk, [first_token; second_token])
+	and second_token = BEGIN_DUMMY command in
+	(Set Blk, [first_token; second_token])
 
 
 (**	Issues a simple command.

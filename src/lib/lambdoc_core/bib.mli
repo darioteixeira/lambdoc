@@ -33,5 +33,5 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val make: Label.t -> order_t -> (_, _) Inline.t nelist -> (_, _) Inline.t nelist -> (_, _) Inline.t nelist -> t
+val make: Label.t -> order_t -> Inline.seq_t -> Inline.seq_t -> Inline.seq_t -> t
 

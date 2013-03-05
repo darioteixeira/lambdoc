@@ -31,38 +31,29 @@ type weight_t =
 
 type colspec_t = alignment_t * weight_t with sexp
 
-type cellspec_t = colspec_t * int * bool * bool with sexp
+type cellspec_t = colspec_t * int * bool * bool with sexp		(* column spec, column span, has overline, has underline *)
 
-type raw_cell_t = cellspec_t option * Inline.seq_t option with sexp
+type cell_t = cellspec_t option * Inline.seq_t option with sexp
 
-type 'a cell_t = private raw_cell_t
+type row_t = cell_t nelist with sexp
 
-type raw_row_t = raw_cell_t nelist with sexp
+type group_t = row_t nelist with sexp
 
-type 'a row_t = private raw_row_t
-
-type raw_group_t = raw_row_t nelist with sexp
-
-type 'a group_t = private raw_group_t
-
-type tabular_t =
+type t =
 	{
 	tcols: colspec_t array;
-	thead: raw_group_t option;
-	tfoot: raw_group_t option;
-	tbodies: raw_group_t nelist;
+	thead: group_t option;
+	tfoot: group_t option;
+	tbodies: group_t nelist;
 	} with sexp
-
-type 'a t = private tabular_t
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val make_cell: cellspec_t option -> ('a, _) Inline.t nelist option -> 'a cell_t
-val make_row: 'a cell_t nelist -> 'a row_t
-val make_group: 'a row_t nelist -> 'a group_t
-val make_tabular: colspec_t array -> ?thead:'a group_t -> ?tfoot:'a group_t -> 'a group_t nelist -> 'a t
-val get_tabular: 'a t -> tabular_t
+val make_cell: cellspec_t option -> Inline.seq_t option -> cell_t
+val make_row: cell_t nelist -> row_t
+val make_group: row_t nelist -> group_t
+val make: colspec_t array -> ?thead:group_t -> ?tfoot:group_t -> group_t nelist -> t
 

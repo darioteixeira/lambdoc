@@ -60,17 +60,17 @@ in object (self)
 		comm_tag = None;
 		comm_label = None;
 		comm_order = None;
-		comm_extra = None;
+		comm_style = None;
 		comm_linenum = line_counter + 1;
 		}
 
 
-	method private comm ?(tag = None) ?(label = None) ?(order = None) ?(extra = None) () =
+	method private comm ?(tag = None) ?(label = None) ?(order = None) ?(style = None) () =
 		{
 		comm_tag = tag;
 		comm_label = label;
 		comm_order = order;
-		comm_extra = extra;
+		comm_style = style;
 		comm_linenum = line_counter + 1;
 		}
 
@@ -208,21 +208,21 @@ in object (self)
 					| Source	-> Scanner.source_scanner
 					| Verbatim	-> Scanner.verbatim_scanner in
 				let lexbuf = Ulexing.from_utf8_string lines.(line_counter) in
-				let tok = scanner lexbuf
-				in match tok with
-					| Begin_source extra ->
+				let tok = scanner lexbuf in
+				match tok with
+					| Begin_source style ->
 						self#unwind_list 0;
 						context <- Source;
-						let extra = if String.length extra = 0 then None else Some extra
-						in self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~extra ()))
+						let style = if String.length style = 0 then None else Some style in
+						self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~style ()))
 					| End_source ->
 						context <- General;
 						self#store (END_SOURCE self#op)
-					| Begin_verbatim extra ->
+					| Begin_verbatim style ->
 						self#unwind_list 0;
 						context <- Verbatim;
-						let extra = if String.length extra = 0 then None else Some extra
-						in self#store (BEGIN_VERBATIM (self#comm ~tag:(Some "(((") ~extra ()))
+						let style = if String.length style = 0 then None else Some style in
+						self#store (BEGIN_VERBATIM (self#comm ~tag:(Some "(((") ~style ()))
 					| End_verbatim ->
 						context <- General;
 						self#store (END_VERBATIM self#op)

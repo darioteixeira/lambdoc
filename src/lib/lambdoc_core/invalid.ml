@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Prelude
 
 
@@ -14,14 +13,27 @@ open Prelude
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type manuscript_t = Error.t nelist with sexp
-type composition_t = Error.t nelist with sexp
+type t = Error.t nelist with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make_manuscript errors = errors
-let make_composition errors = errors
+(********************************************************************************)
+(**	{2 Constructors}							*)
+(********************************************************************************)
+
+let make errors = errors
+
+
+(********************************************************************************)
+(**	{2 Serialisation facilities}						*)
+(********************************************************************************)
+
+let serialize doc =
+	Sexplib.Sexp.to_string_mach (sexp_of_t doc)
+
+let deserialize str =
+	t_of_sexp (Sexplib.Sexp.of_string str)
 

@@ -9,8 +9,6 @@
 (**	Scanner for Lamblite reader.  We use Ulex for handling the UTF-8 parsing.
 *)
 
-open Lambdoc_reader
-
 module String = BatString
 
 
@@ -148,17 +146,17 @@ let general_scanner = lexer
 		End_verbatim
 	| section_pat blank? ->
 		let lexeme = Ulexing.utf8_lexeme lexbuf in
-		let section_level = count_char lexeme '='
-		in Section (section_level, text_scanner lexbuf)
+		let section_level = count_char lexeme '=' in
+		Section (section_level, text_scanner lexbuf)
 	| quote_pat? blank* (list_pat blank+)? ->
 		let lexeme = Ulexing.utf8_lexeme lexbuf in
 		let quote_level = count_char lexeme '>'
 		and list_level =
-			let counter = count_char lexeme
-			in match (counter '-', counter '#') with
+			let counter = count_char lexeme in
+			match (counter '-', counter '#') with
 				| (x, 0) when x > 0 -> Some (Ulist, x)
 				| (0, x) when x > 0 -> Some (Olist, x)
 				| _		    -> None
-		and text = text_scanner lexbuf
-		in Par (quote_level, list_level, text)
+		and text = text_scanner lexbuf in
+		Par (quote_level, list_level, text)
 

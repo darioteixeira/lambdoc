@@ -27,65 +27,45 @@ type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_g
 (**	Part content.
 *)
 type part_content_t =
-	[ `Custom of Inline.seq_t
-	| `Appendix
-	] with sexp
+	| Custom_part of Inline.seq_t
+	| Appendix
+	with sexp
 
 
 (**	Section content.
 *)
 type section_content_t =
-	[ `Custom of Inline.seq_t
-	| `Bibliography
-	| `Notes
-	| `Toc
-	] with sexp
+	| Custom_section of Inline.seq_t
+	| Bibliography
+	| Notes
+	| Toc
+	with sexp
 
 
 (**	Section locations.
 *)
 type section_location_t =
-	[ `Mainbody
-	| `Appendixed
-	] with sexp
+	| Mainbody
+	| Appendixed
+	with sexp
 
 
 (**	Heading blocks.
 *)
-type heading_t =
-	[ `Part of Label.t * part_order_t * part_content_t
-	| `Section of Label.t * section_order_t * section_location_t * Level.hierarchical_t * section_content_t
-	] with sexp
-
-
-(**	Phantom-type wrapper around {!heading_t}.
-	(See {!Block} documentation for explanation).
-*)
-type (+'a, +'b, +'c, +'d, +'e) t = private [< heading_t ] with sexp
+type t =
+	| Part of Label.t * part_order_t * part_content_t
+	| Section of Label.t * section_order_t * section_location_t * Level.hierarchical_t * section_content_t
+	with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val part: Label.t -> part_order_t -> (_, _) Inline.t nelist ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Part_blk ]) t
-
-val appendix: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Part_blk ]) t
-
-val section: Label.t -> section_order_t -> section_location_t -> Level.hierarchical_t -> (_, _) Inline.t nelist ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Section_blk ]) t
-
-val bibliography: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Section_blk ]) t
-
-val notes: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Section_blk ]) t
-
-val toc: Label.t ->
-	([> `Manuscript ], [> `Non_listable ], [> `Non_quotable ], [> `Non_embeddable ], [> `Section_blk ]) t
-
-val get_heading: (_, _, _, _, _) t ->
-	heading_t
+val part: Label.t -> part_order_t -> Inline.seq_t -> t
+val appendix: Label.t -> t
+val section: Label.t -> section_order_t -> section_location_t -> Level.hierarchical_t -> Inline.seq_t -> t
+val bibliography: Label.t -> t
+val notes: Label.t -> t
+val toc: Label.t -> t
 

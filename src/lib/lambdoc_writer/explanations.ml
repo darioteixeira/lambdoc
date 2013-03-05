@@ -34,7 +34,6 @@ let explain_nesting blk =
 		| `Quotable_blk	  -> "a quotable block (or sub-types)"
 		| `Embeddable_blk -> "an embeddable block"
 		| `Paragraph_blk  -> "a 'paragraph' block"
-		| `Decor_blk	  -> "a 'picture' or 'verbatim' block"
 		| `Equation_blk	  -> "a 'mathtex' or 'mathml' block"
 		| `Printout_blk	  -> "a 'source' block"
 		| `Table_blk	  -> "a 'tabular' block"
@@ -82,16 +81,12 @@ let explain_wrapper = function
 let explain_error = function
 
 	| Error.Misplaced_label_parameter (tag, reason) ->
-		let exp_reason = explain_reason "a" "label" reason
-		in sprintf "Misplaced label parameter for %s: %s." (explain_tag tag) exp_reason
+		let exp_reason = explain_reason "a" "label" reason in
+		sprintf "Misplaced label parameter for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Misplaced_order_parameter (tag, reason) ->
-		let exp_reason = explain_reason "an" "order" reason
-		in sprintf "Misplaced order parameter for %s: %s." (explain_tag tag) exp_reason
-
-	| Error.Misplaced_extra_parameter (tag, reason) ->
-		let exp_reason = explain_reason "an" "extra" reason
-		in sprintf "Misplaced extra parameter for %s: %s." (explain_tag tag) exp_reason
+		let exp_reason = explain_reason "an" "order" reason in
+		sprintf "Misplaced order parameter for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Invalid_label (tag, label) ->
 		sprintf "Invalid label '#%s#' in %s. %s." (escape label) (explain_tag tag) (explain_ident "A label")
@@ -102,41 +97,29 @@ let explain_error = function
 	| Error.Invalid_order_levels (tag, order, expected, found) ->
 		sprintf "Expected %d hierarchical levels in the ordering for %s, but the string '#%s#' contains %d instead." (explain_level expected) (explain_tag tag) (escape order) found
 
-	| Error.Invalid_extra_boolean_parameter (tag, key, value) ->
+	| Error.Invalid_style_bad_boolean (tag, key, value) ->
 		sprintf "In %s, the key '#%s#' expects a boolean parameter, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
-	| Error.Invalid_extra_numeric_parameter (tag, key, value, low, high) ->
-		sprintf "In %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
-
-	| Error.Invalid_extra_bullet_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a bullet specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
-
-	| Error.Invalid_extra_numbering_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a numbering specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
-
-	| Error.Invalid_extra_floatation_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a floatation specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
-
-	| Error.Invalid_extra_classname_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a classname specifier, yet the assigned value '#%s#' cannot be interpreted as such. %s." (explain_tag tag) (escape key) (escape value) (explain_ident "A classname")
-
-	| Error.Invalid_extra_lang_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
-
-	| Error.Invalid_extra_style_parameter (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a style specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
-
-	| Error.Invalid_extra_coversize_parameter (tag, key, value) ->
+	| Error.Invalid_style_bad_coversize (tag, key, value) ->
 		sprintf "In %s, the key '#%s#' expects a cover size specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
-	| Error.Invalid_extra_unknown_parameter (tag, col, field) ->
-		sprintf "In %s, the value '#%s#' assigned to field %d of the extra parameter cannot be interpreted." (explain_tag tag) (escape field) col
+	| Error.Invalid_style_bad_lang (tag, key, value) ->
+		sprintf "In %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
 
-	| Error.Invalid_extra_no_solutions (tag, extra) ->
-		sprintf "In %s, no conclusive assignment can be made for the extra parameter '#%s#'." (explain_tag tag) (escape extra)
+	| Error.Invalid_style_bad_numeric (tag, key, value, low, high) ->
+		sprintf "In %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
 
-	| Error.Invalid_extra_multiple_solutions (tag, extra) ->
-		sprintf "In %s, the extra parameter '#%s#' cannot be interpreted unambiguously." (explain_tag tag) (escape extra)
+	| Error.Invalid_style_keyvalue (tag, str) ->
+		sprintf "In %s, the string '#%s#' cannot be interpreted as a key/value pair." (explain_tag tag) (escape str)
+
+	| Error.Invalid_style_classname (tag, str) ->
+		sprintf "In %s, the assigned value '#%s#' cannot be interpreted as a classname." (explain_tag tag) (escape str)
+
+	| Error.Invalid_style_unknown (tag, key, value) ->
+		sprintf "In %s, the value '#%s#' assigned to key '#%s#' of the style parameter cannot be interpreted." (explain_tag tag) (escape value) (escape key)
+
+	| Error.Invalid_style_misplaced (tag, key, value) ->
+		sprintf "In %s, the value '#%s#' assigned to key '#%s#' does not belong to this command." (explain_tag tag) (escape value) (escape key)
 
 	| Error.Invalid_entity_name ent ->
 		sprintf "Unknown entity '#%s#'." (escape ent)

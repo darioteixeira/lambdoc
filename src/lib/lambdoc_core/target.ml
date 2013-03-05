@@ -6,12 +6,6 @@
 *)
 (********************************************************************************)
 
-(**	Definitions concerning document targets.
-*)
-
-open Sexplib.Std
-open Basic
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -36,14 +30,9 @@ type t =
 (********************************************************************************)
 
 let custom env kind order = Visible_target (Custom_target (env, kind, order))
-
 let wrapper kind order = Visible_target (Wrapper_target (kind, order))
-
 let part order = Visible_target (Part_target order)
-
 let section location order = Visible_target (Section_target (location, order))
-
 let bib order = Bib_target order
-
 let note order = Note_target order
 

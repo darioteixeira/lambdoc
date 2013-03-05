@@ -1,39 +1,32 @@
 (********************************************************************************)
-(*	Options.mli
+(*	Label.mli
 	Copyright (c) 2009-2010 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
+open Basic
+
+
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+(**	Label identifiers can either be [Auto] (when they're automatically specified
+	by the system) or [User] (when they're manually attributed by the user).
+*)
 type t =
-	{
-	debug: bool;
-	title: string;
-	language: Language.t;
-
-	amazon_locale: Bookaml_amazon.Locale.t option;
-	amazon_associate_tag: string option;
-	amazon_access_key: string option;
-	amazon_secret_key: string option;
-
-	input_markup: Markup.input_t;
-	output_markup: Markup.output_t;
-
-	input_chan: Pervasives.in_channel;
-	output_chan: Pervasives.out_channel;
-	input_cleaner: Pervasives.in_channel -> unit;
-	output_cleaner: Pervasives.out_channel -> unit;
-	}
+	| Auto of Pointer.t
+	| User of Pointer.t
+	with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val parse: unit -> t
+(**	So it satisfies the [Map.OrderedType] signature.
+*)
+val compare: t -> t -> int
 

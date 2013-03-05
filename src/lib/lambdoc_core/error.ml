@@ -57,7 +57,6 @@ type blk_category_t =
 	| `Quotable_blk
 	| `Embeddable_blk
 	| `Paragraph_blk
-	| `Decor_blk
 	| `Equation_blk
 	| `Printout_blk
 	| `Table_blk
@@ -70,23 +69,19 @@ type blk_category_t =
 type error_msg_t =
 	| Misplaced_label_parameter of Ident.t option * invalid_parameter_reason_t
 	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
-	| Misplaced_extra_parameter of Ident.t option * invalid_parameter_reason_t
 
 	| Invalid_label of Ident.t option * Pointer.t
 	| Invalid_order_format of Ident.t option * string
 	| Invalid_order_levels of Ident.t option * string * Level.hierarchical_t * int
-	| Invalid_extra_boolean_parameter of Ident.t option * string * string
-	| Invalid_extra_numeric_parameter of Ident.t option * string * string * int * int
-	| Invalid_extra_bullet_parameter of Ident.t option * string * string
-	| Invalid_extra_numbering_parameter of Ident.t option * string * string
-	| Invalid_extra_floatation_parameter of Ident.t option * string * string
-	| Invalid_extra_classname_parameter of Ident.t option * string * string
-	| Invalid_extra_lang_parameter of Ident.t option * string * string
-	| Invalid_extra_style_parameter of Ident.t option * string * string
-	| Invalid_extra_coversize_parameter of Ident.t option * string * string
-	| Invalid_extra_unknown_parameter of Ident.t option * int * string
-	| Invalid_extra_no_solutions of Ident.t option * string
-	| Invalid_extra_multiple_solutions of Ident.t option * string
+
+	| Invalid_style_bad_boolean of Ident.t option * string * string
+	| Invalid_style_bad_coversize of Ident.t option * string * string
+	| Invalid_style_bad_lang of Ident.t option * string * string
+	| Invalid_style_bad_numeric of Ident.t option * string * string * int * int
+	| Invalid_style_keyvalue of Ident.t option * string
+	| Invalid_style_classname of Ident.t option * string
+	| Invalid_style_unknown of Ident.t option * string * string
+	| Invalid_style_misplaced of Ident.t option * string * string
 
 	| Invalid_entity_name of string
 	| Invalid_entity_deci of string

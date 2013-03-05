@@ -7,7 +7,6 @@
 (********************************************************************************)
 
 open Lambdoc_core
-open Basic
 open Ast
 
 
@@ -20,46 +19,42 @@ open Ast
 type permission_t =
 	| Optional		(** The parameter is optional but may not be empty. *)
 	| Optional0		(** The parameter is optional and may be empty. *)
-	| Mandatory		(** The parameter is mandatory and may not be empty. *)
 	| Mandatory0		(** The parameter is mandatory but may be empty. *)
 	| Forbidden		(** The parameter is forbidden, either empty or not. *)
 	| Forbidden0		(** The parameter is forbidden, unless it is empty. *)
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Private functions and values}					*)
 (********************************************************************************)
 
-(**	The following values/functions encode the predefined permissions for
-	the various classes of commands.  Each permission class is a 3-tuple
-	stating the individual permissions for the label, ordering, and extra
-	parameters, respectively.  While most classes are constant, some of
-	them are context-sensitive and are therefore functions.
+(**	The following values/functions encode the predefined permissions for the
+	various classes of commands.  Each permission class is a pair stating the
+	individual permissions for the label and ordering parameters, respectively.
+	While most classes are constant, some of them are context-sensitive and are
+	therefore functions.
 *)
 
 let forbidden_class =
-	(Forbidden, Forbidden, Forbidden0)
+	(Forbidden, Forbidden)
 
 let custom_heading_class minipaged =
-	(Optional, (if minipaged then Mandatory0 else Forbidden0), Forbidden0)
+	(Optional, if minipaged then Mandatory0 else Forbidden0)
 
 let preset_heading_class =
-	(Optional, Forbidden, Forbidden0)
-
-let extra_class =
-	(Forbidden, Forbidden, Optional0)
+	(Optional, Forbidden)
 
 let custom_class =
 	(*	Note that the order parameter is not actually "Optional0";
 		because of its complexity it was checked by the caller,
 		so we treat it as "Optional0" so errors are not triggered.
 	*)
-	(Optional, Optional0, Optional0)
+	(Optional, Optional0)
 
 let wrapper_class minipaged =
-	(Optional, (if minipaged then Mandatory0 else Forbidden0), Optional0)
+	(Optional, if minipaged then Mandatory0 else Forbidden0)
 
-let ghost_class = (Optional, Forbidden, Forbidden0)
+let ghost_class = (Optional, Forbidden)
 
 
 (*	This function checks whether a parameter is valid given its
@@ -68,61 +63,59 @@ let ghost_class = (Optional, Forbidden, Forbidden0)
 	result indicates the parameter is valid.
 *)
 let reason_why_invalid perm = function
-	| Some "" -> (match perm with
-		| Optional0
-		| Mandatory0
-		| Forbidden0	-> None
-		| Optional
-		| Mandatory	-> Some Error.Reason_is_empty_when_non_empty_mandatory
-		| Forbidden	-> Some Error.Reason_is_empty_when_forbidden)
-	| Some other -> (match perm with
-		| Forbidden
-		| Forbidden0	-> Some (Error.Reason_is_non_empty_when_forbidden other)
-		| _		-> None)
-	| None -> (match perm with
-		| Mandatory0
-		| Mandatory	-> Some Error.Reason_is_absent_when_mandatory
-		| _		-> None)
+	| Some "" ->
+		begin match perm with
+			| Optional0
+			| Mandatory0
+			| Forbidden0 -> None
+			| Optional   -> Some Error.Reason_is_empty_when_non_empty_mandatory
+			| Forbidden  -> Some Error.Reason_is_empty_when_forbidden
+		end
+	| Some other ->
+		begin match perm with
+			| Forbidden
+			| Forbidden0 -> Some (Error.Reason_is_non_empty_when_forbidden other)
+			| _	     -> None
+		end
+	| None ->
+		begin match perm with
+			| Mandatory0 -> Some Error.Reason_is_absent_when_mandatory
+			| _	     -> None
+		end
 
 
 (*	This function goes through all the command parameters, checking
 	each one individually for correctness.  Any errors found are
 	added to the [errors] [BatDynArray].
 *)
-let check_permission_set errors comm (perm_label, perm_order, perm_extra) =
-
-	let () = match reason_why_invalid perm_label comm.comm_label with
+let check_permission_set errors comm (perm_label, perm_order) =
+	begin match reason_why_invalid perm_label comm.comm_label with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Misplaced_label_parameter (comm.comm_tag, reason) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg)
-
-	and () = match reason_why_invalid perm_order comm.comm_order with
+	end;
+	begin match reason_why_invalid perm_order comm.comm_order with
 		| None ->
 			()
 		| Some reason ->
 			let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg)
-
-	and () = match reason_why_invalid perm_extra comm.comm_extra with
-		| None ->
-			()
-		| Some reason ->
-			let msg = Error.Misplaced_extra_parameter (comm.comm_tag, reason) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg)
-	in ()
+	end
 
 
-(**	Checks a command feature.
-*)
-let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feature =
+(********************************************************************************)
+(**	{1 Public functions and values}						*)
+(********************************************************************************)
+
+let check ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feature =
 
 	let get_minipaged = function
 		| Some minipaged	-> minipaged
 		| None			-> invalid_arg "Feature requires that 'minipaged' be set but it is not!" in
 
-	let composition_inline_feature_set = function
+	let inline_feature_set = function
 		| `Feature_plain	-> forbidden_class
 		| `Feature_entity	-> forbidden_class
 		| `Feature_linebreak	-> forbidden_class
@@ -138,61 +131,49 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_sup		-> forbidden_class
 		| `Feature_sub		-> forbidden_class
 		| `Feature_mbox		-> forbidden_class
-		| `Feature_span		-> extra_class
+		| `Feature_span		-> forbidden_class
 		| `Feature_link		-> forbidden_class
-		| `Feature_booklink	-> extra_class
-
-	and manuscript_inline_feature_set = function
+		| `Feature_booklink	-> forbidden_class
 		| `Feature_see		-> forbidden_class
 		| `Feature_cite		-> forbidden_class
 		| `Feature_ref		-> forbidden_class
 		| `Feature_sref		-> forbidden_class
 
-	and composition_block_feature_set = function
-		| `Feature_paragraph	-> extra_class
-		| `Feature_itemize	-> extra_class
-		| `Feature_enumerate	-> extra_class
+	and block_feature_set = function
+		| `Feature_paragraph	-> forbidden_class
+		| `Feature_itemize	-> forbidden_class
+		| `Feature_enumerate	-> forbidden_class
 		| `Feature_description	-> forbidden_class
 		| `Feature_qanda	-> forbidden_class
 		| `Feature_verse	-> forbidden_class
 		| `Feature_quote	-> forbidden_class
 		| `Feature_mathtex_blk	-> forbidden_class
 		| `Feature_mathml_blk	-> forbidden_class
-		| `Feature_source	-> extra_class
+		| `Feature_source	-> forbidden_class
 		| `Feature_tabular	-> forbidden_class
 		| `Feature_subpage	-> forbidden_class
-		| `Feature_verbatim	-> extra_class
-		| `Feature_picture	-> extra_class
-		| `Feature_bookpic	-> extra_class
-
-	and manuscript_block_feature_set = function
-		| `Feature_decor	-> extra_class
-		| `Feature_pullquote	-> extra_class
-
+		| `Feature_verbatim	-> forbidden_class
+		| `Feature_picture	-> forbidden_class
+		| `Feature_bookpic	-> forbidden_class
+		| `Feature_pullquote	-> forbidden_class
 		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_table	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_figure	-> wrapper_class (get_minipaged maybe_minipaged)
-
 		| `Feature_part		-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_appendix	-> preset_heading_class
-
 		| `Feature_section1	-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_section2	-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_section3	-> custom_heading_class (get_minipaged maybe_minipaged)
-
 		| `Feature_bibliography	-> preset_heading_class
 		| `Feature_notes	-> preset_heading_class
 		| `Feature_toc		-> preset_heading_class
-
 		| `Feature_title1	-> forbidden_class
 		| `Feature_title2	-> forbidden_class
 		| `Feature_abstract	-> forbidden_class
 		| `Feature_rule		-> forbidden_class
-
 		| `Feature_bib		-> ghost_class
 		| `Feature_note		-> ghost_class
-
 		| `Feature_macrodef	-> forbidden_class
 		| `Feature_boxoutdef	-> forbidden_class
 		| `Feature_theoremdef	-> forbidden_class
@@ -214,11 +195,9 @@ let check_feature ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feat
 		| `Feature_custom	-> custom_class in
 
 	let permission_set = match feature with
-		| #Features.composition_inline_feature_t as x	-> composition_inline_feature_set x
-		| #Features.manuscript_inline_feature_t as x	-> manuscript_inline_feature_set x
-		| #Features.composition_block_feature_t as x	-> composition_block_feature_set x
-		| #Features.manuscript_block_feature_t as x	-> manuscript_block_feature_set x
-		| #Features.internal_feature_t as x		-> internal_feature_set x
+		| #Features.inline_feature_t as x   -> inline_feature_set x
+		| #Features.block_feature_t as x    -> block_feature_set x
+		| #Features.internal_feature_t as x -> internal_feature_set x
 
 	in check_permission_set errors comm permission_set
 

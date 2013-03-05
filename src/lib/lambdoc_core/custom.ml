@@ -83,7 +83,7 @@ struct
 	type t = [ unnumbered_t | numbered_t ] with sexp
 
 	let make = function
-		| `Anonymous _	   -> invalid_arg "Custom.Theorem.make"
+		| `Anonymous _ -> invalid_arg "Custom.Theorem.make"
 		| #unnumbered_t
 		| #numbered_t as x -> x
 end

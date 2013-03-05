@@ -35,8 +35,8 @@ let nemap func (hd, tl) =
 (**	Possibly apply a function.
 *)
 let maybe f = function
-	| Some x	-> Some (f x)
-	| None		-> None
+	| Some x -> Some (f x)
+	| None	 -> None
 
 
 (**	Identity function.

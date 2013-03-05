@@ -15,7 +15,7 @@ open Prelude
 open Basic
 open Ast
 open Readconv
-open Extra
+open Style
 
 module String = BatString
 module List = BatList
@@ -63,10 +63,9 @@ let dummy_bookmaker isbns =
 
 (**	Compiles an AST as provided by the parser, producing the corresponding
 	document.  In addition, a label dictionary, bibliography entries, notes,
-	and possible errors are also returned.  Note that because Ocaml does not
-	yet support true GADTs, this function has to rely on Obj.magic.
+	and possible errors are also returned.
 *)
-let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncrasies document_ast =
+let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncrasies ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -77,15 +76,15 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		We determine whether macros are allowed or not by checking the
 		idiosyncrasies of this particular document.
 	*)
-	let macros_authorised = Idiosyncrasies.check_feature `Feature_macrodef idiosyncrasies in
+	let macros_authorised = Idiosyncrasies.check `Feature_macrodef idiosyncrasies in
 
 
 	(************************************************************************)
 	(* Declaration of the local modules used in the function.		*)
 	(************************************************************************)
 
-	let module ImageSet = Set.Make (struct type t = Alias.t let compare = Pervasives.compare end) in
-	let module IsbnSet = Set.Make (struct type t = Book.isbn_t let compare = Pervasives.compare end) in
+	let module ImageSet = Set.Make (struct type t = Alias.t let compare = String.compare end) in
+	let module IsbnSet = Set.Make (struct type t = Book.isbn_t let compare = String.compare end) in
 
 	(************************************************************************)
 	(* Declaration of the mutable values used in the function.		*)
@@ -120,15 +119,15 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	(* Helper sub-functions.						*)
 	(************************************************************************)
 
-	(*	This subfunction creates a new label.  It checks whether the user explicitly
-		provided a label (in which case we use the [`User_label] variant), or if no
-		label was defined (in which case we automatically assign a label using the
-		[`Auto_label] variant).
+	(*	This subfunction creates a new label.  It checks whether the user
+		explicitly provided a label (in which case we use the [User] variant),
+		or if no label was defined (in which case we automatically assign a
+		label using the [Auto] variant).
 	*)
 	let make_label comm target = match comm.comm_label with
 		| Some thing ->
-			let new_label = `User_label thing in
-			let () =
+			let new_label = Label.User thing in
+			begin
 				if Basic_input.matches_ident thing
 				then
 					if Hashtbl.mem labels new_label
@@ -137,10 +136,11 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				else
 					if thing <> ""
 					then BatDynArray.add errors (Some comm.comm_linenum, (Error.Invalid_label (comm.comm_tag, thing)))
-			in new_label
+			end;
+			new_label
 		| None ->
 			incr auto_label_counter;
-			`Auto_label (string_of_int !auto_label_counter)
+			Label.Auto (string_of_int !auto_label_counter)
 
 
 	(*	This subfunction creates an user ordinal order, checking
@@ -151,8 +151,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			Order_input.user_ordinal str
 		with
 			| Order_input.Invalid_order_format str ->
-				let msg = Error.Invalid_order_format (comm.comm_tag, str)
-				in BatDynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				Order_input.user_ordinal "0"
 
 
@@ -164,12 +164,12 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			Order_input.user_hierarchical level str
 		with
 			| Order_input.Invalid_order_format str ->
-				let msg = Error.Invalid_order_format (comm.comm_tag, str)
-				in BatDynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				Order_input.user_hierarchical `Level1 "0"
 			| Order_input.Invalid_order_levels (str, expected, found) ->
-				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found)
-				in BatDynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				Order_input.user_hierarchical `Level1 "0"
 
 
@@ -187,23 +187,24 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		then
 			BatDynArray.add pointers (target_checker, comm, pointer)
 		else
-			let msg = Error.Invalid_label (comm.comm_tag, pointer)
-			in BatDynArray.add errors (Some comm.comm_linenum, msg)
+			let msg = Error.Invalid_label (comm.comm_tag, pointer) in
+			BatDynArray.add errors (Some comm.comm_linenum, msg)
 
 
 	(*	Adds a new TOC entry.
 	*)
 	and add_toc_entry heading =
-		BatDynArray.add toc (Heading.get_heading heading)
+		BatDynArray.add toc heading
 
 
 	(*	Checker for inline/block commands.
 	*)
 	and check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
-		if Idiosyncrasies.check_feature feature idiosyncrasies
+		if Idiosyncrasies.check feature idiosyncrasies
 		then begin
-			Permissions.check_feature ?maybe_minipaged ?maybe_wrapped errors comm feature;
-			Some (elem ())
+			Permissions.check ?maybe_minipaged ?maybe_wrapped errors comm feature;
+			let (attr, dict) = Style.parse comm errors in
+			Some (elem attr dict)
 		end else
 			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe feature) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
@@ -245,169 +246,165 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| None	 -> [dummy_inline] in
 
 
-	let rec convert_inline ~args is_ref inline = match (is_ref, inline) with
+	let rec convert_inline ~depth ~args is_ref inline = match (is_ref, inline) with
 
 		| (_, (comm, Ast.Plain ustr)) ->
-			let elem () = [Inline.plain ustr]
-			in check_inline_comm `Feature_plain comm elem
+			let elem attr _ = [Inline.plain ~attr ustr] in
+			check_inline_comm `Feature_plain comm elem
 
 		| (_, (comm, Ast.Entity ent)) ->
-			let elem () = match Basic_input.expand_entity ent with
-				| `Okay (txt, ustr) -> if expand_entities then [Inline.plain (ustr :> string)] else [Inline.entity txt]
-				| `Error msg	    -> BatDynArray.add errors (Some comm.comm_linenum, msg); []
-			in check_inline_comm `Feature_entity comm elem
+			let elem attr _ = match Basic_input.expand_entity ent with
+				| `Okay (txt, ustr) -> if expand_entities then [Inline.plain ~attr (ustr :> string)] else [Inline.entity ~attr txt]
+				| `Error msg	    -> BatDynArray.add errors (Some comm.comm_linenum, msg); [] in
+			check_inline_comm `Feature_entity comm elem
 
 		| (_, (comm, Ast.Linebreak)) ->
-			let elem () = [Inline.linebreak ()]
-			in check_inline_comm `Feature_linebreak comm elem
+			let elem attr _ = [Inline.linebreak ~attr ()] in
+			check_inline_comm `Feature_linebreak comm elem
 
 		| (_, (comm, Ast.Mathtex_inl txt)) ->
-			let elem () = convert_mathtex Inline.math comm txt
-			in check_inline_comm `Feature_mathtex_inl comm elem
+			let elem attr _ = convert_mathtex (Inline.mathinl ~attr) comm txt in
+			check_inline_comm `Feature_mathtex_inl comm elem
 
 		| (_, (comm, Ast.Mathml_inl txt)) ->
-			let elem () = convert_mathml Inline.math comm txt
-			in check_inline_comm `Feature_mathml_inl comm elem
+			let elem attr _ = convert_mathml (Inline.mathinl ~attr) comm txt in
+			check_inline_comm `Feature_mathml_inl comm elem
 
 		| (_, (comm, Ast.Glyph (alias, alt))) ->
-			let elem () =
-				images := ImageSet.add alias !images;
-				[Inline.glyph alias alt]
-			in check_inline_comm `Feature_glyph comm elem
+			let elem attr _ = images := ImageSet.add alias !images; [Inline.glyph ~attr alias alt] in
+			check_inline_comm `Feature_glyph comm elem
 
 		| (x, (comm, Ast.Bold astseq)) ->
-			let elem () = [Inline.bold (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_bold comm elem
+			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_bold comm elem
 
 		| (x, (comm, Ast.Emph astseq)) ->
-			let elem () = [Inline.emph (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_emph comm elem
+			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_emph comm elem
 
 		| (x, (comm, Ast.Code astseq)) ->
-			let elem () = [Inline.code (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_code comm elem
+			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_code comm elem
 
 		| (x, (comm, Ast.Caps astseq)) ->
-			let elem () = [Inline.caps (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_caps comm elem
+			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_caps comm elem
 
 		| (x, (comm, Ast.Ins astseq)) ->
-			let elem () = [Inline.ins (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_ins comm elem
+			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_ins comm elem
 
 		| (x, (comm, Ast.Del astseq)) ->
-			let elem () = [Inline.del (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_del comm elem
+			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_del comm elem
 
 		| (x, (comm, Ast.Sup astseq)) ->
-			let elem () = [Inline.sup (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_sup comm elem
+			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_sup comm elem
 
 		| (x, (comm, Ast.Sub astseq)) ->
-			let elem () = [Inline.sub (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_sub comm elem
+			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_sub comm elem
 
 		| (x, (comm, Ast.Mbox astseq)) ->
-			let elem () = [Inline.mbox (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_mbox comm elem
+			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_mbox comm elem
 
 		| (x, (comm, Ast.Span astseq)) ->
-			let elem () =
-				let classname = Extra.fetch_classname ~default:None comm errors Classname_hnd
-				in [Inline.span classname (convert_seq_aux ~comm ~args x astseq)]
-			in check_inline_comm `Feature_span comm elem
+			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			check_inline_comm `Feature_span comm elem
 
 		| (false, (comm, Ast.Link (uri, maybe_astseq))) ->
-			let elem () =
-				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
-				in [Inline.link uri (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_link comm elem
+			let elem attr _ =
+				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				[Inline.link ~attr uri maybe_seq] in
+			check_inline_comm `Feature_link comm elem
 
 		| (false, (comm, Ast.Booklink (isbn, maybe_astseq))) ->
-			let elem () =
-				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq
-				and maybe_rating = Extra.fetch_maybe_numeric ~default:None comm errors Rating_hnd in
+			let elem attr dict =
+				let rating = Style.consume1 dict (Rating_hnd, None) in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
 				add_isbn comm `Feature_booklink isbn;
-				[Inline.booklink isbn maybe_rating (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_booklink comm elem
+				[Inline.booklink ~attr isbn rating maybe_seq] in
+			check_inline_comm `Feature_booklink comm elem
 
 		| (false, (comm, Ast.See refs)) ->
-			let elem () =
+			let elem attr _ =
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
-					| _			-> `Wrong_target Error.Target_note
-				in List.iter (add_pointer target_checker comm) refs;
+					| _			-> `Wrong_target Error.Target_note in
+				List.iter (add_pointer target_checker comm) refs;
 				match refs with
 					| hd::tl ->
-						[Inline.see (hd, tl)]
+						[Inline.see ~attr (hd, tl)]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
-						[]
-			in check_inline_comm `Feature_see comm elem
+						[] in
+			check_inline_comm `Feature_see comm elem
 
 		| (false, (comm, Ast.Cite refs)) ->
-			let elem () =
+			let elem attr _ =
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
-					| _			-> `Wrong_target Error.Target_bib
-				in List.iter (add_pointer target_checker comm) refs;
+					| _			-> `Wrong_target Error.Target_bib in
+				List.iter (add_pointer target_checker comm) refs;
 				match refs with
 					| hd::tl ->
-						[Inline.cite (hd, tl)]
+						[Inline.cite ~attr (hd, tl)]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
-						[]
-			in check_inline_comm `Feature_cite comm elem
+						[] in
+			check_inline_comm `Feature_cite comm elem
 
 		| (false, (comm, Ast.Ref (pointer, maybe_astseq))) ->
-			let elem () =
+			let elem attr _ =
 				let target_checker target = match (maybe_astseq, target) with
 					| (None, Target.Visible_target (Target.Custom_target (_, _, `None_given)))
 					| (None, Target.Visible_target (Target.Wrapper_target (_, `None_given)))
 					| (None, Target.Visible_target (Target.Part_target `None_given))
 					| (None, Target.Visible_target (Target.Section_target (_, `None_given))) -> `Empty_target
 					| (_, Target.Visible_target _)						 -> `Valid_target
-					| _									 -> `Wrong_target Error.Target_label
-				in add_pointer target_checker comm pointer;
-				let maybe_seq = maybe (convert_seq_aux ~comm ~args true) maybe_astseq in
-				[Inline.ref pointer (Obj.magic maybe_seq)]
-			in check_inline_comm `Feature_ref comm elem
+					| _									 -> `Wrong_target Error.Target_label in
+				add_pointer target_checker comm pointer;
+				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				[Inline.ref ~attr pointer maybe_seq] in
+			check_inline_comm `Feature_ref comm elem
 
 		| (false, (comm, Ast.Sref pointer)) ->
-			let elem () =
+			let elem attr _ =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
 					| Target.Visible_target (Target.Wrapper_target (_, `None_given))
 					| Target.Visible_target (Target.Part_target `None_given)
 					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
 					| Target.Visible_target _					 -> `Valid_target
-					| _								 -> `Wrong_target Error.Target_label
-				in add_pointer target_checker comm pointer;
-				[Inline.sref pointer]
-			in check_inline_comm `Feature_sref comm elem
+					| _								 -> `Wrong_target Error.Target_label in
+				add_pointer target_checker comm pointer;
+				[Inline.sref ~attr pointer] in
+			check_inline_comm `Feature_sref comm elem
 
 		| (_, (comm, Ast.Macroarg raw_num)) ->
-			let elem () = match args with
+			let elem attr _ = match args with
 				| None ->
 					let msg = Error.Invalid_macro_argument_context in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
 					[]
 				| Some x ->
 					try
-						let num = (int_of_string raw_num) - 1
-						in List.at x num
+						let num = (int_of_string raw_num) - 1 in
+						List.at x num
 					with
 						| Failure _
 						| Invalid_argument _ ->
 							let msg = Error.Invalid_macro_argument_number (raw_num, List.length x) in
 							BatDynArray.add errors (Some comm.comm_linenum, msg);
-							[]
-			in check_inline_comm `Feature_macroarg comm elem
+							[] in
+			check_inline_comm `Feature_macroarg comm elem
 
 		| (x, (comm, Ast.Macrocall (name, arglist))) ->
-			let elem () =
+			let elem attr _ =
 				try
 					let (macro_nargs, macro_astseq) = Hashtbl.find macros name in
 					if macro_nargs <> List.length arglist
@@ -416,34 +413,34 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
 						[]
 					else
-						let new_arglist = List.map (convert_inline_list ~comm ~args x) arglist
-						in convert_inline_list ~comm ~args:(Some new_arglist) x macro_astseq
+						let new_arglist = List.map (convert_inline_list ~comm ~depth:(depth+1) ~args x) arglist in
+						convert_inline_list ~comm ~depth:(depth+1) ~args:(Some new_arglist) x macro_astseq
 				with
 					| Not_found ->
 						let msg = Error.Undefined_macro (comm.comm_tag, name) in
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
-						[]
-			in check_inline_comm `Feature_macrocall comm elem
+						[] in
+			check_inline_comm `Feature_macrocall comm elem
 
 		| (_, (comm, _)) ->
-			let msg = Error.Unexpected_inline comm.comm_tag
-			in BatDynArray.add errors (Some comm.comm_linenum, msg);
+			let msg = Error.Unexpected_inline comm.comm_tag in
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[]
 
-	and convert_inline_list ~comm ~args is_ref astseq =
+	and convert_inline_list ~comm ~depth ~args is_ref astseq =
 		let coalesce_plain seq =
 			let rec coalesce_plain_aux accum = function
-				| (`Plain txt1) :: (`Plain txt2) :: tl ->
-					let agg = `Plain (txt1 ^ txt2)
-					in coalesce_plain_aux accum (agg :: tl)
+				| {Inline.inline = Inline.Plain txt1; attr} :: {Inline.inline = Inline.Plain txt2; _} :: tl ->
+					let agg = Inline.plain ~attr (txt1 ^ txt2) in
+					coalesce_plain_aux accum (agg :: tl)
 				| hd :: tl ->
 					coalesce_plain_aux (hd :: accum) tl
 				| [] ->
-					accum
-			in List.rev (coalesce_plain_aux [] (Inline.get_inlines seq)) in
-		let seq = flatten_map (convert_inline ~args is_ref) astseq in
-		let new_seq = if macros_authorised || expand_entities then Obj.magic (coalesce_plain seq) else seq
-		in match new_seq with
+					accum in
+			List.rev (coalesce_plain_aux [] seq) in
+		let seq = flatten_map (convert_inline ~depth ~args is_ref) astseq in
+		let new_seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
+		match new_seq with
 			| [] ->
 				let msg = Error.Empty_sequence comm.comm_tag in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
@@ -451,12 +448,12 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| xs ->
 				xs
 
-	and convert_seq_aux ~comm ~args is_ref astseq =
-		let seq = convert_inline_list ~comm ~args is_ref astseq
-		in (List.hd seq, List.tl seq) in
+	and convert_seq_aux ~comm ~depth ~args is_ref astseq =
+		let seq = convert_inline_list ~comm ~depth ~args is_ref astseq in
+		(List.hd seq, List.tl seq) in
 
 	let convert_seq ~comm ?args seq =
-		convert_seq_aux ~comm ?args false seq in
+		convert_seq_aux ~comm ~depth:0 ?args false seq in
 
 
 	(************************************************************************)
@@ -483,56 +480,56 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				| Some raw ->
 					begin
 						try
-							let (colspec, colspan, overline, underline) = Tabular_input.cellspec_of_string raw
-							in (colspan, Some (colspec, colspan, overline, underline))
+							let (colspec, colspan, overline, underline) = Tabular_input.cellspec_of_string raw in
+							(colspan, Some (colspec, colspan, overline, underline))
 						with _ ->
-							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw)
-							in BatDynArray.add errors (Some comm.comm_linenum, msg);
+							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw) in
+							BatDynArray.add errors (Some comm.comm_linenum, msg);
 							(1, None)
 					end
 				| None ->
-					(1, None)
-			in (colspan, Tabular.make_cell cellspec (maybe (convert_seq ~comm) maybe_astseq)) in
+					(1, None) in
+			(colspan, Tabular.make_cell cellspec (maybe (convert_seq ~comm) maybe_astseq)) in
 
 		let convert_row (row_comm, row) =
 			let rowspan = ref 0 in
 			let converter raw_cell =
 				let (colspan, cell) = convert_cell raw_cell in
-				let () = rowspan := !rowspan + colspan
-				in cell in
+				let () = rowspan := !rowspan + colspan in
+				cell in
 			let tab_row = match row with
 				| []		-> invalid_arg "Parser has given us an empty tabular row"
-				| hd::tl	-> Tabular.make_row (nemap converter (hd, tl))
-			in if !rowspan <> num_columns
+				| hd::tl	-> Tabular.make_row (nemap converter (hd, tl)) in
+			if !rowspan <> num_columns
 			then begin
-				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_tag, comm.comm_linenum, !rowspan, num_columns)
-				in BatDynArray.add errors (Some row_comm.comm_linenum, msg);
+				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
+				BatDynArray.add errors (Some row_comm.comm_linenum, msg);
 				tab_row
 			end else
 				tab_row in
 
 		let convert_group feature (maybe_comm, rows) =
 			let () = match maybe_comm with
-				| Some comm	-> ignore (check_inline_comm feature comm (fun () -> []))
-				| None		-> ()
-			in match rows with
+				| Some comm	-> ignore (check_inline_comm feature comm (fun _ _ -> []))
+				| None		-> () in
+			 match rows with
 				| []		-> invalid_arg "Parser has given us an empty tabular group"
 				| hd::tl	-> Tabular.make_group (nemap convert_row (hd, tl)) in
 
-		let thead = maybe (convert_group `Feature_thead) tab.thead
+		let thead = maybe (convert_group `Feature_thead) tab.thead in
 
-		and tfoot = maybe (convert_group `Feature_tfoot) tab.tfoot
+		let tfoot = maybe (convert_group `Feature_tfoot) tab.tfoot in
 
-		in match tab.tbodies with
+		match tab.tbodies with
 			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make_tabular specs ?thead ?tfoot (nemap (convert_group `Feature_tbody) (hd, tl)) in
+			| hd::tl	-> Tabular.make specs ?thead ?tfoot (nemap (convert_group `Feature_tbody) (hd, tl)) in
 
 
 	(************************************************************************)
 	(* Compilation functions for document blocks.				*)
 	(************************************************************************)
 
-	let dummy_block = Block.paragraph false None (dummy_inline, []) in
+	let dummy_block = Block.paragraph (dummy_inline, []) in
 
 
 	let check_block_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
@@ -546,138 +543,104 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph astseq))
 		| (_, _, _, `Any_blk, (comm, Ast.Paragraph astseq)) ->
-			let elem () =
-				let extra = Extra.parse comm errors [Initial_hnd; Indent_hnd] in
-				let initial = Extra.get_boolean ~default:false extra Initial_hnd
-				and indent = Extra.get_maybe_boolean ~default:None extra Indent_hnd
-				in [Block.paragraph initial indent (convert_seq ~comm astseq)]
-			in check_block_comm `Feature_paragraph comm elem
+			let elem attr _ = [Block.paragraph ~attr (convert_seq ~comm astseq)] in
+			check_block_comm `Feature_paragraph comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize astfrags)) ->
-			let elem () =
-				let bullet = Extra.fetch_bullet ~default:Bullet.Disc comm errors Bullet_hnd
-				in convert_frag_of_anon_frags ~comm ~cons:(Block.itemize bullet) ~minipaged x1 x2 astfrags
-			in check_block_comm `Feature_itemize comm elem
+			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.itemize ~attr) ~minipaged x1 x2 astfrags in
+			check_block_comm `Feature_itemize comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate astfrags)) ->
-			let elem () =
-				let numbering = Extra.fetch_numbering ~default:Numbering.Decimal comm errors Numbering_hnd
-				in convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate numbering) ~minipaged x1 x2 astfrags
-			in check_block_comm `Feature_enumerate comm elem
+			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate ~attr) ~minipaged x1 x2 astfrags in
+			check_block_comm `Feature_enumerate comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Description astfrags)) ->
-			let elem () = convert_frag_of_desc_frags ~comm ~cons:Block.description ~minipaged x1 x2 astfrags
-			in check_block_comm `Feature_description comm elem
+			let elem attr _ = convert_frag_of_desc_frags ~comm ~cons:(Block.description ~attr) ~minipaged x1 x2 astfrags in
+			check_block_comm `Feature_description comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Qanda astfrags)) ->
-			let elem () = convert_frag_of_qanda_frags ~comm ~cons:Block.qanda ~minipaged x1 x2 astfrags
-			in check_block_comm `Feature_qanda comm elem
+			let elem attr _ = convert_frag_of_qanda_frags ~comm ~cons:(Block.qanda ~attr) ~minipaged x1 x2 astfrags in
+			check_block_comm `Feature_qanda comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Verse astfrag)) ->
-			let elem () =
-				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged false false false `Paragraph_blk astfrag)
-				in [Block.verse frag]
-			in check_block_comm `Feature_verse comm elem
+			let elem attr _ = [Block.verse ~attr (convert_frag_aux ~comm ~minipaged false false false `Paragraph_blk astfrag)] in
+			check_block_comm `Feature_verse comm elem
 
 		| (_, _, true, `Any_blk, (comm, Ast.Quote astfrag)) ->
-			let elem () =
-				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged false false true `Any_blk astfrag)
-				in [Block.quote frag]
-			in check_block_comm `Feature_quote comm elem
+			let elem attr _ = [Block.quote ~attr (convert_frag_aux ~comm ~minipaged false false true `Any_blk astfrag)] in
+			check_block_comm `Feature_quote comm elem
 
 		| (_, _, _, `Equation_blk, (comm, Ast.Mathtex_blk txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Mathtex_blk txt)) ->
-			let elem () = convert_mathtex Block.math comm txt
-			in check_block_comm `Feature_mathtex_blk comm elem
+			let elem attr _ = convert_mathtex (Block.mathblk ~attr) comm txt in
+			check_block_comm `Feature_mathtex_blk comm elem
 
 		| (_, _, _, `Equation_blk, (comm, Ast.Mathml_blk txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Mathml_blk txt)) ->
-			let elem () = convert_mathml Block.math comm txt
-			in check_block_comm `Feature_mathml_blk comm elem
+			let elem attr _ = convert_mathml (Block.mathblk ~attr) comm txt in
+			check_block_comm `Feature_mathml_blk comm elem
 
 		| (_, _, _, `Printout_blk, (comm, Ast.Source txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Source txt)) ->
-			let elem () =
-				let extra = Extra.parse comm errors [Lang_hnd; Style_hnd; Linenums_hnd] in
-				let lang = Extra.get_lang ~default:None extra Lang_hnd in
-				let style = Extra.get_style ~default:Source.Boxed extra Style_hnd in
-				let linenums = Extra.get_boolean ~default:false extra Linenums_hnd in
+			let elem attr dict =
+				let (lang, linenums) = Style.consume2 dict (Lang_hnd, None) (Linenums_hnd, false) in
 				let trimmed = Literal_input.trim txt in
 				let hilite = Camlhighlight_parser.from_string ?lang trimmed in
-				let src = Source.make lang hilite style linenums in
-				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_source comm.comm_tag)
-				in [Block.source src]
-			in check_block_comm `Feature_source comm elem
+				let src = Source.make lang hilite linenums in
+				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_source comm.comm_tag) in
+				[Block.source ~attr src] in
+			check_block_comm `Feature_source comm elem
 
 		| (_, _, _, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
 		| (_, _, _, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
-			let elem () = [Block.tabular (convert_tabular comm tcols tab)]
-			in check_block_comm `Feature_tabular comm elem
+			let elem attr _ = [Block.tabular ~attr (convert_tabular comm tcols tab)] in
+			check_block_comm `Feature_tabular comm elem
 
 		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
 		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
-			let elem () =
-				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged:true true true true `Any_blk astfrag)
-				in [Block.subpage frag]
-			in check_block_comm `Feature_subpage comm elem
+			let elem attr _ = [Block.subpage ~attr (convert_frag_aux ~comm ~minipaged:true true true true `Any_blk astfrag)] in
+			check_block_comm `Feature_subpage comm elem
 
-		| (_, _, _, `Decor_blk, (comm, Ast.Verbatim txt))
 		| (_, _, _, `Figure_blk, (comm, Ast.Verbatim txt))
 		| (_, _, _, `Any_blk, (comm, Ast.Verbatim txt)) ->
-			let elem () =
-				let mult = Extra.fetch_numeric ~default:0 comm errors Mult_hnd
-				and trimmed = Literal_input.trim txt in
-				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag)
-				in [Block.verbatim mult trimmed]
-			in check_block_comm `Feature_verbatim comm elem
+			let elem attr _ =
+				let trimmed = Literal_input.trim txt in
+				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag) in
+				[Block.verbatim ~attr trimmed] in
+			check_block_comm `Feature_verbatim comm elem
 
-		| (_, _, _, `Decor_blk, (comm, Ast.Picture (alias, alt)))
 		| (_, _, _, `Figure_blk, (comm, Ast.Picture (alias, alt)))
 		| (_, _, _, `Any_blk, (comm, Ast.Picture (alias, alt))) ->
-			let elem () =
-				let extra = Extra.parse comm errors [Frame_hnd; Width_hnd] in
-				let frame = Extra.get_boolean ~default:false extra Frame_hnd
-				and width = Extra.get_maybe_numeric ~default:None extra Width_hnd in
+			let elem attr dict =
+				let width = Style.consume1 dict (Width_hnd, None) in
 				images := ImageSet.add alias !images;
-				[Block.picture frame width alias alt]
-			in check_block_comm `Feature_picture comm elem
+				[Block.picture ~attr width alias alt] in
+			check_block_comm `Feature_picture comm elem
 
-		| (_, _, _, `Decor_blk, (comm, Ast.Bookpic isbn))
 		| (_, _, _, `Any_blk, (comm, Ast.Bookpic isbn)) ->
-			let elem () =
-				let extra = Extra.parse comm errors [Rating_hnd; Coversize_hnd] in
-				let maybe_rating = Extra.get_maybe_numeric ~default:None extra Rating_hnd
-				and coversize = Extra.get_coversize ~default:`Medium extra Coversize_hnd in
+			let elem attr dict =
+				let (rating, coversize) = Style.consume2 dict (Rating_hnd, None) (Coversize_hnd, Book.Medium) in
 				add_isbn comm `Feature_bookpic isbn;
-				[Block.bookpic isbn maybe_rating coversize]
-			in check_block_comm `Feature_bookpic comm elem
-
-		| (_, _, _, `Any_blk, (comm, Ast.Decor astblk)) ->
-			let elem () =
-				let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd
-				and blk = Obj.magic (convert_block ~minipaged false false false `Decor_blk astblk)
-				in perhaps (Block.decor floatation) blk
-			in check_block_comm `Feature_decor comm elem
+				[Block.bookpic ~attr isbn rating coversize] in
+			check_block_comm `Feature_bookpic comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_astseq, astfrag))) ->
-			let elem () =
-				let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd
-				and maybe_seq = maybe (convert_seq ~comm) maybe_astseq
-				and frag = Obj.magic (convert_frag_aux ~comm ~minipaged false false false `Any_blk astfrag)
-				in [Block.pullquote floatation maybe_seq frag]
-			in check_block_comm `Feature_pullquote comm elem
+			let elem attr _ =
+				let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
+				let frag = convert_frag_aux ~comm ~minipaged false false false `Any_blk astfrag in
+				[Block.pullquote ~attr maybe_seq frag] in
+			check_block_comm `Feature_pullquote comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Custom (maybe_kind, env, maybe_astseq, astfrag))) ->
-			let elem () =
+			let elem attr _ =
 				let bad_order reason =
 					let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
-					Order_input.no_order ()
-				in try
+					Order_input.no_order () in
+				try
 					let (kind, used, def) = Hashtbl.find customisations env in
 					let () = match maybe_kind with Some k when k <> kind -> raise (Mismatched_custom (k, kind)) | _ -> () in
 					let () = if not used then Hashtbl.replace customisations env (kind, true, def) in
-					let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 					let order = match (def, comm.comm_order, minipaged) with
 						| Numbered _, None, true	     -> bad_order Error.Reason_is_absent_when_mandatory
 						| Numbered (_, counter), None, false -> Order_input.auto_ordinal counter
@@ -694,94 +657,94 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						| Numbered _   -> Custom.numbered in
 					let data = custom_maker env label order in
 					let (block_maker, allow_above_embeddable) = match kind with
-						| Custom.Boxout  -> (Block.boxout floatation (Custom.Boxout.make data), true)
-						| Custom.Theorem -> (Block.theorem (Custom.Theorem.make data), false) in
-					let maybe_seq = maybe (convert_seq ~comm) maybe_astseq
-					and frag = convert_frag_aux ~comm ~minipaged false false allow_above_embeddable `Any_blk astfrag
-					in [block_maker maybe_seq frag]
+						| Custom.Boxout  -> (Block.boxout ~attr (Custom.Boxout.make data), true)
+						| Custom.Theorem -> (Block.theorem ~attr (Custom.Theorem.make data), false) in
+					let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
+					let frag = convert_frag_aux ~comm ~minipaged false false allow_above_embeddable `Any_blk astfrag in
+					[block_maker maybe_seq frag]
 				with
 					| Not_found ->
-						let msg = Error.Undefined_custom (comm.comm_tag, env)
-						in BatDynArray.add errors (Some comm.comm_linenum, msg);
+						let msg = Error.Undefined_custom (comm.comm_tag, env) in
+						BatDynArray.add errors (Some comm.comm_linenum, msg);
 						[]
 					| Mismatched_custom (found, expected) ->
-						let msg = Error.Mismatched_custom (comm.comm_tag, env, found, expected)
-						in BatDynArray.add errors (Some comm.comm_linenum, msg);
-						[]
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
+						let msg = Error.Mismatched_custom (comm.comm_tag, env, found, expected) in
+						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						[] in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astseq, astblk))) ->
-			let elem () =
-				let (floatation, wrapper) = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
-				let blk = Obj.magic (convert_block ~minipaged true true true `Equation_blk astblk)
-				in perhaps (Block.equation floatation wrapper) blk
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
+			let elem attr _ =
+				let wrapper = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
+				let blk = convert_block ~minipaged true true true `Equation_blk astblk in
+				perhaps (Block.equation ~attr wrapper) blk in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astseq, astblk))) ->
-			let elem () =
-				let (floatation, wrapper) = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq
-				and blk = Obj.magic (convert_block ~minipaged true true true `Printout_blk astblk)
-				in perhaps (Block.printout floatation wrapper) blk
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
+			let elem attr _ =
+				let wrapper = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq in
+				let blk = convert_block ~minipaged true true true `Printout_blk astblk in
+				perhaps (Block.printout ~attr wrapper) blk in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astseq, astblk))) ->
-			let elem () =
-				let (floatation, wrapper) = convert_wrapper comm table_counter Wrapper.Table maybe_astseq
-				and blk = Obj.magic (convert_block ~minipaged true true true `Table_blk astblk)
-				in perhaps (Block.table floatation wrapper) blk
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
+			let elem attr _ =
+				let wrapper = convert_wrapper comm table_counter Wrapper.Table maybe_astseq in
+				let blk = convert_block ~minipaged true true true `Table_blk astblk in
+				perhaps (Block.table ~attr wrapper) blk in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astseq, astblk))) ->
-			let elem () =
-				let (floatation, wrapper) = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq
-				and blk = Obj.magic (convert_block ~minipaged true true true `Figure_blk astblk)
-				in perhaps (Block.figure floatation wrapper) blk
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
+			let elem attr _ =
+				let wrapper = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq in
+				let blk = convert_block ~minipaged true true true `Figure_blk astblk in
+				perhaps (Block.figure ~attr wrapper) blk in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Part astseq)) ->
-			let elem () =
+			let elem attr _ =
 				let order = match comm.comm_order with
 					| None	     -> Order_input.auto_ordinal part_counter
 					| Some ""    -> Order_input.no_order ()
 					| Some other -> make_user_ordinal comm other in
 				let label = make_label comm (Target.part order) in
 				let heading = Heading.part label order (convert_seq ~comm astseq) in
-				let block = Block.heading heading in
-				let () = if not minipaged then add_toc_entry heading
-				in [block]
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_part comm elem
+				let block = Block.heading ~attr heading in
+				let () = if not minipaged then add_toc_entry heading in
+				[block] in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_part comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Appendix)) ->
-			let elem () =
+			let elem attr _ =
 				let order = Order_input.no_order () in
 				let label = make_label comm (Target.part order) in
 				let heading = Heading.appendix label in
-				let block = Block.heading heading in
+				let block = Block.heading ~attr heading in
 				let () = if not minipaged then add_toc_entry heading in
-				let () = appendixed := true
-				in [block]
-			in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_appendix comm elem
+				let () = appendixed := true in
+				[block] in
+			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_appendix comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Section (level, astseq))) ->
-			let elem () =
+			let elem attr _ =
 				let (counter, location) =
 					if !appendixed
-					then (appendix_counter, `Appendixed)
-					else (section_counter, `Mainbody) in
+					then (appendix_counter, Heading.Appendixed)
+					else (section_counter, Heading.Mainbody) in
 				let order = match comm.comm_order with
 					| None	     -> Order_input.auto_hierarchical level counter
 					| Some ""    -> Order_input.no_order ()
 					| Some other -> make_user_hierarchical comm level other in
 				let label = make_label comm (Target.section location order) in
 				let heading = Heading.section label order location level (convert_seq ~comm astseq) in
-				let block = Block.heading heading in
-				let () = if not minipaged then add_toc_entry heading
-				in [block]
-			and feature = match level with
+				let block = Block.heading ~attr heading in
+				let () = if not minipaged then add_toc_entry heading in
+				[block] in
+			let feature = match level with
 				| `Level1 -> `Feature_section1
 				| `Level2 -> `Feature_section2
-				| `Level3 -> `Feature_section3
-			in check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
+				| `Level3 -> `Feature_section3 in
+			check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Bibliography)) ->
 			convert_preset_sectional ~tocable:true ~minipaged Heading.bibliography `Feature_bibliography comm
@@ -793,94 +756,93 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			convert_preset_sectional ~tocable:false ~minipaged Heading.toc `Feature_toc comm
 
 		| (true, true, true, `Any_blk, (comm, Ast.Title (level, astseq))) ->
-			let elem () = [Block.title level (convert_seq ~comm astseq)]
-			and feature = match level with
+			let elem attr _ = [Block.title ~attr level (convert_seq ~comm astseq)] in
+			let feature = match level with
 				| `Level1 -> `Feature_title1
-				| `Level2 -> `Feature_title2
-			in check_block_comm feature comm elem
+				| `Level2 -> `Feature_title2 in
+			check_block_comm feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Abstract astfrag)) ->
-			let elem () =
-				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged false false false `Any_blk astfrag)
-				in [Block.abstract frag]
-			in check_block_comm `Feature_abstract comm elem
+			let elem attr _ =
+				let frag = convert_frag_aux ~comm ~minipaged false false false `Any_blk astfrag in
+				[Block.abstract ~attr frag] in
+			check_block_comm `Feature_abstract comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Rule)) ->
-			let elem () = [Block.rule ()]
-			in check_block_comm `Feature_rule comm elem
+			let elem attr _ = [Block.rule ~attr ()] in
+			check_block_comm `Feature_rule comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Bib bib)) ->
-			let elem () =
+			let elem attr _ =
 				let (author_comm, author_astseq) = bib.author
 				and (title_comm, title_astseq) = bib.title
 				and (resource_comm, resource_astseq) = bib.resource in
 				let order = Order_input.auto_ordinal bib_counter in
 				let label = make_label comm (Target.bib order)
 				and author =
-					let elem () = convert_seq ~comm author_astseq
-					in check_comm `Feature_bib_author author_comm elem
+					let elem attr _ = convert_seq ~comm author_astseq in
+					check_comm `Feature_bib_author author_comm elem
 				and title =
-					let elem () = convert_seq ~comm title_astseq
-					in check_comm `Feature_bib_title title_comm elem
+					let elem attr _ = convert_seq ~comm title_astseq in
+					check_comm `Feature_bib_title title_comm elem
 				and resource =
-					let elem () = convert_seq ~comm resource_astseq
-					in check_comm `Feature_bib_resource resource_comm elem
-				in match (author, title, resource) with
+					let elem attr _ = convert_seq ~comm resource_astseq in
+					check_comm `Feature_bib_resource resource_comm elem in
+				match (author, title, resource) with
 					| (Some author, Some title, Some resource) ->
 						let bib = Bib.make label order author title resource in
 						BatDynArray.add bibs bib;
 						[]
 					| _ ->
-						[]
-			in check_block_comm `Feature_bib comm elem
+						[] in
+			check_block_comm `Feature_bib comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Note astfrag)) ->
-			let elem () =
+			let elem attr _ =
 				let order = Order_input.auto_ordinal note_counter in
 				let label = make_label comm (Target.note order) in
-				let frag = Obj.magic (convert_frag_aux ~comm ~minipaged:true false true true `Any_blk astfrag) in
+				let frag = convert_frag_aux ~comm ~minipaged:true false true true `Any_blk astfrag in
 				let note = Note.make label order frag in
 				BatDynArray.add notes note;
-				[]
-			in check_block_comm `Feature_note comm elem
+				[] in
+			check_block_comm `Feature_note comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, nargs, astseq))) ->
-			let elem () =
+			let elem attr _ =
 				if not (Basic_input.matches_ident name)
 				then begin
-					let msg = Error.Invalid_macro (comm.comm_tag, name)
-					in BatDynArray.add errors (Some comm.comm_linenum, msg)
+					let msg = Error.Invalid_macro (comm.comm_tag, name) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg)
 				end;
 				let num_args =
 					try int_of_string nargs
 					with Failure _ ->
-						let msg = Error.Invalid_macro_nargs (name, nargs)
-						in BatDynArray.add errors (Some comm.comm_linenum, msg); 0 in
+						let msg = Error.Invalid_macro_nargs (name, nargs) in
+						BatDynArray.add errors (Some comm.comm_linenum, msg); 0 in
 				let errors_before = BatDynArray.length errors in
 				let _seq = convert_seq ~comm ~args:(List.make num_args [dummy_inline]) astseq in
 				let errors_after = BatDynArray.length errors in
 				(if Hashtbl.mem macros name
 				then
-					let msg = Error.Duplicate_macro (comm.comm_tag, name)
-					in BatDynArray.add errors (Some comm.comm_linenum, msg)
+					let msg = Error.Duplicate_macro (comm.comm_tag, name) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg)
 				else
-					let new_astseq = if errors_after = errors_before then astseq else [(comm, Ast.Linebreak)]
-					in Hashtbl.add macros name (num_args, new_astseq));
-				[]
-			in check_block_comm `Feature_macrodef comm elem
+					let new_astseq = if errors_after = errors_before then astseq else [(comm, Ast.Linebreak)] in
+					Hashtbl.add macros name (num_args, new_astseq));
+				[] in
+			check_block_comm `Feature_macrodef comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Boxoutdef (env, maybe_caption, maybe_counter_name))) ->
-			let elem () = convert_customdef comm env Custom.Boxout maybe_caption maybe_counter_name; []
-			in check_block_comm `Feature_boxoutdef comm elem
+			let elem attr _ = convert_customdef comm env Custom.Boxout maybe_caption maybe_counter_name; [] in
+			check_block_comm `Feature_boxoutdef comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Theoremdef (env, caption, maybe_counter_name))) ->
-			let elem () = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name; []
-			in check_block_comm `Feature_theoremdef comm elem
+			let elem attr _ = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name; [] in
+			check_block_comm `Feature_theoremdef comm elem
 
 		| (_, _, _, _, (comm, _)) ->
 			let blk = match allowed_blk with
 				| `Paragraph_blk
-				| `Decor_blk
 				| `Equation_blk
 				| `Printout_blk
 				| `Table_blk
@@ -890,158 +852,150 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| (_, false, _) -> `Quotable_blk
 					| (false, _, _) -> `Listable_blk
 					| _		-> `Super_blk in
-			let msg = Error.Unexpected_block (comm.comm_tag, blk)
-			in BatDynArray.add errors (Some comm.comm_linenum, msg);
+			let msg = Error.Unexpected_block (comm.comm_tag, blk) in
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[dummy_block]
 
 
 	and convert_preset_sectional ~tocable ~minipaged cons feature comm = 
-		let elem () =
+		let elem attr _ =
 			let order = Order_input.no_order () in
-			let label = make_label comm (Target.section `Mainbody order) in
+			let label = make_label comm (Target.section Heading.Mainbody order) in
 			let heading = cons label in
-			let block = Block.heading heading in
-			let () = if tocable && not minipaged then add_toc_entry heading
-			in [block]
-		in check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_notes comm elem
+			let block = Block.heading ~attr heading in
+			let () = if tocable && not minipaged then add_toc_entry heading in
+			[block] in
+		check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_notes comm elem
 
 
 	and convert_wrapper comm counter kind maybe_astseq =
-		let floatation = Extra.fetch_floatation ~default:Floatation.Center comm errors Floatation_hnd in
 		let order = match comm.comm_order with
 			| None	     -> Order_input.auto_ordinal counter
 			| Some ""    -> Order_input.no_order ()
 			| Some thing -> make_user_ordinal comm thing in
 		let label = make_label comm (Target.wrapper kind order) in
 		let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
-		let wrapper = match (order, maybe_seq) with
+		match (order, maybe_seq) with
 			| (`None_given, None) ->
 				let msg = Error.Invalid_wrapper (comm.comm_tag, kind) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				Wrapper.Unordered (label, Inline.get_seq (dummy_inline, []))
+				Wrapper.Unordered (label, (dummy_inline, []))
 			| (`None_given, Some seq) ->
-				Wrapper.Unordered (label, Inline.get_seq seq)
+				Wrapper.Unordered (label, seq)
 			| (`Auto_given _ as o, maybe_seq)
 			| (`User_given _ as o, maybe_seq) ->
-				Wrapper.Ordered (label, o, maybe Inline.get_seq maybe_seq)
-		in (floatation, wrapper)
+				Wrapper.Ordered (label, o, maybe_seq)
 
 
 	and convert_customdef comm env kind maybe_caption maybe_counter_name =
 		if not (Basic_input.matches_ident env)
 		then begin
-			let msg = Error.Invalid_custom (comm.comm_tag, env)
-			in BatDynArray.add errors (Some comm.comm_linenum, msg)
+			let msg = Error.Invalid_custom (comm.comm_tag, env) in
+			BatDynArray.add errors (Some comm.comm_linenum, msg)
 		end
 		else if Hashtbl.mem customisations env
 		then begin
-			let msg = Error.Duplicate_custom (comm.comm_tag, env)
-			in BatDynArray.add errors (Some comm.comm_linenum, msg)
+			let msg = Error.Duplicate_custom (comm.comm_tag, env) in
+			BatDynArray.add errors (Some comm.comm_linenum, msg)
 		end
 		else match (maybe_caption, maybe_counter_name) with
 			| (None, None) ->
-				let data = (kind, false, Anonymous)
-				in Hashtbl.add customisations env data
+				let data = (kind, false, Anonymous) in
+				Hashtbl.add customisations env data
 			| (None, Some counter_name) ->
-				let msg = Error.Unexpected_counter (comm.comm_tag, counter_name)
-				in BatDynArray.add errors (Some comm.comm_linenum, msg)
+				let msg = Error.Unexpected_counter (comm.comm_tag, counter_name) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg)
 			| (Some astseq, None) ->
-				let data = (kind, false, Unnumbered (Inline.get_seq (convert_seq ~comm astseq)))
-				in Hashtbl.add customisations env data
+				let data = (kind, false, Unnumbered (convert_seq ~comm astseq)) in
+				Hashtbl.add customisations env data
 			| (Some astseq, Some counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
 				if Basic_input.matches_ident counter_name
 				then begin
 					let counter = Order_input.make_ordinal_counter () in
-					let data = (kind, false, Numbered (Inline.get_seq (convert_seq ~comm astseq), counter)) in
+					let data = (kind, false, Numbered (convert_seq ~comm astseq, counter)) in
 					Hashtbl.add custom_counters counter_name (kind, counter);
 					Hashtbl.add customisations env data
 				end
 				else begin
-					let msg = Error.Invalid_counter (comm.comm_tag, counter_name)
-					in BatDynArray.add errors (Some comm.comm_linenum, msg)
+					let msg = Error.Invalid_counter (comm.comm_tag, counter_name) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg)
 				end
 			| (Some astseq, Some counter_name) -> match Hashtbl.find custom_counters counter_name with
 				| (k, _) when k <> kind ->
-					let msg = Error.Mismatched_counter (comm.comm_tag, counter_name)
-					in BatDynArray.add errors (Some comm.comm_linenum, msg)
+					let msg = Error.Mismatched_counter (comm.comm_tag, counter_name) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg)
 				| (_, counter) ->
-					let data = (kind, false, Numbered (Inline.get_seq (convert_seq ~comm astseq), counter))
-					in Hashtbl.add customisations env data
+					let data = (kind, false, Numbered (convert_seq ~comm astseq, counter)) in
+					Hashtbl.add customisations env data
 
 
 	and convert_frag_of_anon_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, astfrag) =
-			let elem () = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag
-			in check_comm `Feature_item comm elem in
-		let frags = Obj.magic (List.filter_map conv astfrags)
-		in match frags with
+			let elem attr _ = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+			check_comm `Feature_item comm elem in
+		let frags = List.filter_map conv astfrags in
+		match frags with
 			| [] ->
-				let msg = Error.Empty_fragment comm.comm_tag
-				in BatDynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Empty_fragment comm.comm_tag in
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				[dummy_block]
 			| hd :: tl ->
 				[cons (hd, tl)]
 
 
-
 	and convert_frag_of_desc_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, astseq, astfrag) =
-			let elem () =
-				let seq = convert_seq ~comm astseq
-				and frag = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag
-				in (seq, frag)
-			in check_comm `Feature_item comm elem in
-		let frags = Obj.magic (List.filter_map conv astfrags)
-		in match frags with
+			let elem attr _ =
+				let seq = convert_seq ~comm astseq in
+				let frag = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+				(seq, frag) in
+			check_comm `Feature_item comm elem in
+		let frags = List.filter_map conv astfrags in
+		match frags with
 			| [] ->
-				let msg = Error.Empty_fragment comm.comm_tag
-				in BatDynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Empty_fragment comm.comm_tag in
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				[dummy_block]
 			| hd :: tl ->
 				[cons (hd, tl)]
 
 
 	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
-		let conv ((q_comm, q_qanda, q_astfrag), (a_comm, a_qanda, a_astfrag)) =
-			let question = 
-				let frag = convert_frag_aux ~comm:q_comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk q_astfrag in
-				let (feature, elem) = match q_qanda with
-					| Different maybe_astseq ->
-						(`Feature_question, fun () -> (Some (maybe (convert_seq ~comm:q_comm) maybe_astseq), frag))
-					| Repeated ->
-						(`Feature_rquestion, fun () -> (None, frag))
-				in check_comm feature q_comm elem
-			and answer = 
-				let frag = convert_frag_aux ~comm:a_comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk a_astfrag in
-				let (feature, elem) = match a_qanda with
-					| Different maybe_astseq ->
-						(`Feature_answer, fun () -> (Some (maybe (convert_seq ~comm:a_comm) maybe_astseq), frag))
-					| Repeated ->
-						(`Feature_ranswer, fun () -> (None, frag))
-				in check_comm feature a_comm elem
-			in match (question, answer) with
-				| (Some q, Some a) -> [(q, a)]
-				| _		   -> [] in
-		let frags = Obj.magic (flatten_map conv astfrags)
-		in match frags with
+		let conv (comm, qanda, astfrag) =
+			let (feature, qanda_maker) = match qanda with
+				| New_questioner maybe_astseq ->
+					(`Feature_question, fun () -> Qanda.New_questioner (maybe (convert_seq ~comm) maybe_astseq))
+				| New_answerer maybe_astseq ->
+					(`Feature_answer, fun () -> Qanda.New_answerer (maybe (convert_seq ~comm) maybe_astseq))
+				| Same_questioner ->
+					(`Feature_rquestion, fun () -> Qanda.Same_questioner)
+				| Same_answerer ->
+					(`Feature_ranswer, fun () -> Qanda.Same_answerer) in
+			let elem attr _ =
+				let qanda = qanda_maker () in
+				let frag = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+				[(qanda, frag)] in
+			check_comm feature comm elem in
+		let frags = List.flatten (List.filter_map conv astfrags) in
+		match frags with
 			| [] ->
-				let msg = Error.Empty_fragment comm.comm_tag
-				in BatDynArray.add errors (Some comm.comm_linenum, msg);
+				let msg = Error.Empty_fragment comm.comm_tag in
+				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				[dummy_block]
 			| hd :: tl ->
 				[cons (hd, tl)]
 
 
 	and convert_frag_aux ?comm ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
-		let conv astblk = Obj.magic (convert_block ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk) in
-		let frag = flatten_map conv astfrag
-		in match frag with
+		let conv astblk = convert_block ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk in
+		let frag = flatten_map conv astfrag in
+		match frag with
 			| [] ->
 				let (tag, linenum) = match comm with
 					| Some comm -> (comm.comm_tag, Some comm.comm_linenum)
 					| None	    -> (None, None) in
-				let msg = Error.Empty_fragment tag
-				in BatDynArray.add errors (linenum, msg);
+				let msg = Error.Empty_fragment tag in
+				BatDynArray.add errors (linenum, msg);
 				(dummy_block, [])
 			| hd :: tl ->
 				(hd, tl) in
@@ -1058,25 +1012,24 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	let filter_pointers () =
 		let filter_pointer (target_checker, comm, label) =
 			try
-				let target = Hashtbl.find labels (`User_label label) in
+				let target = Hashtbl.find labels (Label.User label) in
 				match target_checker target with
 				| `Valid_target ->
 					()
 				| `Empty_target ->
-					let msg = Error.Empty_target (comm.comm_tag, label)
-					in BatDynArray.add errors (Some comm.comm_linenum, msg)
+					let msg = Error.Empty_target (comm.comm_tag, label) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg)
 				| `Wrong_target expected ->
 					let suggestion = match target with
 						| Target.Visible_target _	-> Error.Target_label
 						| Target.Bib_target _		-> Error.Target_bib
 						| Target.Note_target _		-> Error.Target_note in
-					let msg = Error.Wrong_target (comm.comm_tag, label, expected, suggestion)
-					in BatDynArray.add errors (Some comm.comm_linenum, msg)
+					let msg = Error.Wrong_target (comm.comm_tag, label, expected, suggestion) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg)
 			with
 				Not_found ->
 					let msg = Error.Undefined_target (comm.comm_tag, label) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg)
-		in
+					BatDynArray.add errors (Some comm.comm_linenum, msg) in
 		BatDynArray.iter filter_pointer pointers in
 
 
@@ -1113,11 +1066,11 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 							| Unavailable	   -> Error.Unavailable_bookmaker (comm.comm_tag, Features.describe feature)
 							| Uncapable err    -> Error.Uncapable_bookmaker (comm.comm_tag, Features.describe feature, err)
 							| Malformed_ISBN _ -> Error.Malformed_ISBN (comm.comm_tag, isbn)
-							| Unknown_ISBN _   -> Error.Unknown_ISBN (comm.comm_tag, isbn)
-						in BatDynArray.add errors (Some comm.comm_linenum, msg)
+							| Unknown_ISBN _   -> Error.Unknown_ISBN (comm.comm_tag, isbn) in
+						BatDynArray.add errors (Some comm.comm_linenum, msg)
 				with
-					Not_found -> raise (Bookmaker_error isbn)
-			in BatDynArray.iter process_isbnref isbnrefs
+					Not_found -> raise (Bookmaker_error isbn) in
+			BatDynArray.iter process_isbnref isbnrefs
 		end;
 		books in
 
@@ -1126,7 +1079,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	(* Wrap-up.								*)
 	(************************************************************************)
 
-	let contents = convert_frag document_ast in
+	let contents = convert_frag ast in
 	let custom = filter_customisations () in
 	let () = filter_pointers () in
 	let books = retrieve_books () in
@@ -1142,8 +1095,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	where the actual source lines are displayed.
 *)
 let collate_errors =
-	let rex = Pcre.regexp "\\r\\n|\\n"
-	in fun source errors ->
+	let rex = Pcre.regexp "\\r\\n|\\n" in
+	fun source errors ->
 		let source_lines = Pcre.asplit ~rex ~max:(-1) source in
 		let format_error (error_linenum, error_msg) =
 			let error_context = match error_linenum with
@@ -1155,9 +1108,9 @@ let collate_errors =
 						Error.error_line_after = if num < (Array.length source_lines) then [source_lines.(num)] else []
 						}
 				| None ->
-					None
-			in (error_context, error_msg)
-		in List.map format_error errors
+					None in
+			(error_context, error_msg) in
+		List.map format_error errors
 
 
 (********************************************************************************)
@@ -1180,20 +1133,10 @@ let process_errors ~sort source errors =
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile_manuscript ?bookmaker ~expand_entities ~accepted ~denied ~default ~source document_ast =
-	let idiosyncrasies = Idiosyncrasies.make_manuscript_idiosyncrasies ~accepted ~denied ~default in
-	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies document_ast in
+let compile ?bookmaker ~expand_entities ~accepted ~denied ~default ~source ast =
+	let idiosyncrasies = Idiosyncrasies.make ~accepted ~denied ~default in
+	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies ast in
 	match errors with
-		| [] -> Ambivalent.make_valid_manuscript contents bibs notes toc images books labels custom
-		| xs -> Ambivalent.make_invalid_manuscript (process_errors ~sort:true source errors)
-
-
-(**	Compile a document AST into a composition.
-*)
-let compile_composition ?bookmaker ~expand_entities ~accepted ~denied ~default ~source document_ast =
-	let idiosyncrasies = Idiosyncrasies.make_composition_idiosyncrasies ~accepted ~denied ~default in
-	let (contents, _, _, _, images, books, _, _, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies document_ast in
-	match errors with
-		| [] -> Ambivalent.make_valid_composition (Obj.magic contents) images books
-		| xs -> Ambivalent.make_invalid_composition (process_errors ~sort:true source errors)
+		| [] -> Ambivalent.make_valid contents bibs notes toc images books labels custom
+		| xs -> Ambivalent.make_invalid (process_errors ~sort:true source errors)
 

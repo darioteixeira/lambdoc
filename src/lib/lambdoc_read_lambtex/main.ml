@@ -25,16 +25,16 @@ struct
 		let lexer_maker () =
 			let ante_position = tokenizer#position in
 			let token = tokenizer#consume lexbuf in
-			let post_position = tokenizer#position
-			in (token, ante_position, post_position) in
-		let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser
-		in revised_parser lexer_maker
+			let post_position = tokenizer#position in
+			(token, ante_position, post_position) in
+		let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser in
+		revised_parser lexer_maker
 
 	let ast_from_string str =
-		let tokenizer = new Tokenizer.tokenizer
-		in try
-			let lexbuf = Ulexing.from_utf8_string str
-			in menhir_with_ulex Parser.document tokenizer lexbuf
+		let tokenizer = new Tokenizer.tokenizer in
+		try
+			let lexbuf = Ulexing.from_utf8_string str in
+			menhir_with_ulex Parser.document tokenizer lexbuf
 		with
 			| Utf8.MalFormed ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Malformed UTF-8 sequence"))

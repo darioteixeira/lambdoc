@@ -39,48 +39,32 @@ module type S =
 sig
 	type t
 
-	val write_ambivalent_manuscript:
+	val write_valid:
 		?translations:Translations.t ->
-		?settings:Settings.t ->
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
+		?namespace:Html5_types.nmtoken ->
+		?prefix:Html5_types.nmtoken ->
+		?base_classes:Html5_types.nmtokens ->
 		?extra_classes:Html5_types.nmtokens ->
-		Ambivalent.manuscript_t -> t
+		Valid.t -> t
 
-	val write_ambivalent_composition:
+	val write_invalid:
+		?prefix:Html5_types.nmtoken ->
+		?base_classes:Html5_types.nmtokens ->
+		?extra_classes:Html5_types.nmtokens ->
+		Invalid.t -> t
+
+	val write_ambivalent:
 		?translations:Translations.t ->
-		?settings:Settings.t ->
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
 		?image_lookup:image_lookup_t ->
+		?namespace:Html5_types.nmtoken ->
+		?prefix:Html5_types.nmtoken ->
+		?base_classes:Html5_types.nmtokens ->
 		?extra_classes:Html5_types.nmtokens ->
-		Ambivalent.composition_t -> t
-
-	val write_valid_manuscript:
-		?translations:Translations.t ->
-		?settings:Settings.t ->
-		?book_lookup:book_lookup_t ->
-		?cover_lookup:cover_lookup_t ->
-		?image_lookup:image_lookup_t ->
-		?extra_classes:Html5_types.nmtokens ->
-		Valid.manuscript_t -> t
-
-	val write_valid_composition:
-		?translations:Translations.t ->
-		?settings:Settings.t ->
-		?book_lookup:book_lookup_t ->
-		?cover_lookup:cover_lookup_t ->
-		?image_lookup:image_lookup_t ->
-		?extra_classes:Html5_types.nmtokens ->
-		Valid.composition_t -> t
-
-	val write_invalid_manuscript:
-		?extra_classes:Html5_types.nmtokens ->
-		Invalid.manuscript_t -> t
-
-	val write_invalid_composition:
-		?extra_classes:Html5_types.nmtokens ->
-		Invalid.composition_t -> t
+		Ambivalent.t -> t
 end
 

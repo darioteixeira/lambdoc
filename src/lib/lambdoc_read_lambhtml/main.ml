@@ -36,8 +36,8 @@ struct
 						let subs = Pcre.exec ~rex:where_rex why in
 						let line = int_of_string (Pcre.get_named_substring where_rex "line" subs) in
 						let before = Pcre.get_named_substring where_rex "before" subs in
-						let after = Pcre.get_named_substring where_rex "after" subs
-						in before ^ "at line " ^ (string_of_int (line - 1)) ^ after
+						let after = Pcre.get_named_substring where_rex "after" subs in
+						before ^ "at line " ^ (string_of_int (line - 1)) ^ after
 					with Not_found -> why
 				in raise (Reading_error (line - 1, new_why))
 			| Failure msg ->

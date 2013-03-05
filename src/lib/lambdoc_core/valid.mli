@@ -21,20 +21,17 @@ type books_t = (Book.isbn_t, Book.t) Hashtbl.t with sexp
 
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
 
-type 'a document_t =
+type t =
 	{
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
-	toc: Heading.heading_t list;
+	toc: Heading.t list;
 	images: Alias.t list;
 	books: books_t;
 	labels: labels_t;
 	custom: Custom.dict_t;
 	} with sexp
-
-type manuscript_t = [ `Manuscript ] document_t with sexp
-type composition_t = [ `Composition ] document_t with sexp
 
 
 (********************************************************************************)
@@ -45,31 +42,22 @@ type composition_t = [ `Composition ] document_t with sexp
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-val make_manuscript:
-	([< `Composition | `Manuscript ], _, _, _, _) Block.t nelist ->
+val make:
+	Block.frag_t ->
 	Bib.t list ->
 	Note.t list ->
-	Heading.heading_t list ->
+	Heading.t list ->
 	Alias.t list ->
 	books_t ->
 	labels_t ->
 	Custom.dict_t ->
-	manuscript_t
-
-val make_composition:
-	([< `Composition ], _, _, _, _) Block.t nelist ->
-	Alias.t list ->
-	books_t ->
-	composition_t
+	t
 
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-val serialize_manuscript: manuscript_t -> string
-val serialize_composition: composition_t -> string
-
-val deserialize_manuscript: string -> manuscript_t
-val deserialize_composition: string -> composition_t
+val serialize: t -> string
+val deserialize: string -> t
 

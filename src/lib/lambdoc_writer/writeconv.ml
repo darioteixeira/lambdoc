@@ -22,33 +22,6 @@ module String = BatString
 (**	{2 Basic values}							*)
 (********************************************************************************)
 
-module Basic_output =
-struct
-	open Basic
-
-	let string_of_bullet = function
-		| Bullet.Disc	-> "disc"
-		| Bullet.Circle -> "circle"
-		| Bullet.Square -> "square"
-		| Bullet.None	-> "none"
-
-
-	let string_of_numbering = function
-		| Numbering.Decimal	-> "decimal"
-		| Numbering.Lower_roman -> "lower-roman"
-		| Numbering.Upper_roman -> "upper-roman"
-		| Numbering.Lower_alpha -> "lower-alpha"
-		| Numbering.Upper_alpha -> "upper-alpha"
-		| Numbering.None	-> "none"
-
-
-	let string_of_floatation = function
-		| Floatation.Center -> "center"
-		| Floatation.Left   -> "left"
-		| Floatation.Right  -> "right"
-end
-
-
 (********************************************************************************)
 (**	{2 Book values}								*)
 (********************************************************************************)
@@ -62,18 +35,6 @@ end
 (********************************************************************************)
 (**	{2 Source values}							*)
 (********************************************************************************)
-
-module Source_output =
-struct
-	open Source
-
-	let string_of_style = function
-		| Plain   -> "plain"
-		| Boxed   -> "boxed"
-		| Zebra   -> "zebra"
-		| Console -> "console"
-end
-
 
 (********************************************************************************)
 (**	{2 Tabular values}							*)
@@ -118,18 +79,18 @@ struct
 	let alphaseq_of_int num =
 		let base = 26 in
 		let rec from_base10 num =
-			let num = num - 1
-			in if num < base
+			let num = num - 1 in
+			if num < base
 			then
 				[num]
 			else
 				let rem = num mod base
-				and num = num / base
-				in rem::(from_base10 num) in
+				and num = num / base in
+				rem::(from_base10 num) in
 		let alpha_of_int num =
 			String.of_char (char_of_int (65 + num)) in
-		let rems = from_base10 num
-		in List.fold_left (^) "" (List.rev_map alpha_of_int rems)
+		let rems = from_base10 num in
+		List.fold_left (^) "" (List.rev_map alpha_of_int rems)
 
 
 	(**	Converts an integer into its roman numeral representation.

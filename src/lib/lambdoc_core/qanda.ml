@@ -1,26 +1,25 @@
 (********************************************************************************)
-(*	Permissions.mli
+(*	Qanda.ml
 	Copyright (c) 2009-2010 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(**	Document permissions.
+(**	Custom document blocks.
 *)
 
-open Lambdoc_core
+open Sexplib.Std
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
-val check:
-	?maybe_minipaged: bool option ->
-	?maybe_wrapped: bool option ->
-	(int option * Error.error_msg_t) BatDynArray.t ->
-	Ast.command_t ->
-	Features.feature_t ->
-	unit
+type t =
+	| New_questioner of Inline.seq_t option
+	| New_answerer of Inline.seq_t option
+	| Same_questioner
+	| Same_answerer
+	with sexp
 

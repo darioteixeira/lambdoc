@@ -10,12 +10,15 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(**	{1 Inner modules}							*)
 (********************************************************************************)
 
-module Feature_map =
-	Map.Make (struct type t = Features.feature_t let compare = Pervasives.compare end)
+module Feature_map = Map.Make (struct type t = Features.feature_t let compare = Pervasives.compare end)
 
+
+(********************************************************************************)
+(**	{1 Type definitions}							*)
+(********************************************************************************)
 
 type t = bool Feature_map.t
 
@@ -24,40 +27,29 @@ type t = bool Feature_map.t
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make_idiosyncrasies ~accepted ~denied ~default feature_set =
+let make ~accepted ~denied ~default =
+	let internal_set = (Features.internal_features :> Features.feature_t list) in
+	let public_set = (Features.public_features :> Features.feature_t list) in
 	let base_map =
-		let features = (Features.available_internal_features :> Features.feature_t list) in
-		let adder m x = Feature_map.add x true m
-		in List.fold_left adder Feature_map.empty features in
-	let default_bool =
-		(default = `Accept) in
+		let adder m x = Feature_map.add x true m in
+		List.fold_left adder Feature_map.empty internal_set in
+	let default_bool = (default = `Accept) in
 	let is_accepted feature =
-		if List.mem feature denied
-		then false
-		else	 if List.mem feature accepted
-			then true
-			else	if List.mem feature feature_set
+		if List.mem feature (denied :> Features.feature_t list)
+		then
+			false
+		else
+			if List.mem feature (accepted :> Features.feature_t list)
+			then
+				true
+			else
+				if List.mem feature public_set
 				then default_bool
 				else false in
 	let make_feature map feature =
-		Feature_map.add feature (is_accepted feature) map
-	in List.fold_left make_feature base_map (Features.available_manuscript_features :> Features.feature_t list)
+		Feature_map.add feature (is_accepted feature) map in
+	List.fold_left make_feature base_map public_set
 
 
-let make_composition_idiosyncrasies ~accepted ~denied ~default =
-	let composition_features = (Features.available_composition_features :> Features.feature_t list)
-	and accepted = (accepted :> Features.feature_t list)
-	and denied = (denied :> Features.feature_t list)
-	in make_idiosyncrasies ~accepted ~denied ~default composition_features
-
-
-let make_manuscript_idiosyncrasies ~accepted ~denied ~default =
-	let manuscript_features = (Features.available_manuscript_features :> Features.feature_t list)
-	and accepted = (accepted :> Features.feature_t list)
-	and denied = (denied :> Features.feature_t list)
-	in make_idiosyncrasies ~accepted ~denied ~default manuscript_features
-
-
-let check_feature feature map =
-	Feature_map.find feature map
+let check = Feature_map.find
 

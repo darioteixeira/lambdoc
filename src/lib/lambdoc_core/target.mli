@@ -1,39 +1,43 @@
 (********************************************************************************)
-(*	Options.mli
+(*	Target.mli
 	Copyright (c) 2009-2010 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
+(**	Definitions concerning document targets.
+*)
+
+open Basic
+
+
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+type visible_target_t =
+	| Custom_target of Custom.key_t * Custom.kind_t * Custom.order_t
+	| Wrapper_target of Wrapper.kind_t * Wrapper.order_t
+	| Part_target of Heading.part_order_t
+	| Section_target of Heading.section_location_t * Heading.section_order_t
+	with sexp
+
 type t =
-	{
-	debug: bool;
-	title: string;
-	language: Language.t;
-
-	amazon_locale: Bookaml_amazon.Locale.t option;
-	amazon_associate_tag: string option;
-	amazon_access_key: string option;
-	amazon_secret_key: string option;
-
-	input_markup: Markup.input_t;
-	output_markup: Markup.output_t;
-
-	input_chan: Pervasives.in_channel;
-	output_chan: Pervasives.out_channel;
-	input_cleaner: Pervasives.in_channel -> unit;
-	output_cleaner: Pervasives.out_channel -> unit;
-	}
+	| Visible_target of visible_target_t
+	| Bib_target of Bib.order_t
+	| Note_target of Note.order_t
+	with sexp
 
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val parse: unit -> t
+val custom: Custom.key_t -> Custom.kind_t -> Custom.order_t -> t
+val wrapper: Wrapper.kind_t -> Wrapper.order_t -> t
+val part: Heading.part_order_t -> t
+val section: Heading.section_location_t -> Heading.section_order_t -> t
+val bib: Bib.order_t -> t
+val note: Note.order_t -> t
 

@@ -50,8 +50,8 @@ let rec process = parser
 
 let convert expl =
 	let tokens = tokenize (Ulexing.from_utf8_string expl) in
-	let stream = Stream.of_list tokens
-	in match process stream with
-		| []	 -> failwith "Explconv.convert"
+	let stream = Stream.of_list tokens in
+	match process stream with
+		| []	 -> failwith "Emblang.convert"
 		| hd::tl -> (hd, tl)
 

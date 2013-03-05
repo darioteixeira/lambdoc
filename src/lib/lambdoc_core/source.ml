@@ -16,18 +16,10 @@ open Sexplib.Std
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type style_t =
-	| Plain		(** No decorations at all; good for run-in source blocks. *)
-	| Boxed		(** Source should be framed inside a box. *)
-	| Zebra		(** Use Zebra pattern; implies framing inside box. *)
-	| Console	(** Source actually represents console "screenshot". *)
-	with sexp
-
 type t =
 	{
 	lang: Camlhighlight_core.lang_t option;
 	hilite: Camlhighlight_core.t;
-	style: style_t;
 	linenums: bool;
 	} with sexp
 
@@ -36,11 +28,6 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let make lang hilite style linenums =
-	{
-	lang = lang;
-	hilite = hilite;
-	style = style;
-	linenums = linenums;
-	}
+let make lang hilite linenums =
+	{lang; hilite; linenums}
 
