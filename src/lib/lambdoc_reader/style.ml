@@ -86,10 +86,13 @@ let numeric_of_string comm key ~low ~high = function
 	| "none" ->
 		None
 	| x ->
-		let num = int_of_string x in
+		let exc = Value_error (Error.Invalid_style_bad_numeric (comm.comm_tag, key, x, low, high)) in
+		let num =
+			try int_of_string x
+			with Failure "int_of_string" -> raise exc in
 		if (num >= low) && (num <= high)
 		then Some num
-		else raise (Value_error (Error.Invalid_style_bad_numeric (comm.comm_tag, key, x, low, high)))
+		else raise exc
 
 
 let decl_dict =
@@ -104,7 +107,7 @@ let decl_dict =
 
 let raws_of_string =
 	let v_rex = Pcre.regexp "^(?<value>[a-z][a-z0-9_]*)$" in
-	let kv_rex = Pcre.regexp "^(?<key>[a-z]+)(?<value>=.+)$" in
+	let kv_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>.+)$" in
 	fun comm errors ->
 		let conv str =
 			try
