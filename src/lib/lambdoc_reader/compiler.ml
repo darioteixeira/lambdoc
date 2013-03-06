@@ -200,15 +200,20 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	(*	Checker for inline/block commands.
 	*)
 	and check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
+		let check_classname classname =
+			if not (Idiosyncrasies.check_classname feature classname idiosyncrasies)
+			then 
+				let msg = Error.Invalid_style_misplaced_classname (comm.comm_tag, classname) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg) in
 		if Idiosyncrasies.check_feature feature idiosyncrasies
 		then begin
 			Permissions.check ?maybe_minipaged ?maybe_wrapped errors comm feature;
 			let (attr, style_parsing) = Style.parse comm errors in
+			List.iter check_classname attr;
 			let element = elem attr style_parsing in
 			if Style.dispose comm errors style_parsing
 			then Some element
 			else None
-			
 		end else
 			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe feature) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
