@@ -81,7 +81,7 @@ let write_valid
 	?(book_lookup = fun isbn -> Raw.uri_of_string ("isbn:" ^ (Book_output.string_of_isbn isbn)))
 	?(cover_lookup = fun isbn cover -> Raw.uri_of_string (Book_output.string_of_isbn isbn))
 	?(image_lookup = Raw.uri_of_string)
-	?(namespace = "")
+	?(namespace = "doc")
 	?(prefix = "doc")
 	?(base_classes = ["valid"])
 	?(extra_classes = [])
