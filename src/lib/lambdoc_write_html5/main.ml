@@ -95,6 +95,10 @@ let write_valid
 		let prefix = prefix ^ "_" in
 		fun str -> prefix ^ str in
 
+	let (!!!) =
+		let prefix = prefix ^ "_class_" in
+		fun str -> prefix ^ str in
+
 	let (^^) =
 		let prefix = prefix ^ "_" in
 		fun s1 s2 -> prefix ^ s1 ^ s2 in
@@ -206,7 +210,7 @@ let write_valid
 
 	and write_inline {Inline.inline; attr} =
 		let open Inline in
-		let attr = List.map (!!) attr in
+		let attr = List.map (!!!) attr in
 		match inline with
 
 		| Plain txt ->
@@ -417,7 +421,7 @@ let write_valid
 
 
 	and write_block {block; attr} =
-		let attr = List.map (!!) attr in
+		let attr = List.map (!!!) attr in
 		match block with
 
 		| Paragraph seq ->
@@ -469,7 +473,7 @@ let write_valid
 			[Html5.F.div ~a:[a_class (!!"mathblk" :: attr)] [html]]
 
 		| Source src ->
-			[Camlhighlight_write_html5.write ~class_prefix:!!"src_" ~linenums:src.linenums src.hilite]
+			[Camlhighlight_write_html5.write ~class_prefix:!!"src_" ~extra_classes:attr ~linenums:src.linenums src.hilite]
 
 		| Tabular tab ->
 			[write_tabular tab]
@@ -478,8 +482,8 @@ let write_valid
 			[Html5.F.div ~a:[a_class (!!"subpage" :: attr)] (write_frag frag)]
 
 		| Verbatim txt ->
-			let aux = Html5.F.div ~a:[a_class [!!"verb_aux"]] [Html5.F.pre [Html5.F.pcdata txt]] in
-			[Html5.F.div ~a:[a_class (!!"verb" :: attr)] [aux]]
+			let aux = Html5.F.div ~a:[a_class [!!"pre_aux"]] [Html5.F.pre [Html5.F.pcdata txt]] in
+			[Html5.F.div ~a:[a_class (!!"pre" :: attr)] [aux]]
 
 		| Picture (width, alias, alt) ->
 			let attrs = match width with Some w -> [a_width w] | None -> [] in
