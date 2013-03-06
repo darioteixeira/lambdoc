@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Eliom_content
+open Html5.F
 open Options
 open Lambdoc_core
 open Lambdoc_reader
@@ -42,12 +43,10 @@ let make_bookmaker ~credential raw_isbns =
 let string_of_xhtml the_title xhtml =
 	let page = (Html5.F.html
 			(Html5.F.head
-				(Html5.F.title (Html5.F.pcdata the_title)) [])
-				(*
+				(Html5.F.title (Html5.F.pcdata the_title))
 				[
-				link ~rel:[`Stylesheet] ~href:(Raw.uri_of_string "css/lambdoc.css");
+				Html5.F.css_link ~a:[Html5.F.a_media [`All]; Html5.F.a_title "Default"] ~uri:(Raw.uri_of_string "css/lambdoc.css") ();
 				])
-				*)
 			(Html5.F.body [xhtml])) in
 	let buf = Buffer.create 1024 in
 	Eliom_content.Html5.Printer.print ~output:(Buffer.add_string buf) page;
