@@ -109,17 +109,20 @@ let explain_error = function
 	| Error.Invalid_style_bad_numeric (tag, key, value, low, high) ->
 		sprintf "In %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
 
-	| Error.Invalid_style_keyvalue (tag, str) ->
-		sprintf "In %s, the string '#%s#' cannot be interpreted as a key/value pair." (explain_tag tag) (escape str)
-
-	| Error.Invalid_style_classname (tag, str) ->
+	| Error.Invalid_style_bad_classname (tag, str) ->
 		sprintf "In %s, the assigned value '#%s#' cannot be interpreted as a classname." (explain_tag tag) (escape str)
 
-	| Error.Invalid_style_unknown (tag, key, value) ->
-		sprintf "In %s, the value '#%s#' assigned to key '#%s#' of the style parameter cannot be interpreted." (explain_tag tag) (escape value) (escape key)
+	| Error.Invalid_style_bad_keyvalue (tag, str) ->
+		sprintf "In %s, the assigned value '#%s#' cannot be interpreted as a key/value." (explain_tag tag) (escape str)
 
-	| Error.Invalid_style_misplaced (tag, key, value) ->
-		sprintf "In %s, the value '#%s#' assigned to key '#%s#' does not belong to this command." (explain_tag tag) (escape value) (escape key)
+	| Error.Invalid_style_misplaced_keyvalue (tag, key, value) ->
+		sprintf "In %s, the key/value pair '#%s#=#%s#' does not belong to this command." (explain_tag tag) (escape key) (escape value)
+
+	| Error.Invalid_style_misplaced_classname (tag, str) ->
+		sprintf "In %s, the assigned classname '#%s#' does not belong to this command." (explain_tag tag) (escape str)
+
+	| Error.Invalid_style_unknown_keyvalue (tag, key, value) ->
+		sprintf "In %s, the value '#%s#' assigned to key '#%s#' of the style parameter cannot be interpreted." (explain_tag tag) (escape value) (escape key)
 
 	| Error.Invalid_entity_name ent ->
 		sprintf "Unknown entity '#%s#'." (escape ent)

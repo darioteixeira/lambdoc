@@ -26,14 +26,15 @@ type _ handle_t =
 
 type errors_t = (int option * Error.error_msg_t) BatDynArray.t
 
-type dict_t
+type parsing_t
 
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val parse: Ast.command_t -> errors_t -> Attr.t * dict_t ref
-val consume1: dict_t ref -> 'a handle_t * 'a -> 'a
-val consume2: dict_t ref -> 'a handle_t * 'a -> 'b handle_t * 'b -> 'a * 'b
+val parse: Ast.command_t -> errors_t -> Attr.t * parsing_t ref
+val consume1: parsing_t ref -> 'a handle_t * 'a -> 'a
+val consume2: parsing_t ref -> 'a handle_t * 'a -> 'b handle_t * 'b -> 'a * 'b
+val dispose: Ast.command_t -> errors_t -> parsing_t ref -> bool
 

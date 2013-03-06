@@ -76,7 +76,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		We determine whether macros are allowed or not by checking the
 		idiosyncrasies of this particular document.
 	*)
-	let macros_authorised = Idiosyncrasies.check `Feature_macrodef idiosyncrasies in
+	let macros_authorised = Idiosyncrasies.check_feature `Feature_macrodef idiosyncrasies in
 
 
 	(************************************************************************)
@@ -200,11 +200,15 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	(*	Checker for inline/block commands.
 	*)
 	and check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
-		if Idiosyncrasies.check feature idiosyncrasies
+		if Idiosyncrasies.check_feature feature idiosyncrasies
 		then begin
 			Permissions.check ?maybe_minipaged ?maybe_wrapped errors comm feature;
-			let (attr, dict) = Style.parse comm errors in
-			Some (elem attr dict)
+			let (attr, style_parsing) = Style.parse comm errors in
+			let element = elem attr style_parsing in
+			if Style.dispose comm errors style_parsing
+			then Some element
+			else None
+			
 		end else
 			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe feature) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
@@ -1133,8 +1137,8 @@ let process_errors ~sort source errors =
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile ?bookmaker ~expand_entities ~accepted ~denied ~default ~source ast =
-	let idiosyncrasies = Idiosyncrasies.make ~accepted ~denied ~default in
+let compile ?bookmaker ~expand_entities ~feature_ruleset ~feature_default ~classname_ruleset ~classname_default ~source ast =
+	let idiosyncrasies = Idiosyncrasies.make ~feature_ruleset ~feature_default ~classname_ruleset ~classname_default in
 	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies ast in
 	match errors with
 		| [] -> Ambivalent.make_valid contents bibs notes toc images books labels custom

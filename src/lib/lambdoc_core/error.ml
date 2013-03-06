@@ -78,10 +78,11 @@ type error_msg_t =
 	| Invalid_style_bad_coversize of Ident.t option * string * string
 	| Invalid_style_bad_lang of Ident.t option * string * string
 	| Invalid_style_bad_numeric of Ident.t option * string * string * int * int
-	| Invalid_style_keyvalue of Ident.t option * string
-	| Invalid_style_classname of Ident.t option * string
-	| Invalid_style_unknown of Ident.t option * string * string
-	| Invalid_style_misplaced of Ident.t option * string * string
+	| Invalid_style_bad_classname of Ident.t option * string
+	| Invalid_style_bad_keyvalue of Ident.t option * string
+	| Invalid_style_misplaced_keyvalue of Ident.t option * string * string
+	| Invalid_style_misplaced_classname of Ident.t option * string
+	| Invalid_style_unknown_keyvalue of Ident.t option * string * string
 
 	| Invalid_entity_name of string
 	| Invalid_entity_deci of string

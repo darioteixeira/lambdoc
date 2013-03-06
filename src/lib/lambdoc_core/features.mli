@@ -6,6 +6,8 @@
 *)
 (********************************************************************************)
 
+open Basic
+
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -45,7 +47,13 @@ type public_feature_t = [ inline_feature_t | block_feature_t ]
 
 type feature_t = [ public_feature_t | internal_feature_t ]
 
-type default_t = [ `Accept | `Deny ]
+type action_t = [ `Accept | `Deny ]
+
+type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier_t ]
+
+type feature_ruleset_t = (feature_t classifier_t * action_t) list
+
+type classname_ruleset_t = ((feature_t classifier_t * Classname.t classifier_t) * action_t) list
 
 
 (********************************************************************************)

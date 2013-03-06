@@ -53,7 +53,7 @@ type _ handle_t =
 
 type errors_t = (int option * Error.error_msg_t) BatDynArray.t
 
-type dict_t = decl_t list
+type parsing_t = (raw_t * decl_t) list
 
 
 (********************************************************************************)
@@ -115,7 +115,7 @@ let raws_of_string =
 					let value = Pcre.get_named_substring kv_rex "value" subs in
 					Some (Named (key, value))
 				with Not_found ->
-					let msg = Error.Invalid_style_keyvalue (comm.comm_tag, str) in
+					let msg = Error.Invalid_style_bad_keyvalue (comm.comm_tag, str) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
 					None
 				end
@@ -125,7 +125,7 @@ let raws_of_string =
 					let value = Pcre.get_named_substring v_rex "value" subs in
 					Some (Unnamed value)
 				with Not_found ->
-					let msg = Error.Invalid_style_classname (comm.comm_tag, str) in
+					let msg = Error.Invalid_style_bad_classname (comm.comm_tag, str) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
 					None in
 		match comm.comm_style with
@@ -142,7 +142,7 @@ let decl_of_raw comm errors = function
 			Some (maker comm value)
 		with
 			| Not_found ->
-				let msg = Error.Invalid_style_unknown (comm.comm_tag, key, value) in
+				let msg = Error.Invalid_style_unknown_keyvalue (comm.comm_tag, key, value) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				None
 			| Value_error msg ->
@@ -150,8 +150,8 @@ let decl_of_raw comm errors = function
 				None
 
 
-let find_decl hnd dict =
-	let matches: type a. a handle_t -> decl_t -> a option = fun hnd decl -> match (hnd, decl) with
+let find_decl hnd parsing =
+	let matches: type a. a handle_t -> raw_t * decl_t -> a option = fun hnd (_, decl) -> match (hnd, decl) with
 		| (Coversize_hnd, Coversize_decl x) -> Some x
 		| (Lang_hnd, Lang_decl x)	    -> Some x
 		| (Linenums_hnd, Linenums_decl x)   -> Some x
@@ -165,7 +165,7 @@ let find_decl hnd dict =
 			match matches hnd hd with
 				| Some x -> (Some x, accum @ tl)
 				| None	 -> finder (hd :: accum) tl in
-	finder [] dict
+	finder [] parsing
 
 
 (********************************************************************************)
@@ -173,31 +173,50 @@ let find_decl hnd dict =
 (********************************************************************************)
 
 let parse comm errors =
-	let rec split attr_accum dict_accum = function
-		| []	   -> (attr_accum, ref dict_accum)
-		| hd :: tl -> match hd with
-			| Classname_decl x -> split (x :: attr_accum) dict_accum tl
-			| x		   -> split attr_accum (x :: dict_accum) tl in
+	let make_parsing raw = match decl_of_raw comm errors raw with
+		| Some decl -> Some (raw, decl)
+		| None	    -> None in
+	let rec split attr_accum parsing_accum = function
+		| [] ->
+			(attr_accum, ref parsing_accum)
+		| ((_, decl) as hd) :: tl ->
+			match decl with
+				| Classname_decl x -> split (x :: attr_accum) parsing_accum tl
+				| _		   -> split attr_accum (hd :: parsing_accum) tl in
 	raws_of_string comm errors |>
-	List.filter_map (decl_of_raw comm errors) |>
+	List.filter_map make_parsing |>
 	split [] []
 
 
-let consume1 dict_ref (hnd, default) =
-	let (res, vs) = match find_decl hnd !dict_ref with
+let consume1 parsing_ref (hnd, default) =
+	let (res, vs) = match find_decl hnd !parsing_ref with
 		| (Some x, vs) -> (x, vs)
 		| (None, vs)   -> (default, vs) in
-	dict_ref := vs;
+	parsing_ref := vs;
 	res
 
 
-let consume2 dict_ref (hnd1, default1) (hnd2, default2) =
-	let (res1, vs) = match find_decl hnd1 !dict_ref with
+let consume2 parsing_ref (hnd1, default1) (hnd2, default2) =
+	let (res1, vs) = match find_decl hnd1 !parsing_ref with
 		| (Some x, vs) -> (x, vs)
 		| (None, vs)   -> (default1, vs) in
 	let (res2, vs) = match find_decl hnd2 vs with
 		| (Some x, vs) -> (x, vs)
 		| (None, vs)   -> (default2, vs) in
-	dict_ref := vs;
+	parsing_ref := vs;
 	(res1, res2)
+
+
+let dispose comm errors parsing_ref = match !parsing_ref with
+	| [] ->
+		true
+	| xs ->
+		let aux (raw, _) = match raw with
+			| Named (key, value) ->
+				let msg = Error.Invalid_style_misplaced_keyvalue (comm.comm_tag, key, value) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg)
+			| Unnamed _ ->
+				assert false in
+		List.iter aux xs;
+		false
 

@@ -10,46 +10,54 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{1 Inner modules}							*)
-(********************************************************************************)
-
-module Feature_map = Map.Make (struct type t = Features.feature_t let compare = Pervasives.compare end)
-
-
-(********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type t = bool Feature_map.t
+type t =
+	{
+	feature_ruleset: Features.feature_ruleset_t;
+	feature_default: Features.action_t;
+	classname_ruleset: Features.classname_ruleset_t;
+	classname_default: Features.action_t;
+	}
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Private functions and values}					*)
 (********************************************************************************)
 
-let make ~accepted ~denied ~default =
-	let internal_set = (Features.internal_features :> Features.feature_t list) in
-	let public_set = (Features.public_features :> Features.feature_t list) in
-	let base_map =
-		let adder m x = Feature_map.add x true m in
-		List.fold_left adder Feature_map.empty internal_set in
-	let default_bool = (default = `Accept) in
-	let is_accepted feature =
-		if List.mem feature (denied :> Features.feature_t list)
-		then
-			false
-		else
-			if List.mem feature (accepted :> Features.feature_t list)
-			then
-				true
-			else
-				if List.mem feature public_set
-				then default_bool
-				else false in
-	let make_feature map feature =
-		Feature_map.add feature (is_accepted feature) map in
-	List.fold_left make_feature base_map public_set
+let rec classify = function
+	| (_, `Any)		-> true
+	| (x, `Only target)	-> (x = target)
+	| (x, `Member targets)	-> List.mem x targets
+	| (x, `Not classifier)	-> not (classify (x, classifier))
 
 
-let check = Feature_map.find
+let check verify ruleset default =
+	let rec iterate = function
+		| []	   -> default
+		| (rule, action) :: tl -> if verify rule then action else iterate tl
+	in match iterate ruleset with
+		| `Accept -> true
+		| `Deny	  -> false
+
+
+(********************************************************************************)
+(**	{1 Public functions and values}						*)
+(********************************************************************************)
+
+let make ~feature_ruleset ~feature_default ~classname_ruleset ~classname_default =
+	{feature_ruleset; feature_default; classname_ruleset; classname_default}
+
+
+let check_feature feature {feature_ruleset; feature_default; _} =
+	let verify rule =
+		classify (feature, rule) in
+	check verify feature_ruleset feature_default
+
+
+let check_classname feature classname {classname_ruleset; classname_default; _} =
+	let verify (rule1, rule2) =
+		classify (feature, rule1) && classify (classname, rule2) in
+	check verify classname_ruleset classname_default
 

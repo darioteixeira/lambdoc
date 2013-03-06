@@ -31,12 +31,13 @@ end
 module type S =
 sig
 	val ambivalent_from_string:
-		?bookmaker: Bookmaker.t ->
-		?verify_utf8: bool ->
-		?expand_entities: bool ->
-		?accepted: Features.public_feature_t list ->
-		?denied: Features.public_feature_t list ->
-		?default: Features.default_t ->
+		?bookmaker:Bookmaker.t ->
+		?verify_utf8:bool ->
+		?expand_entities:bool ->
+		?feature_ruleset:Features.feature_ruleset_t ->
+		?feature_default:Features.action_t ->
+		?classname_ruleset:Features.classname_ruleset_t ->
+		?classname_default:Features.action_t ->
 		string ->
 		Ambivalent.t
 end
@@ -54,14 +55,15 @@ struct
 		?bookmaker
 		?(verify_utf8 = true)
 		?(expand_entities = true)
-		?(accepted = [])
-		?(denied = [])
-		?(default = `Accept)
+		?(feature_ruleset = [])
+		?(feature_default = `Accept)
+		?(classname_ruleset = [])
+		?(classname_default = `Accept)
 		source =
 			try
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let ast = Reader.ast_from_string source in
-				Compiler.compile ?bookmaker ~expand_entities ~accepted ~denied ~default ~source ast
+				Compiler.compile ?bookmaker ~expand_entities ~feature_ruleset ~feature_default ~classname_ruleset ~classname_default ~source ast
 			with
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in

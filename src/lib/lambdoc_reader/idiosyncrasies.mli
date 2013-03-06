@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Lambdoc_core
+open Basic
 
 
 (********************************************************************************)
@@ -20,7 +21,13 @@ type t
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val make: accepted:Features.public_feature_t list -> denied:Features.public_feature_t list -> default:Features.default_t -> t
+val make:
+	feature_ruleset:Features.feature_ruleset_t ->
+	feature_default:Features.action_t ->
+	classname_ruleset:Features.classname_ruleset_t ->
+	classname_default:Features.action_t ->
+	t
 
-val check: Features.feature_t -> t -> bool
+val check_feature: Features.feature_t -> t -> bool
+val check_classname: Features.feature_t -> Classname.t -> t -> bool
 

@@ -25,12 +25,13 @@ val process_errors:
 	Error.t nelist
 
 val compile:
-	?bookmaker: Bookmaker.t ->
-	expand_entities: bool ->
-	accepted: Features.public_feature_t list ->
-	denied: Features.public_feature_t list ->
-	default: Features.default_t ->
-	source: string ->
+	?bookmaker:Bookmaker.t ->
+	expand_entities:bool ->
+	feature_ruleset:Features.feature_ruleset_t ->
+	feature_default:Features.action_t ->
+	classname_ruleset:Features.classname_ruleset_t ->
+	classname_default:Features.action_t ->
+	source:string ->
 	Ast.t ->
 	Ambivalent.t
 
