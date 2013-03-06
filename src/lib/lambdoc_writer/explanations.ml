@@ -98,31 +98,31 @@ let explain_error = function
 		sprintf "Expected %d hierarchical levels in the ordering for %s, but the string '#%s#' contains %d instead." (explain_level expected) (explain_tag tag) (escape order) found
 
 	| Error.Invalid_style_bad_boolean (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a boolean parameter, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
+		sprintf "In the style parameters of %s, the key '#%s#' expects a boolean parameter, yet the assigned value '#%s#' cannot be interpreted as such.  Valid boolean values are 'true'/'on'/'yes' or 'false'/'off'/'no'." (explain_tag tag) (escape key) (escape value)
 
 	| Error.Invalid_style_bad_coversize (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a cover size specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
+		sprintf "In the style parameters of %s, the key '#%s#' expects a cover size specifier, yet the assigned value '#%s#' cannot be interpreted as such. Valid cover size values are 'small', 'medium', and 'large'." (explain_tag tag) (escape key) (escape value)
 
 	| Error.Invalid_style_bad_lang (tag, key, value) ->
-		sprintf "In %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) (escape value)
+		sprintf "In the style parameters of %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such.  Valid languages are all those accepted by the Camlhighlight library." (explain_tag tag) (escape key) (escape value)
 
 	| Error.Invalid_style_bad_numeric (tag, key, value, low, high) ->
-		sprintf "In %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
+		sprintf "In the style parameters of %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
 
 	| Error.Invalid_style_bad_classname (tag, str) ->
-		sprintf "In %s, the assigned value '#%s#' cannot be interpreted as a classname." (explain_tag tag) (escape str)
+		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a classname." (explain_tag tag) (escape str)
 
 	| Error.Invalid_style_bad_keyvalue (tag, str) ->
-		sprintf "In %s, the assigned value '#%s#' cannot be interpreted as a key/value." (explain_tag tag) (escape str)
+		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a key/value pair." (explain_tag tag) (escape str)
 
 	| Error.Invalid_style_misplaced_keyvalue (tag, key, value) ->
-		sprintf "In %s, the key/value pair '#%s#=#%s#' does not belong to this command." (explain_tag tag) (escape key) (escape value)
+		sprintf "In the style parameters of %s, the key/value pair '#%s#=#%s#' is not accepted for this particular command." (explain_tag tag) (escape key) (escape value)
 
 	| Error.Invalid_style_misplaced_classname (tag, str) ->
-		sprintf "In %s, the assigned classname '#%s#' does not belong to this command." (explain_tag tag) (escape str)
+		sprintf "In the style parameters of %s, the assigned classname '#%s#' is not part of the whitelist for this particular command." (explain_tag tag) (escape str)
 
 	| Error.Invalid_style_unknown_keyvalue (tag, key, value) ->
-		sprintf "In %s, the value '#%s#' assigned to key '#%s#' of the style parameter cannot be interpreted." (explain_tag tag) (escape value) (escape key)
+		sprintf "In the style parameters of %s, the key/value pair '#%s#=#%s#' cannot be interpreted." (explain_tag tag) (escape key) (escape value)
 
 	| Error.Invalid_entity_name ent ->
 		sprintf "Unknown entity '#%s#'." (escape ent)
