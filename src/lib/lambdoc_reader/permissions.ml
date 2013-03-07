@@ -88,10 +88,11 @@ let check_permission_set errors comm (perm_label, perm_order) =
 	end
 
 
-let classify = function
+let rec classify = function
 	| (_, `Any)		-> true
 	| (x, `Only target)	-> (x = target)
 	| (x, `Member targets)	-> List.mem x targets
+	| (x, `Not classifier)	-> not (classify (x, classifier))
 
 
 let run_ruleset verify ruleset default =

@@ -15,7 +15,7 @@ open Basic
 
 type action_t = [ `Accept | `Deny ]
 
-type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list ]
+type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier_t ]
 
 type feature_ruleset_t = (Feature.t classifier_t * action_t) list
 
