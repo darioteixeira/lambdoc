@@ -40,17 +40,6 @@ package "writer"
 	archive(plugin,native) = "lambdoc_writer.cmxs"
 	)
 
-package "proxy"
-	(
-	name = "proxy"
-	version = "0.8.5"
-	requires = "unix, lwt, lwt.unix, lambdoc.core"
-	archive(byte) = "lambdoc_proxy.cmo"
-	archive(native) = "lambdoc_proxy.cmx"
-	archive(plugin,byte) = "lambdoc_proxy.cmo"
-	archive(plugin,native) = "lambdoc_proxy.cmxs"
-	)
-
 package "read_lambhtml"
 	(
 	name = "read_lambhtml"
