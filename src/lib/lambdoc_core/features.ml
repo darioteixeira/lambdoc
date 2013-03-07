@@ -49,7 +49,7 @@ type feature_t = [ public_feature_t | internal_feature_t ]
 
 type action_t = [ `Accept | `Deny ]
 
-type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier_t ]
+type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list ]
 
 type feature_ruleset_t = (feature_t classifier_t * action_t) list
 

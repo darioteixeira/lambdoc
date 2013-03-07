@@ -26,11 +26,10 @@ type t =
 (**	{1 Private functions and values}					*)
 (********************************************************************************)
 
-let rec classify = function
+let classify = function
 	| (_, `Any)		-> true
 	| (x, `Only target)	-> (x = target)
 	| (x, `Member targets)	-> List.mem x targets
-	| (x, `Not classifier)	-> not (classify (x, classifier))
 
 
 let check verify ruleset default =
