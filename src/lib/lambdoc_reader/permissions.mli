@@ -10,17 +10,29 @@
 *)
 
 open Lambdoc_core
+open Basic
 
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val check:
-	?maybe_minipaged: bool option ->
-	?maybe_wrapped: bool option ->
+val check_parameters:
+	?maybe_minipaged:bool option ->
+	?maybe_wrapped:bool option ->
 	(int option * Error.error_msg_t) BatDynArray.t ->
 	Ast.command_t ->
-	Features.feature_t ->
+	Feature.t ->
 	unit
+
+val check_feature:
+	Feature.t ->
+	Idiosyncrasies.t ->
+	bool
+
+val check_classname:
+	Feature.t ->
+	Classname.t ->
+	Idiosyncrasies.t ->
+	bool
 

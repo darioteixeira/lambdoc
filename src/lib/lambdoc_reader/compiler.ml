@@ -76,7 +76,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		We determine whether macros are allowed or not by checking the
 		idiosyncrasies of this particular document.
 	*)
-	let macros_authorised = Idiosyncrasies.check_feature `Feature_macrodef idiosyncrasies in
+	let macros_authorised = Permissions.check_feature `Feature_macrodef idiosyncrasies in
 
 
 	(************************************************************************)
@@ -201,13 +201,13 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	*)
 	and check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
 		let check_classname classname =
-			if not (Idiosyncrasies.check_classname feature classname idiosyncrasies)
+			if not (Permissions.check_classname feature classname idiosyncrasies)
 			then 
 				let msg = Error.Invalid_style_misplaced_classname (comm.comm_tag, classname) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg) in
-		if Idiosyncrasies.check_feature feature idiosyncrasies
+		if Permissions.check_feature feature idiosyncrasies
 		then begin
-			Permissions.check ?maybe_minipaged ?maybe_wrapped errors comm feature;
+			Permissions.check_parameters ?maybe_minipaged ?maybe_wrapped errors comm feature;
 			let (attr, style_parsing) = Style.parse comm errors in
 			List.iter check_classname attr;
 			let element = elem attr style_parsing in
@@ -215,7 +215,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			then Some element
 			else None
 		end else
-			let msg = Error.Unavailable_feature (comm.comm_tag, Features.describe feature) in
+			let msg = Error.Unavailable_feature (comm.comm_tag, Feature.describe feature) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			None in
 
@@ -1072,8 +1072,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						Hashtbl.add books isbn book
 					| Failure failure ->
 						let msg = match failure with
-							| Unavailable	   -> Error.Unavailable_bookmaker (comm.comm_tag, Features.describe feature)
-							| Uncapable err    -> Error.Uncapable_bookmaker (comm.comm_tag, Features.describe feature, err)
+							| Unavailable	   -> Error.Unavailable_bookmaker (comm.comm_tag, Feature.describe feature)
+							| Uncapable err    -> Error.Uncapable_bookmaker (comm.comm_tag, Feature.describe feature, err)
 							| Malformed_ISBN _ -> Error.Malformed_ISBN (comm.comm_tag, isbn)
 							| Unknown_ISBN _   -> Error.Unknown_ISBN (comm.comm_tag, isbn) in
 						BatDynArray.add errors (Some comm.comm_linenum, msg)
@@ -1142,8 +1142,7 @@ let process_errors ~sort source errors =
 
 (**	Compile a document AST into a manuscript.
 *)
-let compile ?bookmaker ~expand_entities ~feature_ruleset ~feature_default ~classname_ruleset ~classname_default ~source ast =
-	let idiosyncrasies = Idiosyncrasies.make ~feature_ruleset ~feature_default ~classname_ruleset ~classname_default in
+let compile ?bookmaker ~expand_entities ~idiosyncrasies ~source ast =
 	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies ast in
 	match errors with
 		| [] -> Ambivalent.make_valid contents bibs notes toc images books labels custom

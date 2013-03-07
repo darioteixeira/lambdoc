@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Lambdoc_core
+open Idiosyncrasies
 open Ast
 
 
@@ -28,40 +29,26 @@ type permission_t =
 (**	{1 Private functions and values}					*)
 (********************************************************************************)
 
-(**	The following values/functions encode the predefined permissions for the
-	various classes of commands.  Each permission class is a pair stating the
-	individual permissions for the label and ordering parameters, respectively.
-	While most classes are constant, some of them are context-sensitive and are
-	therefore functions.
-*)
+let forbidden_class = (Forbidden, Forbidden)
 
-let forbidden_class =
-	(Forbidden, Forbidden)
 
-let custom_heading_class minipaged =
-	(Optional, if minipaged then Mandatory0 else Forbidden0)
+let custom_heading_class minipaged = (Optional, if minipaged then Mandatory0 else Forbidden0)
 
-let preset_heading_class =
-	(Optional, Forbidden)
 
-let custom_class =
-	(*	Note that the order parameter is not actually "Optional0";
-		because of its complexity it was checked by the caller,
-		so we treat it as "Optional0" so errors are not triggered.
-	*)
-	(Optional, Optional0)
+let preset_heading_class = (Optional, Forbidden)
 
-let wrapper_class minipaged =
-	(Optional, if minipaged then Mandatory0 else Forbidden0)
+
+let custom_class = (Optional, Optional0)
+	(* Note that the order parameter is not actually "Optional0"; because of its complexity
+	   it was checked by the caller, so we treat it as "Optional0" so errors are not triggered. *)
+
+
+let wrapper_class minipaged = (Optional, if minipaged then Mandatory0 else Forbidden0)
+
 
 let ghost_class = (Optional, Forbidden)
 
 
-(*	This function checks whether a parameter is valid given its
-	associated permission.  It returns an optional value stating
-	the reason why the parameter was deemed invalid.  A [None]
-	result indicates the parameter is valid.
-*)
 let reason_why_invalid perm = function
 	| Some "" ->
 		begin match perm with
@@ -84,10 +71,6 @@ let reason_why_invalid perm = function
 		end
 
 
-(*	This function goes through all the command parameters, checking
-	each one individually for correctness.  Any errors found are
-	added to the [errors] [BatDynArray].
-*)
 let check_permission_set errors comm (perm_label, perm_order) =
 	begin match reason_why_invalid perm_label comm.comm_label with
 		| None ->
@@ -105,11 +88,26 @@ let check_permission_set errors comm (perm_label, perm_order) =
 	end
 
 
+let classify = function
+	| (_, `Any)		-> true
+	| (x, `Only target)	-> (x = target)
+	| (x, `Member targets)	-> List.mem x targets
+
+
+let run_ruleset verify ruleset default =
+	let rec iterate = function
+		| []	   -> default
+		| (rule, action) :: tl -> if verify rule then action else iterate tl
+	in match iterate ruleset with
+		| `Accept -> true
+		| `Deny	  -> false
+
+
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let check ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feature =
+let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors comm feature =
 
 	let get_minipaged = function
 		| Some minipaged	-> minipaged
@@ -195,9 +193,21 @@ let check ?(maybe_minipaged=None) ?(maybe_wrapped=None) errors comm feature =
 		| `Feature_custom	-> custom_class in
 
 	let permission_set = match feature with
-		| #Features.inline_feature_t as x   -> inline_feature_set x
-		| #Features.block_feature_t as x    -> block_feature_set x
-		| #Features.internal_feature_t as x -> internal_feature_set x
+		| #Feature.inline_feature_t as x   -> inline_feature_set x
+		| #Feature.block_feature_t as x    -> block_feature_set x
+		| #Feature.internal_feature_t as x -> internal_feature_set x
 
 	in check_permission_set errors comm permission_set
+
+
+let check_feature feature {feature_ruleset; feature_default; _} =
+	let verify rule =
+		classify (feature, rule) in
+	run_ruleset verify feature_ruleset feature_default
+
+
+let check_classname feature classname {classname_ruleset; classname_default; _} =
+	let verify (rule1, rule2) =
+		classify (feature, rule1) && classify (classname, rule2) in
+	run_ruleset verify classname_ruleset classname_default
 

@@ -17,10 +17,7 @@ type payload_t =
 	{
 	verify_utf8: bool option;
 	expand_entities: bool option;
-	feature_ruleset: Features.feature_ruleset_t;
-	feature_default: Features.action_t;
-	classname_ruleset: Features.classname_ruleset_t;
-	classname_default: Features.action_t;
+	idiosyncrasies: Idiosyncrasies.t;
 	markup: Markup.t;
 	source: string;
 	}

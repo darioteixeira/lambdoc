@@ -27,10 +27,7 @@ val process_errors:
 val compile:
 	?bookmaker:Bookmaker.t ->
 	expand_entities:bool ->
-	feature_ruleset:Features.feature_ruleset_t ->
-	feature_default:Features.action_t ->
-	classname_ruleset:Features.classname_ruleset_t ->
-	classname_default:Features.action_t ->
+	idiosyncrasies:Idiosyncrasies.t ->
 	source:string ->
 	Ast.t ->
 	Ambivalent.t

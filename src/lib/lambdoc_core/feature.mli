@@ -1,12 +1,10 @@
 (********************************************************************************)
-(*	Features.mli
+(*	Feature.mli
 	Copyright (c) 2009-2010 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
-
-open Basic
 
 
 (********************************************************************************)
@@ -45,15 +43,7 @@ type internal_feature_t =
 
 type public_feature_t = [ inline_feature_t | block_feature_t ]
 
-type feature_t = [ public_feature_t | internal_feature_t ]
-
-type action_t = [ `Accept | `Deny ]
-
-type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list ]
-
-type feature_ruleset_t = (feature_t classifier_t * action_t) list
-
-type classname_ruleset_t = ((feature_t classifier_t * Classname.t classifier_t) * action_t) list
+type t = [ public_feature_t | internal_feature_t ]
 
 
 (********************************************************************************)
@@ -64,6 +54,6 @@ val inline_features: inline_feature_t list
 val block_features: block_feature_t list
 val internal_features: internal_feature_t list
 val public_features: public_feature_t list
-val features: feature_t list
-val describe: feature_t -> string
+val features: t list
+val describe: t -> string
 
