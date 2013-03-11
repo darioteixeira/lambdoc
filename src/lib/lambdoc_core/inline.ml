@@ -35,8 +35,9 @@ type inline_t =
 	| Booklink of Book.isbn_t * Book.rating_t option * seq_t option
 	| See of Pointer.t nelist
 	| Cite of Pointer.t nelist
-	| Ref of Pointer.t * seq_t option
-	| Sref of Pointer.t
+	| Dref of Pointer.t * seq_t option
+	| Sref of Pointer.t * seq_t option
+	| Mref of Pointer.t * seq_t
 
 and t =
 	{
@@ -70,6 +71,7 @@ let link ?(attr = Attr.default) uri maybe_seq = {inline = Link (uri, maybe_seq);
 let booklink ?(attr = Attr.default) isbn maybe_rating maybe_seq = {inline = Booklink (isbn, maybe_rating, maybe_seq); attr}
 let see ?(attr = Attr.default) (hd, tl) = {inline = See (hd, tl); attr}
 let cite ?(attr = Attr.default) (hd, tl) = {inline = Cite (hd, tl); attr}
-let ref ?(attr = Attr.default) pointer maybe_seq = {inline = Ref (pointer, maybe_seq); attr}
-let sref ?(attr = Attr.default) pointer = {inline = Sref pointer; attr}
+let dref ?(attr = Attr.default) pointer maybe_seq = {inline = Dref (pointer, maybe_seq); attr}
+let sref ?(attr = Attr.default) pointer maybe_seq = {inline = Sref (pointer, maybe_seq); attr}
+let mref ?(attr = Attr.default) pointer seq = {inline = Mref (pointer, seq); attr}
 

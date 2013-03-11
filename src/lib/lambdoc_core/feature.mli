@@ -17,7 +17,7 @@ type inline_feature_t =
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
 	| `Feature_mbox | `Feature_span | `Feature_link | `Feature_booklink
-	| `Feature_see | `Feature_cite | `Feature_ref | `Feature_sref ]
+	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref ]
 
 type block_feature_t =
 	[ `Feature_paragraph 

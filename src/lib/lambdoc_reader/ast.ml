@@ -58,8 +58,9 @@ type seq_t = inline_t list
 	| Booklink of string * seq_t option
 	| See of string list
 	| Cite of string list
-	| Ref of string * seq_t option
-	| Sref of string
+	| Dref of string * seq_t option
+	| Sref of string * seq_t option
+	| Mref of string * seq_t
 	| Macroarg of string
 	| Macrocall of string * seq_t list
 

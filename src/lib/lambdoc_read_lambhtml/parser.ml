@@ -75,7 +75,7 @@ let inline_elems =
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
 	"mbox"; "span"; "link"; "a"; "booklink";
-	"see"; "cite"; "ref"; "sref";
+	"see"; "cite"; "dref"; "sref"; "mref";
 	"arg"; "call";
 	]
 
@@ -171,10 +171,12 @@ and process_inline store node =
 			(!!comm, Ast.See (node#required_list_attribute "href"))
 		| T_element "cite" ->
 			(!!comm, Ast.Cite (node#required_list_attribute "href"))
-		| T_element "ref" ->
-			(!!comm, Ast.Ref (node#required_string_attribute "href", process_maybe_seq store node))
+		| T_element "dref" ->
+			(!!comm, Ast.Dref (node#required_string_attribute "href", process_maybe_seq store node))
 		| T_element "sref" ->
-			(!!comm, Ast.Sref (node#required_string_attribute "href"))
+			(!!comm, Ast.Sref (node#required_string_attribute "href", process_maybe_seq store node))
+		| T_element "mref" ->
+			(!!comm, Ast.Mref (node#required_string_attribute "href", process_seq store node))
 		| T_element "arg" ->
 			(!!comm, Ast.Macroarg (node#required_string_attribute "num"))
 		| T_element "call" ->

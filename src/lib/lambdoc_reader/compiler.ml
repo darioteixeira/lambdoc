@@ -367,21 +367,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						[] in
 			check_inline_comm `Feature_cite comm elem
 
-		| (false, (comm, Ast.Ref (pointer, maybe_astseq))) ->
-			let elem attr _ =
-				let target_checker target = match (maybe_astseq, target) with
-					| (None, Target.Visible_target (Target.Custom_target (_, _, `None_given)))
-					| (None, Target.Visible_target (Target.Wrapper_target (_, `None_given)))
-					| (None, Target.Visible_target (Target.Part_target `None_given))
-					| (None, Target.Visible_target (Target.Section_target (_, `None_given))) -> `Empty_target
-					| (_, Target.Visible_target _)						 -> `Valid_target
-					| _									 -> `Wrong_target Error.Target_label in
-				add_pointer target_checker comm pointer;
-				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
-				[Inline.ref ~attr pointer maybe_seq] in
-			check_inline_comm `Feature_ref comm elem
-
-		| (false, (comm, Ast.Sref pointer)) ->
+		| (false, (comm, Ast.Dref (pointer, maybe_astseq))) ->
 			let elem attr _ =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -391,8 +377,32 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				[Inline.sref ~attr pointer] in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				[Inline.dref ~attr pointer maybe_seq] in
+			check_inline_comm `Feature_dref comm elem
+
+		| (false, (comm, Ast.Sref (pointer, maybe_astseq))) ->
+			let elem attr _ =
+				let target_checker = function
+					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
+					| Target.Visible_target (Target.Wrapper_target (_, `None_given))
+					| Target.Visible_target (Target.Part_target `None_given)
+					| Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
+					| Target.Visible_target _					 -> `Valid_target
+					| _								 -> `Wrong_target Error.Target_label in
+				add_pointer target_checker comm pointer;
+				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				[Inline.sref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_sref comm elem
+
+		| (false, (comm, Ast.Mref (pointer, astseq))) ->
+			let elem attr _ =
+				let target_checker = function
+					| Target.Visible_target _ -> `Valid_target
+					| _			  -> `Wrong_target Error.Target_label in
+				add_pointer target_checker comm pointer;
+				[Inline.mref ~attr pointer (convert_seq_aux ~comm ~depth ~args true astseq)] in
+			check_inline_comm `Feature_mref comm elem
 
 		| (_, (comm, Ast.Macroarg raw_num)) ->
 			let elem attr _ = match args with

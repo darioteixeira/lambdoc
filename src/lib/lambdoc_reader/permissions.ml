@@ -135,8 +135,9 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_booklink	-> forbidden_class
 		| `Feature_see		-> forbidden_class
 		| `Feature_cite		-> forbidden_class
-		| `Feature_ref		-> forbidden_class
+		| `Feature_dref		-> forbidden_class
 		| `Feature_sref		-> forbidden_class
+		| `Feature_mref		-> forbidden_class
 
 	and block_feature_set = function
 		| `Feature_paragraph	-> forbidden_class

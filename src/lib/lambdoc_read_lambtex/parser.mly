@@ -97,8 +97,9 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> BOOKLINK
 %token <Lambdoc_reader.Ast.command_t> SEE
 %token <Lambdoc_reader.Ast.command_t> CITE
-%token <Lambdoc_reader.Ast.command_t> REF
+%token <Lambdoc_reader.Ast.command_t> DREF
 %token <Lambdoc_reader.Ast.command_t> SREF
+%token <Lambdoc_reader.Ast.command_t> MREF
 
 %token <Lambdoc_reader.Ast.command_t> PARAGRAPH
 %token <Lambdoc_reader.Ast.command_t> PICTURE
@@ -286,8 +287,9 @@ inline:
 	| BOOKLINK raw_bundle inline_bundle?						{($1, Ast.Booklink ($2, $3))}
 	| SEE raw_bundle*								{($1, Ast.See $2)}
 	| CITE raw_bundle*								{($1, Ast.Cite $2)}
-	| REF raw_bundle inline_bundle?							{($1, Ast.Ref ($2, $3))}
-	| SREF raw_bundle								{($1, Ast.Sref $2)}
+	| DREF raw_bundle inline_bundle?						{($1, Ast.Dref ($2, $3))}
+	| SREF raw_bundle inline_bundle?						{($1, Ast.Sref ($2, $3))}
+	| MREF raw_bundle inline_bundle							{($1, Ast.Mref ($2, $3))}
 	| MACROARG raw_bundle								{($1, Ast.Macroarg $2)}
 	| MACROCALL inline_bundle*							{let (comm, label) = $1 in (comm, Ast.Macrocall (label, $2))}
 

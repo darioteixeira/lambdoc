@@ -28,7 +28,7 @@
 	" entity | br | mathtexinl | mathmlinl | glyph
 	| bold | strong | b | emph | em | i | code | tt | caps
 	| ins | del | sup | sub | mbox | span | link | a | booklink
-	| see | cite | ref | sref
+	| see | cite | dref | sref | mref
 	| arg | call">
 
 <!ENTITY % Frag "(%Block;)*">
@@ -322,11 +322,14 @@
 <!ELEMENT cite EMPTY>
 <!ATTLIST cite %Common; href NMTOKENS #REQUIRED>
 
-<!ELEMENT ref %Inline;>
-<!ATTLIST ref %Common; href NMTOKEN #REQUIRED>
+<!ELEMENT dref %Inline;>
+<!ATTLIST dref %Common; href NMTOKEN #REQUIRED>
 
-<!ELEMENT sref EMPTY>
+<!ELEMENT sref %Inline;>
 <!ATTLIST sref %Common; href NMTOKEN #REQUIRED>
+
+<!ELEMENT mref %Inline;>
+<!ATTLIST mref %Common; href NMTOKEN #REQUIRED>
 
 <!ELEMENT arg EMPTY>
 <!ATTLIST arg %Common; num CDATA #REQUIRED>

@@ -288,31 +288,31 @@ let write_valid
 			let commafy pointer = [pcdata ","; link_maker pointer] in
 			Html5.F.span ~a:[a_class (!!"cite" :: attr)] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
 
-		| Ref (pointer, maybe_seq) ->
+		| Dref (pointer, maybe_seq) ->
 			let label = Label.User pointer in
-			begin match maybe_seq with
-				| Some seq ->
-					make_internal_link ~attr label (Obj.magic (write_seq seq))
-				| None ->
-					let target = Hashtbl.find labels label in
-					match target with
-						| Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
-							make_internal_link ~attr label (boxout_conv order)
-						| Target.Visible_target (Target.Custom_target (_, Custom.Theorem, order)) ->
-							make_internal_link ~attr label (theorem_conv order)
-						| Target.Visible_target (Target.Wrapper_target (_, order)) ->
-							make_internal_link ~attr label (wrapper_conv order)
-						| Target.Visible_target (Target.Part_target order) ->
-							make_internal_link ~attr label (part_conv order)
-						| Target.Visible_target (Target.Section_target (location, order)) ->
-							make_internal_link ~attr label (section_conv location order)
-						| _ ->
-							raise (Command_ref_with_non_visible_block target)
+			let target = Hashtbl.find labels label in
+			let suffix = match maybe_seq with Some seq -> write_seq seq | None -> [] in
+			let make_dref order = make_internal_link ~attr label (Obj.magic (order @ suffix)) in
+			begin match target with
+				| Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
+					make_dref (boxout_conv order)
+				| Target.Visible_target (Target.Custom_target (_, Custom.Theorem, order)) ->
+					make_dref (theorem_conv order)
+				| Target.Visible_target (Target.Wrapper_target (_, order)) ->
+					make_dref (wrapper_conv order)
+				| Target.Visible_target (Target.Part_target order) ->
+					make_dref (part_conv order)
+				| Target.Visible_target (Target.Section_target (location, order)) ->
+					make_dref (section_conv location order)
+				| _ ->
+					raise (Command_ref_with_non_visible_block target)
 			end
 
-		| Sref pointer ->
-			let target = Hashtbl.find labels (Label.User pointer) in
-			let make_sref wseq order = make_internal_link ~attr (Label.User pointer) (Obj.magic (wseq @ order)) in
+		| Sref (pointer, maybe_seq) ->
+			let label = Label.User pointer in
+			let target = Hashtbl.find labels label in
+			let suffix = match maybe_seq with Some seq -> write_seq seq | None -> [] in
+			let make_sref wseq order = make_internal_link ~attr label (Obj.magic (wseq @ order @ suffix)) in
 			begin match target with
 				| Target.Visible_target (Target.Custom_target (env, Custom.Boxout, order)) ->
 					make_sref (write_name (Name_custom env)) (boxout_conv ~prespace:true order)
@@ -336,6 +336,9 @@ let write_valid
 				| _ ->
 					raise (Command_sref_with_non_visible_block target)
 			end
+
+		| Mref (pointer, seq) ->
+			make_internal_link (Label.User pointer) (Obj.magic (write_seq seq))
 
 
 	(************************************************************************)
@@ -380,7 +383,7 @@ let write_valid
 			let uline_class = if underline then [!!"uline"] else [] in
 			let a_hd = a_class (cell_class @ oline_class @ uline_class) in
 			let a_tl = match maybe_colspan with Some n -> [a_colspan n] | None -> [] in
-			let out_seq = match maybe_seq with Some seq -> (write_seq seq) | None -> [] in
+			let out_seq = match maybe_seq with Some seq -> write_seq seq | None -> [] in
 			match weight with
 				| Tabular.Normal -> Html5.F.td ~a:(a_hd :: a_tl) (out_seq :> Html5_types.td_content_fun Html5.F.elt list)
 				| Tabular.Strong -> Html5.F.th ~a:(a_hd :: a_tl) (out_seq :> Html5_types.th_content_fun Html5.F.elt list) in

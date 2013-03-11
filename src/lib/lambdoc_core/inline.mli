@@ -37,8 +37,9 @@ type inline_t =
 	| Booklink of Book.isbn_t * Book.rating_t option * seq_t option		(** Reference to a book via its ISBN *)
 	| See of Pointer.t nelist						(** Reference to an end note *)
 	| Cite of Pointer.t nelist						(** Citation of a bibliography entry *)
-	| Ref of Pointer.t * seq_t option					(** Dumb or manual reference to an internal element *)
-	| Sref of Pointer.t							(** Smart reference to an internal element *)
+	| Dref of Pointer.t * seq_t option					(** Dumb reference to an internal element *)
+	| Sref of Pointer.t * seq_t option					(** Smart reference to an internal element *)
+	| Mref of Pointer.t * seq_t						(** Manual reference to an internal element *)
 
 and t =
 	{
@@ -72,6 +73,7 @@ val link:	?attr:Attr.t -> Uri.t -> seq_t option -> t
 val booklink:	?attr:Attr.t -> Book.isbn_t -> Book.rating_t option -> seq_t option -> t
 val see:	?attr:Attr.t -> Pointer.t nelist -> t
 val cite:	?attr:Attr.t -> Pointer.t nelist -> t
-val ref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
-val sref:	?attr:Attr.t -> Pointer.t -> t
+val dref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
+val sref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
+val mref:	?attr:Attr.t -> Pointer.t -> seq_t -> t
 

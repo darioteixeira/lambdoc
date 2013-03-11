@@ -168,8 +168,9 @@ let issue_simple_command raw_comm position =
 		| "booklink"		-> (Inl, BOOKLINK command)
 		| "see"			-> (Inl, SEE command)
 		| "cite"		-> (Inl, CITE command)
-		| "ref"			-> (Inl, REF command)
+		| "dref"		-> (Inl, DREF command)
 		| "sref"		-> (Inl, SREF command)
+		| "mref"		-> (Inl, MREF command)
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
 		| "picture"		-> (Blk, PICTURE command)
