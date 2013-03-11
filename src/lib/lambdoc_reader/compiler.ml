@@ -638,7 +638,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (_, _, _, `Any_blk, (comm, Ast.Bookpic isbn)) ->
 			let elem attr dict =
-				let (rating, coversize) = Style.consume2 dict (Rating_hnd, None) (Coversize_hnd, Book.Medium) in
+				let (rating, coversize) = Style.consume2 dict (Rating_hnd, None) (Coversize_hnd, `Medium) in
 				add_isbn comm `Feature_bookpic isbn;
 				[Block.bookpic ~attr isbn rating coversize] in
 			check_block_comm `Feature_bookpic comm elem

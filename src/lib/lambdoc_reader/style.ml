@@ -61,9 +61,9 @@ type parsing_t = (raw_t * decl_t) list
 (********************************************************************************)
 
 let coversize_of_string comm key = function
-	| "small"  -> Book.Small
-	| "medium" -> Book.Medium
-	| "large"  -> Book.Large
+	| "small"  -> `Small
+	| "medium" -> `Medium
+	| "large"  -> `Large
 	| x	   -> raise (Value_error (Error.Invalid_style_bad_coversize (comm.comm_tag, key, x)))
 
 
