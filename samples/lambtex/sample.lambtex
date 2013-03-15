@@ -39,11 +39,11 @@ produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
 It is possible to embed images like \glyph{circle-tiny.png}{o} into an inline context.
 \short
 
-Here is a link to part number \ref{part:inline}, or smartly, \sref{part:inline}.
-Similarly, here is a link to section number \ref{sec:foobar}, or smartly,
-\sref{sec:foobar}.  And here is a link to \ref{sec:foobar}{that same
-section}.  You can also link to Tip \ref{tip:one}, or smarly \sref{tip:one},
-or a link to \ref{tip:one}{that same tip}. The bibliography is at the
+Here is a link to part number \dref{part:inline}, or smartly, \sref{part:inline}.
+Similarly, here is a link to section number \dref{sec:foobar}, or smartly,
+\sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
+section}.  You can also link to Tip \dref{tip:one}, or smarly \sref{tip:one},
+or a link to \mref{tip:one}{that same tip}. The bibliography is at the
 end\cite{bib:bib1}\cite{bib:bib2}\cite{bib:bib3}.  You can also place multiple
 citations in the same square brackets\cite{bib:bib1}{bib:bib2}{bib:bib3}. There is
 also\see{note:note1} a list\see{note:note2} of notes\see{note:note3}, which if you prefer
@@ -252,14 +252,14 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \section{Source environment: plain with syntax highlighting}
 
 \p{\lorem}
-\begin<ocaml,plain>{source}
+\begin<lang=ocaml,plain>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
 
@@ -267,14 +267,14 @@ let rec count = function
 \section{Source environment: plain with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<ocaml,plain,nums>{source}
+\begin<lang=ocaml,nums=yes,plain>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
 
@@ -282,14 +282,14 @@ let rec count = function
 \section{Source environment: boxed with syntax highlighting}
 
 \p{\lorem}
-\begin<ocaml,boxed>{source}
+\begin<lang=ocaml,boxed>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
 
@@ -297,14 +297,14 @@ let rec count = function
 \section{Source environment: boxed with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<ocaml,boxed,nums>{source}
+\begin<lang=ocaml,nums=yes,boxed>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
 
@@ -312,14 +312,14 @@ let rec count = function
 \section{Source environment: zebra with syntax highlighting}
 
 \p{\lorem}
-\begin<ocaml,zebra>{source}
+\begin<lang=ocaml,zebra>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
 
@@ -327,14 +327,14 @@ let rec count = function
 \section{Source environment: zebra with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<ocaml,zebra,nums>{source}
+\begin<lang=ocaml,nums=yes,zebra>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
 
@@ -355,7 +355,7 @@ index.html: HTML document text
 \section{Source environment: console with line numbers}
 
 \p{\lorem}
-\begin<console,nums>{source}
+\begin<nums=yes,console>{source}
 dario@localhost:~/lambtex$ make
 lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
 
@@ -420,7 +420,7 @@ index.html: HTML document text
 \end{verbatim}
 \p{\lorem}
 
-\begin<6>{verbatim}
+\begin<mult6>{verbatim}
 ┏┻┓
 ┫☃┣
 ┗┳┛
@@ -439,61 +439,43 @@ index.html: HTML document text
 \p{\lorem}
 
 
-\section{Decor environments}
+\section{Floating pictures}
 
 \subsection{Centered}
 \p{\lorem}
-\begin{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
+\picture<center>{circle-small.png}{Small Circle}
 \p{\lorem}
 
 \subsection{Floating left}
 \p{\lorem}
-\begin<left>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
+\picture<left>{circle-small.png}{Small Circle}
 \p{\lorem}
 \p{\lorem}
 
 \subsection{Floating right}
 \p{\lorem}
-\begin<right>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
+\picture<right>{circle-small.png}{Small Circle}
 \p{\lorem}
 \p{\lorem}
 
 \subsection{Floating left and right}
 \p{\lorem}
-\begin<left>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
-\begin<right>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
+\picture<left>{circle-small.png}{Small Circle}
+\picture<right>{circle-small.png}{Small Circle}
 \p{\lorem}
 \p{\lorem}
 
 \subsection{Floating left and left}
 \p{\lorem}
-\begin<left>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
-\begin<left>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
+\picture<left>{circle-small.png}{Small Circle}
+\picture<left>{circle-small.png}{Small Circle}
 \p{\lorem}
 \p{\lorem}
 
 \subsection{Floating right and right}
 \p{\lorem}
-\begin<right>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
-\begin<right>{decor}
-\picture{circle-small.png}{Small Circle}
-\end{decor}
+\picture<right>{circle-small.png}{Small Circle}
+\picture<right>{circle-small.png}{Small Circle}
 \p{\lorem}
 \p{\lorem}
 
@@ -767,14 +749,14 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin{printout}{\fox}
-\begin<ocaml>{source}
+\begin<lang=ocaml>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
     | Leaf		       -> 0
-    | Node (node, left, right) -> 1 + (count left) + (count right);;
+    | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \end{printout}
 \p{\lorem}
@@ -783,7 +765,7 @@ let rec count = function
 
 \p{\lorem}
 \begin<left>{printout}{\fox}
-\begin<ocaml,!nums>{source}
+\begin<lang=ocaml,nums=no>{source}
 type t =
     | Foo of int
     | Bar of float
@@ -800,7 +782,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<right>{printout}{\fox}
-\begin<ocaml,!nums>{source}
+\begin<lang=ocaml,nums=no>{source}
 type t =
     | Foo of int
     | Bar of float
