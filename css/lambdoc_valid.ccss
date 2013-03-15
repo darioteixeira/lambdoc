@@ -55,7 +55,10 @@ Hmargin_indent: 1em;
 	text-align: justify;
 	}
 
-.doc_initial:first-letter
+.doc_par:not(:first-child)	{margin-top: Vmargin_par;}
+.doc_par:not(:last-child)	{margin-bottom: Vmargin_par;}
+
+.doc_class_initial:first-letter
 	{
 	float: left;
 	margin-right: 0.15em;
@@ -65,12 +68,9 @@ Hmargin_indent: 1em;
 	color: Colour_fancy;
 	}
 
-.doc_par:not(:first-child) {margin-top: Vmargin_par;}
-.doc_par:not(:last-child) {margin-bottom: Vmargin_par;}
-
-.doc_par + .doc_par:not(.doc_initial)	{text-indent: Hmargin_indent;}
-.doc_par.doc_indent:not(.doc_initial)	{text-indent: Hmargin_indent;}
-.doc_par.doc_noindent			{text-indent: 0 !important;}
+.doc_par + .doc_par:not(.doc_class_initial)		{text-indent: Hmargin_indent;}
+.doc_par.doc_class_indent:not(.doc_class_initial)	{text-indent: Hmargin_indent;}
+.doc_par.doc_class_noindent				{text-indent: 0 !important;}
 
 
 /********************************************************************************/
@@ -84,25 +84,15 @@ Hmargin_dt:	-1 * (Hmargin_list - 0.5em);
 .doc_enumerate,
 .doc_description {margin: 0 0 0 Hmargin_list;}
 
-.doc_itemize {list-style: disc outside;}
-.doc_enumerate {list-style: decimal outside;}
+.doc_itemize	{list-style: disc outside;}
+.doc_enumerate	{list-style: decimal outside;}
 
-.doc_itemize > .doc_item, .doc_enumerate > .doc_item {margin: Vmargin_par 0;}
-.doc_description > .doc_item {margin: Vmargin_par 0 Vmargin_short;}
+.doc_itemize > .doc_item,
+.doc_enumerate > .doc_item	{margin: Vmargin_par 0;}
+.doc_description > dt.doc_item	{margin: Vmargin_par 0 Vmargin_short Hmargin_dt;}
 
-.doc_style_none		{list-style-type: none;}
-.doc_style_disc		{list-style-type: disc;}
-.doc_style_circle	{list-style-type: circle;}
-.doc_style_square	{list-style-type: square;}
-.doc_style_decimal	{list-style-type: decimal;}
-.doc_style_lower_roman	{list-style-type: lower-roman;}
-.doc_style_upper_roman	{list-style-type: upper-roman;}
-.doc_style_lower_alpha	{list-style-type: lower-alpha;}
-.doc_style_upper_alpha	{list-style-type: upper-alpha;}
-
-.doc_description > .doc_item
+.doc_description > dt.doc_item
 	{
-	margin-left: Hmargin_dt;
 	font-weight: bold;
 	color: Colour_fancy;
 	}
@@ -114,6 +104,16 @@ Hmargin_dt:	-1 * (Hmargin_list - 0.5em);
 .doc_itemize:not(:last-child),
 .doc_enumerate:not(:last-child),
 .doc_description:not(:last-child) {margin-bottom: Vmargin_textual;}
+
+.doc_class_none		{list-style-type: none;}
+.doc_class_disc		{list-style-type: disc;}
+.doc_class_circle	{list-style-type: circle;}
+.doc_class_square	{list-style-type: square;}
+.doc_class_decimal	{list-style-type: decimal;}
+.doc_class_lower_roman	{list-style-type: lower-roman;}
+.doc_class_upper_roman	{list-style-type: upper-roman;}
+.doc_class_lower_alpha	{list-style-type: lower-alpha;}
+.doc_class_upper_alpha	{list-style-type: upper-alpha;}
 
 
 /********************************************************************************/
@@ -215,6 +215,7 @@ dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual Hmargin_answer;}
 
 .doc_mathblk:not(:first-child) {margin-top: Vmargin_textual;}
 .doc_mathblk:not(:last-child) {margin-bottom: Vmargin_textual;}
+
 .doc_wrapper > .doc_mathblk {margin: 0;}
 
 
@@ -236,24 +237,6 @@ Border_src_consnums:    1px solid #ffb720;
 	overflow: auto;
 	}
 
-.doc_src_boxed,
-.doc_src_zebra
-	{
-	border: Border_box;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
-	background: #f8f9fc;
-	}
-
-.doc_src_console
-	{
-	border: Border_src_console;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
-	background: #000;
-	color: #ffe790;
-	}
-
 .doc_src_nums
 	{
 	float: left;
@@ -261,11 +244,6 @@ Border_src_consnums:    1px solid #ffb720;
 	border-right: 1px solid #666;
 	white-space: normal;
 	font-weight: bold;
-	}
-
-.doc_src_console > .doc_src_nums
-	{
-	border-right: Border_src_consnums;
 	}
 
 .doc_src_code
@@ -287,13 +265,6 @@ Border_src_consnums:    1px solid #ffb720;
 	height: 0;
 	padding: 0.3em 0;
 	}
-
-.doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: #f3f6fc;}
-.doc_src_zebra > .doc_src_code > .doc_src_line:nth-child(even) {background: #f9f9f9;}
-.doc_src_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topright: Radius_box;}
-.doc_src_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topleft: Radius_box;}
-.doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomright: Radius_box;}
-.doc_src_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomleft: Radius_box;}
 
 .doc_src_Kwd	{color: #0000ff; font-weight: bold;}
 .doc_src_Type	{color: #007f00;}
@@ -335,15 +306,45 @@ Border_src_consnums:    1px solid #ffb720;
 .doc_src_Atom	{color: #ff9f00;}
 .doc_src_Meta	{color: #000000; font-style: italic;}
 
-.doc_src_plain:not(:first-child) {margin-top: Vmargin_hybrid;}
-.doc_src_plain:not(:last-child) {margin-bottom: Vmargin_hybrid;}
-.doc_src_boxed:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_src_boxed:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_src_zebra:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_src_zebra:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_src_console:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_src_console:not(:last-child) {margin-bottom: Vmargin_boxish;}
 .doc_wrapper > .doc_src_main {margin: 0;}
+
+.doc_class_boxed,
+.doc_class_zebra
+	{
+	border: Border_box;
+	-moz-box-shadow: Shadow_box;
+	-moz-border-radius: Radius_box;
+	background: #f8f9fc;
+	}
+
+.doc_class_console
+	{
+	border: Border_src_console;
+	-moz-box-shadow: Shadow_box;
+	-moz-border-radius: Radius_box;
+	background: #000;
+	color: #ffe790;
+	}
+
+.doc_class_console > .doc_src_nums {border-right: Border_src_consnums;}
+.doc_class_plain > .doc_src_nums > .doc_src_dummy {display: none;}
+.doc_class_plain > .doc_src_code > .doc_src_dummy {display: none;}
+
+.doc_class_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: #f3f6fc;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:nth-child(even) {background: #f9f9f9;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topright: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topleft: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomright: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomleft: Radius_box;}
+
+.doc_class_plain:not(:first-child) {margin-top: Vmargin_hybrid;}
+.doc_class_plain:not(:last-child) {margin-bottom: Vmargin_hybrid;}
+.doc_class_boxed:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_class_boxed:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_class_zebra:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_class_zebra:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_class_console:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_class_console:not(:last-child) {margin-bottom: Vmargin_boxish;}
 
 
 /********************************************************************************/
@@ -423,7 +424,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 /* Verbatim environments.							*/
 /********************************************************************************/
 
-.doc_verb
+.doc_pre
 	{
 	clear: both;
 	margin: 0 Hmargin_inset;
@@ -431,9 +432,9 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	line-height: 0;
 	}
 
-.doc_verb_aux {display: inline-block;}
+div.doc_pre_aux {display: inline-block;}
 
-.doc_verb_aux > pre
+pre.doc_pre_aux
 	{
         display: block;
 	overflow: hidden;
@@ -443,20 +444,20 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	font-family: Family_mono;
 	}
 
-.doc_mult0 {font-size: 1.20em;}
-.doc_mult1 {font-size: 1.70em;}
-.doc_mult2 {font-size: 2.40em;}
-.doc_mult3 {font-size: 3.39em;}
-.doc_mult4 {font-size: 4.80em;}
-.doc_mult5 {font-size: 6.79em;}
-.doc_mult6 {font-size: 9.60em;}
-.doc_mult7 {font-size: 13.6em;}
-.doc_mult8 {font-size: 19.2em;}
-.doc_mult9 {font-size: 27.2em;}
+.doc_class_mult0 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 1.20em;}
+.doc_class_mult1 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 1.70em;}
+.doc_class_mult2 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 2.40em;}
+.doc_class_mult3 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 3.39em;}
+.doc_class_mult4 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 4.80em;}
+.doc_class_mult5 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 6.79em;}
+.doc_class_mult6 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 9.60em;}
+.doc_class_mult7 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 13.6em;}
+.doc_class_mult8 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 19.2em;}
+.doc_class_mult9 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 27.2em;}
 
-.doc_verb:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_verb:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_wrapper > .doc_verb {margin: 0;}
+.doc_pre:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_pre:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_wrapper > .doc_pre {margin: 0;}
 
 
 /********************************************************************************/
@@ -471,13 +472,14 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 	line-height: 0;
 	}
 
-.doc_pic_lnk				{display: inline-block; width: 100%;}
-.doc_pic_lnk > img			{display: inline; max-width: 100%; border: none;}
-.doc_pic_frame > .doc_pic_lnk > img	{-moz-box-shadow: Shadow_box;}
+.doc_pic_lnk			{display: inline-block; width: 100%;}
+.doc_pic_lnk > img		{display: inline; max-width: 100%; border: none;}
 
 .doc_pic:not(:first-child)	{margin-top: Vmargin_boxish;}
 .doc_pic:not(:last-child)	{margin-bottom: Vmargin_boxish;}
 .doc_wrapper > .doc_pic		{margin: 0;}
+
+.doc_class_frame > .doc_pic_lnk > img	{-moz-box-shadow: Shadow_box;}
 
 
 /********************************************************************************/
@@ -497,6 +499,7 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 
 .doc_subpage:not(:first-child) {margin-top: Vmargin_boxish;}
 .doc_subpage:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
 .doc_wrapper > .doc_subpage {margin: 0;}
 
 
@@ -546,6 +549,9 @@ Border_pull: 2px dotted Colour_fancy;
 	color: Colour_fancy;
 	}
 
+.doc_pull:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_pull:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
 
 /********************************************************************************/
 /* Boxout environments.								*/
@@ -579,6 +585,10 @@ Border_pull: 2px dotted Colour_fancy;
 	}
 
 
+.doc_boxout:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_boxout:not(:last-child) {margin-bottom: Vmargin_boxish;}
+
+
 /********************************************************************************/
 /* Theorem environments.							*/
 /********************************************************************************/
@@ -606,15 +616,15 @@ Border_pull: 2px dotted Colour_fancy;
 /* CSS common to floater blocks.						*/
 /********************************************************************************/
 
-.doc_float_center {clear: both; margin: 0 Hmargin_inset;}
-.doc_float_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
-.doc_float_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
+.doc_class_center {clear: both; margin: 0 Hmargin_inset;}
+.doc_class_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
+.doc_class_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
 
-.doc_float_center:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_float_center:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_class_center:not(:first-child) {margin-top: Vmargin_boxish;}
+.doc_class_center:not(:last-child) {margin-bottom: Vmargin_boxish;}
 
-.doc_wrapper.doc_float_center:not(:first-child) {margin-top: Vmargin_wrapper;}
-.doc_wrapper.doc_float_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
+.doc_wrapper.doc_class_center:not(:first-child) {margin-top: Vmargin_wrapper;}
+.doc_wrapper.doc_class_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
 
 
 /********************************************************************************/
