@@ -439,7 +439,8 @@ let write_valid
 			[Html5.F.ol ~a:[a_class (!!"enumerate" :: attr)] (hd :: tl)]
 
 		| Description dfrags ->
-			let write_dfrag (seq, frag) = (Html5.F.dt ~a:[a_class [!!"item"]] (write_seq seq), Html5.F.dd (write_frag frag)) in
+			let write_dfrag (seq, frag) =
+				(Html5.F.dt ~a:[a_class [!!"item"]] (write_seq seq), Html5.F.dd ~a:[a_class [!!"item"]] (write_frag frag)) in
 			let (hd, tl) = nemap write_dfrag dfrags in
 			let pairs = hd :: tl in
 			let split (dt, dd) = ((dt, []), (dd, [])) in
@@ -485,13 +486,13 @@ let write_valid
 			[Html5.F.div ~a:[a_class (!!"subpage" :: attr)] (write_frag frag)]
 
 		| Verbatim txt ->
-			let aux = Html5.F.div ~a:[a_class [!!"pre_aux"]] [Html5.F.pre [Html5.F.pcdata txt]] in
+			let aux = Html5.F.div ~a:[a_class [!!"pre_aux"]] [Html5.F.pre ~a:[a_class [!!"pre_aux"]] [Html5.F.pcdata txt]] in
 			[Html5.F.div ~a:[a_class (!!"pre" :: attr)] [aux]]
 
 		| Picture (width, alias, alt) ->
-			let attrs = match width with Some w -> [a_width w] | None -> [] in
+			let wattr = match width with Some w -> [a_width w] | None -> [] in
 			let uri = image_lookup alias in
-			let img = Raw.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [Html5.F.img ~a:attrs ~src:uri ~alt ()] in
+			let img = Raw.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [Html5.F.img ~a:(a_class [!!"pic"] :: wattr) ~src:uri ~alt ()] in
 			[Html5.F.div ~a:[a_class (!!"pic" :: attr)] [img]]
 
 		| Bookpic (isbn, maybe_rating, cover) ->
@@ -501,7 +502,7 @@ let write_valid
 			let cover_uri = cover_lookup isbn cover in
 			[Html5.F.div ~a:[a_class (!!"bookpic" :: attr)]
 				[
-				Raw.a ~a:[a_href book_uri; a_class [!!"pic_lnk"]] [Html5.F.img ~src:cover_uri ~alt ()];
+				Raw.a ~a:[a_href book_uri; a_class [!!"pic_lnk"]] [Html5.F.img ~a:[a_class [!!"pic"]] ~src:cover_uri ~alt ()];
 				p [i [pcdata book.title]];
 				p [pcdata book.author];
 				p [pcdata (book.publisher ^ (match book.pubdate with Some p -> " (" ^ p ^ ")" | None -> ""))];
