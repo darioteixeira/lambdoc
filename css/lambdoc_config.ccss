@@ -25,24 +25,24 @@ Colour_fancy:	#501;
 
 /* Stack with wide and large-looking fonts (works well with a base of 13px): */
 
-Stack_wide13_serif:	"DejaVu Serif", serif;
-Stack_wide13_sans:	"DejaVu Sans", "Verdana", "Geneva", sans-serif;
-Stack_wide13_mono:	"DejaVu Sans Mono", "Courier New", "Courier", monospace;
+Stack_wide_l_serif:	"DejaVu Serif", serif;
+Stack_wide_l_sans:	"DejaVu Sans", "Verdana", "Geneva", sans-serif;
+Stack_wide_l_mono:	"DejaVu Sans Mono", "Courier New", "Courier", monospace;
 
 
 /* Stack with wide and small-looking fonts (works well with a base of 14px): */
 
-Stack_wide14_serif:	"Georgia", serif;
+Stack_wide_s_serif:	"Georgia", serif;
 
 
 /* Stack with narrow and small-looking fonts (works well with a base of 14px): */
 
-Stack_narrow14_sans:	"Helvetica", "Liberation Sans", "Arial", sans-serif;
+Stack_narrow_s_sans:	"Helvetica", "Liberation Sans", "Arial", sans-serif;
 
 
 /* Stack with narrow and very small-looking fonts (works well with a base of 15px): */
 
-Stack_narrow15_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
+Stack_narrow_xs_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
 
 
 /********************************************************************************/
@@ -50,33 +50,33 @@ Stack_narrow15_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
 /* Here we select one of the declared font stacks.				*/
 /********************************************************************************/
 
-Family_doc:		Stack_wide13_sans;
-Family_heading:		Stack_wide13_sans;
-Family_mono:		Stack_wide13_mono;
+Family_doc:		Stack_wide_s_serif;
+Family_heading:		Stack_wide_s_serif;
+Family_mono:		Stack_wide_l_mono;
 
 
 /********************************************************************************/
 /* Font sizes.									*/
 /********************************************************************************/
 
-Fsize_doc:		13px;	/* Base for all other values */
+Fsize_doc:		15px;	/* Base for all other values */
 
-Fsize_note:		((Fsize_doc - 2px) ÷ Fsize_doc) * 1em;
-Fsize_pre:		((Fsize_doc - 2px) ÷ Fsize_doc) * 1em;
-Fsize_caption:		((Fsize_doc - 1px) ÷ Fsize_doc) * 1em;
-Fsize_small:		((Fsize_doc - 1px) ÷ Fsize_doc) * 1em;
-Fsize_large:		((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
-Fsize_title1:		((Fsize_doc + 8px) ÷ Fsize_doc) * 1em;
-Fsize_title2:		((Fsize_doc + 6px) ÷ Fsize_doc) * 1em;
-Fsize_part:		((Fsize_doc + 4px) ÷ Fsize_doc) * 1em;
-Fsize_h1:		((Fsize_doc + 3px) ÷ Fsize_doc) * 1em;
-Fsize_h2:		((Fsize_doc + 2px) ÷ Fsize_doc) * 1em;
-Fsize_h3:		((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
-Fsize_pull:		((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
-Fsize_pull_head:	(1em ÷ Fsize_pull) * 1em;
-Fsize_error_head:	((Fsize_doc + 1px) ÷ Fsize_doc) * 1em;
+Fsize_note:		Fsize_doc - 2px;
+Fsize_pre:		Fsize_doc - 2px;
+Fsize_caption:		Fsize_doc - 1px;
+Fsize_small:		Fsize_doc - 1px;
+Fsize_large:		Fsize_doc + 1px;
+Fsize_title1:		Fsize_doc + 8px;
+Fsize_title2:		Fsize_doc + 6px;
+Fsize_part:		Fsize_doc + 4px;
+Fsize_h1:		Fsize_doc + 3px;
+Fsize_h2:		Fsize_doc + 2px;
+Fsize_h3:		Fsize_doc + 1px;
+Fsize_pull:		Fsize_doc + 1px;
+Fsize_pull_head:	Fsize_doc + 0px;
+Fsize_error_head:	Fsize_doc + 1px;
 
-Line_height_doc: 1.5em;
+Line_height_doc: 1.6;
 
 
 /********************************************************************************/
@@ -98,7 +98,7 @@ Vmargin_par:		0.5em;
 Vmargin_textual:	1em;
 Vmargin_hybrid:		1.5em;
 Vmargin_boxish:		2em;
-Vmargin_wrapper:	2.5em;
+Vmargin_wrapper:	2em;
 
 Hmargin_inset:		1em;
 Hmargin_inline_small:	0.25em;

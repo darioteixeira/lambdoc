@@ -52,11 +52,12 @@ Hmargin_indent: 1em;
 
 .doc_par
 	{
+	margin: Vmargin_par 0;
 	text-align: justify;
 	}
 
-.doc_par:not(:first-child)	{margin-top: Vmargin_par;}
-.doc_par:not(:last-child)	{margin-bottom: Vmargin_par;}
+.doc_par:first-child {margin-top: 0;}
+.doc_par:last-child {margin-bottom: 0;}
 
 .doc_class_initial:first-letter
 	{
@@ -82,28 +83,28 @@ Hmargin_dt:	-1 * (Hmargin_list - 0.5em);
 
 .doc_itemize,
 .doc_enumerate,
-.doc_description {margin: 0 0 0 Hmargin_list;}
+.doc_description {margin: Vmargin_textual 0 Vmargin_textual Hmargin_list;}
 
-.doc_itemize	{list-style: disc outside;}
-.doc_enumerate	{list-style: decimal outside;}
+.doc_itemize:first-child,
+.doc_enumerate:first-child,
+.doc_description:first-child {margin-top: 0;}
+
+.doc_itemize:last-child,
+.doc_enumerate:last-child,
+.doc_description:last-child {margin-bottom: 0;}
 
 .doc_itemize > .doc_item,
 .doc_enumerate > .doc_item	{margin: Vmargin_par 0;}
-.doc_description > dt.doc_item	{margin: Vmargin_par 0 Vmargin_short Hmargin_dt;}
 
 .doc_description > dt.doc_item
 	{
+	margin: Vmargin_par 0 Vmargin_short Hmargin_dt;
 	font-weight: bold;
 	color: Colour_fancy;
 	}
 
-.doc_itemize:not(:first-child),
-.doc_enumerate:not(:first-child),
-.doc_description:not(:first-child) {margin-top: Vmargin_textual;}
-
-.doc_itemize:not(:last-child),
-.doc_enumerate:not(:last-child),
-.doc_description:not(:last-child) {margin-bottom: Vmargin_textual;}
+.doc_itemize	 {list-style: disc outside;}
+.doc_enumerate	 {list-style: decimal outside;}
 
 .doc_class_none		{list-style-type: none;}
 .doc_class_disc		{list-style-type: disc;}
@@ -121,6 +122,14 @@ Hmargin_dt:	-1 * (Hmargin_list - 0.5em);
 /********************************************************************************/
 
 Hmargin_answer: 1.5em;
+
+.doc_qanda
+	{
+	margin: Vmargin_textual 0;
+	}
+
+.doc_qanda:first-child {margin-top: 0;}
+.doc_qanda:last-child {margin-bottom: 0;}
 
 dt.doc_question,
 dt.doc_answer
@@ -155,9 +164,6 @@ dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual Hmargin_answer;}
 
 .doc_question {color: Colour_fancy;}
 
-.doc_qanda:not(:first-child) {margin-top: Vmargin_textual;}
-.doc_qanda:not(:last-child) {margin-bottom: Vmargin_textual;}
-
 
 /********************************************************************************/
 /* Verse environments.								*/
@@ -166,9 +172,12 @@ dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual Hmargin_answer;}
 .doc_verse
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_hybrid Hmargin_inset;
 	text-align: center;
 	}
+
+.doc_verse:first-child {margin-top: 0;}
+.doc_verse:last-child {margin-bottom: 0;}
 
 .doc_verse_aux
 	{
@@ -181,9 +190,6 @@ dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual Hmargin_answer;}
 	text-indent: 0 !important;
 	}
 
-.doc_verse:not(:first-child) {margin-top: Vmargin_hybrid;}
-.doc_verse:not(:last-child) {margin-bottom: Vmargin_hybrid;}
-
 
 /********************************************************************************/
 /* Quote environments.								*/
@@ -192,14 +198,14 @@ dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual Hmargin_answer;}
 .doc_quote
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_hybrid Hmargin_inset;
 	padding-left: 0.75em;
 	border-left: 2px dotted Colour_fancy;
 	color: #444;
 	}
 
-.doc_quote:not(:first-child) {margin-top: Vmargin_hybrid;}
-.doc_quote:not(:last-child) {margin-bottom: Vmargin_hybrid;}
+.doc_quote:first-child {margin-top: 0;}
+.doc_quote:last-child {margin-bottom: 0;}
 
 
 /********************************************************************************/
@@ -209,14 +215,12 @@ dd.doc_answer {margin: Vmargin_par 0 Vmargin_textual Hmargin_answer;}
 .doc_mathblk
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_textual Hmargin_inset;
 	text-align: center;
 	}
 
-.doc_mathblk:not(:first-child) {margin-top: Vmargin_textual;}
-.doc_mathblk:not(:last-child) {margin-bottom: Vmargin_textual;}
-
-.doc_wrapper > .doc_mathblk {margin: 0;}
+.doc_mathblk:first-child {margin-top: 0;}
+.doc_mathblk:last-child {margin-bottom: 0;}
 
 
 /********************************************************************************/
@@ -230,12 +234,15 @@ Border_src_consnums:    1px solid #ffb720;
 .doc_src_main
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_hybrid Hmargin_inset;		/* Default Vmargin is equal to "plain" */
 	font-size: Fsize_pre;
 	font-family: Family_mono;
 	line-height: Line_height_src;
 	overflow: auto;
 	}
+
+.doc_src_main:first-child {margin-top: 0;}
+.doc_src_main:last-child {margin-bottom: 0;}
 
 .doc_src_nums
 	{
@@ -261,7 +268,7 @@ Border_src_consnums:    1px solid #ffb720;
 
 .doc_src_dummy
 	{
-	display: block;
+	display: none;
 	height: 0;
 	padding: 0.3em 0;
 	}
@@ -306,45 +313,41 @@ Border_src_consnums:    1px solid #ffb720;
 .doc_src_Atom	{color: #ff9f00;}
 .doc_src_Meta	{color: #000000; font-style: italic;}
 
-.doc_wrapper > .doc_src_main {margin: 0;}
-
 .doc_class_boxed,
 .doc_class_zebra
 	{
+	margin: Vmargin_boxish Hmargin_inset;
 	border: Border_box;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
+	box-shadow: Shadow_box;
+	border-radius: Radius_box;
 	background: #f8f9fc;
 	}
 
 .doc_class_console
 	{
+	margin: Vmargin_boxish Hmargin_inset;
 	border: Border_src_console;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
+	box-shadow: Shadow_box;
+	border-radius: Radius_box;
 	background: #000;
 	color: #ffe790;
 	}
 
-.doc_class_console > .doc_src_nums {border-right: Border_src_consnums;}
-.doc_class_plain > .doc_src_nums > .doc_src_dummy {display: none;}
-.doc_class_plain > .doc_src_code > .doc_src_dummy {display: none;}
+.doc_class_console .doc_src_nums {border-right: Border_src_consnums;}
+
+.doc_class_boxed .doc_src_dummy,
+.doc_class_console .doc_src_dummy,
+.doc_class_zebra .doc_src_dummy
+	{
+	display: block;
+	}
 
 .doc_class_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: #f3f6fc;}
 .doc_class_zebra > .doc_src_code > .doc_src_line:nth-child(even) {background: #f9f9f9;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topright: Radius_box;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {-moz-border-radius-topleft: Radius_box;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomright: Radius_box;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {-moz-border-radius-bottomleft: Radius_box;}
-
-.doc_class_plain:not(:first-child) {margin-top: Vmargin_hybrid;}
-.doc_class_plain:not(:last-child) {margin-bottom: Vmargin_hybrid;}
-.doc_class_boxed:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_class_boxed:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_class_zebra:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_class_zebra:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_class_console:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_class_console:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {border-radius-topright: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {border-radius-topleft: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {border-radius-bottomright: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {border-radius-bottomleft: Radius_box;}
 
 
 /********************************************************************************/
@@ -363,10 +366,13 @@ Padding_vtabout:	0.4em;
 .doc_tab
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	text-align: center;
 	line-height: 0;
 	}
+
+.doc_tab:first-child {margin-top: 0;}
+.doc_tab:last-child {margin-bottom: 0;}
 
 .doc_tab_aux
 	{
@@ -415,10 +421,6 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 .doc_oline {border-top: Border_hline;}
 .doc_uline {border-bottom: Border_hline;}
 
-.doc_tab:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_tab:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_wrapper > .doc_tab {margin: 0;}
-
 
 /********************************************************************************/
 /* Verbatim environments.							*/
@@ -427,10 +429,13 @@ tbody.doc_tgroup + tbody.doc_tgroup {border-top: Border_tabular_body;}
 .doc_pre
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	text-align: center;
 	line-height: 0;
 	}
+
+.doc_pre:first-child {margin-top: 0;}
+.doc_pre:last-child {margin-bottom: 0;}
 
 div.doc_pre_aux {display: inline-block;}
 
@@ -455,10 +460,6 @@ pre.doc_pre_aux
 .doc_class_mult8 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 19.2em;}
 .doc_class_mult9 > div.doc_pre_aux > pre.doc_pre_aux {font-size: 27.2em;}
 
-.doc_pre:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_pre:not(:last-child) {margin-bottom: Vmargin_boxish;}
-.doc_wrapper > .doc_pre {margin: 0;}
-
 
 /********************************************************************************/
 /* Picture environments.							*/
@@ -467,19 +468,18 @@ pre.doc_pre_aux
 .doc_pic
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	text-align: center;
 	line-height: 0;
 	}
 
-.doc_pic_lnk			{display: inline-block; width: 100%;}
-.doc_pic_lnk > img		{display: inline; max-width: 100%; border: none;}
+.doc_pic:first-child {margin-top: 0;}
+.doc_pic:last-child {margin-bottom: 0;}
 
-.doc_pic:not(:first-child)	{margin-top: Vmargin_boxish;}
-.doc_pic:not(:last-child)	{margin-bottom: Vmargin_boxish;}
-.doc_wrapper > .doc_pic		{margin: 0;}
+.doc_pic_lnk		{display: inline-block; width: 100%;}
+.doc_pic_lnk > img	{display: inline; max-width: 100%; border: none;}
 
-.doc_class_frame > .doc_pic_lnk > img	{-moz-box-shadow: Shadow_box;}
+.doc_class_frame > .doc_pic_lnk > img	{box-shadow: Shadow_box;}
 
 
 /********************************************************************************/
@@ -489,18 +489,16 @@ pre.doc_pre_aux
 .doc_subpage
 	{
 	clear: both;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	padding: Padding_box;
 	border: Border_box;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
+	box-shadow: Shadow_box;
+	border-radius: Radius_box;
 	background: #f9f9f9;
 	}
 
-.doc_subpage:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_subpage:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper > .doc_subpage {margin: 0;}
+.doc_subpage:first-child {margin-top: 0;}
+.doc_subpage:last-child {margin-bottom: 0;}
 
 
 /********************************************************************************/
@@ -511,9 +509,12 @@ Border_pull: 2px dotted Colour_fancy;
 
 .doc_pull
 	{
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	text-align: center;
 	}
+
+.doc_pull:first-child {margin-top: 0;}
+.doc_pull:last-child {margin-bottom: 0;}
 
 .doc_pull_aux
 	{
@@ -549,9 +550,6 @@ Border_pull: 2px dotted Colour_fancy;
 	color: Colour_fancy;
 	}
 
-.doc_pull:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_pull:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
 
 /********************************************************************************/
 /* Boxout environments.								*/
@@ -559,18 +557,21 @@ Border_pull: 2px dotted Colour_fancy;
 
 .doc_boxout
 	{
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	border: Border_box;
-	-moz-box-shadow: Shadow_box;
-	-moz-border-radius: Radius_box;
+	box-shadow: Shadow_box;
+	border-radius: Radius_box;
 	background: #fffcf0;
 	}
+
+.doc_boxout:first-child {margin-top: 0;}
+.doc_boxout:last-child {margin-bottom: 0;}
 
 .doc_boxout_head
 	{
 	padding: 0.3em;
-	-moz-border-radius-topleft: Radius_box;
-	-moz-border-radius-topright: Radius_box;
+	border-radius-topleft: Radius_box;
+	border-radius-topright: Radius_box;
 	text-align: center;
 	font-family: Family_heading;
 	font-size: Fsize_large;
@@ -585,18 +586,17 @@ Border_pull: 2px dotted Colour_fancy;
 	}
 
 
-.doc_boxout:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_boxout:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-
 /********************************************************************************/
 /* Theorem environments.							*/
 /********************************************************************************/
 
 .doc_theorem
 	{
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_textual Hmargin_inset;
 	}
+
+.doc_theorem:first-child {margin-top: 0;}
+.doc_theorem:last-child {margin-bottom: 0;}
 
 .doc_theorem_head
 	{
@@ -608,28 +608,43 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_thmname {font-weight: bold; color: Colour_fancy;}
 .doc_thmextra {margin-left: Hmargin_inline_large;}
 
-.doc_theorem:not(:first-child) {margin-top: Vmargin_textual;}
-.doc_theorem:not(:last-child) {margin-bottom: Vmargin_textual;}
-
 
 /********************************************************************************/
 /* CSS common to floater blocks.						*/
 /********************************************************************************/
 
-.doc_class_center {clear: both; margin: 0 Hmargin_inset;}
+.doc_class_center {clear: both;}
 .doc_class_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
 .doc_class_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
 
-.doc_class_center:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_class_center:not(:last-child) {margin-bottom: Vmargin_boxish;}
-
-.doc_wrapper.doc_class_center:not(:first-child) {margin-top: Vmargin_wrapper;}
-.doc_wrapper.doc_class_center:not(:last-child) {margin-bottom: Vmargin_wrapper;}
-
 
 /********************************************************************************/
-/* CSS for wrapper captions.							*/
+/* CSS for wrappers.								*/
 /********************************************************************************/
+
+.doc_wrapper
+	{
+	clear: both;
+	float: none;
+	margin: Vmargin_wrapper Hmargin_inset;
+	}
+
+.doc_wrapper:first-child {margin-top: 0;}
+.doc_wrapper:last-child {margin-bottom: 0;}
+
+.doc_wrapper.doc_class_right {clear: right; float: right; margin: 0.5em 0 1.5em 2.5em; max-width: 45%;}
+.doc_wrapper.doc_class_left {clear: left; float: left; margin: 0.5em 2.5em 1.5em 0; max-width: 45%;}
+
+.doc_wrapper > .doc_mathblk,
+.doc_wrapper > .doc_src,
+.doc_wrapper > .doc_tab,
+.doc_wrapper > .doc_pre,
+.doc_wrapper > .doc_pic,
+.doc_wrapper > .doc_subpage
+	{
+	float: none;
+	margin: 0;
+	}
 
 .doc_caption_long
 	{
@@ -744,11 +759,11 @@ h2.doc_title + h2.doc_title {margin-top: -1em;}
 .doc_rule
 	{
 	border: 1px dotted Colour_fancy;
-	margin: 0 Hmargin_inset;
+	margin: Vmargin_boxish Hmargin_inset;
 	}
 
-.doc_rule:not(:first-child) {margin-top: Vmargin_boxish;}
-.doc_rule:not(:last-child) {margin-bottom: Vmargin_boxish;}
+.doc_rule:first-child {margin-top: 0;}
+.doc_rule:last-child {margin-bottom: 0;}
 
 
 /********************************************************************************/
