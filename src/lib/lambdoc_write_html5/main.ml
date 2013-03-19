@@ -135,6 +135,9 @@ let write_valid
 	let make_sectional level label orderlst attr content =
 		make_heading (cons_of_level level) label orderlst !!"sec" attr content in
 
+	let make_floatable forbidden =
+		if forbidden then [] else [!!"floatable"] in
+
 
 	(********************************************************************************)
 	(**	{2 Converters}								*)
@@ -419,11 +422,11 @@ let write_valid
 	(************************************************************************)
 
 	let rec write_frag frag =
-		let (hd, tl) = nemap write_block frag in
+		let (hd, tl) = nemap (write_block ~wrapped:false) frag in
 		List.flatten (hd :: tl)
 
 
-	and write_block {block; attr} =
+	and write_block ?(wrapped = false) {block; attr} =
 		let attr = List.map (!!!) attr in
 		match block with
 
@@ -487,20 +490,20 @@ let write_valid
 
 		| Verbatim txt ->
 			let aux = Html5.F.div ~a:[a_class [!!"pre_aux"]] [Html5.F.pre ~a:[a_class [!!"pre_aux"]] [Html5.F.pcdata txt]] in
-			[Html5.F.div ~a:[a_class (!!"pre" :: attr)] [aux]]
+			[Html5.F.div ~a:[a_class (!!"pre" :: attr @ make_floatable wrapped)] [aux]]
 
 		| Picture (width, alias, alt) ->
 			let wattr = match width with Some w -> [a_width w] | None -> [] in
 			let uri = image_lookup alias in
 			let img = Raw.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [Html5.F.img ~a:(a_class [!!"pic"] :: wattr) ~src:uri ~alt ()] in
-			[Html5.F.div ~a:[a_class (!!"pic" :: attr)] [img]]
+			[Html5.F.div ~a:[a_class (!!"pic" :: attr @ make_floatable wrapped)] [img]]
 
 		| Bookpic (isbn, maybe_rating, cover) ->
 			let book = Hashtbl.find books isbn in
 			let alt = "ISBN " ^ isbn in
 			let book_uri = book_lookup isbn in
 			let cover_uri = cover_lookup isbn cover in
-			[Html5.F.div ~a:[a_class (!!"bookpic" :: attr)]
+			[Html5.F.div ~a:[a_class (!!"bookpic" :: attr @ make_floatable wrapped)]
 				[
 				Raw.a ~a:[a_href book_uri; a_class [!!"pic_lnk"]] [Html5.F.img ~a:[a_class [!!"pic"]] ~src:cover_uri ~alt ()];
 				p [i [pcdata book.title]];
@@ -514,7 +517,7 @@ let write_valid
 				| Some seq -> [Html5.F.h1 ~a:[a_class [!!"pull_head"]] ([Html5.F.entity "#x2014"; Html5.F.entity "#x2002"] @ (write_seq seq))]
 				| None	   -> [] in
 			let aux = Html5.F.div ~a:[a_class [!!"pull_aux"]] ((write_frag frag) @ head) in
-			[Html5.F.div ~a:[a_class (!!"pull" :: attr)] [aux]]
+			[Html5.F.div ~a:[a_class (!!"pull" :: attr @ make_floatable false)] [aux]]
 
 		| Boxout (data, maybe_seq, frag) ->
 			let formatter = function
@@ -530,7 +533,7 @@ let write_valid
 					seq2
 				| _ ->
 					[] in
-			[write_custom data maybe_seq frag !!"boxout" attr formatter]
+			[write_custom data maybe_seq frag !!"boxout" (attr @ make_floatable false) formatter]
 
 		| Theorem (data, maybe_seq, frag) ->
 			let formatter triple =
@@ -627,7 +630,7 @@ let write_valid
 
 
 	and write_wrapper wrapper blk classname attr name =
-		let wrapper_content = match write_block blk with
+		let wrapper_content = match write_block ~wrapped:true blk with
 			| [b] -> b
 			| _   -> failwith "write_wrapper" in
 		let (length, label, caption_content) = match wrapper with
@@ -640,7 +643,7 @@ let write_valid
 			| Wrapper.Unordered (label, seq) ->
 				("long", label, [Html5.F.p ~a:[a_class [!!"caption_body"]] (write_seq seq)]) in
 		let caption = Html5.F.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [Html5.F.div ~a:[a_class [!!"caption_aux"]] caption_content] in
-		Html5.F.div ~a:[a_id (make_label label); a_class (!!"wrapper" :: classname :: attr)] [wrapper_content; caption]
+		Html5.F.div ~a:[a_id (make_label label); a_class (!!"wrapper" :: !!"floatable" :: classname :: attr)] [wrapper_content; caption]
 
 
 	(************************************************************************)
