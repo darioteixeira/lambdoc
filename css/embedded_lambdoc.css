@@ -1014,12 +1014,12 @@ pre.doc_pre_aux
 	margin-left: 0.5em;
 	}
 
-.doc_class_center
+.doc_floatable.doc_class_center
 	{
 	clear: both;
 	}
 
-.doc_class_right
+.doc_floatable.doc_class_right
 	{
 	clear: right;
 	margin: 0.5em 0 1.5em 2.5em;
@@ -1027,7 +1027,7 @@ pre.doc_pre_aux
 	max-width: 45%;
 	}
 
-.doc_class_left
+.doc_floatable.doc_class_left
 	{
 	clear: left;
 	margin: 0.5em 2.5em 1.5em 0;
@@ -1052,25 +1052,8 @@ pre.doc_pre_aux
 	margin-bottom: 0;
 	}
 
-.doc_wrapper.doc_class_right
-	{
-	clear: right;
-	float: right;
-	margin: 0.5em 0 1.5em 2.5em;
-	max-width: 45%;
-	}
-
-.doc_wrapper.doc_class_left
-	{
-	clear: left;
-	float: left;
-	margin: 0.5em 2.5em 1.5em 0;
-	max-width: 45%;
-	}
-
 .doc_wrapper > .doc_mathblk, .doc_wrapper > .doc_src, .doc_wrapper > .doc_tab, .doc_wrapper > .doc_pre, .doc_wrapper > .doc_pic, .doc_wrapper > .doc_subpage
 	{
-	float: none;
 	margin: 0;
 	}
 

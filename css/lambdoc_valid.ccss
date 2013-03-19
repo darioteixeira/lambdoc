@@ -613,9 +613,9 @@ Border_pull: 2px dotted Colour_fancy;
 /* CSS common to floater blocks.						*/
 /********************************************************************************/
 
-.doc_class_center {clear: both;}
-.doc_class_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
-.doc_class_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
+.doc_floatable.doc_class_center {clear: both;}
+.doc_floatable.doc_class_right {clear: right; margin: 0.5em 0 1.5em 2.5em; float: right; max-width: 45%;}
+.doc_floatable.doc_class_left {clear: left; margin: 0.5em 2.5em 1.5em 0; float: left; max-width: 45%;}
 
 
 /********************************************************************************/
@@ -632,9 +632,6 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_wrapper:first-child {margin-top: 0;}
 .doc_wrapper:last-child {margin-bottom: 0;}
 
-.doc_wrapper.doc_class_right {clear: right; float: right; margin: 0.5em 0 1.5em 2.5em; max-width: 45%;}
-.doc_wrapper.doc_class_left {clear: left; float: left; margin: 0.5em 2.5em 1.5em 0; max-width: 45%;}
-
 .doc_wrapper > .doc_mathblk,
 .doc_wrapper > .doc_src,
 .doc_wrapper > .doc_tab,
@@ -642,7 +639,6 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_wrapper > .doc_pic,
 .doc_wrapper > .doc_subpage
 	{
-	float: none;
 	margin: 0;
 	}
 
