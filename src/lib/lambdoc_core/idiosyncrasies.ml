@@ -27,6 +27,7 @@ type t =
 	feature_default: action_t;
 	classname_ruleset: classname_ruleset_t;
 	classname_default: action_t;
+	max_macro_depth: int option;
 	}
 
 
@@ -34,8 +35,8 @@ type t =
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let make ?(feature_ruleset = []) ?(feature_default = `Accept) ?(classname_ruleset = []) ?(classname_default = `Accept) () =
-	{feature_ruleset; feature_default; classname_ruleset; classname_default}
+let make ?(feature_ruleset = []) ?(feature_default = `Accept) ?(classname_ruleset = []) ?(classname_default = `Accept) ?(max_macro_depth = None) () =
+	{feature_ruleset; feature_default; classname_ruleset; classname_default; max_macro_depth}
 
 let default = make ()
 

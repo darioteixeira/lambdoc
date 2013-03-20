@@ -149,6 +149,9 @@ let explain_error = function
 	| Error.Invalid_macro_call (name, found, expected) ->
 		sprintf "Invalid macro invocation.  Macro '#%s#' expects %d argument(s) but found %d instead." (escape name) expected found
 
+	| Error.Invalid_macro_depth (name, max) ->
+		sprintf "Invocation of macro '#%s#' would cause depth of macro calls to go above maximum depth of %d." (escape name) max
+
 	| Error.Invalid_macro (tag, name) ->
 		sprintf "Invalid macro name '#%s#' in %s. %s." (escape name) (explain_tag tag) (explain_ident "A macro")
 

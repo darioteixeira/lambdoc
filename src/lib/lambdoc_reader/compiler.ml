@@ -16,6 +16,7 @@ open Basic
 open Ast
 open Readconv
 open Style
+open Idiosyncrasies
 
 module String = BatString
 module List = BatList
@@ -255,7 +256,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| None	 -> [dummy_inline] in
 
 
-	let rec convert_inline ~depth ~args is_ref inline = match (is_ref, inline) with
+	let rec convert_inline ~context ~args is_ref inline = match (is_ref, inline) with
 
 		| (_, (comm, Ast.Plain ustr)) ->
 			let elem attr _ = [Inline.plain ~attr ustr] in
@@ -284,55 +285,55 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_inline_comm `Feature_glyph comm elem
 
 		| (x, (comm, Ast.Bold astseq)) ->
-			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_bold comm elem
 
 		| (x, (comm, Ast.Emph astseq)) ->
-			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_emph comm elem
 
 		| (x, (comm, Ast.Code astseq)) ->
-			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_code comm elem
 
 		| (x, (comm, Ast.Caps astseq)) ->
-			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_caps comm elem
 
 		| (x, (comm, Ast.Ins astseq)) ->
-			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_ins comm elem
 
 		| (x, (comm, Ast.Del astseq)) ->
-			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_del comm elem
 
 		| (x, (comm, Ast.Sup astseq)) ->
-			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_sup comm elem
 
 		| (x, (comm, Ast.Sub astseq)) ->
-			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_sub comm elem
 
 		| (x, (comm, Ast.Mbox astseq)) ->
-			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_mbox comm elem
 
 		| (x, (comm, Ast.Span astseq)) ->
-			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~depth ~args x astseq)] in
+			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
 			check_inline_comm `Feature_span comm elem
 
 		| (false, (comm, Ast.Link (uri, maybe_astseq))) ->
 			let elem attr _ =
-				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
 				[Inline.link ~attr uri maybe_seq] in
 			check_inline_comm `Feature_link comm elem
 
 		| (false, (comm, Ast.Booklink (isbn, maybe_astseq))) ->
 			let elem attr dict =
 				let rating = Style.consume1 dict (Rating_hnd, None) in
-				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
 				add_isbn comm `Feature_booklink isbn;
 				[Inline.booklink ~attr isbn rating maybe_seq] in
 			check_inline_comm `Feature_booklink comm elem
@@ -377,7 +378,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
 				[Inline.dref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_dref comm elem
 
@@ -391,7 +392,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				let maybe_seq = maybe (convert_seq_aux ~comm ~depth ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
 				[Inline.sref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_sref comm elem
 
@@ -401,7 +402,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _ -> `Valid_target
 					| _			  -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				[Inline.mref ~attr pointer (convert_seq_aux ~comm ~depth ~args true astseq)] in
+				[Inline.mref ~attr pointer (convert_seq_aux ~comm ~context ~args true astseq)] in
 			check_inline_comm `Feature_mref comm elem
 
 		| (_, (comm, Ast.Macroarg raw_num)) ->
@@ -431,9 +432,21 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						let msg = Error.Invalid_macro_call (name, List.length arglist, macro_nargs) in
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
 						[]
-					else
-						let new_arglist = List.map (convert_inline_list ~comm ~depth:(depth+1) ~args x) arglist in
-						convert_inline_list ~comm ~depth:(depth+1) ~args:(Some new_arglist) x macro_astseq
+					else 
+						let (context_comm, depth) = context in
+						match idiosyncrasies.max_macro_depth with
+							| None ->
+								let context = (context_comm, depth+1) in
+								let new_arglist = List.map (convert_inline_list ~comm ~context ~args x) arglist in
+								convert_inline_list ~comm ~context ~args:(Some new_arglist) x macro_astseq
+							| Some num when depth < num ->
+								let context = (context_comm, depth+1) in
+								let new_arglist = List.map (convert_inline_list ~comm ~context ~args x) arglist in
+								convert_inline_list ~comm ~context ~args:(Some new_arglist) x macro_astseq
+							| Some num ->
+								let msg = Error.Invalid_macro_depth (name, num) in
+								BatDynArray.add errors (Some comm.comm_linenum, msg);
+								[]
 				with
 					| Not_found ->
 						let msg = Error.Undefined_macro (comm.comm_tag, name) in
@@ -446,7 +459,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[]
 
-	and convert_inline_list ~comm ~depth ~args is_ref astseq =
+	and convert_inline_list ~comm ~context ~args is_ref astseq =
 		let coalesce_plain seq =
 			let rec coalesce_plain_aux accum = function
 				| {Inline.inline = Inline.Plain txt1; attr} :: {Inline.inline = Inline.Plain txt2; _} :: tl ->
@@ -457,7 +470,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				| [] ->
 					accum in
 			List.rev (coalesce_plain_aux [] seq) in
-		let seq = flatten_map (convert_inline ~depth ~args is_ref) astseq in
+		let seq = flatten_map (convert_inline ~context ~args is_ref) astseq in
 		let new_seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
 		match new_seq with
 			| [] ->
@@ -467,12 +480,12 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| xs ->
 				xs
 
-	and convert_seq_aux ~comm ~depth ~args is_ref astseq =
-		let seq = convert_inline_list ~comm ~depth ~args is_ref astseq in
+	and convert_seq_aux ~comm ~context ~args is_ref astseq =
+		let seq = convert_inline_list ~comm ~context ~args is_ref astseq in
 		(List.hd seq, List.tl seq) in
 
 	let convert_seq ~comm ?args seq =
-		convert_seq_aux ~comm ~depth:0 ?args false seq in
+		convert_seq_aux ~comm ~context:(comm, 0) ?args false seq in
 
 
 	(************************************************************************)
@@ -1139,15 +1152,23 @@ let collate_errors =
 (**	Process and (optionally) sort the errors by line number.
 *)
 let process_errors ~sort source errors =
-	let compare (a, _) (b, _) =
-		let ord_a = match a with Some x -> x.Error.error_line_number | None -> 0
-		and ord_b = match b with Some x -> x.Error.error_line_number | None -> 0 in
-		Pervasives.compare ord_a ord_b in
-	let collated = collate_errors source errors in
-	let sorted = if sort then List.stable_sort compare collated else collated in
-	match sorted with
-		| []	   -> failwith "Compiler.process_errors"
+	let compare (anum, amsg) (bnum, bmsg) = match (anum, bnum) with
+		| (Some anum, Some bnum) ->
+			let res = BatInt.compare anum bnum in
+			if res = 0
+			then Pervasives.compare amsg bmsg
+			else res
+		| (Some _, None) ->
+			-1
+		| (None, Some _) ->
+			1
+		| (None, None) ->
+			Pervasives.compare amsg bmsg in
+	let sorted = if sort then List.sort_unique compare errors else errors in
+	let collated = collate_errors source sorted in
+	match collated with
 		| hd :: tl -> (hd, tl)
+		| []	   -> assert false
 
 
 (**	Compile a document AST into a manuscript.

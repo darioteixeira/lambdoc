@@ -92,6 +92,7 @@ type error_msg_t =
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int
 	| Invalid_macro_call of Pointer.t * int * int
+	| Invalid_macro_depth of Pointer.t * int
 
 	| Invalid_macro of Ident.t option * Pointer.t
 	| Duplicate_macro of Ident.t option * Pointer.t

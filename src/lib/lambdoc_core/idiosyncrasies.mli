@@ -27,6 +27,7 @@ type t =
 	feature_default: action_t;
 	classname_ruleset: classname_ruleset_t;
 	classname_default: action_t;
+	max_macro_depth: int option;
 	}
 
 
@@ -41,6 +42,7 @@ val make:
 	?feature_default:action_t ->
 	?classname_ruleset:classname_ruleset_t ->
 	?classname_default:action_t ->
+	?max_macro_depth:int option ->
 	unit ->
 	t
 
