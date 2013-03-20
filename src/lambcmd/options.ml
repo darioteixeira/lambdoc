@@ -18,6 +18,7 @@ type t =
 	debug: bool;
 	title: string;
 	language: Language.t;
+	max_macro_depth: int option;
 
 	amazon_locale: Bookaml_amazon.Locale.t option;
 	amazon_associate_tag: string option;
@@ -41,6 +42,7 @@ type t =
 let debug_opt = StdOpt.store_true ()
 let title_opt = StdOpt.str_option ~default:"Lambdoc document" ()
 let language_opt = Opt.value_option "LANGUAGE" (Some Language.default) Language.of_string (fun exn str -> "Unknown language '" ^ str ^ "'")
+let max_macro_depth_opt = StdOpt.int_option ()
 
 let amazon_locale_opt = Opt.value_option "LOCALE" None Bookaml_amazon.Locale.of_string (fun exn str -> "Unknown locale '" ^ str ^ "'")
 let amazon_associate_tag_opt = StdOpt.str_option ()
@@ -64,6 +66,7 @@ let () =
 	OptParser.add options ~group:general ~short_name:'v' ~long_name:"debug" ~help:"Show debug information" debug_opt;
 	OptParser.add options ~group:general ~short_name:'e' ~long_name:"title" ~help:"Document title" title_opt;
 	OptParser.add options ~group:general ~short_name:'l' ~long_name:"lang" ~help:"Language for I18N of document elements (either 'en', 'fr', or 'pt'; assume 'en' if not specified)" language_opt;
+	OptParser.add options ~group:general ~short_name:'d' ~long_name:"max-depth" ~help:"Maximum depth for macro calls" max_macro_depth_opt;
 
 	OptParser.add options ~group:amazon ~long_name:"amazon-locale" ~help:"Amazon Web Services locale" amazon_locale_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-associate-tag" ~help:"Amazon Web Services associate tag" amazon_associate_tag_opt;
@@ -93,6 +96,7 @@ let parse () = match OptParser.parse_argv options with
 			debug = Opt.get debug_opt;
 			title = Opt.get title_opt;
 			language = Opt.get language_opt;
+			max_macro_depth = Opt.opt max_macro_depth_opt;
 
 			amazon_locale = Opt.opt amazon_locale_opt;
 			amazon_associate_tag = Opt.opt amazon_associate_tag_opt;

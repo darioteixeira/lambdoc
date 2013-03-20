@@ -15,6 +15,7 @@ type t =
 	debug: bool;
 	title: string;
 	language: Language.t;
+	max_macro_depth: int option;
 
 	amazon_locale: Bookaml_amazon.Locale.t option;
 	amazon_associate_tag: string option;

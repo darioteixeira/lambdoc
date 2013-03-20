@@ -56,6 +56,7 @@ let string_of_xhtml the_title xhtml =
 let () =
 	let options = Options.parse () in
 	let input_str = BatPervasives.input_all options.input_chan in
+	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~max_macro_depth:options.max_macro_depth () in
 	let bookmaker = match (options.amazon_locale, options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key) with
 		| (Some locale, Some associate_tag, Some access_key, Some secret_key) ->
 			let credential = Bookaml_amazon.make_credential ~locale ~associate_tag ~access_key ~secret_key in
@@ -63,9 +64,9 @@ let () =
 		| _ ->
 			None in
 	let doc = match options.input_markup with
-		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string ?bookmaker input_str
-		| `Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_from_string ?bookmaker input_str
-		| `Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_from_string ?bookmaker input_str
+		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
+		| `Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
+		| `Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
 		| `Sexp	    -> Lambdoc_core.Ambivalent.deserialize input_str in
 	let output_str = match options.output_markup with
 		| `Sexp  -> Lambdoc_core.Ambivalent.serialize doc
