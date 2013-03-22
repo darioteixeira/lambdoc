@@ -95,9 +95,10 @@ let regexp end_mathtex_inl = "$]"
 let regexp begin_mathml_inl = "<$"
 let regexp end_mathml_inl = "$>"
 
+let regexp lower = ['a'-'z']
 let regexp alpha = ['a'-'z' 'A'-'Z']
 let regexp deci = ['0'-'9']
-let regexp ident = alpha (alpha | deci)*
+let regexp ident = lower (lower | deci | '_')*
 
 let regexp order = '(' [^ ')' '[' ']' '<' '>' '{' '}']* ')'
 let regexp label = '[' [^ ']' '(' ')' '<' '>' '{' '}']* ']'

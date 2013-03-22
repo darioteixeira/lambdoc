@@ -61,8 +61,16 @@ let explain_tag = function
 	| None	   -> "anonymous command"
 
 
+let explain_with_colon what =
+	sprintf "%s must begin with a lowercase Roman letter, and is optionally followed by lowercase Roman letters, digits, or the characters '#:#' (colon), '#-#' (dash), and '#_#' (underscore)" what
+
+
+let explain_without_colon what =
+	sprintf "%s must begin with a lowercase Roman letter, and is optionally followed by lowercase Roman letters, digits, or the characters '#-#' (dash), and '#_#' (underscore)" what
+
+
 let explain_ident what =
-	sprintf "%s must begin with a alphabetic letter, and is optionally followed by letters, digits, or the characters '#.#' (dot), '#:#' (colon), '#-#' (dash), and '#_#' (underscore)" what
+	sprintf "%s must begin with a lowercase Roman letter, and is optionally followed by lowercase Roman letters, digits, or the character '#_#' (underscore)" what
 
 
 let explain_level = function
@@ -89,7 +97,7 @@ let explain_error = function
 		sprintf "Misplaced order parameter for %s: %s." (explain_tag tag) exp_reason
 
 	| Error.Invalid_label (tag, label) ->
-		sprintf "Invalid label '#%s#' in %s. %s." (escape label) (explain_tag tag) (explain_ident "A label")
+		sprintf "Invalid label '#%s#' in %s. %s." (escape label) (explain_tag tag) (explain_with_colon "A label")
 
 	| Error.Invalid_order_format (tag, order) ->
 		sprintf "Unable to interpret the string '#%s#' in %s as an ordering." (escape order) (explain_tag tag)
@@ -110,7 +118,7 @@ let explain_error = function
 		sprintf "In the style parameters of %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
 
 	| Error.Invalid_style_bad_classname (tag, str) ->
-		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a classname." (explain_tag tag) (escape str)
+		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a classname. %s." (explain_tag tag) (escape str) (explain_without_colon "A classname")
 
 	| Error.Invalid_style_bad_keyvalue (tag, str) ->
 		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a key/value pair." (explain_tag tag) (escape str)
@@ -180,7 +188,7 @@ let explain_error = function
 		sprintf "In %s, you provided an empty ordering for %s without a caption.  You must either discard the empty ordering specification or provide a caption." (explain_tag tag) (explain_wrapper kind)
 
 	| Error.Invalid_counter (tag, counter) ->
-		sprintf "Invalid name '#%s#' for counter in %s. %s." (escape counter) (explain_tag tag) (explain_ident "A counter")
+		sprintf "Invalid name '#%s#' for counter in %s. %s." (escape counter) (explain_tag tag) (explain_with_colon "A counter")
 
 	| Error.Mismatched_counter (tag, counter) ->
 		sprintf "The counter '#%s#' requested in %s has been already assigned to a different class of custom environment." (escape counter) (explain_tag tag)

@@ -17,15 +17,26 @@ open Lambdoc_core
 (********************************************************************************)
 
 (********************************************************************************)
-(**	{2 Basic values}							*)
+(**	{2 Entities}								*)
 (********************************************************************************)
 
-module Basic_input:
+module Entity_input:
 sig
-	open Basic
+	val expand: string -> [ `Okay of string * BatUTF8.t | `Error of Error.error_msg_t ]
+end
 
-	val expand_entity: string -> [ `Okay of string * BatUTF8.t | `Error of Error.error_msg_t ]
-	val matches_ident: string -> bool
+
+(********************************************************************************)
+(**	{2 Identifiers}								*)
+(********************************************************************************)
+
+module Identifier_input:
+sig
+	val matches_classname: string -> bool
+	val matches_label: string -> bool
+	val matches_macrodef: string -> bool
+	val matches_customdef: string -> bool
+	val matches_counter: string -> bool
 end
 
 

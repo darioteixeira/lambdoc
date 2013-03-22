@@ -129,7 +129,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		| Some thing ->
 			let new_label = Label.User thing in
 			begin
-				if Basic_input.matches_ident thing
+				if Identifier_input.matches_label thing
 				then
 					if Hashtbl.mem labels new_label
 					then BatDynArray.add errors (Some comm.comm_linenum, (Error.Duplicate_target (comm.comm_tag, thing)))
@@ -184,7 +184,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	(*	Adds a new pointer to the dictionary.
 	*)
 	and add_pointer target_checker comm pointer =
-		if Basic_input.matches_ident pointer
+		if Identifier_input.matches_label pointer
 		then
 			BatDynArray.add pointers (target_checker, comm, pointer)
 		else
@@ -263,7 +263,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_inline_comm `Feature_plain comm elem
 
 		| (_, (comm, Ast.Entity ent)) ->
-			let elem attr _ = match Basic_input.expand_entity ent with
+			let elem attr _ = match Entity_input.expand ent with
 				| `Okay (txt, ustr) -> if expand_entities then [Inline.plain ~attr (ustr :> string)] else [Inline.entity ~attr txt]
 				| `Error msg	    -> BatDynArray.add errors (Some comm.comm_linenum, msg); [] in
 			check_inline_comm `Feature_entity comm elem
@@ -841,7 +841,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, nargs, astseq))) ->
 			let elem attr _ =
-				if not (Basic_input.matches_ident name)
+				if not (Identifier_input.matches_macrodef name)
 				then begin
 					let msg = Error.Invalid_macro (comm.comm_tag, name) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg)
@@ -920,7 +920,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 
 	and convert_customdef comm env kind maybe_caption maybe_counter_name =
-		if not (Basic_input.matches_ident env)
+		if not (Identifier_input.matches_customdef env)
 		then begin
 			let msg = Error.Invalid_custom (comm.comm_tag, env) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg)
@@ -941,7 +941,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				let data = (kind, false, Unnumbered (convert_seq ~comm astseq)) in
 				Hashtbl.add customisations env data
 			| (Some astseq, Some counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
-				if Basic_input.matches_ident counter_name
+				if Identifier_input.matches_counter counter_name
 				then begin
 					let counter = Order_input.make_ordinal_counter () in
 					let data = (kind, false, Numbered (convert_seq ~comm astseq, counter)) in

@@ -106,7 +106,6 @@ let decl_dict =
 
 
 let raws_of_string =
-	let v_rex = Pcre.regexp "^(?<value>[a-z][a-z0-9_]*)$" in
 	let kv_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>.+)$" in
 	fun comm errors ->
 		let conv str =
@@ -123,11 +122,10 @@ let raws_of_string =
 					None
 				end
 			with Not_found ->
-				try
-					let subs = Pcre.exec ~rex:v_rex str in
-					let value = Pcre.get_named_substring v_rex "value" subs in
-					Some (Unnamed value)
-				with Not_found ->
+				if Readconv.Identifier_input.matches_classname str
+				then
+					Some (Unnamed str)
+				else
 					let msg = Error.Invalid_style_bad_classname (comm.comm_tag, str) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
 					None in
