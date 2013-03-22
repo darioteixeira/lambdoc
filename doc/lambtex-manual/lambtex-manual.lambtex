@@ -7,45 +7,35 @@
 \newmacro{forbidden0}{0}{\span<forbidden>{✘\sub{ø}}}
 \newmacro{depends0}{0}{\mref{sec:order}{\forbidden0/\mandatory0}}
 
+\newmacro{idem}{0}{\emph{(id.)}}
+
 
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
-\subtitle{May 2010}
+\subtitle{March 2013}
 
 \toc[sec:toc]
 
 \rule
 
-\p<initial>{\lambtex is a document description language.  It is largely inspired by
-\caps{LaTeX}\cite{bib:latex}, both in its syntax and in the approach taken for the
-description of documents.  In basic terms, the source for a \lambtex document is composed
-of \caps{utf-8} text annotated with special commands that attach a precise semantical
-meaning to elements.  There are commands that format passages in a special manner
-(emphasised, superscript, etc), and commands that declare high-level constructs such
-as section headings, quotation blocks, boxouts, or pictures.  \lambtex was especially
-designed to be used in web applications, and as such it supports fully hyperlinked
-documents.  Moreover, its syntax is simple, consistent, and designed with brevity
-in mind.}
+\p<initial>{\lambtex is a document description language.  It is largely inspired
+by \caps{LaTeX}\cite{bib:latex}, both in its syntax and in the approach taken for
+the description of documents.  In basic terms, the source for a \lambtex document
+is composed of plain \caps{utf-8} text annotated with special commands that attach a
+precise semantical meaning to elements.  There are commands for formating passages in
+a special manner (emphasised, superscript, etc), and commands that declare high-level
+constructs such as section headings, quotation blocks, boxouts, or pictures.  \lambtex
+was especially designed to be used in web applications, and as such it supports fully
+hyperlinked documents.  Moreover, its syntax is simple, consistent, and designed with
+brevity in mind.}
 
-This manual is divided into two main parts plus an appendix.  \sref{part:basic}
-introduces the basic principles of the language; these allow you to describe simple
-documents with formatted text, paragraphs, ordered and unordered lists, tabular
-environments, and other features.  \sref{part:advanced} describes the advanced
-features of the language; these enable documents to have internal links, sectioning,
-a bibliography, notes, etc.  Finally, there is an \mref{part:theappendix}{appendix}
-providing reference information concerning miscelaneous issues which do not fit into
-the main flow of the manual.
-
-Note that there is a good reason behind such a stark demarcation between the
-composition/manuscript classes of features.  In \lambdoc --- the library that provides
-support for \lambtex --- a document that uses both basic and advanced features is
-termed a \emph{manuscript}, and may, for instance, be the main story on a blog post
-or article\cite{bib:lambdoc}.  On the other hand, documents that only use the basic
-features are termed \emph{compositions}, and may be used as comments to the main story.
+This manual is divided into two parts: a \mref{part:tutorial}{\lambtex tutorial} and
+an \mref{part:theappendix}{appendix}.  The tutorial introduces all the principles
+and features of the language, whereas the appendix provides reference information
+concerning miscelaneous issues which do not fit into the main flow of the manual.
 
 
-\part[part:basic]{Essential \lambtex}
-
+\part()[part:tutorial]{\lambtex tutorial}
 
 \section[sec:anatomy]{The anatomy of \lambtex documents}
 
@@ -85,14 +75,14 @@ only for those commands that satisfied at least one of the two following conditi
 \end{ul}
 \end{note}
 
-Besides the (normally mandatory) primary parameters, many simple and environment
-commands accept other classes of parameters, typically optional\see{note:optional}.
-In total there are three of these other classes: order parameters, label parameters, and
-extra parameters.  The first are enclosed by round brackets and are used to override the
-automatic ordering associated with blocks such as sections and equations.  The second
-are enclosed by square brackets and are used for assigning a label to any block that
-may be referenced from somewhere else in the document.  Finally, extra parameters are
-enclosed between angle brackets and are used to customise command specific settings.
+Besides the (normally mandatory) primary parameters, both simple and environment
+commands accept three other kinds of (usually optional\see{note:optional}) parameters:
+order parameters, label parameters, and style parameters.  The first are enclosed by
+round brackets and are used to override the automatic ordering associated with blocks
+such as sections and equations.  The second are enclosed by square brackets and are
+used for assigning a label to any block that may be referenced from somewhere else
+in the document.  Finally, style parameters are enclosed between angle brackets and
+provide the mechanism for customising the appearance of individual document elements.
 For the sake of reference, \sref{tab:parameters} lists all the classes of parameters
 and the characters used for enclosing them.
 
@@ -104,21 +94,10 @@ to environments not normally used in regular documents.  Namely, inside sub-page
 order parameter is mandatory for a number of blocks (see \sref{sec:order} for details).
 \end{note}
 
-In the case of order and label parameters, the attributed value is necessarily singular,
-as it makes no sense to give multiple orderings to the same command nor it is possible
-to assign multiple labels to one command.  In the case of extra parameters, however,
-there are commands for which multiple extra options may be set.  In those cases,
-attributions must be separated by the insertion of a '\code{,}' (comma) between them.
-
-Not all of the optional parameters are available for all commands.  There are in fact
-many commands for which none is applicable.  Moreover, for those commands where one
-or more optional arguments are accepted, they may be specified in any order as long
-as they appear before any of the primary (curly bracketed) parameters.
-
 \begin[tab:parameters]{table}
 {The four classes of parameters that may be given to \lambtex commands.
 Primary parameters are typically mandatory and are enclosed by curly brackets.
-Order, label, and extra parameters are usually optional and are enclosed by
+Order, label, and style parameters are usually optional and are enclosed by
 round, square, and angle brackets, respectively.}
 \begin{tabular}{ccc}
 \head
@@ -127,10 +106,44 @@ round, square, and angle brackets, respectively.}
 \body
 | Order		| \code{(}	| \code{)}	|
 | Label		| \code{[}	| \code{]}	|
-| Extra		| \code{<}	| \code{>}	|
+| Style		| \code{<}	| \code{>}	|
 | Primary	| \code{\{}	| \code{\}}	|
 \end{tabular}
 \end{table}
+
+Style parameters come in two varieties: key-value pairs and classnames.  The former
+variety takes the form '\code{\emph{key}=\emph{value}}', and is available only for
+some commands.  Moreover, what constitutes a valid key-value combination is command
+dependent, and is described in more detail in the section that describes each of
+those commands.  \sref{sec:parameters} also provides a list of all existing key-value
+style parameters.  As for classname parameters, they map to \caps{html} classnames
+in a straightforward way, and are available for every command.  If, for example, you
+were to provide '\code{important}' as the style parameter to a command, this would be
+interpreted as a classname declaration, and translated into the \caps{html} classname
+'\code{doc_class_important}' (the prefix '\code{doc_class_}' is preppended to every
+custom classname declaration to prevent name clashes).  Note that classnames must
+begin with a lowercase Roman letter, and may contain only lowercase Roman letters,
+digits, the character '\code{-}' (dash), or the character '\code{_}' (underscore).
+
+Bear in mind that \lambtex is agnostic on the validity and semantics of each
+command/classname combination.  Nevertheless, \lambdoc --- the library that provides
+\lambtex support for applications --- does have facilities for restricting the set
+of acceptable command/classname combinations.  Therefore, you may find yourself using
+\lambtex in an application that may forbid classname style parameters altogether, or that
+at least severely limits their use.  Note also that because some block customisations
+are so widespread, the default \caps{css} shipped with \lambdoc includes declarations
+for the most common customisations.  These are described in detail in the section that
+describes each command.
+
+In the case of order and label parameters, the attributed value is necessarily singular,
+as it makes no sense to give multiple orderings to the same command nor it is possible
+to assign multiple labels to one command.  In the case of style parameters, however,
+multiple attributions separated by a '\code{,}' (comma) may be given.
+
+Not all of the optional parameters are available for all commands.  There are in fact
+many commands for which only style parameters are applicable.  Moreover, for those
+commands where one or more optional arguments are accepted, they may be specified in
+any order as long as they appear before any of the primary (curly bracketed) parameters.
 
 
 \section[sec:paragraphs]{Paragraph blocks}
@@ -141,7 +154,7 @@ a paragraph via the simple command \code{\\paragraph} or its synonym \code{\\p}.
 Should you choose the simple command, the paragraph contents are to be specified inside
 the mandatory curly brackets.  Consider thus the following \lambtex source fragment:
 
-\begin{source}
+\begin<boxed>{source}
 This is the first example of a paragraph.  Note that
 it is composed of inline text.
 
@@ -176,21 +189,19 @@ simple command, as demonstrated.
 
 Using the command \code{\\paragraph} (or its synonym \code{\\p}) to declare a
 paragraph is usually neither necessary nor recommended.  This method exists for the
-sole reason that it may be desirable to provide the composer with extra parameters
-about the paragraph.  Presently, the extra parameters accepted are \code{initial}
-and \code{indent}.  The former is a boolean which signals whether the first letter of
-the paragraph should be rendered in a special manner.  Its default value is always
-\code{false}, so you must explicitly set it to \code{true} when needed.  The latter
-indicates whether the paragraph should be indented, and is tripartite in value.  The
-values it accepts are \code{auto} (the default), \code{true}, or \code{false}.  In most
-situations the \code{auto} algorithm should be good enough: it indents a paragraph only
-if immediately preceded by another paragraph.  There are however situations where you
-may indeed require an override by explicitly setting the indentation to \code{true}
-or \code{false}.
+sole reason that it may be desirable to provide the composer with style parameters
+for the paragraph. 
 
-At this point we recommend that you consult \sref{sec:extra}, which dives into more
-detail on the subject of extra parameters.  There you can learn of shorthand manners
-of inputting booleans and other values.
+The default \caps{css} shipped with \lambdoc supports three style customisations
+for paragraphs.  The associated classnames are \code{initial}, \code{indent},
+and \code{noindent}.  The first declares that the first letter of the paragraph
+should be rendered as an \link{http://en.wikipedia.org/wiki/Initial}{initial}.
+The second and third indicate whether the default paragraph indentation rules should
+be overriden.  By default, a paragraph is only indented when immediately preceded by
+another paragraph.  By providing the \code{indent} classname as a style parameter,
+you are declaring that the paragraph should always be indented regardless of context.
+Similarly, the \code{noindent} classname indicates that the paragraph should not be
+indented no matter what.
 
 
 \section{Formatting inline text}
@@ -220,25 +231,19 @@ curly brackets.  The parameter is a sequence of inline text.}
 							  (Synonym: \code{\\tt})					|
 | \code{\\caps\{\emph{inline}\}}			| \lambtex supports text in small-caps.				|
 | \code{\\ins\{\emph{inline}\}}				| Sometimes it's \ins{very} handy to insert new text.		|
-| \code{\\del\{\emph{inline}\}}				| You may also fix \del{annoyingly} incorrect passages.		|
+| \code{\\del\{\emph{inline}\}}				| You may also fix \del{annoying} incorrect passages.		|
 | \code{\\sup\{\emph{inline}\}}				| The 1\sup{st} of January has a superscript.			|
 | \code{\\sub\{\emph{inline}\}}				| H\sub{2}O requires a subscript.				|
-| \code{\\mbox\{\emph{inline}\}}			| The inline sequence should not be split across lines.		|
-| \code{\\span\{\emph{inline}\}}			| You may create spans with custom classnames.			|
+| \code{\\mbox\{\emph{inline}\}}			| \mbox{This inline sequence should not be split across lines.}	|
+| \code{\\span\{\emph{inline}\}}			| \span{You may create spans with custom semantics.}		|
 \end{tabular}
 \end{table}
 
 While most commands listed in the table above should have a straightforward application,
 a few clarifying words concerning \code{\\span} are in order.  This command translates
-directly into an \caps{xhtml} \code{span} element; moreover, it accepts a class name
-declaration via the optional extra parameter \code{class}.  In \lambdoc's default
-configuration, this class name is prepended by '\code{doc_span_}' and output as the
-\code{span} element's own class name in the \caps{xhtml} output.  Combined with a
-suitable \caps{css} declaration, this allows the definition of custom formatting for
-certain passages.  Note, however, that the class name has two constraints.  First,
-the allowed character set is limited to lowercase roman letters, digits, and the
-characters '\code{.}' (period), '\code{:}' (colon), '\code{-}' (dash), and '\code{_}'
-(underscore).  Second, the first character must be a letter.
+directly into an \caps{xhtml} \code{span} element, and exists for the sole purpose
+of associating a span of text with a custom semantic meaning beyond those listed in
+\sref{tab:inline}.
 
 
 \section{Special characters}
@@ -266,7 +271,7 @@ sequence.  These characters are '\code{\\}' (backslash), '\code{\{}' (opening cu
 bracket), and '\code{\}}' (closing curly bracket).  The character used for escaping
 is the backslash, which means that displaying an ampersand, for example, is achieved
 with \code{\\\&}.  Another option in this particular case is of course to use the
-\code{amp} \caps{html} entity\see{note:ampersand}.
+\code{\&amp;} \caps{html} entity\see{note:ampersand}.
 
 \begin[note:ampersand]{note}
 Note that in most practical situations you can get away with inputting an ampersand
@@ -329,8 +334,7 @@ raw sequences are delimited by curly brackets.  Therefore, the end of sequence c
 '\code{\}}' is interpreted specially.  Escaping is also possible, and thus the backslash
 character is also special.
 
-\lambtex supports also internal targets and hyperlinks.  These are part of the advanced
-features of the language, however, not being discussed before \sref{sec:intlinks}.
+\lambtex supports also internal targets and hyperlinks.  These are discussed in \sref{sec:intlinks}.
 
 \section{List environments}
 
@@ -347,7 +351,7 @@ itself be composed of several blocks (see \sref{sec:structure} for a detailed de
 concerning the structure of \lambtex documents).  Consider thus the following source:
 
 
-\begin{source}
+\begin<boxed>{source}
 Here is a list of small furry mammals:
 
 \begin{itemize}
@@ -357,11 +361,11 @@ Here is a list of small furry mammals:
 	\item{poodle:} Small dogs kept for company
 	\item{greyhound:} Running dogs
 	\end{description}
-\item Various rodents ordered by abundance:
+\item Various rodents ordered by size:
 	\begin{enumerate}
-	\item Rat
-	\item Hamster
 	\item Capivara
+	\item Rat
+	\item Mouse
 	\end{enumerate}
 \end{itemize}
 \end{source}
@@ -389,27 +393,20 @@ Here is a list of small furry mammals:
 \end{itemize}
 \end{subpage}
 
-For the sake of brevity and for compatibility with \caps{html} standards, you
-may also use the synonyms \code{ol}, \code{ul}, \code{dl}, and \code{\\li}, for
-\code{enumerate}, \code{itemize}, \code{description}, and \code{\\item}, respectively.
-Moreover, the British spelling \code{itemise} may be used for ordered lists.  However,
-the start and end tags must still match: though, for example, \code{ol} is a synonym
-for \code{enumerate}, if you start an ordered list with \code{\\begin\{ol\}} you must
+For the sake of brevity and for compatibility with \caps{html} habits, you may also use
+the synonyms \code{ol}, \code{ul}, \code{dl}, and \code{\\li}, for \code{enumerate},
+\code{itemize}, \code{description}, and \code{\\item}, respectively.  Moreover,
+the British spelling \code{itemise} may be used for ordered lists.  However, the
+start and end tags must still match: though, for example, \code{ol} is a synonym for
+\code{enumerate}, if you start an ordered list with \code{\\begin\{ol\}} you must
 terminate it with \code{\\end\{ol\}}.
 
-It is possible to customise the bullet used in unordered lists or the numbering system
-used in ordered lists.  To do so you need to pass an extra parameter to either the
-\code{\\begin\{itemize\}} or \code{\\begin\{enumerate\}} commands.  Remember that extra
-parameters are enclosed between angle brackets, and are to be placed before a command's
-opening curly brackets (check \sref{sec:extra} for a more thorough description of
-extra parameters).  \mbox{Tables \ref{tab:itemize} and \ref{tab:enumerate}} list the
-available options for the itemize and enumerate environments, respectively.
+The default \caps{css} shipped with \lambtex allows for the customisation of
+the bullet used in unordered lists or the numbering system used in ordered lists.
+To do so you need to pass a style parameter to either the \code{\\begin\{itemize\}}
+or \code{\\begin\{enumerate\}} commands.  Below is the list of classnames available
+out-of-the-box for itemize environments:
 
-
-\begin[tab:itemize]{table}
-{Available extra parameters for the \code{itemize} command.  These allow you
-to change the bullet marking each list item.  For completeness, each of the
-values above should be prefixed by \code{bul=}, though the prefix is optional.}
 \begin{tabular}{rl}
 \head
 | Value			| Type of bullet		|
@@ -419,44 +416,38 @@ values above should be prefixed by \code{bul=}, though the prefix is optional.}
 | \code{square}		| A square.			|
 | \code{none}		| Ommit the bullet altogether.	|
 \end{tabular}
-\end{table}
 
+And the corresponding list for itemize environments:
 
-\begin[tab:enumerate]{table}
-{Available extra parameters for the \code{enumerate} command.  These allow you
-to change the numbering scheme ordering each list item.  For completeness, each
-of the values above should be prefixed by \code{num=}, though the prefix is optional.}
 \begin{tabular}{rl}
 \head
-| Value					| Type of numbering				|
+| Value			| Type of numbering				|
 \body
-| \code{decimal}, \code{0}		| Decimal numbers.				|
-| \code{lower-roman}, \code{i}		| Lower-case Roman numerals.			|
-| \code{upper-roman}, \code{I}		| Upper-case Roman numerals.			|
-| \code{lower-alpha}, \code{a}		| Lower-case letters in the Latin alphabet.	|
-| \code{upper-alpha}, \code{A}		| Upper-case letters in the Latin alphabet.	|
-| \code{none}				| Ommit the numbering altogether.		|
+| \code{decimal}	| Decimal numbers.				|
+| \code{lower-roman}	| Lower-case Roman numerals.			|
+| \code{upper-roman}	| Upper-case Roman numerals.			|
+| \code{lower-alpha}	| Lower-case letters in the Latin alphabet.	|
+| \code{upper-alpha}	| Upper-case letters in the Latin alphabet.	|
+| \code{none}		| Ommit the numbering altogether.		|
 \end{tabular}
-\end{table}
 
 
 \section[sec:qanda]{Q&A environments}
 
-Somewhat related to lists, Q&A environments are used to mark a sequence of questions
-and accompanying answers, as typically found in interviews.  The environment is bounded
-by the start/end tag \code{qanda}, and expects an alternating sequence of question and
-answer blocks, delimited by the simple commands \code{\\question} and \code{\\answer},
-respectively.  The latter commands accept an inline sequence delimited by curly
-brackets as optional parameter.  If present, this sequence indicates the text that
-should appear before the actual question or answer; it is used to indicate the name
-of the interviewer or the interviewee, respectively.  Should this sequence be fixed
-for the entire length of the Q&A, there is an alternative to repeating it with each
-\code{\\question} and\code{\\answer} pair: you may instead use the parameterless simple
-commands \code{\\rquestion} and \code{\\ranswer}.  These simply reuse the sequence
-declared in the previous question or answer.  The following example illustrates the
-pattern:
+Somewhat related to lists, Q&A environments are used to mark a sequence of questions and
+accompanying answers, as typically found in interviews.  The environment is bounded by
+the start/end tag \code{qanda}, and expects a sequence of question and answer blocks,
+delimited by the simple commands \code{\\question} and \code{\\answer}, respectively.
+Both these commands accept an inline sequence delimited by curly brackets as optional
+parameter.  If present, this sequence indicates the text that should appear before
+the actual question or answer; it is used to indicate the name of the interviewer or
+the interviewee, respectively.  Should this sequence be fixed for the entire length
+of the Q&A, there is an alternative to repeating it with each \code{\\question}
+and\code{\\answer} pair: you may instead use the parameterless simple commands
+\code{\\rquestion} and \code{\\ranswer}.  These simply reuse the sequence declared in
+the previous question or answer.  The following example illustrates the pattern:
 
-\begin{source}
+\begin<boxed>{source}
 \begin{qanda}
 \question{Egg Gazette:}
 On which side of the egg opening debate are you?
@@ -514,7 +505,7 @@ verse should be terminated by the line break marker \code{\\br}.  Therefore, if 
 wished to typeset the first couple of stanzas from Virgil's \emph{Aeneid}, this would
 be the \lambtex source:
 
-\begin{source}
+\begin<boxed>{source}
 \begin{verse}
 Arma virumque cano, Troiae qui primus ab oris \br
 Italiam, fato profugus, Laviniaque venit \br
@@ -560,7 +551,7 @@ the \code{quote} environment, and may enclose not only plain text paragraphs, bu
 also lists or any of the so-called \emph{quotable blocks}, as \sref{sec:structure}
 describes in greater detail.  Consider thus the following \lambtex source:
 
-\begin{source}
+\begin<boxed>{source}
 This is what you said:
 
 \begin{quote}
@@ -632,132 +623,141 @@ other languages.  Basically, the markers that delimit verbatim environments need
 matches the begin marker.  Therefore, to include the string \code{\\end\{verbatim\}}
 within a verbatim environment, you can simply delimitate that environment with, for
 example, \code{\\begin\{verbatim1\}} and \code{\\end\{verbatim1\}}.  Note that only
-numbers and lowercase letters may be used as suffix characters.
+lowercase Roman letters, digits, and the character '\code{_}' (underscore) may be used
+as suffix characters.
 
-Optionally, you may provide the extra parameter \code{mult} to a verbatim environment.
-This parameter accepts an integer between 0 and 9, indicating a multiplying factor for
-the contents of the environment.  For a factor of [$x$], the actual scaling relative
-to normal size is given by [$\sqrt{2}^x$].  The default factor is 0, which corresponds
-to normal size.  One common application of this feature is to display \caps{unicode}
-characters as full-sized pictures.  As an example, this is what the \caps{unicode}
-snowman (code point \caps{U+2603}) looks like with a multiplier of 7, corresponding
-to a font size 11.3 times larger than normal:
+The \caps{css} shipped with \lambtex defines a series of classnames for exclusive
+use with verbatim environments.  These are \code{mult0}, \code{mult1}, and so forth
+until \code{mult9}.  The integer indicates a multiplying factor for the contents of
+the environment.  For a factor of [$x$], the actual scaling relative to normal size is
+given by [$\sqrt{2}^x$].  The default factor is 0, which corresponds to normal size.
+One common application of this feature is to display \caps{unicode} characters as
+full-sized pictures.  As an example, this is what the \caps{unicode} snowman (code
+point \caps{U+2603}) looks like with a multiplier of 7, corresponding to a font size
+11.3 times larger than normal:
 
-\begin<7>{verbatim}
+\begin<mult7>{verbatim}
 ☃
 \end{verbatim}
+
+In addition, the default \caps{css} also allows floatation specifiers to be used with
+verbatim blocks.  Floating specifiers take the form of classname style parameters
+'\code{center}', '\code{left}', and '\code{right}'.  They declare that the block should
+be displayed either centered and occupying the entire width of the page (this is the
+default), floating on the left, or floating on the right, respectively.  Note that
+they map directly to \caps{css} \code{float} declarations.
+
+Floatation specifiers are not exclusive to verbatim environments, and in subsequent
+sections we shall encounter other block types that also accept them.  The property
+all these block types have in common is the reasonable expectation that they may be
+placed outside the main flow of the document without a loss of context.  In a sense,
+for a block to be floatable, it must be able to carry its own context.  This is the
+case for verbatim blocks, since they can be used for purely decorative purposes.
 
 
 \section[sec:code]{Presenting source-code}
 
-While it is of course possible to input source code listings using the above discussed
-verbatim environment, \lambtex features a dedicated facility that semantically
-speaking is more appropriate and has in addition a number of tricks up its sleave.
+While it is of course possible to input source code listings using the above
+discussed verbatim environment, \lambtex features a dedicated facility that besides
+being semantically more appropriate has in addition a number of tricks up its sleave.
 This new environment is named \code{source}, and offers the possibility of adding line
 numbers to the code listing and highlighting the source according to the syntax of most
 popular languages.  You have in fact already encountered this environment multiple
 times in this document: it has been used for formatting \lambtex source code, albeit
 without line numbers or syntax highlighting.  Suppose thus you wish to pretty-print
-an \link{http://caml.inria.fr/}{\caps{ocaml}} fragment.  You can declare a source-code
+an \link{http://caml.inria.fr/}{OCaml} fragment.  You can declare a source-code
 environment the following way:
 
-\begin{source1}
+\begin<boxed>{source1}
 \begin<lang=ocaml>{source}
 type 'a tree =
-	| Leaf of 'a
-	| Node of 'a tree * 'a tree
+    | Leaf
+    | Node of 'a tree * 'a * 'a tree
 
-let rec count_leaves = function
-	| Leaf _	-> 1
-	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+let rec count = function
+    | Leaf		    -> 0
+    | Node (left, x, right) -> 1 + count left + count right
 \end{source}
 \end{source1}
 
-Note that the source language is specified via an optional extra parameter \code{lang}.
-In most cases the prefix \code{lang=} can be ommited and the language name may appear
-by itself, since there is little chance for conflict with other extra parameters (see
-\sref{sec:extra} for a more detailed discussion).  Also, the same \caps{heredoc}-like
-technique used for verbatim environments can be used in a source environment if you
-wish to include the string \code{\\end\{source\}} itself.  The astute reader will have
-noticed that this trick must have been used in the source for this manual to display the
-code above (this manual is itself written in \lambtex --- we do eat our own dog food).
+Note that the source language is specified via an optional key-value style parameter
+'\code{lang}'.  Also, the same \caps{heredoc}-like technique used for verbatim
+environments can be used in a source environment if you wish to include the string
+\code{\\end\{source\}} itself.  The astute reader will have noticed that this trick
+must have been used in the source for this manual to display the code above (this
+manual is itself written in \lambtex --- we do eat our own dog food).  As for the
+actual result produced by the composer, it is as follows:
 
-Source environments offer two more customisation options via extra parameters.  First,
-the parameter \code{style} indicates the overall style for displaying the code block.
-It accepts the values \code{plain}, \code{boxed}, \code{zebra}, and \code{console},
-with the default being \code{boxed} (\sref{fig:styles} below illustrates the effect
-of each of these styles).  Second, the boolean parameter \code{nums} indicates whether
-line numbers should be added to the listing.  Its default is false.
+\begin<lang=ocaml>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a tree * 'a * 'a tree
 
-To conclude, note that \lambtex offers also the possibility for code environments to
-be numbered and referenced from anywhere in the document.  This can be done by wrapping
-them inside a \code{printout} environment, and is part of the advanced features of
-the language discussed in \sref{sec:wrappers}.
+let rec count = function
+    | Leaf		    -> 0
+    | Node (left, x, right) -> 1 + count left + count right
+\end{source}
 
-\begin[fig:styles]{figure}
-{The various style options available for \code{source} environments.}
-\begin{subpage}
+Another optional key-value style parameter accepted by source environments is '\code{nums}'.
+It accepts a boolean value, and dictates whether line numbers should be added to the
+source code listing.  Valid boolean values are '\code{true}', '\code{yes}' and '\code{on}'
+for truth value \emph{true} and '\code{false}', '\code{no}' and '\code{off}' for truth
+value \emph{false}.  It defaults to false.
 
-\begin(){printout}
-{The \code{plain} style uses no decorations at all, and is better suited for source-code
-fragments that one wishes to integrate tightly with the flow of the document.}
-\begin<ocaml,plain>{source}
+The \caps{css} shipped with \lambtex offers additional customisation options for the
+appearance of source environments:
+
+\begin{description}
+
+\item{\code{plain}}
+This classname indicates that the listing should be displayed in plain style.  This is
+the default, as previously shown.  It is better suited for source-code fragments that
+one wishes to integrate tightly with the flow of the document.
+
+\item{\code{boxed}}
+Declares that the source code listing should be shown inside a decorative box.  Example:
+
+\begin<lang=ocaml,boxed>{source}
 type 'a tree =
 	| Leaf of 'a
 	| Node of 'a tree * 'a tree
 
 let rec count_leaves = function
 	| Leaf _	-> 1
-	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+	| Node (a, b)	-> count_leaves a + count_leaves b
 \end{source}
-\end{printout}
 
-\rule
+\item{\code{zebra}}
+Besides placing the source-code inside a decorative box, this style will in addition
+give a different background to even and odd numbered rows:
 
-\begin(){printout}
-{The \code{boxed} style is the default.  It places the source-code inside a decorative box.}
-\begin<ocaml,boxed>{source}
+\begin<lang=ocaml,zebra>{source}
 type 'a tree =
 	| Leaf of 'a
 	| Node of 'a tree * 'a tree
 
 let rec count_leaves = function
 	| Leaf _	-> 1
-	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
+	| Node (a, b)	-> count_leaves a + count_leaves b
 \end{source}
-\end{printout}
 
-\rule
+\item{\code{console}}
+This style is appropriate if the code block should actually mimick the output from a
+command line console:
 
-\begin(){printout}{Besides placing the source-code inside a decorative box, the \code{zebra}
-style will in addition give a different background to even and odd numbered rows.}
-\begin<ocaml,zebra>{source}
-type 'a tree =
-	| Leaf of 'a
-	| Node of 'a tree * 'a tree
-
-let rec count_leaves = function
-	| Leaf _	-> 1
-	| Node (a, b)	-> (count_leaves a) + (count_leaves b)
-\end{source}
-\end{printout}
-
-\rule
-
-\begin(){printout}
-{The \code{console} style is appropriate if the code block should actually mimick
-the output from a command line console.}
 \begin<console>{source}
 dario@localhost:~/lambtex$ make
-lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+lambcmd -f lambtex -t html -i sample.lambtex -o index.html
 
 dario@localhost:~/lambtex$ file index.html
 index.html: HTML document text
 \end{source}
-\end{printout}
+\end{description}
 
-\end{subpage}
-\end{figure}
+Finally, note that \lambtex offers also the possibility for code environments to be
+numbered and referenced from anywhere in the document.  This can be done by wrapping
+them inside a \code{printout} environment, and is part of the advanced features of
+the language discussed in \sref{sec:wrappers}.
 
 
 \section{Tabular environments}
@@ -826,7 +826,7 @@ The code below is the source for the tabular environment listed above.  Note the
 of the \code{\\head} and \code{\\body} commands to delineate row classes, and how the
 character '\code{|}' is used to separate cells and rows.
 
-\begin{source}
+\begin<boxed>{source}
 \begin{tabular}{lll}
 \head
 | Name		| Phone			| Address	|
@@ -847,8 +847,8 @@ curly bracketed expression containing the cell's formatting.
 The formatting expression is composed of three parts.  First is an integer indicating
 how many columns the cell should span; second is a single character matching one of
 the specifiers listed in \sref{tab:tabular}; last and optional are the characters
-'\code{_}' (underscore) and/or '\code{^}' (caret), which if present indicate that
-a horizontal line should be put above or below the cell.  Note that the formatting
+'\code{_}' (underscore) and/or '\code{^}' (caret), which if present indicate that a
+horizontal line should be put above and/or below the cell.  Note that the formatting
 should satisfy the regular expression \mbox{\code{\emph{digit}+ \emph{spec} ( '_' |
 '^' | '_^' | '^_' )?}}.
 
@@ -859,7 +859,7 @@ header, footer, and multiple body rows, also noteworthy are the cell configurati
 expressions \code{2c_} and \code{2c^}, which configure their corresponding cells to
 span two columns, be centered, and show a horizontal line below and above, respectively.
 
-\begin{source}
+\begin<boxed>{source}
 \begin{tabular}{rll}
 \head
 |		|{2c_} Scientific name			|
@@ -929,7 +929,7 @@ Suppose thus you wished to enter a math block containing the quadratic formula t
 solves the equation listed above.  Specified in the \caps{TeX} format, the code would
 be the following:
 
-\begin{source}
+\begin<boxed>{source}
 \begin{mathtex}
 x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 \end{mathtex}
@@ -944,7 +944,7 @@ contents is provided as part of the markup.  These requirements also apply to th
 an explicit namespace to the \caps{MathML} markup is \bold{not} necessary, since
 namespacing requirements are automatically taken care of.
 
-\begin{source}
+\begin<boxed>{source}
 \begin{mathml}
 <math>
 	<mrow>
@@ -1015,20 +1015,16 @@ is not enforced.
 
 \subsection{Pictures}
 
-The insertion of block images into a document is done via the
-simple command \code{\\picture}, which in its basic usage is identical
+The insertion of block images into a document is done via the simple
+command \code{\\picture}, which in its basic usage is identical
 to the afore described \code{\\glyph}.  Namely, it takes the form
-\code{\\picture\{\emph{identifier}\}\{\emph{alt}\}}, where \code{\emph{identifier}} is the
-name of the picture (typically the filename), and \code{\emph{alt}} is the alternative
-text to be displayed if the browser cannot or is not configured to display images.
-Both parameters consist of raw text and are mandatory.  It differs from \code{\\glyph}
-in that it must be used in a block context and that it supports some additional
-configuration via extra parameters, described further on.
-
-The bitmap below illustrates the use of a image block.  The picture is shown in its
-default centered position, though facilities exist for placing it on the left or right
-of the page and embedded within the flow of the paragraph text (see \sref{sec:decor}
-for details).
+\code{\\picture\{\emph{identifier}\}\{\emph{alt}\}}, where \code{\emph{identifier}}
+is the name of the picture (typically the filename), and \code{\emph{alt}} is the
+alternative text to be displayed if the browser cannot or is not configured to
+display images.  Both parameters consist of raw text and are mandatory.  It differs
+from \code{\\glyph} in that it must be used in a block context and that it supports
+some additional configuration via style parameters.  The bitmap below illustrates the
+use of a image block:
 
 \picture{circle.png}{This is a circle}
 
@@ -1036,28 +1032,29 @@ Note that in most browsers you cannot see the alternative text unless the browse
 configured not to display images.  As for the code that produced the picture, it is as
 simple as this:
 
-\begin{source}
+\begin<boxed>{source}
 \picture{circle.png}{This is a circle}
 \end{source}
 
-There are additional configuration options for pictures, all set via optional extra
-parameters.  Like its name suggests, the boolean parameter \code{frame} adds a small
-framed shadow to the picture.  It is off by default, and esthetically it is more
-sensible for rectangular pictures such as photographs.  The size of the picture can
-be controlled by the parameter \code{width}.  Its value is either \code{auto} or an
-integer between 1 and 100 (inclusive), indicating the percentage of the total width of
-the page that the picture should occupy (minus a small margin common to all non-text
-blocks).  The default is \code{auto}, which translates into a picture occupying its
-natural width in pixels (up to the maximum width of the page).  Note that block images
-are always clickable and that the target \caps{uri} is that of the picture itself.
-This is useful, for example, for seeing at their full size pictures that were scaled
-down with the \code{width} parameter or that did not fit into the width of the page.
+The size of the picture can be controlled by the optional key-value style parameter
+\code{width}.  Its value is either \code{auto} or an integer between 1 and 100
+(inclusive), indicating the percentage of the total width of the page that the picture
+should occupy (minus a small margin common to all non-text blocks).  The default is
+\code{auto}, which translates into a picture occupying its natural width in pixels
+(up to the maximum width of the page).  Note that block images are always clickable and
+that the target \caps{uri} is that of the picture itself.  This is useful, for example,
+for seeing at their full size pictures that were scaled down with the \code{width}
+parameter or that did not fit into the width of the page.
+
+The default \caps{css} shipped with \lambtex offers an additional customisation options
+for pictures.  As its name suggests, the classname style parameter '\code{frame}' adds a
+small framed shadow to the picture.  It is off by default, and esthetically it is more
+sensible for rectangular pictures such as photographs.  In addition, the floatation
+classnames '\code{center}', '\code{left}', and '\code{right}' may also be used.
 
 It is a common practice to add a numbered caption to a picture.  To achieve this in
 \lambtex you must wrap the \code{picture} block inside a \code{figure}, as described
-in \sref{sec:wrappers}.  Pictures may also be used strictly for decorative purposes, in
-which case they may be floated to the left or right of the page.  This is however part
-of the advanced features of the language and is discussed only in \sref{sec:floaters}.
+in \sref{sec:wrappers}.
 
 
 \section[sec:subpage]{Sub-pages}
@@ -1070,7 +1067,7 @@ writing manuals about \lambtex --- they are indispensable.
 
 Sub-pages are not completely independent documents.  You may refer to elements inside
 a sub-page from the main document and vice-versa.  Moreover, any notes and bibliography
-entries (see \mbox{Sections \ref{sec:onnotes} and \ref{sec:onbiblio}}) declared inside a
+entries (see \mbox{Sections \dref{sec:onnotes} and \dref{sec:onbiblio}}) declared inside a
 sub-page are still associated with the main document.  Finally, take into consideration
 that \lambtex will not automatically assign an ordering for sections and wrapper blocks
 declared inside sub-pages (these blocks are part of the advanced language features
@@ -1082,7 +1079,7 @@ each code sample.  The example below is the code that was used to produce the ve
 sub-page you have encountered in this document, back in the \mref{sec:paragraphs}{section
 on paragraph blocks}.
 
-\begin{source}
+\begin<boxed>{source}
 \begin{subpage}
 This is the first example of a paragraph.  Note that
 it is composed of inline text.
@@ -1098,62 +1095,6 @@ explicit declaration of a paragraph.}
 \end{source}
 
 
-\section{The story thus far}
-
-This first part of the manual covered all the basic features of \lambtex.  These allow
-you to write documents that in the \lambdoc parlance are termed \emph{compositions}.
-The reader will have noted, however, that none of the commands discussed thus far can
-be used for creating documents with internal links.  All commands that do have that
-property, either directly or indirectly, are considered part of the advanced features
-of the language, and are covered in the sections that follow.
-
-
-\part[part:advanced]{Advanced features}
-
-
-\section{What exactly makes a feature \emph{advanced}?}
-
-As we briefly alluded to in this manual's prelude, the \lambdoc library makes
-a stark demarcation between basic and advanced features.  The basic rationale is
-that one may wish to use the library to handle two different classes of documents.
-We term \emph{compositions} those that do not contain internal links, do not produce
-numbered blocks, and do not have a complex internal structure requiring sectioning.
-In contrast, \emph{manuscripts} are documents that may make use of all these features.
-To be more precise, besides using any of the features discussed in \sref{part:basic},
-a manuscript is also endowed with all the properties listed below, which are addressed
-individually in the sections that follow.
-
-\begin{itemize}
-\item	May be internally divided into multiple \mref{sec:headings}{parts and sections},
-	each of which may be given a label so that it can be \mref{sec:intlinks}{referenced}
-	from anywhere in the document.
-
-\item	Allows the definition of \mref{sec:pull}{pull-quotes}.
-
-\item	Allows the declaration of custom \mref{sec:boxouts}{boxouts} and
-	\mref{sec:theorems}{theorem-like environments}.
-
-\item	May use \mref{sec:wrappers}{wrappers} around basic blocks such as mathematics,
-	verbatim environments, or figures.  A wrapper allows you to give a label and
-	a caption to the block.
-
-\item	Enables pull-quotes, boxouts, and wrappers to be \mref{sec:floaters}{floated
-	to the left or right} of the page.  Furthermore, pictures and verbatim environments
-	may be placed inside \mref{sec:decor}{decorative} blocks, allowing them to
-	also be floated.
-
-\item	Has facilities typically associated with the frontmatter of a document, such
-	as \mref{sec:frontmatter}{titles and abstracts}.  Moreover, it allows also the
-	creation of \mref{sec:onappendix}{appendices}.
-
-\item	Allows you to define \mref{sec:onnotes}{notes} and \mref{sec:onbiblio}{bibliographic
-	references}.
-
-\item	Has facilities for the declaration and use of simple \mref{sec:macros}{macros}
-	for textual substitution.
-\end{itemize}
-
-
 \section[sec:headings]{Parts and sections}
 
 \lambtex supports three different levels of sectioning: sections, sub-sections, and
@@ -1166,13 +1107,12 @@ simply means that only the opening and closing parenthesis should be present, wi
 any characters between them.  (Sectional commands declared inside sub-pages do require
 an explicit ordering parameter, empty or not; check \sref{sec:order} for details).
 
-In addition to sections, \lambtex documents may be also divided into \emph{parts}.
+In addition to sections, \lambtex documents may also be divided into \emph{parts}.
 Parts are a higher-level division than sections, and are typically only used in
 fairly complex documents.  This manual, for example, uses parts for making a clear
-distinction between the basic and the advanced language features, and for marking
-the appendix sections.  Note that a new part is declared with the homonymous simple
-command \code{\\part}, and that it does not reset the section counter.  In similarity
-to sections, parts can also be unordered.
+distinction between the language tutorial and the appendix sections.  Note that a new
+part is declared with the homonymous simple command \code{\\part}, and that it does
+not reset the section counter.  In similarity to sections, parts can also be unordered.
 
 Another common requirement associated with sectioning is the ability to refer to a given
 part or section in a document.  With that in mind, \lambtex allows you to label a given
@@ -1180,12 +1120,12 @@ part or section declaration, and as described in the \mref{sec:intlinks}{followi
 section}, provides also a set of commands that create hyperlinks to a given label.
 The label parameter is always optional and is enclosed in square brackets:
 
-\begin{source}
+\begin<boxed>{source}
 \part{Prelude}
 
 \section{Introduction}
 
-For more details, please check Section \ref{sec:details}.
+For more details, please check Section \dref{sec:details}.
 
 \subsection[sec:details]{This is a sub-section}
 
@@ -1211,13 +1151,13 @@ The quick brown fox jumps over the lazy brown dog.
 \end{subpage}
 
 To conclude, and since this is our first encounter with label parameters, the reader
-should note that labels have two constraints.  First, the allowed character set is
-limited to lowercase roman letters, digits, and the characters '\code{.}' (period),
-'\code{:}' (colon), '\code{-}' (dash), and '\code{_}' (underscore).  Second, the first
-character must be a letter.  Also note that all labels share the same namespace; we
-recommend adopting the \caps{LaTeX} custom of using a prefix indicating the target
-type.  In the example above, the prefix \code{sec:} is used for the sectioning family
-of commands.
+should note that labels have two constraints.  First, the starting character must be
+a lowercase Roman letter.  Second, the allowed character set for subsequent characters
+is limited to lowercase Roman letters, digits, and the characters '\code{:}' (colon),
+'\code{-}' (dash), and '\code{_}' (underscore).  Also note that all labels share
+the same namespace; we recommend adopting the \caps{LaTeX} custom of using a prefix
+indicating the target type.  In the example above, the prefix \code{sec:} is used for
+the sectioning family of commands.
 
 
 \section[sec:intlinks]{Internal hyperlinks}
@@ -1228,14 +1168,14 @@ the same document.  The former is provided by the already described simple comma
 one tailored for a different use and/or kind of target.  \sref{tab:hyperlinks} lists
 all available hyperlinks commands, and the following source illustrates their use:
 
-\begin{source}
+\begin<boxed>{source}
 You can easily insert a link into an external resource such
 as \link{http://www.wikipedia.com/}{Wikipedia}.  Internal
 links come into several guises: they can be references to
 notes\see{note:meta}; bibliographic references like those
 available in \caps{LaTeX}\cite{bib:latex}; pointers to
 labelled figures, tables, printouts, equations, or sections
-such as \mbox{Section \ref{sec:anatomy}}; smart references to
+such as \mbox{Section \dref{sec:anatomy}}; smart references to
 those same elements such as \sref{sec:anatomy}; and finally,
 references where the order is not automatically added (for
 example, you may refer yet again \mref{sec:anatomy}{to that
@@ -1251,7 +1191,7 @@ links come into several guises: they can be references to
 notes\see{note:meta}; bibliographic references like those
 available in \caps{LaTeX}\cite{bib:latex}; pointers to
 labelled figures, tables, printouts, equations, or sections
-such as \mbox{Section \ref{sec:anatomy}}; smart references to
+such as \mbox{Section \dref{sec:anatomy}}; smart references to
 those same elements such as \sref{sec:anatomy}; and finally,
 references where the order is not automatically added (for
 example, you may refer yet again \mref{sec:anatomy}{to that
@@ -1264,13 +1204,13 @@ of notes.
 \end{note}
 
 Bear in mind that the use of the smart references offered by command \code{\\sref}
-is strongly recommended over the manual references provided by command \code{\\ref}.
+is strongly recommended over the manual references provided by command \code{\\dref}.
 The reason is three-fold.  First, because smart references ensure the consistent use
 of one naming scheme over an entire document and across several documents.  Second,
 because smart references automatically make sure that a non-breaking space is inserted
 between the element name and its ordering number, thus preventing their separation
 by a line break (to achieve the same effect with manual references, the user must
-explicitly place both elements inside an \code{\\mbox} command, or use the \code{nbsp}
+explicitly place both elements inside an \code{\\mbox} command, or use the \code{\&nbsp;}
 \caps{html} entity).  Third and last, because smart references will make a hyperlink
 of both the name and the ordering, which is friendlier for mouse clicking and arguably
 esthetically more pleasant.
@@ -1286,17 +1226,20 @@ or the \code{nbsp} \caps{html} entity.
 \code{\emph{uri}} and \code{\emph{label}} sequences are interpreted as raw
 text.  Moreover, the inline sequence may be ommited in command \code{\\link},
 and commands \code{\\see} and \code{\\cite} may be given more than one curly
-bracketed \code{\emph{label}} sequence (see \mbox{Sections \ref{sec:onnotes}
-and \ref{sec:onbiblio}} for details on the latter).}
+bracketed \code{\emph{label}} sequence (see \mbox{Sections \dref{sec:onnotes}
+and \dref{sec:onbiblio}} for details on the latter).}
 \begin{tabular}{rl}
 \head
 | Command						| Description |
 \body
-| \mbox{\code{\\link\{\emph{uri}\}\{\emph{inline}\}}}	| Inserts a link to an external resource. |
-| \code{\\see\{\emph{label}\}}				| Refers to a document note (see \sref{sec:onnotes}). |
-| \code{\\cite\{\emph{label}\}}				| Cites a bibliographic reference (see \sref{sec:onbiblio}). |
-| \code{\\ref\{\emph{label}\}}				| Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
-| \code{\\sref\{\emph{label}\}}				| Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
+| \mbox{\code{\\link\{\emph{uri}\}}}			| Inserts a link to an external resource. |
+| \mbox{\code{\\link\{\emph{uri}\}\{\emph{inline}\}}}	| Alternate form of \code{\\link}. |
+| \mbox{\code{\\see\{\emph{label}\}}...}		| Refers to a document note (see \sref{sec:onnotes}). |
+| \mbox{\code{\\cite\{\emph{label}\}}...}		| Cites a bibliographic reference (see \sref{sec:onbiblio}). |
+| \mbox{\code{\\dref\{\emph{label}\}}}			| Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
+| \mbox{\code{\\dref\{\emph{label}\}\{\emph{inline}\}}}	| Alternate form of \code{\\dref}. |
+| \mbox{\code{\\sref\{\emph{label}\}}}			| Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
+| \mbox{\code{\\sref\{\emph{label}\}\{\emph{inline}\}}}	| Alternate form of \code{\\sref}. |
 | \mbox{\code{\\mref\{\emph{label}\}\{\emph{inline}\}}}	| Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
 \end{tabular}
 \end{table}
@@ -1323,7 +1266,7 @@ optional primary parameter consisting of an inline sequence specifying the autho
 of the quote.  Therefore, to produce a pull-quote like the one that opens this section,
 you can simply provide the following code:
 
-\begin{source}
+\begin<boxed>{source}
 \begin{pull}{Homer Simpson}
 Weaseling out of things is important to learn:
 it's what separates us from the animals.
@@ -1331,11 +1274,13 @@ Except the weasel.
 \end{pull}
 \end{source}
 
-In similarity to their regular counterparts, the usefulness of pull-quotes carries with
-it a warning against abuse.  Though one may be tempted to make heavy use of this feature,
-bear in mind that its effectiveness goes down as their usage is increased.  Moreover,
-it tends to make more sense for longer manuscripts, and/or when it is floated to the
-left or right (the concept of floating blocks is described in \sref{sec:floaters}).
+In similarity to their regular counterparts, the usefulness of pull-quotes carries
+with it a warning against abuse.  Though one may be tempted to make heavy use of this
+feature, bear in mind that its effectiveness goes down as their usage is increased.
+Moreover, it tends to make more sense for longer manuscripts, and/or when it is
+floated to the left or right.  For the latter reason, the default \caps{css} shipped
+with \lambtex allows for the style parameters of a pull-quote to declare one of the
+previously discussed floatation specifiers.
 
 
 \section[sec:boxouts]{Declaring and using boxouts}
@@ -1355,19 +1300,20 @@ Moreover, boxouts are optionally titled and may be given an automatic ordering.
 
 The command \code{\\newboxout} accepts at least one, and up to three primary parameters.
 The first parameter is the name of the boxout environment; this is the same name that
-must subsequently be used inside the begin/end pairs.  Obviously, you may not name
-a boxout with the same designation of an existing command, or with a designation
-that begins with the name of an environment that uses the \caps{heredoc} technique
-(namely \code{verbatim}, \code{source}, \code{mathtex}, and \code{mathml}). Moreover,
-the name must begin with a lowercase letter and be composed only of lowercase letters
-and digits.  The second parameter, if present, is an inline sequence indicating a fixed
-title that will appear in all boxouts of this name.  Finally, the third parameter may
-be used to assign a counter to this boxout.  If not present, the boxout is unnumbered;
-moreover, different boxouts may share the same counter.  Note that the third parameter
-may only be given for boxouts that do have a title, and thus also a second parameter.
-In addition, bear in mind that counter identifiers must follow the same rules laid out
-for labels, as described in \sref{sec:headings}.  Counter identifiers do nevertheless
-reside in their own separate namespace, independent of that of labels.
+must subsequently be used inside the begin/end pairs.  Obviously, you may not name a
+boxout with the same designation of an existing command, or with a designation that
+begins with the name of an environment that uses the \caps{heredoc} technique (namely
+\code{verbatim}, \code{source}, \code{mathtex}, and \code{mathml}). Moreover, the
+name must begin with a lowercase Roman letter and be composed only of lowercase Roman
+letters, digits, and the character '\code{_}' (underscore).  The second parameter,
+if present, is an inline sequence indicating a fixed title that will appear in all
+boxouts of this name.  Finally, the third parameter may be used to assign a counter to
+this boxout.  If not present, the boxout is unnumbered; moreover, different boxouts
+may share the same counter.  Note that the third parameter may only be given for
+boxouts that do have a title, and thus also a second parameter.  In addition, bear
+in mind that counter identifiers must follow the same rules laid out for labels,
+as described in \sref{sec:headings}.  Counter identifiers do nevertheless reside in
+their own separate namespace, independent of that of labels.
 
 Subsequent to its declaration, using a new boxout named \code{\emph{name}} is
 simply a matter of wrapping its contents between \code{\\begin\{\emph{name}\}} and
@@ -1387,7 +1333,7 @@ the generic title (note that the colon separating the generic and instance-speci
 titles is automatically inserted as needed, so you do not need to include it manually).
  All these considerations can be realised with the following code:
 
-\begin{source}
+\begin<boxed>{source}
 \newboxout{warning}{Warning}
 
 \begin{warning}{Boxout overload}
@@ -1398,7 +1344,7 @@ they are most effective when not abused!
 
 At this point you may be wondering where does the customised warning sign
 come from.  Its origin is simple: for each boxout named \code{\emph{name}}, the
-\caps{xhtml} output driver from the \lambdoc library will include the classname
+\caps{html} output driver from the \lambdoc library will include the classname
 \code{doc_boxout_env_\emph{name}} in the \caps{div} element that encapsulates the
 boxout.  The \caps{css} supplied with the library takes advantage of this metadata,
 and contains sample customisation for boxouts named \code{warning} and \code{tip}.
@@ -1408,7 +1354,7 @@ To conclude note that boxouts may be labelled, and that you may request the supr
 of ordering for individual instances of numbered boxouts.  The latter is achieved in
 the same manner as with sections and parts: by providing the empty ordering declaration
 \code{()}.  Labelled boxouts may be referenced from anywhere in the document via the
-simple commands \code{\\ref}, \code{\\sref}, or \code{\\mref} (the two former commands
+simple commands \code{\\dref}, \code{\\sref}, or \code{\\mref} (the two former commands
 may only be used for numbered boxouts, obviously).
 
 
@@ -1432,7 +1378,7 @@ and its counter to be called \code{cnt:theorem}.  One particular instantiation o
 this theorem has the extra title \emph{``John McAuthor''}, reflecting its authorship.
 This is the \lambtex source you may use:
 
-\begin{source}
+\begin<boxed>{source}
 \newtheorem{theorem}{Theorem}{cnt:theorem}
 
 \begin{theorem}{John McAuthor}
@@ -1463,18 +1409,15 @@ Furthermore, the egg satisfies the scalene condition, and therefore
 
 \section[sec:wrappers]{Wrappers}
 
-As discussed in \sref{part:basic}, \lambdoc allows compositions to declare document
-blocks beyond simple paragraphs of text.  Tabular environments, pictures, mathematics,
-or source-code listings, for example.  All of these are anonymous blocks, in the sense
-they do not have an associated label and therefore cannot be referenced from elsewhere
-in the document (remember that internal references are not allowed in compositions).
-When writing a manuscript, however, there are valid reasons why you may want to reference
-a picture or a source-code listing, or to provide these elements with a caption.
-It it for this motive that \lambtex also offers blocks that may be given a caption, an
-ordering, and may be referred from anywhere.  These blocks are called \emph{wrappers},
-and as their name implies, are essentially just a wrapper around other blocks such
-as \code{source}, \code{tabular}, \code{mathtex}, or \code{mathml} environments.
-There are four different classes of wrappers available:
+Consider the previously discussed math blocks, source-code listings, tabular
+environments, picture blocks, verbatim environments, and subpages.  All of these are
+anonymous blocks, in the sense they do not have an associated label and therefore
+cannot be referenced from elsewhere in the document.   It is however common for one
+to wish to reference any of these block types from elsewhere in the document and/or
+to provide them with a caption.  with this in mind, \lambtex offers a special kind
+of block known as a \emph{wrapper}, which as its name implies, is essentially just
+a wrapper around any of the above listed \emph{wrappable} blocks.  There are four
+different classes of wrappers available:
 
 \begin{description}
 
@@ -1507,14 +1450,14 @@ ordered wrapper is declared.  Note also that the wrapper itself may be labelled,
 illustrated by the code below, which shows the use of a \code{figure} wrapper around
 a \code{picture} block:
 
-\begin{source}
+\begin<boxed>{source}
 \begin[fig:example]{figure}{This is the figure's caption.}
 \picture{circle.png}{This is a circle}
 \end{figure}
 \end{source}
 
 You can refer to the above declared figure from anywhere in the document by using the
-label \code{fig:example} with any of the simple commands \code{\\ref}, \code{\\sref},
+label \code{fig:example} with any of the simple commands \code{\\dref}, \code{\\sref},
 and \code{\\mref}.  The resulting figure (\sref{fig:example}) is shown below:
 
 \begin[fig:example]{figure}{This is the figure's caption.}
@@ -1530,30 +1473,25 @@ specification, then you must provide it with a caption.  This restriction is in 
 so that every wrapper has some form of context, either in the form of an ordering or
 a caption.
 
+It is perfectly reasonable and common for wrapped blocks to be floated on the sides
+of the page.  Therefore, the default \caps{css} shipped with \lambtex allows for
+the floatation specifiers '\code{center}', '\code{left}', and '\code{right}' to be
+provided as style parameters to any wrapper.  Note that with the exception of picture
+and verbatim environments, with the default \caps{css} one can only float wrappable
+blocks when they are actually placed inside a wrapper.  The rationale was discussed
+in \sref{sec:verbatim}: in brief, floating a block is predicated on the block carrying
+its own context, and thus being safely removable from the main flow of the document.
 
-\section[sec:floaters]{Floating blocks left or right}
-
-In all the examples presented so far, blocks have been centered and shown occupying
-the entire width of the page.  For reasons of style this method of presentation is not
-always optimal, however.  Instead, it is often preferable for blocks to be embedded
-within the flow of the text.  With this in mind, pull-quotes, boxouts, wrappers, and
-decoration blocks (see \mref{sec:decor}{next section}) all accept an optional extra
-parameter named \code{float} that tells \lambtex whether the block should be placed
-in the \code{center} (the default), or at the \code{left} or \code{right} of the page.
-These blocks are collectively known as \emph{floaters}.
-
-You may have noticed that the only blocks allowed to float to the side of the page are
-those that may safely be removed from the main flow of the document.  These blocks
-are not tied to a precise location of the document (that is, it won't matter much
-if they are placed a couple of paragraphs above or below, as long as they can be
-found in the relevant section), and they have a fair degree of independence from the
-contents in the main flow.  It is for this reason that you may not directly float, say,
-a \code{source} block.  It carries no context by itself, and thus must be integrated
-into the main flow, or wrapped inside a \code{printout} whose caption and/or ordering
-provide the needed context.  Theorems --- even though they have some independence and
-provide their own context --- are excluded from the set of blocks allowed to float.
-The rationale stems mainly from customary usage, where theorems are integrated into
-the main flow of the document.
+Note that context-carrying blocks are not tied to a precise location of the document
+(that is, it won't matter much if they are placed a couple of paragraphs above or below,
+as long as they can be found in the relevant section), and they have a fair degree
+of independence from the contents in the main flow.  It is for this reason that you
+may not directly float, say, a \code{source} block.  It carries no context by itself,
+and thus must be integrated into the main flow, or wrapped inside a \code{printout}
+whose caption and/or ordering provide the needed context.  Theorems --- even though
+they have some independence and provide their own context --- are excluded from the
+set of blocks allowed to float.  The rationale stems mainly from customary usage,
+where theorems are integrated into the main flow of the document.
 
 \begin<right>{pull}
 Use floating blocks sparingly for maximum effect.
@@ -1563,28 +1501,6 @@ Note that a particularly common application of the floating feature is to displa
 a pull-quote on the right or left side of the page, such as the one that accompanies
 this paragraph.  However, and for maximum effect, this feature should be used sparingly,
 an advice that in general applies to all floating blocks.
-
-
-\section[sec:decor]{Decorations}
-
-The case can be made that pictures are often used for purely decorative purposes, and
-should therefore be allowed to float even when not located inside a figure wrapper.
-A straightforward solution would therefore allow the specification of the \code{float}
-extra parameter also in unwrapped picture.  This approach would, however, run afoul of
-the strict demarcation between compositions and manuscripts espoused by the \lambdoc
-library, since floating elements should only be allowed in manuscripts but pictures
-are composition blocks.
-
-The solution ultimately chosen hinges on the decorative nature of isolated floating
-pictures, which should therefore be semantically marked as such by wrapping them inside
-\code{decor} environments.  This type of block is reserved for manuscripts and may be
-floated via the extra parameter \code{float}.  \lambdoc principles are thus preserved
-and manuscripts gain floating pictures as an additional feature.
-
-Note that being decorative in nature, \code{decor} blocks may not be labelled and are
-thus unreferenceable.  Moreover, because the \code{verbatim} environment is typically
-used for \caps{ascii}-art and therefore can be said to also produce pictures, the
-block wrapped inside a decoration may be either an \code{picture} or \code{verbatim}.
 
 
 \section[sec:frontmatter]{Frontmatter: title, abstract, and table of contents}
@@ -1614,7 +1530,7 @@ well.  An abstract is declared by enclosing one or more embeddable blocks within
 what constitutes a \emph{embeddable block}, and note the source fragment below for an
 example of the various frontmatter blocks.
 
-\begin{source}
+\begin<boxed>{source}
 \title{Small-endian vs big-endian: the solution}
 \subtitle{John McAuthor}
 \subtitle{February 2009}
@@ -1656,7 +1572,7 @@ paragraphs.  For the sake of completeness, \lambtex supports also this feature.
 You may declare it using the \code{\\rule} simple command, or its synonym \code{\\hr}.
 These commands are completely parameterless, as the code sample below demonstrates:
 
-\begin{source}
+\begin<boxed>{source}
 This is a paragraph.
 
 \rule
@@ -1702,7 +1618,7 @@ The sample code below illustrates a note being referenced inside a paragraph and
 defined afterwards.  The example concludes with the simple command \code{\\notes}
 requesting the printing of the homonymous section together with the defined note.
 
-\begin{source}
+\begin<boxed>{source}
 This is a normal\see{note:example} paragraph that references
 an end-document note.  You may read all notes declared in the
 document \mref{sec:notes}{in this section}.
@@ -1730,7 +1646,7 @@ entry is referenced by the simple command \code{\\cite}.  Also, and in similarit
 the command \code{\\see}, it is possible to reference multiple entries with a single
 invocation of \code{\\cite}, since this command accepts multiple primary parameters.
 
-\begin{source}
+\begin<boxed>{source}
 \caps{lambtex} is largely inspired by LaTeX\cite{bib:latex}.
 
 \begin[bib:latex]{bib}
@@ -1753,10 +1669,10 @@ the miscelaneous information required to locate the resource in ``dead tree worl
 
 \section[sec:onappendix]{Creating an appendix}
 
-Large manuscripts typically have fragments that do not fit into the main flow of
-the document.  In many cases, these fragments can satisfactorily be included as notes
-(remember \sref{sec:onnotes}).  In other situations, however, it may make more sense
-to attach them as appendices to the main document.  In \lambtex, creating an appendix
+Large document typically have fragments that do not fit into the main flow.
+In many cases, these fragments can satisfactorily be included as notes (remember
+\sref{sec:onnotes}).  In other situations, however, it may make more sense to
+attach them as appendices to the main document.  In \lambtex, creating an appendix
 is simply a matter of issueing the simple parameterless command \code{\\appendix}.
 Besides declaring an unordered part of the same name, this command also marks all
 subsequent sections as belonging to the appendix.  This means that an appendiced
@@ -1768,23 +1684,23 @@ You can see an example of appendiced sections in this very manual.  Note how all
 sections declared after the \mref{part:theappendix}{appendix marker} are automatically
 ordered using alphabetic characters instead of numbers, as per the usual convention.
 Smart references produced by command \code{\\sref} automatically adjust as well ---
-yet another reason why you should avoid its ``dumb'' counterpart \code{\\ref}.
+yet another reason why you should avoid its ``dumb'' counterpart \code{\\dref}.
 
 
 \section[sec:macros]{Macros}
 
-\lambtex offers limited macro functionality in manuscripts.  Macros provide simple
-textual replacement, possibly parameterised.  Note that these are not full-blown
-programming constructs, being instead aimed at reducing boilerplate and ensuring
-consistent formatting of common text patterns.
+\lambtex offers limited macro functionality.  Macros provide simple textual replacement,
+possibly parameterised.  Note that these are not full-blown programming constructs,
+being instead aimed at reducing boilerplate and ensuring consistent formatting of
+common text patterns.
 
 Before being used, a macro must be declared via the simple command \code{\\newmacro}.
 This command takes three mandatory primary parameters: the name of the macro, the number
 of arguments, and an inline sequence containing the text of the macro.  Macro names
 must obviously be unique and not overlap with the names of built-in commands, but they
 live in their own private namespace.  Moreover, and similarly to boxouts and theorems,
-the name must begin with a lowercase roman letter and be followed by a combination of
-lowercase roman letters and digits.
+the name must begin with a lowercase Roman letter and be followed by any combination
+of lowercase Roman letters, digits, and the character '\code{_}' (underscore).
 
 Should the macro take any arguments, these can be referenced from inside the macro
 text by the alias \code{\\arg\{\emph{num}\}}, where the \code{\emph{num}} between curly
@@ -1823,9 +1739,9 @@ Let us now consider a full example of macro declaration.  We wish to define a ma
 define a macro named \code{greet} that takes two arguments and produces a greeting.
 These two macros are then used in a small sample document.  This is the \lambtex source:
 
-\begin{source}
-\newmacro{author}{0}{John McAuthor, of the small-ended approach,}
-\newmacro{greet}{2}{Greetings \bold{\arg{1}} and welcome to \arg{2}}
+\begin<boxed>{source}
+\newmacro{author}{0}{John McAuthor}
+\newmacro{greet}{2}{Greetings \bold{\arg{1}}, and welcome to \arg{2}}
 
 It was then that \author reached his destination.  The gatekeeper said,
 ``\greet{\author}{this land}'', and there was much rejoicing.
@@ -1834,8 +1750,8 @@ It was then that \author reached his destination.  The gatekeeper said,
 And this is the resulting output:
 
 \begin{subpage}
-\newmacro{author}{0}{John McAuthor, of the small-ended approach,}
-\newmacro{greet}{2}{Greetings \bold{\arg{1}} and welcome to \arg{2}}
+\newmacro{author}{0}{John McAuthor}
+\newmacro{greet}{2}{Greetings \bold{\arg{1}}, and welcome to \arg{2}}
 
 It was then that \author reached his destination.  The gatekeeper said,
 ``\greet{\author}{this land}'', and there was much rejoicing.
@@ -1857,10 +1773,9 @@ some reference material that did not fit into the flow of the main body of the d
 \sref{sec:structure}, for example, discusses at length the structure of the \lambtex
 documents, while \sref{sec:synonyms} summarises all command synonyms available,
 and \sref{sec:parameters} covers all you need to know concerning optional arguments.
-Unless you are writing about \lambtex itself, there is little chance you will need the
-information contained in \sref{sec:order}.  But if you do, it focuses on the somewhat
-arcane aspects concerning numbering in sub-pages.  Finally, \sref{sec:extra} contains
-all the nitty-gritty details about how extra arguments are parsed.
+Finally, unless you are writing about \lambtex itself, there is little chance you will
+need the information contained in \sref{sec:order}.  But if you do, it focuses on the
+somewhat arcane aspects concerning numbering in sub-pages.
 
 
 \appendix[part:theappendix]
@@ -1882,7 +1797,6 @@ as meaning that the source block is a subtype of the target, and dually, that th
 is a supertype of the source.  In practice, this means that a subtype block may be used
 in any circumstance where its supertype is allowed.  However, the converse is not true.
 
-
 \begin[fig:hierarchy]{figure}
 {The subtyping hierarchy for \lambtex blocks.  An arrow pointing from a source
 block to a target block indicates that the source is a subtype of the target and
@@ -1892,18 +1806,12 @@ both green and blue blocks.}
 \picture{hierarchy.png}{Hierarchy}
 \end{figure}
 
-
-Two other things stand out in the figure.  The first is that blocks are grouped
-into two broad categories: composition blocks (in green) and manuscript blocks (in
-blue). Though not relevant to a discussion concerning structure, this categorisation
-serves as a good, graphical reminder of which block types are allowed for composition
-and manuscript document types.  Second, there is a list attached to each of the block
-types.  This list indicates the actual document blocks that belong to that type.
-An \emph{embeddable block}, for example, can be either a paragraph, an itemize,
-enumerate, or description list, a verse block, a block containing mathematics, etc.
-Notice that many blocks have a \emph{\code{of} ...} declaration after their name; these
-blocks --- termed \emph{recursive blocks} --- are those whose contents are other blocks.
-
+Note the list attached to each of the block types, which indicates the actual
+document blocks that belong to that type.  An \emph{embeddable block}, for example,
+can be either a paragraph, an itemize, enumerate, or description list, a verse block,
+a block containing mathematics, etc.  Notice that many blocks have a \emph{\code{of}
+...} declaration after their name; these blocks --- termed \emph{recursive blocks}
+--- are those whose contents are other blocks.
 
 If a \lambtex document were unconstrained, one would expect a recursive block to
 be composed of a list of super blocks.  Because super blocks sit at the top of the
@@ -1962,23 +1870,20 @@ and \code{end} tags, even if they are synonyms.
 
 \section[sec:parameters]{Command parameters}
 
-The typical simple command in \caps{LaTeX} has one or two primary parameters enclosed
-between curly brackets.  In addition, many commands (both simple and environment) accept
-also optional parameters that specify an ordering, a label, or any extra information.
+The typical simple command in \lambtex has one or two primary parameters enclosed between
+curly brackets.  In addition, many commands (both simple and environment) accept also
+optional parameters that specify an ordering, a label, or any style information.
 When present, optional parameters may be specified in any order, as long as they
 precede any of the primary parameters.  Moreover, each class of optional parameter is
 distinguished by the set of characters used for delimitation.  Ordering parameters
-are enclosed in curved brackets, labelling parameters in square brackets, and extra
+are enclosed in curved brackets, labelling parameters in square brackets, and style
 parameters between angle brackets.
 
 Note that not all optional parameters are meaningful for all existing commands.
-Some commands may, for instance, accept only an order and/or a label parameter,
-while others accept only extra parameters.  In fact, no command exists that accepts
-all three classes of optional parameters, and there are several which accept none.
-\sref{tab:permlist} lists the classes accepted for each of all existing commands,
-both simple and environment ones.  An exact definition of the terms used is shown
-in \sref{tab:permdesc}.
-
+This is especially the case for order and label parameters, which are available only
+for some commands.  \sref{tab:permlist} lists the classes accepted for each of all
+existing commands, both simple and environment ones.  An exact definition of the terms
+used is shown in \sref{tab:permdesc}.
 
 \begin[tab:permdesc]{table}
 {Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
@@ -1993,94 +1898,94 @@ in \sref{tab:permdesc}.
 \end{tabular}
 \end{table}
 
-As the \sref{tab:permlist} below confirms, it is always possible to specify empty extra
-parameters for any command.  This is done so that token concatenation is possible for
-simple commands that take no primary parameters, as is often the case with user-defined
-macros.  A practical application of this feature is described in \sref{sec:macros}.
+Note that it is always possible to specify empty extra parameters for any command.
+This is done so that token concatenation is possible for simple commands that take
+no primary parameters, as is often the case with user-defined macros.  A practical
+application of this feature is described in \sref{sec:macros}.
 
 \begin[tab:permlist]{table}
-{The permissions associated with the various \lambtex commands for each of the three classes
-(order, label, and extra) of optional arguments.  In the case of extra parameters, the options
-available for each command are also displayed.  Note that simple commands are shown prefixed
-with a backslash, whereas environment commands are enclosed inside brackets.  Within each
-category, commands are shown alphabetically.  Furthermore, the commands \code{\emph{\\macro}},
-\code{\emph{boxout}} and \code{\emph{theorem}} are shown in italics because the actual command
-name is user-defined.}
-\begin{tabular}{rlll}
+{The permissions associated with the various \lambtex commands for order and label
+optional parameters.  Note that simple commands are shown prefixed with a backslash,
+whereas environment commands are enclosed inside brackets.  Within each category,
+commands are shown alphabetically.  Furthermore, the commands \code{\emph{\\macro}},
+\code{\emph{boxout}} and \code{\emph{theorem}} are shown in italics because the actual
+command name is user-defined.}
+\begin{tabular}{rll}
 \head
-| Command			| Order		| Label		| Extra |
+| Command			| Order		| Label		|
 \body
-| \code{\\answer}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\appendix}		| \forbidden	| \optional	| \forbidden0 |
-| \code{\\arg}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\bibliography}		| \forbidden	| \optional	| \forbidden0 |
-| \code{\\body}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\bold}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\br}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\caps}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\cite}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\code}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\del}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\foot}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\glyph}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\head}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\ins}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\item}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\link}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\emph{\\macro}}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\mbox}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\mref}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\notes}		| \forbidden	| \optional	| \forbidden0 |
-| \code{\\paragraph}		| \forbidden	| \forbidden	| \code{initial}, \code{indent} |
-| \code{\\part}			| \depends0	| \optional	| \forbidden0 |
-| \code{\\picture}		| \forbidden	| \forbidden	| \code{frame}, \code{width} |
-| \code{\\question}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\ranswer}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\ref}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\rquestion}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\rule}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\section}		| \depends0	| \optional	| \forbidden0 |
-| \code{\\see}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\span}			| \forbidden	| \forbidden	| \code{class} |
-| \code{\\sref}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\sub}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\subsection}		| \depends0	| \optional	| \forbidden0 |
-| \code{\\subsubsection}	| \depends0	| \optional	| \forbidden0 |
-| \code{\\subtitle}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\sup}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\title}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\toc}			| \forbidden	| \optional	| \forbidden0 |
-| \code{\\what}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\where}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\\who}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{\\answer}		| \forbidden	| \forbidden	|
+| \code{\\appendix}		| \forbidden	| \optional	|
+| \code{\\arg}			| \forbidden	| \forbidden	|
+| \code{\\bibliography}		| \forbidden	| \optional	|
+| \code{\\body}			| \forbidden	| \forbidden	|
+| \code{\\bold}			| \forbidden	| \forbidden	|
+| \code{\\br}			| \forbidden	| \forbidden	|
+| \code{\\caps}			| \forbidden	| \forbidden	|
+| \code{\\cite}			| \forbidden	| \forbidden	|
+| \code{\\code}			| \forbidden	| \forbidden	|
+| \code{\\del}			| \forbidden	| \forbidden	|
+| \code{\\foot}			| \forbidden	| \forbidden	|
+| \code{\\glyph}		| \forbidden	| \forbidden	|
+| \code{\\head}			| \forbidden	| \forbidden	|
+| \code{\\ins}			| \forbidden	| \forbidden	|
+| \code{\\item}			| \forbidden	| \forbidden	|
+| \code{\\link}			| \forbidden	| \forbidden	|
+| \code{\emph{\\macro}}		| \forbidden	| \forbidden	|
+| \code{\\mbox}			| \forbidden	| \forbidden	|
+| \code{\\mref}			| \forbidden	| \forbidden	|
+| \code{\\notes}		| \forbidden	| \optional	|
+| \code{\\paragraph}		| \forbidden	| \forbidden	|
+| \code{\\part}			| \depends0	| \optional	|
+| \code{\\picture}		| \forbidden	| \forbidden	|
+| \code{\\question}		| \forbidden	| \forbidden	|
+| \code{\\ranswer}		| \forbidden	| \forbidden	|
+| \code{\\dref}			| \forbidden	| \forbidden	|
+| \code{\\rquestion}		| \forbidden	| \forbidden	|
+| \code{\\rule}			| \forbidden	| \forbidden	|
+| \code{\\section}		| \depends0	| \optional	|
+| \code{\\see}			| \forbidden	| \forbidden	|
+| \code{\\span}			| \forbidden	| \forbidden	|
+| \code{\\sref}			| \forbidden	| \forbidden	|
+| \code{\\sub}			| \forbidden	| \forbidden	|
+| \code{\\subsection}		| \depends0	| \optional	|
+| \code{\\subsubsection}	| \depends0	| \optional	|
+| \code{\\subtitle}		| \forbidden	| \forbidden	|
+| \code{\\sup}			| \forbidden	| \forbidden	|
+| \code{\\title}		| \forbidden	| \forbidden	|
+| \code{\\toc}			| \forbidden	| \optional	|
+| \code{\\what}			| \forbidden	| \forbidden	|
+| \code{\\where}		| \forbidden	| \forbidden	|
+| \code{\\who}			| \forbidden	| \forbidden	|
 \body
-| \code{abstract}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{bib}			| \forbidden	| \optional	| \forbidden0 |
-| \code{\emph{boxout}}		| \depends0	| \optional	| \code{float} |
-| \code{decor}			| \forbidden	| \forbidden	| \code{float} |
-| \code{description}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{enumerate}		| \forbidden	| \forbidden	| \code{bul} |
-| \code{equation}		| \depends0	| \optional	| \code{float} |
-| \code{figure}			| \depends0	| \optional	| \code{float} |
-| \code{itemize}		| \forbidden	| \forbidden	| \code{num} |
-| \code{mathml}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{mathtex}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{note}			| \forbidden	| \optional	| \forbidden0 |
-| \code{quote}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{printout}		| \depends0	| \optional	| \code{float} |
-| \code{pull}			| \forbidden	| \forbidden	| \code{float} |
-| \code{qanda}			| \forbidden	| \forbidden	| \forbidden0 |
-| \code{source}			| \forbidden	| \forbidden	| \code{lang}, \code{style}, \code{nums} |
-| \code{subpage}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{table}			| \depends0	| \optional	| \forbidden0 |
-| \code{tabular}		| \forbidden	| \forbidden	| \forbidden0 |
-| \code{\emph{theorem}}		| \depends0	| \optional	| \forbidden0 |
-| \code{verbatim}		| \forbidden	| \forbidden	| \code{mult} |
-| \code{verse}			| \forbidden	| \forbidden	| \forbidden0 |
+| \code{abstract}		| \forbidden	| \forbidden	|
+| \code{bib}			| \forbidden	| \optional	|
+| \code{\emph{boxout}}		| \depends0	| \optional	|
+| \code{decor}			| \forbidden	| \forbidden	|
+| \code{description}		| \forbidden	| \forbidden	|
+| \code{enumerate}		| \forbidden	| \forbidden	|
+| \code{equation}		| \depends0	| \optional	|
+| \code{figure}			| \depends0	| \optional	|
+| \code{itemize}		| \forbidden	| \forbidden	|
+| \code{mathml}			| \forbidden	| \forbidden	|
+| \code{mathtex}		| \forbidden	| \forbidden	|
+| \code{note}			| \forbidden	| \optional	|
+| \code{quote}			| \forbidden	| \forbidden	|
+| \code{printout}		| \depends0	| \optional	|
+| \code{pull}			| \forbidden	| \forbidden	|
+| \code{qanda}			| \forbidden	| \forbidden	|
+| \code{source}			| \forbidden	| \forbidden	|
+| \code{subpage}		| \forbidden	| \forbidden	|
+| \code{table}			| \depends0	| \optional	|
+| \code{tabular}		| \forbidden	| \forbidden	|
+| \code{\emph{theorem}}		| \depends0	| \optional	|
+| \code{verbatim}		| \forbidden	| \forbidden	|
+| \code{verse}			| \forbidden	| \forbidden	|
 \end{tabular}
 \end{table}
 
-\section[sec:order]{Notes on ordering in the context of sub-pages}
+
+\section[sec:order]{Notes on ordering}
 
 This section applies to those blocks that may have an associated ordering, namely
 wrapper blocks, sectional blocks, and the custom blocks (boxouts and theorems).
@@ -2094,16 +1999,16 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 \begin{enumerate}
 
 \item
-	Only numbered elements may be referred to using \code{\\ref} and \code{\\sref}
+	Only numbered elements may be referred to using \code{\\dref} and \code{\\sref}
 	commands:
 
-	\p<!indent>{Unless the user explicitly demanded an empty ordering, sectional
+	\p<noindent>{Unless the user explicitly demanded an empty ordering, sectional
 	commands and wrappers have by default a number.  In the case of custom
 	environments, the situation varies.}
 
 	It makes sense that the hyperlinking commands that are supposed to produce
 	a number should only be used with numbered wrappers, numbered sectional
-	blocks, or numbered custom environments.  These commands are \code{\\ref}
+	blocks, or numbered custom environments.  These commands are \code{\\dref}
 	and \code{\\sref}.  On the other hand, because \code{\\mref} does not output
 	a number, it is always allowed.
 
@@ -2111,7 +2016,7 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 	You must explicitly provide a manual ordering for sub-paged wrappers, sectional
 	blocks, or custom blocks:
 
-	\p<!indent>{A sub-paged element is one that is declared inside a \code{subpage}
+	\p<noindent>{A sub-paged element is one that is declared inside a \code{subpage}
 	block (see \sref{sec:subpage}).  Because they lie outside the main flow of the
 	document, these elements are not automatically numbered.  You must therefore
 	explicitly provide them with an ordering parameter by inserting the numbering
@@ -2121,87 +2026,12 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 	You may not provide a manual ordering for wrappers, sectional blocks, or custom
 	blocks defined outside a sub-page:
 
-	\p<!indent>{This rule is complementary to the previous one.  Because these
+	\p<noindent>{This rule is complementary to the previous one.  Because these
 	blocks are numbered automatically by \lambtex when present in the main document,
 	you may not interfere with that automatism by providing an explicit ordering.
 	Note, however, that an empty ordering is always allowed.}
 
 \end{enumerate}
-
-
-\section[sec:extra]{Extra parameters}
-
-Remember that extra parameters are those enclosed between angle brackets, and always
-precede any mandatory parameters the command may have.  Canonically, specifying that a
-parameter \code{alpha} should have a value \code{x} is done by declaring \code{alpha=x}
-as the extra parameter.  Should the command accept multiple parameters, these can
-be separated by inserting a '\code{,}' (comma) between them.  \sref{tab:extradesc}
-below lists all the existing extra parameters together with the accepted values for each.
-
-\begin[tab:extradesc]{table}
-{List of all existing extra parameters and associated range of values.
-Consult \sref{tab:permlist} for a list of which of these parameters are
-accepted for each command.}
-\begin{tabular}{rl}
-\head
-| Parameter		| Accepted values |
-\body
-| \code{initial}	| Boolean |
-| \code{indent}		| Boolean or \code{auto} |
-| \code{nums}		| Boolean |
-| \code{mult}		| Integer between 0 and 9 (inclusive) |
-| \code{frame}		| Boolean |
-| \code{width}		| Integer between 1 and 100 (inclusive), or \code{auto} |
-| \code{bul}		| Discrete values: \code{disc}, \code{circle}, \code{square}, \code{none} |
-| \code{num}		| Discrete values:
-			\code{0}, \code{i}, \code{I}, \code{a}, \code{A},
-			\code{decimal}, \code{lower-roman}, \code{upper-roman},
-			\code{lower-alpha}, \code{upper-alpha}, \code{none} |
-| \code{float}		| Discrete values: \code{center}, \code{left}, \code{right} |
-| \code{class}		| A class name specification |
-| \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
-| \code{style}		| Discrete values: \code{plain}, \code{boxed}, \code{zebra}, \code{console} |
-\end{tabular}
-\end{table}
-
-
-Note that for brevity sake, \lambtex allows shorthand forms to be specified
-instead of the canonical form.  The shorthand pre-conditions are as follows:
-
-\begin{enumerate}
-
-\item	It suffices to declare a value if there is no ambiguity as to which parameter
-	it belongs to.	In the example above this means declaring simply \code{x}
-	instead of \code{alpha=x}. Because \lambtex knows which values are valid
-	for each parameter, and because there are practically no overlaps in the existing
-	set of commands, this condition applies almost always.	The notable exception
-	is the simple command \code{paragraph}, which accepts two different boolean
-	parameters (see \sref{tab:permlist}).
-
-\item	Boolean parameters may be set by specifying the parameter name.  Therefore, if
-	parameter \code{beta} is boolean, you may set it to true by declaring either
-	\code{beta}, \code{beta=true}, \code{beta=y}, or if there are no other boolean
-	parameters accepted for the command, just \code{true} or \code{y}.  Similarly,
-	a boolean parameter may be unset by prefixing it with '\code{!}'.  Therefore,
-	setting \code{beta} to false can be done by declaring either \code{!beta},
-	\code{beta=false}, \code{beta=n}, or if there is no chance of conflict, just
-	\code{false} or \code{n}.
-
-\item	When setting multiple extra parameters, if one of the settings is
-	provided in canonical form or as a boolean parameter name, then it can be used
-	to constrain an otherwise ambiguous declaration.  Consider thus a command that
-	takes two boolean extra parameters, \code{alpha} and \code{beta}.  Only providing
-	the sequence \code{true} is ambiguous, because \lambtex has no way of
-	knowing to which parameter it refers.  However, specifying \code{!alpha,true}
-	is not ambiguous, because this can only be interpreted as setting parameter
-	\code{alpha} to \code{false}, and the remaining parameter --- which can only
-	be \code{beta} --- to \code{true}.
-
-\end{enumerate}
-
-As can be deduced from the above rules, \lambtex uses a basic constraint
-satisfaction algorithm to resolve extra parameter declarations.  If the declaration
-is unambiguous to a human, so it should be to \lambtex.
 
 
 \part(){Backmatter}
