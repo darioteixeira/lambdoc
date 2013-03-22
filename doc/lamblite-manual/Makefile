@@ -1,12 +1,9 @@
 LAMBCMD=../../src/_build/lambcmd/lambcmd.native
 
-all: index.html features.png
+all: index.html
 
 index.html: lamblite-manual.lambtex
-	$(LAMBCMD) --title "The Lamblite Manual" -f lambtex -t xhtml -i $< -o $@
-
-features.png: features.svg
-	inkscape -D -f $< -e $@ -w 320
+	$(LAMBCMD) --title "The Lamblite Manual" -f lambtex -t html -i $< -o $@
 
 clean:
 	rm -rf index.html

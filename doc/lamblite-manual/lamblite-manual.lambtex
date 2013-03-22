@@ -6,7 +6,7 @@
 
 \title{The \lamblite Manual}
 \subtitle{Dario Teixeira}
-\subtitle{May 2010}
+\subtitle{March 2013}
 
 \toc
 
@@ -16,36 +16,16 @@
 It is inspired by \caps{markdown}\cite{bib:markdown} and \caps{creole}\cite{bib:creole},
 and remains for the most part compatible with the latter. Similarly to other lightweight
 markup languages, \lamblite is targeted at the description of documents consisting
-largely of text (whose input encoding must be \caps{utf-8}), and where syntactic
-annotations match traditional conventions used in email.  While not as powerful
-and flexible as a full-featured markup language like \caps{LaTeX}\cite{bib:latex}
-or \lambtex\cite{bib:lambtex}, the lightweight markup used by \lamblite should be
-sufficient to describe most simple documents.}
+largely of \caps{utf-8} text, and where syntactic annotations are inspired by conventions
+used in email.}
 
 \lamblite is part of the family of markup languages supported by the \lambdoc
-library\cite{bib:lambdoc}.  \lambdoc distinguishes between two classes of documents
---- \emph{manuscripts} and \emph{compositions} --- and \lamblite may be used for
-writing either.  A manuscript may make use of sectioning, internal links, and other
-advanced features of the library such as pull-quotes and decorations.  A composition,
-on the other hand, is a simpler kind of document which neither makes use of internal
-links nor some of the other advanced features of \lambdoc.  Note that compositions
-are a proper subset of manuscripts.
-
-With one exception, all the elements supported by \lamblite are part of the feature
-set of compositions.  The exception consists of the sectioning specifiers described in
-\sref{sec:sectioning}.  Therefore, documents making use of this feature are necessarily
-manuscripts, while those that do not may be either compositions or manuscripts.
-It also follows that \lamblite supports only a limited subset of all the features
-available in \lambdoc, as \sref{fig:features} illustrates.  If your document requires
-a richer set of semantic elements, you should consider using instead a full-fledged
-\lambdoc language like \lambtex.
-
-\begin[fig:features]{figure}
-{Representation of the set of features supported by \lamblite contrasted with the overall
-features of the \lambdoc library.  It should be salient that even though \lamblite
-does support both composition and manuscript features, it covers only a subset of both.}
-\picture{features.png}{Features}
-\end{figure}
+library\cite{bib:lambdoc}.  However, \lamblite supports only a limited subset of
+all the features available in \lambdoc.  While not as powerful and flexible as a
+full-featured markup language like \lambtex\cite{bib:lambtex}, the lightweight markup
+used by \lamblite should be sufficient to describe most simple documents.  If your
+document requires a richer set of semantic elements, then obviously you should consider
+using instead a full-fledged markup like \lambtex.
 
 
 \section{Paragraphs and text formatting}
@@ -94,7 +74,7 @@ using the \caps{uri} itself as description text.
 The following source-code fragment illustrates the declaration of paragraphs in
 \lamblite, text formatting commands, and the use of hyperlinks:
 
-\begin{source}
+\begin<boxed>{source}
 Line breaks within one paragraph are not important,
 since paragraphs are only terminated by a blank line.
 
@@ -202,7 +182,7 @@ list depth by more than one unit.
 The following sample illustrates lists in \lamblite.  Note the flexible use of blank
 lines and whitespace for indentation.
 
-\begin{source}
+\begin<boxed>{source}
 The reasons are four:
 
 # This is the first reason;
@@ -245,7 +225,7 @@ Quotations in \lamblite follow the email tradition of prefixing each quoted line
 the character '\code{>}' (the greater-than sign).  Following this marker you may have
 a normal paragraph or a list definition, as the example below illustrates:
 
-\begin{source}
+\begin<boxed>{source}
 This is what you said:
 
 > Eggs should be opened by their large end.
@@ -283,7 +263,7 @@ Quotations within quotations are also legal.  The quotation level is indicated b
 the number of '\code{>}' characters that prefix the line.  Whitespace between the
 '\code{>}' characters is optional.  Consider thus the following \lamblite source:
 
-\begin{source}
+\begin<boxed>{source}
 This is your interpretation of the discussion:
 
 >This is what you said:
@@ -320,17 +300,36 @@ the characters inside a verbatim block; in other words, escaping is not possible
 and neither is the input of \caps{html} entities using the ampersand operator.
 
 Verbatim environments accept a limited form of configuration.  In the same line and
-immediately after the begin marker you may specify an optional scaling factor for
-the environment.  In the general case, this takes the form \code{mult=\emph{n}},
-where [$n$] is an integer between 0 and 9 (inclusive).  The actual scaling is given
-by the formula [$\sqrt{2}^n$], which means that setting [$n$] to 0 will result in a
-figure shown in normal size (this is the default), while [$n=9$] results in a figure
-22.6 times larger than normal.  Note that the prefix \code{mult=} is optional, and
-therefore the integer factor may appear on its own after the '\code{(((}' sequence.
+immediately after the begin marker you may specify one or more class name declarations,
+separated by commas.  Each class name maps directly to \caps{html} class names,
+but preppended by '\code{doc_class_}' (the prefix prevents name clashes).  Note that
+classnames must begin with a lowercase Roman letter, and may contain only lowercase
+Roman letters, digits, the character '-' (dash), or the character '_' (underscore).
 
-Consider thus the following \lamblite source-code fragment:
+For your convenience, the \caps{css} shipped with \lamblite includes some predefined
+class names for use with verbatim environments.  These are \code{mult0}, \code{mult1},
+and so forth until \code{mult9}.  The integer indicates a multiplying factor for the
+contents of the environment.  For a factor of [$x$], the actual scaling relative to
+normal size is given by [$\sqrt{2}^x$].  The default factor is 0, which corresponds
+to normal size.  One common application of this feature is to display \caps{unicode}
+characters as full-sized pictures.  As an example, this is what the \caps{unicode}
+snowman (code point \caps{U+2603}) looks like with a multiplier of 7, corresponding
+to a font size 11.3 times larger than normal:
 
-\begin{source}
+\begin<mult7>{verbatim}
+☃
+\end{verbatim}
+
+In addition, the default \caps{css} also allows floatation specifiers to be used with
+verbatim blocks.  Floating specifiers take the form of class names '\code{center}',
+'\code{left}', and '\code{right}'.  They declare that the block should be displayed
+either centered and occupying the entire width of the page (this is the default),
+floating on the left, or floating on the right, respectively.  Note that they map
+directly to \caps{css} \code{float} declarations.
+
+To illustrate the use of verbatim blocks, consider the following \lamblite source-code fragment:
+
+\begin<boxed>{source}
 Here's a box:
 
 (((
@@ -338,17 +337,9 @@ Here's a box:
 |  Box  |
 ---------
 )))
-
-And here's a snowman shown with a multiplication factor of 7,
-corresponding to a font 11.3 times larger than normal:
-
-(((mult=7
-☃
-)))
 \end{source}
 
-The result as produced by the composer is shown below.  Note the use of the multiplier
-option in the second figure.
+The result produced by the composer is shown below:
 
 \begin{subpage}
 Here's a box:
@@ -356,11 +347,6 @@ Here's a box:
 ---------
 |  Box  |
 ---------
-\end{verbatim}
-And here's a snowman shown with a multiplication factor of 7,
-corresponding to a font 11.3 times larger than normal:
-\begin<7>{verbatim}
-☃
 \end{verbatim}
 \end{subpage}
 
@@ -371,29 +357,30 @@ While nothing prevents you from using the aforedescribed verbatim blocks for dis
 source-code listings, \lamblite does have a dedicated facility for this purpose, with a
 number of advantages.  Source-code blocks are declared in much the same way as verbatim
 blocks, but use '\code{\{\{\{}' and '\code{\}\}\}}' as delimiter characters instead.
-Moreover, they also accept --- albeit different --- configuration options.
+Moreover, they also accept --- albeit different --- style configuration options.
 
-Similarly to verbatim blocks, the configuration of a source-code environment is to be
-placed immediately after the '\code{\{\{\{}' sequence that signals the beginning of
-the block (whitespace is optional both before and after, but the configuration must be
-on the same line).  Because multiple configuration options are allowed, these should be
-separated by commas.  The canonical form for specifying that an option \code{\emph{key}}
-should take value \code{\emph{value}} is \code{\emph{key}=\emph{value}}.  However,
-if there is no chance of ambiguity then a shorthand notation may be used (see
-\sref{sec:extra} for details).
+Similarly to verbatim blocks, the style configuration of a source-code environment is
+to be placed immediately after the '\code{\{\{\{}' sequence that signals the beginning
+of the block (whitespace is optional both before and after, but the configuration
+must be on the same line).  Because multiple configuration options are allowed,
+these should be separated by commas.  Moreover, options come in two different types.
+The first was already discussed in the previous section about verbatim blocks:
+class name declarations.  The second type is a key-value declaration, whose generic
+form is '\code{\emph{key}=\emph{value}}', for a key '\code{\emph{key}}' and value
+'\code{\emph{value}}'.
 
-As for the accepted configuration options, the most important is undoubtedly \code{lang},
-which sets the rules used for syntax highlighting.  The remaining two options are
-used to tweak the manner in which the source code is to be displayed.  First, the
-parameter \code{style} indicates the overall style for displaying the code block.
-It accepts the values \code{plain}, \code{boxed}, \code{zebra}, and \code{console},
-with the default being \code{boxed}.  Second, the boolean parameter \code{nums}
-indicates whether line numbers should be added to the listing.  Its default is false.
+There are two key-value configuration options available.  The most important is
+undoubtedly '\code{lang}', which when set with the name of a language, sets the rules for
+syntax highlighting.  Also available is '\code{nums}', which accepts a boolean value and
+dictates whether line numbers should be added to the source code listing.  Valid boolean
+values are '\code{true}', '\code{yes}' and '\code{on}' for truth value \emph{true} and
+'\code{false}', '\code{no}' and '\code{off}' for truth value \emph{false}.  It defaults
+to false.
 
-The obligatory example, showing an \caps{ocaml} source-code fragment:
+The obligatory example, showing an OCaml source-code fragment:
 
-\begin{source}
-{{{lang=ocaml,style=zebra,nums=true
+\begin<boxed>{source}
+{{{lang=ocaml,nums=true,zebra
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -405,9 +392,9 @@ let rec count = function
 \end{source}
 
 The result as produced from the composer is shown below.  Note the syntax-highlighting
-following \caps{ocaml} conventions, the zebra lines, and the display of line numbers:
+following OCaml conventions, the zebra lines, and the display of line numbers:
 
-\begin<lang=ocaml,style=zebra,nums=true>{source}
+\begin<lang=ocaml,nums=true,zebra>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -430,7 +417,7 @@ text is optional, and is discarded if present.
 
 Consider thus the following \lamblite fragment:
 
-\begin{source}
+\begin<boxed>{source}
 = This is a section
 
 Lorem ipsum dolor sit amet.
@@ -463,63 +450,6 @@ Lorem ipsum dolor sit amet.
 
 
 \appendix
-
-\section[sec:extra]{How extra parameters are parsed}
-
-Both \mref{sec:verbatim}{verbatim} and \mref{sec:source}{source-code} blocks may be given
-some extra configuration options.  Canonically, specifying that a parameter \code{alpha}
-should have a value \code{x} is done by declaring \code{alpha=x} as the extra parameter.
-Should the command accept multiple parameters, these can be separated by inserting a
-'\code{,}' (comma) between them.  \sref{tab:extradesc} below lists all the existing
-extra parameters together with the accepted values for each.
-
-\begin[tab:extradesc]{table}
-{List of all existing extra parameters and associated range of values.}
-\begin{tabular}{rl}
-\head
-| Command		| Accepted values |
-\body
-| \code{nums}		| Boolean |
-| \code{mult}		| Integer between 0 and 9 (inclusive) |
-| \code{lang}		| Discrete values: \code{ocaml}, \code{c}, \code{java}, etc (any value accepted by the \link{http://camlhighlight.forge.ocamlcore.org/}{\caps{camlhighlight}} library) |
-| \code{style}		| Discrete values: \code{plain}, \code{boxed}, \code{zebra}, \code{console} |
-\end{tabular}
-\end{table}
-
-
-Note that for brevity sake, \lamblite allows shorthand forms to be specified
-instead of the canonical form.  The shorthand pre-conditions are as follows:
-
-\begin{enumerate}
-
-\item	It suffices to declare a value if there is no ambiguity as to which parameter
-	it belongs to.	In the example above this means declaring simply \code{x}
-	instead of \code{alpha=x}.
-
-\item	Boolean parameters may be set by specifying the parameter name.  Therefore, if
-	parameter \code{beta} is boolean, you may set it to true by declaring either
-	\code{beta}, \code{beta=true}, \code{beta=y}, or if there are no other boolean
-	parameters accepted for the command, just \code{true} or \code{y}.  Similarly,
-	a boolean parameter may be unset by prefixing it with '\code{!}'.  Therefore,
-	setting \code{beta} to false can be done by declaring either \code{!beta},
-	\code{beta=false}, \code{beta=n}, or if there is no chance of conflict, just
-	\code{false} or \code{n}.
-
-\item	When setting multiple extra parameters, if one of the settings is provided in
-	canonical form or as a boolean parameter name, then it can be used to constrain
-	an otherwise ambiguous declaration.  Consider thus a command that takes two
-	boolean extra parameters, \code{alpha} and \code{beta}.  Only providing the
-	sequence \code{true} is ambiguous, because \lamblite has no way of knowing
-	to which parameter it refers.  However, specifying \code{!alpha,true} is not
-	ambiguous, because this can only be interpreted as setting parameter \code{alpha}
-	to \code{false}, and the remaining parameter --- which can only be \code{beta}
-	--- to \code{true}.
-
-\end{enumerate}
-
-As can be deduced from the above rules, \lamblite uses a basic constraint satisfaction
-algorithm to resolve extra parameter declarations.  If the declaration is unambiguous
-to a human, so it should be to \lamblite.
 
 
 \part(){Backmatter}
