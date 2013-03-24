@@ -256,7 +256,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| None	 -> [dummy_inline] in
 
 
-	let rec convert_inline ~context ~args is_ref inline = match (is_ref, inline) with
+	let rec convert_inline ~context ~depth ~args is_ref inline = match (is_ref, inline) with
 
 		| (_, (comm, Ast.Plain ustr)) ->
 			let elem attr _ = [Inline.plain ~attr ustr] in
@@ -285,55 +285,55 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_inline_comm `Feature_glyph comm elem
 
 		| (x, (comm, Ast.Bold astseq)) ->
-			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_bold comm elem
 
 		| (x, (comm, Ast.Emph astseq)) ->
-			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_emph comm elem
 
 		| (x, (comm, Ast.Code astseq)) ->
-			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_code comm elem
 
 		| (x, (comm, Ast.Caps astseq)) ->
-			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_caps comm elem
 
 		| (x, (comm, Ast.Ins astseq)) ->
-			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_ins comm elem
 
 		| (x, (comm, Ast.Del astseq)) ->
-			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_del comm elem
 
 		| (x, (comm, Ast.Sup astseq)) ->
-			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_sup comm elem
 
 		| (x, (comm, Ast.Sub astseq)) ->
-			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_sub comm elem
 
 		| (x, (comm, Ast.Mbox astseq)) ->
-			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_mbox comm elem
 
 		| (x, (comm, Ast.Span astseq)) ->
-			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~context ~args x astseq)] in
+			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_span comm elem
 
 		| (false, (comm, Ast.Link (uri, maybe_astseq))) ->
 			let elem attr _ =
-				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				[Inline.link ~attr uri maybe_seq] in
 			check_inline_comm `Feature_link comm elem
 
 		| (false, (comm, Ast.Booklink (isbn, maybe_astseq))) ->
 			let elem attr dict =
 				let rating = Style.consume1 dict (Rating_hnd, None) in
-				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				add_isbn comm `Feature_booklink isbn;
 				[Inline.booklink ~attr isbn rating maybe_seq] in
 			check_inline_comm `Feature_booklink comm elem
@@ -378,7 +378,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				[Inline.dref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_dref comm elem
 
@@ -392,7 +392,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _					 -> `Valid_target
 					| _								 -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~args true) maybe_astseq in
+				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				[Inline.sref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_sref comm elem
 
@@ -402,7 +402,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| Target.Visible_target _ -> `Valid_target
 					| _			  -> `Wrong_target Error.Target_label in
 				add_pointer target_checker comm pointer;
-				[Inline.mref ~attr pointer (convert_seq_aux ~comm ~context ~args true astseq)] in
+				[Inline.mref ~attr pointer (convert_seq_aux ~comm ~context ~depth ~args true astseq)] in
 			check_inline_comm `Feature_mref comm elem
 
 		| (_, (comm, Ast.Macroarg raw_num)) ->
@@ -437,14 +437,14 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						match idiosyncrasies.max_macro_depth with
 							| None ->
 								let context = (context_comm, depth+1) in
-								let new_arglist = List.map (convert_inline_list ~comm ~context ~args x) arglist in
-								convert_inline_list ~comm ~context ~args:(Some new_arglist) x macro_astseq
+								let new_arglist = List.map (convert_inline_list ~comm ~context ~depth ~args x) arglist in
+								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) x macro_astseq
 							| Some num when depth < num ->
 								let context = (context_comm, depth+1) in
-								let new_arglist = List.map (convert_inline_list ~comm ~context ~args x) arglist in
-								convert_inline_list ~comm ~context ~args:(Some new_arglist) x macro_astseq
+								let new_arglist = List.map (convert_inline_list ~comm ~context ~depth ~args x) arglist in
+								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) x macro_astseq
 							| Some num ->
-								let msg = Error.Invalid_macro_depth (name, num) in
+								let msg = Error.Excessive_macro_depth (comm.comm_tag, num) in
 								BatDynArray.add errors (Some comm.comm_linenum, msg);
 								[]
 				with
@@ -459,33 +459,38 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[]
 
-	and convert_inline_list ~comm ~context ~args is_ref astseq =
-		let coalesce_plain seq =
-			let rec coalesce_plain_aux accum = function
-				| {Inline.inline = Inline.Plain txt1; attr} :: {Inline.inline = Inline.Plain txt2; _} :: tl ->
-					let agg = Inline.plain ~attr (txt1 ^ txt2) in
-					coalesce_plain_aux accum (agg :: tl)
-				| hd :: tl ->
-					coalesce_plain_aux (hd :: accum) tl
+	and convert_inline_list ~comm ~context ~depth ~args is_ref astseq = match idiosyncrasies.max_inline_depth with
+		| Some max when depth >= max ->
+			let msg = Error.Excessive_inline_depth (comm.comm_tag, max) in
+			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			[dummy_inline]
+		| _ ->
+			let coalesce_plain seq =
+				let rec coalesce_plain_aux accum = function
+					| {Inline.inline = Inline.Plain txt1; attr} :: {Inline.inline = Inline.Plain txt2; _} :: tl ->
+						let agg = Inline.plain ~attr (txt1 ^ txt2) in
+						coalesce_plain_aux accum (agg :: tl)
+					| hd :: tl ->
+						coalesce_plain_aux (hd :: accum) tl
+					| [] ->
+						accum in
+				List.rev (coalesce_plain_aux [] seq) in
+			let seq = flatten_map (convert_inline ~context ~depth:(depth+1) ~args is_ref) astseq in
+			let new_seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
+			match new_seq with
 				| [] ->
-					accum in
-			List.rev (coalesce_plain_aux [] seq) in
-		let seq = flatten_map (convert_inline ~context ~args is_ref) astseq in
-		let new_seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
-		match new_seq with
-			| [] ->
-				let msg = Error.Empty_sequence comm.comm_tag in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				[dummy_inline]
-			| xs ->
-				xs
+					let msg = Error.Empty_sequence comm.comm_tag in
+					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					[dummy_inline]
+				| xs ->
+					xs
 
-	and convert_seq_aux ~comm ~context ~args is_ref astseq =
-		let seq = convert_inline_list ~comm ~context ~args is_ref astseq in
+	and convert_seq_aux ~comm ~context ~depth ~args is_ref astseq =
+		let seq = convert_inline_list ~comm ~context ~depth ~args is_ref astseq in
 		(List.hd seq, List.tl seq) in
 
 	let convert_seq ~comm ?args seq =
-		convert_seq_aux ~comm ~context:(comm, 0) ?args false seq in
+		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ?args false seq in
 
 
 	(************************************************************************)
@@ -570,7 +575,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| None	 -> [dummy_block] in
 
 
-	let rec convert_block ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk block =
+	let rec convert_block ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk block =
+
 		match (allow_above_listable, allow_above_quotable, allow_above_embeddable, allowed_blk, block) with
 
 		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph astseq))
@@ -579,27 +585,27 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_block_comm `Feature_paragraph comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize astfrags)) ->
-			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.itemize ~attr) ~minipaged x1 x2 astfrags in
+			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.itemize ~attr) ~minipaged ~depth x1 x2 astfrags in
 			check_block_comm `Feature_itemize comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate astfrags)) ->
-			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate ~attr) ~minipaged x1 x2 astfrags in
+			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate ~attr) ~minipaged ~depth x1 x2 astfrags in
 			check_block_comm `Feature_enumerate comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Description astfrags)) ->
-			let elem attr _ = convert_frag_of_desc_frags ~comm ~cons:(Block.description ~attr) ~minipaged x1 x2 astfrags in
+			let elem attr _ = convert_frag_of_desc_frags ~comm ~cons:(Block.description ~attr) ~minipaged ~depth x1 x2 astfrags in
 			check_block_comm `Feature_description comm elem
 
 		| (_, x1, x2, `Any_blk, (comm, Ast.Qanda astfrags)) ->
-			let elem attr _ = convert_frag_of_qanda_frags ~comm ~cons:(Block.qanda ~attr) ~minipaged x1 x2 astfrags in
+			let elem attr _ = convert_frag_of_qanda_frags ~comm ~cons:(Block.qanda ~attr) ~minipaged ~depth x1 x2 astfrags in
 			check_block_comm `Feature_qanda comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Verse astfrag)) ->
-			let elem attr _ = [Block.verse ~attr (convert_frag_aux ~comm ~minipaged false false false `Paragraph_blk astfrag)] in
+			let elem attr _ = [Block.verse ~attr (convert_frag_aux ~comm ~minipaged ~depth false false false `Paragraph_blk astfrag)] in
 			check_block_comm `Feature_verse comm elem
 
 		| (_, _, true, `Any_blk, (comm, Ast.Quote astfrag)) ->
-			let elem attr _ = [Block.quote ~attr (convert_frag_aux ~comm ~minipaged false false true `Any_blk astfrag)] in
+			let elem attr _ = [Block.quote ~attr (convert_frag_aux ~comm ~minipaged ~depth false false true `Any_blk astfrag)] in
 			check_block_comm `Feature_quote comm elem
 
 		| (_, _, _, `Equation_blk, (comm, Ast.Mathtex_blk txt))
@@ -630,7 +636,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
 		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
-			let elem attr _ = [Block.subpage ~attr (convert_frag_aux ~comm ~minipaged:true true true true `Any_blk astfrag)] in
+			let elem attr _ = [Block.subpage ~attr (convert_frag_aux ~comm ~minipaged:true ~depth true true true `Any_blk astfrag)] in
 			check_block_comm `Feature_subpage comm elem
 
 		| (_, _, _, `Figure_blk, (comm, Ast.Verbatim txt))
@@ -659,7 +665,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_astseq, astfrag))) ->
 			let elem attr _ =
 				let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
-				let frag = convert_frag_aux ~comm ~minipaged false false false `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth false false false `Any_blk astfrag in
 				[Block.pullquote ~attr maybe_seq frag] in
 			check_block_comm `Feature_pullquote comm elem
 
@@ -692,7 +698,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						| Custom.Boxout  -> (Block.boxout ~attr (Custom.Boxout.make data), true)
 						| Custom.Theorem -> (Block.theorem ~attr (Custom.Theorem.make data), false) in
 					let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
-					let frag = convert_frag_aux ~comm ~minipaged false false allow_above_embeddable `Any_blk astfrag in
+					let frag = convert_frag_aux ~comm ~minipaged ~depth false false allow_above_embeddable `Any_blk astfrag in
 					[block_maker maybe_seq frag]
 				with
 					| Not_found ->
@@ -708,28 +714,28 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astseq, astblk))) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
-				let blk = convert_block ~minipaged true true true `Equation_blk astblk in
+				let blk = convert_block ~minipaged ~depth true true true `Equation_blk astblk in
 				perhaps (Block.equation ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astseq, astblk))) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq in
-				let blk = convert_block ~minipaged true true true `Printout_blk astblk in
+				let blk = convert_block ~minipaged ~depth true true true `Printout_blk astblk in
 				perhaps (Block.printout ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astseq, astblk))) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm table_counter Wrapper.Table maybe_astseq in
-				let blk = convert_block ~minipaged true true true `Table_blk astblk in
+				let blk = convert_block ~minipaged ~depth true true true `Table_blk astblk in
 				perhaps (Block.table ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astseq, astblk))) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq in
-				let blk = convert_block ~minipaged true true true `Figure_blk astblk in
+				let blk = convert_block ~minipaged ~depth true true true `Figure_blk astblk in
 				perhaps (Block.figure ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
@@ -796,7 +802,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (true, true, true, `Any_blk, (comm, Ast.Abstract astfrag)) ->
 			let elem attr _ =
-				let frag = convert_frag_aux ~comm ~minipaged false false false `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth false false false `Any_blk astfrag in
 				[Block.abstract ~attr frag] in
 			check_block_comm `Feature_abstract comm elem
 
@@ -833,7 +839,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			let elem attr _ =
 				let order = Order_input.auto_ordinal note_counter in
 				let label = make_label comm (Target.note order) in
-				let frag = convert_frag_aux ~comm ~minipaged:true false true true `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged:true ~depth false true true `Any_blk astfrag in
 				let note = Note.make label order frag in
 				BatDynArray.add notes note;
 				[] in
@@ -961,9 +967,9 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					Hashtbl.add customisations env data
 
 
-	and convert_frag_of_anon_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
+	and convert_frag_of_anon_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, astfrag) =
-			let elem attr _ = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+			let elem attr _ = convert_frag_aux ~comm ~minipaged ~depth false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
 			check_comm `Feature_item comm elem in
 		let frags = List.filter_map conv astfrags in
 		match frags with
@@ -975,11 +981,11 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				[cons (hd, tl)]
 
 
-	and convert_frag_of_desc_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
+	and convert_frag_of_desc_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, astseq, astfrag) =
 			let elem attr _ =
 				let seq = convert_seq ~comm astseq in
-				let frag = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
 				(seq, frag) in
 			check_comm `Feature_item comm elem in
 		let frags = List.filter_map conv astfrags in
@@ -992,7 +998,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				[cons (hd, tl)]
 
 
-	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged allow_above_quotable allow_above_embeddable astfrags =
+	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
 		let conv (comm, qanda, astfrag) =
 			let (feature, qanda_maker) = match qanda with
 				| New_questioner maybe_astseq ->
@@ -1005,7 +1011,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					(`Feature_ranswer, fun () -> Qanda.Same_answerer) in
 			let elem attr _ =
 				let qanda = qanda_maker () in
-				let frag = convert_frag_aux ~comm ~minipaged false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
 				[(qanda, frag)] in
 			check_comm feature comm elem in
 		let frags = List.flatten (List.filter_map conv astfrags) in
@@ -1018,8 +1024,19 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				[cons (hd, tl)]
 
 
-	and convert_frag_aux ?comm ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
-		let conv astblk = convert_block ~minipaged allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk in
+	and convert_frag_aux ?comm ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
+		let conv = match idiosyncrasies.max_block_depth with
+			| None -> fun astblk ->
+				convert_block ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk
+			| Some max -> fun astblk ->
+				if depth >= max
+				then
+					let (comm, _) = astblk in
+					let msg = Error.Excessive_block_depth (comm.comm_tag, max) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					[dummy_block]
+				else
+					convert_block ~minipaged ~depth:(depth+1) allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk in
 		let frag = flatten_map conv astfrag in
 		match frag with
 			| [] ->
@@ -1034,7 +1051,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 
 	let convert_frag astfrag =
-		convert_frag_aux ~minipaged:false true true true `Any_blk astfrag in
+		convert_frag_aux ~minipaged:false ~depth:0 true true true `Any_blk astfrag in
 
 
 	(************************************************************************)

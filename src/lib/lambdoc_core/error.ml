@@ -92,11 +92,14 @@ type error_msg_t =
 	| Invalid_macro_argument_context
 	| Invalid_macro_argument_number of string * int
 	| Invalid_macro_call of Pointer.t * int * int
-	| Invalid_macro_depth of Pointer.t * int
 
 	| Invalid_macro of Ident.t option * Pointer.t
 	| Duplicate_macro of Ident.t option * Pointer.t
 	| Undefined_macro of Ident.t option * Pointer.t
+
+	| Excessive_macro_depth of Pointer.t option * int
+	| Excessive_inline_depth of Pointer.t option * int
+	| Excessive_block_depth of Pointer.t option * int
 
 	| Invalid_custom of Ident.t option * Pointer.t
 	| Mismatched_custom of Ident.t option * Pointer.t * Custom.kind_t * Custom.kind_t

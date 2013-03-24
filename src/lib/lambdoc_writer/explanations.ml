@@ -157,9 +157,6 @@ let explain_error = function
 	| Error.Invalid_macro_call (name, found, expected) ->
 		sprintf "Invalid macro invocation.  Macro '#%s#' expects %d argument(s) but found %d instead." (escape name) expected found
 
-	| Error.Invalid_macro_depth (name, max) ->
-		sprintf "Invocation of macro '#%s#' would cause depth of macro calls to go above maximum depth of %d." (escape name) max
-
 	| Error.Invalid_macro (tag, name) ->
 		sprintf "Invalid macro name '#%s#' in %s. %s." (escape name) (explain_tag tag) (explain_ident "A macro")
 
@@ -168,6 +165,15 @@ let explain_error = function
 
 	| Error.Undefined_macro (tag, name) ->
 		sprintf "Reference to undefined macro '#%s#'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." (escape name)
+
+	| Error.Excessive_macro_depth (tag, max) ->
+		sprintf "Invocation of %s would cause depth of macro calls to go above maximum of %d." (explain_tag tag) max
+
+	| Error.Excessive_inline_depth (tag, max) ->
+		sprintf "Invocation of %s would cause depth of inline elements to go above maximum of %d." (explain_tag tag) max
+
+	| Error.Excessive_block_depth (tag, max) ->
+		sprintf "Invocation of %s would cause depth of block elements to go above maximum of %d." (explain_tag tag) max
 
 	| Error.Invalid_custom (tag, env) ->
 		sprintf "Invalid name '#%s#' for custom environment in %s. %s." (escape env) (explain_tag tag) (explain_ident "A custom environment")
