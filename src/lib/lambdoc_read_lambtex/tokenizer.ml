@@ -42,7 +42,7 @@ type action_t =
 (*	{1 Auxiliary regular expressions}					*)
 (********************************************************************************)
 
-let pat_ident = "[a-zA-Z][a-zA-Z0-9]*"
+let pat_ident = "[a-z][a-z0-9_]*"
 let pat_begin = "\\\\begin"
 let pat_simple = "\\\\(?<simple>" ^ pat_ident ^ ")"
 let pat_primary = "\\{(?<primary>" ^ pat_ident ^ ")\\}"
