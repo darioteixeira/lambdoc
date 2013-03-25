@@ -380,11 +380,11 @@ Here is a list of small furry mammals:
 	\item{poodle:} Small dogs kept for company
 	\item{greyhound:} Running dogs
 	\end{description}
-\item Various rodents ordered by abundance:
+\item Various rodents ordered by size:
 	\begin{enumerate}
-	\item Rat
-	\item Hamster
 	\item Capivara
+	\item Rat
+	\item Mouse
 	\end{enumerate}
 \end{itemize}
 \end{subpage}
