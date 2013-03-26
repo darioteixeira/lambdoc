@@ -1147,14 +1147,16 @@ let collate_errors =
 	let rex = Pcre.regexp "\\r\\n|\\n" in
 	fun source errors ->
 		let source_lines = Pcre.asplit ~rex ~max:(-1) source in
+		let num_lines = Array.length source_lines in
 		let format_error (error_linenum, error_msg) =
 			let error_context = match error_linenum with
 				| Some num ->
+					let num = min num num_lines in
 					Some	{
 						Error.error_line_number = num;
 						Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
 						Error.error_line_actual = source_lines.(num - 1);
-						Error.error_line_after = if num < (Array.length source_lines) then [source_lines.(num)] else []
+						Error.error_line_after = if num < num_lines then [source_lines.(num)] else []
 						}
 				| None ->
 					None in

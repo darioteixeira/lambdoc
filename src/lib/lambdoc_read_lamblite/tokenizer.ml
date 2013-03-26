@@ -196,59 +196,59 @@ in object (self)
 
 
 	method private produce =
-		let () =
-			if line_counter >= Array.length lines
-			then begin
-				self#unset_par;
-				self#unwind_list 0;
-				productions <- productions @ [EOF]
-			end else
-				let scanner = match context with
-					| General	-> Scanner.general_scanner
-					| Source	-> Scanner.source_scanner
-					| Verbatim	-> Scanner.verbatim_scanner in
-				let lexbuf = Ulexing.from_utf8_string lines.(line_counter) in
-				let tok = scanner lexbuf in
-				match tok with
-					| Begin_source style ->
-						self#unwind_list 0;
-						context <- Source;
-						let style = if String.length style = 0 then None else Some style in
-						self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~style ()))
-					| End_source ->
-						context <- General;
-						self#store (END_SOURCE self#op)
-					| Begin_verbatim style ->
-						self#unwind_list 0;
-						context <- Verbatim;
-						let style = if String.length style = 0 then None else Some style in
-						self#store (BEGIN_VERBATIM (self#comm ~tag:(Some "(((") ~style ()))
-					| End_verbatim ->
-						context <- General;
-						self#store (END_VERBATIM self#op)
-					| Section (1, text) ->
-						self#unwind_list 0;
-						self#store (BEGIN_SECTION self#op);
-						List.iter self#store (self#tokens_of_text text);
-						self#store (END_SECTION self#op)
-					| Section (2, text) ->
-						self#unwind_list 0;
-						self#store (BEGIN_SUBSECTION self#op);
-						List.iter self#store (self#tokens_of_text text);
-						self#store (END_SUBSECTION self#op)
-					| Section (3, text) ->
-						self#unwind_list 0;
-						self#store (BEGIN_SUBSUBSECTION self#op);
-						List.iter self#store (self#tokens_of_text text);
-						self#store (END_SUBSUBSECTION self#op)
-					| Section (x, text) ->
-						raise (Invalid_section_level x)
-					| Par (quote_new, list_new, text) ->
-						self#handle_par quote_new list_new text
-					| Raw txt ->
-						self#store (RAW txt)
-
-		in line_counter <- line_counter + 1
+		if line_counter >= Array.length lines
+		then begin
+			self#unset_par;
+			self#unwind_list 0;
+			productions <- productions @ [EOF]
+		end
+		else begin
+			let scanner = match context with
+				| General	-> Scanner.general_scanner
+				| Source	-> Scanner.source_scanner
+				| Verbatim	-> Scanner.verbatim_scanner in
+			let lexbuf = Ulexing.from_utf8_string lines.(line_counter) in
+			let tok = scanner lexbuf in
+			let () = match tok with
+				| Begin_source style ->
+					self#unwind_list 0;
+					context <- Source;
+					let style = if String.length style = 0 then None else Some style in
+					self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~style ()))
+				| End_source ->
+					context <- General;
+					self#store (END_SOURCE self#op)
+				| Begin_verbatim style ->
+					self#unwind_list 0;
+					context <- Verbatim;
+					let style = if String.length style = 0 then None else Some style in
+					self#store (BEGIN_VERBATIM (self#comm ~tag:(Some "(((") ~style ()))
+				| End_verbatim ->
+					context <- General;
+					self#store (END_VERBATIM self#op)
+				| Section (1, text) ->
+					self#unwind_list 0;
+					self#store (BEGIN_SECTION self#op);
+					List.iter self#store (self#tokens_of_text text);
+					self#store (END_SECTION self#op)
+				| Section (2, text) ->
+					self#unwind_list 0;
+					self#store (BEGIN_SUBSECTION self#op);
+					List.iter self#store (self#tokens_of_text text);
+					self#store (END_SUBSECTION self#op)
+				| Section (3, text) ->
+					self#unwind_list 0;
+					self#store (BEGIN_SUBSUBSECTION self#op);
+					List.iter self#store (self#tokens_of_text text);
+					self#store (END_SUBSUBSECTION self#op)
+				| Section (x, text) ->
+					raise (Invalid_section_level x)
+				| Par (quote_new, list_new, text) ->
+					self#handle_par quote_new list_new text
+				| Raw txt ->
+					self#store (RAW txt)
+			in line_counter <- line_counter + 1
+		end
 
 	method consume = match productions with
 		| []
