@@ -222,8 +222,8 @@ and process_block store node =
 			(!!comm, Ast.Itemize (process_anon_item_frag store node))
 		| T_element "enumerate"
 		| T_element "ol" ->
-		(!!comm, Ast.Enumerate (process_anon_item_frag store node))
-	| T_element "description"
+			(!!comm, Ast.Enumerate (process_anon_item_frag store node))
+		| T_element "description"
 		| T_element "dl" ->
 			(!!comm, Ast.Description (process_desc_item_frag store node))
 		| T_element "qanda" ->
@@ -358,7 +358,7 @@ and process_qanda_frag store frag_root =
 		| T_element "question"	-> process_different (fun maybe_seq -> New_questioner maybe_seq) qora
 		| T_element "answer"	-> process_different (fun maybe_seq -> New_answerer maybe_seq) qora
 		| T_element "rquestion"	-> process_repeated Same_questioner qora
-		| T_element "ranswer)"	-> process_repeated Same_answerer qora
+		| T_element "ranswer"	-> process_repeated Same_answerer qora
 		| _			-> failwith "process_qanda_frag"
 	in List.rev_map process_node frag_root#sub_nodes
 
