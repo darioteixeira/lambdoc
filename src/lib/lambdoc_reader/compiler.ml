@@ -1151,7 +1151,7 @@ let collate_errors =
 		let format_error (error_linenum, error_msg) =
 			let error_context = match error_linenum with
 				| Some num ->
-					let num = min num num_lines in
+					let num = max 1 (min num num_lines) in
 					Some	{
 						Error.error_line_number = num;
 						Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
