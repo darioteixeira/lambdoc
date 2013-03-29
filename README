@@ -1,5 +1,5 @@
 =========================================================================
-| README for Lambdoc 0.9						|
+| README for Lambdoc 0.9.1						|
 |									|
 | Dario Teixeira (dario.teixeira@yahoo.com)				|
 | March 2013								|
@@ -8,12 +8,20 @@
 1. Overview
 ===========
 
-Lambdoc is a library providing support for semantically rich documents in
-web applications.  It includes parsers for three different markup
-languages: Lambtex, Lambxml, and Lamblite.  The first is inspired by LaTeX,
-the second is inspired by HTML, and the last is a lightweight markup language
-in the spirit of Markdown and Wiki Creole.  The library also includes the
-possibility of outputing any Lambdoc document as an Ocsigen HTML5 value.
+Lambdoc is a library providing support for semantically rich documents
+in web applications, built with Ocsigen/Eliom [1] integration in mind.
+It includes parsers for three different markup languages: Lambtex, Lambxml,
+and Lamblite.  The first is inspired by LaTeX, the second is an XML-based
+markup based on HTML, and the last is a lightweight markup language in the
+spirit of Markdown and Wiki Creole.  The library also includes the possibility
+of outputing any Lambdoc document as an Ocsigen HTML5 value.
+
+Additional capabilities include the runtime customisation of available document
+features (you may, for example, declare that a certain class of users is
+only allowed to produce documents containing nothing more than paragraphs of
+plain text), detailed error messages, and the definition of basic macros.
+It also ships with 'lambcmd', a CLI application that allows the conversion
+between any of the input formats into one of the supported output targets.
 
 
 2. Dependencies
