@@ -10,7 +10,7 @@
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type input_t = [ `Lambtex | `Lamblite | `Lambhtml | `Sexp ]
+type input_t = [ `Lambtex | `Lamblite | `Lambxml | `Sexp ]
 
 type output_t = [ `Sexp | `Html5 ]
 
@@ -22,7 +22,7 @@ type output_t = [ `Sexp | `Html5 ]
 let input_of_string x = match String.lowercase x with
 	| "lambtex"  -> `Lambtex
 	| "lamblite" -> `Lamblite
-	| "lambhtml" -> `Lambhtml
+	| "lambxml" -> `Lambxml
 	| "sexp"     -> `Sexp
 	| _	     -> invalid_arg ("Markup.input_of_string: " ^ x)
 
@@ -34,7 +34,7 @@ let output_of_string x = match String.lowercase x with
 let to_string = function
 	| `Lambtex  -> "Lambtex"
 	| `Lamblite -> "Lamblite"
-	| `Lambhtml -> "Lambhtml"
+	| `Lambxml -> "Lambxml"
 	| `Sexp     -> "Sexp"
 	| `Html5    -> "Html5"
 

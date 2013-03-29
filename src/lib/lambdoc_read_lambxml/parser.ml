@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Parser for the Lambhtml reader.
+(**	Parser for the Lambxml reader.
 *)
 
 open Pxp_document
@@ -442,6 +442,6 @@ let parse =
 			} in
 		let spec = Pxp_tree_parser.default_spec in
 		let source = Pxp_types.from_string ("<document>\n" ^ str ^ "</document>") in
-		let tree = Pxp_tree_parser.parse_content_entity config source Dtd.lambhtml_dtd spec in
+		let tree = Pxp_tree_parser.parse_content_entity config source Dtd.lambxml_dtd spec in
 		process_document store tree#root
 

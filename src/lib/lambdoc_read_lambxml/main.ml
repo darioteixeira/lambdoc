@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Main interface to the Lambhtml reader.
+(**	Main interface to the Lambxml reader.
 *)
 
 open Lambdoc_reader

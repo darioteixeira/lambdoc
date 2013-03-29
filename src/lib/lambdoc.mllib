@@ -1,7 +1,7 @@
 Lambdoc_core
 Lambdoc_reader
 Lambdoc_writer
-Lambdoc_read_lambhtml
+Lambdoc_read_lambxml
 Lambdoc_read_lamblite
 Lambdoc_read_lambtex
 Lambdoc_write_html5

@@ -43,16 +43,16 @@ let book_service =
 
 type markup_t =
 	| Lambtex
-	| Lambhtml
+	| Lambxml
 
 let markup_of_string = function
 	| "lambtex"  -> Lambtex
-	| "lambhtml" -> Lambhtml
+	| "lambxml" -> Lambxml
 	| x	     -> invalid_arg x
 
 let string_of_markup = function
 	| Lambtex  -> "lambtex"
-	| Lambhtml -> "lambhtml"
+	| Lambxml -> "lambxml"
 
 
 (********************************************************************************)
@@ -64,7 +64,7 @@ let show_handler sp (markup, (locale, (associate_tag, (access_key, secret_key)))
 	let (file, reader) = match markup with
 		| None
 		| Some Lambtex  -> ("sample.lambtex", Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string ~book_maker)
-		| Some Lambhtml -> ("sample.lambhtml", Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string ~book_maker) in
+		| Some Lambxml -> ("sample.lambxml", Lambdoc_read_lambxml.Main.ambivalent_manuscript_from_string ~book_maker) in
 	let chan = open_in file in
 	let src = Std.input_all chan in
 	let () = close_in chan in
@@ -95,8 +95,8 @@ let show_form (e_markup, (e_locale, (e_associate_tag, (e_access_key, e_secret_ke
 		XHTML.M.label ~a:[a_for "e_lambtex"] [pcdata "Lambtex"];
 		XHTML.M.br ();
 
-		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lambhtml"] string_of_markup ~name:e_markup ~value:Lambhtml ();
-		XHTML.M.label ~a:[a_for "e_lambhtml"] [pcdata "Lambhtml"];
+		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lambxml"] string_of_markup ~name:e_markup ~value:Lambxml ();
+		XHTML.M.label ~a:[a_for "e_lambxml"] [pcdata "Lambxml"];
 		XHTML.M.br ();
 
 		XHTML.M.p [pcdata "Enter your Amazon credentials:"];

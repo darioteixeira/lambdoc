@@ -40,15 +40,15 @@ package "writer"
 	archive(plugin,native) = "lambdoc_writer.cmxs"
 	)
 
-package "read_lambhtml"
+package "read_lambxml"
 	(
-	name = "read_lambhtml"
+	name = "read_lambxml"
 	version = "0.9"
 	requires = "pcre, pxp-engine, pxp-ulex-utf8, lambdoc.core, lambdoc.reader"
-	archive(byte) = "lambdoc_read_lambhtml.cmo"
-	archive(native) = "lambdoc_read_lambhtml.cmx"
-	archive(plugin,byte) = "lambdoc_read_lambhtml.cmo"
-	archive(plugin,native) = "lambdoc_read_lambhtml.cmxs"
+	archive(byte) = "lambdoc_read_lambxml.cmo"
+	archive(native) = "lambdoc_read_lambxml.cmx"
+	archive(plugin,byte) = "lambdoc_read_lambxml.cmo"
+	archive(plugin,native) = "lambdoc_read_lambxml.cmxs"
 	)
 
 package "read_lamblite"

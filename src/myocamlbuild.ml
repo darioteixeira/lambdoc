@@ -34,8 +34,8 @@ let _ = dispatch begin function
 		(* Add 'lib' to include directories when building pack *)
 		flag ["ocaml"; "pack"] (S[A"-I"; A"lib"]);
 
-		(* Add dependency to lambhtml.dtd *)
-		dep ["ocamldep"; "file:lib/lambdoc_read_lambhtml/dtd.ml"] ["lib/lambdoc_read_lambhtml/lambhtml.dtd"];
+		(* Add dependency to lambxml.dtd *)
+		dep ["ocamldep"; "file:lib/lambdoc_read_lambxml/dtd.ml"] ["lib/lambdoc_read_lambxml/lambxml.dtd"];
 
 		(* Flag Menhir options. *)
 		flag ["menhir"] menhir_opts;

@@ -9,8 +9,8 @@
 ===========
 
 Lambdoc is a library providing support for semantically rich documents in
-Ocsigen web applications.  It includes parsers for three different markup
-languages: Lambtex, Lambhtml, and Lamblite.  The first is inspired by LaTeX,
+web applications.  It includes parsers for three different markup
+languages: Lambtex, Lambxml, and Lamblite.  The first is inspired by LaTeX,
 the second is inspired by HTML, and the last is a lightweight markup language
 in the spirit of Markdown and Wiki Creole.  The library also includes the
 possibility of outputing any Lambdoc document as an Ocsigen HTML5 value.

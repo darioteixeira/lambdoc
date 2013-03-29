@@ -17,18 +17,18 @@ open Features
 type markup_t =
 	| Lambtex
 	| Lamblite
-	| Lambhtml
+	| Lambxml
 
 let markup_of_string = function
 	| "lambtex"  -> Lambtex
 	| "lamblite" -> Lamblite
-	| "lambhtml" -> Lambhtml
+	| "lambxml" -> Lambxml
 	| x	     -> invalid_arg x
 
 let string_of_markup = function
 	| Lambtex  -> "lambtex"
 	| Lamblite -> "lamblite"
-	| Lambhtml -> "lambhtml"
+	| Lambxml -> "lambxml"
 
 
 (********************************************************************************)
@@ -52,7 +52,7 @@ let show_handler sp markup () =
 		| None
 		| Some Lambtex  -> ("sample.lambtex", Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string)
 		| Some Lamblite -> ("sample.lamblite", Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string)
-		| Some Lambhtml -> ("sample.lambhtml", Lambdoc_read_lambhtml.Main.ambivalent_manuscript_from_string) in
+		| Some Lambxml -> ("sample.lambxml", Lambdoc_read_lambxml.Main.ambivalent_manuscript_from_string) in
 	let chan = open_in file in
 	let src = Std.input_all chan in
 	let () = close_in chan in
@@ -82,8 +82,8 @@ let show_form e_markup =
 		XHTML.M.label ~a:[a_for "e_lamblite"] [pcdata "Lamblite"];
 		XHTML.M.br ();
 
-		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lambhtml"] string_of_markup ~name:e_markup ~value:Lambhtml ();
-		XHTML.M.label ~a:[a_for "e_lambhtml"] [pcdata "Lambhtml"];
+		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lambxml"] string_of_markup ~name:e_markup ~value:Lambxml ();
+		XHTML.M.label ~a:[a_for "e_lambxml"] [pcdata "Lambxml"];
 		XHTML.M.br ();
 
 		Eliom_predefmod.Xhtml.string_input ~input_type:`Submit ~value:"Submit" ();

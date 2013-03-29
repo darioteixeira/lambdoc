@@ -48,7 +48,7 @@ let iterate reader src len =
 				raise exc in
 		let counter = if is_valid then 0 else counter + 1 in
 		Printf.printf "%c%!" (if is_valid then '.' else 'x');
-		if counter < 10
+		if counter < 20
 		then aux counter src' len'
 		else ()
 	in aux 0 src len
@@ -59,7 +59,7 @@ let fuzz total markup src =
 	let reader = match markup with
 		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string
 		| `Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_from_string
-		| `Lambhtml -> Lambdoc_read_lambhtml.Main.ambivalent_from_string in
+		| `Lambxml  -> Lambdoc_read_lambxml.Main.ambivalent_from_string in
 	for i = 1 to total do
 		Printf.printf "#%03d: %!" i;
 		let () = try iterate reader src len with exc -> print_char '!' in
@@ -71,5 +71,5 @@ let () =
 	Random.self_init ();
 	Printexc.record_backtrace true;
 	let src = BatPervasives.input_all stdin in
-	fuzz 10 `Lambtex src
+	fuzz 20 `Lambxml src
 
