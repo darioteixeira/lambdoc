@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Main interface to the Lamblite reader.
+(**	Main interface to the Lambwiki reader.
 *)
 
 open Lexing

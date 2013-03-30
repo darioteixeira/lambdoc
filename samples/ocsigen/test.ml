@@ -16,18 +16,18 @@ open Features
 
 type markup_t =
 	| Lambtex
-	| Lamblite
+	| Lambwiki
 	| Lambxml
 
 let markup_of_string = function
 	| "lambtex"  -> Lambtex
-	| "lamblite" -> Lamblite
+	| "lambwiki" -> Lambwiki
 	| "lambxml" -> Lambxml
 	| x	     -> invalid_arg x
 
 let string_of_markup = function
 	| Lambtex  -> "lambtex"
-	| Lamblite -> "lamblite"
+	| Lambwiki -> "lambwiki"
 	| Lambxml -> "lambxml"
 
 
@@ -51,7 +51,7 @@ let show_handler sp markup () =
 	let (file, reader) = match markup with
 		| None
 		| Some Lambtex  -> ("sample.lambtex", Lambdoc_read_lambtex.Main.ambivalent_manuscript_from_string)
-		| Some Lamblite -> ("sample.lamblite", Lambdoc_read_lamblite.Main.ambivalent_manuscript_from_string)
+		| Some Lambwiki -> ("sample.lambwiki", Lambdoc_read_lambwiki.Main.ambivalent_manuscript_from_string)
 		| Some Lambxml -> ("sample.lambxml", Lambdoc_read_lambxml.Main.ambivalent_manuscript_from_string) in
 	let chan = open_in file in
 	let src = Std.input_all chan in
@@ -78,8 +78,8 @@ let show_form e_markup =
 		XHTML.M.label ~a:[a_for "e_lambtex"] [pcdata "Lambtex"];
 		XHTML.M.br ();
 
-		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lamblite"] string_of_markup ~name:e_markup ~value:Lamblite ();
-		XHTML.M.label ~a:[a_for "e_lamblite"] [pcdata "Lamblite"];
+		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lambwiki"] string_of_markup ~name:e_markup ~value:Lambwiki ();
+		XHTML.M.label ~a:[a_for "e_lambwiki"] [pcdata "Lambwiki"];
 		XHTML.M.br ();
 
 		Eliom_predefmod.Xhtml.user_type_radio ~a:[a_id "e_lambxml"] string_of_markup ~name:e_markup ~value:Lambxml ();

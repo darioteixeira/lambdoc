@@ -68,7 +68,7 @@ let () =
 			None in
 	let doc = match options.input_markup with
 		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
-		| `Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
+		| `Lambwiki -> Lambdoc_read_lambwiki.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
 		| `Lambxml -> Lambdoc_read_lambxml.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
 		| `Sexp	    -> Lambdoc_core.Ambivalent.deserialize input_str in
 	let output_str = match options.output_markup with

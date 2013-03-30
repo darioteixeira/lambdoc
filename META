@@ -51,15 +51,15 @@ package "read_lambxml"
 	archive(plugin,native) = "lambdoc_read_lambxml.cmxs"
 	)
 
-package "read_lamblite"
+package "read_lambwiki"
 	(
-	name = "read_lamblite"
+	name = "read_lambwiki"
 	version = "0.9.1"
 	requires = "ulex, menhirLib, lambdoc.core, lambdoc.reader"
-	archive(byte) = "lambdoc_read_lamblite.cmo"
-	archive(native) = "lambdoc_read_lamblite.cmx"
-	archive(plugin,byte) = "lambdoc_read_lamblite.cmo"
-	archive(plugin,native) = "lambdoc_read_lamblite.cmxs"
+	archive(byte) = "lambdoc_read_lambwiki.cmo"
+	archive(native) = "lambdoc_read_lambwiki.cmx"
+	archive(plugin,byte) = "lambdoc_read_lambwiki.cmo"
+	archive(plugin,native) = "lambdoc_read_lambwiki.cmxs"
 	)
 
 package "read_lambtex"

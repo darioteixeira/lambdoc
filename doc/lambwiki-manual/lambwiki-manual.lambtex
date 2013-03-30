@@ -1,10 +1,10 @@
 \newmacro{lambdoc}{0}{\caps{lambdoc}}
-\newmacro{lamblite}{0}{\caps{lamblite}}
+\newmacro{lambwiki}{0}{\caps{lambwiki}}
 \newmacro{lambtex}{0}{\caps{lambtex}}
 \newmacro{thin}{0}{&#8202;}
 \newmacro{marker}{1}{\code{\arg{1}\arg{1}}}
 
-\title{The \lamblite Manual}
+\title{The \lambwiki Manual}
 \subtitle{Dario Teixeira}
 \subtitle{March 2013}
 
@@ -12,25 +12,25 @@
 
 \rule
 
-\p<initial>{\lamblite is a lightweight markup language for the description of documents.
+\p<initial>{\lambwiki is a lightweight markup language for the description of documents.
 It is inspired by \caps{markdown}\cite{bib:markdown} and \caps{creole}\cite{bib:creole},
 and remains for the most part compatible with the latter. Similarly to other lightweight
-markup languages, \lamblite is targeted at the description of documents consisting
+markup languages, \lambwiki is targeted at the description of documents consisting
 largely of \caps{utf-8} text, and where syntactic annotations are inspired by conventions
 used in email.}
 
-\lamblite is part of the family of markup languages supported by the \lambdoc
-library\cite{bib:lambdoc}.  However, \lamblite supports only a limited subset of
+\lambwiki is part of the family of markup languages supported by the \lambdoc
+library\cite{bib:lambdoc}.  However, \lambwiki supports only a limited subset of
 all the features available in \lambdoc.  While not as powerful and flexible as a
 full-featured markup language like \lambtex\cite{bib:lambtex}, the lightweight markup
-used by \lamblite should be sufficient to describe most simple documents.  If your
+used by \lambwiki should be sufficient to describe most simple documents.  If your
 document requires a richer set of semantic elements, then obviously you should consider
 using instead a full-fledged markup like \lambtex.
 
 
 \section{Paragraphs and text formatting}
 
-A \lamblite document is composed of a sequence of blocks.  Examples of blocks include
+A \lambwiki document is composed of a sequence of blocks.  Examples of blocks include
 paragraphs of text, quotes, and source-code listings.  Blocks occupy the entire width
 of the page, and are vertically separated from other blocks by a small margin.
 
@@ -57,13 +57,13 @@ the begin marker.}
 | \marker{*}		| \marker{*}		| You can make some passages be \bold{bold}.	|
 | \marker{/}		| \marker{/}		| Here's another way to \emph{emphasise} text.	|
 | \marker{\{}		| \marker{\}}		| You can also imitate a \code{typewriter}.	|
-| \marker{(}		| \marker{)}		| \lamblite supports text in small-caps.	|
+| \marker{(}		| \marker{)}		| \lambwiki supports text in small-caps.	|
 | \marker{^}		| \marker{^}		| The 1\sup{st} of January has a superscript.	|
 | \marker{,}		| \marker{,}		| H\sub{2}O requires a subscript.		|
 \end{tabular}
 \end{table}
 
-\lamblite supports also hyperlinks into external
+\lambwiki supports also hyperlinks into external
 resources.  The general notation for hyperlinks is
 \mbox{\code{[[}\thin\code{\emph{uri}}\thin\code{|}\thin\code{\emph{description}}\thin\code{]]}},
 where \code{\emph{uri}} is the actual resource identifier and \code{\emph{description}}
@@ -72,7 +72,7 @@ is the clickable hyperlink text.  The latter is optional, meaning that
 using the \caps{uri} itself as description text.
 
 The following source-code fragment illustrates the declaration of paragraphs in
-\lamblite, text formatting commands, and the use of hyperlinks:
+\lambwiki, text formatting commands, and the use of hyperlinks:
 
 \begin<boxed>{source}
 Line breaks within one paragraph are not important,
@@ -90,7 +90,7 @@ Adding a hyperlink into the [[http://www.wikipedia.org/|Wikipedia]]
 is easy.  Here's another one: [[http://www.wikipedia.org/]].
 \end{source}
 
-This is the corresponding output from the \lamblite composer:
+This is the corresponding output from the \lambwiki composer:
 
 \begin{subpage}
 Line breaks within one paragraph are not important,
@@ -111,7 +111,7 @@ is easy.  Here's another one: \link{http://www.wikipedia.org/}.
 
 \section{Special characters}
 
-\lamblite allows the direct use of \caps{html} entities via the same notation used
+\lambwiki allows the direct use of \caps{html} entities via the same notation used
 in \caps{html}.  More precisely, entities are to be enclosed between the characters
 '\code{\&}' (ampersand) and '\code{;}' (semicolon), and may be specified by name
 or by \caps{unicode} code point in decimal or hexadecimal notation.  As an example,
@@ -125,10 +125,10 @@ you may enter it in either of the following three manners:
 | \code{\&euro;}        | \code{\&#8364;}       | \code{\&#x20ac;}      |
 \end{tabular}
 
-The reader will have noted that \lamblite must interpret the character '\code{\&}'
+The reader will have noted that \lambwiki must interpret the character '\code{\&}'
 (ampersand) differently, and therefore you need a workaround if you want to input an
 actual ampersand.  In fact, there is another character that is interpreted differently
-by \lamblite, and as such also requires a special escaping sequence.  That character
+by \lambwiki, and as such also requires a special escaping sequence.  That character
 is '\code{\\}' (backslash), which also happens to be the character used for escaping.
 Therefore, displaying a backslash or an ampersand is achieved with \code{\\\\} and
 \code{\\\&}, respectively.  Another option is of course to use the \code{#47} and
@@ -141,13 +141,13 @@ or numeric sequence terminated by a semicolon.  If it is not, then the ampersand
 interpreted as plain text.
 
 Besides individual characters, there are also some multi-character sequences that are
-interpreted differently by \lamblite.  One example are the previously described two
+interpreted differently by \lambwiki.  One example are the previously described two
 character markers used for text formatting.  \sref{tab:seq} lists all the other ones.
 Remember to use the escape character if you wish to input any of these sequences
 literally.
 
 \begin[tab:seq]{table}
-{Special character sequences and their \lamblite interpretation.  Remember to use
+{Special character sequences and their \lambwiki interpretation.  Remember to use
 the backslash for escaping if you wish to input any of these sequences verbatim.
 Note that using dash(es) at the start of a line is the marker for unordered lists
 (see \mref{sec:lists}{the next section} for details).}
@@ -165,7 +165,7 @@ Note that using dash(es) at the start of a line is the marker for unordered list
 
 \section[sec:lists]{Lists}
 
-Lists in \lamblite come in two varieties: ordered and unordered.  The former are
+Lists in \lambwiki come in two varieties: ordered and unordered.  The former are
 denoted my prefixing each list item with the character '\code{#}', whereas in the
 latter case the prefix is '\code{-}'.  Declaring sub-lists (ie, lists within lists)
 is also possible: simply repeat either '\code{#}' or '\code{-}' a number of times in
@@ -175,11 +175,11 @@ as long as they are the first non-whitespace character in the line.
 Separating a list from a preceding paragraph with a blank line is not required, though
 it is advisable.  Similarly, usage of blank lines between list items is also optional.
 More importantly, make sure the list depth as indicated by the number of '\code{#}'
-or '\code{-}' characters makes sense: the \lamblite composer will complain if you
+or '\code{-}' characters makes sense: the \lambwiki composer will complain if you
 declare at the top-level a list with depth higher than 1, or if a sub-list increases
 list depth by more than one unit.
 
-The following sample illustrates lists in \lamblite.  Note the flexible use of blank
+The following sample illustrates lists in \lambwiki.  Note the flexible use of blank
 lines and whitespace for indentation.
 
 \begin<boxed>{source}
@@ -221,7 +221,7 @@ The reasons are four:
 
 \section{Quotations}
 
-Quotations in \lamblite follow the email tradition of prefixing each quoted line with
+Quotations in \lambwiki follow the email tradition of prefixing each quoted line with
 the character '\code{>}' (the greater-than sign).  Following this marker you may have
 a normal paragraph or a list definition, as the example below illustrates:
 
@@ -261,7 +261,7 @@ I beg to differ. Let me expand on why.
 
 Quotations within quotations are also legal.  The quotation level is indicated by
 the number of '\code{>}' characters that prefix the line.  Whitespace between the
-'\code{>}' characters is optional.  Consider thus the following \lamblite source:
+'\code{>}' characters is optional.  Consider thus the following \lambwiki source:
 
 \begin<boxed>{source}
 This is your interpretation of the discussion:
@@ -292,7 +292,7 @@ Opening them by their small end is heresy.
 
 A verbatim block denotes a fragment of text where linebreaks are significant and the
 text is to be rendered using a monospaced font.  The primary application of verbatim
-blocks is to display \caps{ascii}-art diagrams.  In \lamblite, the beginning of a
+blocks is to display \caps{ascii}-art diagrams.  In \lambwiki, the beginning of a
 verbatim block is denoted by a line consisting entirely of the characters '\code{(((}'
 (plus optional extra specifiers, described below), and its termination by a line
 consisting only of the characters '\code{)))}'.  There is no attempt at interpreting
@@ -306,7 +306,7 @@ but preppended by '\code{doc_class_}' (the prefix prevents name clashes).  Note 
 classnames must begin with a lowercase Roman letter, and may contain only lowercase
 Roman letters, digits, the character '-' (dash), or the character '_' (underscore).
 
-For your convenience, the \caps{css} shipped with \lamblite includes some predefined
+For your convenience, the \caps{css} shipped with \lambwiki includes some predefined
 class names for use with verbatim environments.  These are \code{mult0}, \code{mult1},
 and so forth until \code{mult9}.  The integer indicates a multiplying factor for the
 contents of the environment.  For a factor of [$x$], the actual scaling relative to
@@ -327,7 +327,7 @@ either centered and occupying the entire width of the page (this is the default)
 floating on the left, or floating on the right, respectively.  Note that they map
 directly to \caps{css} \code{float} declarations.
 
-To illustrate the use of verbatim blocks, consider the following \lamblite source-code fragment:
+To illustrate the use of verbatim blocks, consider the following \lambwiki source-code fragment:
 
 \begin<boxed>{source}
 Here's a box:
@@ -354,7 +354,7 @@ Here's a box:
 \section[sec:source]{Source-code blocks}
 
 While nothing prevents you from using the aforedescribed verbatim blocks for displaying
-source-code listings, \lamblite does have a dedicated facility for this purpose, with a
+source-code listings, \lambwiki does have a dedicated facility for this purpose, with a
 number of advantages.  Source-code blocks are declared in much the same way as verbatim
 blocks, but use '\code{\{\{\{}' and '\code{\}\}\}}' as delimiter characters instead.
 Moreover, they also accept --- albeit different --- style configuration options.
@@ -407,7 +407,7 @@ let rec count = function
 
 \section[sec:sectioning]{Sectioning}
 
-\lamblite supports up to three levels of sectioning headers, designated as
+\lambwiki supports up to three levels of sectioning headers, designated as
 \emph{sections}, \emph{sub-sections}, and \emph{sub-sub-sections}.  These map
 directly to \caps{html}'s \code{h1}, \code{h2}, and \code{h3} elements, respectively.
 The declaration of a header is done by prefixing the header text with one, two, or
@@ -415,7 +415,7 @@ three times the character '\code{=}', where the number of equal signs correspond
 the sectioning level.  Note that whitespace between the equal sign(s) and the header
 text is optional, and is discarded if present.
 
-Consider thus the following \lamblite fragment:
+Consider thus the following \lambwiki fragment:
 
 \begin<boxed>{source}
 = This is a section
@@ -431,7 +431,7 @@ Lorem ipsum dolor sit amet.
 Lorem ipsum dolor sit amet.
 \end{source}
 
-Below is the result as produced by the \lamblite composer.  Note that the numbering is
+Below is the result as produced by the \lambwiki composer.  Note that the numbering is
 automatically assigned.
 
 \begin{subpage}

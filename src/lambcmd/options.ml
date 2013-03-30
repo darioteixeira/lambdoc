@@ -82,7 +82,7 @@ let () =
 	OptParser.add options ~group:amazon ~long_name:"amazon-access_key" ~help:"Amazon Web Services access key" amazon_access_key_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-secret_key" ~help:"Amazon Web Services secret key" amazon_secret_key_opt;
 
-	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lamblite', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
+	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lambwiki', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
 	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; assume 'xhtml' if not specified)" output_markup_opt;
 
 	OptParser.add options ~group:file ~short_name:'i' ~long_name:"in" ~help:"Input file name (read from STDIN if not specified)" input_file_opt;

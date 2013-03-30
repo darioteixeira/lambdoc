@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Tokenizer for the Lamblite reader.
+(**	Tokenizer for the Lambwiki reader.
 *)
 
 open Lexing

@@ -58,7 +58,7 @@ let fuzz total markup src =
 	let len = String.length src in
 	let reader = match markup with
 		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string
-		| `Lamblite -> Lambdoc_read_lamblite.Main.ambivalent_from_string
+		| `Lambwiki -> Lambdoc_read_lambwiki.Main.ambivalent_from_string
 		| `Lambxml  -> Lambdoc_read_lambxml.Main.ambivalent_from_string in
 	for i = 1 to total do
 		Printf.printf "#%03d: %!" i;

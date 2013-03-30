@@ -1,2 +1,2 @@
-<*.cmx>: for-pack(Lambdoc_read_lamblite)
+<*.cmx>: for-pack(Lambdoc_read_lambwiki)
 <scanner.ml>: package(ulex), syntax(camlp4o)
