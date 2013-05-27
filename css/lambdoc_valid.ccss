@@ -344,10 +344,10 @@ Border_src_consnums:    1px solid #ffb720;
 
 .doc_class_zebra > .doc_src_code > .doc_src_line:nth-child(odd) {background: #f3f6fc;}
 .doc_class_zebra > .doc_src_code > .doc_src_line:nth-child(even) {background: #f9f9f9;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {border-radius-topright: Radius_box;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {border-radius-topleft: Radius_box;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {border-radius-bottomright: Radius_box;}
-.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {border-radius-bottomleft: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {border-top-right-radius: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:first-child {border-top-left-radius: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {border-bottom-right-radius: Radius_box;}
+.doc_class_zebra > .doc_src_code > .doc_src_line:last-child {border-bottom-left-radius: Radius_box;}
 
 
 /********************************************************************************/
@@ -570,8 +570,8 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_boxout_head
 	{
 	padding: 0.3em;
-	border-radius-topleft: Radius_box;
-	border-radius-topright: Radius_box;
+	border-top-right-radius: Radius_box;
+	border-top-left-radius: Radius_box;
 	text-align: center;
 	font-family: Family_heading;
 	font-size: Fsize_large;

@@ -654,22 +654,22 @@ dd.doc_answer
 
 .doc_class_zebra > .doc_src_code > .doc_src_line:first-child
 	{
-	border-radius-topright: 5px;
+	border-top-right-radius: 5px;
 	}
 
 .doc_class_zebra > .doc_src_code > .doc_src_line:first-child
 	{
-	border-radius-topleft: 5px;
+	border-top-left-radius: 5px;
 	}
 
 .doc_class_zebra > .doc_src_code > .doc_src_line:last-child
 	{
-	border-radius-bottomright: 5px;
+	border-bottom-right-radius: 5px;
 	}
 
 .doc_class_zebra > .doc_src_code > .doc_src_line:last-child
 	{
-	border-radius-bottomleft: 5px;
+	border-bottom-left-radius: 5px;
 	}
 
 .doc_tab
@@ -1008,8 +1008,8 @@ pre.doc_pre_aux
 .doc_boxout_head
 	{
 	padding: 0.3em;
-	border-radius-topleft: 5px;
-	border-radius-topright: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 	text-align: center;
 	font-family: "Georgia", serif;
 	font-size: 16px;
