@@ -17,7 +17,7 @@ Colour_fancy:	#501;
 /* fonts in each list have similar metrics, and the sets go well together.	*/
 /* (Note that only one of these stacks is actually later selected).		*/
 /*										*/
-/* Within each list fonts are listed by order of subjective prettyness, at	*/
+/* Within each list, fonts are listed by order of subjective prettyness, at	*/
 /* least as far as a standard X installation is concerned.  Note also that	*/
 /* each list should contain at least one font which is standard in Linux,	*/
 /* Windows, and Mac systems.							*/

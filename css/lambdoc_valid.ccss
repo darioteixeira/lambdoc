@@ -601,7 +601,7 @@ Border_pull: 2px dotted Colour_fancy;
 .doc_theorem_head
 	{
 	float: left;
-	height: Line_height_doc;
+	height: 1em;
 	margin-right: Hmargin_inline_large;
 	}
 

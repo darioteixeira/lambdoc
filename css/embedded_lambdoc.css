@@ -999,7 +999,7 @@ pre.doc_pre_aux
 .doc_theorem_head
 	{
 	float: left;
-	height: 1.6;
+	height: 1em;
 	margin-right: 0.5em;
 	}
 
