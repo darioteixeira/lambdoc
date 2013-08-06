@@ -5,7 +5,7 @@ SOURCES=lambdoc_reset.ccss \
 	lambdoc_valid.ccss \
 	lambdoc_invalid.ccss \
 	lambdoc_custom.ccss \
-	lambdoc_global.ccss
+	lambdoc_root.ccss
 
 TARGET=../lambdoc.css
 
