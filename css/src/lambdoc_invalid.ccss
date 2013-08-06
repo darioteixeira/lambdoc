@@ -8,20 +8,20 @@
 
 .doc_error + .doc_error
 	{
-	margin-top: Vmargin_boxish;
+	margin-top: Doc_vmargin_boxish;
 	}
 
 
 .doc_error_head
 	{
-	font-size: Fsize_error_head;
+	font-size: Doc_fsize_error_head;
 	}
 
 .doc_error_lines
 	{
 	border: 1px dotted #666;
 	list-style-type: none;
-	font-size: Fsize_pre;
+	font-size: Doc_fsize_pre;
 	font-family: monospace;
 	background: #ffc;
 	}

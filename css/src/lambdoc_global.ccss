@@ -10,9 +10,9 @@
 	{
 	margin: 1em auto;
 	width: 44em;
-	font-family: Family_doc;
-	font-size: Fsize_doc;
-	line-height: Line_height_doc;
-	color: Colour_normal;
+	font-family: Doc_family_doc;
+	font-size: Doc_fsize_doc;
+	line-height: Doc_line_height_doc;
+	color: Doc_colour_normal;
 	}
 
