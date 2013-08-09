@@ -689,7 +689,7 @@ let write_valid
 				make_toc_entry label (class_of_level level) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_toc))
 
 
-	in Html5.F.div ~a:[a_class (prefix :: (List.map (!!) base_classes) @ (List.map (!!) extra_classes))] (write_frag content)
+	in Html5.F.div ~a:[a_class (prefix :: (List.map (!!) base_classes) @ extra_classes)] (write_frag content)
 
 
 (********************************************************************************)
