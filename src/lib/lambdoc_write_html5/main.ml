@@ -226,7 +226,7 @@ let write_valid
 			Html5.F.br ~a:[a_class attr] ()
 
 		| Mathinl math ->
-			let html: [> Html5_types.span ] Html5.F.elt = Html5.F.unsafe_data (Math_output.get_mathml math) in
+			let html: [> Html5_types.span ] Html5.F.elt = Html5.F.Unsafe.data (Math_output.get_mathml math) in
 			Html5.F.span ~a:[a_class (!!"mathinl" :: attr)] [html]
 
 		| Glyph (alias, alt) ->
@@ -476,7 +476,7 @@ let write_valid
 			[Html5.F.blockquote ~a:[a_class (!!"quote" :: attr)] (write_frag frag)]
 
 		| Mathblk math ->
-			let html: [> Html5_types.div ] Html5.F.elt = Html5.F.unsafe_data (Math_output.get_mathml math) in
+			let html: [> Html5_types.div ] Html5.F.elt = Html5.F.Unsafe.data (Math_output.get_mathml math) in
 			[Html5.F.div ~a:[a_class (!!"mathblk" :: attr)] [html]]
 
 		| Source src ->
