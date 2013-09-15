@@ -6,15 +6,15 @@
 /* Inline text.									*/
 /********************************************************************************/
 
-.doc_bold {font-weight: bold;}
-.doc_emph {font-style: italic;}
-.doc_code {font-family: Doc_family_mono; font-weight: bold; color: Doc_colour_faded;}
-.doc_caps {font-variant: small-caps;}
-.doc_ins  {text-decoration: underline; color: #090;}
-.doc_del  {text-decoration: line-through; color: #900;}
-.doc_sup  {vertical-align: 0.3em;}
-.doc_sub  {vertical-align: -0.1em;}
-.doc_mbox {white-space: nowrap;}
+.doc_bold	{font-weight: bold;}
+.doc_emph	{font-style: italic;}
+.doc_code	{font-family: Doc_family_mono; font-weight: bold; color: Doc_colour_faded;}
+.doc_caps	{font-variant: small-caps;}
+.doc_ins	{text-decoration: underline; color: #090;}
+.doc_del	{text-decoration: line-through; color: #900;}
+.doc_sup	{vertical-align: 0.3em;}
+.doc_sub	{vertical-align: -0.1em;}
+.doc_mbox	{white-space: nowrap;}
 
 
 /********************************************************************************/
@@ -441,7 +441,7 @@ div.doc_pre_aux {display: inline-block;}
 
 pre.doc_pre_aux
 	{
-        display: block;
+	display: block;
 	overflow: hidden;
 	white-space: pre;
 	line-height: 1em;
