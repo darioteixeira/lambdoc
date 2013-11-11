@@ -29,7 +29,9 @@ type 'a nelist = 'a * 'a list with sexp
 (**	Similar to [List.map], but for values of type {!nelist}.
 *)
 let nemap func (hd, tl) =
-	(func hd, List.map func tl)
+	let hd' = func hd in
+	let tl' = List.map func tl in
+	(hd', tl')
 
 
 (**	Possibly apply a function.
