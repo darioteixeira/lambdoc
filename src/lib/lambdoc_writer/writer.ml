@@ -40,6 +40,7 @@ sig
 	type t
 
 	val write_valid:
+		?numbered_paragraphs:bool ->
 		?translations:Translations.t ->
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->
@@ -57,6 +58,7 @@ sig
 		Invalid.t -> t
 
 	val write_ambivalent:
+		?numbered_paragraphs:bool ->
 		?translations:Translations.t ->
 		?book_lookup:book_lookup_t ->
 		?cover_lookup:cover_lookup_t ->

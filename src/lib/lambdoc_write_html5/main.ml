@@ -77,6 +77,7 @@ type t = [ `Div ] Html5.F.elt
 (********************************************************************************)
 
 let write_valid
+	?(numbered_paragraphs = false)
 	?(translations = Translations.default)
 	?(book_lookup = fun isbn -> Raw.uri_of_string ("isbn:" ^ (Book_output.string_of_isbn isbn)))
 	?(cover_lookup = fun isbn cover -> Raw.uri_of_string (Book_output.string_of_isbn isbn))
@@ -180,6 +181,13 @@ let write_valid
 
 	let note_conv order =
 		listify_order (Order_output.maybe_string_of_ordinal Order_output.format_arabic order) in
+
+
+	(************************************************************************)
+	(* Counter for number of paragraphs.					*)
+	(************************************************************************)
+
+	let paragraph_counter = ref 0 in
 
 
 	(************************************************************************)
@@ -431,7 +439,11 @@ let write_valid
 		match block with
 
 		| Paragraph seq ->
-			[Html5.F.p ~a:[a_class (!!"par" :: attr)] (write_seq seq)]
+			let extra =
+				if numbered_paragraphs
+				then []
+				else (incr paragraph_counter; [a_title (translations.paragraph ^ " #" ^ (string_of_int !paragraph_counter))]) in
+			[Html5.F.p ~a:(a_class (!!"par" :: attr) :: extra) (write_seq seq)]
 
 		| Itemize frags ->
 			let (hd, tl) = nemap (fun frag -> Html5.F.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
@@ -741,7 +753,7 @@ let write_invalid ?(prefix = "doc") ?(base_classes = ["invalid"]) ?(extra_classe
 (**	{2 Conversion of ambivalent documents}					*)
 (********************************************************************************)
 
-let write_ambivalent ?translations ?book_lookup ?cover_lookup ?image_lookup ?namespace ?prefix ?base_classes ?extra_classes = function
-	| Ambivalent.Valid doc   -> write_valid ?translations ?book_lookup ?cover_lookup ?image_lookup ?namespace ?prefix ?base_classes ?extra_classes doc
+let write_ambivalent ?numbered_paragraphs ?translations ?book_lookup ?cover_lookup ?image_lookup ?namespace ?prefix ?base_classes ?extra_classes = function
+	| Ambivalent.Valid doc   -> write_valid ?numbered_paragraphs ?translations ?book_lookup ?cover_lookup ?image_lookup ?namespace ?prefix ?base_classes ?extra_classes doc
 	| Ambivalent.Invalid doc -> write_invalid ?prefix ?base_classes ?extra_classes doc
 

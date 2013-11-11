@@ -29,6 +29,7 @@ type t =
 	notes: Inline.seq_t;
 	toc: Inline.seq_t;
 	abstract: Inline.seq_t;
+	paragraph: string;
 	}
 
 
@@ -36,8 +37,8 @@ type t =
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let make equation printout table figure part appendix section bibliography notes toc abstract =
-	{equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract}
+let make equation printout table figure part appendix section bibliography notes toc abstract paragraph =
+	{equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract; paragraph}
 
 let english_names = make
 	(Inline.plain "Eq.", [])
@@ -51,6 +52,7 @@ let english_names = make
 	(Inline.plain "Notes", [])
 	(Inline.plain "Table of Contents", [])
 	(Inline.plain "Abstract", [])
+	"Paragraph"
 
 let french_names = make
 	(Inline.plain "Eq.", [])
@@ -64,6 +66,7 @@ let french_names = make
 	(Inline.plain "Notes", [])
 	(Inline.plain "Index", [])
 	(Inline.plain "Résumé", [])
+	"Paragraphe"
 
 let portuguese_names = make
 	(Inline.plain "Eq.", [])
@@ -77,6 +80,7 @@ let portuguese_names = make
 	(Inline.plain "Notas", [])
 	(Inline.plain "Índice", [])
 	(Inline.plain "Resumo", [])
+	"Parágrafo"
 
 let default = english_names
 
