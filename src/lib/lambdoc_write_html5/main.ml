@@ -441,8 +441,8 @@ let write_valid
 		| Paragraph seq ->
 			let extra =
 				if numbered_paragraphs
-				then []
-				else (incr paragraph_counter; [a_title (Translations.(translations.paragraph) ^ " #" ^ (string_of_int !paragraph_counter))]) in
+				then (incr paragraph_counter; [a_title (Translations.(translations.paragraph) ^ " #" ^ (string_of_int !paragraph_counter))])
+				else [] in
 			[Html5.F.p ~a:(a_class (!!"par" :: attr) :: extra) (write_seq seq)]
 
 		| Itemize frags ->
