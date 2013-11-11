@@ -9,7 +9,6 @@
 (**	Definitions concerning heading elements.
 *)
 
-open Prelude
 open Basic
 
 

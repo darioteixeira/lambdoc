@@ -266,12 +266,12 @@ object (self)
 	*)
 	method private produce lexbuf =
 		let scanner = match Globalenv.get_scanner () with
-			| General	-> Scanner.general_scanner
-			| Raw		-> Scanner.raw_scanner
-			| Mathtex_inl	-> Scanner.mathtex_inl_scanner
-			| Mathml_inl	-> Scanner.mathml_inl_scanner
-			| Tabular	-> Scanner.tabular_scanner
-			| Literal term	-> Scanner.literal_scanner term in
+			| Scanner_general	-> Scanner.general_scanner
+			| Scanner_raw		-> Scanner.raw_scanner
+			| Scanner_mathtex_inl	-> Scanner.mathtex_inl_scanner
+			| Scanner_mathml_inl	-> Scanner.mathml_inl_scanner
+			| Scanner_tabular	-> Scanner.tabular_scanner
+			| Scanner_literal term	-> Scanner.literal_scanner term in
 		let (num_newlines, raw_token) = scanner lexbuf in
 		let op = build_op self#position in
 		let (action, tokens) = match raw_token with

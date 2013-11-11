@@ -9,8 +9,6 @@
 (**	Definitions concerning document targets.
 *)
 
-open Basic
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)

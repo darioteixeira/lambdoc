@@ -9,8 +9,6 @@
 (**	Definitions concerning note blocks.
 *)
 
-open Prelude
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)

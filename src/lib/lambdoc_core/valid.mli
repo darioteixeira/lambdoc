@@ -9,7 +9,6 @@
 (**	Definitions concerning valid documents.
 *)
 
-open Prelude
 open Basic
 
 

@@ -10,7 +10,6 @@
 *)
 
 open Lexing
-open Lambdoc_reader.Ast
 open Scanner
 open Parser
 
@@ -56,6 +55,7 @@ in object (self)
 
 
 	method private op =
+		let open Lambdoc_reader.Ast in
 		{
 		comm_tag = None;
 		comm_label = None;
@@ -66,6 +66,7 @@ in object (self)
 
 
 	method private comm ?(tag = None) ?(label = None) ?(order = None) ?(style = None) () =
+		let open Lambdoc_reader.Ast in
 		{
 		comm_tag = tag;
 		comm_label = label;

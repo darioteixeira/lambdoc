@@ -316,33 +316,33 @@ pop_brk:		CLOSE_DUMMY						{Globalenv.pop None}
 
 /********************************************************************************/
 
-general:		/* empty */						{(None, General)}
-raw:			/* empty */						{(None, Raw)}
-mathtex_inl:		/* empty */						{(None, Mathtex_inl)}
-mathml_inl:		/* empty */						{(None, Mathml_inl)}
+general:		/* empty */						{(None, Scanner_general)}
+raw:			/* empty */						{(None, Scanner_raw)}
+mathtex_inl:		/* empty */						{(None, Scanner_mathtex_inl)}
+mathml_inl:		/* empty */						{(None, Scanner_mathml_inl)}
 
 
 /********************************************************************************/
 
-blk_itemize:		BEGIN_ITEMIZE						{(Some $1, General)}
-blk_enumerate:		BEGIN_ENUMERATE						{(Some $1, General)}
-blk_description:	BEGIN_DESCRIPTION					{(Some $1, General)}
-blk_qanda:		BEGIN_QANDA						{(Some $1, General)}
-blk_verse:		BEGIN_VERSE						{(Some $1, General)}
-blk_quote:		BEGIN_QUOTE						{(Some $1, General)}
-blk_mathtex_blk:	BEGIN_MATHTEX_BLK					{(Some $1, Literal $1)}
-blk_mathml_blk:		BEGIN_MATHML_BLK					{(Some $1, Literal $1)}
-blk_source:		BEGIN_SOURCE						{(Some $1, Literal $1)}
-blk_tabular:		BEGIN_TABULAR						{(Some $1, Tabular)}
-blk_subpage:		BEGIN_SUBPAGE						{(Some $1, General)}
-blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Literal $1)}
-blk_pullquote:		BEGIN_PULLQUOTE						{(Some $1, General)}
-blk_custom:		BEGIN_CUSTOM						{(Some $1, General)}
-blk_equation:		BEGIN_EQUATION						{(Some $1, General)}
-blk_printout:		BEGIN_PRINTOUT 						{(Some $1, General)}
-blk_table:		BEGIN_TABLE						{(Some $1, General)}
-blk_figure:		BEGIN_FIGURE						{(Some $1, General)}
-blk_abstract:		BEGIN_ABSTRACT						{(Some $1, General)}
-blk_bib:		BEGIN_BIB						{(Some $1, General)}
-blk_note:		BEGIN_NOTE						{(Some $1, General)}
+blk_itemize:		BEGIN_ITEMIZE						{(Some $1, Scanner_general)}
+blk_enumerate:		BEGIN_ENUMERATE						{(Some $1, Scanner_general)}
+blk_description:	BEGIN_DESCRIPTION					{(Some $1, Scanner_general)}
+blk_qanda:		BEGIN_QANDA						{(Some $1, Scanner_general)}
+blk_verse:		BEGIN_VERSE						{(Some $1, Scanner_general)}
+blk_quote:		BEGIN_QUOTE						{(Some $1, Scanner_general)}
+blk_mathtex_blk:	BEGIN_MATHTEX_BLK					{(Some $1, Scanner_literal $1)}
+blk_mathml_blk:		BEGIN_MATHML_BLK					{(Some $1, Scanner_literal $1)}
+blk_source:		BEGIN_SOURCE						{(Some $1, Scanner_literal $1)}
+blk_tabular:		BEGIN_TABULAR						{(Some $1, Scanner_tabular)}
+blk_subpage:		BEGIN_SUBPAGE						{(Some $1, Scanner_general)}
+blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Scanner_literal $1)}
+blk_pullquote:		BEGIN_PULLQUOTE						{(Some $1, Scanner_general)}
+blk_custom:		BEGIN_CUSTOM						{(Some $1, Scanner_general)}
+blk_equation:		BEGIN_EQUATION						{(Some $1, Scanner_general)}
+blk_printout:		BEGIN_PRINTOUT 						{(Some $1, Scanner_general)}
+blk_table:		BEGIN_TABLE						{(Some $1, Scanner_general)}
+blk_figure:		BEGIN_FIGURE						{(Some $1, Scanner_general)}
+blk_abstract:		BEGIN_ABSTRACT						{(Some $1, Scanner_general)}
+blk_bib:		BEGIN_BIB						{(Some $1, Scanner_general)}
+blk_note:		BEGIN_NOTE						{(Some $1, Scanner_general)}
 

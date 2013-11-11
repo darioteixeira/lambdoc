@@ -43,8 +43,3 @@ let maybe f = function
 *)
 external identity: 'a -> 'a = "%identity"
 
-
-(**	Pipe operator.
-*)
-let (|>) x f = f x
-

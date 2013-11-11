@@ -9,9 +9,6 @@
 (**	Definitions concerning bibliographic elements.
 *)
 
-open Prelude
-open Basic
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)

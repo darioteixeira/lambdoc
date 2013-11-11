@@ -490,7 +490,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		(List.hd seq, List.tl seq) in
 
 	let convert_seq ~comm ?args seq =
-		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ?args false seq in
+		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ~args false seq in
 
 
 	(************************************************************************)
@@ -1104,7 +1104,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		let books = Hashtbl.create 0 in
 		if not (IsbnSet.is_empty !isbns)
 		then begin
-			let open Bookmaker in
+			let open! Bookmaker in
 			let results = bookmaker (IsbnSet.elements !isbns) in
 			let process_isbnref (comm, feature, isbn) =
 				try match List.assoc isbn results with

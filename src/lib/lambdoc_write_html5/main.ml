@@ -22,7 +22,6 @@ open Source
 open Book
 open Lambdoc_writer
 open Writeconv
-open Translations
 
 module List = BatList
 module String = BatString
@@ -361,6 +360,7 @@ let write_valid
 		fun name ->
 			try Hashtbl.find cache name
 			with Not_found ->
+				let open Translations in
 				let seq = match name with
 					| Name_custom env   -> Hashtbl.find custom env
 					| Name_equation	    -> translations.equation
@@ -442,7 +442,7 @@ let write_valid
 			let extra =
 				if numbered_paragraphs
 				then []
-				else (incr paragraph_counter; [a_title (translations.paragraph ^ " #" ^ (string_of_int !paragraph_counter))]) in
+				else (incr paragraph_counter; [a_title (Translations.(translations.paragraph) ^ " #" ^ (string_of_int !paragraph_counter))]) in
 			[Html5.F.p ~a:(a_class (!!"par" :: attr) :: extra) (write_seq seq)]
 
 		| Itemize frags ->

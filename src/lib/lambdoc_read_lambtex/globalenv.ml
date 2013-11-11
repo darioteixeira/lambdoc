@@ -19,12 +19,12 @@ exception Pop_mismatch of string * string
 (********************************************************************************)
 
 type scanner_t =
-	| General
-	| Raw
-	| Mathtex_inl
-	| Mathml_inl
-	| Tabular
-	| Literal of string
+	| Scanner_general
+	| Scanner_raw
+	| Scanner_mathtex_inl
+	| Scanner_mathml_inl
+	| Scanner_tabular
+	| Scanner_literal of string
 
 
 type t = string option * scanner_t
@@ -40,7 +40,7 @@ let string_of_name = function
 
 let history =
 	let stack = Stack.create () in
-	Stack.push (None, General) stack;
+	Stack.push (None, Scanner_general) stack;
 	stack
 
 let push env =

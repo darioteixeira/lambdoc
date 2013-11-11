@@ -7,7 +7,6 @@
 (********************************************************************************)
 
 open Lambdoc_core
-open Prelude
 open Basic
 open Ast
 
