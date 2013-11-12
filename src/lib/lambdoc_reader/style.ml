@@ -35,7 +35,6 @@ type decl_t =
 	| Coversize_decl of Book.coversize_t
 	| Lang_decl of Camlhighlight_core.lang_t option
 	| Linenums_decl of bool
-	| Rating_decl of Book.rating_t option
 	| Width_decl of int option
 
 
@@ -47,7 +46,6 @@ type _ handle_t =
 	| Coversize_hnd: Book.coversize_t handle_t
 	| Lang_hnd: Camlhighlight_core.lang_t option handle_t
 	| Linenums_hnd: bool handle_t
-	| Rating_hnd: Book.rating_t option handle_t
 	| Width_hnd: int option handle_t
 
 type errors_t = (int option * Error.error_msg_t) BatDynArray.t
@@ -99,7 +97,6 @@ let decl_dict =
 	("coversize", fun comm v -> Coversize_decl (coversize_of_string comm "coversize" v));
 	("lang", fun comm v -> Lang_decl (lang_of_string comm "lang" v));
 	("nums", fun comm v -> Linenums_decl (boolean_of_string comm "nums" v));
-	("rating", fun comm v -> Rating_decl (numeric_of_string comm "rating" ~low:1 ~high:5 v));
 	("width", fun comm v -> Width_decl (numeric_of_string comm "width" ~low:1 ~high:100 v));
 	]
 
@@ -155,7 +152,6 @@ let find_decl hnd parsing =
 		| (Coversize_hnd, Coversize_decl x) -> Some x
 		| (Lang_hnd, Lang_decl x)	    -> Some x
 		| (Linenums_hnd, Linenums_decl x)   -> Some x
-		| (Rating_hnd, Rating_decl x)	    -> Some x
 		| (Width_hnd, Width_decl x)	    -> Some x
 		| _				    -> None in
 	let rec finder accum = function

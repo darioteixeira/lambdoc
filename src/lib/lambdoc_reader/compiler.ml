@@ -332,10 +332,9 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (false, (comm, Ast.Booklink (isbn, maybe_astseq))) ->
 			let elem attr dict =
-				let rating = Style.consume1 dict (Rating_hnd, None) in
 				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				add_isbn comm `Feature_booklink isbn;
-				[Inline.booklink ~attr isbn rating maybe_seq] in
+				[Inline.booklink ~attr isbn maybe_seq] in
 			check_inline_comm `Feature_booklink comm elem
 
 		| (false, (comm, Ast.See refs)) ->
@@ -657,9 +656,9 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 
 		| (_, _, _, `Any_blk, (comm, Ast.Bookpic isbn)) ->
 			let elem attr dict =
-				let (rating, coversize) = Style.consume2 dict (Rating_hnd, None) (Coversize_hnd, `Medium) in
+				let coversize = Style.consume1 dict (Coversize_hnd, `Medium) in
 				add_isbn comm `Feature_bookpic isbn;
-				[Block.bookpic ~attr isbn rating coversize] in
+				[Block.bookpic ~attr isbn coversize] in
 			check_block_comm `Feature_bookpic comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_astseq, astfrag))) ->

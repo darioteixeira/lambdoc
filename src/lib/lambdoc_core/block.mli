@@ -31,7 +31,7 @@ type block_t =
 	| Subpage of frag_t
 	| Verbatim of string
 	| Picture of int option * Alias.t * string
-	| Bookpic of Book.isbn_t * Book.rating_t option * Book.coversize_t
+	| Bookpic of Book.isbn_t * Book.coversize_t
 	| Pullquote of Inline.seq_t option * frag_t
 	| Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
 	| Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
@@ -70,7 +70,7 @@ val tabular:	?attr:Attr.t -> Tabular.t -> t
 val subpage:	?attr:Attr.t -> frag_t -> t
 val verbatim:	?attr:Attr.t -> string -> t
 val picture:	?attr:Attr.t -> int option -> Alias.t -> string -> t
-val bookpic:	?attr:Attr.t -> Book.isbn_t -> Book.rating_t option -> Book.coversize_t -> t
+val bookpic:	?attr:Attr.t -> Book.isbn_t -> Book.coversize_t -> t
 val pullquote:	?attr:Attr.t -> Inline.seq_t option -> frag_t -> t
 val boxout:	?attr:Attr.t -> Custom.Boxout.t -> Inline.seq_t option -> frag_t -> t
 val theorem:	?attr:Attr.t -> Custom.Theorem.t -> Inline.seq_t option -> frag_t -> t

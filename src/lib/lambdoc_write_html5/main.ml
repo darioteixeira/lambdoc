@@ -273,7 +273,7 @@ let write_valid
 			let seq = match maybe_seq with Some seq -> seq | None -> (Inline.plain uri, []) in
 			make_link ~attr uri (Obj.magic (write_seq seq))
 
-		| Booklink (isbn, maybe_rating, maybe_seq) ->
+		| Booklink (isbn, maybe_seq) ->
 			let book = Hashtbl.find books isbn in
 			let seq = match maybe_seq with Some seq -> seq | None -> (Inline.emph ((Inline.plain book.title), []), []) in
 			Raw.a ~a:[a_class (!!"booklink" :: attr); a_href (book_lookup isbn)] (Obj.magic (write_seq seq))
@@ -510,7 +510,7 @@ let write_valid
 			let img = Raw.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [Html5.F.img ~a:(a_class [!!"pic"] :: wattr) ~src:uri ~alt ()] in
 			[Html5.F.div ~a:[a_class (!!"pic" :: attr @ make_floatable wrapped)] [img]]
 
-		| Bookpic (isbn, maybe_rating, cover) ->
+		| Bookpic (isbn, cover) ->
 			let book = Hashtbl.find books isbn in
 			let alt = "ISBN " ^ isbn in
 			let book_uri = book_lookup isbn in

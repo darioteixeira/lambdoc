@@ -32,7 +32,7 @@ type inline_t =
 	| Mbox of seq_t
 	| Span of seq_t
 	| Link of Uri.t * seq_t option
-	| Booklink of Book.isbn_t * Book.rating_t option * seq_t option
+	| Booklink of Book.isbn_t * seq_t option
 	| See of Pointer.t nelist
 	| Cite of Pointer.t nelist
 	| Dref of Pointer.t * seq_t option
@@ -68,7 +68,7 @@ let sub ?(attr = Attr.default) seq = {inline = Sub seq; attr}
 let mbox ?(attr = Attr.default) seq = {inline = Mbox seq; attr}
 let span ?(attr = Attr.default) seq = {inline = Span seq; attr}
 let link ?(attr = Attr.default) uri maybe_seq = {inline = Link (uri, maybe_seq); attr}
-let booklink ?(attr = Attr.default) isbn maybe_rating maybe_seq = {inline = Booklink (isbn, maybe_rating, maybe_seq); attr}
+let booklink ?(attr = Attr.default) isbn maybe_seq = {inline = Booklink (isbn, maybe_seq); attr}
 let see ?(attr = Attr.default) (hd, tl) = {inline = See (hd, tl); attr}
 let cite ?(attr = Attr.default) (hd, tl) = {inline = Cite (hd, tl); attr}
 let dref ?(attr = Attr.default) pointer maybe_seq = {inline = Dref (pointer, maybe_seq); attr}

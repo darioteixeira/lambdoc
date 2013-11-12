@@ -34,7 +34,7 @@ type inline_t =
 	| Mbox of seq_t
 	| Span of seq_t
 	| Link of Uri.t * seq_t option						(** Reference to an external URI *)
-	| Booklink of Book.isbn_t * Book.rating_t option * seq_t option		(** Reference to a book via its ISBN *)
+	| Booklink of Book.isbn_t * seq_t option				(** Reference to a book via its ISBN *)
 	| See of Pointer.t nelist						(** Reference to an end note *)
 	| Cite of Pointer.t nelist						(** Citation of a bibliography entry *)
 	| Dref of Pointer.t * seq_t option					(** Dumb reference to an internal element *)
@@ -70,7 +70,7 @@ val sub:	?attr:Attr.t -> seq_t -> t
 val mbox:	?attr:Attr.t -> seq_t -> t
 val span:	?attr:Attr.t -> seq_t -> t
 val link:	?attr:Attr.t -> Uri.t -> seq_t option -> t
-val booklink:	?attr:Attr.t -> Book.isbn_t -> Book.rating_t option -> seq_t option -> t
+val booklink:	?attr:Attr.t -> Book.isbn_t -> seq_t option -> t
 val see:	?attr:Attr.t -> Pointer.t nelist -> t
 val cite:	?attr:Attr.t -> Pointer.t nelist -> t
 val dref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t

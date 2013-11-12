@@ -18,8 +18,6 @@ open Sexplib.Std
 
 type isbn_t = string with sexp
 
-type rating_t = int with sexp
-
 type coversize_t = [ `Small | `Medium | `Large ] with sexp
 
 type t =
