@@ -252,7 +252,7 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \section{Source environment: default with syntax highlighting}
 
 \p{\lorem}
-\begin<lang=ocaml>{source}
+\begin<lang=caml>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -267,7 +267,7 @@ let rec count = function
 \section{Source environment: default with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<lang=ocaml,nums=yes>{source}
+\begin<lang=caml,nums=yes>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -282,7 +282,7 @@ let rec count = function
 \section{Source environment: plain with syntax highlighting}
 
 \p{\lorem}
-\begin<lang=ocaml,plain>{source}
+\begin<lang=caml,plain>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -297,7 +297,7 @@ let rec count = function
 \section{Source environment: plain with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<lang=ocaml,nums=yes,plain>{source}
+\begin<lang=caml,nums=yes,plain>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -312,7 +312,7 @@ let rec count = function
 \section{Source environment: boxed with syntax highlighting}
 
 \p{\lorem}
-\begin<lang=ocaml,boxed>{source}
+\begin<lang=caml,boxed>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -327,7 +327,7 @@ let rec count = function
 \section{Source environment: boxed with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<lang=ocaml,nums=yes,boxed>{source}
+\begin<lang=caml,nums=yes,boxed>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -342,7 +342,7 @@ let rec count = function
 \section{Source environment: zebra with syntax highlighting}
 
 \p{\lorem}
-\begin<lang=ocaml,zebra>{source}
+\begin<lang=caml,zebra>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -357,7 +357,7 @@ let rec count = function
 \section{Source environment: zebra with syntax highlighting and line numbers}
 
 \p{\lorem}
-\begin<lang=ocaml,nums=yes,zebra>{source}
+\begin<lang=caml,nums=yes,zebra>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -779,7 +779,7 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin{printout}{\fox}
-\begin<lang=ocaml>{source}
+\begin<lang=caml>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -795,7 +795,7 @@ let rec count = function
 
 \p{\lorem}
 \begin<left>{printout}{\fox}
-\begin<lang=ocaml,nums=no>{source}
+\begin<lang=caml,nums=no>{source}
 type t =
     | Foo of int
     | Bar of float
@@ -812,7 +812,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<right>{printout}{\fox}
-\begin<lang=ocaml,nums=no>{source}
+\begin<lang=caml,nums=no>{source}
 type t =
     | Foo of int
     | Bar of float

@@ -123,7 +123,7 @@ quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, ali
 nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
 justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
 
-{{{lang=ocaml
+{{{lang=caml
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
