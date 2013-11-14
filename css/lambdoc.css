@@ -212,22 +212,22 @@ caption, th, td
 	list-style-type: decimal;
 	}
 
-.doc_class_lower_roman
+.doc_class_lower-roman
 	{
 	list-style-type: lower-roman;
 	}
 
-.doc_class_upper_roman
+.doc_class_upper-roman
 	{
 	list-style-type: upper-roman;
 	}
 
-.doc_class_lower_alpha
+.doc_class_lower-alpha
 	{
 	list-style-type: lower-alpha;
 	}
 
-.doc_class_upper_alpha
+.doc_class_upper-alpha
 	{
 	list-style-type: upper-alpha;
 	}
