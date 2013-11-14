@@ -19,6 +19,7 @@ type t =
 	title: string;
 	language: Language.t;
 
+	unrestricted: bool;
 	max_macro_depth: int option;
 	max_inline_depth: int option;
 	max_block_depth: int option;
@@ -46,6 +47,7 @@ let debug_opt = StdOpt.store_true ()
 let title_opt = StdOpt.str_option ~default:"Lambdoc document" ()
 let language_opt = Opt.value_option "LANGUAGE" (Some Language.default) Language.of_string (fun exn str -> "Unknown language '" ^ str ^ "'")
 
+let unrestricted_opt = StdOpt.store_true ()
 let max_macro_depth_opt = StdOpt.int_option ()
 let max_inline_depth_opt = StdOpt.int_option ()
 let max_block_depth_opt = StdOpt.int_option ()
@@ -64,6 +66,7 @@ let output_file_opt = StdOpt.str_option ~metavar:"FILE" ()
 let options = OptParser.make ()
 
 let general = OptParser.add_group options "General options"
+let idiosyncrasies = OptParser.add_group options "Document idiosyncrasies"
 let amazon = OptParser.add_group options "Amazon credentials (only required for book lookups)"
 let markup = OptParser.add_group options "Definition of markup languages"
 let file = OptParser.add_group options "Definition of I/O files"
@@ -73,9 +76,10 @@ let () =
 	OptParser.add options ~group:general ~short_name:'e' ~long_name:"title" ~help:"Document title" title_opt;
 	OptParser.add options ~group:general ~short_name:'l' ~long_name:"lang" ~help:"Language for I18N of document elements (either 'en', 'fr', or 'pt'; assume 'en' if not specified)" language_opt;
 
-	OptParser.add options ~group:general ~long_name:"max-macro-depth" ~help:"Maximum depth for macro calls" max_macro_depth_opt;
-	OptParser.add options ~group:general ~long_name:"max-inline-depth" ~help:"Maximum depth for inline elements" max_inline_depth_opt;
-	OptParser.add options ~group:general ~long_name:"max-block-depth" ~help:"Maximum depth for block elements" max_block_depth_opt;
+	OptParser.add options ~group:idiosyncrasies ~short_name:'u' ~long_name:"unrestricted" ~help:"Unrestricted idiosyncrasies" unrestricted_opt;
+	OptParser.add options ~group:idiosyncrasies ~long_name:"max-macro-depth" ~help:"Maximum depth for macro calls" max_macro_depth_opt;
+	OptParser.add options ~group:idiosyncrasies ~long_name:"max-inline-depth" ~help:"Maximum depth for inline elements" max_inline_depth_opt;
+	OptParser.add options ~group:idiosyncrasies ~long_name:"max-block-depth" ~help:"Maximum depth for block elements" max_block_depth_opt;
 
 	OptParser.add options ~group:amazon ~long_name:"amazon-locale" ~help:"Amazon Web Services locale" amazon_locale_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-associate-tag" ~help:"Amazon Web Services associate tag" amazon_associate_tag_opt;
@@ -106,6 +110,7 @@ let parse () = match OptParser.parse_argv options with
 			title = Opt.get title_opt;
 			language = Opt.get language_opt;
 
+			unrestricted = Opt.get unrestricted_opt;
 			max_macro_depth = Opt.opt max_macro_depth_opt;
 			max_inline_depth = Opt.opt max_inline_depth_opt;
 			max_block_depth = Opt.opt max_block_depth_opt;

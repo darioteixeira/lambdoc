@@ -37,7 +37,9 @@ type t =
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-val default: t
+(********************************************************************************)
+(**	{2 Constructors}							*)
+(********************************************************************************)
 
 val make:
 	?feature_ruleset:feature_ruleset_t ->
@@ -49,4 +51,13 @@ val make:
 	?max_block_depth:int option ->
 	unit ->
 	t
+
+
+(********************************************************************************)
+(**	{2 Built-in idiosyncrasies}						*)
+(********************************************************************************)
+
+val unrestricted: t	(** Maximally unrestrictive: all features and classnames allowed, and there are no depth limits *)
+val restricted: t	(** Maximally restrictive: no features and no classnames allowed, and maximum depth of 1 *)
+val default: t		(** Unrestrictive on features, but only allows the classnames shipped with default CSS and has reasonable depth limits *)
 

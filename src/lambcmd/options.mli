@@ -16,6 +16,7 @@ type t =
 	title: string;
 	language: Language.t;
 
+	unrestricted: bool;
 	max_macro_depth: int option;
 	max_inline_depth: int option;
 	max_block_depth: int option;

@@ -56,10 +56,17 @@ let string_of_xhtml the_title xhtml =
 let () =
 	let options = Options.parse () in
 	let input_str = BatPervasives.input_all options.input_chan in
-	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make
-		~max_macro_depth:options.max_macro_depth
-		~max_inline_depth:options.max_inline_depth
-		~max_block_depth:options.max_block_depth () in
+	let idiosyncrasies =
+		let base =
+			if options.unrestricted
+			then Idiosyncrasies.unrestricted
+			else Idiosyncrasies.default in
+		{
+		base with
+			Idiosyncrasies.max_macro_depth = options.max_macro_depth;
+			Idiosyncrasies.max_inline_depth = options.max_inline_depth;
+			Idiosyncrasies.max_block_depth = options.max_block_depth;
+		} in
 	let bookmaker = match (options.amazon_locale, options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key) with
 		| (Some locale, Some associate_tag, Some access_key, Some secret_key) ->
 			let credential = Bookaml_amazon.make_credential ~locale ~associate_tag ~access_key ~secret_key in
