@@ -49,7 +49,7 @@ let string_of_xhtml the_title xhtml =
 				])
 			(Html5.F.body [xhtml])) in
 	let buf = Buffer.create 1024 in
-	Eliom_content.Html5.Printer.print ~output:(Buffer.add_string buf) page;
+	Html5.Printer.print ~output:(Buffer.add_string buf) page;
 	Buffer.contents buf
 
 
