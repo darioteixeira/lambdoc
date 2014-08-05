@@ -1,86 +1,9 @@
 name = "lambdoc"
 version = "0.9.2"
 description = "The Lambdoc library for document parsing/printing"
-requires = "threads, unix, ulex, menhirLib, batteries, sexplib, pcre, pxp-engine, pxp-ulex-utf8, lwt, lwt.unix, tyxml, blahcaml, camlhighlight"
+requires = "threads, unix, ulex, menhirLib, batteries, sexplib, pcre, pxp-engine, pxp-ulex-utf8, lwt, lwt.unix, tyxml, blahcaml, camlhighlight, omd"
 archive(byte) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"
 archive(plugin,byte) = "lambdoc.cma"
 archive(plugin,native) = "lambdoc.cmxs"
-
-package "core"
-	(
-	name = "core"
-	version = "0.9.2"
-	requires = "batteries, sexplib, camlhighlight.core"
-	archive(byte) = "lambdoc_core.cmo"
-	archive(native) = "lambdoc_core.cmx"
-	archive(plugin,byte) = "lambdoc_core.cmo"
-	archive(plugin,native) = "lambdoc_core.cmxs"
-	)
-
-package "reader"
-	(
-	name = "reader"
-	version = "0.9.2"
-	requires = "batteries, pcre, blahcaml, camlhighlight.core, camlhighlight.parser, lambdoc.core"
-	archive(byte) = "lambdoc_reader.cmo"
-	archive(native) = "lambdoc_reader.cmx"
-	archive(plugin,byte) = "lambdoc_reader.cmo"
-	archive(plugin,native) = "lambdoc_reader.cmxs"
-	)
-
-package "writer"
-	(
-	name = "writer"
-	version = "0.9.2"
-	requires = "batteries, lambdoc.core"
-	archive(byte) = "lambdoc_writer.cmo"
-	archive(native) = "lambdoc_writer.cmx"
-	archive(plugin,byte) = "lambdoc_writer.cmo"
-	archive(plugin,native) = "lambdoc_writer.cmxs"
-	)
-
-package "read_lambxml"
-	(
-	name = "read_lambxml"
-	version = "0.9.2"
-	requires = "pcre, pxp-engine, pxp-ulex-utf8, lambdoc.core, lambdoc.reader"
-	archive(byte) = "lambdoc_read_lambxml.cmo"
-	archive(native) = "lambdoc_read_lambxml.cmx"
-	archive(plugin,byte) = "lambdoc_read_lambxml.cmo"
-	archive(plugin,native) = "lambdoc_read_lambxml.cmxs"
-	)
-
-package "read_lambwiki"
-	(
-	name = "read_lambwiki"
-	version = "0.9.2"
-	requires = "ulex, menhirLib, lambdoc.core, lambdoc.reader"
-	archive(byte) = "lambdoc_read_lambwiki.cmo"
-	archive(native) = "lambdoc_read_lambwiki.cmx"
-	archive(plugin,byte) = "lambdoc_read_lambwiki.cmo"
-	archive(plugin,native) = "lambdoc_read_lambwiki.cmxs"
-	)
-
-package "read_lambtex"
-	(
-	name = "read_lambtex"
-	version = "0.9.2"
-	requires = "ulex, menhirLib, batteries, pcre, lambdoc.core, lambdoc.reader"
-	archive(byte) = "lambdoc_read_lambtex.cmo"
-	archive(native) = "lambdoc_read_lambtex.cmx"
-	archive(plugin,byte) = "lambdoc_read_lambtex.cmo"
-	archive(plugin,native) = "lambdoc_read_lambtex.cmxs"
-	)
-
-package "write_html5"
-	(
-	name = "write_html5"
-	version = "0.9.2"
-	requires = "batteries, tyxml, camlhighlight.write_html5, lambdoc.core, lambdoc.writer"
-	archive(byte) = "lambdoc_write_html5.cmo"
-	archive(native) = "lambdoc_write_html5.cmx"
-	archive(plugin,byte) = "lambdoc_write_html5.cmo"
-	archive(plugin,native) = "lambdoc_write_html5.cmxs"
-	)
 
