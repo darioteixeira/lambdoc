@@ -12,11 +12,12 @@
 
 Lambdoc is a library providing support for semantically rich documents
 in web applications, built with Ocsigen/Eliom [1] integration in mind.
-It includes parsers for three different markup languages: Lambtex, Lambxml,
-and Lambwiki.  The first is inspired by LaTeX, the second is an XML-based
-markup based on HTML, and the last is a lightweight markup language in the
-spirit of Markdown and Wiki Creole.  The library also includes the possibility
-of outputing any Lambdoc document as an Ocsigen HTML5 value.
+It includes parsers for four different markup languages: Lambtex, Lambxml,
+Lambwiki, and Markdown.  The first is inspired by LaTeX, the second is an
+XML-based markup based on HTML, the third is a lightweight markup language
+in the spirit of Wiki Creole, and the last is the popular lightweight markup
+language.  The library also includes the possibility of outputing any Lambdoc
+document as an Ocsigen HTML5 value.
 
 Additional capabilities include the runtime customisation of available document
 features (you may, for example, declare that a certain class of users is
@@ -29,10 +30,10 @@ between any of the input formats into one of the supported output targets.
 2. Dependencies
 ===============
 
-Lambdoc requires Ocsigen [1], Ulex [2], Menhir [3], Batteries [4], Sexplib
-[5], Pcre-ocaml [6], PXP [7], Lwt [8], Blahcaml [9], and Camlhighlight [10].
-The command line utility 'lambcmd' and some of the demos also depend on Bookaml
-[11].  Note that this dependency does not apply to the core Lambdoc library.
+Lambdoc requires Ocsigen [1], Ulex [2], Menhir [3], Batteries [4], Sexplib [5],
+Pcre-ocaml [6], PXP [7], Lwt [8], Blahcaml [9], Camlhighlight [10], and OMD [11].
+The command line utility 'lambcmd' and some of the demos also depend on Bookaml [12].
+Note that this dependency does not apply to the core Lambdoc library.
 
 
 3. Building and installing
@@ -43,7 +44,7 @@ of the library run 'make install' or 'make reinstall'.  To remove the package
 run 'make uninstall'.  The API documentation can be built with 'make doc'.
 
 If you also wish to build the lambcmd command line utility, issue 'make
-lambcmd'.  Note that this binary also requires the Bookaml [11] package.
+lambcmd'.  Note that this binary also requires the Bookaml package [12].
 Finally, if you wish to build everything (library + lambcmd) you may simply
 run 'make all' or just 'make'.
 
@@ -83,5 +84,6 @@ References
  [8] http://www.ocsigen.org/lwt
  [9] http://blahcaml.forge.ocamlcore.org/
 [10] http://camlhighlight.forge.ocamlcore.org/
-[11] http://bookaml.forge.ocamlcore.org/
+[11] http://github.com/ocaml/omd
+[12] http://bookaml.forge.ocamlcore.org/
 
