@@ -16,8 +16,8 @@ open Lambdoc_reader
 (**	{1 Reader module}							*)
 (********************************************************************************)
 
-module R : Reader.READER =
-struct
+include Reader.Make
+(struct
 	exception Reading_error of int * string
 
 	(* PXP does not provide raw access to line numbers, so we must parse the exception output. *)
@@ -42,7 +42,5 @@ struct
 				in raise (Reading_error (line - 1, new_why))
 			| Failure msg ->
 				raise (Failure ("Internal parser error in " ^ msg))
-end
-
-include Reader.Make_reader (R)
+end)
 

@@ -9,7 +9,7 @@
 PKG_NAME=lambdoc
 SRC_DIR=src
 LIB_DIR=$(SRC_DIR)/_build/lib
-OCAMLBUILD_OPTS=-use-ocamlfind -no-links -cflags -w,+a-4-6-9-27
+OCAMLBUILD_OPTS=-use-ocamlfind -no-links -cflags -w,+a-4-6-9-27-42
 
 LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.cmxs lambdoc.a
 COMPONENTS=lambdoc_core \

@@ -16,8 +16,8 @@ open Lambdoc_reader
 (*	{2 Reader module}							*)
 (********************************************************************************)
 
-module R : Reader.READER =
-struct
+include Reader.Make
+(struct
 	exception Reading_error of int * string
 
 	let ast_from_string str =
@@ -26,8 +26,5 @@ struct
 			let msg = Printf.sprintf "The document uses an unsupported feature (%s)" x in
 			raise (Reading_error (0, msg))
 
-end
-
-
-include Reader.Make_reader (R)
+end)
 

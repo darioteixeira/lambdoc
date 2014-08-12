@@ -6,11 +6,20 @@
 *)
 (********************************************************************************)
 
-open Eliom_content
-open Html5.F
 open Options
 open Lambdoc_core
 open Lambdoc_reader
+
+
+(********************************************************************************)
+(**	{1 Modules}								*)
+(********************************************************************************)
+
+module Html5_writer = Lambdoc_write_html5.Main.Make
+(struct
+	include Html5.M
+	module Svg = Svg.M
+end)
 
 
 (********************************************************************************)
@@ -41,15 +50,14 @@ let make_bookmaker ~credential raw_isbns =
 
 
 let string_of_xhtml the_title xhtml =
-	let page = (Html5.F.html
-			(Html5.F.head
-				(Html5.F.title (Html5.F.pcdata the_title))
-				[
-				Html5.F.css_link ~a:[Html5.F.a_media [`All]; Html5.F.a_title "Default"] ~uri:(Raw.uri_of_string "css/lambdoc.css") ();
-				])
-			(Html5.F.body [xhtml])) in
+	let open Html5.M in
+	let page = (html
+			(head
+				(title (pcdata the_title))
+				[link ~a:[a_media [`All]; a_title "Default"] ~rel:[`Stylesheet] ~href:(uri_of_string "css/lambdoc.css") ()])
+			(body [xhtml])) in
 	let buf = Buffer.create 1024 in
-	Html5.Printer.print ~output:(Buffer.add_string buf) page;
+	Html5.P.print ~output:(Buffer.add_string buf) page;
 	Buffer.contents buf
 
 
@@ -80,8 +88,12 @@ let () =
 		| `Markdown -> Lambdoc_read_markdown.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
 		| `Sexp	    -> Lambdoc_core.Ambivalent.deserialize input_str in
 	let output_str = match options.output_markup with
-		| `Sexp  -> Lambdoc_core.Ambivalent.serialize doc
-		| `Html5 -> string_of_xhtml options.title (Lambdoc_write_html5.Main.write_ambivalent ~translations:options.language doc) in
+		| `Sexp  ->
+			Lambdoc_core.Ambivalent.serialize doc
+		| `Html5 ->
+			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
+			let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
+			string_of_xhtml options.title xhtml in
 	output_string options.output_chan output_str;
 	options.input_cleaner options.input_chan;
 	options.output_cleaner options.output_chan;

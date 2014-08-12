@@ -17,8 +17,8 @@ open Lambdoc_reader
 (*	{2 Reader module}							*)
 (********************************************************************************)
 
-module R : Reader.READER =
-struct
+include Reader.Make
+(struct
 	exception Reading_error of int * string
 
 	let menhir_with_ulex menhir_parser tokenizer lexbuf =
@@ -42,7 +42,5 @@ struct
 				raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected))
 			| Parser.Error ->
 				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
-end
-
-include Reader.Make_reader (R)
+end)
 

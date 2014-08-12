@@ -17,8 +17,6 @@ open Sexplib.Std
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	The type of non-empty lists.
-*)
 type 'a nelist = 'a * 'a list with sexp
 
 
@@ -26,22 +24,16 @@ type 'a nelist = 'a * 'a list with sexp
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-(**	Similar to [List.map], but for values of type {!nelist}.
-*)
-let nemap func (hd, tl) =
-	let hd' = func hd in
-	let tl' = List.map func tl in
-	(hd', tl')
+external identity: 'a -> 'a = "%identity"
 
 
-(**	Possibly apply a function.
-*)
 let maybe f = function
 	| Some x -> Some (f x)
 	| None	 -> None
 
 
-(**	Identity function.
-*)
-external identity: 'a -> 'a = "%identity"
+let nemap func (hd, tl) =
+	let hd' = func hd in
+	let tl' = List.map func tl in
+	(hd', tl')
 

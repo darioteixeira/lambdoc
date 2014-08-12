@@ -13,12 +13,12 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(**	{1 Module types}							*)
 (********************************************************************************)
 
 (**	The module type that all wannabe document readers must export.
 *)
-module type READER =
+module type READABLE =
 sig
 	exception Reading_error of int * string
 
@@ -46,7 +46,7 @@ end
 
 (**	The functor that creates a document reader.
 *)
-module Make_reader (Reader: READER): S =
+module Make (Readable: READABLE): S =
 struct
 	let ambivalent_from_string
 		?bookmaker
@@ -56,14 +56,14 @@ struct
 		source =
 			try
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
-				let ast = Reader.ast_from_string source in
+				let ast = Readable.ast_from_string source in
 				Compiler.compile ?bookmaker ~expand_entities ~idiosyncrasies ~source ast
 			with
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
 					let errors = Compiler.process_errors ~sort:false sane_str msgs in
 					Ambivalent.make_invalid errors
-				| Reader.Reading_error (line, msg) ->
+				| Readable.Reading_error (line, msg) ->
 					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)] in
 					Ambivalent.make_invalid errors
 end
