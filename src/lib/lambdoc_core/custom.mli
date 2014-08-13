@@ -1,12 +1,14 @@
 (********************************************************************************)
-(*	Custom.ml
+(*	Custom.mli
 	Copyright (c) 2009-2014 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-open Sexplib.Std
+(**	Custom document blocks.
+*)
+
 open Basic
 
 
@@ -38,26 +40,22 @@ type t = [ anonymous_t | unnumbered_t | numbered_t ]
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
-let anonymous key label = function
-	| `None_given -> `Anonymous (key, label)
-	| _	      -> invalid_arg "Custom.anonymous"
+val anonymous: key_t -> Label.t -> order_t -> [> anonymous_t ]
 
-let unnumbered key label = function
-	| `None_given -> `Unnumbered (key, label)
-	| _	      -> invalid_arg "Custom.unnumbered"
+val unnumbered: key_t -> Label.t -> order_t -> [> unnumbered_t ]
 
-let numbered key label order = `Numbered (key, label, order)
+val numbered: key_t -> Label.t -> order_t -> [> numbered_t ]
 
 
 (********************************************************************************)
 (**	{1 Boxout module}							*)
 (********************************************************************************)
 
-module Boxout =
-struct
+module Boxout:
+sig
 	type t = [ anonymous_t | unnumbered_t | numbered_t ] with sexp
 
-	let make x = x
+	val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
 end
 
 
@@ -65,13 +63,10 @@ end
 (**	{1 Theorem module}							*)
 (********************************************************************************)
 
-module Theorem =
-struct
+module Theorem:
+sig
 	type t = [ unnumbered_t | numbered_t ] with sexp
 
-	let make = function
-		| `Anonymous _ -> invalid_arg "Custom.Theorem.make"
-		| #unnumbered_t
-		| #numbered_t as x -> x
+	val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
 end
 

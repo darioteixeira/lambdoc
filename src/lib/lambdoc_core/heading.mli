@@ -16,10 +16,13 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-(**	Definition of the ordering types for the various kinds of headings
+(**	Ordering type for part headings.
 *)
-
 type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+
+
+(**	Ordering type for section headings.
+*)
 type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_given_t | Order.hierarchical_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
 
