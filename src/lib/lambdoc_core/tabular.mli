@@ -9,8 +9,6 @@
 (**	Definitions concerning tabular environments.
 *)
 
-open Prelude
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -34,16 +32,16 @@ type cellspec_t = colspec_t * int * bool * bool with sexp		(* column spec, colum
 
 type cell_t = cellspec_t option * Inline.seq_t option with sexp
 
-type row_t = cell_t nelist with sexp
+type row_t = cell_t list with sexp
 
-type group_t = row_t nelist with sexp
+type group_t = row_t list with sexp
 
 type t =
 	{
 	tcols: colspec_t array;
 	thead: group_t option;
 	tfoot: group_t option;
-	tbodies: group_t nelist;
+	tbodies: group_t list;
 	} with sexp
 
 
@@ -52,7 +50,7 @@ type t =
 (********************************************************************************)
 
 val make_cell: cellspec_t option -> Inline.seq_t option -> cell_t
-val make_row: cell_t nelist -> row_t
-val make_group: row_t nelist -> group_t
-val make: colspec_t array -> ?thead:group_t -> ?tfoot:group_t -> group_t nelist -> t
+val make_row: cell_t list -> row_t
+val make_group: row_t list -> group_t
+val make: colspec_t array -> ?thead:group_t -> ?tfoot:group_t -> group_t list -> t
 

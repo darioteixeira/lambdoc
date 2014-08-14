@@ -9,7 +9,6 @@
 (**	Definitions concerning block elements.
 *)
 
-open Prelude
 open Basic
 
 
@@ -19,10 +18,10 @@ open Basic
 
 type block_t =
 	| Paragraph of Inline.seq_t
-	| Itemize of frag_t nelist
-	| Enumerate of frag_t nelist
-	| Description of (Inline.seq_t * frag_t) nelist
-	| Qanda of (Qanda.t * frag_t) nelist
+	| Itemize of frag_t list
+	| Enumerate of frag_t list
+	| Description of (Inline.seq_t * frag_t) list
+	| Qanda of (Qanda.t * frag_t) list
 	| Verse of frag_t
 	| Quote of frag_t
 	| Mathblk of Math.t
@@ -50,7 +49,7 @@ and t =
 	attr: Attr.t;
 	}
 
-and frag_t = t nelist with sexp
+and frag_t = t list with sexp
 
 
 (********************************************************************************)
@@ -58,10 +57,10 @@ and frag_t = t nelist with sexp
 (********************************************************************************)
 
 val paragraph:	?attr:Attr.t -> Inline.seq_t -> t
-val itemize:	?attr:Attr.t -> frag_t nelist -> t
-val enumerate:	?attr:Attr.t -> frag_t nelist -> t
-val description:?attr:Attr.t -> (Inline.seq_t * frag_t) nelist -> t
-val qanda:	?attr:Attr.t -> (Qanda.t * frag_t) nelist -> t
+val itemize:	?attr:Attr.t -> frag_t list -> t
+val enumerate:	?attr:Attr.t -> frag_t list -> t
+val description:?attr:Attr.t -> (Inline.seq_t * frag_t) list -> t
+val qanda:	?attr:Attr.t -> (Qanda.t * frag_t) list -> t
 val verse:	?attr:Attr.t -> frag_t -> t
 val quote:	?attr:Attr.t -> frag_t -> t
 val mathblk:	?attr:Attr.t -> Math.t -> t

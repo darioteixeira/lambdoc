@@ -6,9 +6,6 @@
 *)
 (********************************************************************************)
 
-(**	Definition of language-specific names for document elements.
-*)
-
 open Lambdoc_core
 
 
@@ -41,45 +38,45 @@ let make equation printout table figure part appendix section bibliography notes
 	{equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract; paragraph}
 
 let english_names = make
-	(Inline.plain "Eq.", [])
-	(Inline.plain "Print.", [])
-	(Inline.plain "Tab.", [])
-	(Inline.plain "Fig.", [])
-	(Inline.plain "Part", [])
-	(Inline.plain "Appendix", [])
-	(Inline.plain "Section", [])
-	(Inline.plain "Bibliography", [])
-	(Inline.plain "Notes", [])
-	(Inline.plain "Table of Contents", [])
-	(Inline.plain "Abstract", [])
+	[Inline.plain "Eq."]
+	[Inline.plain "Print."]
+	[Inline.plain "Tab."]
+	[Inline.plain "Fig."]
+	[Inline.plain "Part"]
+	[Inline.plain "Appendix"]
+	[Inline.plain "Section"]
+	[Inline.plain "Bibliography"]
+	[Inline.plain "Notes"]
+	[Inline.plain "Table of Contents"]
+	[Inline.plain "Abstract"]
 	"Paragraph"
 
 let french_names = make
-	(Inline.plain "Eq.", [])
-	(Inline.plain "List.", [])
-	(Inline.plain "Tab.", [])
-	(Inline.plain "Fig.", [])
-	(Inline.plain "Partie", [])
-	(Inline.plain "Annexe", [])
-	(Inline.plain "Section", [])
-	(Inline.plain "Bibliographie", [])
-	(Inline.plain "Notes", [])
-	(Inline.plain "Index", [])
-	(Inline.plain "Résumé", [])
+	[Inline.plain "Eq."]
+	[Inline.plain "List."]
+	[Inline.plain "Tab."]
+	[Inline.plain "Fig."]
+	[Inline.plain "Partie"]
+	[Inline.plain "Annexe"]
+	[Inline.plain "Section"]
+	[Inline.plain "Bibliographie"]
+	[Inline.plain "Notes"]
+	[Inline.plain "Index"]
+	[Inline.plain "Résumé"]
 	"Paragraphe"
 
 let portuguese_names = make
-	(Inline.plain "Eq.", [])
-	(Inline.plain "List.", [])
-	(Inline.plain "Tab.", [])
-	(Inline.plain "Fig.", [])
-	(Inline.plain "Parte", [])
-	(Inline.plain "Apêndice", [])
-	(Inline.plain "Secção", [])
-	(Inline.plain "Bibliografia", [])
-	(Inline.plain "Notas", [])
-	(Inline.plain "Índice", [])
-	(Inline.plain "Resumo", [])
+	[Inline.plain "Eq."]
+	[Inline.plain "List."]
+	[Inline.plain "Tab."]
+	[Inline.plain "Fig."]
+	[Inline.plain "Parte"]
+	[Inline.plain "Apêndice"]
+	[Inline.plain "Secção"]
+	[Inline.plain "Bibliografia"]
+	[Inline.plain "Notas"]
+	[Inline.plain "Índice"]
+	[Inline.plain "Resumo"]
 	"Parágrafo"
 
 let default = english_names

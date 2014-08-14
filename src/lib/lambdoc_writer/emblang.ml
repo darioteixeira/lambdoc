@@ -6,10 +6,6 @@
 *)
 (********************************************************************************)
 
-(**	Emblang is a very small DSL whose purpose is to simplify the generation
-	of Lambdoc_core values for internal use of the library itself.
-*)
-
 open Lambdoc_core
 
 
@@ -39,9 +35,9 @@ let tokenize lexbuf =
 
 
 let rec process = parser
-	| [< 'Plain s; rest >] -> (Inline.plain s) :: (process rest)
-	| [< 'Code; 'Plain s; 'Code; rest >] -> (Inline.code ((Inline.plain s), [])) :: (process rest)
-	| [< >] -> []
+	| [< 'Plain s; rest >]		     -> Inline.plain s :: process rest
+	| [< 'Code; 'Plain s; 'Code; rest >] -> Inline.code [Inline.plain s] :: process rest
+	| [< >]				     -> []
 
 
 (********************************************************************************)
@@ -52,6 +48,6 @@ let convert expl =
 	let tokens = tokenize (Ulexing.from_utf8_string expl) in
 	let stream = Stream.of_list tokens in
 	match process stream with
-		| []	 -> failwith "Emblang.convert"
-		| hd::tl -> (hd, tl)
+		| []  -> failwith "Emblang.convert"
+		| seq -> seq
 

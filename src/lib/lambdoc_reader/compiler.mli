@@ -11,7 +11,6 @@
 *)
 
 open Lambdoc_core
-open Prelude
 
 
 (********************************************************************************)
@@ -22,7 +21,7 @@ val process_errors:
 	sort:bool ->
 	string ->
 	(int option * Error.error_msg_t) list ->
-	Error.t nelist
+	Error.t list
 
 val compile:
 	?bookmaker:Bookmaker.t ->

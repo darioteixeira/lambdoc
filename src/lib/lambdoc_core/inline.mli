@@ -9,7 +9,6 @@
 (**	Definitions concerning inline elements.
 *)
 
-open Prelude
 open Basic
 
 
@@ -35,8 +34,8 @@ type inline_t =
 	| Span of seq_t
 	| Link of Uri.t * seq_t option						(** Reference to an external URI *)
 	| Booklink of Book.isbn_t * seq_t option				(** Reference to a book via its ISBN *)
-	| See of Pointer.t nelist						(** Reference to an end note *)
-	| Cite of Pointer.t nelist						(** Citation of a bibliography entry *)
+	| See of Pointer.t list							(** Reference to an end note *)
+	| Cite of Pointer.t list						(** Citation of a bibliography entry *)
 	| Dref of Pointer.t * seq_t option					(** Dumb reference to an internal element *)
 	| Sref of Pointer.t * seq_t option					(** Smart reference to an internal element *)
 	| Mref of Pointer.t * seq_t						(** Manual reference to an internal element *)
@@ -47,7 +46,7 @@ and t =
 	attr: Attr.t;
 	}
 
-and seq_t = t nelist with sexp
+and seq_t = t list with sexp
 
 
 (********************************************************************************)
@@ -71,8 +70,8 @@ val mbox:	?attr:Attr.t -> seq_t -> t
 val span:	?attr:Attr.t -> seq_t -> t
 val link:	?attr:Attr.t -> Uri.t -> seq_t option -> t
 val booklink:	?attr:Attr.t -> Book.isbn_t -> seq_t option -> t
-val see:	?attr:Attr.t -> Pointer.t nelist -> t
-val cite:	?attr:Attr.t -> Pointer.t nelist -> t
+val see:	?attr:Attr.t -> Pointer.t list -> t
+val cite:	?attr:Attr.t -> Pointer.t list -> t
 val dref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
 val sref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
 val mref:	?attr:Attr.t -> Pointer.t -> seq_t -> t

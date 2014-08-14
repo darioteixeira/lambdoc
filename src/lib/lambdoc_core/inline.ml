@@ -7,7 +7,6 @@
 (********************************************************************************)
 
 open Sexplib.Std
-open Prelude
 open Basic
 
 
@@ -33,8 +32,8 @@ type inline_t =
 	| Span of seq_t
 	| Link of Uri.t * seq_t option
 	| Booklink of Book.isbn_t * seq_t option
-	| See of Pointer.t nelist
-	| Cite of Pointer.t nelist
+	| See of Pointer.t list
+	| Cite of Pointer.t list
 	| Dref of Pointer.t * seq_t option
 	| Sref of Pointer.t * seq_t option
 	| Mref of Pointer.t * seq_t
@@ -45,7 +44,7 @@ and t =
 	attr: Classname.t list;
 	}
 
-and seq_t = t nelist with sexp
+and seq_t = t list with sexp
 
 
 (********************************************************************************)
@@ -69,8 +68,8 @@ let mbox ?(attr = Attr.default) seq = {inline = Mbox seq; attr}
 let span ?(attr = Attr.default) seq = {inline = Span seq; attr}
 let link ?(attr = Attr.default) uri maybe_seq = {inline = Link (uri, maybe_seq); attr}
 let booklink ?(attr = Attr.default) isbn maybe_seq = {inline = Booklink (isbn, maybe_seq); attr}
-let see ?(attr = Attr.default) (hd, tl) = {inline = See (hd, tl); attr}
-let cite ?(attr = Attr.default) (hd, tl) = {inline = Cite (hd, tl); attr}
+let see ?(attr = Attr.default) pointers = {inline = See pointers; attr}
+let cite ?(attr = Attr.default) pointers = {inline = Cite pointers; attr}
 let dref ?(attr = Attr.default) pointer maybe_seq = {inline = Dref (pointer, maybe_seq); attr}
 let sref ?(attr = Attr.default) pointer maybe_seq = {inline = Sref (pointer, maybe_seq); attr}
 let mref ?(attr = Attr.default) pointer seq = {inline = Mref (pointer, seq); attr}

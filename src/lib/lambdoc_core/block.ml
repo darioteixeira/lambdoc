@@ -7,7 +7,6 @@
 (********************************************************************************)
 
 open Sexplib.Std
-open Prelude
 open Basic
 
 
@@ -17,10 +16,10 @@ open Basic
 
 type block_t =
 	| Paragraph of Inline.seq_t
-	| Itemize of frag_t nelist
-	| Enumerate of frag_t nelist
-	| Description of (Inline.seq_t * frag_t) nelist
-	| Qanda of (Qanda.t * frag_t) nelist
+	| Itemize of frag_t list
+	| Enumerate of frag_t list
+	| Description of (Inline.seq_t * frag_t) list
+	| Qanda of (Qanda.t * frag_t) list
 	| Verse of frag_t
 	| Quote of frag_t
 	| Mathblk of Math.t
@@ -48,7 +47,7 @@ and t =
 	attr: Attr.t;
 	}
 
-and frag_t = t nelist with sexp
+and frag_t = t list with sexp
 
 
 (********************************************************************************)

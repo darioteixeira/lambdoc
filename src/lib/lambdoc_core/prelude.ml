@@ -6,18 +6,9 @@
 *)
 (********************************************************************************)
 
-(**	Definition of common types and functions which though not defined
-	in Pervasives, probably should.
+(**	Definition of common functions which though not defined in Pervasives,
+	probably should.
 *)
-
-open Sexplib.Std
-
-
-(********************************************************************************)
-(**	{1 Type definitions}							*)
-(********************************************************************************)
-
-type 'a nelist = 'a * 'a list with sexp
 
 
 (********************************************************************************)
@@ -30,10 +21,4 @@ external identity: 'a -> 'a = "%identity"
 let maybe f = function
 	| Some x -> Some (f x)
 	| None	 -> None
-
-
-let nemap func (hd, tl) =
-	let hd' = func hd in
-	let tl' = List.map func tl in
-	(hd', tl')
 

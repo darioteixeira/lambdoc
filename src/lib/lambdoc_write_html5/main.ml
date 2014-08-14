@@ -177,6 +177,13 @@ struct
 			let make_floatable forbidden =
 				if forbidden then [] else [!!"floatable"] in
 
+			let commafy ~prefix ~suffix xs =
+				let rec aux accum = function
+					| []	   -> assert false
+					| [x]	   -> pcdata prefix :: List.rev (pcdata suffix :: x :: accum)
+					| hd :: tl -> aux (pcdata "," :: hd :: accum) tl in
+				aux [] xs in
+
 
 			(********************************************************)
 			(**	{3 Converters}					*)
@@ -254,8 +261,7 @@ struct
 			(********************************************************)
 
 			let rec write_seq seq =
-				let (hd, tl) = nemap write_inline seq in
-				hd :: tl
+				List.map write_inline seq
 
 			and write_inline {Inline.inline; attr} =
 				let open Inline in
@@ -309,33 +315,31 @@ struct
 					Html5.span ~a:[a_class attr] (write_seq seq)
 
 				| Link (uri, maybe_seq) ->
-					let seq = match maybe_seq with Some seq -> seq | None -> (Inline.plain uri, []) in
+					let seq = match maybe_seq with Some seq -> seq | None -> [Inline.plain uri] in
 					make_link ~attr uri (Obj.magic (write_seq seq))
 
 				| Booklink (isbn, maybe_seq) ->
 					let book = Hashtbl.find books isbn in
-					let seq = match maybe_seq with Some seq -> seq | None -> (Inline.emph ((Inline.plain book.title), []), []) in
+					let seq = match maybe_seq with Some seq -> seq | None -> [Inline.emph [Inline.plain book.title]] in
 					Html5.a ~a:[a_class (!!"booklink" :: attr); a_href (opts.book_lookup isbn)] (Obj.magic (write_seq seq))
 
-				| See (hd, tl) ->
+				| See pointers ->
 					let link_maker pointer =
 						let label = Label.User pointer in
 						let target = Hashtbl.find labels label in
 						match target with
 							| Target.Note_target order -> make_internal_link label (note_conv order)
 							| _			   -> raise (Command_see_with_non_note target) in
-					let commafy pointer = [pcdata ","; link_maker pointer] in
-					Html5.span ~a:[a_class (!!"see" :: attr)] ((pcdata "(") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata ")"])
+					Html5.span ~a:[a_class (!!"see" :: attr)] (commafy ~prefix:"(" ~suffix:")" (List.map link_maker pointers))
 
-				| Cite (hd, tl) ->
+				| Cite pointers ->
 					let link_maker pointer =
 						let label = Label.User pointer in
 						let target = Hashtbl.find labels label in
 						match target with
 							| Target.Bib_target order -> make_internal_link label (bib_conv order)
 							| _			  -> raise (Command_cite_with_non_bib target) in
-					let commafy pointer = [pcdata ","; link_maker pointer] in
-					Html5.span ~a:[a_class (!!"cite" :: attr)] ((pcdata "[") :: (link_maker hd) :: (List.flatten (List.map commafy tl)) @ [pcdata "]"])
+					Html5.span ~a:[a_class (!!"cite" :: attr)] (commafy ~prefix:"[" ~suffix:"]" (List.map link_maker pointers))
 
 				| Dref (pointer, maybe_seq) ->
 					let label = Label.User pointer in
@@ -427,7 +431,7 @@ struct
 				let write_cell ord (maybe_cellspec, maybe_seq) =
 					let ((alignment, weight), maybe_colspan, overline, underline) = match maybe_cellspec with
 						| Some (spec, span, overline, underline) -> (spec, Some span, overline, underline)
-						| None					 -> (Array.get tab.Tabular.tcols (ord+1), None, false, false) in
+						| None					 -> (Array.get tab.Tabular.tcols ord, None, false, false) in
 					let cell_class = ["cell_" ^^ Tabular_output.string_of_alignment alignment] in
 					let oline_class = if overline then [!!"oline"] else [] in
 					let uline_class = if underline then [!!"uline"] else [] in
@@ -438,30 +442,26 @@ struct
 						| Tabular.Normal -> Html5.td ~a:(a_hd :: a_tl) (out_seq :> Html5_types.td_content_fun Html5.elt list)
 						| Tabular.Strong -> Html5.th ~a:(a_hd :: a_tl) (out_seq :> Html5_types.th_content_fun Html5.elt list) in
 
-				let write_row (hd, tl) =
-					Html5.tr (write_cell (-1) hd :: List.mapi write_cell tl) in
+				let write_row cells =
+					Html5.tr (List.mapi write_cell cells) in
 
-				let write_group (hd, tl) =
-					let hd = write_row hd in
-					let tl = List.map write_row tl in
-					(hd, tl) in
+				let write_group grp =
+					List.map write_row grp in
 
 				let thead = match tab.Tabular.thead with
-					| None		-> None
-					| Some grp	-> let (hd, tl) = write_group grp in Some (Html5.thead ~a:[a_class [!!"tgroup"]] (hd :: tl)) in
+					| None	   -> None
+					| Some grp -> Some (Html5.thead ~a:[a_class [!!"tgroup"]] (write_group grp)) in
 
-				let (tbody_hd, tbody_tl) =
+				let tbodies =
 					let write_tbody grp =
-						let (hd, tl) = write_group grp in
-						Html5.tbody ~a:[a_class [!!"tgroup"]] (hd :: tl) in
-					let (hd, tl) = tab.Tabular.tbodies in
-					(write_tbody hd, List.map write_tbody tl) in
+						Html5.tbody ~a:[a_class [!!"tgroup"]] (write_group grp) in
+					List.map write_tbody tab.Tabular.tbodies in
 
 				let tfoot = match tab.Tabular.tfoot with
-					| None		-> None
-					| Some grp	-> let (hd, tl) = write_group grp in Some (Html5.tfoot ~a:[a_class [!!"tgroup"]] (hd :: tl)) in
+					| None	   -> None
+					| Some grp -> Some (Html5.tfoot ~a:[a_class [!!"tgroup"]] (write_group grp)) in
 
-				Html5.div ~a:[a_class [!!"tab"]] [Html5.div ~a:[a_class [!!"tab_aux"]]  [Html5.tablex ?thead ?tfoot (tbody_hd :: tbody_tl)]] in
+				Html5.div ~a:[a_class [!!"tab"]] [Html5.div ~a:[a_class [!!"tab_aux"]]  [Html5.tablex ?thead ?tfoot tbodies]] in
 
 
 			(********************************************************)
@@ -469,8 +469,7 @@ struct
 			(********************************************************)
 
 			let rec write_frag frag =
-				let (hd, tl) = nemap (write_block ~wrapped:false) frag in
-				List.flatten (hd :: tl)
+				List.flatten (List.map (write_block ~wrapped:false) frag)
 
 
 			and write_block ?(wrapped = false) {block; attr} =
@@ -485,21 +484,21 @@ struct
 					[Html5.p ~a:(a_class (!!"par" :: attr) :: extra) (write_seq seq)]
 
 				| Itemize frags ->
-					let (hd, tl) = nemap (fun frag -> Html5.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
-					[Html5.ul ~a:[a_class (!!"itemize" :: attr)] (hd :: tl)]
+					let xs = List.map (fun frag -> Html5.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
+					[Html5.ul ~a:[a_class (!!"itemize" :: attr)] xs]
 
 				| Enumerate frags ->
-					let (hd, tl) = nemap (fun frag -> Html5.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
-					[Html5.ol ~a:[a_class (!!"enumerate" :: attr)] (hd :: tl)]
+					let xs = List.map (fun frag -> Html5.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
+					[Html5.ol ~a:[a_class (!!"enumerate" :: attr)] xs]
 
-				| Description (hd, tl) ->
+				| Description elems ->
 					let write_dfrag (seq, frag) accum =
 						let dt = Html5.dt ~a:[a_class [!!"item"]] (write_seq seq) in
 						let dd = Html5.dd ~a:[a_class [!!"item"]] (write_frag frag) in
 						dt :: dd :: accum in
-					[Html5.dl ~a:[a_class (!!"description" :: attr)] (List.fold_right write_dfrag (hd::tl) [])]
+					[Html5.dl ~a:[a_class (!!"description" :: attr)] (List.fold_right write_dfrag elems [])]
 
-				| Qanda (hd, tl) ->
+				| Qanda elems ->
 					let write_qfrag (qanda, frag) accum =
 						let (qora, maybe_seq) = match qanda with
 							| Qanda.New_questioner maybe_seq -> last_question_seq := maybe_seq; (`Question, maybe_seq)
@@ -515,7 +514,7 @@ struct
 						let dt = Html5.dt ~a:[a_class (qora_class :: empty_class)] outseq in
 						let dd = Html5.dd ~a:[a_class [qora_class]] (write_frag frag) in
 						dt :: dd :: accum in
-					[Html5.dl ~a:[a_class (!!"qanda" :: attr)] (List.fold_right write_qfrag (hd::tl) [])]
+					[Html5.dl ~a:[a_class (!!"qanda" :: attr)] (List.fold_right write_qfrag elems [])]
 
 				| Verse frag ->
 					let aux = Html5.div ~a:[a_class [!!"verse_aux"]] (write_frag frag) in
@@ -646,24 +645,24 @@ struct
 				| Section (label, order, location, level, Bibliography) ->
 					let title = make_sectional level label (section_conv ~spanify:true location order) attr (write_name Name_bibliography) in
 					let bibs = match bibs with
-						| []	   -> []
-						| hd :: tl -> let (hd, tl) = nemap write_bib (hd, tl) in [Html5.ol ~a:[a_class [!!"bibs"]] (hd :: tl)] in
-					title::bibs
+						| []   -> []
+						| _::_ -> [Html5.ol ~a:[a_class [!!"bibs"]] (List.map write_bib bibs)] in
+					title :: bibs
 
 				| Section (label, order, location, level, Notes) ->
 					let title = make_sectional level label (section_conv ~spanify:true location order) attr (write_name Name_notes) in
 					let notes = match notes with
-						| []	   -> []
-						| hd :: tl -> let (hd, tl) = nemap write_note (hd, tl) in [Html5.ol ~a:[a_class [!!"notes"]] (hd :: tl)] in
-					title::notes
+						| []   -> []
+						| _::_ -> [Html5.ol ~a:[a_class [!!"notes"]] (List.map write_note notes)] in
+					title :: notes
 
 				| Section (label, order, location, level, Toc) ->
 					let title = make_sectional level label (section_conv ~spanify:true location order) attr (write_name Name_toc) in
 					let entries = List.filter_map write_toc_entry toc in
 					let toc_xhtml = match entries with
-						| []	   -> []
-						| hd :: tl -> [Html5.ul ~a:[a_class [!!"toc"]] (hd :: tl)] in
-					title::toc_xhtml
+						| []   -> []
+						| _::_ -> [Html5.ul ~a:[a_class [!!"toc"]] entries] in
+					title :: toc_xhtml
 
 
 			and write_custom data maybe_seq frag classname attr formatter =
@@ -780,13 +779,12 @@ struct
 							]
 					| None ->
 						[Html5.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]]
-				and explanation_doc = Valid.make (Block.paragraph (Explanations.explain error_msg), []) [] [] [] [] (Hashtbl.create 0) (Hashtbl.create 0) (Hashtbl.create 0) in
+				and explanation_doc = Valid.make [Block.paragraph (Explanations.explain error_msg)] [] [] [] [] (Hashtbl.create 0) (Hashtbl.create 0) (Hashtbl.create 0) in
 				let valid_options = {default_valid_options with prefix = opts.prefix; base_classes = ["error_msg"]} in
 				let explanation_out = [write_valid ~valid_options explanation_doc] in
 				Html5.li ~a:[a_class [!!"error"]] (context @ explanation_out) in
 
-			let (hd, tl) = nemap write_error doc in
-			div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ (List.map (!!) opts.extra_classes))] [ul ~a:[a_class [!!"errors"]] (hd :: tl)]
+			div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ (List.map (!!) opts.extra_classes))] [ul ~a:[a_class [!!"errors"]] (List.map write_error doc)]
 	end): Lambdoc_writer.Writer.S with
 		type t = Html5_types.div Html5.elt and
 		type valid_options_t := valid_options_t and

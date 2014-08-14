@@ -7,7 +7,6 @@
 (********************************************************************************)
 
 open Sexplib.Std
-open Prelude
 
 
 (********************************************************************************)
@@ -32,16 +31,16 @@ type cellspec_t = colspec_t * int * bool * bool with sexp
 
 type cell_t = cellspec_t option * Inline.seq_t option with sexp
 
-type row_t = cell_t nelist with sexp
+type row_t = cell_t list with sexp
 
-type group_t = row_t nelist with sexp
+type group_t = row_t list with sexp
 
 type t =
 	{
 	tcols: colspec_t array;
 	thead: group_t option;
 	tfoot: group_t option;
-	tbodies: group_t nelist;
+	tbodies: group_t list;
 	} with sexp
 
 

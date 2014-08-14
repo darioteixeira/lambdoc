@@ -9,7 +9,6 @@
 (**	Definitions concerning ambivalent documents.
 *)
 
-open Prelude
 open Basic
 
 
@@ -42,7 +41,7 @@ val make_valid:
 	Custom.dict_t ->
 	t
 
-val make_invalid: Error.t nelist -> t
+val make_invalid: Error.t list -> t
 
 
 (********************************************************************************)

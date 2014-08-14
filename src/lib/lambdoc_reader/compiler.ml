@@ -344,8 +344,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| _			-> `Wrong_target Error.Target_note in
 				List.iter (add_pointer target_checker comm) refs;
 				match refs with
-					| hd::tl ->
-						[Inline.see ~attr (hd, tl)]
+					| _::_ ->
+						[Inline.see ~attr refs]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
@@ -359,8 +359,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					| _			-> `Wrong_target Error.Target_bib in
 				List.iter (add_pointer target_checker comm) refs;
 				match refs with
-					| hd::tl ->
-						[Inline.cite ~attr (hd, tl)]
+					| _::_ ->
+						[Inline.cite ~attr refs]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
 						BatDynArray.add errors (Some comm.comm_linenum, msg);
@@ -485,8 +485,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					xs
 
 	and convert_seq_aux ~comm ~context ~depth ~args is_ref astseq =
-		let seq = convert_inline_list ~comm ~context ~depth ~args is_ref astseq in
-		(List.hd seq, List.tl seq) in
+		convert_inline_list ~comm ~context ~depth ~args is_ref astseq in
 
 	let convert_seq ~comm ?args seq =
 		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ~args false seq in
@@ -534,8 +533,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				let () = rowspan := !rowspan + colspan in
 				cell in
 			let tab_row = match row with
-				| []		-> invalid_arg "Parser has given us an empty tabular row"
-				| hd::tl	-> Tabular.make_row (nemap converter (hd, tl)) in
+				| _::_ -> Tabular.make_row (List.map converter row)
+				| []   -> invalid_arg "Parser has given us an empty tabular row" in
 			if !rowspan <> num_columns
 			then begin
 				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
@@ -549,23 +548,23 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 				| Some comm	-> ignore (check_inline_comm feature comm (fun _ _ -> []))
 				| None		-> () in
 			 match rows with
-				| []		-> invalid_arg "Parser has given us an empty tabular group"
-				| hd::tl	-> Tabular.make_group (nemap convert_row (hd, tl)) in
+				| _::_ -> Tabular.make_group (List.map convert_row rows)
+				| []   -> invalid_arg "Parser has given us an empty tabular group" in
 
 		let thead = maybe (convert_group `Feature_thead) tab.thead in
 
 		let tfoot = maybe (convert_group `Feature_tfoot) tab.tfoot in
 
 		match tab.tbodies with
-			| []		-> invalid_arg "Parser has given us an empty tabular body"
-			| hd::tl	-> Tabular.make specs ?thead ?tfoot (nemap (convert_group `Feature_tbody) (hd, tl)) in
+			| _::_ -> Tabular.make specs ?thead ?tfoot (List.map (convert_group `Feature_tbody) tab.tbodies)
+			| []   -> invalid_arg "Parser has given us an empty tabular body" in
 
 
 	(************************************************************************)
 	(* Compilation functions for document blocks.				*)
 	(************************************************************************)
 
-	let dummy_block = Block.paragraph (dummy_inline, []) in
+	let dummy_block = Block.paragraph [dummy_inline] in
 
 
 	let check_block_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
@@ -916,7 +915,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			| (`None_given, None) ->
 				let msg = Error.Invalid_wrapper (comm.comm_tag, kind) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				Wrapper.Unordered (label, (dummy_inline, []))
+				Wrapper.Unordered (label, [dummy_inline])
 			| (`None_given, Some seq) ->
 				Wrapper.Unordered (label, seq)
 			| (`Auto_given _ as o, maybe_seq)
@@ -972,12 +971,12 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_comm `Feature_item comm elem in
 		let frags = List.filter_map conv astfrags in
 		match frags with
+			| _::_ ->
+				[cons frags]
 			| [] ->
 				let msg = Error.Empty_fragment comm.comm_tag in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				[dummy_block]
-			| hd :: tl ->
-				[cons (hd, tl)]
 
 
 	and convert_frag_of_desc_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
@@ -989,12 +988,12 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_comm `Feature_item comm elem in
 		let frags = List.filter_map conv astfrags in
 		match frags with
+			| _::_ ->
+				[cons frags]
 			| [] ->
 				let msg = Error.Empty_fragment comm.comm_tag in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				[dummy_block]
-			| hd :: tl ->
-				[cons (hd, tl)]
 
 
 	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
@@ -1015,12 +1014,12 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 			check_comm feature comm elem in
 		let frags = List.flatten (List.filter_map conv astfrags) in
 		match frags with
+			| _::_ ->
+				[cons frags]
 			| [] ->
 				let msg = Error.Empty_fragment comm.comm_tag in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				[dummy_block]
-			| hd :: tl ->
-				[cons (hd, tl)]
 
 
 	and convert_frag_aux ?comm ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
@@ -1038,15 +1037,15 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 					convert_block ~minipaged ~depth:(depth+1) allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk in
 		let frag = flatten_map conv astfrag in
 		match frag with
+			| _::_ ->
+				frag
 			| [] ->
 				let (tag, linenum) = match comm with
 					| Some comm -> (comm.comm_tag, Some comm.comm_linenum)
 					| None	    -> (None, None) in
 				let msg = Error.Empty_fragment tag in
 				BatDynArray.add errors (linenum, msg);
-				(dummy_block, [])
-			| hd :: tl ->
-				(hd, tl) in
+				[dummy_block] in
 
 
 	let convert_frag astfrag =
@@ -1185,8 +1184,8 @@ let process_errors ~sort source errors =
 	let sorted = if sort then List.sort_unique compare errors else errors in
 	let collated = collate_errors source sorted in
 	match collated with
-		| hd :: tl -> (hd, tl)
-		| []	   -> assert false
+		| _::_ -> collated
+		| []   -> assert false
 
 
 (**	Compile a document AST into a manuscript.
@@ -1194,6 +1193,6 @@ let process_errors ~sort source errors =
 let compile ?bookmaker ~expand_entities ~idiosyncrasies ~source ast =
 	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies ast in
 	match errors with
-		| [] -> Ambivalent.make_valid contents bibs notes toc images books labels custom
-		| xs -> Ambivalent.make_invalid (process_errors ~sort:true source errors)
+		| []   -> Ambivalent.make_valid contents bibs notes toc images books labels custom
+		| _::_ -> Ambivalent.make_invalid (process_errors ~sort:true source errors)
 
