@@ -6,18 +6,13 @@
 *)
 (********************************************************************************)
 
-(**	Document reader.
-*)
-
 open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{1 Module types}							*)
+(**	{1 Public signatures}							*)
 (********************************************************************************)
 
-(**	The module type that all wannabe document readers must export.
-*)
 module type READABLE =
 sig
 	exception Reading_error of int * string
@@ -26,8 +21,6 @@ sig
 end
 
 
-(**	The signature exported by the functor.
-*)
 module type S =
 sig
 	val ambivalent_from_string:
@@ -41,11 +34,9 @@ end
 
 
 (********************************************************************************)
-(**	{1 Modules and functors}						*)
+(**	{1 Public modules and functors}						*)
 (********************************************************************************)
 
-(**	The functor that creates a document reader.
-*)
 module Make (Readable: READABLE): S =
 struct
 	let ambivalent_from_string

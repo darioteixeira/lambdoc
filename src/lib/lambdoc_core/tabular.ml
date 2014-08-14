@@ -45,7 +45,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 let make_cell cellspec maybe_seq = (cellspec, maybe_seq)

@@ -6,17 +6,12 @@
 *)
 (********************************************************************************)
 
-(**	Definition of common functions which though not defined in Pervasives,
-	probably should.
-*)
-
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 external identity: 'a -> 'a = "%identity"
-
 
 let maybe f = function
 	| Some x -> Some (f x)

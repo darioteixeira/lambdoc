@@ -53,7 +53,7 @@ and frag_t = t list with sexp
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val paragraph:	?attr:Attr.t -> Inline.seq_t -> t

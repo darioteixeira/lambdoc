@@ -46,7 +46,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val make_cell: cellspec_t option -> Inline.seq_t option -> cell_t

@@ -50,7 +50,7 @@ type t = [ public_feature_t | internal_feature_t ]
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val inline_features: inline_feature_t list

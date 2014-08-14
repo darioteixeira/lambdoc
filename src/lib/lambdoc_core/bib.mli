@@ -27,7 +27,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val make: Label.t -> order_t -> Inline.seq_t -> Inline.seq_t -> Inline.seq_t -> t

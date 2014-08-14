@@ -26,7 +26,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 let custom env kind order = Visible_target (Custom_target (env, kind, order))

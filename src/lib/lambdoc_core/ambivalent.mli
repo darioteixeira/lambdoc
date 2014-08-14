@@ -6,7 +6,8 @@
 *)
 (********************************************************************************)
 
-(**	Definitions concerning ambivalent documents.
+(**	Definitions concerning ambivalent documents.  An ambivalent document
+	is one which can either be valid or document.
 *)
 
 open Basic
@@ -23,7 +24,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 (********************************************************************************)

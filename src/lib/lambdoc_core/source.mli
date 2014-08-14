@@ -23,7 +23,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 val make: Camlhighlight_core.lang_t option -> Camlhighlight_core.t -> bool -> t

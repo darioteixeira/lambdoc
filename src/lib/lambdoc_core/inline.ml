@@ -48,7 +48,7 @@ and seq_t = t list with sexp
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 let plain ?(attr = Attr.default) txt = {inline = Plain txt; attr}

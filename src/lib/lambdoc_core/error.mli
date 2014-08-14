@@ -1,12 +1,14 @@
 (********************************************************************************)
-(*	Error.ml
+(*	Error.mli
 	Copyright (c) 2009-2014 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-open Sexplib.Std
+(**	Definition of document errors.
+*)
+
 open Basic
 
 
@@ -14,15 +16,21 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
+(**	Definition of the error context.  The context includes any number
+	of lines preceding the error, the error line proper, and a number
+	of lines that follow.
+*)
 type error_context_t =
 	{
-	error_line_number: int;
-	error_line_before: string list;
-	error_line_actual: string;
-	error_line_after: string list;
+	error_line_number: int;			(** Number of the line where the error occurred. *)
+	error_line_before: string list;		(** Lines immediately before the error line. *)
+	error_line_actual: string;		(** Contents of the line where the error is found. *)
+	error_line_after: string list;		(** Lines immediately after the error line. *)
 	} with sexp
 
 
+(**	Reasons why a parameter can be invalid.
+*)
 type invalid_parameter_reason_t =
 	| Reason_is_empty_when_non_empty_mandatory
 	| Reason_is_empty_when_forbidden
@@ -31,6 +39,8 @@ type invalid_parameter_reason_t =
 	with sexp
 
 
+(**	Expected targets.
+*)
 type target_t =
 	| Target_bib
 	| Target_note
@@ -38,6 +48,8 @@ type target_t =
 	with sexp
 
 
+(**	Block categories.
+*)
 type blk_category_t =
 	[ `Super_blk
 	| `Listable_blk
@@ -51,6 +63,8 @@ type blk_category_t =
 	] with sexp
 
 
+(**	The various types of error messages.
+*)
 type error_msg_t =
 	| Misplaced_label_parameter of Ident.t option * invalid_parameter_reason_t
 	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
@@ -128,5 +142,8 @@ type error_msg_t =
 	with sexp
 
 
+(**	An error is a pair consisting of the context where the error
+	occurred (where applicable) and the error message itself.
+*)
 type t = error_context_t option * error_msg_t with sexp
 

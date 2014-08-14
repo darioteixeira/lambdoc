@@ -1,27 +1,19 @@
 (********************************************************************************)
-(*	Label.ml
+(*	Emblang.mli
 	Copyright (c) 2009-2014 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-open Basic
-
-
-(********************************************************************************)
-(**	{1 Type definitions}							*)
-(********************************************************************************)
-
-type t =
-	| Auto of Pointer.t
-	| User of Pointer.t
-	with sexp
+(**	Emblang is a very small DSL whose purpose is to simplify the generation
+	of Lambdoc_core values for internal use of the library itself.
+*)
 
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let compare = Pervasives.compare
+val convert: string -> Lambdoc_core.Inline.seq_t
 

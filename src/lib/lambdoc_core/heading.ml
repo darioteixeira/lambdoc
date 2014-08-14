@@ -41,7 +41,7 @@ type t =
 
 
 (********************************************************************************)
-(**	{1 Functions and values}						*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
 let part label order seq = Part (label, order, Custom_part seq)
