@@ -30,13 +30,17 @@ sig
 	*)
 	module Make: functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
 	sig
+		type book_lookup_t = Book.isbn_t -> Html5.uri
+		type cover_lookup_t = Book.isbn_t -> Book.coversize_t -> Html5.uri
+		type image_lookup_t = Basic.Alias.t -> Html5.uri
+
 		type valid_options_t =
 			{
 			numbered_paragraphs: bool;
 			translations: Translations.t;
-			book_lookup: (Book.isbn_t -> Html5.uri);
-			cover_lookup: (Book.isbn_t -> Book.coversize_t -> Html5.uri);
-			image_lookup: (Basic.Alias.t -> Html5.uri);
+			book_lookup: book_lookup_t;
+			cover_lookup: cover_lookup_t;
+			image_lookup: image_lookup_t;
 			namespace: Html5_types.nmtoken;
 			prefix: Html5_types.nmtoken;
 			base_classes: Html5_types.nmtokens;
