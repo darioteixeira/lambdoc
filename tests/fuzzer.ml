@@ -59,7 +59,8 @@ let fuzz total markup src =
 	let reader = match markup with
 		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string
 		| `Lambwiki -> Lambdoc_read_lambwiki.Main.ambivalent_from_string
-		| `Lambxml  -> Lambdoc_read_lambxml.Main.ambivalent_from_string in
+		| `Lambxml  -> Lambdoc_read_lambxml.Main.ambivalent_from_string
+		| `Markdown -> Lambdoc_read_markdown.Main.ambivalent_from_string in
 	for i = 1 to total do
 		Printf.printf "#%03d: %!" i;
 		let () = try iterate reader src len with exc -> print_char '!' in
@@ -71,5 +72,5 @@ let () =
 	Random.self_init ();
 	Printexc.record_backtrace true;
 	let src = BatPervasives.input_all stdin in
-	fuzz 20 `Lambxml src
+	fuzz 5000 `Markdown src
 
