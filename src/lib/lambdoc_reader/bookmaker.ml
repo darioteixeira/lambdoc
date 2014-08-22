@@ -1,13 +1,10 @@
 (********************************************************************************)
-(*	Bookmaker.mli
+(*	Bookmaker.ml
 	Copyright (c) 2009-2014 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
 *)
 (********************************************************************************)
-
-(**	Bookmaker.
-*)
 
 open Lambdoc_core
 
@@ -54,7 +51,22 @@ end
 (*	{1 Public modules}							*)
 (********************************************************************************)
 
-module Identity: MONAD with type 'a t = 'a
+module Identity: MONAD with type 'a t = 'a =
+struct
+	type 'a t = 'a
 
-module Null: S with type 'a Monad.t = 'a
+	let return x = x
+	let fail exc = raise exc
+	let (>>=) t f = f t
+	let catch f g = try f () with exc -> raise exc
+end
+
+
+module Null =
+struct
+	module Monad = Identity
+
+	let resolve isbns =
+		List.map (fun isbn -> (isbn, Failure Unavailable)) isbns
+end
 

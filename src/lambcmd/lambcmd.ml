@@ -82,11 +82,20 @@ let () =
 		| _ ->
 			None in
 	let doc = match options.input_markup with
-		| `Lambtex  -> Lambdoc_read_lambtex.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
-		| `Lambwiki -> Lambdoc_read_lambwiki.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
-		| `Lambxml  -> Lambdoc_read_lambxml.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
-		| `Markdown -> Lambdoc_read_markdown.Main.ambivalent_from_string ?bookmaker ~idiosyncrasies input_str
-		| `Sexp	    -> Lambdoc_core.Ambivalent.deserialize input_str in
+		| `Lambtex ->
+			let module M = Lambdoc_read_lambtex.Main.Make (Bookmaker.Null) in
+			M.ambivalent_from_string ~idiosyncrasies input_str
+		| `Lambwiki ->
+			let module M = Lambdoc_read_lambwiki.Main.Make (Bookmaker.Null) in
+			M.ambivalent_from_string ~idiosyncrasies input_str
+		| `Lambxml ->
+			let module M = Lambdoc_read_lambxml.Main.Make (Bookmaker.Null) in
+			M.ambivalent_from_string ~idiosyncrasies input_str
+		| `Markdown ->
+			let module M = Lambdoc_read_markdown.Main.Make (Bookmaker.Null) in
+			M.ambivalent_from_string ~idiosyncrasies input_str
+		| `Sexp ->
+			Lambdoc_core.Ambivalent.deserialize input_str in
 	let output_str = match options.output_markup with
 		| `Sexp  ->
 			Lambdoc_core.Ambivalent.serialize doc

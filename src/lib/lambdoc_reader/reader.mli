@@ -30,13 +30,23 @@ end
 *)
 module type S =
 sig
+	type 'a monad_t
+
 	val ambivalent_from_string:
-		?bookmaker:Bookmaker.t ->
 		?verify_utf8:bool ->
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
 		string ->
-		Ambivalent.t
+		Ambivalent.t monad_t
+end
+
+
+(**	The signature of a partially applied functor.
+*)
+module type SEMI =
+sig
+	module Make: functor (BM: Bookmaker.S) -> S with type 'a monad_t = 'a BM.Monad.t
+
 end
 
 
@@ -44,7 +54,7 @@ end
 (**	{1 Public modules and functors}						*)
 (********************************************************************************)
 
-(**	The functor that creates a document reader.
-*)
-module Make: functor (Readable : READABLE) -> S
+module Make:
+	functor (Readable: READABLE) ->
+	functor (BM: Bookmaker.S) -> S with type 'a monad_t = 'a BM.Monad.t
 

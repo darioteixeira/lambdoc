@@ -23,11 +23,7 @@ module List = BatList
 
 
 (********************************************************************************)
-(**	{1 Private data}							*)
-(********************************************************************************)
-
-(********************************************************************************)
-(**	{2 Exceptions}								*)
+(**	{1 Exceptions}								*)
 (********************************************************************************)
 
 exception Bookmaker_error of Book.isbn_t
@@ -35,7 +31,7 @@ exception Mismatched_custom of Custom.kind_t * Custom.kind_t
 
 
 (********************************************************************************)
-(**	{2 Type definitions}							*)
+(**	{1 Type definitions}							*)
 (********************************************************************************)
 
 type customdef_t =
@@ -45,7 +41,7 @@ type customdef_t =
 
 
 (********************************************************************************)
-(**	{2 Auxiliary functions}							*)
+(**	{1 Auxiliary functions}							*)
 (********************************************************************************)
 
 let flatten_map f xs = List.flatten (List.map f xs)
@@ -54,8 +50,15 @@ let perhaps f = function
 	| [x] -> [f x]
 	| _   -> []
 
-let dummy_bookmaker isbns =
-	List.map (fun isbn -> (isbn, Bookmaker.Failure Bookmaker.Unavailable)) isbns
+
+(********************************************************************************)
+(**	{1 Functors}								*)
+(********************************************************************************)
+
+module Make (BM: Bookmaker.S) =
+struct
+	open BM
+	open Monad
 
 
 (********************************************************************************)
@@ -66,7 +69,7 @@ let dummy_bookmaker isbns =
 	document.  In addition, a label dictionary, bibliography entries, notes,
 	and possible errors are also returned.
 *)
-let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncrasies ast =
+let compile_document ~expand_entities ~idiosyncrasies ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -1102,8 +1105,7 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 		let books = Hashtbl.create 0 in
 		if not (IsbnSet.is_empty !isbns)
 		then begin
-			let open! Bookmaker in
-			let results = bookmaker (IsbnSet.elements !isbns) in
+			BM.resolve (IsbnSet.elements !isbns) >>= fun results ->
 			let process_isbnref (comm, feature, isbn) =
 				try match List.assoc isbn results with
 					| Success book ->
@@ -1117,9 +1119,13 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 						BatDynArray.add errors (Some comm.comm_linenum, msg)
 				with
 					Not_found -> raise (Bookmaker_error isbn) in
-			BatDynArray.iter process_isbnref isbnrefs
-		end;
-		books in
+			try
+				let () = BatDynArray.iter process_isbnref isbnrefs in
+				Monad.return books
+			with exc ->
+				Monad.fail exc
+		end
+		else Monad.return books in
 
 
 	(************************************************************************)
@@ -1129,8 +1135,8 @@ let compile_document ?(bookmaker = dummy_bookmaker) ~expand_entities ~idiosyncra
 	let contents = convert_frag ast in
 	let custom = filter_customisations () in
 	let () = filter_pointers () in
-	let books = retrieve_books () in
-	(contents, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, ImageSet.elements !images, books, labels, custom, BatDynArray.to_list errors)
+	retrieve_books () >>= fun books ->
+	Monad.return (contents, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, ImageSet.elements !images, books, labels, custom, BatDynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -1163,11 +1169,9 @@ let collate_errors =
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-(**	Process and (optionally) sort the errors by line number.
-*)
 let process_errors ~sort source errors =
 	let compare (anum, amsg) (bnum, bmsg) = match (anum, bnum) with
 		| (Some anum, Some bnum) ->
@@ -1188,11 +1192,10 @@ let process_errors ~sort source errors =
 		| []   -> assert false
 
 
-(**	Compile a document AST into a manuscript.
-*)
-let compile ?bookmaker ~expand_entities ~idiosyncrasies ~source ast =
-	let (contents, bibs, notes, toc, images, books, labels, custom, errors) = compile_document ?bookmaker ~expand_entities ~idiosyncrasies ast in
+let compile ~expand_entities ~idiosyncrasies ~source ast =
+	compile_document ~expand_entities ~idiosyncrasies ast >>= fun (contents, bibs, notes, toc, images, books, labels, custom, errors) ->
 	match errors with
-		| []   -> Ambivalent.make_valid contents bibs notes toc images books labels custom
-		| _::_ -> Ambivalent.make_invalid (process_errors ~sort:true source errors)
+		| []   -> Monad.return (Ambivalent.make_valid contents bibs notes toc images books labels custom)
+		| _::_ -> Monad.return (Ambivalent.make_invalid (process_errors ~sort:true source errors))
+end
 

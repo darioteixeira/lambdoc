@@ -17,17 +17,23 @@ open Lambdoc_core
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val process_errors:
-	sort:bool ->
-	string ->
-	(int option * Error.error_msg_t) list ->
-	Error.t list
+module Make (BM: Bookmaker.S):
+sig
+	(**	Process and (optionally) sort the errors by line number.
+	*)
+	val process_errors:
+		sort:bool ->
+		string ->
+		(int option * Error.error_msg_t) list ->
+		Error.t list
 
-val compile:
-	?bookmaker:Bookmaker.t ->
-	expand_entities:bool ->
-	idiosyncrasies:Idiosyncrasies.t ->
-	source:string ->
-	Ast.t ->
-	Ambivalent.t
+	(**	Compile a document AST into a manuscript.
+	*)
+	val compile:
+		expand_entities:bool ->
+		idiosyncrasies:Idiosyncrasies.t ->
+		source:string ->
+		Ast.t ->
+		Ambivalent.t BM.Monad.t
+end
 

@@ -23,13 +23,20 @@ end
 
 module type S =
 sig
+	type 'a monad_t
+
 	val ambivalent_from_string:
-		?bookmaker:Bookmaker.t ->
 		?verify_utf8:bool ->
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
 		string ->
-		Ambivalent.t
+		Ambivalent.t monad_t
+end
+
+
+module type SEMI =
+sig
+	module Make: functor (BM: Bookmaker.S) -> S with type 'a monad_t = 'a BM.Monad.t
 end
 
 
@@ -37,25 +44,32 @@ end
 (**	{1 Public modules and functors}						*)
 (********************************************************************************)
 
-module Make (Readable: READABLE): S =
+module Make (Readable: READABLE) (BM: Bookmaker.S) : S with type 'a monad_t = 'a BM.Monad.t =
 struct
+	module C = Compiler.Make (BM)
+
+	type 'a monad_t = 'a BM.Monad.t
+
 	let ambivalent_from_string
-		?bookmaker
 		?(verify_utf8 = true)
 		?(expand_entities = true)
 		?(idiosyncrasies = Idiosyncrasies.default)
-		source =
-			try
+		source = BM.Monad.catch
+			begin fun () ->
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let ast = Readable.ast_from_string source in
-				Compiler.compile ?bookmaker ~expand_entities ~idiosyncrasies ~source ast
-			with
+				C.compile ~expand_entities ~idiosyncrasies ~source ast
+			end
+			begin function
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
-					let errors = Compiler.process_errors ~sort:false sane_str msgs in
-					Ambivalent.make_invalid errors
+					let errors = C.process_errors ~sort:false sane_str msgs in
+					BM.Monad.return (Ambivalent.make_invalid errors)
 				| Readable.Reading_error (line, msg) ->
-					let errors = Compiler.process_errors ~sort:false source [(Some line, Error.Reading_error msg)] in
-					Ambivalent.make_invalid errors
+					let errors = C.process_errors ~sort:false source [(Some line, Error.Reading_error msg)] in
+					BM.Monad.return (Ambivalent.make_invalid errors)
+				| exc ->
+					BM.Monad.fail exc
+			end
 end
 

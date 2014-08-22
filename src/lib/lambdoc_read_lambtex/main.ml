@@ -17,7 +17,7 @@ open Lambdoc_reader
 (*	{2 Reader module}							*)
 (********************************************************************************)
 
-include Reader.Make
+module Make = Reader.Make
 (struct
 	exception Reading_error of int * string
 
