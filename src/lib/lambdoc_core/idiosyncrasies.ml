@@ -67,6 +67,7 @@ let restricted =
 let default =
 	let classname_ruleset =
 		[
+		((`Only `Feature_span, `Any), `Accept);
 		((`Only `Feature_paragraph, `Member ["initial"; "indent"; "noindent"]), `Accept);
 		((`Only `Feature_itemize, `Member ["disc"; "circle"; "square"; "none"]), `Accept);
 		((`Only `Feature_enumerate, `Member ["decimal"; "lower-roman"; "upper-roman"; "lower-alpha"; "upper-alpha"; "none"]), `Accept);
