@@ -35,7 +35,7 @@ let _ = dispatch begin function
 		flag ["ocaml"; "pack"] (S[A"-I"; A"lib"]);
 
 		(* Add dependency to lambxml.dtd *)
-		dep ["ocamldep"; "file:lib/lambdoc_read_lambxml/dtd.ml"] ["lib/lambdoc_read_lambxml/lambxml.dtd"];
+		dep ["ocamldep"; "file:lib/lambdoc_read_lambxml_impl/dtd.ml"] ["lib/lambdoc_read_lambxml_impl/lambxml.dtd"];
 
 		(* Flag Menhir options. *)
 		flag ["menhir"] menhir_opts;

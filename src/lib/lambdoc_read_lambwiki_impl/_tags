@@ -1,0 +1,2 @@
+<*.cmx>: for-pack(Lambdoc_read_lambwiki_impl)
+<scanner.ml>: package(ulex), syntax(camlp4o)

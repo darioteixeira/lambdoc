@@ -2,7 +2,12 @@ Lambdoc_core
 Lambdoc_reader
 Lambdoc_writer
 Lambdoc_read_lambtex
+Lambdoc_read_lambtex_impl
 Lambdoc_read_lambwiki
+Lambdoc_read_lambwiki_impl
 Lambdoc_read_lambxml
+Lambdoc_read_lambxml_impl
 Lambdoc_read_markdown
+Lambdoc_read_markdown_impl
 Lambdoc_write_html5
+Lambdoc_write_html5_impl

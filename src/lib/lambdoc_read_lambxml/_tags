@@ -1,2 +1,0 @@
-<*.cmx>: for-pack(Lambdoc_read_lambxml)
-<dtd.ml>: package(xstrp4), syntax(camlp4o)

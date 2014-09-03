@@ -134,16 +134,16 @@ let main () =
 	let module Extension = Make_extension (struct let credential = credential end) in
 	lwt doc = match options.input_markup with
 		| `Lambtex ->
-			let module M = Lambdoc_read_lambtex.Main.Make (Extension) in
+			let module M = Lambdoc_read_lambtex.Make (Extension) in
 			M.ambivalent_from_string ~idiosyncrasies input_str
 		| `Lambwiki ->
-			let module M = Lambdoc_read_lambwiki.Main.Make (Extension) in
+			let module M = Lambdoc_read_lambwiki.Make (Extension) in
 			M.ambivalent_from_string ~idiosyncrasies input_str
 		| `Lambxml ->
-			let module M = Lambdoc_read_lambxml.Main.Make (Extension) in
+			let module M = Lambdoc_read_lambxml.Make (Extension) in
 			M.ambivalent_from_string ~idiosyncrasies input_str
 		| `Markdown ->
-			let module M = Lambdoc_read_markdown.Main.Make (Extension) in
+			let module M = Lambdoc_read_markdown.Make (Extension) in
 			M.ambivalent_from_string ~idiosyncrasies input_str
 		| `Sexp ->
 			Lwt.return (Lambdoc_core.Ambivalent.deserialize Extension.link_t_of_sexp Extension.image_t_of_sexp Extension.extern_t_of_sexp input_str) in
@@ -151,7 +151,7 @@ let main () =
 		| `Sexp  ->
 			Lwt.return (Lambdoc_core.Ambivalent.serialize Extension.sexp_of_link_t Extension.sexp_of_image_t Extension.sexp_of_extern_t doc)
 		| `Html5 ->
-			let module Html5_writer = Lambdoc_write_html5.Main.Make (Tyxml_backend) (Extension) in
+			let module Html5_writer = Lambdoc_write_html5.Make (Tyxml_backend) (Extension) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
 			lwt xhtml = Html5_writer.write_ambivalent ~valid_options doc in
 			Lwt.return (string_of_xhtml options.title xhtml) in

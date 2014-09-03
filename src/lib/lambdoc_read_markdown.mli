@@ -6,5 +6,5 @@
 *)
 (********************************************************************************)
 
-module Main: Lambdoc_reader.Reader.PARTIAL
+include Lambdoc_reader.Reader.PARTIAL
 
