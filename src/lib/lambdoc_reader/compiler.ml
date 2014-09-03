@@ -1117,27 +1117,6 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 				Not_found -> assert false in	(* This really shouldn't happen *)
 		Monad.return (BatDynArray.fold_left process [] refs) in
 
-	(*
-	let resolve_links () =
-		let dict = Hashtbl.create (LinkSet.cardinal !linkset) in
-		let aux k =
-			Ext.resolve_link k >>= fun v ->
-			Monad.return (Hashtbl.add dict k v) in
-		Monad.iter aux (LinkSet.elements !linkset) >>= fun () ->
-		let process_linkref accum (comm, feature, link) =
-			try match Hashtbl.find dict link with
-				| `Okay payload ->
-					(link, payload) :: accum
-				| `Error failure ->
-					let feature = (feature :> Feature.t) in
-					let msg = Error.Unsupported_extension (comm.comm_tag, Feature.describe feature, failure) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
-					accum
-			with
-				Not_found -> assert false in	(* This really shouldn't happen *)
-		Monad.return (BatDynArray.fold_left process_linkref [] linkrefs) in
-	*)
-
 
 	(************************************************************************)
 	(* Wrap-up.								*)
