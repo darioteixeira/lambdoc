@@ -1,4 +1,0 @@
-directory = "."
-requires = "lambdoc"
-archive(plugin,byte) = "test.cma"
-archive(plugin,native) = "test.cmxs"
