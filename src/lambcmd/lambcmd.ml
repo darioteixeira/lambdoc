@@ -105,7 +105,10 @@ let string_of_xhtml the_title xhtml =
 	let page = (html
 			(head
 				(title (pcdata the_title))
-				[link ~a:[a_media [`All]; a_title "Default"] ~rel:[`Stylesheet] ~href:(uri_of_string "css/lambdoc.css") ()])
+				[
+				meta ~a:[a_charset "utf-8"] ();
+				link ~a:[a_media [`All]; a_title "Default"] ~rel:[`Stylesheet] ~href:(uri_of_string "css/lambdoc.css") ()
+				])
 			(body [xhtml])) in
 	let buf = Buffer.create 1024 in
 	Html5.P.print ~output:(Buffer.add_string buf) page;
