@@ -165,7 +165,6 @@ let issue_simple_command raw_comm position =
 		| "span"		-> (Inl, SPAN command)
 		| "link"
 		| "a"			-> (Inl, LINK command)
-		| "booklink"		-> (Inl, BOOKLINK command)
 		| "see"			-> (Inl, SEE command)
 		| "cite"		-> (Inl, CITE command)
 		| "dref"		-> (Inl, DREF command)
@@ -174,7 +173,7 @@ let issue_simple_command raw_comm position =
 		| "paragraph"
 		| "p"			-> (Blk, PARAGRAPH command)
 		| "picture"		-> (Blk, PICTURE command)
-		| "bookpic"		-> (Blk, BOOKPIC command)
+		| "extern"		-> (Blk, EXTERN command)
 		| "part"		-> (Blk, PART command)
 		| "appendix"		-> (Blk, APPENDIX command)
 		| "section"

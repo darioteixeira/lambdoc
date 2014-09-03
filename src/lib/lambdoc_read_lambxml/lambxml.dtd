@@ -14,7 +14,7 @@
 	| qanda | verse | quote
 	| mathtexblk | mathmlblk
 	| source | tabular 
-	| subpage | verbatim | pre | picture | bookpic
+	| subpage | verbatim | pre | picture | extern
 	| pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix
@@ -27,7 +27,7 @@
 <!ENTITY % Node
 	" entity | br | mathtexinl | mathmlinl | glyph
 	| bold | strong | b | emph | em | i | code | tt | caps
-	| ins | del | sup | sub | mbox | span | link | a | booklink
+	| ins | del | sup | sub | mbox | span | link | a
 	| see | cite | dref | sref | mref
 	| arg | call">
 
@@ -103,8 +103,8 @@
 <!ELEMENT picture EMPTY>
 <!ATTLIST picture %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
-<!ELEMENT bookpic EMPTY>
-<!ATTLIST bookpic %Common; isbn CDATA #REQUIRED>
+<!ELEMENT extern EMPTY>
+<!ATTLIST extern %Common; href CDATA #REQUIRED>
 
 <!ELEMENT pull %Frag;>
 <!ATTLIST pull %Common;>
@@ -312,9 +312,6 @@
 
 <!ELEMENT a %Inline;>
 <!ATTLIST a %Common; href CDATA #REQUIRED>
-
-<!ELEMENT booklink %Inline;>
-<!ATTLIST booklink %Common; isbn CDATA #REQUIRED>
 
 <!ELEMENT see EMPTY>
 <!ATTLIST see %Common; href NMTOKENS #REQUIRED>

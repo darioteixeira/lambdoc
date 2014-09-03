@@ -27,8 +27,8 @@ type block_t =
 	| Tabular of Tabular.t
 	| Subpage of frag_t
 	| Verbatim of string
-	| Picture of int option * Alias.t * string
-	| Bookpic of Book.isbn_t * Book.coversize_t
+	| Picture of int option * Href.t * string
+	| Extern of Href.t
 	| Pullquote of Inline.seq_t option * frag_t
 	| Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
 	| Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
@@ -66,8 +66,8 @@ let source ?(attr = Attr.default) data = {block = Source data; attr}
 let tabular ?(attr = Attr.default) data = {block = Tabular data; attr}
 let subpage ?(attr = Attr.default) frag = {block = Subpage frag; attr}
 let verbatim ?(attr = Attr.default) txt = {block = Verbatim txt; attr}
-let picture ?(attr = Attr.default) width alias alt = {block = Picture (width, alias, alt); attr}
-let bookpic ?(attr = Attr.default) isbn coversize = {block = Bookpic (isbn, coversize); attr}
+let picture ?(attr = Attr.default) width href alt = {block = Picture (width, href, alt); attr}
+let extern ?(attr = Attr.default) href = {block = Extern href; attr}
 let pullquote ?(attr = Attr.default) maybe_seq frag = {block = Pullquote (maybe_seq, frag); attr}
 let boxout ?(attr = Attr.default) data maybe_seq frag = {block = Boxout (data, maybe_seq, frag); attr}
 let theorem ?(attr = Attr.default) data maybe_seq frag = {block = Theorem (data, maybe_seq, frag); attr}

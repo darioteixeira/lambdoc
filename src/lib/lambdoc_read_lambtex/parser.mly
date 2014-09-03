@@ -94,7 +94,6 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> MBOX
 %token <Lambdoc_reader.Ast.command_t> SPAN
 %token <Lambdoc_reader.Ast.command_t> LINK
-%token <Lambdoc_reader.Ast.command_t> BOOKLINK
 %token <Lambdoc_reader.Ast.command_t> SEE
 %token <Lambdoc_reader.Ast.command_t> CITE
 %token <Lambdoc_reader.Ast.command_t> DREF
@@ -103,7 +102,7 @@ let the comm = match comm.Ast.comm_tag with
 
 %token <Lambdoc_reader.Ast.command_t> PARAGRAPH
 %token <Lambdoc_reader.Ast.command_t> PICTURE
-%token <Lambdoc_reader.Ast.command_t> BOOKPIC
+%token <Lambdoc_reader.Ast.command_t> EXTERN
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
 %token <Lambdoc_reader.Ast.command_t> SECTION
@@ -177,7 +176,7 @@ block:
 simple_block:
 	| PARAGRAPH inline_bundle						{($1, Ast.Paragraph $2)}
 	| PICTURE raw_bundle raw_bundle						{($1, Ast.Picture ($2, $3))}
-	| BOOKPIC raw_bundle							{($1, Ast.Bookpic $2)}
+	| EXTERN raw_bundle							{($1, Ast.Extern $2)}
 	| PART inline_bundle							{($1, Ast.Part $2)}
 	| APPENDIX								{($1, Ast.Appendix)}
 	| SECTION inline_bundle							{($1, Ast.Section (`Level1, $2))}
@@ -284,7 +283,6 @@ inline:
 	| MBOX inline_bundle								{($1, Ast.Mbox $2)}
 	| SPAN inline_bundle								{($1, Ast.Span $2)}
 	| LINK raw_bundle inline_bundle?						{($1, Ast.Link ($2, $3))}
-	| BOOKLINK raw_bundle inline_bundle?						{($1, Ast.Booklink ($2, $3))}
 	| SEE raw_bundle*								{($1, Ast.See $2)}
 	| CITE raw_bundle*								{($1, Ast.Cite $2)}
 	| DREF raw_bundle inline_bundle?						{($1, Ast.Dref ($2, $3))}

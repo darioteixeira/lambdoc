@@ -26,7 +26,6 @@ module List = BatList
 (**	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Bookmaker_error of Book.isbn_t
 exception Mismatched_custom of Custom.kind_t * Custom.kind_t
 
 
@@ -55,10 +54,11 @@ let perhaps f = function
 (**	{1 Functors}								*)
 (********************************************************************************)
 
-module Make (BM: Bookmaker.S) =
+module Make (Ext: Extension.S) =
 struct
-	open BM
-	open Monad
+	open Ext
+
+	let (>>=) = Monad.bind
 
 
 (********************************************************************************)
@@ -87,8 +87,8 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 	(* Declaration of the local modules used in the function.		*)
 	(************************************************************************)
 
-	let module ImageSet = Set.Make (struct type t = Alias.t let compare = String.compare end) in
-	let module IsbnSet = Set.Make (struct type t = Book.isbn_t let compare = String.compare end) in
+	let module HrefSet = Set.Make (Href) in
+
 
 	(************************************************************************)
 	(* Declaration of the mutable values used in the function.		*)
@@ -98,9 +98,12 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 	and bibs = BatDynArray.create ()
 	and notes = BatDynArray.create ()
 	and toc = BatDynArray.create ()
-	and images = ref ImageSet.empty
-	and isbnrefs = BatDynArray.create ()
-	and isbns = ref IsbnSet.empty
+	and linkrefs = BatDynArray.create ()
+	and imagerefs = BatDynArray.create ()
+	and externrefs = BatDynArray.create ()
+	and linkset = ref HrefSet.empty
+	and imageset = ref HrefSet.empty
+	and externset = ref HrefSet.empty
         and labels = Hashtbl.create 10
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
@@ -175,13 +178,6 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				Order_input.user_hierarchical `Level1 "0"
-
-
-	(*	Adds a new ISBN to the array of referenced books.
-	*)
-	and add_isbn comm feature isbn =
-		BatDynArray.add isbnrefs (comm, feature, isbn);
-		isbns := IsbnSet.add isbn !isbns
 
 
 	(*	Adds a new pointer to the dictionary.
@@ -283,8 +279,11 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 			let elem attr _ = convert_mathml (Inline.mathinl ~attr) comm txt in
 			check_inline_comm `Feature_mathml_inl comm elem
 
-		| (_, (comm, Ast.Glyph (alias, alt))) ->
-			let elem attr _ = images := ImageSet.add alias !images; [Inline.glyph ~attr alias alt] in
+		| (_, (comm, Ast.Glyph (href, alt))) ->
+			let elem attr _ =
+				BatDynArray.add imagerefs (comm, `Feature_glyph, href);
+				imageset := HrefSet.add href !imageset;
+				[Inline.glyph ~attr href alt] in
 			check_inline_comm `Feature_glyph comm elem
 
 		| (x, (comm, Ast.Bold astseq)) ->
@@ -327,18 +326,13 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
 			check_inline_comm `Feature_span comm elem
 
-		| (false, (comm, Ast.Link (uri, maybe_astseq))) ->
+		| (false, (comm, Ast.Link (href, maybe_astseq))) ->
 			let elem attr _ =
+				BatDynArray.add linkrefs (comm, `Feature_link, href);
+				linkset := HrefSet.add href !linkset;
 				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
-				[Inline.link ~attr uri maybe_seq] in
+				[Inline.link ~attr href maybe_seq] in
 			check_inline_comm `Feature_link comm elem
-
-		| (false, (comm, Ast.Booklink (isbn, maybe_astseq))) ->
-			let elem attr dict =
-				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
-				add_isbn comm `Feature_booklink isbn;
-				[Inline.booklink ~attr isbn maybe_seq] in
-			check_inline_comm `Feature_booklink comm elem
 
 		| (false, (comm, Ast.See refs)) ->
 			let elem attr _ =
@@ -648,20 +642,21 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 				[Block.verbatim ~attr trimmed] in
 			check_block_comm `Feature_verbatim comm elem
 
-		| (_, _, _, `Figure_blk, (comm, Ast.Picture (alias, alt)))
-		| (_, _, _, `Any_blk, (comm, Ast.Picture (alias, alt))) ->
+		| (_, _, _, `Figure_blk, (comm, Ast.Picture (href, alt)))
+		| (_, _, _, `Any_blk, (comm, Ast.Picture (href, alt))) ->
 			let elem attr dict =
+				BatDynArray.add imagerefs (comm, `Feature_picture, href);
+				imageset := HrefSet.add href !imageset;
 				let width = Style.consume1 dict (Width_hnd, None) in
-				images := ImageSet.add alias !images;
-				[Block.picture ~attr width alias alt] in
+				[Block.picture ~attr width href alt] in
 			check_block_comm `Feature_picture comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Bookpic isbn)) ->
+		| (_, _, _, `Any_blk, (comm, Ast.Extern href)) ->
 			let elem attr dict =
-				let coversize = Style.consume1 dict (Coversize_hnd, `Medium) in
-				add_isbn comm `Feature_bookpic isbn;
-				[Block.bookpic ~attr isbn coversize] in
-			check_block_comm `Feature_bookpic comm elem
+				BatDynArray.add externrefs (comm, `Feature_extern, href);
+				externset := HrefSet.add href !externset;
+				[Block.extern ~attr href] in
+			check_block_comm `Feature_extern comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_astseq, astfrag))) ->
 			let elem attr _ =
@@ -1056,7 +1051,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 
 
 	(************************************************************************)
-	(* Filtering of pointers.						*)
+	(* Filtering of internal references.					*)
 	(************************************************************************)
 
 	let filter_pointers () =
@@ -1098,45 +1093,60 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 
 
 	(************************************************************************)
-	(* Retrieve book data for all referenced ISBNs.				*)
+	(* Resolve all referenced links.					*)
 	(************************************************************************)
 
-	let retrieve_books () =
-		let books = Hashtbl.create 0 in
-		if not (IsbnSet.is_empty !isbns)
-		then begin
-			BM.resolve (IsbnSet.elements !isbns) >>= fun results ->
-			let process_isbnref (comm, feature, isbn) =
-				try match List.assoc isbn results with
-					| Success book ->
-						Hashtbl.add books isbn book
-					| Failure failure ->
-						let msg = match failure with
-							| Unavailable	   -> Error.Unavailable_bookmaker (comm.comm_tag, Feature.describe feature)
-							| Uncapable err    -> Error.Uncapable_bookmaker (comm.comm_tag, Feature.describe feature, err)
-							| Malformed_ISBN _ -> Error.Malformed_ISBN (comm.comm_tag, isbn)
-							| Unknown_ISBN _   -> Error.Unknown_ISBN (comm.comm_tag, isbn) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg)
-				with
-					Not_found -> raise (Bookmaker_error isbn) in
-			try
-				let () = BatDynArray.iter process_isbnref isbnrefs in
-				Monad.return books
-			with exc ->
-				Monad.fail exc
-		end
-		else Monad.return books in
+	let resolve resolver set refs =
+		let dict = Hashtbl.create (HrefSet.cardinal set) in
+		let aux href =
+			resolver href >>= fun v ->
+			Monad.return (Hashtbl.add dict href v) in
+		Monad.iter aux (HrefSet.elements set) >>= fun () ->
+		let process accum (comm, feature, href) =
+			try match Hashtbl.find dict href with
+				| `Okay payload ->
+					(href, payload) :: accum
+				| `Error failure ->
+					let msg = Error.Unsupported_extension (comm.comm_tag, Feature.describe feature, failure) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					accum
+			with
+				Not_found -> assert false in	(* This really shouldn't happen *)
+		Monad.return (BatDynArray.fold_left process [] refs) in
+
+	(*
+	let resolve_links () =
+		let dict = Hashtbl.create (LinkSet.cardinal !linkset) in
+		let aux k =
+			Ext.resolve_link k >>= fun v ->
+			Monad.return (Hashtbl.add dict k v) in
+		Monad.iter aux (LinkSet.elements !linkset) >>= fun () ->
+		let process_linkref accum (comm, feature, link) =
+			try match Hashtbl.find dict link with
+				| `Okay payload ->
+					(link, payload) :: accum
+				| `Error failure ->
+					let feature = (feature :> Feature.t) in
+					let msg = Error.Unsupported_extension (comm.comm_tag, Feature.describe feature, failure) in
+					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					accum
+			with
+				Not_found -> assert false in	(* This really shouldn't happen *)
+		Monad.return (BatDynArray.fold_left process_linkref [] linkrefs) in
+	*)
 
 
 	(************************************************************************)
 	(* Wrap-up.								*)
 	(************************************************************************)
 
-	let contents = convert_frag ast in
-	let custom = filter_customisations () in
+	let content = convert_frag ast in
+	let customs = filter_customisations () in
 	let () = filter_pointers () in
-	retrieve_books () >>= fun books ->
-	Monad.return (contents, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, ImageSet.elements !images, books, labels, custom, BatDynArray.to_list errors)
+	resolve Ext.resolve_link !linkset linkrefs >>= fun links ->
+	resolve Ext.resolve_image !imageset imagerefs >>= fun images ->
+	resolve Ext.resolve_extern !externset externrefs >>= fun externs ->
+	Monad.return (content, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, labels, customs, links, images, externs, BatDynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -1193,9 +1203,9 @@ let process_errors ~sort source errors =
 
 
 let compile ~expand_entities ~idiosyncrasies ~source ast =
-	compile_document ~expand_entities ~idiosyncrasies ast >>= fun (contents, bibs, notes, toc, images, books, labels, custom, errors) ->
+	compile_document ~expand_entities ~idiosyncrasies ast >>= fun (content, bibs, notes, toc, labels, customs, links, images, externs, errors) ->
 	match errors with
-		| []   -> Monad.return (Ambivalent.make_valid contents bibs notes toc images books labels custom)
+		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~externs)
 		| _::_ -> Monad.return (Ambivalent.make_invalid (process_errors ~sort:true source errors))
 end
 

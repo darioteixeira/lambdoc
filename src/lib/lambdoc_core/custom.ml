@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Basic
 
 
@@ -20,8 +19,6 @@ type kind_t =
 	with sexp
 
 type key_t = Pointer.t with sexp
-
-type dict_t = (key_t, Inline.seq_t) Hashtbl.t with sexp
 
 type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 

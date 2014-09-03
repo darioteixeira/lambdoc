@@ -1,3 +1,3 @@
 true: package(tyxml), package(bookaml.ocsigen)
-<lambcmd.*>: package(lwt.syntax), syntax(camlp4o)
+<lambcmd.*>: package(lwt.syntax), package(sexplib.syntax), syntax(camlp4o)
 

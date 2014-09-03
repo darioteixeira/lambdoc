@@ -19,9 +19,11 @@ struct
 end
 
 
-module Uri =
+module Href =
 struct
 	type t = string with sexp
+
+	let compare = String.compare
 end
 
 
@@ -36,12 +38,6 @@ struct
 	type t = Classname.t list with sexp
 
 	let default = []
-end
-
-
-module Alias =
-struct
-	type t = string with sexp
 end
 
 

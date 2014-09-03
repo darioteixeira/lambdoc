@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_core
 open Lambdoc_writer
 
 
@@ -28,19 +27,14 @@ sig
 		end)
 		v}
 	*)
-	module Make: functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
+	module Make:
+		functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
+		functor (Ext: Extension.S) ->
 	sig
-		type book_lookup_t = Book.isbn_t -> Html5.uri
-		type cover_lookup_t = Book.isbn_t -> Book.coversize_t -> Html5.uri
-		type image_lookup_t = Basic.Alias.t -> Html5.uri
-
 		type valid_options_t =
 			{
 			numbered_paragraphs: bool;
 			translations: Translations.t;
-			book_lookup: book_lookup_t;
-			cover_lookup: cover_lookup_t;
-			image_lookup: image_lookup_t;
 			namespace: Html5_types.nmtoken;
 			prefix: Html5_types.nmtoken;
 			base_classes: Html5_types.nmtokens;
@@ -56,6 +50,10 @@ sig
 
 		include Writer.S with
 			type t = Html5_types.div Html5.elt and
+			type 'a monad_t = 'a Ext.Monad.t and
+			type link_t = Ext.link_t and
+			type image_t = Ext.image_t and
+			type extern_t = Ext.extern_t and
 			type valid_options_t := valid_options_t and
 			type invalid_options_t := invalid_options_t
 	end

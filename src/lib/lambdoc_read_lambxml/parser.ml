@@ -74,7 +74,7 @@ let inline_elems =
 	"entity"; "br"; "mathtexinl"; "mathmlinl"; "glyph";
 	"bold"; "strong"; "b"; "emph"; "em"; "i"; "code"; "tt"; "caps";
 	"ins"; "del"; "sup"; "sub";
-	"mbox"; "span"; "link"; "a"; "booklink";
+	"mbox"; "span"; "link"; "a";
 	"see"; "cite"; "dref"; "sref"; "mref";
 	"arg"; "call";
 	]
@@ -165,8 +165,6 @@ and process_inline store node =
 		| T_element "link"
 		| T_element "a" ->
 			(!!comm, Ast.Link (node#required_string_attribute "href", process_maybe_seq store node))
-		| T_element "booklink" ->
-			(!!comm, Ast.Booklink (node#required_string_attribute "isbn", process_maybe_seq store node))
 		| T_element "see" ->
 			(!!comm, Ast.See (node#required_list_attribute "href"))
 		| T_element "cite" ->
@@ -252,8 +250,8 @@ and process_block store node =
 			let src = node#required_string_attribute "src" in
 			let alt = node#required_string_attribute "alt" in
 			(!!comm, Ast.Picture (src, alt))
-		| T_element "bookpic" ->
-			(!!comm, Ast.Bookpic (node#required_string_attribute "isbn"))
+		| T_element "extern" ->
+			(!!comm, Ast.Extern (node#required_string_attribute "href"))
 		| T_element "pull" ->
 			(!!comm, Ast.Pullquote (None, process_frag store node))
 		| T_element "boxout" ->

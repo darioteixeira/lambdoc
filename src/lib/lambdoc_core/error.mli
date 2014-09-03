@@ -74,7 +74,6 @@ type error_msg_t =
 	| Invalid_order_levels of Ident.t option * string * Level.hierarchical_t * int
 
 	| Invalid_style_bad_boolean of Ident.t option * string * string
-	| Invalid_style_bad_coversize of Ident.t option * string * string
 	| Invalid_style_bad_lang of Ident.t option * string * string
 	| Invalid_style_bad_numeric of Ident.t option * string * string * int * int
 	| Invalid_style_bad_classname of Ident.t option * string
@@ -122,11 +121,6 @@ type error_msg_t =
 	| Wrong_target of Ident.t option * Pointer.t * target_t * target_t
 	| Undefined_target of Ident.t option * Pointer.t
 
-	| Unavailable_bookmaker of Ident.t option * string
-	| Uncapable_bookmaker of Ident.t option * string * string
-	| Malformed_ISBN of Ident.t option * string
-	| Unknown_ISBN of Ident.t option * string
-
 	| Empty_source of Ident.t option
 	| Empty_verbatim of Ident.t option
 	| Empty_list of Ident.t option
@@ -138,6 +132,7 @@ type error_msg_t =
 	| Malformed_code_point
 	| Reading_error of string
 	| Unavailable_feature of Ident.t option * string
+	| Unsupported_extension of Ident.t option * string * string
 
 	with sexp
 

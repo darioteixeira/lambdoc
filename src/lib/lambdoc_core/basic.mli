@@ -22,11 +22,12 @@ sig
 end
 
 
-(**	The type of links to external resources.
+(**	The type of references to external resources.
 *)
-module Uri:
+module Href:
 sig
 	type t = string with sexp
+	val compare: t -> t -> int
 end
 
 
@@ -48,14 +49,6 @@ sig
 end
 
 
-(**	The type of aliases to filenames.
-*)
-module Alias:
-sig
-	type t = string with sexp
-end
-
-
 (**	The type of identifiers.
 *)
 module Ident:
@@ -64,7 +57,7 @@ sig
 end
 
 
-(**	The type of pointers (internal references).
+(**	The type of internal references.
 *)
 module Pointer:
 sig

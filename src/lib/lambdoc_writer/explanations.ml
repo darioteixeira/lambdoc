@@ -108,9 +108,6 @@ let explain_error = function
 	| Error.Invalid_style_bad_boolean (tag, key, value) ->
 		sprintf "In the style parameters of %s, the key '#%s#' expects a boolean parameter, yet the assigned value '#%s#' cannot be interpreted as such.  Valid boolean values are 'true'/'on'/'yes' or 'false'/'off'/'no'." (explain_tag tag) (escape key) (escape value)
 
-	| Error.Invalid_style_bad_coversize (tag, key, value) ->
-		sprintf "In the style parameters of %s, the key '#%s#' expects a cover size specifier, yet the assigned value '#%s#' cannot be interpreted as such. Valid cover size values are 'small', 'medium', and 'large'." (explain_tag tag) (escape key) (escape value)
-
 	| Error.Invalid_style_bad_lang (tag, key, value) ->
 		sprintf "In the style parameters of %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such.  Valid languages are all those accepted by the Camlhighlight library." (explain_tag tag) (escape key) (escape value)
 
@@ -237,18 +234,6 @@ let explain_error = function
 	| Error.Undefined_target (tag, label) ->
 		sprintf "Reference to an undefined label '#%s#' in %s." (escape label) (explain_tag tag)
 
-	| Error.Unavailable_bookmaker (tag, description) ->
-		sprintf "No book information fetching is available for feature '%s' requested by %s." description (explain_tag tag)
-
-	| Error.Uncapable_bookmaker (tag, description, error) ->
-		sprintf "Failure while fetching book information for feature '%s' requested by %s: %s." description (explain_tag tag) error
-
-	| Error.Malformed_ISBN (tag, isbn) ->
-		sprintf "The string '#%s#' in %s is not a valid ISBN." (escape isbn) (explain_tag tag)
-
-	| Error.Unknown_ISBN (tag, isbn) ->
-		sprintf "Cannot find book with ISBN '#%s#' in %s." (escape isbn) (explain_tag tag)
-
 	| Error.Empty_source tag ->
 		sprintf "Empty source environment in %s." (explain_tag tag)
 
@@ -278,6 +263,9 @@ let explain_error = function
 
 	| Error.Unavailable_feature (tag, description) ->
 		sprintf "The feature '%s' requested by %s is unavailable for this document." description (explain_tag tag)
+
+	| Error.Unsupported_extension (tag, description, error) ->
+		sprintf "Unsupported exception for feature '%s' requested by %s: %s." description (explain_tag tag) error
 
 
 (********************************************************************************)

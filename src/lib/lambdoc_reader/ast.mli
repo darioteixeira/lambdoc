@@ -55,7 +55,6 @@ type seq_t = inline_t list
 	| Mbox of seq_t
 	| Span of seq_t
 	| Link of string * seq_t option
-	| Booklink of string * seq_t option
 	| See of string list
 	| Cite of string list
 	| Dref of string * seq_t option
@@ -106,7 +105,7 @@ type frag_t = block_t list
 	| Subpage of frag_t
 	| Verbatim of string
 	| Picture of string * string
-	| Bookpic of string
+	| Extern of string
 	| Pullquote of seq_t option * frag_t
 	| Custom of Custom.kind_t option * string * seq_t option * frag_t
 	| Equation of seq_t option * block_t

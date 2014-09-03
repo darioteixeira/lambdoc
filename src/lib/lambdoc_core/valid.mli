@@ -16,20 +16,21 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type books_t = (Book.isbn_t, Book.t) Hashtbl.t with sexp
-
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
+type customs_t = (Custom.key_t, Inline.seq_t) Hashtbl.t with sexp
+type 'a payload_t = (Href.t * 'a) list with sexp
 
-type t =
+type ('a, 'b, 'c) t =
 	{
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.t list;
-	images: Alias.t list;
-	books: books_t;
 	labels: labels_t;
-	custom: Custom.dict_t;
+	customs: customs_t;
+	links: 'a payload_t;
+	images: 'b payload_t;
+	externs: 'c payload_t;
 	} with sexp
 
 
@@ -42,21 +43,22 @@ type t =
 (********************************************************************************)
 
 val make:
-	Block.frag_t ->
-	Bib.t list ->
-	Note.t list ->
-	Heading.t list ->
-	Alias.t list ->
-	books_t ->
-	labels_t ->
-	Custom.dict_t ->
-	t
+	content:Block.frag_t ->
+	bibs:Bib.t list ->
+	notes:Note.t list ->
+	toc:Heading.t list ->
+	labels:labels_t ->
+	customs:customs_t ->
+	links:'a payload_t ->
+	images:'b payload_t ->
+	externs:'c payload_t ->
+	('a, 'b, 'c) t
 
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-val serialize: t -> string
-val deserialize: string -> t
+val serialize: ('a -> Sexplib.Sexp.t) -> ('b -> Sexplib.Sexp.t) -> ('c -> Sexplib.Sexp.t) -> ('a, 'b, 'c) t -> string
+val deserialize: (Sexplib.Sexp.t -> 'a) -> (Sexplib.Sexp.t -> 'b) -> (Sexplib.Sexp.t -> 'c) -> string -> ('a, 'b, 'c) t
 

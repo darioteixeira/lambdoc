@@ -17,20 +17,21 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type books_t = (Book.isbn_t, Book.t) Hashtbl.t with sexp
-
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
+type customs_t = (Custom.key_t, Inline.seq_t) Hashtbl.t with sexp
+type 'a payload_t = (Href.t * 'a) list with sexp
 
-type t =
+type ('a, 'b, 'c) t =
 	{
 	content: Block.frag_t;
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.t list;
-	images: Alias.t list;
-	books: books_t;
 	labels: labels_t;
-	custom: Custom.dict_t;
+	customs: customs_t;
+	links: 'a payload_t;
+	images: 'b payload_t;
+	externs: 'c payload_t;
 	} with sexp
 
 
@@ -42,17 +43,17 @@ type t =
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-let make content bibs notes toc images books labels custom =
-	{content; bibs; notes; toc; images; books; labels; custom}
+let make ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~externs =
+	{content; bibs; notes; toc; labels; customs; links; images; externs}
 
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-let serialize doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_t doc)
+let serialize sexp_of_a sexp_of_b sexp_of_c doc =
+	Sexplib.Sexp.to_string_mach (sexp_of_t sexp_of_a sexp_of_b sexp_of_c doc)
 
-let deserialize str =
-	t_of_sexp (Sexplib.Sexp.of_string str)
+let deserialize a_of_sexp b_of_sexp c_of_sexp str =
+	t_of_sexp a_of_sexp b_of_sexp c_of_sexp (Sexplib.Sexp.of_string str)
 

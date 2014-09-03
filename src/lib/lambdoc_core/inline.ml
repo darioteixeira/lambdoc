@@ -19,7 +19,7 @@ type inline_t =
 	| Entity of Entity.t
 	| Linebreak
 	| Mathinl of Math.t
-	| Glyph of Alias.t * string
+	| Glyph of Href.t * string
 	| Bold of seq_t
 	| Emph of seq_t
 	| Code of seq_t
@@ -30,8 +30,7 @@ type inline_t =
 	| Sub of seq_t
 	| Mbox of seq_t
 	| Span of seq_t
-	| Link of Uri.t * seq_t option
-	| Booklink of Book.isbn_t * seq_t option
+	| Link of Href.t * seq_t option
 	| See of Pointer.t list
 	| Cite of Pointer.t list
 	| Dref of Pointer.t * seq_t option
@@ -55,7 +54,7 @@ let plain ?(attr = Attr.default) txt = {inline = Plain txt; attr}
 let entity ?(attr = Attr.default) ent = {inline = Entity ent; attr}
 let linebreak ?(attr = Attr.default) () = {inline = Linebreak; attr}
 let mathinl ?(attr = Attr.default) data = {inline = Mathinl data; attr}
-let glyph ?(attr = Attr.default) alias alt = {inline = Glyph (alias, alt); attr}
+let glyph ?(attr = Attr.default) href alt = {inline = Glyph (href, alt); attr}
 let bold ?(attr = Attr.default) seq = {inline = Bold seq; attr}
 let emph ?(attr = Attr.default) seq = {inline = Emph seq; attr}
 let code ?(attr = Attr.default) seq = {inline = Code seq; attr}
@@ -66,8 +65,7 @@ let sup ?(attr = Attr.default) seq = {inline = Sup seq; attr}
 let sub ?(attr = Attr.default) seq = {inline = Sub seq; attr}
 let mbox ?(attr = Attr.default) seq = {inline = Mbox seq; attr}
 let span ?(attr = Attr.default) seq = {inline = Span seq; attr}
-let link ?(attr = Attr.default) uri maybe_seq = {inline = Link (uri, maybe_seq); attr}
-let booklink ?(attr = Attr.default) isbn maybe_seq = {inline = Booklink (isbn, maybe_seq); attr}
+let link ?(attr = Attr.default) href maybe_seq = {inline = Link (href, maybe_seq); attr}
 let see ?(attr = Attr.default) pointers = {inline = See pointers; attr}
 let cite ?(attr = Attr.default) pointers = {inline = Cite pointers; attr}
 let dref ?(attr = Attr.default) pointer maybe_seq = {inline = Dref (pointer, maybe_seq); attr}

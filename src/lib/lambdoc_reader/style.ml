@@ -32,7 +32,6 @@ type raw_t =
 
 type decl_t =
 	| Classname_decl of Classname.t
-	| Coversize_decl of Book.coversize_t
 	| Lang_decl of Camlhighlight_core.lang_t option
 	| Linenums_decl of bool
 	| Width_decl of int option
@@ -43,7 +42,6 @@ type decl_t =
 (********************************************************************************)
 
 type _ handle_t =
-	| Coversize_hnd: Book.coversize_t handle_t
 	| Lang_hnd: Camlhighlight_core.lang_t option handle_t
 	| Linenums_hnd: bool handle_t
 	| Width_hnd: int option handle_t
@@ -56,13 +54,6 @@ type parsing_t = (raw_t * decl_t) list
 (********************************************************************************)
 (**	{1 Private functions and values}					*)
 (********************************************************************************)
-
-let coversize_of_string comm key = function
-	| "small"  -> `Small
-	| "medium" -> `Medium
-	| "large"  -> `Large
-	| x	   -> raise (Value_error (Error.Invalid_style_bad_coversize (comm.comm_tag, key, x)))
-
 
 let lang_of_string comm key = function
 	| "none" ->
@@ -94,7 +85,6 @@ let numeric_of_string comm key ~low ~high = function
 
 let decl_dict =
 	[
-	("coversize", fun comm v -> Coversize_decl (coversize_of_string comm "coversize" v));
 	("lang", fun comm v -> Lang_decl (lang_of_string comm "lang" v));
 	("nums", fun comm v -> Linenums_decl (boolean_of_string comm "nums" v));
 	("width", fun comm v -> Width_decl (numeric_of_string comm "width" ~low:1 ~high:100 v));
@@ -149,7 +139,6 @@ let decl_of_raw comm errors = function
 
 let find_decl hnd parsing =
 	let matches: type a. a handle_t -> raw_t * decl_t -> a option = fun hnd (_, decl) -> match (hnd, decl) with
-		| (Coversize_hnd, Coversize_decl x) -> Some x
 		| (Lang_hnd, Lang_decl x)	    -> Some x
 		| (Linenums_hnd, Linenums_decl x)   -> Some x
 		| (Width_hnd, Width_decl x)	    -> Some x

@@ -132,7 +132,6 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_mbox		-> forbidden_class
 		| `Feature_span		-> forbidden_class
 		| `Feature_link		-> forbidden_class
-		| `Feature_booklink	-> forbidden_class
 		| `Feature_see		-> forbidden_class
 		| `Feature_cite		-> forbidden_class
 		| `Feature_dref		-> forbidden_class
@@ -154,7 +153,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_subpage	-> forbidden_class
 		| `Feature_verbatim	-> forbidden_class
 		| `Feature_picture	-> forbidden_class
-		| `Feature_bookpic	-> forbidden_class
+		| `Feature_extern	-> forbidden_class
 		| `Feature_pullquote	-> forbidden_class
 		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)

@@ -19,7 +19,7 @@ type inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_link | `Feature_booklink
+	| `Feature_mbox | `Feature_span | `Feature_link
 	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref ]
 
 type block_feature_t =
@@ -28,7 +28,7 @@ type block_feature_t =
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk 
 	| `Feature_source | `Feature_tabular 
-	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookpic | `Feature_pullquote
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_extern | `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3

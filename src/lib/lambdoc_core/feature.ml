@@ -16,7 +16,7 @@ type inline_feature_t =
 	| `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
-	| `Feature_mbox | `Feature_span | `Feature_link | `Feature_booklink
+	| `Feature_mbox | `Feature_span | `Feature_link
 	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref ]
 
 type block_feature_t =
@@ -25,13 +25,13 @@ type block_feature_t =
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk 
 	| `Feature_source | `Feature_tabular 
-	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_bookpic | `Feature_pullquote
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_extern | `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
 	| `Feature_title1 | `Feature_title2
-	| `Feature_abstract | `Feature_rule
+	| `Feature_abstract | `Feature_rule | `Feature_extern
 	| `Feature_bib | `Feature_note
 	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef ]
 
@@ -68,7 +68,6 @@ let describe_inline_feature = function
 	| `Feature_mbox		-> "non-breakable text"
 	| `Feature_span		-> "custom span"
 	| `Feature_link		-> "link to external resource"
-	| `Feature_booklink	-> "book reference"
 	| `Feature_see		-> "link to note"
 	| `Feature_cite		-> "bibliography citation"
 	| `Feature_dref		-> "dumb internal link"
@@ -90,7 +89,7 @@ let describe_block_feature = function
 	| `Feature_subpage	-> "subpage block"
 	| `Feature_verbatim	-> "verbatim block"
 	| `Feature_picture	-> "image block"
-	| `Feature_bookpic	-> "book block"
+	| `Feature_extern	-> "externally defined block"
 	| `Feature_pullquote	-> "pull-quote block"
 	| `Feature_equation	-> "equation wrapper"
 	| `Feature_printout	-> "printout wrapper"
@@ -141,7 +140,7 @@ let inline_features =
 	`Feature_mathtex_inl; `Feature_mathml_inl; `Feature_glyph;
 	`Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
 	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
-	`Feature_mbox; `Feature_span; `Feature_link; `Feature_booklink;
+	`Feature_mbox; `Feature_span; `Feature_link;
 	`Feature_see; `Feature_cite; `Feature_dref; `Feature_sref; `Feature_mref;
 	]
 
@@ -152,7 +151,7 @@ let block_features =
 	`Feature_qanda; `Feature_verse; `Feature_quote;
 	`Feature_mathtex_blk; `Feature_mathml_blk;
 	`Feature_source; `Feature_tabular;
-	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_bookpic; `Feature_pullquote;
+	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_extern; `Feature_pullquote;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_part; `Feature_appendix;
 	`Feature_section1; `Feature_section2; `Feature_section3;

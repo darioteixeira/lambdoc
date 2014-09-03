@@ -6,5 +6,5 @@
 *)
 (********************************************************************************)
 
-module Main: Lambdoc_reader.Reader.SEMI
+module Main: Lambdoc_reader.Reader.PARTIAL
 

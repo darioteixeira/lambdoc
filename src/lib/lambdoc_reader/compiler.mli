@@ -17,7 +17,7 @@ open Lambdoc_core
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-module Make (BM: Bookmaker.S):
+module Make (Ext: Extension.S):
 sig
 	(**	Process and (optionally) sort the errors by line number.
 	*)
@@ -34,6 +34,6 @@ sig
 		idiosyncrasies:Idiosyncrasies.t ->
 		source:string ->
 		Ast.t ->
-		Ambivalent.t BM.Monad.t
+		(Ext.link_t, Ext.image_t, Ext.extern_t) Ambivalent.t Ext.Monad.t
 end
 
