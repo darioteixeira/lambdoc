@@ -565,7 +565,7 @@ let write_valid ?(valid_options = default_valid_options) doc =
 			let aux = Html5.div ~a:[a_class [!!"pre_aux"]] [Html5.pre ~a:[a_class [!!"pre_aux"]] [Html5.pcdata txt]] in
 			[Html5.div ~a:[a_class (!!"pre" :: attr @ make_floatable wrapped)] [aux]]
 
-		| Picture (width, href, alt) ->
+		| Picture (href, alt, width) ->
 			let wattr = match width with Some w -> [a_width w] | None -> [] in
 			let href = try Hashtbl.find image_dict href with Not_found -> href in
 			let uri = Html5.uri_of_string href in

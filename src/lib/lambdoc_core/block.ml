@@ -27,7 +27,7 @@ type block_t =
 	| Tabular of Tabular.t
 	| Subpage of frag_t
 	| Verbatim of string
-	| Picture of int option * Href.t * string
+	| Picture of Href.t * string * int option
 	| Extern of Href.t
 	| Pullquote of Inline.seq_t option * frag_t
 	| Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
@@ -66,7 +66,7 @@ let source ?(attr = Attr.default) data = {block = Source data; attr}
 let tabular ?(attr = Attr.default) data = {block = Tabular data; attr}
 let subpage ?(attr = Attr.default) frag = {block = Subpage frag; attr}
 let verbatim ?(attr = Attr.default) txt = {block = Verbatim txt; attr}
-let picture ?(attr = Attr.default) width href alt = {block = Picture (width, href, alt); attr}
+let picture ?(attr = Attr.default) href alt width = {block = Picture (href, alt, width); attr}
 let extern ?(attr = Attr.default) href = {block = Extern href; attr}
 let pullquote ?(attr = Attr.default) maybe_seq frag = {block = Pullquote (maybe_seq, frag); attr}
 let boxout ?(attr = Attr.default) data maybe_seq frag = {block = Boxout (data, maybe_seq, frag); attr}

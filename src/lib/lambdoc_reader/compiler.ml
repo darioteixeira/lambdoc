@@ -648,7 +648,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 				BatDynArray.add imagerefs (comm, `Feature_picture, href);
 				imageset := HrefSet.add href !imageset;
 				let width = Style.consume1 dict (Width_hnd, None) in
-				[Block.picture ~attr width href alt] in
+				[Block.picture ~attr href alt width] in
 			check_block_comm `Feature_picture comm elem
 
 		| (_, _, _, `Any_blk, (comm, Ast.Extern href)) ->

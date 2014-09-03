@@ -29,7 +29,7 @@ type block_t =
 	| Tabular of Tabular.t
 	| Subpage of frag_t
 	| Verbatim of string
-	| Picture of int option * Href.t * string
+	| Picture of Href.t * string * int option
 	| Extern of Href.t
 	| Pullquote of Inline.seq_t option * frag_t
 	| Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
@@ -68,7 +68,7 @@ val source:	?attr:Attr.t -> Source.t -> t
 val tabular:	?attr:Attr.t -> Tabular.t -> t
 val subpage:	?attr:Attr.t -> frag_t -> t
 val verbatim:	?attr:Attr.t -> string -> t
-val picture:	?attr:Attr.t -> int option -> Href.t -> string -> t
+val picture:	?attr:Attr.t -> Href.t -> string -> int option -> t
 val extern:	?attr:Attr.t -> Href.t -> t
 val pullquote:	?attr:Attr.t -> Inline.seq_t option -> frag_t -> t
 val boxout:	?attr:Attr.t -> Custom.Boxout.t -> Inline.seq_t option -> frag_t -> t
