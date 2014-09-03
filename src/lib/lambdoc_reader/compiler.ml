@@ -87,7 +87,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 	(* Declaration of the local modules used in the function.		*)
 	(************************************************************************)
 
-	let module HrefSet = Set.Make (Href) in
+	let module ExtSet = Set.Make (struct type t = Href.t * string option let compare = Pervasives.compare end) in
 
 
 	(************************************************************************)
@@ -101,9 +101,9 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 	and linkrefs = BatDynArray.create ()
 	and imagerefs = BatDynArray.create ()
 	and externrefs = BatDynArray.create ()
-	and linkset = ref HrefSet.empty
-	and imageset = ref HrefSet.empty
-	and externset = ref HrefSet.empty
+	and linkset = ref ExtSet.empty
+	and imageset = ref ExtSet.empty
+	and externset = ref ExtSet.empty
         and labels = Hashtbl.create 10
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
@@ -282,7 +282,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 		| (_, (comm, Ast.Glyph (href, alt))) ->
 			let elem attr _ =
 				BatDynArray.add imagerefs (comm, `Feature_glyph, href);
-				imageset := HrefSet.add href !imageset;
+				imageset := ExtSet.add (href, comm.comm_style) !imageset;
 				[Inline.glyph ~attr href alt] in
 			check_inline_comm `Feature_glyph comm elem
 
@@ -329,7 +329,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 		| (false, (comm, Ast.Link (href, maybe_astseq))) ->
 			let elem attr _ =
 				BatDynArray.add linkrefs (comm, `Feature_link, href);
-				linkset := HrefSet.add href !linkset;
+				linkset := ExtSet.add (href, comm.comm_style) !linkset;
 				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				[Inline.link ~attr href maybe_seq] in
 			check_inline_comm `Feature_link comm elem
@@ -646,7 +646,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 		| (_, _, _, `Any_blk, (comm, Ast.Picture (href, alt))) ->
 			let elem attr dict =
 				BatDynArray.add imagerefs (comm, `Feature_picture, href);
-				imageset := HrefSet.add href !imageset;
+				imageset := ExtSet.add (href, comm.comm_style) !imageset;
 				let width = Style.consume1 dict (Width_hnd, None) in
 				[Block.picture ~attr href alt width] in
 			check_block_comm `Feature_picture comm elem
@@ -654,7 +654,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 		| (_, _, _, `Any_blk, (comm, Ast.Extern href)) ->
 			let elem attr dict =
 				BatDynArray.add externrefs (comm, `Feature_extern, href);
-				externset := HrefSet.add href !externset;
+				externset := ExtSet.add (href, comm.comm_style) !externset;
 				[Block.extern ~attr href] in
 			check_block_comm `Feature_extern comm elem
 
@@ -1097,17 +1097,20 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 	(************************************************************************)
 
 	let resolve resolver set refs =
-		let dict = Hashtbl.create (HrefSet.cardinal set) in
-		let aux href =
-			resolver href >>= fun v ->
-			Monad.return (Hashtbl.add dict href v) in
-		Monad.iter aux (HrefSet.elements set) >>= fun () ->
+		let dict = Hashtbl.create (ExtSet.cardinal set) in
+		let aux ((href, style) as x) =
+			resolver href style >>= fun v ->
+			Monad.return (Hashtbl.add dict x v) in
+		Monad.iter aux (ExtSet.elements set) >>= fun () ->
 		let process accum (comm, feature, href) =
-			try match Hashtbl.find dict href with
+			try match Hashtbl.find dict (href, comm.comm_style) with
 				| `Okay payload ->
 					(href, payload) :: accum
-				| `Error failure ->
-					let msg = Error.Unsupported_extension (comm.comm_tag, Feature.describe feature, failure) in
+				| `Error error ->
+					let msg = match error with
+						| `Unsupported -> Error.Unsupported_extension comm.comm_tag
+						| `Failed expl -> Error.Failed_extension (comm.comm_tag, expl)
+						| `Style expl  -> Error.Invalid_style_extension (comm.comm_tag, expl) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
 					accum
 			with

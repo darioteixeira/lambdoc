@@ -14,7 +14,8 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type 'a result_t = [ `Okay of 'a | `Error of string ]
+type error_t = [ `Unsupported | `Failed of string | `Style of string ]
+type 'a result_t = [ `Okay of 'a | `Error of error_t ]
 
 
 (********************************************************************************)
@@ -41,9 +42,9 @@ sig
 	type image_t
 	type extern_t
 
-	val resolve_link: Href.t -> link_t result_t Monad.t
-	val resolve_image: Href.t -> image_t result_t Monad.t
-	val resolve_extern: Href.t -> extern_t result_t Monad.t
+	val resolve_link: Href.t -> string option -> link_t result_t Monad.t
+	val resolve_image: Href.t -> string option -> image_t result_t Monad.t
+	val resolve_extern: Href.t -> string option -> extern_t result_t Monad.t
 end
 
 
@@ -71,8 +72,8 @@ struct
 	type image_t = unit
 	type extern_t = unit
 
-	let resolve_link _ = `Okay ()
-	let resolve_image _ = `Okay ()
-	let resolve_extern _ = `Okay ()
+	let resolve_link _ _ = `Okay ()
+	let resolve_image _ _ = `Okay ()
+	let resolve_extern _ _ = `Okay ()
 end
 

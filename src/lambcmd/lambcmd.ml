@@ -52,19 +52,19 @@ struct
 		with
 			| Bookaml_ISBN.Bad_ISBN_length _
 			| Bookaml_ISBN.Bad_ISBN_checksum _
-			| Bookaml_ISBN.Bad_ISBN_character _ -> Lwt.return (`Error "bad isbn")
-			| Bookaml_amazon.No_match _	    -> Lwt.return (`Error "no match")
+			| Bookaml_ISBN.Bad_ISBN_character _ -> Lwt.return (`Error (`Failed "bad isbn"))
+			| Bookaml_amazon.No_match _	    -> Lwt.return (`Error (`Failed "no match"))
 
-	let resolve_link href = match (Credential.credential, href) with
+	let resolve_link href _ = match (Credential.credential, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Okay (`Other x))
 
-	let resolve_image _ =
+	let resolve_image _ _ =
 		Lwt.return (`Okay ())
 
-	let resolve_extern href = match (Credential.credential, href) with
+	let resolve_extern href _ = match (Credential.credential, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
-		| (_, x)						 -> Lwt.return (`Error "unsupported")
+		| (_, x)						 -> Lwt.return (`Error `Unsupported)
 
 	let expand_link (href, payload) = match payload with
 		| `Book book ->
