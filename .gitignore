@@ -1,1 +1,7 @@
 src/_build/
+*.cm[aiox]
+*.cmx[as]
+*.a
+*.o
+*.byte
+*.native
