@@ -8,3 +8,5 @@
 
 include Lambdoc_reader.Reader.PARTIAL
 
+module Simple: module type of Lambdoc_read_lambtex_impl.Main.Make (Lambdoc_reader.Extension.Unit)
+
