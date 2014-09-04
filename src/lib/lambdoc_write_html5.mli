@@ -57,5 +57,5 @@ sig
 end
 
 
-module Simple: module type of Lambdoc_write_html5_impl.Main.Make (Lambdoc_writer.Extension.Unit)
+module Make_simple: module type of Lambdoc_write_html5_impl.Main.Make (Lambdoc_writer.Extension.Unit)
 
