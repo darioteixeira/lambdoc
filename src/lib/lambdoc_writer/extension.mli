@@ -37,9 +37,9 @@ sig
 	type image_t
 	type extern_t
 
-	val expand_link: Href.t * link_t -> (Href.t * Inline.seq_t option) Monad.t
-	val expand_image: Href.t * image_t -> Href.t Monad.t
-	val expand_extern: Href.t * extern_t -> Block.frag_t Monad.t
+	val expand_link: Href.t -> link_t -> (Href.t * Inline.seq_t option) Monad.t
+	val expand_image: Href.t -> image_t -> Href.t Monad.t
+	val expand_extern: Href.t -> extern_t -> Block.frag_t Monad.t
 end
 
 

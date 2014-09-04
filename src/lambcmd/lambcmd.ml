@@ -66,17 +66,17 @@ struct
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Error `Unsupported)
 
-	let expand_link (href, payload) = match payload with
+	let expand_link href payload = match payload with
 		| `Book book ->
 			let href = match book.page with Some page -> page | None -> href in
 			Lwt.return (href, Some [Inline.emph [Inline.plain book.title]])
 		| `Other href ->
 			Lwt.return (href, None)
 
-	let expand_image (href, _) =
+	let expand_image href _ =
 		Lwt.return href
 
-	let expand_extern (href, `Book (book : book_t)) =
+	let expand_extern href (`Book (book : book_t)) =
 		let tl =
 			[
 			Inline.emph [Inline.plain book.title];

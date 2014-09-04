@@ -151,8 +151,8 @@ let write_valid ?(valid_options = default_valid_options) doc =
 
 	let expand expander xs =
 		let dict = Hashtbl.create (List.length xs) in
-		let aux ((href, payload) as x) =
-			expander x >>= fun res ->
+		let aux (href, payload) =
+			expander href payload >>= fun res ->
 			Monad.return (Hashtbl.add dict href res) in
 		Monad.iter aux xs >>= fun () ->
 		Monad.return dict in
