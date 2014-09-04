@@ -1,0 +1,4 @@
+directory = "."
+requires = "lambdoc"
+archive(plugin,byte) = "ocsigen_test.cma"
+archive(plugin,native) = "ocsigen_test.cmxs"
