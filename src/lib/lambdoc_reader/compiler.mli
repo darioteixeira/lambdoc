@@ -17,7 +17,7 @@ open Lambdoc_core
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-module Make (Ext: Extension.S):
+module Make: functor (Ext: Extension.S) ->
 sig
 	(**	Process and (optionally) sort the errors by line number.
 	*)
