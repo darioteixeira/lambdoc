@@ -8,5 +8,5 @@
 
 include Lambdoc_write_html5_impl.Main
 
-module Make_simple = Lambdoc_write_html5_impl.Main.Make (Lambdoc_writer.Extension.Unit)
+module Make_simple = Make (Lambdoc_writer.Extension.Unit)
 
