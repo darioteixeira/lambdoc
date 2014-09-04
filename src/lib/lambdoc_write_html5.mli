@@ -26,8 +26,8 @@ open Lambdoc_writer
 	v}
 *)
 module Make:
-	functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
 	functor (Ext: Extension.S) ->
+	functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
 sig
 	type valid_options_t =
 		{
@@ -55,4 +55,7 @@ sig
 		type valid_options_t := valid_options_t and
 		type invalid_options_t := invalid_options_t
 end
+
+
+module Simple: module type of Lambdoc_write_html5_impl.Main.Make (Lambdoc_writer.Extension.Unit)
 

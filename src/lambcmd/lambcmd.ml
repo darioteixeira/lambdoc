@@ -154,7 +154,7 @@ let main () =
 		| `Sexp  ->
 			Lwt.return (Lambdoc_core.Ambivalent.serialize Extension.sexp_of_link_t Extension.sexp_of_image_t Extension.sexp_of_extern_t doc)
 		| `Html5 ->
-			let module Html5_writer = Lambdoc_write_html5.Make (Tyxml_backend) (Extension) in
+			let module Html5_writer = Lambdoc_write_html5.Make (Extension) (Tyxml_backend) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
 			lwt xhtml = Html5_writer.write_ambivalent ~valid_options doc in
 			Lwt.return (string_of_xhtml options.title xhtml) in

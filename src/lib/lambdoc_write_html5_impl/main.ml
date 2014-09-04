@@ -23,7 +23,7 @@ module String = BatString
 (**	{1 Public functors}							*)
 (********************************************************************************)
 
-module Make (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) (Ext: Extension.S) =
+module Make (Ext: Extension.S) (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
 struct
 
 open Html5
