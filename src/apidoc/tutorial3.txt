@@ -1,1 +1,0 @@
-{1:tutorial3 Tutorial 3: Extending Lambdoc}
