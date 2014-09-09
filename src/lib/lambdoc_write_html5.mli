@@ -18,7 +18,7 @@ open Lambdoc_writer
 	feeding Eliom's [Html5.F.Raw] and [Eliom_content.Svg.F.Raw] to the functor,
 	as exemplified by the code below:
 	{v
-	module My_writer = Lambdoc_write_html5.Main.Make
+	module My_writer = Lambdoc_write_html5.Make_simple
 	(struct
 		include Eliom_content.Html5.F.Raw
 		module Svg = Eliom_content.Svg.F.Raw
