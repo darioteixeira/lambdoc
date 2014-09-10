@@ -18,40 +18,42 @@ module String = BatString
 
 module Extension =
 struct
-    module Monad = struct include Lwt let iter = Lwt_list.iter_p end
+	module Monad = struct include Lwt let iter = Lwt_list.iter_p end
 
-    type link_t = [ `User of string | `Other of string ]
-    type image_t = unit
-    type extern_t = unit
+	type link_t = [ `User of string | `Other of string ]
+	type image_t = unit
+	type extern_t = unit
+	type rconfig_t = unit
+	type wconfig_t = unit
 
-    let find_user name =
-        (* Actual code goes here *)
-        Lwt.return (`Okay (`User name))
+	let find_user name =
+		(* Actual code goes here *)
+		Lwt.return (`Okay (`User name))
 
-    let linkify_user name =
-        (* Actual code goes here *)
-        name
+	let linkify_user name =
+		(* Actual code goes here *)
+		name
 
-    let resolve_link href _ = match href with
-        | x when String.starts_with x "user:" -> find_user (String.lchop ~n:5 x)
-        | x                                   -> Lwt.return (`Okay (`Other x))
+	let resolve_link href _ = match href with
+		| x when String.starts_with x "user:" -> find_user (String.lchop ~n:5 x)
+		| x				      -> Lwt.return (`Okay (`Other x))
 
-    let resolve_image href _ = Lwt.return (`Okay ())
+	let resolve_image href _ = Lwt.return (`Okay ())
 
-    let resolve_extern href _ = Lwt.return (`Okay ())
+	let resolve_extern href _ = Lwt.return (`Okay ())
 
-    let expand_link href payload = match payload with
-        | `User u ->
-            let open Lambdoc_core in
-            let href = linkify_user u in
-            let seq = [Inline.plain "Estimeed User "; Inline.bold [Inline.plain u]] in
-            Lwt.return (href, Some seq)
-        | `Other x ->
-            Lwt.return (href, None)
+	let expand_link href payload = match payload with
+		| `User u ->
+			let open Lambdoc_core in
+			let href = linkify_user u in
+			let seq = [Inline.plain "Estimeed User "; Inline.bold [Inline.plain u]] in
+			Lwt.return (href, Some seq)
+		| `Other x ->
+			Lwt.return (href, None)
 
-    let expand_image href _ = Lwt.return href
+	let expand_image href _ = Lwt.return href
 
-    let expand_extern _ _ = Lwt.return []
+	let expand_extern _ _ = Lwt.return []
 end
 
 
@@ -63,8 +65,8 @@ module Markdown_reader = Lambdoc_read_markdown.Make (Extension)
 
 module Eliom_backend =
 struct
-    include Eliom_content.Html5.F.Raw
-    module Svg = Eliom_content.Svg.F.Raw
+	include Eliom_content.Html5.F.Raw
+	module Svg = Eliom_content.Svg.F.Raw
 end
 
 
@@ -73,24 +75,24 @@ module Lambdoc_writer = Lambdoc_write_html5.Make (Extension) (Eliom_backend)
 
 module Markup = Litiom_choice.Make
 (struct
-    type t = [ `Lambtex | `Lambwiki | `Lambxml | `Markdown ]
+	type t = [ `Lambtex | `Lambwiki | `Lambxml | `Markdown ]
 
-    let of_string = function
-        | "lambtex"  -> `Lambtex
-        | "lambwiki" -> `Lambwiki
-        | "lambxml"  -> `Lambxml
-        | "markdown" -> `Markdown
-        | x          -> invalid_arg ("Markup.of_string: " ^ x)
+	let of_string = function
+		| "lambtex"  -> `Lambtex
+		| "lambwiki" -> `Lambwiki
+		| "lambxml"  -> `Lambxml
+		| "markdown" -> `Markdown
+		| x	     -> invalid_arg ("Markup.of_string: " ^ x)
 
-    let to_string = function
-        | `Lambtex  -> "lambtex"
-        | `Lambwiki -> "lambwiki"
-        | `Lambxml  -> "lambxml"
-        | `Markdown -> "markdown"
+	let to_string = function
+		| `Lambtex  -> "lambtex"
+		| `Lambwiki -> "lambwiki"
+		| `Lambxml  -> "lambxml"
+		| `Markdown -> "markdown"
 
-    let describe = to_string
+	let describe = to_string
 
-    let all = [ `Lambtex; `Lambwiki; `Lambxml; `Markdown ]
+	let all = [ `Lambtex; `Lambwiki; `Lambxml; `Markdown ]
 end)
 
 
@@ -99,57 +101,57 @@ end)
 (********************************************************************************)
 
 let make_page content =
-    let css_uri = make_uri (Eliom_service.static_dir ()) ["css"; "lambdoc.css"] in
-    (html
-        (head
-            (title (pcdata "Lambdoc + Ocsigen : Basic example"))
-            [css_link ~a:[(a_media [`All]); (a_title "Default")] ~uri:css_uri ()])
-        (body content))
+	let css_uri = make_uri (Eliom_service.static_dir ()) ["css"; "lambdoc.css"] in
+	(html
+		(head
+			(title (pcdata "Lambdoc + Ocsigen : Basic example"))
+			[css_link ~a:[(a_media [`All]); (a_title "Default")] ~uri:css_uri ()])
+		(body content))
 
 
 let main_service = Eliom_service.Http.service 
-    ~path:[""]
-    ~get_params:Eliom_parameter.unit
-    ()
+	~path:[""]
+	~get_params:Eliom_parameter.unit
+	()
 
 
 let rec step1_handler () () =
-    let step2_service = Eliom_registration.Html5.register_post_coservice
-        ~scope:Eliom_common.default_session_scope
-        ~fallback:main_service
-        ~post_params:Eliom_parameter.(Markup.param "markup" ** string "source")
-        step2_handler in
-    let step2_form (e_markup, e_source) =
-        [
-        label ~a:[a_for e_markup] [pcdata "Markup:"];
-        Markup.choose ~name:e_markup ~value:`Lambtex ();
-        br ();
-        label ~a:[a_for e_source] [pcdata "Source:"];
-        textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum" ();
-        br ();
-        button ~button_type:`Submit [pcdata "Submit"];
-        ] in
-    Lwt.return (make_page [post_form step2_service step2_form ()])
+	let step2_service = Eliom_registration.Html5.register_post_coservice
+		~scope:Eliom_common.default_session_scope
+		~fallback:main_service
+		~post_params:Eliom_parameter.(Markup.param "markup" ** string "source")
+		step2_handler in
+	let step2_form (e_markup, e_source) =
+		[
+		label ~a:[a_for e_markup] [pcdata "Markup:"];
+		Markup.choose ~name:e_markup ~value:`Lambtex ();
+		br ();
+		label ~a:[a_for e_source] [pcdata "Source:"];
+		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum" ();
+		br ();
+		button ~button_type:`Submit [pcdata "Submit"];
+		] in
+	Lwt.return (make_page [post_form step2_service step2_form ()])
 
 
 and step2_handler () (markup, source) =
-    let reader = match markup with
-        | `Lambtex  -> Lambtex_reader.ambivalent_from_string
-        | `Lambwiki -> Lambwiki_reader.ambivalent_from_string
-        | `Lambxml  -> Lambxml_reader.ambivalent_from_string
-        | `Markdown -> Markdown_reader.ambivalent_from_string in
-    let feature_ruleset = [`Only `Feature_bold, `Deny] in
-    let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~feature_ruleset () in
-    lwt doc = reader ~idiosyncrasies source in
-    lwt xdoc = Lambdoc_writer.write_ambivalent doc in
-    let contents =
-        [
-        (xdoc : [ Html5_types.div ] Html5.F.elt :> [> Html5_types.div ] Html5.F.elt);
-        p [a main_service [pcdata "Start again"] ()];
-        ] in
-    Lwt.return (make_page contents)
+	let reader = match markup with
+		| `Lambtex  -> Lambtex_reader.ambivalent_from_string
+		| `Lambwiki -> Lambwiki_reader.ambivalent_from_string
+		| `Lambxml  -> Lambxml_reader.ambivalent_from_string
+		| `Markdown -> Markdown_reader.ambivalent_from_string in
+	let feature_ruleset = [`Only `Feature_bold, `Deny] in
+	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~feature_ruleset () in
+	lwt doc = reader ~idiosyncrasies source in
+	lwt xdoc = Lambdoc_writer.write_ambivalent doc in
+	let contents =
+		[
+		(xdoc : [ Html5_types.div ] Html5.F.elt :> [> Html5_types.div ] Html5.F.elt);
+		p [a main_service [pcdata "Start again"] ()];
+		] in
+	Lwt.return (make_page contents)
 
 
 let () =
-    Eliom_registration.Html5.register main_service step1_handler
+	Eliom_registration.Html5.register main_service step1_handler
 
