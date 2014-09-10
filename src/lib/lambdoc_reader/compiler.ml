@@ -11,7 +11,6 @@
 *)
 
 open Lambdoc_core
-open Prelude
 open Basic
 open Ast
 open Readconv
@@ -44,6 +43,10 @@ type customdef_t =
 (********************************************************************************)
 
 let flatten_map f xs = List.flatten (List.map f xs)
+
+let maybe f = function
+	| Some x -> Some (f x)
+	| None   -> None
 
 let perhaps f = function
 	| [x] -> [f x]

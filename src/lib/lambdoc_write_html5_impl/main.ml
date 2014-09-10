@@ -8,7 +8,6 @@
 
 open Printf
 open Lambdoc_core
-open Prelude
 open Block
 open Heading
 open Source
@@ -101,6 +100,10 @@ type invalid_options_t = invalid_options_u
 (********************************************************************************)
 
 let (>>=) = Monad.bind
+
+let maybe f = function
+	| Some x -> Some (f x)
+	| None   -> None
 
 
 (********************************************************************************)

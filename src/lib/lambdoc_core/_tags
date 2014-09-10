@@ -12,7 +12,6 @@
 <math.*>: package(sexplib.syntax), syntax(camlp4o)
 <note.*>: package(sexplib.syntax), syntax(camlp4o)
 <order.*>: package(sexplib.syntax), syntax(camlp4o)
-<prelude.*>: package(sexplib.syntax), syntax(camlp4o)
 <qanda.*>: package(sexplib.syntax), syntax(camlp4o)
 <source.*>: package(sexplib.syntax), syntax(camlp4o)
 <tabular.*>: package(sexplib.syntax), syntax(camlp4o)
