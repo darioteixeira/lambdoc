@@ -69,7 +69,7 @@ struct
 	document.  In addition, a label dictionary, bibliography entries, notes,
 	and possible errors are also returned.
 *)
-let compile_document ~expand_entities ~idiosyncrasies ast =
+let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -1099,7 +1099,7 @@ let compile_document ~expand_entities ~idiosyncrasies ast =
 	let resolve resolver set refs =
 		let dict = Hashtbl.create (ExtSet.cardinal set) in
 		let aux ((href, style) as x) =
-			resolver href style >>= fun v ->
+			resolver href style rconfig >>= fun v ->
 			Monad.return (Hashtbl.add dict x v) in
 		Monad.iter aux (ExtSet.elements set) >>= fun () ->
 		let process accum (comm, feature, href) =
@@ -1184,8 +1184,8 @@ let process_errors ~sort source errors =
 		| []   -> assert false
 
 
-let compile ~expand_entities ~idiosyncrasies ~source ast =
-	compile_document ~expand_entities ~idiosyncrasies ast >>= fun (content, bibs, notes, toc, labels, customs, links, images, externs, errors) ->
+let compile ?rconfig ~expand_entities ~idiosyncrasies ~source ast =
+	compile_document ?rconfig ~expand_entities ~idiosyncrasies ast >>= fun (content, bibs, notes, toc, labels, customs, links, images, externs, errors) ->
 	match errors with
 		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~externs)
 		| _::_ -> Monad.return (Ambivalent.make_invalid (process_errors ~sort:true source errors))

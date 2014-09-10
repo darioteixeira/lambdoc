@@ -17,7 +17,7 @@ module String = BatString
 (**	{1 Modules}								*)
 (********************************************************************************)
 
-module Make_extension (Credential: sig val credential: Bookaml_amazon.credential_t option end) =
+module Extension =
 struct
 	module Monad = struct include Lwt let iter = Lwt_list.iter_s end
 
@@ -34,6 +34,8 @@ struct
 	type link_t = [ `Book of book_t | `Other of string ] with sexp
 	type image_t = unit with sexp
 	type extern_t = [ `Book of book_t ] with sexp
+	type rconfig_t = Bookaml_amazon.credential_t
+	type wconfig_t = unit
 
 	let get_book ~credential raw_isbn =
 		try_lwt
@@ -46,7 +48,7 @@ struct
 				publisher = book.Bookaml_book.publisher;
 				pubdate = book.Bookaml_book.pubdate;
 				page = book.Bookaml_book.page;
-				cover = match book.Bookaml_book.image_small with Some img -> Some img.url | None -> None;
+				cover = match book.Bookaml_book.image_small with Some img -> Some img.Bookaml_book.url | None -> None;
 				} in
 			Lwt.return (`Okay (`Book book'))
 		with
@@ -55,28 +57,28 @@ struct
 			| Bookaml_ISBN.Bad_ISBN_character _ -> Lwt.return (`Error (`Failed "bad isbn"))
 			| Bookaml_amazon.No_match _	    -> Lwt.return (`Error (`Failed "no match"))
 
-	let resolve_link href _ = match (Credential.credential, href) with
+	let resolve_link href _ credential = match (credential, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Okay (`Other x))
 
-	let resolve_image _ _ =
+	let resolve_image _ _ _ =
 		Lwt.return (`Okay ())
 
-	let resolve_extern href _ = match (Credential.credential, href) with
+	let resolve_extern href _ credential = match (credential, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Error `Unsupported)
 
-	let expand_link href payload = match payload with
+	let expand_link href payload _ = match payload with
 		| `Book book ->
 			let href = match book.page with Some page -> page | None -> href in
 			Lwt.return (href, Some [Inline.emph [Inline.plain book.title]])
 		| `Other href ->
 			Lwt.return (href, None)
 
-	let expand_image href _ =
+	let expand_image href _ _ =
 		Lwt.return href
 
-	let expand_extern href (`Book (book : book_t)) =
+	let expand_extern href (`Book (book : book_t)) _ =
 		let tl =
 			[
 			Inline.emph [Inline.plain book.title];
@@ -134,20 +136,19 @@ let main () =
 			Some (Bookaml_amazon.make_credential ~locale ~associate_tag ~access_key ~secret_key)
 		| _ ->
 			None in
-	let module Extension = Make_extension (struct let credential = credential end) in
 	lwt doc = match options.input_markup with
 		| `Lambtex ->
 			let module M = Lambdoc_read_lambtex.Make (Extension) in
-			M.ambivalent_from_string ~idiosyncrasies input_str
+			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
 		| `Lambwiki ->
 			let module M = Lambdoc_read_lambwiki.Make (Extension) in
-			M.ambivalent_from_string ~idiosyncrasies input_str
+			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
 		| `Lambxml ->
 			let module M = Lambdoc_read_lambxml.Make (Extension) in
-			M.ambivalent_from_string ~idiosyncrasies input_str
+			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
 		| `Markdown ->
 			let module M = Lambdoc_read_markdown.Make (Extension) in
-			M.ambivalent_from_string ~idiosyncrasies input_str
+			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
 		| `Sexp ->
 			Lwt.return (Lambdoc_core.Ambivalent.deserialize Extension.link_t_of_sexp Extension.image_t_of_sexp Extension.extern_t_of_sexp input_str) in
 	lwt output_str = match options.output_markup with

@@ -48,10 +48,11 @@ sig
 	type link_t
 	type image_t
 	type extern_t
+	type rconfig_t
 
-	val resolve_link: Href.t -> string option -> link_t result_t Monad.t
-	val resolve_image: Href.t -> string option -> image_t result_t Monad.t
-	val resolve_extern: Href.t -> string option -> extern_t result_t Monad.t
+	val resolve_link: Href.t -> string option -> rconfig_t option -> link_t result_t Monad.t
+	val resolve_image: Href.t -> string option -> rconfig_t option -> image_t result_t Monad.t
+	val resolve_extern: Href.t -> string option -> rconfig_t option -> extern_t result_t Monad.t
 end
 
 
@@ -65,5 +66,6 @@ module Unit: S with
 	type 'a Monad.t = 'a and
 	type link_t = unit and
 	type image_t = unit and
-	type extern_t = unit
+	type extern_t = unit and
+	type rconfig_t = unit
 

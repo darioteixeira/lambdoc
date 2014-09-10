@@ -30,6 +30,7 @@ sig
 	(**	Compile a document AST into a manuscript.
 	*)
 	val compile:
+		?rconfig:Ext.rconfig_t ->
 		expand_entities:bool ->
 		idiosyncrasies:Idiosyncrasies.t ->
 		source:string ->

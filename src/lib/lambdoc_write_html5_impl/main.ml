@@ -89,6 +89,7 @@ type 'a monad_t = 'a Ext.Monad.t
 type link_t = Ext.link_t
 type image_t = Ext.image_t
 type extern_t = Ext.extern_t
+type wconfig_t = Ext.wconfig_t
 type valid_options_u = valid_options_t
 type valid_options_t = valid_options_u
 type invalid_options_u = invalid_options_t
@@ -128,7 +129,7 @@ let default_invalid_options =
 (**	{3 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid ?(valid_options = default_valid_options) doc =
+let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 
 	let opts = valid_options in
 
@@ -152,7 +153,7 @@ let write_valid ?(valid_options = default_valid_options) doc =
 	let expand expander xs =
 		let dict = Hashtbl.create (List.length xs) in
 		let aux (href, payload) =
-			expander href payload >>= fun res ->
+			expander href payload wconfig >>= fun res ->
 			Monad.return (Hashtbl.add dict href res) in
 		Monad.iter aux xs >>= fun () ->
 		Monad.return dict in
@@ -762,7 +763,7 @@ let write_valid ?(valid_options = default_valid_options) doc =
 (**	{3 Conversion of invalid documents}					*)
 (********************************************************************************)
 
-let write_invalid ?(invalid_options = default_invalid_options) doc =
+let write_invalid ?wconfig ?(invalid_options = default_invalid_options) doc =
 
 	let opts = invalid_options in
 
@@ -826,6 +827,7 @@ end): Lambdoc_writer.Writer.S with
 	type link_t = Ext.link_t and
 	type image_t = Ext.image_t and
 	type extern_t = Ext.extern_t and
+	type wconfig_t = Ext.wconfig_t and
 	type valid_options_t := valid_options_t and
 	type invalid_options_t := invalid_options_t)
 end

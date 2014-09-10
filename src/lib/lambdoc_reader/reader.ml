@@ -27,8 +27,10 @@ sig
 	type link_t
 	type image_t
 	type extern_t
+	type rconfig_t
 
 	val ambivalent_from_string:
+		?rconfig:rconfig_t ->
 		?verify_utf8:bool ->
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
@@ -43,7 +45,8 @@ sig
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_t = Ext.link_t and
 		type image_t = Ext.image_t and
-		type extern_t = Ext.extern_t
+		type extern_t = Ext.extern_t and
+		type rconfig_t = Ext.rconfig_t
 end
 
 
@@ -55,7 +58,8 @@ module Make (Readable: READABLE) (Ext: Extension.S) : S with
 	type 'a monad_t = 'a Ext.Monad.t and
 	type link_t = Ext.link_t and
 	type image_t = Ext.image_t and
-	type extern_t = Ext.extern_t =
+	type extern_t = Ext.extern_t and
+	type rconfig_t = Ext.rconfig_t =
 struct
 	open Ext
 
@@ -63,10 +67,12 @@ struct
 	type link_t = Ext.link_t
 	type image_t = Ext.image_t
 	type extern_t = Ext.extern_t
+	type rconfig_t = Ext.rconfig_t
 
 	module C = Compiler.Make (Ext)
 
 	let ambivalent_from_string
+		?rconfig
 		?(verify_utf8 = true)
 		?(expand_entities = true)
 		?(idiosyncrasies = Idiosyncrasies.default)
@@ -74,7 +80,7 @@ struct
 			begin fun () ->
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let ast = Readable.ast_from_string source in
-				C.compile ~expand_entities ~idiosyncrasies ~source ast
+				C.compile ?rconfig ~expand_entities ~idiosyncrasies ~source ast
 			end
 			begin function
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->

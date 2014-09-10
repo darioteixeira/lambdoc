@@ -41,10 +41,11 @@ sig
 	type link_t
 	type image_t
 	type extern_t
+	type rconfig_t
 
-	val resolve_link: Href.t -> string option -> link_t result_t Monad.t
-	val resolve_image: Href.t -> string option -> image_t result_t Monad.t
-	val resolve_extern: Href.t -> string option -> extern_t result_t Monad.t
+	val resolve_link: Href.t -> string option -> rconfig_t option -> link_t result_t Monad.t
+	val resolve_image: Href.t -> string option -> rconfig_t option -> image_t result_t Monad.t
+	val resolve_extern: Href.t -> string option -> rconfig_t option -> extern_t result_t Monad.t
 end
 
 
@@ -71,9 +72,10 @@ struct
 	type link_t = unit
 	type image_t = unit
 	type extern_t = unit
+	type rconfig_t = unit
 
-	let resolve_link _ _ = `Okay ()
-	let resolve_image _ _ = `Okay ()
-	let resolve_extern _ _ = `Okay ()
+	let resolve_link _ _ _ = `Okay ()
+	let resolve_image _ _ _ = `Okay ()
+	let resolve_extern _ _ _ = `Okay ()
 end
 

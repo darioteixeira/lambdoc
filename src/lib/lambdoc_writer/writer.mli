@@ -25,14 +25,24 @@ sig
 	type link_t
 	type image_t
 	type extern_t
+	type wconfig_t
 	type valid_options_t
 	type invalid_options_t
 
 	val default_valid_options: valid_options_t
 	val default_invalid_options: invalid_options_t
 
-	val write_valid: ?valid_options:valid_options_t -> (link_t, image_t, extern_t) Valid.t -> t monad_t
-	val write_invalid: ?invalid_options:invalid_options_t -> Invalid.t -> t monad_t
+	val write_valid:
+		?wconfig:wconfig_t ->
+		?valid_options:valid_options_t ->
+		(link_t, image_t, extern_t) Valid.t ->
+		t monad_t
+
+	val write_invalid:
+		?wconfig:wconfig_t ->
+		?invalid_options:invalid_options_t ->
+		Invalid.t ->
+		t monad_t
 end
 
 
@@ -42,7 +52,12 @@ module type S =
 sig
 	include WRITABLE
 
-	val write_ambivalent: ?valid_options:valid_options_t -> ?invalid_options:invalid_options_t -> (link_t, image_t, extern_t) Ambivalent.t -> t monad_t
+	val write_ambivalent:
+		?wconfig:wconfig_t ->
+		?valid_options:valid_options_t ->
+		?invalid_options:invalid_options_t ->
+		(link_t, image_t, extern_t) Ambivalent.t ->
+		t monad_t
 end
 
 
@@ -58,6 +73,7 @@ module Make: functor (Writable: WRITABLE) -> S with
 	type link_t = Writable.link_t and
 	type image_t = Writable.image_t and
 	type extern_t = Writable.extern_t and
+	type wconfig_t = Writable.wconfig_t and
 	type valid_options_t = Writable.valid_options_t and
 	type invalid_options_t = Writable.invalid_options_t
 

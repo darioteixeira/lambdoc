@@ -52,6 +52,7 @@ sig
 		type link_t = Ext.link_t and
 		type image_t = Ext.image_t and
 		type extern_t = Ext.extern_t and
+		type wconfig_t = Ext.wconfig_t and
 		type valid_options_t := valid_options_t and
 		type invalid_options_t := invalid_options_t
 end
