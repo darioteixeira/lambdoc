@@ -35,9 +35,9 @@ sig
 	type extern_t
 	type wconfig_t
 
-	val expand_link: Href.t -> link_t -> wconfig_t option -> (Href.t * Inline.seq_t option) Monad.t
-	val expand_image: Href.t -> image_t -> wconfig_t option -> Href.t Monad.t
-	val expand_extern: Href.t -> extern_t -> wconfig_t option -> Block.frag_t Monad.t
+	val expand_link: ?wconfig:wconfig_t -> Href.t -> link_t -> (Href.t * Inline.seq_t option) Monad.t
+	val expand_image: ?wconfig:wconfig_t -> Href.t -> image_t -> Href.t Monad.t
+	val expand_extern: ?wconfig:wconfig_t -> Href.t -> extern_t -> Block.frag_t Monad.t
 end
 
 
@@ -66,8 +66,8 @@ struct
 	type extern_t = unit
 	type wconfig_t = unit
 
-	let expand_link href  () _ = (href, None)
-	let expand_image href  () _ = href
-	let expand_extern _ () _ = []
+	let expand_link ?wconfig href  () = (href, None)
+	let expand_image ?wconfig href  () = href
+	let expand_extern ?wconfig _ () = []
 end
 

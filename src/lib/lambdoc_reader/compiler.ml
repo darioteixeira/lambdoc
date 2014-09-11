@@ -1102,7 +1102,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	let resolve resolver set refs =
 		let dict = Hashtbl.create (ExtSet.cardinal set) in
 		let aux ((href, style) as x) =
-			resolver href style rconfig >>= fun v ->
+			resolver ?rconfig href style >>= fun v ->
 			Monad.return (Hashtbl.add dict x v) in
 		Monad.iter aux (ExtSet.elements set) >>= fun () ->
 		let process accum (comm, feature, href) =

@@ -57,28 +57,28 @@ struct
 			| Bookaml_ISBN.Bad_ISBN_character _ -> Lwt.return (`Error (`Failed "bad isbn"))
 			| Bookaml_amazon.No_match _	    -> Lwt.return (`Error (`Failed "no match"))
 
-	let resolve_link href _ credential = match (credential, href) with
+	let resolve_link ?rconfig href _ = match (rconfig, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Okay (`Other x))
 
-	let resolve_image _ _ _ =
+	let resolve_image ?rconfig _ _ =
 		Lwt.return (`Okay ())
 
-	let resolve_extern href _ credential = match (credential, href) with
+	let resolve_extern ?rconfig href _ = match (rconfig, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Error `Unsupported)
 
-	let expand_link href payload _ = match payload with
+	let expand_link ?wconfig href payload = match payload with
 		| `Book book ->
 			let href = match book.page with Some page -> page | None -> href in
 			Lwt.return (href, Some [Inline.emph [Inline.plain book.title]])
 		| `Other href ->
 			Lwt.return (href, None)
 
-	let expand_image href _ _ =
+	let expand_image ?wconfig href _ =
 		Lwt.return href
 
-	let expand_extern href (`Book (book : book_t)) _ =
+	let expand_extern ?wconfig href (`Book (book : book_t)) =
 		let tl =
 			[
 			Inline.emph [Inline.plain book.title];

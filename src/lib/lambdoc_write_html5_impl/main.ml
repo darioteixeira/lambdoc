@@ -156,7 +156,7 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 	let expand expander xs =
 		let dict = Hashtbl.create (List.length xs) in
 		let aux (href, payload) =
-			expander href payload wconfig >>= fun res ->
+			expander ?wconfig href payload >>= fun res ->
 			Monad.return (Hashtbl.add dict href res) in
 		Monad.iter aux xs >>= fun () ->
 		Monad.return dict in

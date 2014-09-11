@@ -38,9 +38,9 @@ sig
 	type extern_t
 	type wconfig_t
 
-	val expand_link: Href.t -> link_t -> wconfig_t option -> (Href.t * Inline.seq_t option) Monad.t
-	val expand_image: Href.t -> image_t -> wconfig_t option -> Href.t Monad.t
-	val expand_extern: Href.t -> extern_t -> wconfig_t option -> Block.frag_t Monad.t
+	val expand_link: ?wconfig:wconfig_t -> Href.t -> link_t -> (Href.t * Inline.seq_t option) Monad.t
+	val expand_image: ?wconfig:wconfig_t -> Href.t -> image_t -> Href.t Monad.t
+	val expand_extern: ?wconfig:wconfig_t -> Href.t -> extern_t -> Block.frag_t Monad.t
 end
 
 
