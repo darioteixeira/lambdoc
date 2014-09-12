@@ -34,15 +34,15 @@ struct
 		(* Actual code goes here *)
 		name
 
-	let resolve_link href _ = match href with
+	let resolve_link ?rconfig href _ = match href with
 		| x when String.starts_with x "user:" -> find_user (String.lchop ~n:5 x)
 		| x				      -> Lwt.return (`Okay (`Other x))
 
-	let resolve_image href _ = Lwt.return (`Okay ())
+	let resolve_image ?rconfig href _ = Lwt.return (`Okay ())
 
-	let resolve_extern href _ = Lwt.return (`Okay ())
+	let resolve_extern ?rconfig href _ = Lwt.return (`Okay ())
 
-	let expand_link href payload = match payload with
+	let expand_link ?wconfig href = function
 		| `User u ->
 			let open Lambdoc_core in
 			let href = linkify_user u in
@@ -51,9 +51,9 @@ struct
 		| `Other x ->
 			Lwt.return (href, None)
 
-	let expand_image href _ = Lwt.return href
+	let expand_image ?wconfig href _ = Lwt.return href
 
-	let expand_extern _ _ = Lwt.return []
+	let expand_extern ?wconfig _ _ = Lwt.return []
 end
 
 
