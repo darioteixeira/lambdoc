@@ -6,6 +6,16 @@
 *)
 (********************************************************************************)
 
+(**	Part 4/4 of the Lambdoc+Ocsigen tutorial.
+
+	This fourth and final part of the tutorial illustrates the creation of
+	a custom extension.  The module [Extension] defines Lambdoc extension
+	wrapped under the Lwt monad.  Whereas images and extern blocks pass
+	through the extension unmodified, we check if links are using the
+	protocol "user", in which case they are specially processed (the actual
+	processing is outside the scope of this example, though).
+*)
+
 open Eliom_content
 open Html5.F
 
@@ -27,11 +37,11 @@ struct
 	type wconfig_t = unit
 
 	let find_user name =
-		(* Actual code goes here *)
+		(* Insert code to check if user actually exists in the system *)
 		Lwt.return (`Okay (`User name))
 
 	let linkify_user name =
-		(* Actual code goes here *)
+		(* Insert code to create a link to the user's home page *)
 		name
 
 	let resolve_link ?rconfig href _ = match href with

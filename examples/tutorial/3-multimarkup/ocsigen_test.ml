@@ -6,6 +6,13 @@
 *)
 (********************************************************************************)
 
+(**	Part 3/4 of the Lambdoc+Ocsigen tutorial.
+
+	Again, this example is almost identical to the previous one.  The only
+	difference this time is that the user may choose one of the four markup
+	languages currently supported by Lambdoc.
+*)
+
 open Eliom_content
 open Html5.F
 

@@ -6,6 +6,21 @@
 *)
 (********************************************************************************)
 
+(**	Part 1/4 of the Lambdoc+Ocsigen tutorial.
+
+	All examples in this tutorial illustrate a 2-step service: the first step
+	prompts the user with a textarea where the input text (formatted using
+	some supported markup) may be entered; the second step then shows the
+	rendered Lambdoc document.  Note that in this example, the only supported
+	markup is Lambtex.
+
+	The built-in [Simple] Lambtex reader (ie, using a dummy extension wrapped
+	under the identity monad) is used for parsing with Lambdoc's defaults.
+	For outputting Html5 values, the [Make_simple] Html5 writer is given
+	Eliom's [Html5.F.Raw].  Note that the [Make_simple] functor is used
+	because a dummy extension wrapped under the identity monad suffices.
+*)
+
 open Eliom_content
 open Html5.F
 
