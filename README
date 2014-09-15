@@ -31,8 +31,9 @@ between any of the input formats into one of the supported output targets.
 ===============
 
 The library depends on Batteries [2], Pcre-ocaml [3], Sexplib [4], Ulex [5],
-Menhir [6], PXP [7], Tyxml [8], OMD [9], Blahcaml [10], and Camlhighlight [11].
-The command line utility 'lambcmd' also depends on Bookaml [12].
+Menhir [6], PXP [7], Xstrp4 [8], Tyxml [9], OMD [10], Blahcaml [11], and
+Camlhighlight [12].  The command line utility 'lambcmd' also depends on
+Bookaml [13].
 
 
 3. Building and installing
@@ -80,9 +81,10 @@ References
  [5] http://www.cduce.org/download.html
  [6] http://cristal.inria.fr/~fpottier/menhir/
  [7] http://projects.camlcity.org/projects/pxp.html
- [8] http://www.ocsigen.org/tyxml
- [9] http://github.com/ocaml/omd
-[10] http://blahcaml.forge.ocamlcore.org/
-[11] http://camlhighlight.forge.ocamlcore.org/
-[12] http://bookaml.forge.ocamlcore.org/
+ [8] http://projects.camlcity.org/projects/xstrp4.html
+ [9] http://www.ocsigen.org/tyxml
+[10] http://github.com/ocaml/omd
+[11] http://blahcaml.forge.ocamlcore.org/
+[12] http://camlhighlight.forge.ocamlcore.org/
+[13] http://bookaml.forge.ocamlcore.org/
 
