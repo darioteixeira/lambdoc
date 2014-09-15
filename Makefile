@@ -21,11 +21,8 @@ COMPONENTS=lambdoc_core \
 	lambdoc_read_markdown \
 	lambdoc_write_html5
 COMPONENTS_CMI=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmi)
-COMPONENTS_CMO=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmo)
-COMPONENTS_CMX=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmx)
-COMPONENTS_OBJ=$(foreach ELEM, $(COMPONENTS), $(ELEM).o)
 
-TARGETS=$(LIBFILES) $(COMPONENTS_CMI) $(COMPONENTS_CMO) $(COMPONENTS_CMX) $(COMPONENTS_OBJ)
+TARGETS=$(LIBFILES) $(COMPONENTS_CMI)
 FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
 
 
@@ -46,14 +43,14 @@ doc:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
 
 install: lib
-	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
+	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
 
 uninstall:
 	ocamlfind remove $(PKG_NAME)
 
 reinstall: lib
 	ocamlfind remove $(PKG_NAME)
-	ocamlfind install $(PKG_NAME) META $(FQTARGETS)
+	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
 
 clean:
 	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) -clean

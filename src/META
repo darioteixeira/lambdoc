@@ -1,9 +1,8 @@
 name = "lambdoc"
-version = "0.9.2"
+version = "1.0-beta1"
 description = "The Lambdoc library for document parsing/printing"
-requires = "threads, unix, ulex, menhirLib, batteries, sexplib, pcre, pxp-engine, pxp-ulex-utf8, lwt, lwt.unix, tyxml, blahcaml, camlhighlight, omd"
+requires = "threads, batteries, pcre, sexplib, ulex, menhirLib, pxp-engine, pxp-ulex-utf8, tyxml, omd, blahcaml, camlhighlight"
 archive(byte) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"
 archive(plugin,byte) = "lambdoc.cma"
 archive(plugin,native) = "lambdoc.cmxs"
-
