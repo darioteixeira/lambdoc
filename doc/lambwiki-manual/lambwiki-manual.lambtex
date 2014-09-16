@@ -2,11 +2,11 @@
 \newmacro{lambwiki}{0}{\caps{lambwiki}}
 \newmacro{lambtex}{0}{\caps{lambtex}}
 \newmacro{thin}{0}{&#8202;}
-\newmacro{marker}{1}{\code{\arg{1}\arg{1}}}
+\newmacro{marker}{1}{\bold{\arg{1}&#x202f;\arg{1}}}
 
 \title{The \lambwiki Manual}
 \subtitle{Dario Teixeira}
-\subtitle{March 2013}
+\subtitle{September 2014}
 
 \toc
 
@@ -59,7 +59,7 @@ the begin marker.}
 | \marker{\{}		| \marker{\}}		| You can also imitate a \code{typewriter}.	|
 | \marker{(}		| \marker{)}		| \lambwiki supports text in small-caps.	|
 | \marker{^}		| \marker{^}		| The 1\sup{st} of January has a superscript.	|
-| \marker{,}		| \marker{,}		| H\sub{2}O requires a subscript.		|
+| \marker{_}		| \marker{_}		| H\sub{2}O requires a subscript.		|
 \end{tabular}
 \end{table}
 
@@ -84,7 +84,7 @@ in **bold text**, //emphasised text//,
 
 For the sake of completeness, it is also possible
 to declare superscripts such as 1^^st^^ of January,
-and subscripts such as H,,2,,O.
+and subscripts such as H__2__O.
 
 Adding a hyperlink into the [[http://www.wikipedia.org/|Wikipedia]]
 is easy.  Here's another one: [[http://www.wikipedia.org/]].

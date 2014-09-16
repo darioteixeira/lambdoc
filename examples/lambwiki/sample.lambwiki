@@ -3,7 +3,7 @@
 You can format text in **bold**, or just //emphasised// if you prefer.  It is also
 possible to enter {{monospaced}} text and ((small caps)).  Superscripts are handy
 to typeset ordinals such as 1^^st^^, 2^^nd^^, etc.  Subscripts also have practical
-applications: how else would you typeset H,,2,,O?  You may also enter links: please
+applications: how else would you typeset H__2__O?  You may also enter links: please
 check [[http://localhost:8080/]] or [[http://localhost:8080/|Localhost]] now.
 
 It is possible to enter ((HTML)) entities either by name ({{\&euro;}} produces '&euro;'),
