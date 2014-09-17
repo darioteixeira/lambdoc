@@ -10,7 +10,9 @@
 
 	Again, this example is almost identical to the previous one.  The only
 	difference this time is that the user may choose one of the four markup
-	languages currently supported by Lambdoc.
+	languages currently supported by Lambdoc.  Note that this example uses
+	the Litiom_choice module to simplify the creation of a select box (make
+	sure the 'Litiom' package is installed on your system).
 *)
 
 open Eliom_content

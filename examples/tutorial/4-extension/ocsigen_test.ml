@@ -9,11 +9,11 @@
 (**	Part 4/4 of the Lambdoc+Ocsigen tutorial.
 
 	This fourth and final part of the tutorial illustrates the creation of
-	a custom extension.  The module [Extension] defines Lambdoc extension
+	a custom extension.  The module [Extension] defines a Lambdoc extension
 	wrapped under the Lwt monad.  Whereas images and extern blocks pass
 	through the extension unmodified, we check if links are using the
-	protocol "user", in which case they are specially processed (the actual
-	processing is outside the scope of this example, though).
+	protocol "user", in which case they are specially processed (the
+	actual processing is outside the scope of this example, though).
 *)
 
 open Eliom_content
