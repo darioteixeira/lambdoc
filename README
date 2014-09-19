@@ -32,19 +32,16 @@ between any of the input formats into one of the supported output targets.
 
 The library depends on Batteries [2], Pcre-ocaml [3], Sexplib [4], Ulex [5],
 Menhir [6], PXP [7], Xstrp4 [8], Tyxml [9], OMD [10], Blahcaml [11], and
-Camlhighlight [12].  The command line utility 'lambcmd' also depends on
-Bookaml [13].
+Camlhighlight [12].
 
 
 3. Building and installing
 ==========================
 
-To build only the library run 'make lib'.  To perform a Findlib installation
-of the library run 'make install' or 'make reinstall'.  To remove the package
-run 'make uninstall'.  The API documentation can be built with 'make doc'.
-
-If you also wish to build the lambcmd command line utility, issue 'make
-lambcmd'.  Note that this binary also requires the Bookaml package [12].
+To build only the library run 'make lib'.  To perform a Findlib installation of
+the library run 'make install' or 'make reinstall'.  To remove the package run
+'make uninstall'.  The API documentation can be built with 'make doc'.  If you
+also wish to build the lambcmd command line utility, issue 'make lambcmd'.
 Finally, if you wish to build everything (library + lambcmd) you may simply
 run 'make all' or just 'make'.
 
@@ -86,5 +83,4 @@ References
 [10] http://github.com/ocaml/omd
 [11] http://blahcaml.forge.ocamlcore.org/
 [12] http://camlhighlight.forge.ocamlcore.org/
-[13] http://bookaml.forge.ocamlcore.org/
 
