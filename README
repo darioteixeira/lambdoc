@@ -17,7 +17,7 @@ and Markdown.  The first is inspired by LaTeX, the second is an XML-based
 markup based on HTML, the third is a lightweight markup language in the spirit
 of Wiki Creole, and the last is the popular lightweight markup language.
 The library also includes the possibility of outputing any Lambdoc document
-as an Ocsigen HTML5 value.
+as an Ocsigen (Tyxml) HTML5 value.
 
 Additional capabilities include the runtime customisation of available document
 features (you may, for example, declare that a certain class of users is
