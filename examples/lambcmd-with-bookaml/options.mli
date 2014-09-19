@@ -21,6 +21,11 @@ type t =
 	max_inline_depth: int option;
 	max_block_depth: int option;
 
+	amazon_locale: Bookaml_amazon.Locale.t option;
+	amazon_associate_tag: string option;
+	amazon_access_key: string option;
+	amazon_secret_key: string option;
+
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
 

@@ -24,6 +24,11 @@ type t =
 	max_inline_depth: int option;
 	max_block_depth: int option;
 
+	amazon_locale: Bookaml_amazon.Locale.t option;
+	amazon_associate_tag: string option;
+	amazon_access_key: string option;
+	amazon_secret_key: string option;
+
 	input_markup: Markup.input_t;
 	output_markup: Markup.output_t;
 
@@ -47,6 +52,11 @@ let max_macro_depth_opt = StdOpt.int_option ()
 let max_inline_depth_opt = StdOpt.int_option ()
 let max_block_depth_opt = StdOpt.int_option ()
 
+let amazon_locale_opt = Opt.value_option "LOCALE" None Bookaml_amazon.Locale.of_string (fun exn str -> "Unknown locale '" ^ str ^ "'")
+let amazon_associate_tag_opt = StdOpt.str_option ()
+let amazon_access_key_opt = StdOpt.str_option ()
+let amazon_secret_key_opt = StdOpt.str_option ()
+
 let input_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_input) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
 let output_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_output) Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
 
@@ -57,6 +67,7 @@ let options = OptParser.make ()
 
 let general = OptParser.add_group options "General options"
 let idiosyncrasies = OptParser.add_group options "Document idiosyncrasies"
+let amazon = OptParser.add_group options "Amazon credentials (only required for book lookups)"
 let markup = OptParser.add_group options "Definition of markup languages"
 let file = OptParser.add_group options "Definition of I/O files"
 
@@ -69,6 +80,11 @@ let () =
 	OptParser.add options ~group:idiosyncrasies ~long_name:"max-macro-depth" ~help:"Maximum depth for macro calls" max_macro_depth_opt;
 	OptParser.add options ~group:idiosyncrasies ~long_name:"max-inline-depth" ~help:"Maximum depth for inline elements" max_inline_depth_opt;
 	OptParser.add options ~group:idiosyncrasies ~long_name:"max-block-depth" ~help:"Maximum depth for block elements" max_block_depth_opt;
+
+	OptParser.add options ~group:amazon ~long_name:"amazon-locale" ~help:"Amazon Web Services locale" amazon_locale_opt;
+	OptParser.add options ~group:amazon ~long_name:"amazon-associate-tag" ~help:"Amazon Web Services associate tag" amazon_associate_tag_opt;
+	OptParser.add options ~group:amazon ~long_name:"amazon-access_key" ~help:"Amazon Web Services access key" amazon_access_key_opt;
+	OptParser.add options ~group:amazon ~long_name:"amazon-secret_key" ~help:"Amazon Web Services secret key" amazon_secret_key_opt;
 
 	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lambwiki', 'markdown', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
 	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; assume 'xhtml' if not specified)" output_markup_opt;
@@ -98,6 +114,11 @@ let parse () = match OptParser.parse_argv options with
 			max_macro_depth = Opt.opt max_macro_depth_opt;
 			max_inline_depth = Opt.opt max_inline_depth_opt;
 			max_block_depth = Opt.opt max_block_depth_opt;
+
+			amazon_locale = Opt.opt amazon_locale_opt;
+			amazon_associate_tag = Opt.opt amazon_associate_tag_opt;
+			amazon_access_key = Opt.opt amazon_access_key_opt;
+			amazon_secret_key = Opt.opt amazon_secret_key_opt;
 
 			input_markup = Opt.get input_markup_opt;
 			output_markup = Opt.get output_markup_opt;
