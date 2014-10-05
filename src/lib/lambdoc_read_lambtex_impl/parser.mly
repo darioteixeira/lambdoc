@@ -13,6 +13,8 @@ open Globalenv
 let the comm = match comm.Ast.comm_tag with
 	| Some x -> x
 	| None	 -> invalid_arg "the"
+
+let to_string = BatText.to_string
 %}
 
 
@@ -28,9 +30,9 @@ let the comm = match comm.Ast.comm_tag with
 %token <Lambdoc_reader.Ast.command_t> ROW_END
 %token <Lambdoc_reader.Ast.command_t> CELL_MARK
 
-%token <Lambdoc_reader.Ast.command_t * string> PLAIN
+%token <Lambdoc_reader.Ast.command_t * BatText.t> PLAIN
 %token <Lambdoc_reader.Ast.command_t * string> ENTITY
-%token <string> RAW
+%token <BatText.t> RAW
 
 
 /********************************************************************************/
@@ -199,12 +201,12 @@ env_block:
 	| begin_block(blk_qanda) qanda_frag* end_block				{($1, Ast.Qanda $2)}
 	| begin_block(blk_verse) block* end_block				{($1, Ast.Verse $2)}
 	| begin_block(blk_quote) block* end_block				{($1, Ast.Quote $2)}
-	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk $2)}
-	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk $2)}
-	| begin_block(blk_source) RAW end_block					{($1, Ast.Source $2)}
+	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk (to_string $2))}
+	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk (to_string $2))}
+	| begin_block(blk_source) RAW end_block					{($1, Ast.Source (to_string $2))}
 	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
 	| begin_block(blk_subpage) block* end_block				{($1, Ast.Subpage $2)}
-	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim $2)}
+	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim (to_string $2))}
 	| begin_block(blk_pullquote) inline_bundle? block* end_block		{($1, Ast.Pullquote ($2, $3))}
 	| begin_block(blk_custom) inline_bundle? block* end_block		{($1, Ast.Custom (None, the $1, $2, $3))}
 	| begin_block(blk_equation) inline_bundle? block end_block		{($1, Ast.Equation ($2, $3))}
@@ -266,11 +268,11 @@ cell:	CELL_MARK raw_bundle? option(inline+)					{($1, $2, $3)}
 /********************************************************************************/
 
 inline:
-	| PLAIN										{let (comm, txt) = $1 in (comm, Ast.Plain txt)}
+	| PLAIN										{let (comm, txt) = $1 in (comm, Ast.Plain (to_string txt))}
 	| ENTITY									{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
 	| LINEBREAK									{($1, Ast.Linebreak)}
-	| BEGIN_MATHTEX_INL push(mathtex_inl) OPEN_DUMMY RAW pop_brk END_MATHTEX_INL	{($1, Ast.Mathtex_inl $4)}
-	| BEGIN_MATHML_INL push(mathml_inl) OPEN_DUMMY RAW pop_brk END_MATHML_INL	{($1, Ast.Mathml_inl $4)}
+	| BEGIN_MATHTEX_INL push(mathtex_inl) OPEN_DUMMY RAW pop_brk END_MATHTEX_INL	{($1, Ast.Mathtex_inl (to_string $4))}
+	| BEGIN_MATHML_INL push(mathml_inl) OPEN_DUMMY RAW pop_brk END_MATHML_INL	{($1, Ast.Mathml_inl (to_string $4))}
 	| GLYPH raw_bundle raw_bundle							{($1, Ast.Glyph ($2, $3))}
 	| BOLD inline_bundle								{($1, Ast.Bold $2)}
 	| EMPH inline_bundle								{($1, Ast.Emph $2)}
@@ -297,7 +299,7 @@ inline:
 /********************************************************************************/
 
 inline_bundle: 		BEGIN push(general) OPEN_DUMMY inline* pop_brk END	{$4}
-raw_bundle: 		BEGIN push(raw) OPEN_DUMMY RAW pop_brk END		{$4}
+raw_bundle: 		BEGIN push(raw) OPEN_DUMMY RAW pop_brk END		{to_string $4}
 
 
 /********************************************************************************/
