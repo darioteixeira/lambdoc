@@ -119,14 +119,18 @@ let ast_of_omd frag =
 		| Omd.Code_block (lang, txt)	-> Block (add_style "lang" lang, Ast.Source txt)
 		| Omd.Hr			-> Block (dummy, Ast.Rule)
 		| Omd.NL			-> Drop
-		| Omd.Img_ref _			-> raise (Unsupported_feature "Img_ref")
 		| Omd.Html _			-> raise (Unsupported_feature "Html")
 		| Omd.Html_block _		-> raise (Unsupported_feature "Html_block")
 		| Omd.Html_comment _		-> raise (Unsupported_feature "Html_comment")
 		| Omd.Raw _			-> raise (Unsupported_feature "Raw")
 		| Omd.Raw_block _		-> raise (Unsupported_feature "Raw_block")
 		| Omd.Blockquote frag		-> Block (dummy, Ast.Quote (convert_frag frag))
-		| Omd.Img _			-> raise (Unsupported_feature "Img")
+		| Omd.Img (alt, src, _title) -> Block (dummy, Ast.Picture (src, alt))
+		| Omd.Img_ref (ref, link, txt, fallback)
+			-> begin match ref#get_ref link with
+			   | Some (href, _title) -> Block (dummy, Ast.Picture (href, txt))
+			   | None -> Block (dummy, Ast.Paragraph ([dummy, Ast.Plain fallback#to_string]))
+			end
 		| Omd.X _			-> raise (Unsupported_feature "X")
 		| x				-> convert_inline x
 
@@ -135,4 +139,3 @@ let ast_of_omd frag =
 		List.map aux frags
 
 	in convert_frag frag
-
