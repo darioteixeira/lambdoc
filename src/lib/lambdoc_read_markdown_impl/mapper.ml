@@ -94,6 +94,11 @@ let ast_of_omd frag =
 		| Omd.Br			-> Inline (dummy, Ast.Linebreak)
 		| Omd.NL			-> Inline (dummy, Ast.Plain " ")
 		| Omd.Url (href, seq, _)	-> Inline (dummy, Ast.Link (href, Some (convert_seq seq)))
+		| Omd.Ref (ref, link, txt, fallback)
+			-> begin match ref#get_ref link with
+			   | Some (href, _title) -> Inline (dummy, Ast.Link ( href, Some ([(dummy, Ast.Plain txt)])))
+			   | None -> Inline (dummy, Ast.Plain fallback#to_string)
+			end
 		| _				-> assert false
 
 	and convert_frag frag = blockify (List.map convert_block frag)
@@ -114,7 +119,6 @@ let ast_of_omd frag =
 		| Omd.Code_block (lang, txt)	-> Block (add_style "lang" lang, Ast.Source txt)
 		| Omd.Hr			-> Block (dummy, Ast.Rule)
 		| Omd.NL			-> Drop
-		| Omd.Ref _			-> raise (Unsupported_feature "Ref")
 		| Omd.Img_ref _			-> raise (Unsupported_feature "Img_ref")
 		| Omd.Html _			-> raise (Unsupported_feature "Html")
 		| Omd.Html_block _		-> raise (Unsupported_feature "Html_block")
