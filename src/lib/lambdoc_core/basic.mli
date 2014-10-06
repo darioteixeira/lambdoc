@@ -70,14 +70,11 @@ end
 module Level:
 sig
 	(**     Definition of hierarchy levels for sections.  We support a
-		three-level hierarchy, equivalent to XHTML's H1, H2, .. to H6.
+		six-level hierarchy, equivalent to XHTML's H1 to H6.
 		The first three can be interpreted as "section", "subsection", and
 		"subsubsection".
 	*)
-	type hierarchical_t = [
-		`Level1 | `Level2 | `Level3 | `Level4 | `Level5 | `Level6
-	] with sexp
-
+	type hierarchical_t = [ `Level1 | `Level2 | `Level3 | `Level4 | `Level5 | `Level6 ] with sexp
 
 	(**     Definition of hierarchy levels for titles.  We support a
 		two-level hierarchy, equivalent to XHTML's H1 and H2.
