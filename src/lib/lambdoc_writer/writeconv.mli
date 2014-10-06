@@ -34,14 +34,8 @@ module Order_output:
 sig
 	open Order
 
-	type ordinal_converter_t = (ordinal_t -> string)
-
-	type hierarchical_converter_t =
-		{
-		level1: (int -> string);
-		level2: (int -> string);
-		level3: (int -> string);
-		}
+	type ordinal_converter_t = ordinal_t -> string
+	type hierarchical_converter_t = (int -> string) list
 
 	val format_arabic: ordinal_converter_t
 	val format_roman: ordinal_converter_t
