@@ -256,8 +256,8 @@ object (self)
 	*)
 	method private store token =
 		productions <- match (productions, token) with
-			| ([PLAIN (op1, txt1)], PLAIN (op2, txt2))	-> [PLAIN (op1, txt1 ^ txt2)]
-			| ([RAW txt1], RAW txt2)			-> [RAW (txt1 ^ txt2)]
+			| ([PLAIN (op1, txt1)], PLAIN (op2, txt2))	-> [PLAIN (op1, BatText.append txt1 txt2)]
+			| ([RAW txt1], RAW txt2)			-> [RAW (BatText.append txt1  txt2)]
 			| _						-> productions @ [token]
 
 
@@ -287,10 +287,10 @@ object (self)
 			| `Tok_row_end			-> (Set Tab, [ROW_END op])
 			| `Tok_eof			-> (Hold, [EOF])
 			| `Tok_parbreak			-> (Set Blk, [])
-			| `Tok_space when context = Inl	-> (Hold, [PLAIN (op, " ")])
+			| `Tok_space when context = Inl	-> (Hold, [PLAIN (op, BatText.of_string " ")])
 			| `Tok_space			-> (Hold, [])
-			| `Tok_raw txt			-> (Hold, [RAW txt])
-			| `Tok_plain txt		-> (Set Inl, [PLAIN (op, txt)])
+			| `Tok_raw txt			-> (Hold, [RAW (BatText.of_string txt)])
+			| `Tok_plain txt		-> (Set Inl, [PLAIN (op, BatText.of_string txt)])
 			| `Tok_entity ent		-> (Set Inl, [ENTITY (op, ent)]) in
 		let tokens = match (context, action) with
 			| (Blk, Set Inl) -> (NEW_PAR op) :: tokens
