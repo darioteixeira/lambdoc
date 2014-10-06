@@ -55,8 +55,9 @@ end
 
 module Level =
 struct
-	type hierarchical_t = [ `Level1 | `Level2 | `Level3 ] with sexp
+	type hierarchical_t = [
+		`Level1 | `Level2 | `Level3 | `Level4 | `Level5 | `Level6
+	] with sexp
 
 	type title_t = [ `Level1 | `Level2 ] with sexp
 end
-

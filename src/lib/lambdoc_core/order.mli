@@ -20,6 +20,9 @@ type hierarchical_t =
 	| Level1_order of int
 	| Level2_order of int * int
 	| Level3_order of int * int * int
+	| Level4_order of int * int * int * int
+	| Level5_order of int * int * int * int * int
+	| Level6_order of int * int * int * int * int * int
 	with sexp
 
 
@@ -36,4 +39,3 @@ type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
 type 'a user_given_t = [ `User_given of 'a ] with sexp
 type none_given_t = [ `None_given ] with sexp
 type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] with sexp
-

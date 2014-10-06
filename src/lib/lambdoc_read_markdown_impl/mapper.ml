@@ -94,6 +94,11 @@ let ast_of_omd frag =
 		| Omd.Br			-> Inline (dummy, Ast.Linebreak)
 		| Omd.NL			-> Inline (dummy, Ast.Plain " ")
 		| Omd.Url (href, seq, _)	-> Inline (dummy, Ast.Link (href, Some (convert_seq seq)))
+		| Omd.Ref (ref, link, txt, fallback)
+			-> begin match ref#get_ref link with
+			   | Some (href, _title) -> Inline (dummy, Ast.Link ( href, Some ([(dummy, Ast.Plain txt)])))
+			   | None -> Inline (dummy, Ast.Plain fallback#to_string)
+			end
 		| _				-> assert false
 
 	and convert_frag frag = blockify (List.map convert_block frag)
@@ -102,9 +107,9 @@ let ast_of_omd frag =
 		| Omd.H1 seq			-> Block (dummy, Ast.Section (`Level1, convert_seq seq))
 		| Omd.H2 seq			-> Block (dummy, Ast.Section (`Level2, convert_seq seq))
 		| Omd.H3 seq			-> Block (dummy, Ast.Section (`Level3, convert_seq seq))
-		| Omd.H4 _			-> raise (Unsupported_feature "H4")
-		| Omd.H5 _			-> raise (Unsupported_feature "H5")
-		| Omd.H6 _			-> raise (Unsupported_feature "H6")
+		| Omd.H4 seq			-> Block (dummy, Ast.Section (`Level4, convert_seq seq))
+		| Omd.H5 seq			-> Block (dummy, Ast.Section (`Level5, convert_seq seq))
+		| Omd.H6 seq			-> Block (dummy, Ast.Section (`Level6, convert_seq seq))
 		| Omd.Paragraph [Omd.Hr]	-> Block (dummy, Ast.Rule)
 		| Omd.Paragraph seq		-> Block (dummy, Ast.Paragraph (convert_seq seq))
 		| Omd.Ul frags			-> Block (dummy, Ast.Itemize (convert_list frags))
@@ -114,15 +119,18 @@ let ast_of_omd frag =
 		| Omd.Code_block (lang, txt)	-> Block (add_style "lang" lang, Ast.Source txt)
 		| Omd.Hr			-> Block (dummy, Ast.Rule)
 		| Omd.NL			-> Drop
-		| Omd.Ref _			-> raise (Unsupported_feature "Ref")
-		| Omd.Img_ref _			-> raise (Unsupported_feature "Img_ref")
 		| Omd.Html _			-> raise (Unsupported_feature "Html")
 		| Omd.Html_block _		-> raise (Unsupported_feature "Html_block")
 		| Omd.Html_comment _		-> raise (Unsupported_feature "Html_comment")
 		| Omd.Raw _			-> raise (Unsupported_feature "Raw")
 		| Omd.Raw_block _		-> raise (Unsupported_feature "Raw_block")
 		| Omd.Blockquote frag		-> Block (dummy, Ast.Quote (convert_frag frag))
-		| Omd.Img _			-> raise (Unsupported_feature "Img")
+		| Omd.Img (alt, src, _title) -> Block (dummy, Ast.Picture (src, alt))
+		| Omd.Img_ref (ref, link, txt, fallback)
+			-> begin match ref#get_ref link with
+			   | Some (href, _title) -> Block (dummy, Ast.Picture (href, txt))
+			   | None -> Block (dummy, Ast.Paragraph ([dummy, Ast.Plain fallback#to_string]))
+			end
 		| Omd.X _			-> raise (Unsupported_feature "X")
 		| x				-> convert_inline x
 
@@ -131,4 +139,3 @@ let ast_of_omd frag =
 		List.map aux frags
 
 	in convert_frag frag
-

@@ -197,13 +197,13 @@ struct
 
 
 	type ordinal_counter_t = ordinal_t
-	type hierarchical_counter_t = int * int * int
+	type hierarchical_counter_t = int * int * int * int * int * int
 
 
 	let make_ordinal_counter () = ref 0
 
 
-	let make_hierarchy_counter () = ref (0, 0, 0)
+	let make_hierarchy_counter () = ref (0, 0, 0, 0, 0, 0)
 
 
 	let auto_ordinal counter =
@@ -212,15 +212,21 @@ struct
 
 
 	let auto_hierarchical level counter =
-		let (l1, l2, l3) = match (level, !counter) with
-			| (`Level1, (l1, _, _))		-> (l1+1, 0, 0)
-			| (`Level2, (l1, l2, _))	-> (l1, l2+1, 0)
-			| (`Level3, (l1, l2, l3))	-> (l1, l2, l3+1) in
-		counter := (l1, l2, l3);
+		let (l1, l2, l3, l4, l5, l6) = match (level, !counter) with
+			| (`Level1, (l1, _ , _ , _ , _ , _ ))	-> (l1+1, 0   , 0   , 0   , 0   , 0   )
+			| (`Level2, (l1, l2, _ , _ , _ , _ ))	-> (l1  , l2+1, 0   , 0   , 0   , 0   )
+			| (`Level3, (l1, l2, l3, _ , _ , _ ))	-> (l1  , l2  , l3+1, 0   , 0   , 0   )
+			| (`Level4, (l1, l2, l3, l4, _ , _ ))	-> (l1  , l2  , l3  , l4+1, 0   , 0   )
+			| (`Level5, (l1, l2, l3, l4, l5, _ ))	-> (l1  , l2  , l3  , l4  , l5+1, 0   )
+			| (`Level6, (l1, l2, l3, l4, l5, l6))	-> (l1  , l2  , l3  , l4  , l5  , l6+1) in
+		counter := (l1, l2, l3, l4, l5, l6);
 		match level with
 			| `Level1 -> `Auto_given (Level1_order l1)
 			| `Level2 -> `Auto_given (Level2_order (l1, l2))
 			| `Level3 -> `Auto_given (Level3_order (l1, l2, l3))
+			| `Level4 -> `Auto_given (Level4_order (l1, l2, l3, l4))
+			| `Level5 -> `Auto_given (Level5_order (l1, l2, l3, l4, l5))
+			| `Level6 -> `Auto_given (Level6_order (l1, l2, l3, l4, l5, l6))
 
 
 	let user_ordinal str =
@@ -229,10 +235,14 @@ struct
 
 
 	let user_hierarchical level str =
+   let i = int_of_string in
 		try match (level, String.nsplit str ".") with
-			| (`Level1, [l1])	  -> `User_given (Level1_order (int_of_string l1))
-			| (`Level2, [l1; l2])	  -> `User_given (Level2_order (int_of_string l1, int_of_string l2))
-			| (`Level3, [l1; l2; l3]) -> `User_given (Level3_order (int_of_string l1, int_of_string l2, int_of_string l3))
+			| (`Level1, [l1])                     -> `User_given (Level1_order (i l1))
+			| (`Level2, [l1; l2])                 -> `User_given (Level2_order (i l1, i l2))
+			| (`Level3, [l1; l2; l3])             -> `User_given (Level3_order (i l1, i l2, i l3))
+			| (`Level4, [l1; l2; l3; l4])         -> `User_given (Level4_order (i l1, i l2, i l3, i l4))
+			| (`Level5, [l1; l2; l3; l4; l5])     -> `User_given (Level5_order (i l1, i l2, i l3, i l4, i l5))
+			| (`Level6, [l1; l2; l3; l4; l5; l6]) -> `User_given (Level6_order (i l1, i l2, i l3, i l4, i l5, i l6))
 			| (expected, found)	  -> raise (Invalid_order_levels (str, expected, List.length found))
 		with
 			Failure "int_of_string" -> raise (Invalid_order_format str)

@@ -200,13 +200,19 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 	let cons_of_level = function
 		| `Level1 -> Html5.h1
 		| `Level2 -> Html5.h2
-		| `Level3 -> Html5.h3 in
+		| `Level3 -> Html5.h3
+		| `Level4 -> Html5.h4
+		| `Level5 -> Html5.h5
+		| `Level6 -> Html5.h6 in
 
 	let class_of_level = function
 		| `Level0 -> !!"level0"
 		| `Level1 -> !!"level1"
 		| `Level2 -> !!"level2"
-		| `Level3 -> !!"level3" in
+		| `Level3 -> !!"level3"
+		| `Level4 -> !!"level4"
+		| `Level5 -> !!"level5"
+		| `Level6 -> !!"level6" in
 
 	let make_heading cons label orderlst classname attr content =
 		cons ?a:(Some [a_id (make_label label); a_class (classname :: attr)]) (orderlst @ [Html5.span content]) in
