@@ -28,7 +28,7 @@ type block_feature_t =
 	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_extern | `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
-	| `Feature_section1 | `Feature_section2 | `Feature_section3
+	| `Feature_section1 | `Feature_section2 | `Feature_section3 | `Feature_section4 | `Feature_section5 | `Feature_section6
 	| `Feature_bibliography | `Feature_notes | `Feature_toc
 	| `Feature_title1 | `Feature_title2
 	| `Feature_abstract | `Feature_rule | `Feature_extern
@@ -100,6 +100,9 @@ let describe_block_feature = function
 	| `Feature_section1	-> "Level 1 sectioning"
 	| `Feature_section2	-> "Level 2 sectioning"
 	| `Feature_section3	-> "Level 3 sectioning"
+	| `Feature_section4	-> "Level 4 sectioning"
+	| `Feature_section5	-> "Level 5 sectioning"
+	| `Feature_section6	-> "Level 6 sectioning"
 	| `Feature_bibliography	-> "bibliography"
 	| `Feature_notes	-> "notes"
 	| `Feature_toc		-> "table of contents"
@@ -154,7 +157,7 @@ let block_features =
 	`Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_extern; `Feature_pullquote;
 	`Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
 	`Feature_part; `Feature_appendix;
-	`Feature_section1; `Feature_section2; `Feature_section3;
+	`Feature_section1; `Feature_section2; `Feature_section3; `Feature_section4; `Feature_section5; `Feature_section6;
 	`Feature_bibliography; `Feature_notes; `Feature_toc;
 	`Feature_title1; `Feature_title2;
 	`Feature_abstract; `Feature_rule;

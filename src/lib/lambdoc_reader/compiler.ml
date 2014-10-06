@@ -780,7 +780,10 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			let feature = match level with
 				| `Level1 -> `Feature_section1
 				| `Level2 -> `Feature_section2
-				| `Level3 -> `Feature_section3 in
+				| `Level3 -> `Feature_section3
+				| `Level4 -> `Feature_section4
+				| `Level5 -> `Feature_section5
+				| `Level6 -> `Feature_section6 in
 			check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Bibliography)) ->

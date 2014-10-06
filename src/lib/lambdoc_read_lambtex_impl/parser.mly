@@ -107,9 +107,12 @@ let to_string = BatText.to_string
 %token <Lambdoc_reader.Ast.command_t> EXTERN
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
-%token <Lambdoc_reader.Ast.command_t> SECTION
-%token <Lambdoc_reader.Ast.command_t> SUBSECTION
-%token <Lambdoc_reader.Ast.command_t> SUBSUBSECTION
+%token <Lambdoc_reader.Ast.command_t> H1
+%token <Lambdoc_reader.Ast.command_t> H2
+%token <Lambdoc_reader.Ast.command_t> H3
+%token <Lambdoc_reader.Ast.command_t> H4
+%token <Lambdoc_reader.Ast.command_t> H5
+%token <Lambdoc_reader.Ast.command_t> H6
 %token <Lambdoc_reader.Ast.command_t> BIBLIOGRAPHY
 %token <Lambdoc_reader.Ast.command_t> NOTES
 %token <Lambdoc_reader.Ast.command_t> TOC
@@ -181,9 +184,12 @@ simple_block:
 	| EXTERN raw_bundle							{($1, Ast.Extern $2)}
 	| PART inline_bundle							{($1, Ast.Part $2)}
 	| APPENDIX								{($1, Ast.Appendix)}
-	| SECTION inline_bundle							{($1, Ast.Section (`Level1, $2))}
-	| SUBSECTION inline_bundle						{($1, Ast.Section (`Level2, $2))}
-	| SUBSUBSECTION inline_bundle						{($1, Ast.Section (`Level3, $2))}
+	| H1 inline_bundle							{($1, Ast.Section (`Level1, $2))}
+	| H2 inline_bundle							{($1, Ast.Section (`Level2, $2))}
+	| H3 inline_bundle							{($1, Ast.Section (`Level3, $2))}
+	| H4 inline_bundle							{($1, Ast.Section (`Level4, $2))}
+	| H5 inline_bundle							{($1, Ast.Section (`Level5, $2))}
+	| H6 inline_bundle							{($1, Ast.Section (`Level6, $2))}
 	| BIBLIOGRAPHY								{($1, Ast.Bibliography)}
 	| NOTES									{($1, Ast.Notes)}
 	| TOC									{($1, Ast.Toc)} 

@@ -1207,6 +1207,21 @@ h3.doc_sec
 	font-size: 16px;
 	}
 
+h4.doc_sec
+	{
+	font-size: 15px;
+	}
+
+h5.doc_sec
+	{
+	font-size: 15px;
+	}
+
+h6.doc_sec
+	{
+	font-size: 15px;
+	}
+
 .doc_title:not(:first-child)
 	{
 	margin-top: 2em;

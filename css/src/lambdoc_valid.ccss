@@ -727,6 +727,9 @@ h2.doc_title {font-size: Doc_fsize_title2;}
 h1.doc_sec {font-size: Doc_fsize_h1;}
 h2.doc_sec {font-size: Doc_fsize_h2;}
 h3.doc_sec {font-size: Doc_fsize_h3;}
+h4.doc_sec {font-size: Doc_fsize_h4;}
+h5.doc_sec {font-size: Doc_fsize_h5;}
+h6.doc_sec {font-size: Doc_fsize_h6;}
 
 .doc_title:not(:first-child) {margin-top: 2em;}
 .doc_part:not(:first-child) {margin-top: 2em;}

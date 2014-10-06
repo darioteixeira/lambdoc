@@ -164,6 +164,9 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_section1	-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_section2	-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_section3	-> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section4	-> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section5	-> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section6	-> custom_heading_class (get_minipaged maybe_minipaged)
 		| `Feature_bibliography	-> preset_heading_class
 		| `Feature_notes	-> preset_heading_class
 		| `Feature_toc		-> preset_heading_class

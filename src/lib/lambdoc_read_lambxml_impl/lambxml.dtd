@@ -18,7 +18,7 @@
 	| pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix
-	| section | h1 | subsection | h2 | subsubsection | h3
+	| h1 | section | h2 | subsection | h3 | subsubsection | h4 | h5 | h6
 	| bibliography | notes | toc
 	| title | subtitle | abstract | rule
 	| bib | note
@@ -133,23 +133,32 @@
 <!ELEMENT appendix EMPTY>
 <!ATTLIST appendix %Common;>
 
-<!ELEMENT section %Inline;>
-<!ATTLIST section %Common;>
-
 <!ELEMENT h1 %Inline;>
 <!ATTLIST h1 %Common;>
 
-<!ELEMENT subsection %Inline;>
-<!ATTLIST subsection %Common;>
+<!ELEMENT section %Inline;>
+<!ATTLIST section %Common;>
 
 <!ELEMENT h2 %Inline;>
 <!ATTLIST h2 %Common;>
 
-<!ELEMENT subsubsection %Inline;>
-<!ATTLIST subsubsection %Common;>
+<!ELEMENT subsection %Inline;>
+<!ATTLIST subsection %Common;>
 
 <!ELEMENT h3 %Inline;>
 <!ATTLIST h3 %Common;>
+
+<!ELEMENT subsubsection %Inline;>
+<!ATTLIST subsubsection %Common;>
+
+<!ELEMENT h4 %Inline;>
+<!ATTLIST h4 %Common;>
+
+<!ELEMENT h5 %Inline;>
+<!ATTLIST h5 %Common;>
+
+<!ELEMENT h6 %Inline;>
+<!ATTLIST h6 %Common;>
 
 <!ELEMENT bibliography EMPTY>
 <!ATTLIST bibliography %Common;>
