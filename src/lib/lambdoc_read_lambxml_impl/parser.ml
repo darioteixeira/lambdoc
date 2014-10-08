@@ -280,19 +280,19 @@ and process_block store node =
 			(!!comm, Ast.Appendix)
 		| T_element "h1"
 		| T_element "section" ->
-			(!!comm, Ast.Section (`Level1, process_seq store node))
+			(!!comm, Ast.Section (1, process_seq store node))
 		| T_element "h2"
 		| T_element "subsection" ->
-			(!!comm, Ast.Section (`Level2, process_seq store node))
+			(!!comm, Ast.Section (2, process_seq store node))
 		| T_element "h3"
 		| T_element "subsubsection" ->
-			(!!comm, Ast.Section (`Level3, process_seq store node))
+			(!!comm, Ast.Section (3, process_seq store node))
 		| T_element "h4" ->
-			(!!comm, Ast.Section (`Level4, process_seq store node))
+			(!!comm, Ast.Section (4, process_seq store node))
 		| T_element "h5" ->
-			(!!comm, Ast.Section (`Level5, process_seq store node))
+			(!!comm, Ast.Section (5, process_seq store node))
 		| T_element "h6" ->
-			(!!comm, Ast.Section (`Level6, process_seq store node))
+			(!!comm, Ast.Section (6, process_seq store node))
 		| T_element "bibliography" ->
 			(!!comm, Ast.Bibliography)
 		| T_element "notes" ->
@@ -300,9 +300,9 @@ and process_block store node =
 		| T_element "toc" ->
 			(!!comm, Ast.Toc)
 		| T_element "title" ->
-			(!!comm, Ast.Title (`Level1, process_seq store node))
+			(!!comm, Ast.Title (1, process_seq store node))
 		| T_element "subtitle" ->
-			(!!comm, Ast.Title (`Level2, process_seq store node))
+			(!!comm, Ast.Title (2, process_seq store node))
 		| T_element "abstract" ->
 			(!!comm, Ast.Abstract (process_frag store node))
 		| T_element "rule" ->

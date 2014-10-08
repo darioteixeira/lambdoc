@@ -56,7 +56,7 @@ type section_location_t =
 *)
 type t =
 	| Part of Label.t * part_order_t * part_content_t
-	| Section of Label.t * section_order_t * section_location_t * Level.hierarchical_t * section_content_t
+	| Section of Label.t * section_order_t * section_location_t * Level.section_t * section_content_t
 	with sexp
 
 
@@ -66,7 +66,7 @@ type t =
 
 val part: Label.t -> part_order_t -> Inline.seq_t -> t
 val appendix: Label.t -> t
-val section: Label.t -> section_order_t -> section_location_t -> Level.hierarchical_t -> Inline.seq_t -> t
+val section: Label.t -> section_order_t -> section_location_t -> Level.section_t -> Inline.seq_t -> t
 val bibliography: Label.t -> t
 val notes: Label.t -> t
 val toc: Label.t -> t

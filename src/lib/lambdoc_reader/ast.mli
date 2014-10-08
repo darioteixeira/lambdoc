@@ -114,11 +114,11 @@ type frag_t = block_t list
 	| Figure of seq_t option * block_t
 	| Part of seq_t
 	| Appendix
-	| Section of Level.hierarchical_t * seq_t
+	| Section of int * seq_t
 	| Bibliography
 	| Notes
 	| Toc
-	| Title of Level.title_t * seq_t
+	| Title of int * seq_t
 	| Abstract of frag_t
 	| Rule
 	| Bib of bib_t

@@ -35,9 +35,6 @@ module Make = Reader.Make
 		try
 			menhir_with_ulex Parser.document tokenizer
 		with
-			| Tokenizer.Invalid_section_level num ->
-				let msg = Printf.sprintf "You have requested %d levels of sectioning, but only 3 are available" num in
-				raise (Reading_error (tokenizer#position.pos_lnum, msg))
 			| Tokenizer.Invalid_ulist_level (current, found) ->
 				let msg = Printf.sprintf "You've requested an unordered list %d levels deep, but in this context a maximum of %d is allowed in this context" found (current+1) in
 				raise (Reading_error (tokenizer#position.pos_lnum, msg))

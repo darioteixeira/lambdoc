@@ -104,12 +104,12 @@ let ast_of_omd frag =
 	and convert_frag frag = blockify (List.map convert_block frag)
 
 	and convert_block = function
-		| Omd.H1 seq			-> Block (dummy, Ast.Section (`Level1, convert_seq seq))
-		| Omd.H2 seq			-> Block (dummy, Ast.Section (`Level2, convert_seq seq))
-		| Omd.H3 seq			-> Block (dummy, Ast.Section (`Level3, convert_seq seq))
-		| Omd.H4 seq			-> Block (dummy, Ast.Section (`Level4, convert_seq seq))
-		| Omd.H5 seq			-> Block (dummy, Ast.Section (`Level5, convert_seq seq))
-		| Omd.H6 seq			-> Block (dummy, Ast.Section (`Level6, convert_seq seq))
+		| Omd.H1 seq			-> Block (dummy, Ast.Section (1, convert_seq seq))
+		| Omd.H2 seq			-> Block (dummy, Ast.Section (2, convert_seq seq))
+		| Omd.H3 seq			-> Block (dummy, Ast.Section (3, convert_seq seq))
+		| Omd.H4 seq			-> Block (dummy, Ast.Section (4, convert_seq seq))
+		| Omd.H5 seq			-> Block (dummy, Ast.Section (5, convert_seq seq))
+		| Omd.H6 seq			-> Block (dummy, Ast.Section (6, convert_seq seq))
 		| Omd.Paragraph [Omd.Hr]	-> Block (dummy, Ast.Rule)
 		| Omd.Paragraph seq		-> Block (dummy, Ast.Paragraph (convert_seq seq))
 		| Omd.Ul frags			-> Block (dummy, Ast.Itemize (convert_list frags))

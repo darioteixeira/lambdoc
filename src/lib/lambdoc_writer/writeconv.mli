@@ -32,9 +32,7 @@ end
 
 module Order_output:
 sig
-	open Order
-
-	type ordinal_converter_t = ordinal_t -> string
+	type ordinal_converter_t = Order.ordinal_t -> string
 	type hierarchical_converter_t = (int -> string) list
 
 	val format_arabic: ordinal_converter_t
@@ -42,8 +40,8 @@ sig
 	val format_mainbody: hierarchical_converter_t
 	val format_appendixed: hierarchical_converter_t
 
-	val maybe_string_of_ordinal: ordinal_converter_t -> (ordinal_t, 'b) t -> string option
-	val maybe_string_of_hierarchical: hierarchical_converter_t -> (hierarchical_t, 'b) t -> string option
+	val maybe_string_of_ordinal: ordinal_converter_t -> (Order.ordinal_t, 'b) Order.t -> string option
+	val maybe_string_of_hierarchical: hierarchical_converter_t -> (Order.hierarchical_t, 'b) Order.t -> string option
 end
 
 

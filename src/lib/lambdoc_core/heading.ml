@@ -36,7 +36,7 @@ type section_location_t =
 
 type t =
 	| Part of Label.t * part_order_t * part_content_t
-	| Section of Label.t * section_order_t * section_location_t * Level.hierarchical_t * section_content_t
+	| Section of Label.t * section_order_t * section_location_t * Level.section_t * section_content_t
 	with sexp
 
 
@@ -47,7 +47,7 @@ type t =
 let part label order seq = Part (label, order, Custom_part seq)
 let appendix label = Part (label, `None_given, Appendix)
 let section label order location level seq = Section (label, order, location, level, Custom_section seq)
-let bibliography label = Section (label, `None_given, Mainbody, `Level1, Bibliography)
-let notes label = Section (label, `None_given, Mainbody, `Level1, Notes)
-let toc label = Section (label, `None_given, Mainbody, `Level1, Toc)
+let bibliography label = Section (label, `None_given, Mainbody, Level.section 1, Bibliography)
+let notes label = Section (label, `None_given, Mainbody, Level.section 1, Notes)
+let toc label = Section (label, `None_given, Mainbody, Level.section 1, Toc)
 

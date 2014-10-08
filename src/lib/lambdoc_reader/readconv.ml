@@ -11,6 +11,7 @@
 
 open Lambdoc_core
 
+module List = BatList
 module String = BatString
 
 
@@ -190,63 +191,42 @@ end
 module Order_input =
 struct
 	open Basic
-	open Order
 
 	exception Invalid_order_format of string
-	exception Invalid_order_levels of string * Level.hierarchical_t * int
+	exception Invalid_order_levels of string * Level.section_t * int
 
+	type ordinal_counter_t = Order.ordinal_t
+	type hierarchical_counter_t = Order.hierarchical_t
 
-	type ordinal_counter_t = ordinal_t
-	type hierarchical_counter_t = int * int * int * int * int * int
+	let ordinal_counter () = ref 0
 
-
-	let make_ordinal_counter () = ref 0
-
-
-	let make_hierarchy_counter () = ref (0, 0, 0, 0, 0, 0)
-
+	let hierarchical_counter () = ref (List.make 6 0)
 
 	let auto_ordinal counter =
 		let () = incr counter in
 		`Auto_given !counter
 
-
 	let auto_hierarchical level counter =
-		let (l1, l2, l3, l4, l5, l6) = match (level, !counter) with
-			| (`Level1, (l1, _ , _ , _ , _ , _ ))	-> (l1+1, 0   , 0   , 0   , 0   , 0   )
-			| (`Level2, (l1, l2, _ , _ , _ , _ ))	-> (l1  , l2+1, 0   , 0   , 0   , 0   )
-			| (`Level3, (l1, l2, l3, _ , _ , _ ))	-> (l1  , l2  , l3+1, 0   , 0   , 0   )
-			| (`Level4, (l1, l2, l3, l4, _ , _ ))	-> (l1  , l2  , l3  , l4+1, 0   , 0   )
-			| (`Level5, (l1, l2, l3, l4, l5, _ ))	-> (l1  , l2  , l3  , l4  , l5+1, 0   )
-			| (`Level6, (l1, l2, l3, l4, l5, l6))	-> (l1  , l2  , l3  , l4  , l5  , l6+1) in
-		counter := (l1, l2, l3, l4, l5, l6);
-		match level with
-			| `Level1 -> `Auto_given (Level1_order l1)
-			| `Level2 -> `Auto_given (Level2_order (l1, l2))
-			| `Level3 -> `Auto_given (Level3_order (l1, l2, l3))
-			| `Level4 -> `Auto_given (Level4_order (l1, l2, l3, l4))
-			| `Level5 -> `Auto_given (Level5_order (l1, l2, l3, l4, l5))
-			| `Level6 -> `Auto_given (Level6_order (l1, l2, l3, l4, l5, l6))
-
+		let level = (level : Level.section_t :> int) in
+		let f i x = match i+1 with
+			| n when n < level -> x
+			| n when n = level -> x+1
+			| n 		   -> 0 in
+		counter := List.mapi f !counter;
+		`Auto_given (List.take level !counter)
 
 	let user_ordinal str =
 		try `User_given (int_of_string str)
-		with Failure "int_of_string" -> raise (Invalid_order_format str)
-
+		with _ -> raise (Invalid_order_format str)
 
 	let user_hierarchical level str =
-   let i = int_of_string in
-		try match (level, String.nsplit str ".") with
-			| (`Level1, [l1])                     -> `User_given (Level1_order (i l1))
-			| (`Level2, [l1; l2])                 -> `User_given (Level2_order (i l1, i l2))
-			| (`Level3, [l1; l2; l3])             -> `User_given (Level3_order (i l1, i l2, i l3))
-			| (`Level4, [l1; l2; l3; l4])         -> `User_given (Level4_order (i l1, i l2, i l3, i l4))
-			| (`Level5, [l1; l2; l3; l4; l5])     -> `User_given (Level5_order (i l1, i l2, i l3, i l4, i l5))
-			| (`Level6, [l1; l2; l3; l4; l5; l6]) -> `User_given (Level6_order (i l1, i l2, i l3, i l4, i l5, i l6))
-			| (expected, found)	  -> raise (Invalid_order_levels (str, expected, List.length found))
-		with
-			Failure "int_of_string" -> raise (Invalid_order_format str)
-
+		let elems =
+			try String.nsplit str "." |> List.map int_of_string
+			with _ -> raise (Invalid_order_format str) in
+		let nelems = List.length elems in
+		if nelems = (level : Level.section_t :> int)
+		then `User_given elems
+		else raise (Invalid_order_levels (str, level, nelems))
 
 	let no_order () = `None_given
 end

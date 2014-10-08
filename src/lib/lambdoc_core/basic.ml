@@ -55,8 +55,22 @@ end
 
 module Level =
 struct
-	type hierarchical_t = [ `Level1 | `Level2 | `Level3 | `Level4 | `Level5 | `Level6 ] with sexp
+	type section_t = int with sexp
 
-	type title_t = [ `Level1 | `Level2 ] with sexp
+	type title_t = int with sexp
+
+	let max_section = 6
+
+	let max_title = 2
+
+	let section level =
+		if level >= 1 && level <= max_section
+		then level
+		else invalid_arg ("Level.section: " ^ string_of_int level)
+
+	let title level =
+		if level >= 1 && level <= max_title
+		then level
+		else invalid_arg ("Level.title: " ^ string_of_int level)
 end
 

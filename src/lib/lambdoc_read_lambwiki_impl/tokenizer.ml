@@ -20,7 +20,6 @@ module String = BatString
 (*	{1 Exceptions}								*)
 (********************************************************************************)
 
-exception Invalid_section_level of int
 exception Invalid_ulist_level of int * int
 exception Invalid_olist_level of int * int
 
@@ -227,23 +226,11 @@ in object (self)
 				| End_verbatim ->
 					context <- General;
 					self#store (END_VERBATIM self#op)
-				| Section (1, text) ->
+				| Section (level, text) ->
 					self#unwind_list 0;
-					self#store (BEGIN_SECTION self#op);
+					self#store (BEGIN_SECTION (self#op, level));
 					List.iter self#store (self#tokens_of_text text);
 					self#store (END_SECTION self#op)
-				| Section (2, text) ->
-					self#unwind_list 0;
-					self#store (BEGIN_SUBSECTION self#op);
-					List.iter self#store (self#tokens_of_text text);
-					self#store (END_SUBSECTION self#op)
-				| Section (3, text) ->
-					self#unwind_list 0;
-					self#store (BEGIN_SUBSUBSECTION self#op);
-					List.iter self#store (self#tokens_of_text text);
-					self#store (END_SUBSUBSECTION self#op)
-				| Section (x, text) ->
-					raise (Invalid_section_level x)
 				| Par (quote_new, list_new, text) ->
 					self#handle_par quote_new list_new text
 				| Raw txt ->

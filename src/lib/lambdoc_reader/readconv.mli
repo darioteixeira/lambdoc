@@ -70,21 +70,20 @@ end
 module Order_input:
 sig
 	open Basic
-	open Order
 
 	exception Invalid_order_format of string
-	exception Invalid_order_levels of string * Level.hierarchical_t * int
+	exception Invalid_order_levels of string * Level.section_t * int
 
 	type ordinal_counter_t
 	type hierarchical_counter_t
 
-	val make_ordinal_counter: unit -> ordinal_counter_t ref
-	val make_hierarchy_counter: unit -> hierarchical_counter_t ref
+	val ordinal_counter: unit -> ordinal_counter_t ref
+	val hierarchical_counter: unit -> hierarchical_counter_t ref
 
-	val auto_ordinal: ordinal_counter_t ref -> [> `Auto_given of ordinal_t ]
-	val auto_hierarchical: Level.hierarchical_t -> hierarchical_counter_t ref -> [> `Auto_given of hierarchical_t ]
-	val user_ordinal: string -> [> `User_given of ordinal_t ]
-	val user_hierarchical: Level.hierarchical_t -> string -> [> `User_given of hierarchical_t ]
+	val auto_ordinal: ordinal_counter_t ref -> [> `Auto_given of Order.ordinal_t ]
+	val auto_hierarchical: Level.section_t -> hierarchical_counter_t ref -> [> `Auto_given of Order.hierarchical_t ]
+	val user_ordinal: string -> [> `User_given of Order.ordinal_t ]
+	val user_hierarchical: Level.section_t -> string -> [> `User_given of Order.hierarchical_t ]
 	val no_order: unit -> [> `None_given ]
 end
 

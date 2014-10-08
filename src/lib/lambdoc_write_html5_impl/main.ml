@@ -8,6 +8,7 @@
 
 open Printf
 open Lambdoc_core
+open Basic
 open Block
 open Heading
 open Source
@@ -198,27 +199,21 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 		make_link ?attr ("#" ^ (make_label pointer)) content in
 
 	let cons_of_level = function
-		| `Level1 -> Html5.h1
-		| `Level2 -> Html5.h2
-		| `Level3 -> Html5.h3
-		| `Level4 -> Html5.h4
-		| `Level5 -> Html5.h5
-		| `Level6 -> Html5.h6 in
+		| 1 -> Html5.h1
+		| 2 -> Html5.h2
+		| 3 -> Html5.h3
+		| 4 -> Html5.h4
+		| 5 -> Html5.h5
+		| 6 -> Html5.h6
+		| _ -> assert false in
 
-	let class_of_level = function
-		| `Level0 -> !!"level0"
-		| `Level1 -> !!"level1"
-		| `Level2 -> !!"level2"
-		| `Level3 -> !!"level3"
-		| `Level4 -> !!"level4"
-		| `Level5 -> !!"level5"
-		| `Level6 -> !!"level6" in
+	let class_of_level level = !!("level" ^ string_of_int level) in
 
 	let make_heading cons label orderlst classname attr content =
 		cons ?a:(Some [a_id (make_label label); a_class (classname :: attr)]) (orderlst @ [Html5.span content]) in
 
 	let make_sectional level label orderlst attr content =
-		make_heading (cons_of_level level) label orderlst !!"sec" attr content in
+		make_heading (cons_of_level (level : Level.section_t :> int)) label orderlst !!"sec" attr content in
 
 	let make_floatable forbidden =
 		if forbidden then [] else [!!"floatable"] in
@@ -649,7 +644,7 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 			write_heading_block attr heading
 
 		| Title (level, seq) ->
-			[(cons_of_level level) ~a:[a_class (!!"title" :: attr)] (write_seq seq)]
+			[(cons_of_level (level :> int)) ~a:[a_class (!!"title" :: attr)] (write_seq seq)]
 
 		| Abstract frag ->
 			let aux = Html5.h1 ~a:[a_class [!!"sec"]] (write_name Name_abstract) :: (write_frag frag) in
@@ -752,17 +747,17 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 			Some (Html5.li ~a:[a_class [!!"item"; classname]] [make_internal_link label (orderlst @ content)])
 		in match sec with
 			| Part (label, order, Custom_part seq) ->
-				make_toc_entry label (class_of_level `Level0) (part_conv ~spanify:true order) (Obj.magic (write_seq seq))
+				make_toc_entry label (class_of_level 0) (part_conv ~spanify:true order) (Obj.magic (write_seq seq))
 			| Part (label, order, Appendix) ->
-				make_toc_entry label (class_of_level `Level0) (part_conv ~spanify:true order) (Obj.magic (write_name Name_appendix))
+				make_toc_entry label (class_of_level 0) (part_conv ~spanify:true order) (Obj.magic (write_name Name_appendix))
 			| Section (label, order, location, level, Custom_section seq) ->
-				make_toc_entry label (class_of_level level) (section_conv ~spanify:true location order) (Obj.magic (write_seq seq))
+				make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_seq seq))
 			| Section (label, order, location, level, Bibliography) ->
-				make_toc_entry label (class_of_level level) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_bibliography))
+				make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_bibliography))
 			| Section (label, order, location, level, Notes) ->
-				make_toc_entry label (class_of_level level) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_notes))
+				make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_notes))
 			| Section (label, order, location, level, Toc) ->
-				make_toc_entry label (class_of_level level) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_toc))
+				make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_toc))
 
 
 	in Monad.return (Html5.div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ opts.extra_classes)] (write_frag content))

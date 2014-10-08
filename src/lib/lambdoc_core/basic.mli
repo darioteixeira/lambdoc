@@ -71,14 +71,31 @@ module Level:
 sig
 	(**     Definition of hierarchy levels for sections.  We support a
 		six-level hierarchy, equivalent to XHTML's H1 to H6.
-		The first three can be interpreted as "section", "subsection", and
-		"subsubsection".
 	*)
-	type hierarchical_t = [ `Level1 | `Level2 | `Level3 | `Level4 | `Level5 | `Level6 ] with sexp
+	type section_t = private int with sexp
 
 	(**     Definition of hierarchy levels for titles.  We support a
 		two-level hierarchy, equivalent to XHTML's H1 and H2.
 		These can be interpreted as "title" and "subtitle".
 	*)
-	type title_t = [ `Level1 | `Level2 ] with sexp
+	type title_t = private int with sexp
+
+	(**	Maximum accepted hierarchical level.
+	*)
+	val max_section: int
+
+	(**	Maximum accepted title level.
+	*)
+	val max_title: int
+
+	(**	Constructor for {!section_t}.  We force the use
+		of this constructor my making the type private.
+	*)
+	val section: int -> section_t
+
+	(**	Constructor for {!title_t}.  We force the use
+		of this constructor my making the type private.
+	*)
+	val title: int -> title_t
 end
+

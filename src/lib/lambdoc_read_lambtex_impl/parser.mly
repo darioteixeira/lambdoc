@@ -107,17 +107,11 @@ let to_string = BatText.to_string
 %token <Lambdoc_reader.Ast.command_t> EXTERN
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
-%token <Lambdoc_reader.Ast.command_t> H1
-%token <Lambdoc_reader.Ast.command_t> H2
-%token <Lambdoc_reader.Ast.command_t> H3
-%token <Lambdoc_reader.Ast.command_t> H4
-%token <Lambdoc_reader.Ast.command_t> H5
-%token <Lambdoc_reader.Ast.command_t> H6
+%token <Lambdoc_reader.Ast.command_t * int> SECTION
 %token <Lambdoc_reader.Ast.command_t> BIBLIOGRAPHY
 %token <Lambdoc_reader.Ast.command_t> NOTES
 %token <Lambdoc_reader.Ast.command_t> TOC
-%token <Lambdoc_reader.Ast.command_t> TITLE
-%token <Lambdoc_reader.Ast.command_t> SUBTITLE
+%token <Lambdoc_reader.Ast.command_t * int> TITLE
 %token <Lambdoc_reader.Ast.command_t> RULE
 %token <Lambdoc_reader.Ast.command_t> MACRODEF
 %token <Lambdoc_reader.Ast.command_t> BOXOUTDEF
@@ -184,17 +178,11 @@ simple_block:
 	| EXTERN raw_bundle							{($1, Ast.Extern $2)}
 	| PART inline_bundle							{($1, Ast.Part $2)}
 	| APPENDIX								{($1, Ast.Appendix)}
-	| H1 inline_bundle							{($1, Ast.Section (`Level1, $2))}
-	| H2 inline_bundle							{($1, Ast.Section (`Level2, $2))}
-	| H3 inline_bundle							{($1, Ast.Section (`Level3, $2))}
-	| H4 inline_bundle							{($1, Ast.Section (`Level4, $2))}
-	| H5 inline_bundle							{($1, Ast.Section (`Level5, $2))}
-	| H6 inline_bundle							{($1, Ast.Section (`Level6, $2))}
+	| SECTION inline_bundle							{let (comm, level) = $1 in (comm, Ast.Section (level, $2))}
 	| BIBLIOGRAPHY								{($1, Ast.Bibliography)}
 	| NOTES									{($1, Ast.Notes)}
 	| TOC									{($1, Ast.Toc)} 
-	| TITLE inline_bundle							{($1, Ast.Title (`Level1, $2))}
-	| SUBTITLE inline_bundle						{($1, Ast.Title (`Level2, $2))}
+	| TITLE inline_bundle							{let (comm, level) = $1 in (comm, Ast.Title (level, $2))}
 	| RULE									{($1, Ast.Rule)}
 	| MACRODEF raw_bundle raw_bundle inline_bundle				{($1, Ast.Macrodef ($2, $3, $4))}
 	| BOXOUTDEF raw_bundle boxoutdef					{let (caption, counter) = $3 in ($1, Ast.Boxoutdef ($2, caption, counter))}

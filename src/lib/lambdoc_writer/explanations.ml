@@ -11,6 +11,7 @@
 
 open Printf
 open Lambdoc_core
+open Basic
 
 module String = BatString
 
@@ -73,13 +74,7 @@ let explain_ident what =
 	sprintf "%s must begin with a lowercase Roman letter, and is optionally followed by lowercase Roman letters, digits, or the character '#_#' (underscore)" what
 
 
-let explain_level = function
-	| `Level1 -> 1
-	| `Level2 -> 2
-	| `Level3 -> 3
-	| `Level4 -> 4
-	| `Level5 -> 5
-	| `Level6 -> 6
+let explain_level level = (level : Level.section_t :> int)
 
 
 let explain_wrapper = function
@@ -195,6 +190,12 @@ let explain_error = function
 
 	| Error. Invalid_wrapper (tag, kind) ->
 		sprintf "In %s, you provided an empty ordering for %s without a caption.  You must either discard the empty ordering specification or provide a caption." (explain_tag tag) (explain_wrapper kind)
+
+	| Error. Invalid_section_level (tag, level) ->
+		sprintf "In %s, you requested a section level of %d, but the allowed maximum is %d." (explain_tag tag) level Level.max_section
+
+	| Error. Invalid_title_level (tag, level) ->
+		sprintf "In %s, you requested a title level of %d, but the allowed maximum is %d." (explain_tag tag) level Level.max_title
 
 	| Error.Invalid_counter (tag, counter) ->
 		sprintf "Invalid name '#%s#' for counter in %s. %s." (escape counter) (explain_tag tag) (explain_with_colon "A counter")

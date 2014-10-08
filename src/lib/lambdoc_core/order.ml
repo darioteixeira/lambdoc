@@ -15,14 +15,7 @@ open Sexplib.Std
 
 type ordinal_t = int with sexp
 
-type hierarchical_t =
-	| Level1_order of int
-	| Level2_order of int * int
-	| Level3_order of int * int * int
-	| Level4_order of int * int * int * int
-	| Level5_order of int * int * int * int * int
-	| Level6_order of int * int * int * int * int * int
-	with sexp
+type hierarchical_t = int list with sexp
 
 type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
 type 'a user_given_t = [ `User_given of 'a ] with sexp

@@ -111,15 +111,15 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
 	and errors = BatDynArray.create ()
-	and part_counter = Order_input.make_ordinal_counter ()
-	and section_counter = Order_input.make_hierarchy_counter ()
-	and appendix_counter = Order_input.make_hierarchy_counter ()
-	and printout_counter = Order_input.make_ordinal_counter ()
-	and equation_counter = Order_input.make_ordinal_counter ()
-	and figure_counter = Order_input.make_ordinal_counter ()
-	and table_counter = Order_input.make_ordinal_counter ()
-	and bib_counter = Order_input.make_ordinal_counter ()
-	and note_counter = Order_input.make_ordinal_counter ()
+	and part_counter = Order_input.ordinal_counter ()
+	and section_counter = Order_input.hierarchical_counter ()
+	and appendix_counter = Order_input.hierarchical_counter ()
+	and printout_counter = Order_input.ordinal_counter ()
+	and equation_counter = Order_input.ordinal_counter ()
+	and figure_counter = Order_input.ordinal_counter ()
+	and table_counter = Order_input.ordinal_counter ()
+	and bib_counter = Order_input.ordinal_counter ()
+	and note_counter = Order_input.ordinal_counter ()
 	and custom_counters = Hashtbl.create 10
         and auto_label_counter = ref 0
 	and appendixed = ref false in
@@ -176,11 +176,11 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			| Order_input.Invalid_order_format str ->
 				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				Order_input.user_hierarchical `Level1 "0"
+				Order_input.user_hierarchical (Level.section 1) "0"
 			| Order_input.Invalid_order_levels (str, expected, found) ->
 				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				Order_input.user_hierarchical `Level1 "0"
+				Order_input.user_hierarchical (Level.section 1) "0"
 
 
 	(*	Adds a new pointer to the dictionary.
@@ -768,22 +768,29 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					if !appendixed
 					then (appendix_counter, Heading.Appendixed)
 					else (section_counter, Heading.Mainbody) in
+				let level' =
+					try Level.section level
+					with Invalid_argument _ -> 
+						let msg = Error.Invalid_section_level (comm.comm_tag, level) in
+						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						Level.section 1 in
 				let order = match comm.comm_order with
-					| None	     -> Order_input.auto_hierarchical level counter
+					| None	     -> Order_input.auto_hierarchical level' counter
 					| Some ""    -> Order_input.no_order ()
-					| Some other -> make_user_hierarchical comm level other in
+					| Some other -> make_user_hierarchical comm level' other in
 				let label = make_label comm (Target.section location order) in
-				let heading = Heading.section label order location level (convert_seq ~comm astseq) in
+				let heading = Heading.section label order location level' (convert_seq ~comm astseq) in
 				let block = Block.heading ~attr heading in
 				let () = if not minipaged then add_toc_entry heading in
 				[block] in
 			let feature = match level with
-				| `Level1 -> `Feature_section1
-				| `Level2 -> `Feature_section2
-				| `Level3 -> `Feature_section3
-				| `Level4 -> `Feature_section4
-				| `Level5 -> `Feature_section5
-				| `Level6 -> `Feature_section6 in
+				| 1 -> `Feature_section1
+				| 2 -> `Feature_section2
+				| 3 -> `Feature_section3
+				| 4 -> `Feature_section4
+				| 5 -> `Feature_section5
+				| 6 -> `Feature_section6
+				| _ -> assert false in
 			check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Bibliography)) ->
@@ -796,10 +803,18 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			convert_preset_sectional ~tocable:false ~minipaged Heading.toc `Feature_toc comm
 
 		| (true, true, true, `Any_blk, (comm, Ast.Title (level, astseq))) ->
-			let elem attr _ = [Block.title ~attr level (convert_seq ~comm astseq)] in
+			let elem attr _ =
+				let level' =
+					try Level.title level
+					with Invalid_argument _ -> 
+						let msg = Error.Invalid_title_level (comm.comm_tag, level) in
+						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						Level.title 1 in
+				[Block.title ~attr level' (convert_seq ~comm astseq)] in
 			let feature = match level with
-				| `Level1 -> `Feature_title1
-				| `Level2 -> `Feature_title2 in
+				| 1 -> `Feature_title1
+				| 2 -> `Feature_title2
+				| _ -> assert false in
 			check_block_comm feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Abstract astfrag)) ->
@@ -951,7 +966,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			| (Some astseq, Some counter_name) when not (Hashtbl.mem custom_counters counter_name) ->
 				if Identifier_input.matches_counter counter_name
 				then begin
-					let counter = Order_input.make_ordinal_counter () in
+					let counter = Order_input.ordinal_counter () in
 					let data = (kind, false, Numbered (convert_seq ~comm astseq, counter)) in
 					Hashtbl.add custom_counters counter_name (kind, counter);
 					Hashtbl.add customisations env data

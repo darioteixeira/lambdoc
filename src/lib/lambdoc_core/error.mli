@@ -71,7 +71,7 @@ type error_msg_t =
 
 	| Invalid_label of Ident.t option * Pointer.t
 	| Invalid_order_format of Ident.t option * string
-	| Invalid_order_levels of Ident.t option * string * Level.hierarchical_t * int
+	| Invalid_order_levels of Ident.t option * string * Level.section_t * int
 
 	| Invalid_style_bad_boolean of Ident.t option * string * string
 	| Invalid_style_bad_lang of Ident.t option * string * string
@@ -106,6 +106,9 @@ type error_msg_t =
 	| Undefined_custom of Ident.t option * Pointer.t
 
 	| Invalid_wrapper of Ident.t option * Wrapper.kind_t
+
+	| Invalid_section_level of Ident.t option * int
+	| Invalid_title_level of Ident.t option * int
 
 	| Invalid_counter of Ident.t option * Pointer.t
 	| Mismatched_counter of Ident.t option * Pointer.t

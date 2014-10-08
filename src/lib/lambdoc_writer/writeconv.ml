@@ -45,11 +45,8 @@ end
 
 module Order_output =
 struct
-	open Order
-
-	type ordinal_converter_t = ordinal_t -> string
+	type ordinal_converter_t = Order.ordinal_t -> string
 	type hierarchical_converter_t = (int -> string) list
-
 
 	(**	This function converts an ordinal number into a sequence of uppercase
 		letters used for numbering appendices.  Ordinal 1 is converted to "A",
@@ -72,7 +69,6 @@ struct
 			String.of_char (char_of_int (65 + num)) in
 		let rems = from_base10 num in
 		List.fold_left (^) "" (List.rev_map alpha_of_int rems)
-
 
 	(**	Converts an integer into its roman numeral representation.
 	*)
@@ -100,56 +96,28 @@ struct
 						else digit 'I' 'V' 'X' i
 		in String.implode (to_roman i)
 
-
 	let format_arabic = string_of_int
-
 
 	let format_roman = roman_of_int
 
-
 	let format_mainbody = List.make 6 string_of_int
 
-
 	let format_appendixed = alphaseq_of_int :: List.make 5 string_of_int
-
 
 	let maybe_string_of_ordinal conv = function
 		| `Auto_given o
 		| `User_given o	-> Some (conv o)
 		| `None_given	-> None
 
-
-	let maybe_string_of_hierarchical conv =
-		let rec map2 fs ls = match (fs, ls) with
-			| (fhd :: ftl, lhd :: ltl) -> fhd lhd :: map2 ftl ltl
-			| _			   -> [] in
-		function
-			| `Auto_given (Level1_order l1)
-			| `User_given (Level1_order l1) ->
-				Some (String.join "." (map2 conv [l1]))
-
-			| `Auto_given (Level2_order (l1, l2))
-			| `User_given (Level2_order (l1, l2)) ->
-				Some (String.join "." (map2 conv [l1; l2]))
-
-			| `Auto_given (Level3_order (l1, l2, l3))
-			| `User_given (Level3_order (l1, l2, l3)) ->
-				Some (String.join "." (map2 conv [l1; l2; l3]))
-
-			| `Auto_given (Level4_order (l1, l2, l3, l4))
-			| `User_given (Level4_order (l1, l2, l3, l4)) ->
-				Some (String.join "." (map2 conv [l1; l2; l3; l4]))
-
-			| `Auto_given (Level5_order (l1, l2, l3, l4, l5))
-			| `User_given (Level5_order (l1, l2, l3, l4, l5)) ->
-				Some (String.join "." (map2 conv [l1; l2; l3; l4; l5]))
-
-			| `Auto_given (Level6_order (l1, l2, l3, l4, l5, l6))
-			| `User_given (Level6_order (l1, l2, l3, l4, l5, l6)) ->
-				Some (String.join "." (map2 conv [l1; l2; l3; l4; l5; l6]))
-
-			| `None_given ->
-				None
+	let maybe_string_of_hierarchical conv = function
+		| `Auto_given order
+		| `User_given order ->
+			let rec mapper fs ls = match (fs, ls) with
+				| (fhd :: ftl, lhd :: ltl) -> fhd lhd :: mapper ftl ltl
+				| _			   -> [] in
+			Some (String.join "." (mapper conv order))
+		| `None_given ->
+			None
 end
 
 
