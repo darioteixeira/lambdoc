@@ -1077,13 +1077,24 @@ let is_foo = function
 
 \part{Sectioning}
 
-\section{Introduction}
+\h1{Level 1 section}
 \p{\lorem}
-\subsection{Sub-introduction}
+\section{Level 1 section (alternative)}
 \p{\lorem}
-\subsubsection{Sub-sub-introduction}
+\h2{Level 2 section}
 \p{\lorem}
-
+\subsection{Level 2 section (alternative)}
+\p{\lorem}
+\h3{Level 3 section}
+\p{\lorem}
+\subsubsection{Level 3 section (alternative)}
+\p{\lorem}
+\h4{Level 4 section}
+\p{\lorem}
+\h5{Level 5 section}
+\p{\lorem}
+\h6{Level 6 section}
+\p{\lorem}
 
 \part{Backmatter}
 

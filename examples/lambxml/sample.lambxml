@@ -541,13 +541,22 @@ let rec count = function
 <!-- ****************************************************************** -->
 <part order="">Sectioning</part>
 
-<h1 label="sec:intro">Introduction</h1>
+<h1 label="sec:intro">Level 1 section</h1>
 <p><call name="lorem"/></p>
 
-<h2>Sub-Introduction</h2>
+<h2>Level 2 section</h2>
 <p><call name="lorem"/></p>
 
-<h3>Sub-Sub-Introduction</h3>
+<h3>Level 3 section</h3>
+<p><call name="lorem"/></p>
+
+<h4>Level 4 section</h4>
+<p><call name="lorem"/></p>
+
+<h5>Level 5 section</h5>
+<p><call name="lorem"/></p>
+
+<h6>Level 6 section</h6>
 <p><call name="lorem"/></p>
 
 
