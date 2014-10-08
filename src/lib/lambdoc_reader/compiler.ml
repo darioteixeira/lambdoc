@@ -789,8 +789,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				| 3 -> `Feature_section3
 				| 4 -> `Feature_section4
 				| 5 -> `Feature_section5
-				| 6 -> `Feature_section6
-				| _ -> assert false in
+				| _ -> `Feature_section6 in
 			check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Bibliography)) ->
@@ -813,8 +812,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Block.title ~attr level' (convert_seq ~comm astseq)] in
 			let feature = match level with
 				| 1 -> `Feature_title1
-				| 2 -> `Feature_title2
-				| _ -> assert false in
+				| _ -> `Feature_title2 in
 			check_block_comm feature comm elem
 
 		| (true, true, true, `Any_blk, (comm, Ast.Abstract astfrag)) ->
