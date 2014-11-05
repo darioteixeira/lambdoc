@@ -8,5 +8,5 @@
 
 include (Lambdoc_read_markdown_impl.Main: Lambdoc_reader.Reader.PARTIAL)
 
-module Simple = Make (Lambdoc_reader.Extension.Unit)
+module Simple = Make (Lambdoc_reader.Extension.Unitary)
 

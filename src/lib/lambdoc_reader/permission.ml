@@ -1,5 +1,5 @@
 (********************************************************************************)
-(*	Permissions.ml
+(*	Permission.ml
 	Copyright (c) 2009-2014 Dario Teixeira (dario.teixeira@yahoo.com)
 	This software is distributed under the terms of the GNU GPL version 2.
 	See LICENSE file for full license text.
@@ -17,9 +17,9 @@ open Ast
 
 (**	The type encoding the various kinds of available permissions.
 *)
-type permission_t =
-	| Optional		(** The parameter is optional but may not be empty. *)
-	| Optional0		(** The parameter is optional and may be empty. *)
+type t =
+	| Optional		(** The parameter is optional and may not be empty. *)
+	| Optional0		(** The parameter is optional but may be empty. *)
 	| Mandatory0		(** The parameter is mandatory but may be empty. *)
 	| Forbidden		(** The parameter is forbidden, either empty or not. *)
 	| Forbidden0		(** The parameter is forbidden, unless it is empty. *)
@@ -28,6 +28,9 @@ type permission_t =
 (********************************************************************************)
 (**	{1 Private functions and values}					*)
 (********************************************************************************)
+
+let permissive_class = (Optional, Optional)
+
 
 let forbidden_class = (Forbidden, Forbidden)
 
@@ -137,6 +140,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_dref		-> forbidden_class
 		| `Feature_sref		-> forbidden_class
 		| `Feature_mref		-> forbidden_class
+		| `Feature_extinl _	-> forbidden_class
 
 	and block_feature_set = function
 		| `Feature_paragraph	-> forbidden_class
@@ -153,7 +157,6 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_subpage	-> forbidden_class
 		| `Feature_verbatim	-> forbidden_class
 		| `Feature_picture	-> forbidden_class
-		| `Feature_extern	-> forbidden_class
 		| `Feature_pullquote	-> forbidden_class
 		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
 		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
@@ -179,6 +182,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| `Feature_macrodef	-> forbidden_class
 		| `Feature_boxoutdef	-> forbidden_class
 		| `Feature_theoremdef	-> forbidden_class
+		| `Feature_extblk _	-> permissive_class
 
 	and internal_feature_set = function
 		| `Feature_macrocall	-> forbidden_class

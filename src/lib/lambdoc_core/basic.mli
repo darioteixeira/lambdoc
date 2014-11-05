@@ -57,6 +57,14 @@ sig
 end
 
 
+(**	The type of keys for extension commands.
+*)
+module Extkey:
+sig
+	type t = int with sexp
+end
+
+
 (**	The type of internal references.
 *)
 module Pointer:

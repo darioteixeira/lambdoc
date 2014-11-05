@@ -14,7 +14,7 @@
 	| qanda | verse | quote
 	| mathtexblk | mathmlblk
 	| source | tabular 
-	| subpage | verbatim | pre | picture | extern
+	| subpage | verbatim | pre | picture
 	| pull | boxout | theorem
 	| equation | printout | table | figure
 	| part | appendix

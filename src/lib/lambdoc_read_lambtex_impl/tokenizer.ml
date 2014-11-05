@@ -17,11 +17,13 @@
 *)
 
 open Lexing
+open Lambdoc_core
 open Lambdoc_reader
 open Ast
 open Globalenv
 open Parser
 
+module Hashtbl = BatHashtbl
 module String = BatString
 
 
@@ -98,114 +100,150 @@ let build_op position =
 
 (**	Issues the begin tag of an environment command.
 *)
-let issue_begin_command raw_comm position =
-	let subs = Pcre.exec ~rex:begin_rex raw_comm in
-	let primary = Pcre.get_named_substring begin_rex "primary" subs in
-	let command = build_command primary begin_rex subs position in
-	let first_token =
-		if String.starts_with primary "mathtex"
-		then BEGIN_MATHTEX_BLK primary
-		else if String.starts_with primary "mathml"
-		then BEGIN_MATHML_BLK primary
-		else if String.starts_with primary "verbatim"
-		then BEGIN_VERBATIM primary
-		else if String.starts_with primary "pre"
-		then BEGIN_VERBATIM primary
-		else if String.starts_with primary "source"
-		then BEGIN_SOURCE primary
-		else match primary with
-			| "abstract"	-> BEGIN_ABSTRACT primary
-			| "itemize"
-			| "itemise"
-			| "ul"		-> BEGIN_ITEMIZE primary
-			| "enumerate"
-			| "ol"		-> BEGIN_ENUMERATE primary
-			| "description"
-			| "dl"		-> BEGIN_DESCRIPTION primary
-			| "qanda"	-> BEGIN_QANDA primary
-			| "verse"	-> BEGIN_VERSE primary
-			| "quote"	-> BEGIN_QUOTE primary
-			| "tabular"	-> BEGIN_TABULAR primary
-			| "subpage"	-> BEGIN_SUBPAGE primary
-			| "pull"	-> BEGIN_PULLQUOTE primary
-			| "equation"	-> BEGIN_EQUATION primary
-			| "printout"	-> BEGIN_PRINTOUT primary
-			| "table"	-> BEGIN_TABLE primary
-			| "figure"	-> BEGIN_FIGURE primary
-			| "bib"		-> BEGIN_BIB primary
-			| "note"	-> BEGIN_NOTE primary
-			| _		-> BEGIN_CUSTOM primary
-	and second_token = BEGIN_DUMMY command in
-	(Set Blk, [first_token; second_token])
+let make_issue_begin_command ~extblkdefs =
+	let envblks =
+		let f (_, (syntax, _)) = match syntax with
+			| #Extcomm.synblkenv_t	-> true
+			| _			-> false in
+		List.filter f extblkdefs in
+	fun raw_comm position ->
+		let subs = Pcre.exec ~rex:begin_rex raw_comm in
+		let primary = Pcre.get_named_substring begin_rex "primary" subs in
+		let command = build_command primary begin_rex subs position in
+		let first_token =
+			if String.starts_with primary "mathtex"
+			then BEGIN_MATHTEX_BLK primary
+			else if String.starts_with primary "mathml"
+			then BEGIN_MATHML_BLK primary
+			else if String.starts_with primary "verbatim"
+			then BEGIN_VERBATIM primary
+			else if String.starts_with primary "pre"
+			then BEGIN_VERBATIM primary
+			else if String.starts_with primary "source"
+			then BEGIN_SOURCE primary
+			else match primary with
+				| "abstract"	-> BEGIN_ABSTRACT primary
+				| "itemize"
+				| "itemise"
+				| "ul"		-> BEGIN_ITEMIZE primary
+				| "enumerate"
+				| "ol"		-> BEGIN_ENUMERATE primary
+				| "description"
+				| "dl"		-> BEGIN_DESCRIPTION primary
+				| "qanda"	-> BEGIN_QANDA primary
+				| "verse"	-> BEGIN_VERSE primary
+				| "quote"	-> BEGIN_QUOTE primary
+				| "tabular"	-> BEGIN_TABULAR primary
+				| "subpage"	-> BEGIN_SUBPAGE primary
+				| "pull"	-> BEGIN_PULLQUOTE primary
+				| "equation"	-> BEGIN_EQUATION primary
+				| "printout"	-> BEGIN_PRINTOUT primary
+				| "table"	-> BEGIN_TABLE primary
+				| "figure"	-> BEGIN_FIGURE primary
+				| "bib"		-> BEGIN_BIB primary
+				| "note"	-> BEGIN_NOTE primary
+				| x ->
+					try
+						let (tag, (syntax, _)) = List.find (fun (tag, _) -> String.starts_with x tag) envblks in
+						match syntax with
+							| `Synblk_envraw	-> BEGIN_EXTBLK_ENVRAW tag
+							| `Synblk_envseqraw	-> BEGIN_EXTBLK_ENVSEQRAW tag
+							| `Synblk_envrawraw	-> BEGIN_EXTBLK_ENVRAWRAW tag
+							| `Synblk_envseqoptraw	-> BEGIN_EXTBLK_ENVSEQOPTRAW tag
+							| `Synblk_envrawoptraw	-> BEGIN_EXTBLK_ENVRAWOPTRAW tag
+							| _			-> assert false
+					with
+						Not_found -> BEGIN_CUSTOM x
+		and second_token = BEGIN_DUMMY command in
+		(Set Blk, [first_token; second_token])
 
 
 (**	Issues a simple command.
 *)
-let issue_simple_command raw_comm position =
-	let subs = Pcre.exec ~rex:simple_rex raw_comm in
-	let simple = Pcre.get_named_substring simple_rex "simple" subs in
-	let command = build_command ("\\" ^ simple) simple_rex subs position in
-	let (context, token) = match simple with
-		| "br"				-> (Inl, LINEBREAK command)
-		| "glyph"			-> (Inl, GLYPH command)
-		| "bold" | "strong" | "b"	-> (Inl, BOLD command)
-		| "emph" | "em" | "i"		-> (Inl, EMPH command)
-		| "code" | "tt"			-> (Inl, CODE command)
-		| "caps"			-> (Inl, CAPS command)
-		| "ins"				-> (Inl, INS command)
-		| "del"				-> (Inl, DEL command)
-		| "sup"				-> (Inl, SUP command)
-		| "sub"				-> (Inl, SUB command)
-		| "mbox"			-> (Inl, MBOX command)
-		| "span"			-> (Inl, SPAN command)
-		| "link" | "a"			-> (Inl, LINK command)
-		| "see"				-> (Inl, SEE command)
-		| "cite"			-> (Inl, CITE command)
-		| "dref"			-> (Inl, DREF command)
-		| "sref"			-> (Inl, SREF command)
-		| "mref"			-> (Inl, MREF command)
-		| "paragraph" | "p"		-> (Blk, PARAGRAPH command)
-		| "picture"			-> (Blk, PICTURE command)
-		| "extern"			-> (Blk, EXTERN command)
-		| "part"			-> (Blk, PART command)
-		| "appendix"			-> (Blk, APPENDIX command)
-		| "h1" | "section"		-> (Blk, SECTION (command, 1))
-		| "h2" | "subsection"		-> (Blk, SECTION (command, 2))
-		| "h3" | "subsubsection"	-> (Blk, SECTION (command, 3))
-		| "h4"				-> (Blk, SECTION (command, 4))
-		| "h5"				-> (Blk, SECTION (command, 5))
-		| "h6"				-> (Blk, SECTION (command, 6))
-		| "bibliography"		-> (Blk, BIBLIOGRAPHY command)
-		| "notes"			-> (Blk, NOTES command)
-		| "toc"				-> (Blk, TOC command)
-		| "title"			-> (Blk, TITLE (command, 1))
-		| "subtitle"			-> (Blk, TITLE (command, 2))
-		| "rule" | "hr"			-> (Blk, RULE command)
-		| "newmacro"			-> (Blk, MACRODEF command)
-		| "newboxout"			-> (Blk, BOXOUTDEF command)
-		| "newtheorem"			-> (Blk, THEOREMDEF command)
-		| "item" | "li"			-> (Blk, ITEM command)
-		| "question"			-> (Blk, QUESTION command)
-		| "rquestion"			-> (Blk, RQUESTION command)
-		| "answer"			-> (Blk, ANSWER command)
-		| "ranswer"			-> (Blk, RANSWER command)
-		| "head"			-> (Blk, THEAD command)
-		| "foot"			-> (Blk, TFOOT command)
-		| "body"			-> (Blk, TBODY command)
-		| "who"				-> (Blk, BIB_AUTHOR command)
-		| "what"			-> (Blk, BIB_TITLE command)
-		| "where"			-> (Blk, BIB_RESOURCE command)
-		| "arg"				-> (Inl, MACROARG command)
-		| _				-> (Inl, MACROCALL (command, simple))
-	in (Set context, [token])
+let make_issue_simple_command ~extinldefs ~extblkdefs =
+	let simblks =
+		let f (_, (syntax, _)) = match (syntax : Extcomm.synblk_t) with
+			| #Extcomm.synblksim_t	-> true
+			| _			-> false in
+		List.filter f extblkdefs in
+	fun raw_comm position ->
+		let subs = Pcre.exec ~rex:simple_rex raw_comm in
+		let simple = Pcre.get_named_substring simple_rex "simple" subs in
+		let command = build_command ("\\" ^ simple) simple_rex subs position in
+		let (context, token) = match simple with
+			| "br"				-> (Inl, LINEBREAK command)
+			| "glyph"			-> (Inl, GLYPH command)
+			| "bold" | "strong" | "b"	-> (Inl, BOLD command)
+			| "emph" | "em" | "i"		-> (Inl, EMPH command)
+			| "code" | "tt"			-> (Inl, CODE command)
+			| "caps"			-> (Inl, CAPS command)
+			| "ins"				-> (Inl, INS command)
+			| "del"				-> (Inl, DEL command)
+			| "sup"				-> (Inl, SUP command)
+			| "sub"				-> (Inl, SUB command)
+			| "mbox"			-> (Inl, MBOX command)
+			| "span"			-> (Inl, SPAN command)
+			| "link" | "a"			-> (Inl, LINK command)
+			| "see"				-> (Inl, SEE command)
+			| "cite"			-> (Inl, CITE command)
+			| "dref"			-> (Inl, DREF command)
+			| "sref"			-> (Inl, SREF command)
+			| "mref"			-> (Inl, MREF command)
+			| "paragraph" | "p"		-> (Blk, PARAGRAPH command)
+			| "picture"			-> (Blk, PICTURE command)
+			| "part"			-> (Blk, PART command)
+			| "appendix"			-> (Blk, APPENDIX command)
+			| "h1" | "section"		-> (Blk, SECTION (command, 1))
+			| "h2" | "subsection"		-> (Blk, SECTION (command, 2))
+			| "h3" | "subsubsection"	-> (Blk, SECTION (command, 3))
+			| "h4"				-> (Blk, SECTION (command, 4))
+			| "h5"				-> (Blk, SECTION (command, 5))
+			| "h6"				-> (Blk, SECTION (command, 6))
+			| "bibliography"		-> (Blk, BIBLIOGRAPHY command)
+			| "notes"			-> (Blk, NOTES command)
+			| "toc"				-> (Blk, TOC command)
+			| "title"			-> (Blk, TITLE (command, 1))
+			| "subtitle"			-> (Blk, TITLE (command, 2))
+			| "rule" | "hr"			-> (Blk, RULE command)
+			| "newmacro"			-> (Blk, MACRODEF command)
+			| "newboxout"			-> (Blk, BOXOUTDEF command)
+			| "newtheorem"			-> (Blk, THEOREMDEF command)
+			| "item" | "li"			-> (Blk, ITEM command)
+			| "question"			-> (Blk, QUESTION command)
+			| "rquestion"			-> (Blk, RQUESTION command)
+			| "answer"			-> (Blk, ANSWER command)
+			| "ranswer"			-> (Blk, RANSWER command)
+			| "head"			-> (Blk, THEAD command)
+			| "foot"			-> (Blk, TFOOT command)
+			| "body"			-> (Blk, TBODY command)
+			| "who"				-> (Blk, BIB_AUTHOR command)
+			| "what"			-> (Blk, BIB_TITLE command)
+			| "where"			-> (Blk, BIB_RESOURCE command)
+			| "arg"				-> (Inl, MACROARG command)
+			| x ->
+				let maybe_assoc key xs = try Some (List.assoc key xs) with Not_found -> None in
+				match maybe_assoc x extinldefs with
+					| Some (`Syninl_simseq, _)	 -> (Inl, EXTINL_SIMSEQ (command, x))
+					| Some (`Syninl_simraw, _)	 -> (Inl, EXTINL_SIMRAW (command, x))
+					| Some (`Syninl_simrawseq, _)	 -> (Inl, EXTINL_SIMRAWSEQ (command, x))
+					| Some (`Syninl_simrawseqopt, _) -> (Inl, EXTINL_SIMRAWSEQOPT (command, x))
+					| None ->
+						match maybe_assoc x simblks with
+							| Some (`Synblk_simseq, _) -> (Blk, EXTBLK_SIMSEQ (command, x))
+							| Some (`Synblk_simraw, _) -> (Blk, EXTBLK_SIMRAW (command, x))
+							| _			   -> (Inl, MACROCALL (command, x))
+		in (Set context, [token])
 
 
 (********************************************************************************)
 (**	{1 Tokenizer class}							*)
 (********************************************************************************)
 
-class tokenizer =
+class tokenizer ~(extinldefs: Extcomm.extinldefs_t) ~(extblkdefs: Extcomm.extblkdefs_t) =
 object (self)
+
+	val issue_begin_command = make_issue_begin_command ~extblkdefs
+	val issue_simple_command = make_issue_simple_command ~extinldefs ~extblkdefs
 
 	val mutable context = Blk
 	val mutable history = []

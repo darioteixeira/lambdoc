@@ -8,5 +8,5 @@
 
 include Lambdoc_reader.Reader.PARTIAL
 
-module Simple: module type of Make (Lambdoc_reader.Extension.Unit)
+module Simple: module type of Make (Lambdoc_reader.Extension.Unitary)
 

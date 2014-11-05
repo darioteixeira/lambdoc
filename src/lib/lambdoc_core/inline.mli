@@ -32,12 +32,13 @@ type inline_t =
 	| Sub of seq_t					(** Subscript *)
 	| Mbox of seq_t					(** Text sequence which should not be broken across lines *)
 	| Span of seq_t					(** A custom span of text *)
-	| Link of Href.t * seq_t option			(** Reference to an external resource *)
+	| Link of Href.t * seq_t option			(** Reference to an extenal resource *)
 	| See of Pointer.t list				(** Reference to an end note *)
 	| Cite of Pointer.t list			(** Citation of a bibliography entry *)
 	| Dref of Pointer.t * seq_t option		(** Dumb reference to an internal element *)
 	| Sref of Pointer.t * seq_t option		(** Smart reference to an internal element *)
 	| Mref of Pointer.t * seq_t			(** Manual reference to an internal element *)
+	| Extinl of Extkey.t				(** Inline extension *)
 
 and t =
 	{
@@ -73,4 +74,5 @@ val cite:	?attr:Attr.t -> Pointer.t list -> t
 val dref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
 val sref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
 val mref:	?attr:Attr.t -> Pointer.t -> seq_t -> t
+val extinl:	?attr:Attr.t -> Extkey.t -> t
 

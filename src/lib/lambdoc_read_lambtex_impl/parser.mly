@@ -9,12 +9,6 @@
 %{
 open Lambdoc_reader
 open Globalenv
-
-let the comm = match comm.Ast.comm_tag with
-	| Some x -> x
-	| None	 -> invalid_arg "the"
-
-let to_string = BatText.to_string
 %}
 
 
@@ -76,6 +70,12 @@ let to_string = BatText.to_string
 %token <string> BEGIN_BIB
 %token <string> BEGIN_NOTE
 
+%token <string> BEGIN_EXTBLK_ENVRAW
+%token <string> BEGIN_EXTBLK_ENVRAWRAW
+%token <string> BEGIN_EXTBLK_ENVSEQRAW
+%token <string> BEGIN_EXTBLK_ENVRAWOPTRAW
+%token <string> BEGIN_EXTBLK_ENVSEQOPTRAW
+
 %token END_BLOCK
 
 
@@ -104,7 +104,6 @@ let to_string = BatText.to_string
 
 %token <Lambdoc_reader.Ast.command_t> PARAGRAPH
 %token <Lambdoc_reader.Ast.command_t> PICTURE
-%token <Lambdoc_reader.Ast.command_t> EXTERN
 %token <Lambdoc_reader.Ast.command_t> PART
 %token <Lambdoc_reader.Ast.command_t> APPENDIX
 %token <Lambdoc_reader.Ast.command_t * int> SECTION
@@ -132,6 +131,14 @@ let to_string = BatText.to_string
 
 %token <Lambdoc_reader.Ast.command_t> MACROARG
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t > MACROCALL
+
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMSEQ
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMRAW
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMRAWSEQ
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMRAWSEQOPT
+
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTBLK_SIMSEQ
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTBLK_SIMRAW
 
 
 /********************************************************************************/
@@ -175,7 +182,6 @@ block:
 simple_block:
 	| PARAGRAPH inline_bundle						{($1, Ast.Paragraph $2)}
 	| PICTURE raw_bundle raw_bundle						{($1, Ast.Picture ($2, $3))}
-	| EXTERN raw_bundle							{($1, Ast.Extern $2)}
 	| PART inline_bundle							{($1, Ast.Part $2)}
 	| APPENDIX								{($1, Ast.Appendix)}
 	| SECTION inline_bundle							{let (comm, level) = $1 in (comm, Ast.Section (level, $2))}
@@ -187,29 +193,35 @@ simple_block:
 	| MACRODEF raw_bundle raw_bundle inline_bundle				{($1, Ast.Macrodef ($2, $3, $4))}
 	| BOXOUTDEF raw_bundle boxoutdef					{let (caption, counter) = $3 in ($1, Ast.Boxoutdef ($2, caption, counter))}
 	| THEOREMDEF raw_bundle theoremdef					{let (caption, counter) = $3 in ($1, Ast.Theoremdef ($2, caption, counter))}
+	| sim_extblk								{let (comm, tag, extblk) = $1 in (comm, Ast.Extblk (tag, extblk))}
+
+sim_extblk:
+	| EXTBLK_SIMSEQ inline_bundle						{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_simseq $2)}
+	| EXTBLK_SIMRAW raw_bundle						{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_simraw $2)}
 
 env_block:
-	| begin_block(blk_itemize) anon_item_frag* end_block			{($1, Ast.Itemize $2)}
-	| begin_block(blk_enumerate) anon_item_frag* end_block			{($1, Ast.Enumerate $2)}
-	| begin_block(blk_description) desc_item_frag* end_block		{($1, Ast.Description $2)}
-	| begin_block(blk_qanda) qanda_frag* end_block				{($1, Ast.Qanda $2)}
-	| begin_block(blk_verse) block* end_block				{($1, Ast.Verse $2)}
-	| begin_block(blk_quote) block* end_block				{($1, Ast.Quote $2)}
-	| begin_block(blk_mathtex_blk) RAW end_block				{($1, Ast.Mathtex_blk (to_string $2))}
-	| begin_block(blk_mathml_blk) RAW end_block				{($1, Ast.Mathml_blk (to_string $2))}
-	| begin_block(blk_source) RAW end_block					{($1, Ast.Source (to_string $2))}
-	| begin_block(blk_tabular) raw_bundle tabular end_block			{($1, Ast.Tabular ($2, $3))}
-	| begin_block(blk_subpage) block* end_block				{($1, Ast.Subpage $2)}
-	| begin_block(blk_verbatim) RAW end_block				{($1, Ast.Verbatim (to_string $2))}
-	| begin_block(blk_pullquote) inline_bundle? block* end_block		{($1, Ast.Pullquote ($2, $3))}
-	| begin_block(blk_custom) inline_bundle? block* end_block		{($1, Ast.Custom (None, the $1, $2, $3))}
-	| begin_block(blk_equation) inline_bundle? block end_block		{($1, Ast.Equation ($2, $3))}
-	| begin_block(blk_printout) inline_bundle? block end_block		{($1, Ast.Printout ($2, $3))}
-	| begin_block(blk_table) inline_bundle? block end_block			{($1, Ast.Table ($2, $3))}
-	| begin_block(blk_figure) inline_bundle? block end_block		{($1, Ast.Figure ($2, $3))}
-	| begin_block(blk_abstract) block* end_block				{($1, Ast.Abstract $2)}
-	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
-	| begin_block(blk_note) block* end_block				{($1, Ast.Note $2)}
+	| begin_block(blk_itemize) anon_item_frag* end_block			{let (comm, _) = $1 in (comm, Ast.Itemize $2)}
+	| begin_block(blk_enumerate) anon_item_frag* end_block			{let (comm, _) = $1 in (comm, Ast.Enumerate $2)}
+	| begin_block(blk_description) desc_item_frag* end_block		{let (comm, _) = $1 in (comm, Ast.Description $2)}
+	| begin_block(blk_qanda) qanda_frag* end_block				{let (comm, _) = $1 in (comm, Ast.Qanda $2)}
+	| begin_block(blk_verse) block* end_block				{let (comm, _) = $1 in (comm, Ast.Verse $2)}
+	| begin_block(blk_quote) block* end_block				{let (comm, _) = $1 in (comm, Ast.Quote $2)}
+	| begin_block(blk_mathtex_blk) RAW end_block				{let (comm, _) = $1 in (comm, Ast.Mathtex_blk (BatText.to_string $2))}
+	| begin_block(blk_mathml_blk) RAW end_block				{let (comm, _) = $1 in (comm, Ast.Mathml_blk (BatText.to_string $2))}
+	| begin_block(blk_source) RAW end_block					{let (comm, _) = $1 in (comm, Ast.Source (BatText.to_string $2))}
+	| begin_block(blk_tabular) raw_bundle tabular end_block			{let (comm, _) = $1 in (comm, Ast.Tabular ($2, $3))}
+	| begin_block(blk_subpage) block* end_block				{let (comm, _) = $1 in (comm, Ast.Subpage $2)}
+	| begin_block(blk_verbatim) RAW end_block				{let (comm, _) = $1 in (comm, Ast.Verbatim (BatText.to_string $2))}
+	| begin_block(blk_pullquote) inline_bundle? block* end_block		{let (comm, _) = $1 in (comm, Ast.Pullquote ($2, $3))}
+	| begin_block(blk_custom) inline_bundle? block* end_block		{let (comm, tag) = $1 in (comm, Ast.Custom (None, tag, $2, $3))}
+	| begin_block(blk_equation) inline_bundle? block end_block		{let (comm, _) = $1 in (comm, Ast.Equation ($2, $3))}
+	| begin_block(blk_printout) inline_bundle? block end_block		{let (comm, _) = $1 in (comm, Ast.Printout ($2, $3))}
+	| begin_block(blk_table) inline_bundle? block end_block			{let (comm, _) = $1 in (comm, Ast.Table ($2, $3))}
+	| begin_block(blk_figure) inline_bundle? block end_block		{let (comm, _) = $1 in (comm, Ast.Figure ($2, $3))}
+	| begin_block(blk_abstract) block* end_block				{let (comm, _) = $1 in (comm, Ast.Abstract $2)}
+	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{let (comm, _) = $1 in (comm, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
+	| begin_block(blk_note) block* end_block				{let (comm, _) = $1 in (comm, Ast.Note $2)}
+	| env_extblk								{let (comm, tag, extblk) = $1 in (comm, Ast.Extblk (tag, extblk))}
 
 anon_item_frag:
 	| ITEM block*								{($1, $2)}
@@ -222,6 +234,13 @@ qanda_frag:
 	| RQUESTION block*							{($1, Ast.Same_questioner, $2)}
 	| ANSWER inline_bundle? block*						{($1, Ast.New_answerer $2, $3)}
 	| RANSWER block*							{($1, Ast.Same_answerer, $2)}
+
+env_extblk:
+	| begin_block(extblk_envraw) RAW end_block				{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envraw (BatText.to_string $2))}
+	| begin_block(extblk_envseqraw) inline_bundle RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envseqraw ($2, BatText.to_string $3))}
+	| begin_block(extblk_envrawraw) raw_bundle RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envrawraw ($2, BatText.to_string $3))}
+	| begin_block(extblk_envseqoptraw) inline_bundle? RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envseqoptraw ($2, BatText.to_string $3))}
+	| begin_block(extblk_envrawoptraw) raw_bundle? RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envrawoptraw ($2, BatText.to_string $3))}
 
 bib_author:
 	| BIB_AUTHOR inline_bundle						{($1, $2)}
@@ -262,11 +281,11 @@ cell:	CELL_MARK raw_bundle? option(inline+)					{($1, $2, $3)}
 /********************************************************************************/
 
 inline:
-	| PLAIN										{let (comm, txt) = $1 in (comm, Ast.Plain (to_string txt))}
+	| PLAIN										{let (comm, txt) = $1 in (comm, Ast.Plain (BatText.to_string txt))}
 	| ENTITY									{let (comm, ent) = $1 in (comm, Ast.Entity ent)}
 	| LINEBREAK									{($1, Ast.Linebreak)}
-	| BEGIN_MATHTEX_INL push(mathtex_inl) OPEN_DUMMY RAW pop_brk END_MATHTEX_INL	{($1, Ast.Mathtex_inl (to_string $4))}
-	| BEGIN_MATHML_INL push(mathml_inl) OPEN_DUMMY RAW pop_brk END_MATHML_INL	{($1, Ast.Mathml_inl (to_string $4))}
+	| BEGIN_MATHTEX_INL push(mathtex_inl) OPEN_DUMMY RAW pop_brk END_MATHTEX_INL	{($1, Ast.Mathtex_inl (BatText.to_string $4))}
+	| BEGIN_MATHML_INL push(mathml_inl) OPEN_DUMMY RAW pop_brk END_MATHML_INL	{($1, Ast.Mathml_inl (BatText.to_string $4))}
 	| GLYPH raw_bundle raw_bundle							{($1, Ast.Glyph ($2, $3))}
 	| BOLD inline_bundle								{($1, Ast.Bold $2)}
 	| EMPH inline_bundle								{($1, Ast.Emph $2)}
@@ -286,6 +305,13 @@ inline:
 	| MREF raw_bundle inline_bundle							{($1, Ast.Mref ($2, $3))}
 	| MACROARG raw_bundle								{($1, Ast.Macroarg $2)}
 	| MACROCALL inline_bundle*							{let (comm, label) = $1 in (comm, Ast.Macrocall (label, $2))}
+	| sim_extinl									{let (comm, tag, extinl) = $1 in (comm, Ast.Extinl (tag, extinl))}
+
+sim_extinl:
+	| EXTINL_SIMSEQ inline_bundle							{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simseq $2)}
+	| EXTINL_SIMRAW raw_bundle							{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simraw $2)}
+	| EXTINL_SIMRAWSEQ raw_bundle inline_bundle					{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simrawseq ($2, $3))}
+	| EXTINL_SIMRAWSEQOPT raw_bundle inline_bundle?					{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simrawseqopt ($2, $3))}
 
 
 /********************************************************************************/
@@ -293,16 +319,17 @@ inline:
 /********************************************************************************/
 
 inline_bundle: 		BEGIN push(general) OPEN_DUMMY inline* pop_brk END	{$4}
-raw_bundle: 		BEGIN push(raw) OPEN_DUMMY RAW pop_brk END		{to_string $4}
+raw_bundle: 		BEGIN push(raw) OPEN_DUMMY RAW pop_brk END		{BatText.to_string $4}
 
 
 /********************************************************************************/
 /* Dummy actions.								*/
 /********************************************************************************/
 
-begin_block(x):		push(x) BEGIN_DUMMY					{$2}
+begin_block(x):		push_blk(x) BEGIN_DUMMY					{($2, $1)}
 end_block:		pop_blk END_BLOCK					{$2}
 
+push_blk(x):		x							{let (tag, scanner) = $1 in Globalenv.push (Some tag, scanner); tag}
 push(x):		x							{Globalenv.push $1}
 pop_blk:		END_DUMMY						{Globalenv.pop (Some $1)}
 pop_brk:		CLOSE_DUMMY						{Globalenv.pop None}
@@ -318,25 +345,31 @@ mathml_inl:		/* empty */						{(None, Scanner_mathml_inl)}
 
 /********************************************************************************/
 
-blk_itemize:		BEGIN_ITEMIZE						{(Some $1, Scanner_general)}
-blk_enumerate:		BEGIN_ENUMERATE						{(Some $1, Scanner_general)}
-blk_description:	BEGIN_DESCRIPTION					{(Some $1, Scanner_general)}
-blk_qanda:		BEGIN_QANDA						{(Some $1, Scanner_general)}
-blk_verse:		BEGIN_VERSE						{(Some $1, Scanner_general)}
-blk_quote:		BEGIN_QUOTE						{(Some $1, Scanner_general)}
-blk_mathtex_blk:	BEGIN_MATHTEX_BLK					{(Some $1, Scanner_literal $1)}
-blk_mathml_blk:		BEGIN_MATHML_BLK					{(Some $1, Scanner_literal $1)}
-blk_source:		BEGIN_SOURCE						{(Some $1, Scanner_literal $1)}
-blk_tabular:		BEGIN_TABULAR						{(Some $1, Scanner_tabular)}
-blk_subpage:		BEGIN_SUBPAGE						{(Some $1, Scanner_general)}
-blk_verbatim:		BEGIN_VERBATIM						{(Some $1, Scanner_literal $1)}
-blk_pullquote:		BEGIN_PULLQUOTE						{(Some $1, Scanner_general)}
-blk_custom:		BEGIN_CUSTOM						{(Some $1, Scanner_general)}
-blk_equation:		BEGIN_EQUATION						{(Some $1, Scanner_general)}
-blk_printout:		BEGIN_PRINTOUT 						{(Some $1, Scanner_general)}
-blk_table:		BEGIN_TABLE						{(Some $1, Scanner_general)}
-blk_figure:		BEGIN_FIGURE						{(Some $1, Scanner_general)}
-blk_abstract:		BEGIN_ABSTRACT						{(Some $1, Scanner_general)}
-blk_bib:		BEGIN_BIB						{(Some $1, Scanner_general)}
-blk_note:		BEGIN_NOTE						{(Some $1, Scanner_general)}
+blk_itemize:			BEGIN_ITEMIZE					{($1, Scanner_general)}
+blk_enumerate:			BEGIN_ENUMERATE					{($1, Scanner_general)}
+blk_description:		BEGIN_DESCRIPTION				{($1, Scanner_general)}
+blk_qanda:			BEGIN_QANDA					{($1, Scanner_general)}
+blk_verse:			BEGIN_VERSE					{($1, Scanner_general)}
+blk_quote:			BEGIN_QUOTE					{($1, Scanner_general)}
+blk_mathtex_blk:		BEGIN_MATHTEX_BLK				{($1, Scanner_literal $1)}
+blk_mathml_blk:			BEGIN_MATHML_BLK				{($1, Scanner_literal $1)}
+blk_source:			BEGIN_SOURCE					{($1, Scanner_literal $1)}
+blk_tabular:			BEGIN_TABULAR					{($1, Scanner_tabular)}
+blk_subpage:			BEGIN_SUBPAGE					{($1, Scanner_general)}
+blk_verbatim:			BEGIN_VERBATIM					{($1, Scanner_literal $1)}
+blk_pullquote:			BEGIN_PULLQUOTE					{($1, Scanner_general)}
+blk_custom:			BEGIN_CUSTOM					{($1, Scanner_general)}
+blk_equation:			BEGIN_EQUATION					{($1, Scanner_general)}
+blk_printout:			BEGIN_PRINTOUT 					{($1, Scanner_general)}
+blk_table:			BEGIN_TABLE					{($1, Scanner_general)}
+blk_figure:			BEGIN_FIGURE					{($1, Scanner_general)}
+blk_abstract:			BEGIN_ABSTRACT					{($1, Scanner_general)}
+blk_bib:			BEGIN_BIB					{($1, Scanner_general)}
+blk_note:			BEGIN_NOTE					{($1, Scanner_general)}
+
+extblk_envraw:			BEGIN_EXTBLK_ENVRAW				{($1, Scanner_literal $1)}
+extblk_envseqraw:		BEGIN_EXTBLK_ENVSEQRAW				{($1, Scanner_literal $1)}
+extblk_envrawraw:		BEGIN_EXTBLK_ENVRAWRAW				{($1, Scanner_literal $1)}
+extblk_envseqoptraw:		BEGIN_EXTBLK_ENVSEQOPTRAW			{($1, Scanner_literal $1)}
+extblk_envrawoptraw:		BEGIN_EXTBLK_ENVRAWOPTRAW			{($1, Scanner_literal $1)}
 

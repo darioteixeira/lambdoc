@@ -62,6 +62,13 @@ type seq_t = inline_t list
 	| Mref of string * seq_t
 	| Macroarg of string
 	| Macrocall of string * seq_t list
+	| Extinl of Ident.t * extinl_t
+
+and extinl_t =
+	| Extinl_simseq of seq_t
+	| Extinl_simraw of string
+	| Extinl_simrawseq of string * seq_t
+	| Extinl_simrawseqopt of string * seq_t option
 
 
 (********************************************************************************)
@@ -105,7 +112,6 @@ type frag_t = block_t list
 	| Subpage of frag_t
 	| Verbatim of string
 	| Picture of string * string
-	| Extern of string
 	| Pullquote of seq_t option * frag_t
 	| Custom of Custom.kind_t option * string * seq_t option * frag_t
 	| Equation of seq_t option * block_t
@@ -126,12 +132,22 @@ type frag_t = block_t list
 	| Macrodef of string * string * seq_t
 	| Boxoutdef of string * seq_t option * string option
 	| Theoremdef of string * seq_t * string option
+	| Extblk of Ident.t * extblk_t
 
 and qanda_t =
 	| New_questioner of seq_t option
 	| New_answerer of seq_t option
 	| Same_questioner
 	| Same_answerer
+
+and extblk_t =
+	| Extblk_simseq of seq_t
+	| Extblk_simraw of string
+	| Extblk_envraw of string
+	| Extblk_envseqraw of seq_t * string
+	| Extblk_envrawraw of string * string
+	| Extblk_envseqoptraw of seq_t option * string
+	| Extblk_envrawoptraw of string option * string
 
 
 (********************************************************************************)

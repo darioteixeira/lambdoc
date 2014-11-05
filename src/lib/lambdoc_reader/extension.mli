@@ -18,6 +18,7 @@ open Basic
 (********************************************************************************)
 
 type error_t = [ `Unsupported | `Failed of string | `Style of string ]
+
 type 'a result_t = [ `Okay of 'a | `Error of error_t ]
 
 
@@ -45,14 +46,19 @@ module type S =
 sig
 	module Monad: MONAD
 
-	type link_t
-	type image_t
-	type extern_t
-	type rconfig_t
+	type linkdata_t		(** Payload associated with {!read_link} *)
+	type imagedata_t	(** Payload associated with {!read_image} *)
+	type extinldata_t	(** Payload associated with {!read_extinl} *)
+	type extblkdata_t	(** Payload associated with {!read_extblk} *)
+	type rconfig_t		(** Reader configuration *)
 
-	val resolve_link: ?rconfig:rconfig_t -> Href.t -> string option -> link_t result_t Monad.t
-	val resolve_image: ?rconfig:rconfig_t -> Href.t -> string option -> image_t result_t Monad.t
-	val resolve_extern: ?rconfig:rconfig_t -> Href.t -> string option -> extern_t result_t Monad.t
+	val extinldefs: Extcomm.extinldefs_t
+	val extblkdefs: Extcomm.extblkdefs_t
+
+	val read_link: ?rconfig:rconfig_t -> Href.t -> linkdata_t result_t Monad.t
+	val read_image: ?rconfig:rconfig_t -> Href.t -> imagedata_t result_t Monad.t
+	val read_extinl: ?rconfig:rconfig_t -> Ident.t -> Extcomm.extinl_t -> extinldata_t result_t Monad.t
+	val read_extblk: ?rconfig:rconfig_t -> Ident.t -> Extcomm.extblk_t -> extblkdata_t result_t Monad.t
 end
 
 
@@ -62,10 +68,11 @@ end
 
 module Identity: MONAD with type 'a t = 'a
 
-module Unit: S with
+module Unitary: S with
 	type 'a Monad.t = 'a and
-	type link_t = unit and
-	type image_t = unit and
-	type extern_t = unit and
+	type linkdata_t = unit and
+	type imagedata_t = unit and
+	type extinldata_t = unit and
+	type extblkdata_t = unit and
 	type rconfig_t = unit
 

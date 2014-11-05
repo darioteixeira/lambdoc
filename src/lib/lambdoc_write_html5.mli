@@ -49,14 +49,15 @@ sig
 	include Writer.S with
 		type t = Html5_types.div Html5.elt and
 		type 'a monad_t = 'a Ext.Monad.t and
-		type link_t = Ext.link_t and
-		type image_t = Ext.image_t and
-		type extern_t = Ext.extern_t and
+		type linkdata_t = Ext.linkdata_t and
+		type imagedata_t = Ext.imagedata_t and
+		type extinldata_t = Ext.extinldata_t and
+		type extblkdata_t = Ext.extblkdata_t and
 		type wconfig_t = Ext.wconfig_t and
 		type valid_options_t := valid_options_t and
 		type invalid_options_t := invalid_options_t
 end
 
 
-module Make_simple: module type of Make (Lambdoc_writer.Extension.Unit)
+module Make_simple: module type of Make (Lambdoc_writer.Extension.Unitary)
 

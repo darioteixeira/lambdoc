@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Extension.
+(**	Writer extension.
 *)
 
 open Lambdoc_core
@@ -33,14 +33,16 @@ module type S =
 sig
 	module Monad: MONAD
 
-	type link_t
-	type image_t
-	type extern_t
+	type linkdata_t
+	type imagedata_t
+	type extinldata_t
+	type extblkdata_t
 	type wconfig_t
 
-	val expand_link: ?wconfig:wconfig_t -> Href.t -> link_t -> (Href.t * Inline.seq_t option) Monad.t
-	val expand_image: ?wconfig:wconfig_t -> Href.t -> image_t -> Href.t Monad.t
-	val expand_extern: ?wconfig:wconfig_t -> Href.t -> extern_t -> Block.frag_t Monad.t
+	val write_link: ?wconfig:wconfig_t -> Href.t -> linkdata_t -> (Href.t * Inline.seq_t option) Monad.t
+	val write_image: ?wconfig:wconfig_t -> Href.t -> imagedata_t -> Href.t Monad.t
+	val write_extinl: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extinl_t -> extinldata_t -> Inline.seq_t Monad.t
+	val write_extblk: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extblk_t ->extblkdata_t -> Block.frag_t Monad.t
 end
 
 
@@ -50,10 +52,11 @@ end
 
 module Identity: MONAD with type 'a t = 'a
 
-module Unit: S with
+module Unitary: S with
 	type 'a Monad.t = 'a and
-	type link_t = unit and
-	type image_t = unit and
-	type extern_t = unit and
+	type linkdata_t = unit and
+	type imagedata_t = unit and
+	type extinldata_t = unit and
+	type extblkdata_t = unit and
 	type wconfig_t = unit
 

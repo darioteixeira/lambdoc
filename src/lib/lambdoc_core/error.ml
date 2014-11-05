@@ -38,19 +38,6 @@ type target_t =
 	with sexp
 
 
-type blk_category_t =
-	[ `Super_blk
-	| `Listable_blk
-	| `Quotable_blk
-	| `Embeddable_blk
-	| `Paragraph_blk
-	| `Equation_blk
-	| `Printout_blk
-	| `Table_blk
-	| `Figure_blk
-	] with sexp
-
-
 type error_msg_t =
 	| Misplaced_label_parameter of Ident.t option * invalid_parameter_reason_t
 	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
@@ -117,7 +104,7 @@ type error_msg_t =
 	| Empty_sequence of Ident.t option
 	| Empty_fragment of Ident.t option
 	| Unexpected_inline of Ident.t option
-	| Unexpected_block of Ident.t option * blk_category_t
+	| Unexpected_block of Ident.t option * Block.category_t
 
 	| Malformed_code_point
 	| Reading_error of string

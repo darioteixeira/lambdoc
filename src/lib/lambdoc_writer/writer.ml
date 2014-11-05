@@ -22,9 +22,10 @@ module type WRITABLE =
 sig
 	type t
 	type 'a monad_t
-	type link_t
-	type image_t
-	type extern_t
+	type linkdata_t
+	type imagedata_t
+	type extinldata_t
+	type extblkdata_t
 	type wconfig_t
 	type valid_options_t
 	type invalid_options_t
@@ -35,7 +36,7 @@ sig
 	val write_valid:
 		?wconfig:wconfig_t ->
 		?valid_options:valid_options_t ->
-		(link_t, image_t, extern_t) Valid.t ->
+		(linkdata_t, imagedata_t, extinldata_t, extblkdata_t) Valid.t ->
 		t monad_t
 
 	val write_invalid:
@@ -56,7 +57,7 @@ sig
 		?wconfig:wconfig_t ->
 		?valid_options:valid_options_t ->
 		?invalid_options:invalid_options_t ->
-		(link_t, image_t, extern_t) Ambivalent.t ->
+		(linkdata_t, imagedata_t, extinldata_t, extblkdata_t) Ambivalent.t ->
 		t monad_t
 end
 
@@ -70,9 +71,10 @@ end
 module Make (Writable: WRITABLE): S with
 	type t = Writable.t and
 	type 'a monad_t = 'a Writable.monad_t and
-	type link_t = Writable.link_t and
-	type image_t = Writable.image_t and
-	type extern_t = Writable.extern_t and
+	type linkdata_t = Writable.linkdata_t and
+	type imagedata_t = Writable.imagedata_t and
+	type extinldata_t = Writable.extinldata_t and
+	type extblkdata_t = Writable.extblkdata_t and
 	type wconfig_t = Writable.wconfig_t and
 	type valid_options_t = Writable.valid_options_t and
 	type invalid_options_t = Writable.invalid_options_t =

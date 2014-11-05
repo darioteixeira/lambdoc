@@ -6,13 +6,15 @@
 *)
 (********************************************************************************)
 
+open Sexplib.Std
+
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type ('a, 'b, 'c) t =
-	| Valid of ('a, 'b, 'c) Valid.t
+type ('a, 'b, 'c, 'd) t =
+	| Valid of ('a, 'b, 'c, 'd) Valid.t
 	| Invalid of Invalid.t
 	with sexp
 
@@ -25,8 +27,8 @@ type ('a, 'b, 'c) t =
 (**	{2 Constructors}							*)
 (********************************************************************************)
 
-let make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~externs =
-	Valid (Valid.make ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~externs)
+let make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~extinls ~extblks =
+	Valid (Valid.make ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~extinls ~extblks)
 
 let make_invalid errors =
 	Invalid (Invalid.make errors)
@@ -36,9 +38,13 @@ let make_invalid errors =
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-let serialize sexp_of_a sexp_of_b sexp_of_c doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_t sexp_of_a sexp_of_b sexp_of_c doc)
+let serialize sexp_of_a sexp_of_b sexp_of_c sexp_of_d doc =
+	Sexplib.Sexp.to_string_mach (sexp_of_t sexp_of_a sexp_of_b sexp_of_c sexp_of_d doc)
 
-let deserialize a_of_sexp b_of_sexp c_of_sexp str =
-	t_of_sexp a_of_sexp b_of_sexp c_of_sexp (Sexplib.Sexp.of_string str)
+let deserialize a_of_sexp b_of_sexp c_of_sexp d_of_sexp str =
+	t_of_sexp a_of_sexp b_of_sexp c_of_sexp d_of_sexp (Sexplib.Sexp.of_string str)
+
+let serialize_unitary = serialize sexp_of_unit sexp_of_unit sexp_of_unit sexp_of_unit
+
+let deserialize_unitary = deserialize unit_of_sexp unit_of_sexp unit_of_sexp unit_of_sexp
 

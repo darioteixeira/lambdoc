@@ -20,7 +20,7 @@ module Make = Reader.Make
 (struct
 	exception Reading_error of int * string
 
-	let ast_from_string str =
+	let ast_from_string ~extinldefs ~extblkdefs str =
 		try Omd.of_string str |> Mapper.ast_of_omd
 		with Mapper.Unsupported_feature x -> 
 			let msg = Printf.sprintf "The document uses an unsupported feature (%s)" x in

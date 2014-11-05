@@ -9,6 +9,8 @@
 (**	Declarations concerning document features.
 *)
 
+open Basic
+
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -20,7 +22,8 @@ type inline_feature_t =
 	| `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
 	| `Feature_mbox | `Feature_span | `Feature_link
-	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref ]
+	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref
+	| `Feature_extinl of Ident.t ]
 
 type block_feature_t =
 	[ `Feature_paragraph 
@@ -28,7 +31,7 @@ type block_feature_t =
 	| `Feature_qanda | `Feature_verse | `Feature_quote
 	| `Feature_mathtex_blk | `Feature_mathml_blk 
 	| `Feature_source | `Feature_tabular 
-	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_extern | `Feature_pullquote
+	| `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_pullquote
 	| `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
 	| `Feature_part | `Feature_appendix
 	| `Feature_section1 | `Feature_section2 | `Feature_section3 | `Feature_section4 | `Feature_section5 | `Feature_section6
@@ -36,7 +39,8 @@ type block_feature_t =
 	| `Feature_title1 | `Feature_title2
 	| `Feature_abstract | `Feature_rule
 	| `Feature_bib | `Feature_note
-	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef ]
+	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef
+	| `Feature_extblk of Ident.t ]
 
 type internal_feature_t =
 	[ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer

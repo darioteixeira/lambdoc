@@ -17,16 +17,17 @@ module type READABLE =
 sig
 	exception Reading_error of int * string
 
-	val ast_from_string: string -> Ast.t
+	val ast_from_string: extinldefs:Extcomm.extinldefs_t -> extblkdefs:Extcomm.extblkdefs_t -> string -> Ast.t
 end
 
 
 module type S =
 sig
 	type 'a monad_t
-	type link_t
-	type image_t
-	type extern_t
+	type linkdata_t
+	type imagedata_t
+	type extinldata_t
+	type extblkdata_t
 	type rconfig_t
 
 	val ambivalent_from_string:
@@ -35,7 +36,7 @@ sig
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
 		string ->
-		(link_t, image_t, extern_t) Ambivalent.t monad_t
+		(linkdata_t, imagedata_t, extinldata_t, extblkdata_t) Ambivalent.t monad_t
 end
 
 
@@ -43,9 +44,10 @@ module type PARTIAL =
 sig
 	module Make: functor (Ext: Extension.S) -> S with
 		type 'a monad_t = 'a Ext.Monad.t and
-		type link_t = Ext.link_t and
-		type image_t = Ext.image_t and
-		type extern_t = Ext.extern_t and
+		type linkdata_t = Ext.linkdata_t and
+		type imagedata_t = Ext.imagedata_t and
+		type extinldata_t = Ext.extinldata_t and
+		type extblkdata_t = Ext.extblkdata_t and
 		type rconfig_t = Ext.rconfig_t
 end
 
@@ -56,30 +58,28 @@ end
 
 module Make (Readable: READABLE) (Ext: Extension.S) : S with
 	type 'a monad_t = 'a Ext.Monad.t and
-	type link_t = Ext.link_t and
-	type image_t = Ext.image_t and
-	type extern_t = Ext.extern_t and
+	type linkdata_t = Ext.linkdata_t and
+	type imagedata_t = Ext.imagedata_t and
+	type extinldata_t = Ext.extinldata_t and
+	type extblkdata_t = Ext.extblkdata_t and
 	type rconfig_t = Ext.rconfig_t =
 struct
 	open Ext
 
 	type 'a monad_t = 'a Monad.t
-	type link_t = Ext.link_t
-	type image_t = Ext.image_t
-	type extern_t = Ext.extern_t
+	type linkdata_t = Ext.linkdata_t
+	type imagedata_t = Ext.imagedata_t
+	type extinldata_t = Ext.extinldata_t
+	type extblkdata_t = Ext.extblkdata_t
 	type rconfig_t = Ext.rconfig_t
 
 	module C = Compiler.Make (Ext)
 
-	let ambivalent_from_string
-		?rconfig
-		?(verify_utf8 = true)
-		?(expand_entities = true)
-		?(idiosyncrasies = Idiosyncrasies.default)
-		source = Monad.catch
+	let ambivalent_from_string ?rconfig ?(verify_utf8 = true) ?(expand_entities = true) ?(idiosyncrasies = Idiosyncrasies.default) source =
+		Monad.catch
 			begin fun () ->
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
-				let ast = Readable.ast_from_string source in
+				let ast = Readable.ast_from_string ~extinldefs ~extblkdefs source in
 				C.compile ?rconfig ~expand_entities ~idiosyncrasies ~source ast
 			end
 			begin function

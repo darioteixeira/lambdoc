@@ -22,7 +22,7 @@ module type READABLE =
 sig
 	exception Reading_error of int * string
 
-	val ast_from_string: string -> Ast.t
+	val ast_from_string: extinldefs:Extcomm.extinldefs_t -> extblkdefs:Extcomm.extblkdefs_t -> string -> Ast.t
 end
 
 
@@ -31,9 +31,10 @@ end
 module type S =
 sig
 	type 'a monad_t
-	type link_t
-	type image_t
-	type extern_t
+	type linkdata_t
+	type imagedata_t
+	type extinldata_t
+	type extblkdata_t
 	type rconfig_t
 
 	val ambivalent_from_string:
@@ -42,7 +43,7 @@ sig
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
 		string ->
-		(link_t, image_t, extern_t) Ambivalent.t monad_t
+		(linkdata_t, imagedata_t, extinldata_t, extblkdata_t) Ambivalent.t monad_t
 end
 
 
@@ -52,9 +53,10 @@ module type PARTIAL =
 sig
 	module Make: functor (Ext: Extension.S) -> S with
 		type 'a monad_t = 'a Ext.Monad.t and
-		type link_t = Ext.link_t and
-		type image_t = Ext.image_t and
-		type extern_t = Ext.extern_t and
+		type linkdata_t = Ext.linkdata_t and
+		type imagedata_t = Ext.imagedata_t and
+		type extinldata_t = Ext.extinldata_t and
+		type extblkdata_t = Ext.extblkdata_t and
 		type rconfig_t = Ext.rconfig_t
 end
 
@@ -67,8 +69,9 @@ module Make:
 	functor (Readable: READABLE) ->
 	functor (Ext: Extension.S) -> S with
 		type 'a monad_t = 'a Ext.Monad.t and
-		type link_t = Ext.link_t and
-		type image_t = Ext.image_t and
-		type extern_t = Ext.extern_t and
+		type linkdata_t = Ext.linkdata_t and
+		type imagedata_t = Ext.imagedata_t and
+		type extinldata_t = Ext.extinldata_t and
+		type extblkdata_t = Ext.extblkdata_t and
 		type rconfig_t = Ext.rconfig_t
 

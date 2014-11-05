@@ -47,6 +47,12 @@ struct
 end
 
 
+module Extkey =
+struct
+	type t = int with sexp
+end
+
+
 module Pointer =
 struct
 	type t = string with sexp

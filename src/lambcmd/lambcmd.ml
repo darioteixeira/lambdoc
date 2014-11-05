@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Options
 open Lambdoc_core
 
@@ -62,10 +61,10 @@ let () =
 		| `Lambwiki -> Lambdoc_read_lambwiki.Simple.ambivalent_from_string ~idiosyncrasies input_str
 		| `Lambxml  -> Lambdoc_read_lambxml.Simple.ambivalent_from_string ~idiosyncrasies input_str
 		| `Markdown -> Lambdoc_read_markdown.Simple.ambivalent_from_string ~idiosyncrasies input_str
-		| `Sexp     -> Lambdoc_core.Ambivalent.deserialize unit_of_sexp unit_of_sexp unit_of_sexp input_str in
+		| `Sexp     -> Lambdoc_core.Ambivalent.deserialize_unitary input_str in
 	let output_str = match options.output_markup with
 		| `Sexp  ->
-			Lambdoc_core.Ambivalent.serialize sexp_of_unit sexp_of_unit sexp_of_unit doc
+			Lambdoc_core.Ambivalent.serialize_unitary doc
 		| `Html5 ->
 			let module Html5_writer = Lambdoc_write_html5.Make_simple (Tyxml_backend) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in

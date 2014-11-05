@@ -83,14 +83,14 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		We determine whether macros are allowed or not by checking the
 		idiosyncrasies of this particular document.
 	*)
-	let macros_authorised = Permissions.check_feature `Feature_macrodef idiosyncrasies in
+	let macros_authorised = Permission.check_feature `Feature_macrodef idiosyncrasies in
 
 
 	(************************************************************************)
 	(* Declaration of the local modules used in the function.		*)
 	(************************************************************************)
 
-	let module ExtSet = Set.Make (struct type t = Href.t * string option let compare = Pervasives.compare end) in
+	let module HrefSet = Set.Make (Href) in
 
 
 	(************************************************************************)
@@ -103,10 +103,10 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	and toc = BatDynArray.create ()
 	and linkrefs = BatDynArray.create ()
 	and imagerefs = BatDynArray.create ()
-	and externrefs = BatDynArray.create ()
-	and linkset = ref ExtSet.empty
-	and imageset = ref ExtSet.empty
-	and externset = ref ExtSet.empty
+	and extinlrefs = BatDynArray.create ()
+	and extblkrefs = BatDynArray.create ()
+	and linkset = ref HrefSet.empty
+	and imageset = ref HrefSet.empty
         and labels = Hashtbl.create 10
 	and customisations = Hashtbl.create 10
 	and macros = Hashtbl.create 10
@@ -122,6 +122,8 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	and note_counter = Order_input.ordinal_counter ()
 	and custom_counters = Hashtbl.create 10
         and auto_label_counter = ref 0
+	and extinl_counter = ref 0
+	and extblk_counter = ref 0
 	and appendixed = ref false in
 
 
@@ -160,7 +162,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		try
 			Order_input.user_ordinal str
 		with
-			| Order_input.Invalid_order_format str ->
+			Order_input.Invalid_order_format str ->
 				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg);
 				Order_input.user_ordinal "0"
@@ -204,13 +206,13 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	*)
 	and check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
 		let check_classname classname =
-			if not (Permissions.check_classname feature classname idiosyncrasies)
+			if not (Permission.check_classname feature classname idiosyncrasies)
 			then 
 				let msg = Error.Invalid_style_misplaced_classname (comm.comm_tag, classname) in
 				BatDynArray.add errors (Some comm.comm_linenum, msg) in
-		if Permissions.check_feature feature idiosyncrasies
+		if Permission.check_feature feature idiosyncrasies
 		then begin
-			Permissions.check_parameters ?maybe_minipaged ?maybe_wrapped errors comm feature;
+			Permission.check_parameters ?maybe_minipaged ?maybe_wrapped errors comm feature;
 			let (attr, style_parsing) = Style.parse comm errors in
 			List.iter check_classname attr;
 			let element = elem attr style_parsing in
@@ -221,6 +223,24 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			let msg = Error.Unavailable_feature (comm.comm_tag, Feature.describe feature) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			None in
+
+
+	(*	Check if extension command's category allows its placement.
+	*)
+	let check_category tag allow_above_listable allow_above_quotable allow_above_embeddable allowed_block =
+		let (_, category) =
+			try List.assoc tag extblkdefs
+			with Not_found -> assert false in
+		match category with
+			| `Paragraph_blk
+			| `Equation_blk
+			| `Printout_blk
+			| `Table_blk
+			| `Figure_blk as blk -> blk = allowed_block
+			| `Embeddable_blk    -> true
+			| `Quotable_blk	     -> allow_above_embeddable
+			| `Listable_blk	     -> allow_above_quotable
+			| `Super_blk	     -> allow_above_listable in
 
 
 	(************************************************************************)
@@ -285,7 +305,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		| (_, (comm, Ast.Glyph (href, alt))) ->
 			let elem attr _ =
 				BatDynArray.add imagerefs (comm, `Feature_glyph, href);
-				imageset := ExtSet.add (href, comm.comm_style) !imageset;
+				imageset := HrefSet.add href !imageset;
 				[Inline.glyph ~attr href alt] in
 			check_inline_comm `Feature_glyph comm elem
 
@@ -332,7 +352,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		| (false, (comm, Ast.Link (href, maybe_astseq))) ->
 			let elem attr _ =
 				BatDynArray.add linkrefs (comm, `Feature_link, href);
-				linkset := ExtSet.add (href, comm.comm_style) !linkset;
+				linkset := HrefSet.add href !linkset;
 				let maybe_seq = maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq in
 				[Inline.link ~attr href maybe_seq] in
 			check_inline_comm `Feature_link comm elem
@@ -453,10 +473,31 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						[] in
 			check_inline_comm `Feature_macrocall comm elem
 
+		| (x, (comm, Ast.Extinl (tag, extinl))) when not x || not (snd (List.assoc tag extinldefs)) ->
+			let elem attr _ =
+				let extkey = !extinl_counter in
+				incr extinl_counter;
+				let extinl = convert_extinl ~comm ~context ~depth ~args x extinl in
+				BatDynArray.add extinlrefs (extkey, tag, comm, extinl);
+				[Inline.extinl ~attr extkey] in
+			check_inline_comm (`Feature_extinl tag) comm elem
+
 		| (_, (comm, _)) ->
 			let msg = Error.Unexpected_inline comm.comm_tag in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[]
+
+
+	and convert_extinl ~comm ~context ~depth ~args is_ref = function
+		| Ast.Extinl_simseq astseq ->
+			Extcomm.Extinl_simseq (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)
+		| Ast.Extinl_simraw txt ->
+			Extcomm.Extinl_simraw txt
+		| Ast.Extinl_simrawseq (txt, astseq) ->
+			Extcomm.Extinl_simrawseq (txt, convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)
+		| Ast.Extinl_simrawseqopt (txt, maybe_astseq) ->
+			Extcomm.Extinl_simrawseqopt (txt, maybe (convert_seq_aux ~comm ~context ~depth ~args is_ref) maybe_astseq)
+
 
 	and convert_inline_list ~comm ~context ~depth ~args is_ref astseq = match idiosyncrasies.max_inline_depth with
 		| Some max when depth >= max ->
@@ -484,8 +525,10 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				| xs ->
 					xs
 
+
 	and convert_seq_aux ~comm ~context ~depth ~args is_ref astseq =
 		convert_inline_list ~comm ~context ~depth ~args is_ref astseq in
+
 
 	let convert_seq ~comm ?args seq =
 		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ~args false seq in
@@ -649,17 +692,10 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		| (_, _, _, `Any_blk, (comm, Ast.Picture (href, alt))) ->
 			let elem attr dict =
 				BatDynArray.add imagerefs (comm, `Feature_picture, href);
-				imageset := ExtSet.add (href, comm.comm_style) !imageset;
+				imageset := HrefSet.add href !imageset;
 				let width = Style.consume1 dict (Width_hnd, None) in
 				[Block.picture ~attr href alt width] in
 			check_block_comm `Feature_picture comm elem
-
-		| (_, _, _, `Any_blk, (comm, Ast.Extern href)) ->
-			let elem attr dict =
-				BatDynArray.add externrefs (comm, `Feature_extern, href);
-				externset := ExtSet.add (href, comm.comm_style) !externset;
-				[Block.extern ~attr href] in
-			check_block_comm `Feature_extern comm elem
 
 		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_astseq, astfrag))) ->
 			let elem attr _ =
@@ -893,6 +929,15 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			let elem attr _ = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name; [] in
 			check_block_comm `Feature_theoremdef comm elem
 
+		| (aal, aaq, aae, ablk, (comm, Ast.Extblk (tag, extblk))) when true (*check_category tag aal aaq aae ablk*) ->
+			let elem attr _ =
+				let extkey = !extblk_counter in
+				incr extblk_counter;
+				let extblk = convert_extblk ~comm extblk in
+				BatDynArray.add extblkrefs (extkey, tag, comm, extblk);
+				[Block.extblk ~attr extkey] in
+			check_block_comm (`Feature_extblk tag) comm elem
+
 		| (_, _, _, _, (comm, _)) ->
 			let blk = match allowed_blk with
 				| `Paragraph_blk
@@ -1039,6 +1084,16 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[dummy_block]
 
 
+	and convert_extblk ~comm = function
+		| Ast.Extblk_simseq astseq			-> Extcomm.Extblk_simseq (convert_seq ~comm astseq)
+		| Ast.Extblk_simraw txt				-> Extcomm.Extblk_simraw txt
+		| Ast.Extblk_envraw txt				-> Extcomm.Extblk_envraw txt
+		| Ast.Extblk_envseqraw (astseq, txt)		-> Extcomm.Extblk_envseqraw (convert_seq ~comm astseq, txt)
+		| Ast.Extblk_envrawraw (txt1, txt2)		-> Extcomm.Extblk_envrawraw (txt1, txt2)
+		| Ast.Extblk_envseqoptraw (maybe_astseq, txt)	-> Extcomm.Extblk_envseqoptraw (maybe (convert_seq ~comm) maybe_astseq, txt)
+		| Ast.Extblk_envrawoptraw (maybe_txt1, txt2)	-> Extcomm.Extblk_envrawoptraw (maybe_txt1, txt2)
+
+
 	and convert_frag_aux ?comm ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
 		let conv = match idiosyncrasies.max_block_depth with
 			| None -> fun astblk ->
@@ -1112,29 +1167,48 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 
 
 	(************************************************************************)
-	(* Resolve all referenced links.					*)
+	(* Resolve referenced links.						*)
 	(************************************************************************)
 
-	let resolve resolver set refs =
-		let dict = Hashtbl.create (ExtSet.cardinal set) in
-		let aux ((href, style) as x) =
-			resolver ?rconfig href style >>= fun v ->
-			Monad.return (Hashtbl.add dict x v) in
-		Monad.iter aux (ExtSet.elements set) >>= fun () ->
-		let process accum (comm, feature, href) =
-			try match Hashtbl.find dict (href, comm.comm_style) with
-				| `Okay payload ->
-					(href, payload) :: accum
+	let process_href processor set refs =
+		let dict = Hashtbl.create (HrefSet.cardinal set) in
+		let aux href =
+			processor ?rconfig href >>= fun v ->
+			Monad.return (Hashtbl.add dict href v) in
+		Monad.iter aux (HrefSet.elements set) >>= fun () ->
+		let newdict = Hashtbl.create (BatDynArray.length refs) in
+		let process (comm, feature, href) = match Hashtbl.find dict href with
+			| `Okay v ->
+				Hashtbl.add newdict href v
+			| `Error error ->
+				let msg = match error with
+					| `Unsupported -> Error.Unsupported_extension comm.comm_tag
+					| `Failed expl -> Error.Failed_extension (comm.comm_tag, expl)
+					| `Style expl  -> Error.Invalid_style_extension (comm.comm_tag, expl) in
+				BatDynArray.add errors (Some comm.comm_linenum, msg) in
+		let () = BatDynArray.iter process refs in
+		Monad.return newdict in
+
+
+	(************************************************************************)
+	(* Resolve command extensions.						*)
+	(************************************************************************)
+
+	let process_extcomm processor refs =
+		let dict = Hashtbl.create (BatDynArray.length refs) in
+		let aux (extkey, tag, comm, extcomm) =
+			processor ?rconfig tag extcomm >>= function
+				| `Okay v ->
+					Monad.return (Hashtbl.add dict extkey (tag, extcomm, v))
 				| `Error error ->
 					let msg = match error with
 						| `Unsupported -> Error.Unsupported_extension comm.comm_tag
 						| `Failed expl -> Error.Failed_extension (comm.comm_tag, expl)
 						| `Style expl  -> Error.Invalid_style_extension (comm.comm_tag, expl) in
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
-					accum
-			with
-				Not_found -> assert false in	(* This really shouldn't happen *)
-		Monad.return (BatDynArray.fold_left process [] refs) in
+					Monad.return () in
+		Monad.iter aux (BatDynArray.to_list refs) >>= fun () ->
+		Monad.return dict in
 
 
 	(************************************************************************)
@@ -1144,10 +1218,11 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	let content = convert_frag ast in
 	let customs = filter_customisations () in
 	let () = filter_pointers () in
-	resolve Ext.resolve_link !linkset linkrefs >>= fun links ->
-	resolve Ext.resolve_image !imageset imagerefs >>= fun images ->
-	resolve Ext.resolve_extern !externset externrefs >>= fun externs ->
-	Monad.return (content, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, labels, customs, links, images, externs, BatDynArray.to_list errors)
+	process_href Ext.read_link !linkset linkrefs >>= fun links ->
+	process_href Ext.read_image !imageset imagerefs >>= fun images ->
+	process_extcomm Ext.read_extinl extinlrefs >>= fun extinls ->
+	process_extcomm Ext.read_extblk extblkrefs >>= fun extblks ->
+	Monad.return (content, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, labels, customs, links, images, extinls, extblks, BatDynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -1204,9 +1279,9 @@ let process_errors ~sort source errors =
 
 
 let compile ?rconfig ~expand_entities ~idiosyncrasies ~source ast =
-	compile_document ?rconfig ~expand_entities ~idiosyncrasies ast >>= fun (content, bibs, notes, toc, labels, customs, links, images, externs, errors) ->
+	compile_document ?rconfig ~expand_entities ~idiosyncrasies ast >>= fun (content, bibs, notes, toc, labels, customs, links, images, extinls, extblks, errors) ->
 	match errors with
-		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~externs)
+		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~extinls ~extblks)
 		| _::_ -> Monad.return (Ambivalent.make_invalid (process_errors ~sort:true source errors))
 end
 

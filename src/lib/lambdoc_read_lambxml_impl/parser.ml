@@ -250,8 +250,6 @@ and process_block store node =
 			let src = node#required_string_attribute "src" in
 			let alt = node#required_string_attribute "alt" in
 			(!!comm, Ast.Picture (src, alt))
-		| T_element "extern" ->
-			(!!comm, Ast.Extern (node#required_string_attribute "href"))
 		| T_element "pull" ->
 			(!!comm, Ast.Pullquote (None, process_frag store node))
 		| T_element "boxout" ->

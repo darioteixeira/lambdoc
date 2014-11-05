@@ -35,6 +35,6 @@ sig
 		idiosyncrasies:Idiosyncrasies.t ->
 		source:string ->
 		Ast.t ->
-		(Ext.link_t, Ext.image_t, Ext.extern_t) Ambivalent.t Ext.Monad.t
+		(Ext.linkdata_t, Ext.imagedata_t, Ext.extinldata_t, Ext.extblkdata_t) Ambivalent.t Ext.Monad.t
 end
 

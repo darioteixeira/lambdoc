@@ -5,6 +5,7 @@
 <block.*>: package(sexplib.syntax), syntax(camlp4o)
 <custom.*>: package(sexplib.syntax), syntax(camlp4o)
 <error.*>: package(sexplib.syntax), syntax(camlp4o)
+<extcomm.*>: package(sexplib.syntax), syntax(camlp4o)
 <heading.*>: package(sexplib.syntax), syntax(camlp4o)
 <inline.*>: package(sexplib.syntax), syntax(camlp4o)
 <invalid.*>: package(sexplib.syntax), syntax(camlp4o)

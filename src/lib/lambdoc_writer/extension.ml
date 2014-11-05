@@ -30,14 +30,16 @@ module type S =
 sig
 	module Monad: MONAD
 
-	type link_t
-	type image_t
-	type extern_t
+	type linkdata_t
+	type imagedata_t
+	type extinldata_t
+	type extblkdata_t
 	type wconfig_t
 
-	val expand_link: ?wconfig:wconfig_t -> Href.t -> link_t -> (Href.t * Inline.seq_t option) Monad.t
-	val expand_image: ?wconfig:wconfig_t -> Href.t -> image_t -> Href.t Monad.t
-	val expand_extern: ?wconfig:wconfig_t -> Href.t -> extern_t -> Block.frag_t Monad.t
+	val write_link: ?wconfig:wconfig_t -> Href.t -> linkdata_t -> (Href.t * Inline.seq_t option) Monad.t
+	val write_image: ?wconfig:wconfig_t -> Href.t -> imagedata_t -> Href.t Monad.t
+	val write_extinl: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extinl_t -> extinldata_t -> Inline.seq_t Monad.t
+	val write_extblk: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extblk_t ->extblkdata_t -> Block.frag_t Monad.t
 end
 
 
@@ -57,17 +59,19 @@ struct
 end
 
 
-module Unit =
+module Unitary =
 struct
 	module Monad = Identity
 
-	type link_t = unit
-	type image_t = unit
-	type extern_t = unit
+	type linkdata_t = unit
+	type imagedata_t = unit
+	type extinldata_t = unit
+	type extblkdata_t = unit
 	type wconfig_t = unit
 
-	let expand_link ?wconfig href  () = (href, None)
-	let expand_image ?wconfig href  () = href
-	let expand_extern ?wconfig _ () = []
+	let write_link ?wconfig href  () = (href, None)
+	let write_image ?wconfig href  () = href
+	let write_extinl ?wconfig _ _ () = []
+	let write_extblk ?wconfig _ _ () = []
 end
 

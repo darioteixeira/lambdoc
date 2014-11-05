@@ -30,7 +30,6 @@ type block_t =
 	| Subpage of frag_t
 	| Verbatim of string
 	| Picture of Href.t * string * int option
-	| Extern of Href.t
 	| Pullquote of Inline.seq_t option * frag_t
 	| Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
 	| Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
@@ -42,6 +41,7 @@ type block_t =
 	| Title of Level.title_t * Inline.seq_t
 	| Abstract of frag_t
 	| Rule
+	| Extblk of Extkey.t
 
 and t =
 	{
@@ -51,34 +51,46 @@ and t =
 
 and frag_t = t list with sexp
 
+type category_t =
+	[ `Super_blk
+	| `Listable_blk
+	| `Quotable_blk
+	| `Embeddable_blk
+	| `Paragraph_blk
+	| `Equation_blk
+	| `Printout_blk
+	| `Table_blk
+	| `Figure_blk
+	] with sexp
+
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val paragraph:	?attr:Attr.t -> Inline.seq_t -> t
-val itemize:	?attr:Attr.t -> frag_t list -> t
-val enumerate:	?attr:Attr.t -> frag_t list -> t
-val description:?attr:Attr.t -> (Inline.seq_t * frag_t) list -> t
-val qanda:	?attr:Attr.t -> (Qanda.t * frag_t) list -> t
-val verse:	?attr:Attr.t -> frag_t -> t
-val quote:	?attr:Attr.t -> frag_t -> t
-val mathblk:	?attr:Attr.t -> Math.t -> t
-val source:	?attr:Attr.t -> Source.t -> t
-val tabular:	?attr:Attr.t -> Tabular.t -> t
-val subpage:	?attr:Attr.t -> frag_t -> t
-val verbatim:	?attr:Attr.t -> string -> t
-val picture:	?attr:Attr.t -> Href.t -> string -> int option -> t
-val extern:	?attr:Attr.t -> Href.t -> t
-val pullquote:	?attr:Attr.t -> Inline.seq_t option -> frag_t -> t
-val boxout:	?attr:Attr.t -> Custom.Boxout.t -> Inline.seq_t option -> frag_t -> t
-val theorem:	?attr:Attr.t -> Custom.Theorem.t -> Inline.seq_t option -> frag_t -> t
-val equation:	?attr:Attr.t -> Wrapper.t -> t -> t
-val printout:	?attr:Attr.t -> Wrapper.t -> t -> t
-val table:	?attr:Attr.t -> Wrapper.t -> t -> t
-val figure:	?attr:Attr.t -> Wrapper.t -> t -> t
-val heading:	?attr:Attr.t -> Heading.t -> t
-val title:	?attr:Attr.t -> Level.title_t -> Inline.seq_t -> t
-val abstract:	?attr:Attr.t -> frag_t -> t
-val rule:	?attr:Attr.t -> unit -> t
+val paragraph:	 ?attr:Attr.t -> Inline.seq_t -> t
+val itemize:	 ?attr:Attr.t -> frag_t list -> t
+val enumerate:	 ?attr:Attr.t -> frag_t list -> t
+val description: ?attr:Attr.t -> (Inline.seq_t * frag_t) list -> t
+val qanda:	 ?attr:Attr.t -> (Qanda.t * frag_t) list -> t
+val verse:	 ?attr:Attr.t -> frag_t -> t
+val quote:	 ?attr:Attr.t -> frag_t -> t
+val mathblk:	 ?attr:Attr.t -> Math.t -> t
+val source:	 ?attr:Attr.t -> Source.t -> t
+val tabular:	 ?attr:Attr.t -> Tabular.t -> t
+val subpage:	 ?attr:Attr.t -> frag_t -> t
+val verbatim:	 ?attr:Attr.t -> string -> t
+val picture:	 ?attr:Attr.t -> Href.t -> string -> int option -> t
+val pullquote:	 ?attr:Attr.t -> Inline.seq_t option -> frag_t -> t
+val boxout:	 ?attr:Attr.t -> Custom.Boxout.t -> Inline.seq_t option -> frag_t -> t
+val theorem:	 ?attr:Attr.t -> Custom.Theorem.t -> Inline.seq_t option -> frag_t -> t
+val equation:	 ?attr:Attr.t -> Wrapper.t -> t -> t
+val printout:	 ?attr:Attr.t -> Wrapper.t -> t -> t
+val table:	 ?attr:Attr.t -> Wrapper.t -> t -> t
+val figure:	 ?attr:Attr.t -> Wrapper.t -> t -> t
+val heading:	 ?attr:Attr.t -> Heading.t -> t
+val title:	 ?attr:Attr.t -> Level.title_t -> Inline.seq_t -> t
+val abstract:	 ?attr:Attr.t -> frag_t -> t
+val rule:	 ?attr:Attr.t -> unit -> t
+val extblk:	 ?attr:Attr.t -> Extkey.t -> t
 
