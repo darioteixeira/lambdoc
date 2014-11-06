@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Part 1/4 of the Lambdoc+Ocsigen tutorial.
+(**	Part 1 of the Lambdoc+Ocsigen tutorial.
 
 	All examples in this tutorial illustrate a 2-step service: the first step
 	prompts the user with a textarea where the input text (formatted using

@@ -6,14 +6,10 @@
 *)
 (********************************************************************************)
 
-(**	Part 4/4 of the Lambdoc+Ocsigen tutorial.
+(**	Part 5 of the Lambdoc+Ocsigen tutorial.
 
-	This fourth and final part of the tutorial illustrates the creation of
-	a custom extension.  The module [Extension] defines a Lambdoc extension
-	wrapped under the Lwt monad.  Whereas images and extern blocks pass
-	through the extension unmodified, we check if links are using the
-	protocol "user", in which case they are specially processed (the
-	actual processing is outside the scope of this example, though).
+	Make sure that 'banner' is installed in your system! (On Debian
+	and derivatives the package is 'sysvbanner')
 *)
 
 open Eliom_content
@@ -28,11 +24,15 @@ module String = BatString
 
 module Extension =
 struct
+	open Lambdoc_core
+	open Extcomm
+
 	module Monad = struct include Lwt let iter = Lwt_list.iter_p end
 
-	type link_t = [ `User of string | `Other of string ]
-	type image_t = unit
-	type extern_t = unit
+	type linkdata_t = [ `User of string | `Other of string ]
+	type imagedata_t = unit
+	type extinldata_t = unit
+	type extblkdata_t = [ `Banner of string ]
 	type rconfig_t = unit
 	type wconfig_t = unit
 
@@ -44,26 +44,47 @@ struct
 		(* Insert code to create a link to the user's home page *)
 		name
 
-	let resolve_link ?rconfig href _ = match href with
+	let extinldefs = []	(* We do not define any custom inline commands *)
+
+	let extblkdefs =
+		[
+		("banner", (`Synblk_simraw, [`Embeddable_blk; `Figure_blk]));
+		]
+
+	let read_link ?rconfig href = match href with
 		| x when String.starts_with x "user:" -> find_user (String.lchop ~n:5 x)
 		| x				      -> Lwt.return (`Okay (`Other x))
 
-	let resolve_image ?rconfig href _ = Lwt.return (`Okay ())
+	let read_image ?rconfig href =
+		Lwt.return (`Okay ())
 
-	let resolve_extern ?rconfig href _ = Lwt.return (`Okay ())
+	let read_extinl ?rconfig tag extcomm =
+		assert false	(* This should never be called, because we haven't defined any custom inline commands *)
 
-	let expand_link ?wconfig href = function
+	let read_extblk ?rconfig tag extcomm = match (tag, extcomm) with
+		| ("banner", Extblk_simraw txt) ->
+			lwt banner = Lwt_process.pread ("", [| "banner"; txt |]) in
+			Lwt.return (`Okay (`Banner banner))
+		| _ ->
+			assert false	(* This should never be called *)
+
+	let write_link ?wconfig href = function
 		| `User u ->
-			let open Lambdoc_core in
 			let href = linkify_user u in
 			let seq = [Inline.plain "Estimeed User "; Inline.bold [Inline.plain u]] in
 			Lwt.return (href, Some seq)
 		| `Other x ->
 			Lwt.return (href, None)
 
-	let expand_image ?wconfig href _ = Lwt.return href
+	let write_image ?wconfig href _ =
+		Lwt.return href
 
-	let expand_extern ?wconfig _ _ = Lwt.return []
+	let write_extinl ?wconfig tag extinl data =
+		assert false	(* This should never be called, because we haven't defined any custom inline commands *)
+
+	let write_extblk ?wconfig tag extblk data = match (tag, extblk, data) with
+		| ("banner", _, `Banner banner) -> Lwt.return [Block.verbatim banner]
+		| _				-> assert false
 end
 
 

@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Part 3/4 of the Lambdoc+Ocsigen tutorial.
+(**	Part 3 of the Lambdoc+Ocsigen tutorial.
 
 	Again, this example is almost identical to the previous one.  The only
 	difference this time is that the user may choose one of the four markup

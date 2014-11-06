@@ -19,11 +19,11 @@ let doc =
 	Lambdoc_read_lambtex.Simple.ambivalent_from_string src
 
 
-let sexp_pickle = Lambdoc_core.Ambivalent.serialize sexp_of_unit sexp_of_unit sexp_of_unit doc
+let sexp_pickle = Lambdoc_core.Ambivalent.serialize_unitary doc
 let marshal_pickle = Marshal.to_string doc []
 
-let conv_to_sexp () = let _ = Lambdoc_core.Ambivalent.serialize sexp_of_unit sexp_of_unit sexp_of_unit doc in ()
-let conv_from_sexp () = let _ = Lambdoc_core.Ambivalent.deserialize unit_of_sexp unit_of_sexp unit_of_sexp sexp_pickle in ()
+let conv_to_sexp () = let _ = Lambdoc_core.Ambivalent.serialize_unitary doc in ()
+let conv_from_sexp () = let _ = Lambdoc_core.Ambivalent.deserialize_unitary sexp_pickle in ()
 
 let conv_to_marshal () = let _ = Marshal.to_string doc [] in ()
 let conv_from_marshal () = let _ = Marshal.from_string marshal_pickle 0 in ()

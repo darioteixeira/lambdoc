@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(**	Part 2/4 of the Lambdoc+Ocsigen tutorial.
+(**	Part 2 of the Lambdoc+Ocsigen tutorial.
 
 	This example is almost identical to the previous one.  The sole difference
 	is that a non-default idiosyncrasy is provided to the Lambtex reader: the

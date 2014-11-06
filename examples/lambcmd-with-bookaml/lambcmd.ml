@@ -9,6 +9,7 @@
 open Sexplib.Std
 open Options
 open Lambdoc_core
+open Extcomm
 
 module String = BatString
 
@@ -31,11 +32,19 @@ struct
 		cover: string option;
 		} with sexp
 
-	type link_t = [ `Book of book_t | `Other of string ] with sexp
-	type image_t = unit with sexp
-	type extern_t = [ `Book of book_t ] with sexp
+	type linkdata_t = [ `Book of book_t | `Other of string ] with sexp
+	type imagedata_t = unit with sexp
+	type extinldata_t = unit with sexp
+	type extblkdata_t = [ `Book of book_t ] with sexp
 	type rconfig_t = Bookaml_amazon.credential_t
 	type wconfig_t = unit
+
+	let extinldefs = []
+
+	let extblkdefs =
+		[
+		("bookpic", (`Synblk_simraw, [`Embeddable_blk; `Figure_blk]));
+		]
 
 	let get_book ~credential raw_isbn =
 		try_lwt
@@ -57,37 +66,50 @@ struct
 			| Bookaml_ISBN.Bad_ISBN_character _ -> Lwt.return (`Error (`Failed "bad isbn"))
 			| Bookaml_amazon.No_match _	    -> Lwt.return (`Error (`Failed "no match"))
 
-	let resolve_link ?rconfig href _ = match (rconfig, href) with
+	let read_link ?rconfig href = match (rconfig, href) with
 		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
 		| (_, x)						 -> Lwt.return (`Okay (`Other x))
 
-	let resolve_image ?rconfig _ _ =
+	let read_image ?rconfig _ =
 		Lwt.return (`Okay ())
 
-	let resolve_extern ?rconfig href _ = match (rconfig, href) with
-		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
-		| (_, x)						 -> Lwt.return (`Error `Unsupported)
+	let read_extinl ?rconfig _ _ =
+		assert false	(* This should never be called *)
 
-	let expand_link ?wconfig href payload = match payload with
+	let read_extblk ?rconfig tag extcomm = match (rconfig, tag, extcomm) with
+		| (Some credential, "bookpic", Extblk_simraw txt) ->
+			if String.starts_with txt "isbn:"
+			then get_book ~credential (String.lchop ~n:5 txt)
+			else Lwt.return (`Error `Unsupported)
+		| _ ->
+			Lwt.return (`Error `Unsupported)
+
+	let write_link ?wconfig href = function
 		| `Book book ->
 			let href = match book.page with Some page -> page | None -> href in
 			Lwt.return (href, Some [Inline.emph [Inline.plain book.title]])
 		| `Other href ->
 			Lwt.return (href, None)
 
-	let expand_image ?wconfig href _ =
+	let write_image ?wconfig href _ =
 		Lwt.return href
 
-	let expand_extern ?wconfig href (`Book (book : book_t)) =
-		let tl =
-			[
-			Inline.emph [Inline.plain book.title];
-			Inline.span [Inline.plain book.author];
-			] in
-		let xs = match book.cover with
-			| Some cover -> Inline.glyph cover "book cover" :: tl
-			| None	     -> tl in
-		Lwt.return [Block.paragraph xs]
+	let write_extinl ?wconfig _ _ _ =
+		assert false	(* This should never be called *)
+
+	let write_extblk ?wconfig tag _ data = match (tag, data) with
+		| ("bookpic", `Book (book : book_t)) ->
+			let tl =
+				[
+				Inline.emph [Inline.plain book.title];
+				Inline.span [Inline.plain book.author];
+				] in
+			let xs = match book.cover with
+				| Some cover -> Inline.glyph cover "book cover" :: tl
+				| None	     -> tl in
+			Lwt.return [Block.paragraph xs]
+		| _ ->
+			assert false	(* This should never be called *)
 end
 
 
@@ -150,10 +172,10 @@ let main () =
 			let module M = Lambdoc_read_markdown.Make (Extension) in
 			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
 		| `Sexp ->
-			Lwt.return (Lambdoc_core.Ambivalent.deserialize Extension.link_t_of_sexp Extension.image_t_of_sexp Extension.extern_t_of_sexp input_str) in
+			Lwt.return (Lambdoc_core.Ambivalent.deserialize Extension.linkdata_t_of_sexp Extension.imagedata_t_of_sexp Extension.extinldata_t_of_sexp Extension.extblkdata_t_of_sexp input_str) in
 	lwt output_str = match options.output_markup with
 		| `Sexp  ->
-			Lwt.return (Lambdoc_core.Ambivalent.serialize Extension.sexp_of_link_t Extension.sexp_of_image_t Extension.sexp_of_extern_t doc)
+			Lwt.return (Lambdoc_core.Ambivalent.serialize Extension.sexp_of_linkdata_t Extension.sexp_of_imagedata_t Extension.sexp_of_extinldata_t Extension.sexp_of_extblkdata_t doc)
 		| `Html5 ->
 			let module Html5_writer = Lambdoc_write_html5.Make (Extension) (Tyxml_backend) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
