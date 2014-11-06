@@ -39,7 +39,7 @@ sig
 	val write_link: ?wconfig:wconfig_t -> Href.t -> linkdata_t -> (Href.t * Inline.seq_t option) Monad.t
 	val write_image: ?wconfig:wconfig_t -> Href.t -> imagedata_t -> Href.t Monad.t
 	val write_extinl: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extinl_t -> extinldata_t -> Inline.seq_t Monad.t
-	val write_extblk: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extblk_t ->extblkdata_t -> Block.frag_t Monad.t
+	val write_extblk: ?wconfig:wconfig_t -> Ident.t -> Extcomm.extblk_t -> extblkdata_t -> Block.frag_t Monad.t
 end
 
 
