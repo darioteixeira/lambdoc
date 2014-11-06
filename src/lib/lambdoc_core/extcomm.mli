@@ -57,5 +57,5 @@ type extblk_t =
 
 type extinldefs_t = (Ident.t * (syninl_t * bool)) list
 
-type extblkdefs_t = (Ident.t * (synblk_t * Block.category_t)) list
+type extblkdefs_t = (Ident.t * (synblk_t * Blkcat.t list)) list
 

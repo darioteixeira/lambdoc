@@ -2,6 +2,7 @@
 <ambivalent.*>: package(sexplib.syntax), syntax(camlp4o)
 <basic.*>: package(sexplib.syntax), syntax(camlp4o)
 <bib.*>: package(sexplib.syntax), syntax(camlp4o)
+<blkcat.*>: package(sexplib.syntax), syntax(camlp4o)
 <block.*>: package(sexplib.syntax), syntax(camlp4o)
 <custom.*>: package(sexplib.syntax), syntax(camlp4o)
 <error.*>: package(sexplib.syntax), syntax(camlp4o)

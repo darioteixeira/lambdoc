@@ -225,24 +225,6 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			None in
 
 
-	(*	Check if extension command's category allows its placement.
-	*)
-	let check_category tag allow_above_listable allow_above_quotable allow_above_embeddable allowed_block =
-		let (_, category) =
-			try List.assoc tag extblkdefs
-			with Not_found -> assert false in
-		match category with
-			| `Paragraph_blk
-			| `Equation_blk
-			| `Printout_blk
-			| `Table_blk
-			| `Figure_blk as blk -> blk = allowed_block
-			| `Embeddable_blk    -> true
-			| `Quotable_blk	     -> allow_above_embeddable
-			| `Listable_blk	     -> allow_above_quotable
-			| `Super_blk	     -> allow_above_listable in
-
-
 	(************************************************************************)
 	(* Compilation functions for mathematics.				*)
 	(************************************************************************)
@@ -278,78 +260,78 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			| None	 -> [dummy_inline] in
 
 
-	let rec convert_inline ~context ~depth ~args is_ref inline = match (is_ref, inline) with
+	let rec convert_inline ~context ~depth ~args is_ref (comm, inline) = match inline with
 
-		| (_, (comm, Ast.Plain ustr)) ->
+		| Ast.Plain ustr ->
 			let elem attr _ = [Inline.plain ~attr ustr] in
 			check_inline_comm `Feature_plain comm elem
 
-		| (_, (comm, Ast.Entity ent)) ->
+		| Ast.Entity ent ->
 			let elem attr _ = match Entity_input.expand ent with
 				| `Okay (txt, ustr) -> if expand_entities then [Inline.plain ~attr (ustr :> string)] else [Inline.entity ~attr txt]
 				| `Error msg	    -> BatDynArray.add errors (Some comm.comm_linenum, msg); [] in
 			check_inline_comm `Feature_entity comm elem
 
-		| (_, (comm, Ast.Linebreak)) ->
+		| Ast.Linebreak ->
 			let elem attr _ = [Inline.linebreak ~attr ()] in
 			check_inline_comm `Feature_linebreak comm elem
 
-		| (_, (comm, Ast.Mathtex_inl txt)) ->
+		| Ast.Mathtex_inl txt ->
 			let elem attr _ = convert_mathtex (Inline.mathinl ~attr) comm txt in
 			check_inline_comm `Feature_mathtex_inl comm elem
 
-		| (_, (comm, Ast.Mathml_inl txt)) ->
+		| Ast.Mathml_inl txt ->
 			let elem attr _ = convert_mathml (Inline.mathinl ~attr) comm txt in
 			check_inline_comm `Feature_mathml_inl comm elem
 
-		| (_, (comm, Ast.Glyph (href, alt))) ->
+		| Ast.Glyph (href, alt) ->
 			let elem attr _ =
 				BatDynArray.add imagerefs (comm, `Feature_glyph, href);
 				imageset := HrefSet.add href !imageset;
 				[Inline.glyph ~attr href alt] in
 			check_inline_comm `Feature_glyph comm elem
 
-		| (x, (comm, Ast.Bold astseq)) ->
-			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Bold astseq ->
+			let elem attr _ = [Inline.bold ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_bold comm elem
 
-		| (x, (comm, Ast.Emph astseq)) ->
-			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Emph astseq ->
+			let elem attr _ = [Inline.emph ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_emph comm elem
 
-		| (x, (comm, Ast.Code astseq)) ->
-			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Code astseq ->
+			let elem attr _ = [Inline.code ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_code comm elem
 
-		| (x, (comm, Ast.Caps astseq)) ->
-			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Caps astseq ->
+			let elem attr _ = [Inline.caps ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_caps comm elem
 
-		| (x, (comm, Ast.Ins astseq)) ->
-			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Ins astseq ->
+			let elem attr _ = [Inline.ins ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_ins comm elem
 
-		| (x, (comm, Ast.Del astseq)) ->
-			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Del astseq ->
+			let elem attr _ = [Inline.del ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_del comm elem
 
-		| (x, (comm, Ast.Sup astseq)) ->
-			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Sup astseq ->
+			let elem attr _ = [Inline.sup ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_sup comm elem
 
-		| (x, (comm, Ast.Sub astseq)) ->
-			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Sub astseq ->
+			let elem attr _ = [Inline.sub ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_sub comm elem
 
-		| (x, (comm, Ast.Mbox astseq)) ->
-			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Mbox astseq ->
+			let elem attr _ = [Inline.mbox ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_mbox comm elem
 
-		| (x, (comm, Ast.Span astseq)) ->
-			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~context ~depth ~args x astseq)] in
+		| Ast.Span astseq ->
+			let elem attr _ = [Inline.span ~attr (convert_seq_aux ~comm ~context ~depth ~args is_ref astseq)] in
 			check_inline_comm `Feature_span comm elem
 
-		| (false, (comm, Ast.Link (href, maybe_astseq))) ->
+		| Ast.Link (href, maybe_astseq) when not is_ref ->
 			let elem attr _ =
 				BatDynArray.add linkrefs (comm, `Feature_link, href);
 				linkset := HrefSet.add href !linkset;
@@ -357,7 +339,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Inline.link ~attr href maybe_seq] in
 			check_inline_comm `Feature_link comm elem
 
-		| (false, (comm, Ast.See refs)) ->
+		| Ast.See refs when not is_ref ->
 			let elem attr _ =
 				let target_checker = function
 					| Target.Note_target _	-> `Valid_target
@@ -372,7 +354,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						[] in
 			check_inline_comm `Feature_see comm elem
 
-		| (false, (comm, Ast.Cite refs)) ->
+		| Ast.Cite refs when not is_ref ->
 			let elem attr _ =
 				let target_checker = function
 					| Target.Bib_target _	-> `Valid_target
@@ -387,7 +369,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						[] in
 			check_inline_comm `Feature_cite comm elem
 
-		| (false, (comm, Ast.Dref (pointer, maybe_astseq))) ->
+		| Ast.Dref (pointer, maybe_astseq) when not is_ref ->
 			let elem attr _ =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -401,7 +383,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Inline.dref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_dref comm elem
 
-		| (false, (comm, Ast.Sref (pointer, maybe_astseq))) ->
+		| Ast.Sref (pointer, maybe_astseq) when not is_ref ->
 			let elem attr _ =
 				let target_checker = function
 					| Target.Visible_target (Target.Custom_target (_, _, `None_given))
@@ -415,7 +397,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Inline.sref ~attr pointer maybe_seq] in
 			check_inline_comm `Feature_sref comm elem
 
-		| (false, (comm, Ast.Mref (pointer, astseq))) ->
+		| Ast.Mref (pointer, astseq) when not is_ref ->
 			let elem attr _ =
 				let target_checker = function
 					| Target.Visible_target _ -> `Valid_target
@@ -424,7 +406,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Inline.mref ~attr pointer (convert_seq_aux ~comm ~context ~depth ~args true astseq)] in
 			check_inline_comm `Feature_mref comm elem
 
-		| (_, (comm, Ast.Macroarg raw_num)) ->
+		| Ast.Macroarg raw_num ->
 			let elem attr _ = match args with
 				| None ->
 					let msg = Error.Invalid_macro_argument_context in
@@ -442,7 +424,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 							[] in
 			check_inline_comm `Feature_macroarg comm elem
 
-		| (x, (comm, Ast.Macrocall (name, arglist))) ->
+		| Ast.Macrocall (name, arglist) ->
 			let elem attr _ =
 				try
 					let (macro_nargs, macro_astseq) = Hashtbl.find macros name in
@@ -456,12 +438,12 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						match idiosyncrasies.max_macro_depth with
 							| None ->
 								let context = (context_comm, depth+1) in
-								let new_arglist = List.map (convert_inline_list ~comm ~context ~depth ~args x) arglist in
-								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) x macro_astseq
+								let new_arglist = List.map (convert_inline_list ~comm ~context ~depth ~args is_ref) arglist in
+								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) is_ref macro_astseq
 							| Some num when depth < num ->
 								let context = (context_comm, depth+1) in
-								let new_arglist = List.map (convert_inline_list ~comm ~context ~depth ~args x) arglist in
-								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) x macro_astseq
+								let new_arglist = List.map (convert_inline_list ~comm ~context ~depth ~args is_ref) arglist in
+								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) is_ref macro_astseq
 							| Some num ->
 								let msg = Error.Excessive_macro_depth (comm.comm_tag, num) in
 								BatDynArray.add errors (Some comm.comm_linenum, msg);
@@ -473,16 +455,16 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						[] in
 			check_inline_comm `Feature_macrocall comm elem
 
-		| (x, (comm, Ast.Extinl (tag, extinl))) when not x || not (snd (List.assoc tag extinldefs)) ->
+		| Ast.Extinl (tag, extinl) when not is_ref || not (snd (List.assoc tag extinldefs)) ->
 			let elem attr _ =
 				let extkey = !extinl_counter in
 				incr extinl_counter;
-				let extinl = convert_extinl ~comm ~context ~depth ~args x extinl in
+				let extinl = convert_extinl ~comm ~context ~depth ~args is_ref extinl in
 				BatDynArray.add extinlrefs (extkey, tag, comm, extinl);
 				[Inline.extinl ~attr extkey] in
 			check_inline_comm (`Feature_extinl tag) comm elem
 
-		| (_, (comm, _)) ->
+		| _ ->
 			let msg = Error.Unexpected_inline comm.comm_tag in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[]
@@ -616,51 +598,45 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			| None	 -> [dummy_block] in
 
 
-	let rec convert_block ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk block =
+	let rec convert_block ~minipaged ~depth allowed (comm, astblk) = match astblk with
 
-		match (allow_above_listable, allow_above_quotable, allow_above_embeddable, allowed_blk, block) with
-
-		| (_, _, _, `Paragraph_blk, (comm, Ast.Paragraph astseq))
-		| (_, _, _, `Any_blk, (comm, Ast.Paragraph astseq)) ->
+		| Ast.Paragraph astseq when allowed = `Paragraph_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr _ = [Block.paragraph ~attr (convert_seq ~comm astseq)] in
 			check_block_comm `Feature_paragraph comm elem
 
-		| (_, x1, x2, `Any_blk, (comm, Ast.Itemize astfrags)) ->
-			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.itemize ~attr) ~minipaged ~depth x1 x2 astfrags in
+		| Ast.Itemize astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.itemize ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_itemize comm elem
 
-		| (_, x1, x2, `Any_blk, (comm, Ast.Enumerate astfrags)) ->
-			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate ~attr) ~minipaged ~depth x1 x2 astfrags in
+		| Ast.Enumerate astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_enumerate comm elem
 
-		| (_, x1, x2, `Any_blk, (comm, Ast.Description astfrags)) ->
-			let elem attr _ = convert_frag_of_desc_frags ~comm ~cons:(Block.description ~attr) ~minipaged ~depth x1 x2 astfrags in
+		| Ast.Description astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+			let elem attr _ = convert_frag_of_desc_frags ~comm ~cons:(Block.description ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_description comm elem
 
-		| (_, x1, x2, `Any_blk, (comm, Ast.Qanda astfrags)) ->
-			let elem attr _ = convert_frag_of_qanda_frags ~comm ~cons:(Block.qanda ~attr) ~minipaged ~depth x1 x2 astfrags in
+		| Ast.Qanda astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+			let elem attr _ = convert_frag_of_qanda_frags ~comm ~cons:(Block.qanda ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_qanda comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Verse astfrag)) ->
-			let elem attr _ = [Block.verse ~attr (convert_frag_aux ~comm ~minipaged ~depth false false false `Paragraph_blk astfrag)] in
+		| Ast.Verse astfrag when Blkcat.(`Embeddable_blk <: allowed) ->
+			let elem attr _ = [Block.verse ~attr (convert_frag_aux ~comm ~minipaged ~depth `Paragraph_blk astfrag)] in
 			check_block_comm `Feature_verse comm elem
 
-		| (_, _, true, `Any_blk, (comm, Ast.Quote astfrag)) ->
-			let elem attr _ = [Block.quote ~attr (convert_frag_aux ~comm ~minipaged ~depth false false true `Any_blk astfrag)] in
+		| Ast.Quote astfrag when Blkcat.(`Quotable_blk <: allowed) ->
+			let elem attr _ = [Block.quote ~attr (convert_frag_aux ~comm ~minipaged ~depth `Quotable_blk astfrag)] in
 			check_block_comm `Feature_quote comm elem
 
-		| (_, _, _, `Equation_blk, (comm, Ast.Mathtex_blk txt))
-		| (_, _, _, `Any_blk, (comm, Ast.Mathtex_blk txt)) ->
+		| Ast.Mathtex_blk txt when allowed = `Equation_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr _ = convert_mathtex (Block.mathblk ~attr) comm txt in
 			check_block_comm `Feature_mathtex_blk comm elem
 
-		| (_, _, _, `Equation_blk, (comm, Ast.Mathml_blk txt))
-		| (_, _, _, `Any_blk, (comm, Ast.Mathml_blk txt)) ->
+		| Ast.Mathml_blk txt when allowed = `Equation_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr _ = convert_mathml (Block.mathblk ~attr) comm txt in
 			check_block_comm `Feature_mathml_blk comm elem
 
-		| (_, _, _, `Printout_blk, (comm, Ast.Source txt))
-		| (_, _, _, `Any_blk, (comm, Ast.Source txt)) ->
+		| Ast.Source txt when allowed = `Printout_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr dict =
 				let (lang, linenums) = Style.consume2 dict (Lang_hnd, None) (Linenums_hnd, false) in
 				let trimmed = Literal_input.trim txt in
@@ -670,26 +646,22 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Block.source ~attr src] in
 			check_block_comm `Feature_source comm elem
 
-		| (_, _, _, `Table_blk, (comm, Ast.Tabular (tcols, tab)))
-		| (_, _, _, `Any_blk, (comm, Ast.Tabular (tcols, tab))) ->
+		| Ast.Tabular (tcols, tab) when allowed = `Table_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr _ = [Block.tabular ~attr (convert_tabular comm tcols tab)] in
 			check_block_comm `Feature_tabular comm elem
 
-		| (_, true, true, `Figure_blk, (comm, Ast.Subpage astfrag))
-		| (_, true, true, `Any_blk, (comm, Ast.Subpage astfrag)) ->
-			let elem attr _ = [Block.subpage ~attr (convert_frag_aux ~comm ~minipaged:true ~depth true true true `Any_blk astfrag)] in
+		| Ast.Subpage astfrag when allowed = `Figure_blk || Blkcat.(`Listable_blk <: allowed) ->
+			let elem attr _ = [Block.subpage ~attr (convert_frag_aux ~comm ~minipaged:true ~depth `Super_blk astfrag)] in
 			check_block_comm `Feature_subpage comm elem
 
-		| (_, _, _, `Figure_blk, (comm, Ast.Verbatim txt))
-		| (_, _, _, `Any_blk, (comm, Ast.Verbatim txt)) ->
+		| Ast.Verbatim txt when allowed = `Figure_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr _ =
 				let trimmed = Literal_input.trim txt in
 				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag) in
 				[Block.verbatim ~attr trimmed] in
 			check_block_comm `Feature_verbatim comm elem
 
-		| (_, _, _, `Figure_blk, (comm, Ast.Picture (href, alt)))
-		| (_, _, _, `Any_blk, (comm, Ast.Picture (href, alt))) ->
+		| Ast.Picture (href, alt) when allowed = `Figure_blk || Blkcat.(`Embeddable_blk <: allowed) ->
 			let elem attr dict =
 				BatDynArray.add imagerefs (comm, `Feature_picture, href);
 				imageset := HrefSet.add href !imageset;
@@ -697,14 +669,14 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Block.picture ~attr href alt width] in
 			check_block_comm `Feature_picture comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Pullquote (maybe_astseq, astfrag))) ->
+		| Ast.Pullquote (maybe_astseq, astfrag) when Blkcat.(`Listable_blk <: allowed) ->
 			let elem attr _ =
 				let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
-				let frag = convert_frag_aux ~comm ~minipaged ~depth false false false `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth `Embeddable_blk astfrag in
 				[Block.pullquote ~attr maybe_seq frag] in
 			check_block_comm `Feature_pullquote comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Custom (maybe_kind, env, maybe_astseq, astfrag))) ->
+		| Ast.Custom (maybe_kind, env, maybe_astseq, astfrag) when Blkcat.(`Listable_blk <: allowed) ->
 			let elem attr _ =
 				let bad_order reason =
 					let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
@@ -729,11 +701,11 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						| Unnumbered _ -> Custom.unnumbered
 						| Numbered _   -> Custom.numbered in
 					let data = custom_maker env label order in
-					let (block_maker, allow_above_embeddable) = match kind with
-						| Custom.Boxout  -> (Block.boxout ~attr (Custom.Boxout.make data), true)
-						| Custom.Theorem -> (Block.theorem ~attr (Custom.Theorem.make data), false) in
+					let (block_maker, allowed) = match kind with
+						| Custom.Boxout  -> (Block.boxout ~attr (Custom.Boxout.make data), Blkcat.min allowed `Quotable_blk)
+						| Custom.Theorem -> (Block.theorem ~attr (Custom.Theorem.make data), `Embeddable_blk) in
 					let maybe_seq = maybe (convert_seq ~comm) maybe_astseq in
-					let frag = convert_frag_aux ~comm ~minipaged ~depth false false allow_above_embeddable `Any_blk astfrag in
+					let frag = convert_frag_aux ~comm ~minipaged ~depth allowed astfrag in
 					[block_maker maybe_seq frag]
 				with
 					| Not_found ->
@@ -746,35 +718,35 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						[] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Equation (maybe_astseq, astblk))) ->
+		| Ast.Equation (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq in
-				let blk = convert_block ~minipaged ~depth true true true `Equation_blk astblk in
+				let blk = convert_block ~minipaged ~depth `Equation_blk astblk in
 				perhaps (Block.equation ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Printout (maybe_astseq, astblk))) ->
+		| Ast.Printout (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq in
-				let blk = convert_block ~minipaged ~depth true true true `Printout_blk astblk in
+				let blk = convert_block ~minipaged ~depth `Printout_blk astblk in
 				perhaps (Block.printout ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Table (maybe_astseq, astblk))) ->
+		| Ast.Table (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm table_counter Wrapper.Table maybe_astseq in
-				let blk = convert_block ~minipaged ~depth true true true `Table_blk astblk in
+				let blk = convert_block ~minipaged ~depth `Table_blk astblk in
 				perhaps (Block.table ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
-		| (_, true, true, `Any_blk, (comm, Ast.Figure (maybe_astseq, astblk))) ->
+		| Ast.Figure (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
 			let elem attr _ =
 				let wrapper = convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq in
-				let blk = convert_block ~minipaged ~depth true true true `Figure_blk astblk in
+				let blk = convert_block ~minipaged ~depth `Figure_blk astblk in
 				perhaps (Block.figure ~attr wrapper) blk in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_figure comm elem
 
-		| (true, true, true, `Any_blk, (comm, Ast.Part astseq)) ->
+		| Ast.Part astseq when allowed = `Super_blk ->
 			let elem attr _ =
 				let order = match comm.comm_order with
 					| None	     -> Order_input.auto_ordinal part_counter
@@ -787,7 +759,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[block] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_part comm elem
 
-		| (true, true, true, `Any_blk, (comm, Ast.Appendix)) ->
+		| Ast.Appendix when allowed = `Super_blk ->
 			let elem attr _ =
 				let order = Order_input.no_order () in
 				let label = make_label comm (Target.part order) in
@@ -798,7 +770,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[block] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_appendix comm elem
 
-		| (true, true, true, `Any_blk, (comm, Ast.Section (level, astseq))) ->
+		| Ast.Section (level, astseq) when allowed = `Super_blk ->
 			let elem attr _ =
 				let (counter, location) =
 					if !appendixed
@@ -828,16 +800,16 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				| _ -> `Feature_section6 in
 			check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
-		| (true, true, true, `Any_blk, (comm, Ast.Bibliography)) ->
+		| Ast.Bibliography when allowed = `Super_blk ->
 			convert_preset_sectional ~tocable:true ~minipaged Heading.bibliography `Feature_bibliography comm
 
-		| (true, true, true, `Any_blk, (comm, Ast.Notes)) ->
+		| Ast.Notes when allowed = `Super_blk ->
 			convert_preset_sectional ~tocable:true ~minipaged Heading.notes `Feature_notes comm 
 
-		| (true, true, true, `Any_blk, (comm, Ast.Toc)) ->
+		| Ast.Toc when allowed = `Super_blk ->
 			convert_preset_sectional ~tocable:false ~minipaged Heading.toc `Feature_toc comm
 
-		| (true, true, true, `Any_blk, (comm, Ast.Title (level, astseq))) ->
+		| Ast.Title (level, astseq) when allowed = `Super_blk  ->
 			let elem attr _ =
 				let level' =
 					try Level.title level
@@ -851,17 +823,17 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				| _ -> `Feature_title2 in
 			check_block_comm feature comm elem
 
-		| (true, true, true, `Any_blk, (comm, Ast.Abstract astfrag)) ->
+		| Ast.Abstract astfrag when allowed = `Super_blk ->
 			let elem attr _ =
-				let frag = convert_frag_aux ~comm ~minipaged ~depth false false false `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth `Embeddable_blk astfrag in
 				[Block.abstract ~attr frag] in
 			check_block_comm `Feature_abstract comm elem
 
-		| (true, true, true, `Any_blk, (comm, Ast.Rule)) ->
+		| Ast.Rule when allowed = `Super_blk ->
 			let elem attr _ = [Block.rule ~attr ()] in
 			check_block_comm `Feature_rule comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Bib bib)) ->
+		| Ast.Bib bib ->
 			let elem attr _ =
 				let (author_comm, author_astseq) = bib.author
 				and (title_comm, title_astseq) = bib.title
@@ -886,17 +858,17 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						[] in
 			check_block_comm `Feature_bib comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Note astfrag)) ->
+		| Ast.Note astfrag ->
 			let elem attr _ =
 				let order = Order_input.auto_ordinal note_counter in
 				let label = make_label comm (Target.note order) in
-				let frag = convert_frag_aux ~comm ~minipaged:true ~depth false true true `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged:true ~depth `Listable_blk astfrag in
 				let note = Note.make label order frag in
 				BatDynArray.add notes note;
 				[] in
 			check_block_comm `Feature_note comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Macrodef (name, nargs, astseq))) ->
+		| Ast.Macrodef (name, nargs, astseq) ->
 			let elem attr _ =
 				if not (Identifier_input.matches_macrodef name)
 				then begin
@@ -921,15 +893,15 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[] in
 			check_block_comm `Feature_macrodef comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Boxoutdef (env, maybe_caption, maybe_counter_name))) ->
+		| Ast.Boxoutdef (env, maybe_caption, maybe_counter_name) ->
 			let elem attr _ = convert_customdef comm env Custom.Boxout maybe_caption maybe_counter_name; [] in
 			check_block_comm `Feature_boxoutdef comm elem
 
-		| (_, _, _, `Any_blk, (comm, Ast.Theoremdef (env, caption, maybe_counter_name))) ->
+		| Ast.Theoremdef (env, caption, maybe_counter_name) ->
 			let elem attr _ = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name; [] in
 			check_block_comm `Feature_theoremdef comm elem
 
-		| (aal, aaq, aae, ablk, (comm, Ast.Extblk (tag, extblk))) when true (*check_category tag aal aaq aae ablk*) ->
+		| Ast.Extblk (tag, extblk) when List.exists Blkcat.(fun blk -> blk <: allowed) (snd (List.assoc tag extblkdefs)) ->
 			let elem attr _ =
 				let extkey = !extblk_counter in
 				incr extblk_counter;
@@ -938,19 +910,8 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[Block.extblk ~attr extkey] in
 			check_block_comm (`Feature_extblk tag) comm elem
 
-		| (_, _, _, _, (comm, _)) ->
-			let blk = match allowed_blk with
-				| `Paragraph_blk
-				| `Equation_blk
-				| `Printout_blk
-				| `Table_blk
-				| `Figure_blk as blk -> blk
-				| `Any_blk -> match (allow_above_listable, allow_above_quotable, allow_above_embeddable) with
-					| (_, _, false) -> `Embeddable_blk
-					| (_, false, _) -> `Quotable_blk
-					| (false, _, _) -> `Listable_blk
-					| _		-> `Super_blk in
-			let msg = Error.Unexpected_block (comm.comm_tag, blk) in
+		| _ ->
+			let msg = Error.Unexpected_block (comm.comm_tag, allowed) in
 			BatDynArray.add errors (Some comm.comm_linenum, msg);
 			[dummy_block]
 
@@ -1027,9 +988,9 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					Hashtbl.add customisations env data
 
 
-	and convert_frag_of_anon_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
+	and convert_frag_of_anon_frags ~comm ~cons ~minipaged ~depth allowed astfrags =
 		let conv (comm, astfrag) =
-			let elem attr _ = convert_frag_aux ~comm ~minipaged ~depth false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+			let elem attr _ = convert_frag_aux ~comm ~minipaged ~depth (Blkcat.min allowed `Listable_blk) astfrag in
 			check_comm `Feature_item comm elem in
 		let frags = List.filter_map conv astfrags in
 		match frags with
@@ -1041,11 +1002,11 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[dummy_block]
 
 
-	and convert_frag_of_desc_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
+	and convert_frag_of_desc_frags ~comm ~cons ~minipaged ~depth allowed astfrags =
 		let conv (comm, astseq, astfrag) =
 			let elem attr _ =
 				let seq = convert_seq ~comm astseq in
-				let frag = convert_frag_aux ~comm ~minipaged ~depth false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth (Blkcat.min allowed `Listable_blk) astfrag in
 				(seq, frag) in
 			check_comm `Feature_item comm elem in
 		let frags = List.filter_map conv astfrags in
@@ -1058,7 +1019,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				[dummy_block]
 
 
-	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged ~depth allow_above_quotable allow_above_embeddable astfrags =
+	and convert_frag_of_qanda_frags ~comm ~cons ~minipaged ~depth allowed astfrags =
 		let conv (comm, qanda, astfrag) =
 			let (feature, qanda_maker) = match qanda with
 				| New_questioner maybe_astseq ->
@@ -1071,7 +1032,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					(`Feature_ranswer, fun () -> Qanda.Same_answerer) in
 			let elem attr _ =
 				let qanda = qanda_maker () in
-				let frag = convert_frag_aux ~comm ~minipaged ~depth false allow_above_quotable allow_above_embeddable `Any_blk astfrag in
+				let frag = convert_frag_aux ~comm ~minipaged ~depth (Blkcat.min allowed `Listable_blk) astfrag in
 				[(qanda, frag)] in
 			check_comm feature comm elem in
 		let frags = List.flatten (List.filter_map conv astfrags) in
@@ -1094,10 +1055,10 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		| Ast.Extblk_envrawoptraw (maybe_txt1, txt2)	-> Extcomm.Extblk_envrawoptraw (maybe_txt1, txt2)
 
 
-	and convert_frag_aux ?comm ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astfrag =
+	and convert_frag_aux ?comm ~minipaged ~depth allowed astfrag =
 		let conv = match idiosyncrasies.max_block_depth with
 			| None -> fun astblk ->
-				convert_block ~minipaged ~depth allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk
+				convert_block ~minipaged ~depth allowed astblk
 			| Some max -> fun astblk ->
 				if depth >= max
 				then
@@ -1106,7 +1067,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					BatDynArray.add errors (Some comm.comm_linenum, msg);
 					[dummy_block]
 				else
-					convert_block ~minipaged ~depth:(depth+1) allow_above_listable allow_above_quotable allow_above_embeddable allowed_blk astblk in
+					convert_block ~minipaged ~depth:(depth+1) allowed astblk in
 		let frag = flatten_map conv astfrag in
 		match frag with
 			| _::_ ->
@@ -1121,7 +1082,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 
 
 	let convert_frag astfrag =
-		convert_frag_aux ~minipaged:false ~depth:0 true true true `Any_blk astfrag in
+		convert_frag_aux ~minipaged:false ~depth:0 `Super_blk astfrag in
 
 
 	(************************************************************************)

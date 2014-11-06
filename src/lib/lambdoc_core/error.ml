@@ -104,7 +104,7 @@ type error_msg_t =
 	| Empty_sequence of Ident.t option
 	| Empty_fragment of Ident.t option
 	| Unexpected_inline of Ident.t option
-	| Unexpected_block of Ident.t option * Block.category_t
+	| Unexpected_block of Ident.t option * Blkcat.t
 
 	| Malformed_code_point
 	| Reading_error of string

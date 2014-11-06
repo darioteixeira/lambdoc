@@ -51,18 +51,6 @@ and t =
 
 and frag_t = t list with sexp
 
-type category_t =
-	[ `Super_blk
-	| `Listable_blk
-	| `Quotable_blk
-	| `Embeddable_blk
-	| `Paragraph_blk
-	| `Equation_blk
-	| `Printout_blk
-	| `Table_blk
-	| `Figure_blk
-	] with sexp
-
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
