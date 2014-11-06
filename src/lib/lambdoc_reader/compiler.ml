@@ -901,7 +901,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			let elem attr _ = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name; [] in
 			check_block_comm `Feature_theoremdef comm elem
 
-		| Ast.Extblk (tag, extblk) when List.exists Blkcat.(fun blk -> blk <: allowed) (snd (List.assoc tag extblkdefs)) ->
+		| Ast.Extblk (tag, extblk) when List.exists Blkcat.(fun blk -> blk = allowed || blk <: allowed) (snd (List.assoc tag extblkdefs)) ->
 			let elem attr _ =
 				let extkey = !extblk_counter in
 				incr extblk_counter;
