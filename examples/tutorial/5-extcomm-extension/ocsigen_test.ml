@@ -8,8 +8,11 @@
 
 (**	Part 5 of the Lambdoc+Ocsigen tutorial.
 
-	Make sure that 'banner' is installed in your system! (On Debian
-	and derivatives the package is 'sysvbanner')
+	This instalment of the tutorial illustrates the definition of the custom
+	simple block command 'banner', which takes some raw text as argument and
+	produces a verbatim block with a banner version of the input.  Make sure
+	that 'banner' is installed in your system! (On Debian and derivatives
+	the package is 'sysvbanner'.)
 *)
 
 open Eliom_content
