@@ -149,6 +149,14 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 
 
 	(************************************************************************)
+	(* Dummy elements.							*)
+	(************************************************************************)
+
+	let dummy_inline = Inline.linebreak () in
+	let dummy_block = Block.paragraph [dummy_inline] in
+
+
+	(************************************************************************)
 	(* Helper sub-functions.						*)
 	(************************************************************************)
 
@@ -246,6 +254,18 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			Monad.return None in
 
 
+	let check_inline_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
+		check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem >>= function
+			| Some x -> Monad.return x
+			| None	 -> Monad.return [dummy_inline] in
+
+
+	let check_block_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
+		check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem >>= function
+			| Some x -> Monad.return x
+			| None	 -> Monad.return [dummy_block] in
+
+
 	(************************************************************************)
 	(* Compilation functions for mathematics.				*)
 	(************************************************************************)
@@ -271,15 +291,6 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	(************************************************************************)
 	(* Compilation functions for inline context.				*)
 	(************************************************************************)
-
-	let dummy_inline = Inline.linebreak () in
-
-
-	let check_inline_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
-		check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem >>= function
-			| Some x -> Monad.return x
-			| None	 -> Monad.return [dummy_inline] in
-
 
 	let rec convert_inline ~context ~depth ~args is_ref (comm, inline) = match inline with
 
@@ -558,18 +569,18 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 
 
 	and convert_seq_aux ~comm ~context ~depth ~args is_ref astseq =
-		convert_inline_list ~comm ~context ~depth ~args is_ref astseq in
+		convert_inline_list ~comm ~context ~depth ~args is_ref astseq
 
 
-	let convert_seq ~comm ?args seq =
-		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ~args false seq in
+	and convert_seq ~comm ?args seq =
+		convert_seq_aux ~comm ~context:(comm, 0) ~depth:0 ~args false seq
 
 
 	(************************************************************************)
 	(* Compilation functions for tabular environment.			*)
 	(************************************************************************)
 
-	let convert_tabular comm tcols tab =
+	and convert_tabular comm tcols tab =
 
 		let get_colspec comm spec =
 			try
@@ -634,23 +645,14 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		monadic_maybe (convert_group `Feature_tfoot) tab.tfoot >>= fun tfoot ->
 		match tab.tbodies with
 			| _::_ -> monadic_map (convert_group `Feature_tbody) tab.tbodies >|= Tabular.make specs ?thead ?tfoot
-			| []   -> invalid_arg "Parser has given us an empty tabular body" in
+			| []   -> invalid_arg "Parser has given us an empty tabular body"
 
 
 	(************************************************************************)
 	(* Compilation functions for document blocks.				*)
 	(************************************************************************)
 
-	let dummy_block = Block.paragraph [dummy_inline] in
-
-
-	let check_block_comm ?maybe_minipaged ?maybe_wrapped feature comm elem =
-		check_comm ?maybe_minipaged ?maybe_wrapped feature comm elem >>= function
-			| Some x -> Monad.return x
-			| None	 -> Monad.return [dummy_block] in
-
-
-	let rec convert_block ~minipaged ~depth allowed (comm, astblk) = match astblk with
+	and convert_block ~minipaged ~depth allowed (comm, astblk) = match astblk with
 
 		| Ast.Paragraph astseq when Blkcat.subtype [`Paragraph_blk; `Embeddable_blk] allowed ->
 			let elem attr _ =
@@ -1157,10 +1159,10 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				BatDynArray.add errors (linenum, msg);
 				Monad.return [dummy_block]
 			| frag ->
-				Monad.return (List.flatten frag) in
+				Monad.return (List.flatten frag)
 
 
-	let convert_frag astfrag =
+	and convert_frag astfrag =
 		convert_frag_aux ~minipaged:false ~depth:0 `Super_blk astfrag in
 
 
