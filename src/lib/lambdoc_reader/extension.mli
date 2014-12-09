@@ -17,48 +17,75 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type error_t = [ `Unsupported | `Failed of string | `Style of string ]
+type inline_syntax_t =
+	| Inlsyn_empty		(* No main parameters. Eg: Linebreak *)
+	| Inlsyn_seq		(* Parameter is an inline sequence. Eg: Bold *)
+	| Inlsyn_raw		(* Parameter is single sequence of raw text. Eg: Macroarg *)
+	| Inlsyn_raw_raw	(* Parameters are two sequences of raw text. Eg: Glyph *)
+	| Inlsyn_raw_seq	(* Parameters are a sequence of raw text followed by an inline sequence. Eg: Mref *)
+	| Inlsyn_raw_seqopt	(* Parameters are a sequence of raw text followed optionally by an inline sequence. Eg: Link *)
 
-type 'a result_t = [ `Okay of 'a | `Error of error_t ]
+type block_syntax_t =
+	| Blksyn_empty		(* No main parameters. Eg: Appendix *)
+	| Blksyn_seq		(* Parameter is an inline sequence. Eg: Paragraph *)
+	| Blksyn_raw		(* Parameter is single sequence of raw text. *)
+	| Blksyn_lit		(* Parameter is a multiline sequence of raw text. *)
+	| Blksyn_frag		(* Parameter is a fragment (list of blocks). Eg: Quote *)
+	| Blksyn_raw_raw	(* Parameters are two sequences of raw text. Eg: Picture *)
+
+type inline_extdef_t = Ident.t * inline_syntax_t
+
+type block_extdef_t = Ident.t * block_syntax_t
 
 
 (********************************************************************************)
 (**	{1 Public signatures}							*)
 (********************************************************************************)
 
-(**	The signature of the monad that the extension lives under.
-*)
-module type MONAD =
-sig
-	type 'a t
-
-	val return: 'a -> 'a t
-	val fail: exn -> 'a t
-	val bind: 'a t -> ('a -> 'b t) -> 'b t
-	val catch: (unit -> 'a t) -> (exn -> 'a t) -> 'a t
-	val iter: ('a -> unit t) -> 'a list -> unit t
-end
-
-
 (**	The signature of a reader extension.
 *)
 module type S =
 sig
-	module Monad: MONAD
+	module Monad: Monadic.S
 
-	type linkdata_t		(** Payload associated with {!read_link} *)
-	type imagedata_t	(** Payload associated with {!read_image} *)
-	type extinldata_t	(** Payload associated with {!read_extinl} *)
-	type extblkdata_t	(** Payload associated with {!read_extblk} *)
-	type rconfig_t		(** Reader configuration *)
+	type 'a result_t = [ `Okay of 'a | `Error of Error.error_msg_t list ]
 
-	val extinldefs: Extcomm.extinldefs_t
-	val extblkdefs: Extcomm.extblkdefs_t
+	type link_reader_t = Href.t -> string result_t option Monad.t
 
-	val read_link: ?rconfig:rconfig_t -> Href.t -> linkdata_t result_t Monad.t
-	val read_image: ?rconfig:rconfig_t -> Href.t -> imagedata_t result_t Monad.t
-	val read_extinl: ?rconfig:rconfig_t -> Ident.t -> Extcomm.extinl_t -> extinldata_t result_t Monad.t
-	val read_extblk: ?rconfig:rconfig_t -> Ident.t -> Extcomm.extblk_t -> extblkdata_t result_t Monad.t
+	type image_reader_t = Href.t -> string result_t option Monad.t
+
+	type inline_function_result_t = Ast.seq_t result_t Monad.t
+
+	type block_function_result_t = Ast.frag_t result_t Monad.t
+
+	type inline_function_t =
+		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
+		| Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw of (Ast.command_t -> string -> inline_function_result_t)
+		| Inlfun_raw_raw of (Ast.command_t -> string -> string -> inline_function_result_t)
+		| Inlfun_raw_seq of (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw_seqopt of (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+
+	type block_function_t =
+		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
+		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
+		| Blkfun_raw of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
+		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
+
+	type inline_extcomm_t =
+		{
+		inltag: Ident.t;
+		inlfun: inline_function_t;
+		}
+
+	type block_extcomm_t =
+		{
+		blktag: Ident.t;
+		blkfun: block_function_t;
+		blkcat: Blkcat.t list;
+		}
 end
 
 
@@ -66,13 +93,7 @@ end
 (**	{1 Public modules}							*)
 (********************************************************************************)
 
-module Identity: MONAD with type 'a t = 'a
+module Make: functor (M: Monadic.S) -> S with module Monad = M
 
-module Unitary: S with
-	type 'a Monad.t = 'a and
-	type linkdata_t = unit and
-	type imagedata_t = unit and
-	type extinldata_t = unit and
-	type extblkdata_t = unit and
-	type rconfig_t = unit
+module Trivial: S with module Monad = Monadic.Identity
 

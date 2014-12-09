@@ -41,11 +41,10 @@ type block_t =
 	| Title of Level.title_t * Inline.seq_t
 	| Abstract of frag_t
 	| Rule
-	| Extblk of Extkey.t
 
 and t =
 	{
-	block: block_t;
+	blk: block_t;
 	attr: Attr.t;
 	}
 
@@ -80,5 +79,4 @@ val heading:	 ?attr:Attr.t -> Heading.t -> t
 val title:	 ?attr:Attr.t -> Level.title_t -> Inline.seq_t -> t
 val abstract:	 ?attr:Attr.t -> frag_t -> t
 val rule:	 ?attr:Attr.t -> unit -> t
-val extblk:	 ?attr:Attr.t -> Extkey.t -> t
 

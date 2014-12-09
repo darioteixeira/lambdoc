@@ -38,11 +38,10 @@ type inline_t =
 	| Dref of Pointer.t * seq_t option		(** Dumb reference to an internal element *)
 	| Sref of Pointer.t * seq_t option		(** Smart reference to an internal element *)
 	| Mref of Pointer.t * seq_t			(** Manual reference to an internal element *)
-	| Extinl of Extkey.t				(** Inline extension *)
 
 and t =
 	{
-	inline: inline_t; 
+	inl: inline_t; 
 	attr: Attr.t;
 	}
 
@@ -74,5 +73,4 @@ val cite:	?attr:Attr.t -> Pointer.t list -> t
 val dref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
 val sref:	?attr:Attr.t -> Pointer.t -> seq_t option -> t
 val mref:	?attr:Attr.t -> Pointer.t -> seq_t -> t
-val extinl:	?attr:Attr.t -> Extkey.t -> t
 

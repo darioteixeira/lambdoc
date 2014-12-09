@@ -36,11 +36,10 @@ type inline_t =
 	| Dref of Pointer.t * seq_t option
 	| Sref of Pointer.t * seq_t option
 	| Mref of Pointer.t * seq_t
-	| Extinl of Extkey.t
 
 and t =
 	{
-	inline: inline_t;
+	inl: inline_t;
 	attr: Classname.t list;
 	}
 
@@ -51,26 +50,25 @@ and seq_t = t list with sexp
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let plain	?(attr = Attr.default) txt = {inline = Plain txt; attr}
-let entity	?(attr = Attr.default) ent = {inline = Entity ent; attr}
-let linebreak	?(attr = Attr.default) () = {inline = Linebreak; attr}
-let mathinl	?(attr = Attr.default) data = {inline = Mathinl data; attr}
-let glyph	?(attr = Attr.default) href alt = {inline = Glyph (href, alt); attr}
-let bold	?(attr = Attr.default) seq = {inline = Bold seq; attr}
-let emph	?(attr = Attr.default) seq = {inline = Emph seq; attr}
-let code	?(attr = Attr.default) seq = {inline = Code seq; attr}
-let caps	?(attr = Attr.default) seq = {inline = Caps seq; attr}
-let ins		?(attr = Attr.default) seq = {inline = Ins seq; attr}
-let del		?(attr = Attr.default) seq = {inline = Del seq; attr}
-let sup		?(attr = Attr.default) seq = {inline = Sup seq; attr}
-let sub		?(attr = Attr.default) seq = {inline = Sub seq; attr}
-let mbox	?(attr = Attr.default) seq = {inline = Mbox seq; attr}
-let span	?(attr = Attr.default) seq = {inline = Span seq; attr}
-let link	?(attr = Attr.default) href maybe_seq = {inline = Link (href, maybe_seq); attr}
-let see		?(attr = Attr.default) pointers = {inline = See pointers; attr}
-let cite	?(attr = Attr.default) pointers = {inline = Cite pointers; attr}
-let dref	?(attr = Attr.default) pointer maybe_seq = {inline = Dref (pointer, maybe_seq); attr}
-let sref	?(attr = Attr.default) pointer maybe_seq = {inline = Sref (pointer, maybe_seq); attr}
-let mref	?(attr = Attr.default) pointer seq = {inline = Mref (pointer, seq); attr}
-let extinl	?(attr = Attr.default) extkey = {inline = Extinl extkey; attr}
+let plain	?(attr = Attr.default) txt = {inl = Plain txt; attr}
+let entity	?(attr = Attr.default) ent = {inl = Entity ent; attr}
+let linebreak	?(attr = Attr.default) () = {inl = Linebreak; attr}
+let mathinl	?(attr = Attr.default) data = {inl = Mathinl data; attr}
+let glyph	?(attr = Attr.default) href alt = {inl = Glyph (href, alt); attr}
+let bold	?(attr = Attr.default) seq = {inl = Bold seq; attr}
+let emph	?(attr = Attr.default) seq = {inl = Emph seq; attr}
+let code	?(attr = Attr.default) seq = {inl = Code seq; attr}
+let caps	?(attr = Attr.default) seq = {inl = Caps seq; attr}
+let ins		?(attr = Attr.default) seq = {inl = Ins seq; attr}
+let del		?(attr = Attr.default) seq = {inl = Del seq; attr}
+let sup		?(attr = Attr.default) seq = {inl = Sup seq; attr}
+let sub		?(attr = Attr.default) seq = {inl = Sub seq; attr}
+let mbox	?(attr = Attr.default) seq = {inl = Mbox seq; attr}
+let span	?(attr = Attr.default) seq = {inl = Span seq; attr}
+let link	?(attr = Attr.default) href maybe_seq = {inl = Link (href, maybe_seq); attr}
+let see		?(attr = Attr.default) pointers = {inl = See pointers; attr}
+let cite	?(attr = Attr.default) pointers = {inl = Cite pointers; attr}
+let dref	?(attr = Attr.default) pointer maybe_seq = {inl = Dref (pointer, maybe_seq); attr}
+let sref	?(attr = Attr.default) pointer maybe_seq = {inl = Sref (pointer, maybe_seq); attr}
+let mref	?(attr = Attr.default) pointer seq = {inl = Mref (pointer, seq); attr}
 

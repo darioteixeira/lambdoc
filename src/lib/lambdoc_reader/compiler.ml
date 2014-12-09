@@ -97,7 +97,7 @@ let rec monadic_filter_map f = function
 	document.  In addition, a label dictionary, bibliography entries, notes,
 	and possible errors are also returned.
 *)
-let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
+let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -128,8 +128,6 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	and toc = BatDynArray.create ()
 	and linkrefs = BatDynArray.create ()
 	and imagerefs = BatDynArray.create ()
-	and extinlrefs = BatDynArray.create ()
-	and extblkrefs = BatDynArray.create ()
 	and linkset = ref HrefSet.empty
 	and imageset = ref HrefSet.empty
         and labels = Hashtbl.create 10
@@ -147,8 +145,6 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	and note_counter = Order_input.ordinal_counter ()
 	and custom_counters = Hashtbl.create 10
         and auto_label_counter = ref 0
-	and extinl_counter = ref 0
-	and extblk_counter = ref 0
 	and appendixed = ref false in
 
 
@@ -506,14 +502,16 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						Monad.return [] in
 			check_inline_comm `Feature_macrocall comm elem
 
-		| Ast.Extinl (tag, astextinl) when not is_ref || not (snd (List.assoc tag extinldefs)) ->
+		| Ast.Extcomm_inl (tag, pattern) ->
 			let elem attr _ =
-				let extkey = !extinl_counter in
-				incr extinl_counter;
-				convert_extinl ~comm ~context ~depth ~args is_ref astextinl >>= fun extinl ->
-				BatDynArray.add extinlrefs (extkey, tag, comm, extinl);
-				Monad.return [Inline.extinl ~attr extkey] in
-			check_inline_comm (`Feature_extinl tag) comm elem
+				let extcomm = List.find (fun x -> x.inltag = tag) inline_extcomms in
+				convert_extcomm_inl comm (pattern, extcomm.inlfun) >>= function
+					| `Okay astseq ->
+						convert_seq_aux ~comm ~context ~depth ~args is_ref astseq
+					| `Error msgs ->
+						List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs;
+						Monad.return [] in
+			check_inline_comm (`Feature_extcomm_inl tag) comm elem
 
 		| _ ->
 			let msg = Error.Unexpected_inline comm.comm_tag in
@@ -521,18 +519,14 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			Monad.return []
 
 
-	and convert_extinl ~comm ~context ~depth ~args is_ref = function
-		| Ast.Extinl_simseq astseq ->
-			convert_seq_aux ~comm ~context ~depth ~args is_ref astseq >>= fun seq ->
-			Monad.return (Extcomm.Extinl_simseq seq)
-		| Ast.Extinl_simraw txt ->
-			Monad.return (Extcomm.Extinl_simraw txt)
-		| Ast.Extinl_simrawseq (txt, astseq) ->
-			convert_seq_aux ~comm ~context ~depth ~args is_ref astseq >>= fun seq ->
-			Monad.return (Extcomm.Extinl_simrawseq (txt, seq))
-		| Ast.Extinl_simrawseqopt (txt, maybe_astseq) ->
-			monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args is_ref) maybe_astseq >>= fun maybe_seq ->
-			Monad.return (Extcomm.Extinl_simrawseqopt (txt, maybe_seq))
+	and convert_extcomm_inl comm = function
+		| (Ast.Inlpat_empty, Ext.Inlfun_empty f)				-> f comm
+		| (Ast.Inlpat_seq astseq, Ext.Inlfun_seq f)				-> f comm astseq
+		| (Ast.Inlpat_raw txt, Ext.Inlfun_raw f)				-> f comm txt
+		| (Ast.Inlpat_raw_raw (txt1, txt2), Ext.Inlfun_raw_raw f)		-> f comm txt1 txt2
+		| (Ast.Inlpat_raw_seq (txt, astseq), Ext.Inlfun_raw_seq f)		-> f comm txt astseq
+		| (Ast.Inlpat_raw_seqopt (txt, maybe_astseq), Ext.Inlfun_raw_seqopt f)	-> f comm txt maybe_astseq
+		| _									-> assert false
 
 
 	and convert_inline_list ~comm ~context ~depth ~args is_ref astseq = match idiosyncrasies.max_inline_depth with
@@ -543,7 +537,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 		| _ ->
 			let coalesce_plain seq =
 				let rec coalesce_plain_aux accum = function
-					| {Inline.inline = Inline.Plain txt1; attr} :: {Inline.inline = Inline.Plain txt2; _} :: tl ->
+					| {Inline.inl = Inline.Plain txt1; attr} :: {Inline.inl = Inline.Plain txt2; _} :: tl ->
 						let agg = Inline.plain ~attr (txt1 ^ txt2) in
 						coalesce_plain_aux accum (agg :: tl)
 					| hd :: tl ->
@@ -658,49 +652,49 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 
 	let rec convert_block ~minipaged ~depth allowed (comm, astblk) = match astblk with
 
-		| Ast.Paragraph astseq when allowed = `Paragraph_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Paragraph astseq when Blkcat.subtype [`Paragraph_blk; `Embeddable_blk] allowed ->
 			let elem attr _ =
 				convert_seq ~comm astseq >>= fun seq ->
 				Monad.return [Block.paragraph ~attr seq] in
 			check_block_comm `Feature_paragraph comm elem
 
-		| Ast.Itemize astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Itemize astfrags when Blkcat.subtype [`Embeddable_blk] allowed ->
 			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.itemize ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_itemize comm elem
 
-		| Ast.Enumerate astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Enumerate astfrags when Blkcat.subtype [`Embeddable_blk] allowed ->
 			let elem attr _ = convert_frag_of_anon_frags ~comm ~cons:(Block.enumerate ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_enumerate comm elem
 
-		| Ast.Description astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Description astfrags when Blkcat.subtype [`Embeddable_blk] allowed ->
 			let elem attr _ = convert_frag_of_desc_frags ~comm ~cons:(Block.description ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_description comm elem
 
-		| Ast.Qanda astfrags when Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Qanda astfrags when Blkcat.subtype [`Embeddable_blk] allowed ->
 			let elem attr _ = convert_frag_of_qanda_frags ~comm ~cons:(Block.qanda ~attr) ~minipaged ~depth allowed astfrags in
 			check_block_comm `Feature_qanda comm elem
 
-		| Ast.Verse astfrag when Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Verse astfrag when Blkcat.subtype [`Embeddable_blk] allowed ->
 			let elem attr _ =
 				convert_frag_aux ~comm ~minipaged ~depth `Paragraph_blk astfrag >>= fun frag ->
 				Monad.return [Block.verse ~attr frag] in
 			check_block_comm `Feature_verse comm elem
 
-		| Ast.Quote astfrag when Blkcat.(`Quotable_blk <: allowed) ->
+		| Ast.Quote astfrag when Blkcat.subtype [`Quotable_blk] allowed ->
 			let elem attr _ =
 				convert_frag_aux ~comm ~minipaged ~depth `Quotable_blk astfrag >>= fun frag ->
 				Monad.return [Block.quote ~attr frag] in
 			check_block_comm `Feature_quote comm elem
 
-		| Ast.Mathtex_blk txt when allowed = `Equation_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Mathtex_blk txt when Blkcat.subtype [`Equation_blk; `Embeddable_blk] allowed ->
 			let elem attr _ = Monad.return (convert_mathtex (Block.mathblk ~attr) comm txt) in
 			check_block_comm `Feature_mathtex_blk comm elem
 
-		| Ast.Mathml_blk txt when allowed = `Equation_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Mathml_blk txt when Blkcat.subtype [`Equation_blk; `Embeddable_blk] allowed ->
 			let elem attr _ = Monad.return (convert_mathml (Block.mathblk ~attr) comm txt) in
 			check_block_comm `Feature_mathml_blk comm elem
 
-		| Ast.Source txt when allowed = `Printout_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Source txt when Blkcat.subtype [`Printout_blk; `Embeddable_blk] allowed ->
 			let elem attr dict =
 				let (lang, linenums) = Style.consume2 dict (Lang_hnd, None) (Linenums_hnd, false) in
 				let trimmed = Literal_input.trim txt in
@@ -710,26 +704,26 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				Monad.return [Block.source ~attr src] in
 			check_block_comm `Feature_source comm elem
 
-		| Ast.Tabular (tcols, asttab) when allowed = `Table_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Tabular (tcols, asttab) when Blkcat.subtype [`Table_blk; `Embeddable_blk] allowed ->
 			let elem attr _ =
 				convert_tabular comm tcols asttab >>= fun tab ->
 				Monad.return [Block.tabular ~attr tab] in
 			check_block_comm `Feature_tabular comm elem
 
-		| Ast.Subpage astfrag when allowed = `Figure_blk || Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Subpage astfrag when Blkcat.subtype [`Figure_blk; `Listable_blk] allowed ->
 			let elem attr _ =
 				convert_frag_aux ~comm ~minipaged:true ~depth `Super_blk astfrag >>= fun frag ->
 				Monad.return [Block.subpage ~attr frag] in
 			check_block_comm `Feature_subpage comm elem
 
-		| Ast.Verbatim txt when allowed = `Figure_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Verbatim txt when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
 			let elem attr _ =
 				let trimmed = Literal_input.trim txt in
 				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag) in
 				Monad.return [Block.verbatim ~attr trimmed] in
 			check_block_comm `Feature_verbatim comm elem
 
-		| Ast.Picture (href, alt) when allowed = `Figure_blk || Blkcat.(`Embeddable_blk <: allowed) ->
+		| Ast.Picture (href, alt) when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
 			let elem attr dict =
 				BatDynArray.add imagerefs (comm, `Feature_picture, href);
 				imageset := HrefSet.add href !imageset;
@@ -737,14 +731,14 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				Monad.return [Block.picture ~attr href alt width] in
 			check_block_comm `Feature_picture comm elem
 
-		| Ast.Pullquote (maybe_astseq, astfrag) when Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Pullquote (maybe_astseq, astfrag) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				monadic_maybe (convert_seq ~comm) maybe_astseq >>= fun maybe_seq ->
 				convert_frag_aux ~comm ~minipaged ~depth `Embeddable_blk astfrag >>= fun frag ->
 				Monad.return [Block.pullquote ~attr maybe_seq frag] in
 			check_block_comm `Feature_pullquote comm elem
 
-		| Ast.Custom (maybe_kind, env, maybe_astseq, astfrag) when Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Custom (maybe_kind, env, maybe_astseq, astfrag) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				let bad_order reason =
 					let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
@@ -786,7 +780,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 						Monad.return [] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
 
-		| Ast.Equation (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Equation (maybe_astseq, astblk) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				convert_wrapper comm equation_counter Wrapper.Equation maybe_astseq >>= fun wrapper ->
 				convert_block ~minipaged ~depth `Equation_blk astblk >>= function
@@ -794,7 +788,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					| _	-> Monad.return [] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_equation comm elem
 
-		| Ast.Printout (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Printout (maybe_astseq, astblk) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				convert_wrapper comm printout_counter Wrapper.Printout maybe_astseq >>= fun wrapper ->
 				convert_block ~minipaged ~depth `Printout_blk astblk >>= function
@@ -802,7 +796,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					| _	-> Monad.return [] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_printout comm elem
 
-		| Ast.Table (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Table (maybe_astseq, astblk) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				convert_wrapper comm table_counter Wrapper.Table maybe_astseq >>= fun wrapper ->
 				convert_block ~minipaged ~depth `Table_blk astblk >>= function
@@ -810,7 +804,7 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 					| _	-> Monad.return [] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_table comm elem
 
-		| Ast.Figure (maybe_astseq, astblk) when Blkcat.(`Listable_blk <: allowed) ->
+		| Ast.Figure (maybe_astseq, astblk) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				convert_wrapper comm figure_counter Wrapper.Figure maybe_astseq >>= fun wrapper ->
 				convert_block ~minipaged ~depth `Figure_blk astblk >>= function
@@ -972,14 +966,17 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 			let elem attr _ = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name in
 			check_block_comm `Feature_theoremdef comm elem
 
-		| Ast.Extblk (tag, astextblk) when List.exists Blkcat.(fun blk -> blk = allowed || blk <: allowed) (snd (List.assoc tag extblkdefs)) ->
+		| Ast.Extcomm_blk (tag, pattern) when Blkcat.subtype (List.find (fun x -> x.blktag = tag) block_extcomms).blkcat allowed ->
 			let elem attr _ =
-				let extkey = !extblk_counter in
-				incr extblk_counter;
-				convert_extblk ~comm astextblk >>= fun extblk ->
-				BatDynArray.add extblkrefs (extkey, tag, comm, extblk);
-				Monad.return [Block.extblk ~attr extkey] in
-			check_block_comm (`Feature_extblk tag) comm elem
+				(* Note that we use List.find again. Hopefully OCaml will support "with guards" in the near future. *)
+				let extcomm = List.find (fun x -> x.blktag = tag) block_extcomms in
+				convert_extcomm_blk comm (pattern, extcomm.blkfun) >>= function
+					| `Okay astfrag ->
+						convert_frag_aux ~comm ~minipaged ~depth allowed astfrag
+					| `Error msgs ->
+						List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs;
+						Monad.return [] in
+			check_block_comm (`Feature_extcomm_blk tag) comm elem
 
 		| _ ->
 			let msg = Error.Unexpected_block (comm.comm_tag, allowed) in
@@ -1128,24 +1125,14 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 				Monad.return [cons (List.flatten frags)]
 
 
-	and convert_extblk ~comm = function
-		| Ast.Extblk_simseq astseq ->
-			convert_seq ~comm astseq >>= fun seq ->
-			Monad.return (Extcomm.Extblk_simseq seq)
-		| Ast.Extblk_simraw txt ->
-			Monad.return (Extcomm.Extblk_simraw txt)
-		| Ast.Extblk_envraw txt ->
-			Monad.return (Extcomm.Extblk_envraw txt)
-		| Ast.Extblk_envseqraw (astseq, txt) ->
-			convert_seq ~comm astseq >>= fun seq ->
-			Monad.return (Extcomm.Extblk_envseqraw (seq, txt))
-		| Ast.Extblk_envrawraw (txt1, txt2) ->
-			Monad.return (Extcomm.Extblk_envrawraw (txt1, txt2))
-		| Ast.Extblk_envseqoptraw (maybe_astseq, txt) ->
-			monadic_maybe (convert_seq ~comm) maybe_astseq >>= fun maybe_seq ->
-			Monad.return (Extcomm.Extblk_envseqoptraw (maybe_seq, txt))
-		| Ast.Extblk_envrawoptraw (maybe_txt1, txt2) ->
-			Monad.return (Extcomm.Extblk_envrawoptraw (maybe_txt1, txt2))
+	and convert_extcomm_blk comm = function
+		| (Ast.Blkpat_empty, Ext.Blkfun_empty f)		  -> f comm
+		| (Ast.Blkpat_seq astseq, Ext.Blkfun_seq f)		  -> f comm astseq
+		| (Ast.Blkpat_raw txt, Ext.Blkfun_raw f)		  -> f comm txt
+		| (Ast.Blkpat_lit txt, Ext.Blkfun_lit f)		  -> f comm txt
+		| (Ast.Blkpat_frag astfrag, Ext.Blkfun_frag f)		  -> f comm astfrag
+		| (Ast.Blkpat_raw_raw (txt1, txt2), Ext.Blkfun_raw_raw f) -> f comm txt1 txt2
+		| _							  -> assert false
 
 
 	and convert_frag_aux ?comm ~minipaged ~depth allowed astfrag =
@@ -1223,44 +1210,23 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	(* Resolve referenced links.						*)
 	(************************************************************************)
 
-	let process_href processor set refs =
-		let dict = Hashtbl.create (HrefSet.cardinal set) in
-		let aux href =
-			processor ?rconfig href >>= fun v ->
-			Monad.return (Hashtbl.add dict href v) in
-		Monad.iter aux (HrefSet.elements set) >>= fun () ->
-		let newdict = Hashtbl.create (BatDynArray.length refs) in
-		let process (comm, feature, href) = match Hashtbl.find dict href with
-			| `Okay v ->
-				Hashtbl.add newdict href v
-			| `Error error ->
-				let msg = match error with
-					| `Unsupported -> Error.Unsupported_extension comm.comm_tag
-					| `Failed expl -> Error.Failed_extension (comm.comm_tag, expl)
-					| `Style expl  -> Error.Invalid_style_extension (comm.comm_tag, expl) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg) in
+	let process_hrefs readers set refs =
+		let results = Hashtbl.create (HrefSet.cardinal set) in
+		let process_href href =
+			let rec loop = function
+				| [] -> Monad.return (`Success None)
+				| hd :: tl -> hd href >>= function
+					| None		     -> loop tl
+					| Some (`Okay res)   -> Monad.return (`Success (Some res))
+					| Some (`Error msgs) -> Monad.return (`Failure msgs) in
+			loop readers >>= fun result ->
+			Monad.return (Hashtbl.add results href result) in
+		Monad.iter process_href (HrefSet.elements set) >>= fun () ->
+		let dict = Hashtbl.create (Hashtbl.length results) in
+		let process (comm, feature, href) = match Hashtbl.find results href with
+			| `Success v	-> Hashtbl.add dict href v
+			| `Failure msgs -> List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs in
 		let () = BatDynArray.iter process refs in
-		Monad.return newdict in
-
-
-	(************************************************************************)
-	(* Resolve command extensions.						*)
-	(************************************************************************)
-
-	let process_extcomm processor refs =
-		let dict = Hashtbl.create (BatDynArray.length refs) in
-		let aux (extkey, tag, comm, extcomm) =
-			processor ?rconfig tag extcomm >>= function
-				| `Okay v ->
-					Monad.return (Hashtbl.add dict extkey (tag, extcomm, v))
-				| `Error error ->
-					let msg = match error with
-						| `Unsupported -> Error.Unsupported_extension comm.comm_tag
-						| `Failed expl -> Error.Failed_extension (comm.comm_tag, expl)
-						| `Style expl  -> Error.Invalid_style_extension (comm.comm_tag, expl) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
-					Monad.return () in
-		Monad.iter aux (BatDynArray.to_list refs) >>= fun () ->
 		Monad.return dict in
 
 
@@ -1271,11 +1237,9 @@ let compile_document ?rconfig ~expand_entities ~idiosyncrasies ast =
 	convert_frag ast >>= fun content ->
 	let customs = filter_customisations () in
 	let () = filter_pointers () in
-	process_href Ext.read_link !linkset linkrefs >>= fun links ->
-	process_href Ext.read_image !imageset imagerefs >>= fun images ->
-	process_extcomm Ext.read_extinl extinlrefs >>= fun extinls ->
-	process_extcomm Ext.read_extblk extblkrefs >>= fun extblks ->
-	Monad.return (content, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, labels, customs, links, images, extinls, extblks, BatDynArray.to_list errors)
+	process_hrefs link_readers !linkset linkrefs >>= fun links ->
+	process_hrefs image_readers !imageset imagerefs >>= fun images ->
+	Monad.return (content, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, labels, customs, links, images, BatDynArray.to_list errors)
 
 
 (********************************************************************************)
@@ -1331,10 +1295,11 @@ let process_errors ~sort source errors =
 		| []   -> assert false
 
 
-let compile ?rconfig ~expand_entities ~idiosyncrasies ~source ast =
-	compile_document ?rconfig ~expand_entities ~idiosyncrasies ast >>= fun (content, bibs, notes, toc, labels, customs, links, images, extinls, extblks, errors) ->
+let compile ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ~source ast =
+	compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ast >>=
+	fun (content, bibs, notes, toc, labels, customs, links, images, errors) ->
 	match errors with
-		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images ~extinls ~extblks)
+		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images)
 		| _::_ -> Monad.return (Ambivalent.make_invalid (process_errors ~sort:true source errors))
 end
 

@@ -118,71 +118,71 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| None			-> invalid_arg "Feature requires that 'minipaged' be set but it is not!" in
 
 	let inline_feature_set = function
-		| `Feature_plain	-> forbidden_class
-		| `Feature_entity	-> forbidden_class
-		| `Feature_linebreak	-> forbidden_class
-		| `Feature_mathtex_inl	-> forbidden_class
-		| `Feature_mathml_inl	-> forbidden_class
-		| `Feature_glyph	-> forbidden_class
-		| `Feature_bold		-> forbidden_class
-		| `Feature_emph		-> forbidden_class
-		| `Feature_code		-> forbidden_class
-		| `Feature_caps		-> forbidden_class
-		| `Feature_ins		-> forbidden_class
-		| `Feature_del		-> forbidden_class
-		| `Feature_sup		-> forbidden_class
-		| `Feature_sub		-> forbidden_class
-		| `Feature_mbox		-> forbidden_class
-		| `Feature_span		-> forbidden_class
-		| `Feature_link		-> forbidden_class
-		| `Feature_see		-> forbidden_class
-		| `Feature_cite		-> forbidden_class
-		| `Feature_dref		-> forbidden_class
-		| `Feature_sref		-> forbidden_class
-		| `Feature_mref		-> forbidden_class
-		| `Feature_extinl _	-> forbidden_class
+		| `Feature_plain	 -> forbidden_class
+		| `Feature_entity	 -> forbidden_class
+		| `Feature_linebreak	 -> forbidden_class
+		| `Feature_mathtex_inl	 -> forbidden_class
+		| `Feature_mathml_inl	 -> forbidden_class
+		| `Feature_glyph	 -> forbidden_class
+		| `Feature_bold		 -> forbidden_class
+		| `Feature_emph		 -> forbidden_class
+		| `Feature_code		 -> forbidden_class
+		| `Feature_caps		 -> forbidden_class
+		| `Feature_ins		 -> forbidden_class
+		| `Feature_del		 -> forbidden_class
+		| `Feature_sup		 -> forbidden_class
+		| `Feature_sub		 -> forbidden_class
+		| `Feature_mbox		 -> forbidden_class
+		| `Feature_span		 -> forbidden_class
+		| `Feature_link		 -> forbidden_class
+		| `Feature_see		 -> forbidden_class
+		| `Feature_cite		 -> forbidden_class
+		| `Feature_dref		 -> forbidden_class
+		| `Feature_sref		 -> forbidden_class
+		| `Feature_mref		 -> forbidden_class
+		| `Feature_extcomm_inl _ -> permissive_class
 
 	and block_feature_set = function
-		| `Feature_paragraph	-> forbidden_class
-		| `Feature_itemize	-> forbidden_class
-		| `Feature_enumerate	-> forbidden_class
-		| `Feature_description	-> forbidden_class
-		| `Feature_qanda	-> forbidden_class
-		| `Feature_verse	-> forbidden_class
-		| `Feature_quote	-> forbidden_class
-		| `Feature_mathtex_blk	-> forbidden_class
-		| `Feature_mathml_blk	-> forbidden_class
-		| `Feature_source	-> forbidden_class
-		| `Feature_tabular	-> forbidden_class
-		| `Feature_subpage	-> forbidden_class
-		| `Feature_verbatim	-> forbidden_class
-		| `Feature_picture	-> forbidden_class
-		| `Feature_pullquote	-> forbidden_class
-		| `Feature_equation	-> wrapper_class (get_minipaged maybe_minipaged)
-		| `Feature_printout	-> wrapper_class (get_minipaged maybe_minipaged)
-		| `Feature_table	-> wrapper_class (get_minipaged maybe_minipaged)
-		| `Feature_figure	-> wrapper_class (get_minipaged maybe_minipaged)
-		| `Feature_part		-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_appendix	-> preset_heading_class
-		| `Feature_section1	-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_section2	-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_section3	-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_section4	-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_section5	-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_section6	-> custom_heading_class (get_minipaged maybe_minipaged)
-		| `Feature_bibliography	-> preset_heading_class
-		| `Feature_notes	-> preset_heading_class
-		| `Feature_toc		-> preset_heading_class
-		| `Feature_title1	-> forbidden_class
-		| `Feature_title2	-> forbidden_class
-		| `Feature_abstract	-> forbidden_class
-		| `Feature_rule		-> forbidden_class
-		| `Feature_bib		-> ghost_class
-		| `Feature_note		-> ghost_class
-		| `Feature_macrodef	-> forbidden_class
-		| `Feature_boxoutdef	-> forbidden_class
-		| `Feature_theoremdef	-> forbidden_class
-		| `Feature_extblk _	-> permissive_class
+		| `Feature_paragraph	 -> forbidden_class
+		| `Feature_itemize	 -> forbidden_class
+		| `Feature_enumerate	 -> forbidden_class
+		| `Feature_description	 -> forbidden_class
+		| `Feature_qanda	 -> forbidden_class
+		| `Feature_verse	 -> forbidden_class
+		| `Feature_quote	 -> forbidden_class
+		| `Feature_mathtex_blk	 -> forbidden_class
+		| `Feature_mathml_blk	 -> forbidden_class
+		| `Feature_source	 -> forbidden_class
+		| `Feature_tabular	 -> forbidden_class
+		| `Feature_subpage	 -> forbidden_class
+		| `Feature_verbatim	 -> forbidden_class
+		| `Feature_picture	 -> forbidden_class
+		| `Feature_pullquote	 -> forbidden_class
+		| `Feature_equation	 -> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_printout	 -> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_table	 -> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_figure	 -> wrapper_class (get_minipaged maybe_minipaged)
+		| `Feature_part		 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_appendix	 -> preset_heading_class
+		| `Feature_section1	 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section2	 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section3	 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section4	 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section5	 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_section6	 -> custom_heading_class (get_minipaged maybe_minipaged)
+		| `Feature_bibliography	 -> preset_heading_class
+		| `Feature_notes	 -> preset_heading_class
+		| `Feature_toc		 -> preset_heading_class
+		| `Feature_title1	 -> forbidden_class
+		| `Feature_title2	 -> forbidden_class
+		| `Feature_abstract	 -> forbidden_class
+		| `Feature_rule		 -> forbidden_class
+		| `Feature_bib		 -> ghost_class
+		| `Feature_note		 -> ghost_class
+		| `Feature_macrodef	 -> forbidden_class
+		| `Feature_boxoutdef	 -> forbidden_class
+		| `Feature_theoremdef	 -> forbidden_class
+		| `Feature_extcomm_blk _ -> permissive_class
 
 	and internal_feature_set = function
 		| `Feature_macrocall	-> forbidden_class

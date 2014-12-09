@@ -8,5 +8,5 @@
 
 include (Lambdoc_read_lambwiki_impl.Main: Lambdoc_reader.Reader.PARTIAL)
 
-module Simple = Make (Lambdoc_reader.Extension.Unitary)
+module Trivial = Make (Lambdoc_reader.Extension.Trivial)
 

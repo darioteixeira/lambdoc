@@ -9,6 +9,7 @@
 open Printf
 open Lambdoc_core
 open Basic
+open Inline
 open Block
 open Heading
 open Source
@@ -23,33 +24,18 @@ module String = BatString
 (**	{1 Public functors}							*)
 (********************************************************************************)
 
-module Make (Ext: Extension.S) (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+module Make (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
 struct
 
 open Html5
-open Ext
+
+
+(********************************************************************************)
+(**	{2 Private modules}							*)
+(********************************************************************************)
 
 module Source_writer = Camlhighlight_write_html5.Make (Html5)
 
-type valid_options_t =
-	{
-	numbered_paragraphs: bool;
-	translations: Translations.t;
-	namespace: Html5_types.nmtoken;
-	prefix: Html5_types.nmtoken;
-	base_classes: Html5_types.nmtokens;
-	extra_classes: Html5_types.nmtokens;
-	}
-
-type invalid_options_t =
-	{
-	prefix: Html5_types.nmtoken;
-	base_classes: Html5_types.nmtokens;
-	extra_classes: Html5_types.nmtokens;
-	}
-
-include (Writer.Make
-(struct
 
 (********************************************************************************)
 (**	{2 Exceptions}								*)
@@ -85,23 +71,28 @@ type name_t =
 (********************************************************************************)
 
 type t = Html5_types.div Html5.elt
-type 'a monad_t = 'a Ext.Monad.t
-type linkdata_t = Ext.linkdata_t
-type imagedata_t = Ext.imagedata_t
-type extinldata_t = Ext.extinldata_t
-type extblkdata_t = Ext.extblkdata_t
-type wconfig_t = Ext.wconfig_t
-type valid_options_u = valid_options_t
-type valid_options_t = valid_options_u
-type invalid_options_u = invalid_options_t
-type invalid_options_t = invalid_options_u
+
+type valid_options_t =
+	{
+	numbered_paragraphs: bool;
+	translations: Translations.t;
+	namespace: Html5_types.nmtoken;
+	prefix: Html5_types.nmtoken;
+	base_classes: Html5_types.nmtokens;
+	extra_classes: Html5_types.nmtokens;
+	}
+
+type invalid_options_t =
+	{
+	prefix: Html5_types.nmtoken;
+	base_classes: Html5_types.nmtokens;
+	extra_classes: Html5_types.nmtokens;
+	}
 
 
 (********************************************************************************)
 (**	{2 Private functions and values}					*)
 (********************************************************************************)
-
-let (>>=) = Monad.bind
 
 let maybe f = function
 	| Some x -> Some (f x)
@@ -134,7 +125,7 @@ let default_invalid_options =
 (**	{3 Conversion of valid documents}					*)
 (********************************************************************************)
 
-let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
+let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict doc =
 
 	let opts = valid_options in
 
@@ -149,32 +140,6 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 	let toc = Valid.(doc.toc) in
 	let labels = Valid.(doc.labels) in
 	let customs = Valid.(doc.customs) in
-
-
-	(************************************************************************)
-	(**	{4 Expand links/images/extens via extension}			*)
-	(************************************************************************)
-
-	let process_href processor dict =
-		let newdict = Hashtbl.create (Hashtbl.length dict) in
-		let aux (href, data) =
-			processor ?wconfig href data >>= fun res ->
-			Monad.return (Hashtbl.add newdict href res) in
-		Monad.iter aux (Hashtbl.fold (fun k v accum -> (k, v) :: accum) dict []) >>= fun () ->
-		Monad.return newdict in
-
-	let process_extcomm processor dict =
-		let newdict = Hashtbl.create (Hashtbl.length dict) in
-		let aux (extkey, (tag, extcomm, data)) =
-			processor ?wconfig tag extcomm data >>= fun res ->
-			Monad.return (Hashtbl.add newdict extkey (tag, res)) in
-		Monad.iter aux (Hashtbl.fold (fun k v accum -> (k, v) :: accum) dict []) >>= fun () ->
-		Monad.return newdict in
-
-	process_href Ext.write_link Valid.(doc.links) >>= fun link_dict ->
-	process_href Ext.write_image Valid.(doc.images) >>= fun image_dict ->
-	process_extcomm Ext.write_extinl Valid.(doc.extinls) >>= fun extinl_dict ->
-	process_extcomm Ext.write_extblk Valid.(doc.extblks) >>= fun extblk_dict ->
 
 
 	(************************************************************************)
@@ -301,10 +266,9 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 	let rec write_seq seq =
 		List.map write_inline seq
 
-	and write_inline {Inline.inline; attr} =
-		let open Inline in
+	and write_inline {inl; attr} =
 		let attr = List.map (!!!) attr in
-		match inline with
+		match inl with
 
 		| Plain txt ->
 			Html5.pcdata txt
@@ -355,13 +319,11 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 			Html5.span ~a:[a_class attr] (write_seq seq)
 
 		| Link (href, maybe_seq) ->
-			let (href, maybe_newseq) = try Hashtbl.find link_dict href with Not_found -> (href, None) in
+			let href' = try Hashtbl.find link_dict href with Not_found -> href in
 			let seq = match maybe_seq with
 				| Some seq -> seq
-				| None -> match maybe_newseq with
-					| Some newseq -> newseq
-					| None	      -> [Inline.plain href] in
-			make_link ~attr href (Obj.magic (write_seq seq))
+				| None -> [Inline.plain href] in
+			make_link ~attr href' (Obj.magic (write_seq seq))
 
 		| See pointers ->
 			let link_maker pointer =
@@ -432,10 +394,6 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 
 		| Mref (pointer, seq) ->
 			make_internal_link (Label.User pointer) (Obj.magic (write_seq seq))
-
-		| Extinl extkey ->
-			let (tag, seq) = Hashtbl.find extinl_dict extkey in
-			Html5.span ~a:[a_class (("extinl" ^^ tag) :: attr)] (write_seq seq)
 
 
 	(************************************************************************)
@@ -516,9 +474,9 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 		List.flatten (List.map (write_block ~wrapped:false) frag)
 
 
-	and write_block ?(wrapped = false) {block; attr} =
+	and write_block ?(wrapped = false) {blk; attr} =
 		let attr = List.map (!!!) attr in
-		match block with
+		match blk with
 
 		| Paragraph seq ->
 			let extra =
@@ -661,13 +619,6 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 		| Rule ->
 			[Html5.hr ~a:[a_class (!!"rule" :: attr)] ()]
 
-		| Extblk extkey ->
-			let (tag, frag) = Hashtbl.find extblk_dict extkey in
-			begin match frag with
-				| []   -> []
-				| frag -> [Html5.div ~a:[a_class (("extblk" ^^ tag) :: attr)] (write_frag frag)]
-			end
-
 
 	and write_heading_block attr = function
 
@@ -775,27 +726,20 @@ let write_valid ?wconfig ?(valid_options = default_valid_options) doc =
 				make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_toc))
 
 
-	in Monad.return (Html5.div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ opts.extra_classes)] (write_frag content))
+	in Html5.div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ opts.extra_classes)] (write_frag content)
 
 
 (********************************************************************************)
 (**	{3 Conversion of invalid documents}					*)
 (********************************************************************************)
 
-let write_invalid ?wconfig ?(invalid_options = default_invalid_options) doc =
+let from_invalid ?(invalid_options = default_invalid_options) doc =
 
 	let opts = invalid_options in
 
 	let (!!) =
 		let prefix = opts.prefix ^ "_" in
 		fun str -> prefix ^ str in
-
-	let monadic_map f xs =
-		let aux x accum =
-			accum >>= fun accum ->
-			f x >>= fun res ->
-			Monad.return (res :: accum) in
-		List.fold_right aux xs (Monad.return []) in
 
 	let write_error (maybe_error_context, error_msg) =
 		let context = match maybe_error_context with
@@ -832,23 +776,11 @@ let write_invalid ?wconfig ?(invalid_options = default_invalid_options) doc =
 			~labels:(Hashtbl.create 0)
 			~customs:(Hashtbl.create 0)
 			~links:(Hashtbl.create 0)
-			~images:(Hashtbl.create 0)
-			~extinls:(Hashtbl.create 0)
-			~extblks:(Hashtbl.create 0) in
+			~images:(Hashtbl.create 0) in
 		let valid_options = {default_valid_options with prefix = opts.prefix; base_classes = ["error_msg"]} in
-		write_valid ~valid_options explanation_doc >>= fun explanation_out ->
-		Monad.return (Html5.li ~a:[a_class [!!"error"]] (context @ [explanation_out])) in
-	monadic_map write_error doc >>= fun errors ->
-	Monad.return (div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ (List.map (!!) opts.extra_classes))] [ul ~a:[a_class [!!"errors"]] errors])
-end): Lambdoc_writer.Writer.S with
-	type t = Html5_types.div Html5.elt and
-	type 'a monad_t = 'a Ext.Monad.t and
-	type linkdata_t = Ext.linkdata_t and
-	type imagedata_t = Ext.imagedata_t and
-	type extinldata_t = Ext.extinldata_t and
-	type extblkdata_t = Ext.extblkdata_t and
-	type wconfig_t = Ext.wconfig_t and
-	type valid_options_t := valid_options_t and
-	type invalid_options_t := invalid_options_t)
+		let explanation_out = from_valid ~valid_options ~link_dict:(Hashtbl.create 0) ~image_dict:(Hashtbl.create 0) explanation_doc in
+		Html5.li ~a:[a_class [!!"error"]] (context @ [explanation_out]) in
+	let errors = List.map write_error doc in
+	Html5.div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ (List.map (!!) opts.extra_classes))] [ul ~a:[a_class [!!"errors"]] errors]
 end
 

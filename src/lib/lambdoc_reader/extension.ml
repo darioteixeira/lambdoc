@@ -14,44 +14,73 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type error_t = [ `Unsupported | `Failed of string | `Style of string ]
+type inline_syntax_t =
+	| Inlsyn_empty
+	| Inlsyn_seq
+	| Inlsyn_raw
+	| Inlsyn_raw_raw
+	| Inlsyn_raw_seq
+	| Inlsyn_raw_seqopt
 
-type 'a result_t = [ `Okay of 'a | `Error of error_t ]
+type block_syntax_t =
+	| Blksyn_empty
+	| Blksyn_seq
+	| Blksyn_raw
+	| Blksyn_lit
+	| Blksyn_frag
+	| Blksyn_raw_raw
+
+type inline_extdef_t = Ident.t * inline_syntax_t
+
+type block_extdef_t = Ident.t * block_syntax_t
 
 
 (********************************************************************************)
 (**	{1 Public signatures}							*)
 (********************************************************************************)
 
-module type MONAD =
-sig
-	type 'a t
-
-	val return: 'a -> 'a t
-	val fail: exn -> 'a t
-	val bind: 'a t -> ('a -> 'b t) -> 'b t
-	val catch: (unit -> 'a t) -> (exn -> 'a t) -> 'a t
-	val iter: ('a -> unit t) -> 'a list -> unit t
-end
-
-
 module type S =
 sig
-	module Monad: MONAD
+	module Monad: Monadic.S
 
-	type linkdata_t
-	type imagedata_t
-	type extinldata_t
-	type extblkdata_t
-	type rconfig_t
+	type 'a result_t = [ `Okay of 'a | `Error of Error.error_msg_t list ]
 
-	val extinldefs: Extcomm.extinldefs_t
-	val extblkdefs: Extcomm.extblkdefs_t
+	type link_reader_t = Href.t -> string result_t option Monad.t
 
-	val read_link: ?rconfig:rconfig_t -> Href.t -> linkdata_t result_t Monad.t
-	val read_image: ?rconfig:rconfig_t -> Href.t -> imagedata_t result_t Monad.t
-	val read_extinl: ?rconfig:rconfig_t -> Ident.t -> Extcomm.extinl_t -> extinldata_t result_t Monad.t
-	val read_extblk: ?rconfig:rconfig_t -> Ident.t -> Extcomm.extblk_t -> extblkdata_t result_t Monad.t
+	type image_reader_t = Href.t -> string result_t option Monad.t
+
+	type inline_function_result_t = Ast.seq_t result_t Monad.t
+
+	type block_function_result_t = Ast.frag_t result_t Monad.t
+
+	type inline_function_t =
+		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
+		| Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw of (Ast.command_t -> string -> inline_function_result_t)
+		| Inlfun_raw_raw of (Ast.command_t -> string -> string -> inline_function_result_t)
+		| Inlfun_raw_seq of (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw_seqopt of (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+
+	type block_function_t =
+		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
+		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
+		| Blkfun_raw of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
+		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
+
+	type inline_extcomm_t =
+		{
+		inltag: Ident.t;
+		inlfun: inline_function_t;
+		}
+
+	type block_extcomm_t =
+		{
+		blktag: Ident.t;
+		blkfun: block_function_t;
+		blkcat: Blkcat.t list;
+		}
 end
 
 
@@ -59,34 +88,50 @@ end
 (**	{1 Public modules}							*)
 (********************************************************************************)
 
-module Identity =
+module Make (M: Monadic.S): S with module Monad = M =
 struct
-	type 'a t = 'a
+	module Monad = M
 
-	let return x = x
-	let fail exc = raise exc
-	let bind t f = f t
-	let catch f g = try f () with exc -> g exc
-	let iter = List.iter
+	type 'a result_t = [ `Okay of 'a | `Error of Error.error_msg_t list ]
+
+	type link_reader_t = Href.t -> Href.t result_t option Monad.t
+
+	type image_reader_t = Href.t -> Href.t result_t option Monad.t
+
+	type inline_function_result_t = Ast.seq_t result_t Monad.t
+
+	type block_function_result_t = Ast.frag_t result_t Monad.t
+
+	type inline_function_t =
+		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
+		| Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw of (Ast.command_t -> string -> inline_function_result_t)
+		| Inlfun_raw_raw of (Ast.command_t -> string -> string -> inline_function_result_t)
+		| Inlfun_raw_seq of (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw_seqopt of (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+
+	type block_function_t =
+		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
+		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
+		| Blkfun_raw of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
+		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
+
+	type inline_extcomm_t =
+		{
+		inltag: Ident.t;
+		inlfun: inline_function_t;
+		}
+
+	type block_extcomm_t =
+		{
+		blktag: Ident.t;
+		blkfun: block_function_t;
+		blkcat: Blkcat.t list;
+		}
 end
 
 
-module Unitary =
-struct
-	module Monad = Identity
-
-	type linkdata_t = unit
-	type imagedata_t = unit
-	type extinldata_t = unit
-	type extblkdata_t = unit
-	type rconfig_t = unit
-
-	let extinldefs = []
-	let extblkdefs = []
-
-	let read_link ?rconfig _ = `Okay ()
-	let read_image ?rconfig _ = `Okay ()
-	let read_extinl ?rconfig _ _ = `Okay ()
-	let read_extblk ?rconfig _ _ = `Okay ()
-end
+module Trivial = Make (Monadic.Identity)
 

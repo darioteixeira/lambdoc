@@ -30,11 +30,14 @@ sig
 	(**	Compile a document AST into a manuscript.
 	*)
 	val compile:
-		?rconfig:Ext.rconfig_t ->
+		link_readers:Ext.link_reader_t list ->
+		image_readers:Ext.image_reader_t list ->
+		inline_extcomms:Ext.inline_extcomm_t list ->
+		block_extcomms:Ext.block_extcomm_t list ->
 		expand_entities:bool ->
 		idiosyncrasies:Idiosyncrasies.t ->
 		source:string ->
 		Ast.t ->
-		(Ext.linkdata_t, Ext.imagedata_t, Ext.extinldata_t, Ext.extblkdata_t) Ambivalent.t Ext.Monad.t
+		Ambivalent.t Ext.Monad.t
 end
 

@@ -69,12 +69,8 @@ open Globalenv
 %token <string> BEGIN_ABSTRACT
 %token <string> BEGIN_BIB
 %token <string> BEGIN_NOTE
-
-%token <string> BEGIN_EXTBLK_ENVRAW
-%token <string> BEGIN_EXTBLK_ENVRAWRAW
-%token <string> BEGIN_EXTBLK_ENVSEQRAW
-%token <string> BEGIN_EXTBLK_ENVRAWOPTRAW
-%token <string> BEGIN_EXTBLK_ENVSEQOPTRAW
+%token <string> BEGIN_BLKPAT_LIT
+%token <string> BEGIN_BLKPAT_FRAG
 
 %token END_BLOCK
 
@@ -132,13 +128,17 @@ open Globalenv
 %token <Lambdoc_reader.Ast.command_t> MACROARG
 %token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t > MACROCALL
 
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMSEQ
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMRAW
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMRAWSEQ
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTINL_SIMRAWSEQOPT
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> INLPAT_EMPTY
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> INLPAT_SEQ
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> INLPAT_RAW
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> INLPAT_RAW_RAW
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> INLPAT_RAW_SEQ
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> INLPAT_RAW_SEQOPT
 
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTBLK_SIMSEQ
-%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> EXTBLK_SIMRAW
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> BLKPAT_EMPTY
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> BLKPAT_SEQ
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> BLKPAT_RAW
+%token <Lambdoc_reader.Ast.command_t * Lambdoc_core.Basic.Ident.t> BLKPAT_RAW_RAW
 
 
 /********************************************************************************/
@@ -193,11 +193,7 @@ simple_block:
 	| MACRODEF raw_bundle raw_bundle inline_bundle				{($1, Ast.Macrodef ($2, $3, $4))}
 	| BOXOUTDEF raw_bundle boxoutdef					{let (caption, counter) = $3 in ($1, Ast.Boxoutdef ($2, caption, counter))}
 	| THEOREMDEF raw_bundle theoremdef					{let (caption, counter) = $3 in ($1, Ast.Theoremdef ($2, caption, counter))}
-	| sim_extblk								{let (comm, tag, extblk) = $1 in (comm, Ast.Extblk (tag, extblk))}
-
-sim_extblk:
-	| EXTBLK_SIMSEQ inline_bundle						{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_simseq $2)}
-	| EXTBLK_SIMRAW raw_bundle						{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_simraw $2)}
+	| sim_blkpat								{let (comm, tag, blkpat) = $1 in (comm, Ast.Extcomm_blk (tag, blkpat))}
 
 env_block:
 	| begin_block(blk_itemize) anon_item_frag* end_block			{let (comm, _) = $1 in (comm, Ast.Itemize $2)}
@@ -221,7 +217,7 @@ env_block:
 	| begin_block(blk_abstract) block* end_block				{let (comm, _) = $1 in (comm, Ast.Abstract $2)}
 	| begin_block(blk_bib) bib_author bib_title bib_resource end_block	{let (comm, _) = $1 in (comm, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
 	| begin_block(blk_note) block* end_block				{let (comm, _) = $1 in (comm, Ast.Note $2)}
-	| env_extblk								{let (comm, tag, extblk) = $1 in (comm, Ast.Extblk (tag, extblk))}
+	| env_blkpat								{let (comm, tag, blkpat) = $1 in (comm, Ast.Extcomm_blk (tag, blkpat))}
 
 anon_item_frag:
 	| ITEM block*								{($1, $2)}
@@ -234,13 +230,6 @@ qanda_frag:
 	| RQUESTION block*							{($1, Ast.Same_questioner, $2)}
 	| ANSWER inline_bundle? block*						{($1, Ast.New_answerer $2, $3)}
 	| RANSWER block*							{($1, Ast.Same_answerer, $2)}
-
-env_extblk:
-	| begin_block(extblk_envraw) RAW end_block				{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envraw (BatText.to_string $2))}
-	| begin_block(extblk_envseqraw) inline_bundle RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envseqraw ($2, BatText.to_string $3))}
-	| begin_block(extblk_envrawraw) raw_bundle RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envrawraw ($2, BatText.to_string $3))}
-	| begin_block(extblk_envseqoptraw) inline_bundle? RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envseqoptraw ($2, BatText.to_string $3))}
-	| begin_block(extblk_envrawoptraw) raw_bundle? RAW end_block		{let (comm, tag) = $1 in (comm, tag, Ast.Extblk_envrawoptraw ($2, BatText.to_string $3))}
 
 bib_author:
 	| BIB_AUTHOR inline_bundle						{($1, $2)}
@@ -259,6 +248,16 @@ boxoutdef:
 theoremdef:
 	| inline_bundle								{($1, None)}
 	| inline_bundle raw_bundle						{($1, Some $2)}
+
+sim_blkpat:
+	| BLKPAT_EMPTY								{let (comm, tag) = $1 in (comm, tag, Ast.Blkpat_empty)}
+	| BLKPAT_SEQ inline_bundle						{let (comm, tag) = $1 in (comm, tag, Ast.Blkpat_seq $2)}
+	| BLKPAT_RAW raw_bundle							{let (comm, tag) = $1 in (comm, tag, Ast.Blkpat_raw $2)}
+	| BLKPAT_RAW_RAW raw_bundle raw_bundle					{let (comm, tag) = $1 in (comm, tag, Ast.Blkpat_raw_raw ($2, $3))}
+
+env_blkpat:
+	| begin_block(blkpat_lit) RAW end_block					{let (comm, tag) = $1 in (comm, tag, Ast.Blkpat_lit (BatText.to_string $2))}
+	| begin_block(blkpat_frag) block* end_block				{let (comm, tag) = $1 in (comm, tag, Ast.Blkpat_frag $2)}
 
 
 /********************************************************************************/
@@ -305,13 +304,15 @@ inline:
 	| MREF raw_bundle inline_bundle							{($1, Ast.Mref ($2, $3))}
 	| MACROARG raw_bundle								{($1, Ast.Macroarg $2)}
 	| MACROCALL inline_bundle*							{let (comm, label) = $1 in (comm, Ast.Macrocall (label, $2))}
-	| sim_extinl									{let (comm, tag, extinl) = $1 in (comm, Ast.Extinl (tag, extinl))}
+	| sim_inlpat									{let (comm, tag, inlpat) = $1 in (comm, Ast.Extcomm_inl (tag, inlpat))}
 
-sim_extinl:
-	| EXTINL_SIMSEQ inline_bundle							{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simseq $2)}
-	| EXTINL_SIMRAW raw_bundle							{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simraw $2)}
-	| EXTINL_SIMRAWSEQ raw_bundle inline_bundle					{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simrawseq ($2, $3))}
-	| EXTINL_SIMRAWSEQOPT raw_bundle inline_bundle?					{let (comm, tag) = $1 in (comm, tag, Ast.Extinl_simrawseqopt ($2, $3))}
+sim_inlpat:
+	| INLPAT_EMPTY									{let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_empty)}
+	| INLPAT_SEQ inline_bundle							{let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_seq $2)}
+	| INLPAT_RAW raw_bundle								{let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_raw $2)}
+	| INLPAT_RAW_RAW raw_bundle raw_bundle						{let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_raw_raw ($2, $3))}
+	| INLPAT_RAW_SEQ raw_bundle inline_bundle					{let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_raw_seq ($2, $3))}
+	| INLPAT_RAW_SEQOPT raw_bundle inline_bundle?					{let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_raw_seqopt ($2, $3))}
 
 
 /********************************************************************************/
@@ -366,10 +367,6 @@ blk_figure:			BEGIN_FIGURE					{($1, Scanner_general)}
 blk_abstract:			BEGIN_ABSTRACT					{($1, Scanner_general)}
 blk_bib:			BEGIN_BIB					{($1, Scanner_general)}
 blk_note:			BEGIN_NOTE					{($1, Scanner_general)}
-
-extblk_envraw:			BEGIN_EXTBLK_ENVRAW				{($1, Scanner_literal $1)}
-extblk_envseqraw:		BEGIN_EXTBLK_ENVSEQRAW				{($1, Scanner_literal $1)}
-extblk_envrawraw:		BEGIN_EXTBLK_ENVRAWRAW				{($1, Scanner_literal $1)}
-extblk_envseqoptraw:		BEGIN_EXTBLK_ENVSEQOPTRAW			{($1, Scanner_literal $1)}
-extblk_envrawoptraw:		BEGIN_EXTBLK_ENVRAWOPTRAW			{($1, Scanner_literal $1)}
+blkpat_lit:			BEGIN_BLKPAT_LIT				{($1, Scanner_literal $1)}
+blkpat_frag:			BEGIN_BLKPAT_FRAG				{($1, Scanner_general)}
 

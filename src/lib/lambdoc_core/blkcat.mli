@@ -43,11 +43,10 @@ type t = [ ranked_t | unranked_t ] with sexp
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-(**	The subtyping operator.  It tells whether the first parameter is a subtype
-	of the second.  Note that the subtyping relationship will always return
-	[false] if any of the operands belongs to {!unranked_t}.
+(**	It tells whether any element of the list given as first parameter
+	is a subtype of the second.
 *)
-val (<:): t -> t -> bool
+val subtype: t list -> t -> bool
 
 (**	Given two block categories, returns whichever is lowest in the hierarchy.
 *)

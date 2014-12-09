@@ -15,8 +15,8 @@
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type ('a, 'b, 'c, 'd) t =
-	| Valid of ('a, 'b, 'c, 'd) Valid.t
+type t =
+	| Valid of Valid.t
 	| Invalid of Invalid.t
 	with sexp
 
@@ -36,36 +36,17 @@ val make_valid:
 	toc:Heading.t list ->
 	labels:Valid.labels_t ->
 	customs:Valid.customs_t ->
-	links:'a Valid.hdata_t ->
-	images:'b Valid.hdata_t ->
-	extinls:(Extcomm.extinl_t, 'c) Valid.xdata_t ->
-	extblks:(Extcomm.extblk_t, 'd) Valid.xdata_t ->
-	('a, 'b, 'c, 'd) t
+	links:Valid.hdata_t ->
+	images:Valid.hdata_t ->
+	t
 
-val make_invalid: Error.t list -> ('a, 'b, 'c, 'd) t
+val make_invalid: Error.t list -> t
 
 
 (********************************************************************************)
 (**	{2 Serialisation facilities}						*)
 (********************************************************************************)
 
-val serialize:
-	('a -> Sexplib.Sexp.t) ->
-	('b -> Sexplib.Sexp.t) ->
-	('c -> Sexplib.Sexp.t) ->
-	('d -> Sexplib.Sexp.t) ->
-	('a, 'b, 'c, 'd) t ->
-	string
-
-val deserialize:
-	(Sexplib.Sexp.t -> 'a) ->
-	(Sexplib.Sexp.t -> 'b) ->
-	(Sexplib.Sexp.t -> 'c) ->
-	(Sexplib.Sexp.t -> 'd) ->
-	string ->
-	('a, 'b, 'c, 'd) t
-
-val serialize_unitary: (unit, unit, unit, unit) t -> string
-
-val deserialize_unitary: string -> (unit, unit, unit, unit) t
+val serialize: t -> string
+val deserialize: string -> t
 

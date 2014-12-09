@@ -18,7 +18,7 @@ open Lambdoc_writer
 	feeding Eliom's [Html5.F.Raw] and [Eliom_content.Svg.F.Raw] to the functor,
 	as exemplified by the code below:
 	{v
-	module My_writer = Lambdoc_write_html5.Make_simple
+	module My_writer = Lambdoc_write_html5.Make_trivial
 	(struct
 		include Eliom_content.Html5.F.Raw
 		module Svg = Eliom_content.Svg.F.Raw
@@ -48,16 +48,13 @@ sig
 
 	include Writer.S with
 		type t = Html5_types.div Html5.elt and
-		type 'a monad_t = 'a Ext.Monad.t and
-		type linkdata_t = Ext.linkdata_t and
-		type imagedata_t = Ext.imagedata_t and
-		type extinldata_t = Ext.extinldata_t and
-		type extblkdata_t = Ext.extblkdata_t and
-		type wconfig_t = Ext.wconfig_t and
 		type valid_options_t := valid_options_t and
-		type invalid_options_t := invalid_options_t
+		type invalid_options_t := invalid_options_t and
+		type 'a monad_t = 'a Ext.Monad.t and
+		type link_writer_t = Ext.link_writer_t and
+		type image_writer_t = Ext.image_writer_t
 end
 
 
-module Make_simple: module type of Make (Lambdoc_writer.Extension.Unitary)
+module Make_trivial: module type of Make (Lambdoc_writer.Extension.Trivial)
 

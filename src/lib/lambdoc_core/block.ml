@@ -39,11 +39,10 @@ type block_t =
 	| Title of Level.title_t * Inline.seq_t
 	| Abstract of frag_t
 	| Rule
-	| Extblk of Extkey.t
 
 and t =
 	{
-	block: block_t;
+	blk: block_t;
 	attr: Attr.t;
 	}
 
@@ -54,29 +53,28 @@ and frag_t = t list with sexp
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let paragraph	?(attr = Attr.default) seq = {block = Paragraph seq; attr}
-let itemize	?(attr = Attr.default) frags = {block = Itemize frags; attr}
-let enumerate	?(attr = Attr.default) frags = {block = Enumerate frags; attr}
-let description	?(attr = Attr.default) dfrags = {block = Description dfrags; attr}
-let qanda	?(attr = Attr.default) qafrags = {block = Qanda qafrags; attr}
-let verse	?(attr = Attr.default) frag = {block = Verse frag; attr}
-let quote	?(attr = Attr.default) frag = {block = Quote frag; attr}
-let mathblk	?(attr = Attr.default) data = {block = Mathblk data; attr}
-let source	?(attr = Attr.default) data = {block = Source data; attr}
-let tabular	?(attr = Attr.default) data = {block = Tabular data; attr}
-let subpage	?(attr = Attr.default) frag = {block = Subpage frag; attr}
-let verbatim	?(attr = Attr.default) txt = {block = Verbatim txt; attr}
-let picture	?(attr = Attr.default) href alt width = {block = Picture (href, alt, width); attr}
-let pullquote	?(attr = Attr.default) maybe_seq frag = {block = Pullquote (maybe_seq, frag); attr}
-let boxout	?(attr = Attr.default) data maybe_seq frag = {block = Boxout (data, maybe_seq, frag); attr}
-let theorem	?(attr = Attr.default) data maybe_seq frag = {block = Theorem (data, maybe_seq, frag); attr}
-let equation	?(attr = Attr.default) wrapper blk = {block = Equation (wrapper, blk); attr}
-let printout	?(attr = Attr.default) wrapper blk = {block = Printout (wrapper, blk); attr}
-let table	?(attr = Attr.default) wrapper blk = {block = Table (wrapper, blk); attr}
-let figure	?(attr = Attr.default) wrapper blk = {block = Figure (wrapper, blk); attr}
-let heading	?(attr = Attr.default) data = {block = Heading data; attr}
-let title	?(attr = Attr.default) level seq = {block = Title (level, seq); attr}
-let abstract	?(attr = Attr.default) frag = {block = Abstract frag; attr}
-let rule	?(attr = Attr.default) () = {block = Rule; attr}
-let extblk	?(attr = Attr.default) extkey = {block = Extblk extkey; attr}
+let paragraph	?(attr = Attr.default) seq = {blk = Paragraph seq; attr}
+let itemize	?(attr = Attr.default) frags = {blk = Itemize frags; attr}
+let enumerate	?(attr = Attr.default) frags = {blk = Enumerate frags; attr}
+let description	?(attr = Attr.default) dfrags = {blk = Description dfrags; attr}
+let qanda	?(attr = Attr.default) qafrags = {blk = Qanda qafrags; attr}
+let verse	?(attr = Attr.default) frag = {blk = Verse frag; attr}
+let quote	?(attr = Attr.default) frag = {blk = Quote frag; attr}
+let mathblk	?(attr = Attr.default) data = {blk = Mathblk data; attr}
+let source	?(attr = Attr.default) data = {blk = Source data; attr}
+let tabular	?(attr = Attr.default) data = {blk = Tabular data; attr}
+let subpage	?(attr = Attr.default) frag = {blk = Subpage frag; attr}
+let verbatim	?(attr = Attr.default) txt = {blk = Verbatim txt; attr}
+let picture	?(attr = Attr.default) href alt width = {blk = Picture (href, alt, width); attr}
+let pullquote	?(attr = Attr.default) maybe_seq frag = {blk = Pullquote (maybe_seq, frag); attr}
+let boxout	?(attr = Attr.default) data maybe_seq frag = {blk = Boxout (data, maybe_seq, frag); attr}
+let theorem	?(attr = Attr.default) data maybe_seq frag = {blk = Theorem (data, maybe_seq, frag); attr}
+let equation	?(attr = Attr.default) wrapper blk = {blk = Equation (wrapper, blk); attr}
+let printout	?(attr = Attr.default) wrapper blk = {blk = Printout (wrapper, blk); attr}
+let table	?(attr = Attr.default) wrapper blk = {blk = Table (wrapper, blk); attr}
+let figure	?(attr = Attr.default) wrapper blk = {blk = Figure (wrapper, blk); attr}
+let heading	?(attr = Attr.default) data = {blk = Heading data; attr}
+let title	?(attr = Attr.default) level seq = {blk = Title (level, seq); attr}
+let abstract	?(attr = Attr.default) frag = {blk = Abstract frag; attr}
+let rule	?(attr = Attr.default) () = {blk = Rule; attr}
 

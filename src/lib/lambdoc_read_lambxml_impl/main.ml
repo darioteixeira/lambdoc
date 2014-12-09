@@ -23,7 +23,7 @@ module Make = Reader.Make
 	(* PXP does not provide raw access to line numbers, so we must parse the exception output. *)
 	let where_rex = Pcre.regexp "^(?<before>.*)at line (?<line>\\d+), position (?<pos>\\d+)(?<after>.*)$"
 
-	let ast_from_string ~extinldefs ~extblkdefs str =
+	let ast_from_string ~inline_extdefs ~block_extdefs str =
 		try
 			Parser.parse str
 		with

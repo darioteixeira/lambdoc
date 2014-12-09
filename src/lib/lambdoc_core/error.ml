@@ -54,7 +54,6 @@ type error_msg_t =
 	| Invalid_style_misplaced_keyvalue of Ident.t option * string * string
 	| Invalid_style_misplaced_classname of Ident.t option * string
 	| Invalid_style_unknown_keyvalue of Ident.t option * string * string
-	| Invalid_style_extension of Ident.t option * string
 
 	| Invalid_entity_name of string
 	| Invalid_entity_deci of string
@@ -103,15 +102,14 @@ type error_msg_t =
 	| Empty_list of Ident.t option
 	| Empty_sequence of Ident.t option
 	| Empty_fragment of Ident.t option
+
 	| Unexpected_inline of Ident.t option
 	| Unexpected_block of Ident.t option * Blkcat.t
 
 	| Malformed_code_point
 	| Reading_error of string
 	| Unavailable_feature of Ident.t option * string
-
-	| Unsupported_extension of Ident.t option
-	| Failed_extension of Ident.t option * string
+	| Extension_error of Ident.t option * string
 
 	with sexp
 

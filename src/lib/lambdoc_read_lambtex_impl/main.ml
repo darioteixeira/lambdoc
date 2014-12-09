@@ -30,8 +30,8 @@ module Make = Reader.Make
 		let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser in
 		revised_parser lexer_maker
 
-	let ast_from_string ~extinldefs ~extblkdefs str =
-		let tokenizer = new Tokenizer.tokenizer ~extinldefs ~extblkdefs in
+	let ast_from_string ~inline_extdefs ~block_extdefs str =
+		let tokenizer = new Tokenizer.tokenizer ~inline_extdefs ~block_extdefs in
 		try
 			let lexbuf = Ulexing.from_utf8_string str in
 			menhir_with_ulex Parser.document tokenizer lexbuf

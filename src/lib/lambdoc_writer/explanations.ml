@@ -127,9 +127,6 @@ let explain_error = function
 	| Error.Invalid_style_unknown_keyvalue (tag, key, value) ->
 		sprintf "In the style parameters of %s, the key/value pair '#%s#=#%s#' cannot be interpreted." (explain_tag tag) (escape key) (escape value)
 
-	| Error.Invalid_style_extension (tag, description) ->
-		sprintf "Error in the style parameters of %s: %s." (explain_tag tag) (escape description)
-
 	| Error.Invalid_entity_name ent ->
 		sprintf "Unknown entity '#%s#'." (escape ent)
 
@@ -271,11 +268,8 @@ let explain_error = function
 	| Error.Unavailable_feature (tag, description) ->
 		sprintf "The feature '%s' requested by %s is unavailable for this document." description (explain_tag tag)
 
-	| Error.Unsupported_extension tag ->
-		sprintf "Unsupported extension requested by %s." (explain_tag tag)
-
-	| Error.Failed_extension (tag, txt) ->
-		sprintf "Extension error requested by %s: %s." (explain_tag tag) (escape txt)
+	| Error.Extension_error (tag, msg) ->
+		sprintf "Error in %s: %s." (explain_tag tag) msg
 
 
 (********************************************************************************)

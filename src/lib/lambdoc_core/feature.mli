@@ -23,7 +23,7 @@ type inline_feature_t =
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
 	| `Feature_mbox | `Feature_span | `Feature_link
 	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref
-	| `Feature_extinl of Ident.t ]
+	| `Feature_extcomm_inl of Ident.t ]
 
 type block_feature_t =
 	[ `Feature_paragraph 
@@ -40,7 +40,7 @@ type block_feature_t =
 	| `Feature_abstract | `Feature_rule
 	| `Feature_bib | `Feature_note
 	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef
-	| `Feature_extblk of Ident.t ]
+	| `Feature_extcomm_blk of Ident.t ]
 
 type internal_feature_t =
 	[ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer

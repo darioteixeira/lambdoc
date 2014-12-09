@@ -20,7 +20,7 @@ type inline_feature_t =
 	| `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
 	| `Feature_mbox | `Feature_span | `Feature_link
 	| `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref
-	| `Feature_extinl of Ident.t ]
+	| `Feature_extcomm_inl of Ident.t ]
 
 type block_feature_t =
 	[ `Feature_paragraph
@@ -37,7 +37,7 @@ type block_feature_t =
 	| `Feature_abstract | `Feature_rule
 	| `Feature_bib | `Feature_note
 	| `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef
-	| `Feature_extblk of Ident.t ]
+	| `Feature_extcomm_blk of Ident.t ]
 
 type internal_feature_t =
 	[ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
@@ -55,71 +55,71 @@ type t = [ public_feature_t | internal_feature_t ]
 (********************************************************************************)
 
 let describe_inline_feature = function
-	| `Feature_plain	-> "plain text"
-	| `Feature_entity	-> "HTML entities"
-	| `Feature_linebreak	-> "line break within paragraph"
-	| `Feature_mathtex_inl	-> "inline TeX math"
-	| `Feature_mathml_inl	-> "inline MathML math"
-	| `Feature_glyph	-> "inline image"
-	| `Feature_bold		-> "bold text"
-	| `Feature_emph		-> "emphasised text"
-	| `Feature_code		-> "code (monospaced) text"
-	| `Feature_caps		-> "small caps text"
-	| `Feature_ins		-> "corrected text"
-	| `Feature_del		-> "deleted text"
-	| `Feature_sup		-> "superscript text"
-	| `Feature_sub		-> "subscript text"
-	| `Feature_mbox		-> "non-breakable text"
-	| `Feature_span		-> "custom span"
-	| `Feature_link		-> "link to external resource"
-	| `Feature_see		-> "link to note"
-	| `Feature_cite		-> "bibliography citation"
-	| `Feature_dref		-> "dumb internal link"
-	| `Feature_sref		-> "smart internal link"
-	| `Feature_mref		-> "manual internal link"
-	| `Feature_extinl tag	-> "inline extension (" ^ tag ^ ")"
+	| `Feature_plain		-> "plain text"
+	| `Feature_entity		-> "HTML entities"
+	| `Feature_linebreak		-> "line break within paragraph"
+	| `Feature_mathtex_inl		-> "inline TeX math"
+	| `Feature_mathml_inl		-> "inline MathML math"
+	| `Feature_glyph		-> "inline image"
+	| `Feature_bold			-> "bold text"
+	| `Feature_emph			-> "emphasised text"
+	| `Feature_code			-> "code (monospaced) text"
+	| `Feature_caps			-> "small caps text"
+	| `Feature_ins			-> "corrected text"
+	| `Feature_del			-> "deleted text"
+	| `Feature_sup			-> "superscript text"
+	| `Feature_sub			-> "subscript text"
+	| `Feature_mbox			-> "non-breakable text"
+	| `Feature_span			-> "custom span"
+	| `Feature_link			-> "link to external resource"
+	| `Feature_see			-> "link to note"
+	| `Feature_cite			-> "bibliography citation"
+	| `Feature_dref			-> "dumb internal link"
+	| `Feature_sref			-> "smart internal link"
+	| `Feature_mref			-> "manual internal link"
+	| `Feature_extcomm_inl tag	-> "inline extension command (" ^ tag ^ ")"
 
 let describe_block_feature = function
-	| `Feature_paragraph	-> "paragraph block"
-	| `Feature_itemize	-> "itemize block"
-	| `Feature_enumerate	-> "enumerate block"
-	| `Feature_description	-> "description block"
-	| `Feature_qanda	-> "Q&A block"
-	| `Feature_verse	-> "verse block"
-	| `Feature_quote	-> "quote block"
-	| `Feature_mathtex_blk	-> "TeX math block"
-	| `Feature_mathml_blk	-> "MathML block"
-	| `Feature_source	-> "source-code block"
-	| `Feature_tabular	-> "tabular"
-	| `Feature_subpage	-> "subpage block"
-	| `Feature_verbatim	-> "verbatim block"
-	| `Feature_picture	-> "image block"
-	| `Feature_pullquote	-> "pull-quote block"
-	| `Feature_equation	-> "equation wrapper"
-	| `Feature_printout	-> "printout wrapper"
-	| `Feature_table	-> "table wrapper"
-	| `Feature_figure	-> "figure wrapper"
-	| `Feature_part		-> "document part"
-	| `Feature_appendix	-> "appendix"
-	| `Feature_section1	-> "Level 1 sectioning"
-	| `Feature_section2	-> "Level 2 sectioning"
-	| `Feature_section3	-> "Level 3 sectioning"
-	| `Feature_section4	-> "Level 4 sectioning"
-	| `Feature_section5	-> "Level 5 sectioning"
-	| `Feature_section6	-> "Level 6 sectioning"
-	| `Feature_bibliography	-> "bibliography"
-	| `Feature_notes	-> "notes"
-	| `Feature_toc		-> "table of contents"
-	| `Feature_title1	-> "Level 1 title"
-	| `Feature_title2	-> "Level 2 title"
-	| `Feature_abstract	-> "abstract"
-	| `Feature_rule		-> "rule"
-	| `Feature_bib		-> "bibliography entry"
-	| `Feature_note		-> "note"
-	| `Feature_macrodef	-> "definition of macro"
-	| `Feature_boxoutdef	-> "definition of boxout environment"
-	| `Feature_theoremdef	-> "definition of theorem environment"
-	| `Feature_extblk tag	-> "block extension (" ^ tag ^ ")"
+	| `Feature_paragraph		-> "paragraph block"
+	| `Feature_itemize		-> "itemize block"
+	| `Feature_enumerate		-> "enumerate block"
+	| `Feature_description		-> "description block"
+	| `Feature_qanda		-> "Q&A block"
+	| `Feature_verse		-> "verse block"
+	| `Feature_quote		-> "quote block"
+	| `Feature_mathtex_blk		-> "TeX math block"
+	| `Feature_mathml_blk		-> "MathML block"
+	| `Feature_source		-> "source-code block"
+	| `Feature_tabular		-> "tabular"
+	| `Feature_subpage		-> "subpage block"
+	| `Feature_verbatim		-> "verbatim block"
+	| `Feature_picture		-> "image block"
+	| `Feature_pullquote		-> "pull-quote block"
+	| `Feature_equation		-> "equation wrapper"
+	| `Feature_printout		-> "printout wrapper"
+	| `Feature_table		-> "table wrapper"
+	| `Feature_figure		-> "figure wrapper"
+	| `Feature_part			-> "document part"
+	| `Feature_appendix		-> "appendix"
+	| `Feature_section1		-> "Level 1 sectioning"
+	| `Feature_section2		-> "Level 2 sectioning"
+	| `Feature_section3		-> "Level 3 sectioning"
+	| `Feature_section4		-> "Level 4 sectioning"
+	| `Feature_section5		-> "Level 5 sectioning"
+	| `Feature_section6		-> "Level 6 sectioning"
+	| `Feature_bibliography		-> "bibliography"
+	| `Feature_notes		-> "notes"
+	| `Feature_toc			-> "table of contents"
+	| `Feature_title1		-> "Level 1 title"
+	| `Feature_title2		-> "Level 2 title"
+	| `Feature_abstract		-> "abstract"
+	| `Feature_rule			-> "rule"
+	| `Feature_bib			-> "bibliography entry"
+	| `Feature_note			-> "note"
+	| `Feature_macrodef		-> "definition of macro"
+	| `Feature_boxoutdef		-> "definition of boxout environment"
+	| `Feature_theoremdef		-> "definition of theorem environment"
+	| `Feature_extcomm_blk tag	-> "block extension command (" ^ tag ^ ")"
 
 let describe_internal_feature = function
         | `Feature_item		-> "item separator for lists"
@@ -150,7 +150,7 @@ let inline_features =
 	`Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
 	`Feature_mbox; `Feature_span; `Feature_link;
 	`Feature_see; `Feature_cite; `Feature_dref; `Feature_sref; `Feature_mref;
-	`Feature_extinl "";
+	`Feature_extcomm_inl "";
 	]
 
 let block_features =
@@ -169,7 +169,7 @@ let block_features =
 	`Feature_abstract; `Feature_rule;
 	`Feature_bib; `Feature_note;
 	`Feature_macrodef; `Feature_boxoutdef; `Feature_theoremdef;
-	`Feature_extblk "";
+	`Feature_extcomm_blk "";
 	]
 
 let internal_features =

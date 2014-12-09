@@ -6,7 +6,15 @@
 *)
 (********************************************************************************)
 
-include Lambdoc_write_html5_impl.Main
+module Make
+	(Ext: Lambdoc_writer.Extension.S)
+	(Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+struct
+	module Writable = Lambdoc_write_html5_impl.Main.Make (Html5)
 
-module Make_simple = Make (Lambdoc_writer.Extension.Unitary)
+	include Lambdoc_writer.Writer.Make (Writable) (Ext)
+end
+
+module Make_trivial (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+	Make (Lambdoc_writer.Extension.Trivial) (Html5)
 

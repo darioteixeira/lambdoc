@@ -21,29 +21,23 @@ open Lambdoc_core
 module type WRITABLE =
 sig
 	type t
-	type 'a monad_t
-	type linkdata_t
-	type imagedata_t
-	type extinldata_t
-	type extblkdata_t
-	type wconfig_t
 	type valid_options_t
 	type invalid_options_t
 
 	val default_valid_options: valid_options_t
 	val default_invalid_options: invalid_options_t
 
-	val write_valid:
-		?wconfig:wconfig_t ->
+	val from_valid:
 		?valid_options:valid_options_t ->
-		(linkdata_t, imagedata_t, extinldata_t, extblkdata_t) Valid.t ->
-		t monad_t
+		link_dict:Extension.link_dict_t ->
+		image_dict:Extension.image_dict_t ->
+		Valid.t ->
+		t
 
-	val write_invalid:
-		?wconfig:wconfig_t ->
+	val from_invalid:
 		?invalid_options:invalid_options_t ->
 		Invalid.t ->
-		t monad_t
+		t
 end
 
 
@@ -51,13 +45,34 @@ end
 *)
 module type S =
 sig
-	include WRITABLE
+	type t
+	type valid_options_t
+	type invalid_options_t
+	type 'a monad_t
+	type link_writer_t
+	type image_writer_t
+
+	val default_valid_options: valid_options_t
+	val default_invalid_options: invalid_options_t
+
+	val write_valid:
+		?valid_options:valid_options_t ->
+		?link_writers:link_writer_t list ->
+		?image_writers:image_writer_t list ->
+		Valid.t ->
+		t monad_t
+
+	val write_invalid:
+		?invalid_options:invalid_options_t ->
+		Invalid.t ->
+		t monad_t
 
 	val write_ambivalent:
-		?wconfig:wconfig_t ->
 		?valid_options:valid_options_t ->
 		?invalid_options:invalid_options_t ->
-		(linkdata_t, imagedata_t, extinldata_t, extblkdata_t) Ambivalent.t ->
+		?link_writers:link_writer_t list ->
+		?image_writers:image_writer_t list ->
+		Ambivalent.t ->
 		t monad_t
 end
 
@@ -68,14 +83,13 @@ end
 
 (** The functor that creates a document writer.
 *)
-module Make: functor (Writable: WRITABLE) -> S with
+module Make:
+	functor (Writable: WRITABLE) ->
+	functor (Ext: Extension.S) -> S with
 	type t = Writable.t and
-	type 'a monad_t = 'a Writable.monad_t and
-	type linkdata_t = Writable.linkdata_t and
-	type imagedata_t = Writable.imagedata_t and
-	type extinldata_t = Writable.extinldata_t and
-	type extblkdata_t = Writable.extblkdata_t and
-	type wconfig_t = Writable.wconfig_t and
 	type valid_options_t = Writable.valid_options_t and
-	type invalid_options_t = Writable.invalid_options_t
+	type invalid_options_t = Writable.invalid_options_t and
+	type 'a monad_t = 'a Ext.Monad.t and
+	type link_writer_t = Ext.link_writer_t and
+	type image_writer_t = Ext.image_writer_t
 

@@ -57,16 +57,16 @@ let () =
 			Idiosyncrasies.max_block_depth = options.max_block_depth;
 		} in
 	let doc = match options.input_markup with
-		| `Lambtex  -> Lambdoc_read_lambtex.Simple.ambivalent_from_string ~idiosyncrasies input_str
-		| `Lambwiki -> Lambdoc_read_lambwiki.Simple.ambivalent_from_string ~idiosyncrasies input_str
-		| `Lambxml  -> Lambdoc_read_lambxml.Simple.ambivalent_from_string ~idiosyncrasies input_str
-		| `Markdown -> Lambdoc_read_markdown.Simple.ambivalent_from_string ~idiosyncrasies input_str
-		| `Sexp     -> Lambdoc_core.Ambivalent.deserialize_unitary input_str in
+		| `Lambtex  -> Lambdoc_read_lambtex.Trivial.ambivalent_from_string ~idiosyncrasies input_str
+		| `Lambwiki -> Lambdoc_read_lambwiki.Trivial.ambivalent_from_string ~idiosyncrasies input_str
+		| `Lambxml  -> Lambdoc_read_lambxml.Trivial.ambivalent_from_string ~idiosyncrasies input_str
+		| `Markdown -> Lambdoc_read_markdown.Trivial.ambivalent_from_string ~idiosyncrasies input_str
+		| `Sexp     -> Lambdoc_core.Ambivalent.deserialize input_str in
 	let output_str = match options.output_markup with
 		| `Sexp  ->
-			Lambdoc_core.Ambivalent.serialize_unitary doc
+			Lambdoc_core.Ambivalent.serialize doc
 		| `Html5 ->
-			let module Html5_writer = Lambdoc_write_html5.Make_simple (Tyxml_backend) in
+			let module Html5_writer = Lambdoc_write_html5.Make_trivial (Tyxml_backend) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
 			let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
 			string_of_xhtml options.title xhtml in
