@@ -122,30 +122,30 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	(* Declaration of the mutable values used in the function.		*)
 	(************************************************************************)
 
-	let pointers = BatDynArray.create ()
-	and bibs = BatDynArray.create ()
-	and notes = BatDynArray.create ()
-	and toc = BatDynArray.create ()
-	and linkrefs = BatDynArray.create ()
-	and imagerefs = BatDynArray.create ()
-	and linkset = ref HrefSet.empty
-	and imageset = ref HrefSet.empty
-        and labels = Hashtbl.create 10
-	and customisations = Hashtbl.create 10
-	and macros = Hashtbl.create 10
-	and errors = BatDynArray.create ()
-	and part_counter = Order_input.ordinal_counter ()
-	and section_counter = Order_input.hierarchical_counter ()
-	and appendix_counter = Order_input.hierarchical_counter ()
-	and printout_counter = Order_input.ordinal_counter ()
-	and equation_counter = Order_input.ordinal_counter ()
-	and figure_counter = Order_input.ordinal_counter ()
-	and table_counter = Order_input.ordinal_counter ()
-	and bib_counter = Order_input.ordinal_counter ()
-	and note_counter = Order_input.ordinal_counter ()
-	and custom_counters = Hashtbl.create 10
-        and auto_label_counter = ref 0
-	and appendixed = ref false in
+	let pointers = BatDynArray.create () in
+	let bibs = BatDynArray.create () in
+	let notes = BatDynArray.create () in
+	let toc = BatDynArray.create () in
+	let linkrefs = BatDynArray.create () in
+	let imagerefs = BatDynArray.create () in
+	let linkset = ref HrefSet.empty in
+	let imageset = ref HrefSet.empty in
+        let labels = Hashtbl.create 10 in
+	let customisations = Hashtbl.create 10 in
+	let macros = Hashtbl.create 10 in
+	let errors = BatDynArray.create () in
+	let part_counter = Order_input.ordinal_counter () in
+	let section_counter = Order_input.hierarchical_counter () in
+	let appendix_counter = Order_input.hierarchical_counter () in
+	let printout_counter = Order_input.ordinal_counter () in
+	let equation_counter = Order_input.ordinal_counter () in
+	let figure_counter = Order_input.ordinal_counter () in
+	let table_counter = Order_input.ordinal_counter () in
+	let bib_counter = Order_input.ordinal_counter () in
+	let note_counter = Order_input.ordinal_counter () in
+	let custom_counters = Hashtbl.create 10 in
+        let auto_label_counter = ref 0 in
+	let appendixed = ref false in
 
 
 	(************************************************************************)
@@ -1209,7 +1209,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 
 
 	(************************************************************************)
-	(* Resolve referenced links.						*)
+	(* Resolve referenced links/images.					*)
 	(************************************************************************)
 
 	let process_hrefs readers set refs =
