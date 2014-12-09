@@ -6,10 +6,9 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Options
 open Lambdoc_core
-open Extcomm
+open Lambdoc_reader
 
 module String = BatString
 
@@ -18,100 +17,9 @@ module String = BatString
 (**	{1 Modules}								*)
 (********************************************************************************)
 
-module Extension =
-struct
-	module Monad = struct include Lwt let iter = Lwt_list.iter_s end
+module Lwt_monad = struct include Lwt let iter = Lwt_list.iter_s end
 
-	type book_t =
-		{
-		title: string;
-		author: string;
-		publisher: string;
-		pubdate: string option;
-		page: string option;
-		cover: string option;
-		} with sexp
-
-	type linkdata_t = [ `Book of book_t | `Other of string ] with sexp
-	type imagedata_t = unit with sexp
-	type extinldata_t = unit with sexp
-	type extblkdata_t = [ `Book of book_t ] with sexp
-	type rconfig_t = Bookaml_amazon.credential_t
-	type wconfig_t = unit
-
-	let extinldefs = []
-
-	let extblkdefs =
-		[
-		("bookpic", (`Synblk_simraw, [`Embeddable_blk; `Figure_blk]));
-		]
-
-	let get_book ~credential raw_isbn =
-		try_lwt
-			let isbn = Bookaml_ISBN.of_string raw_isbn in
-			lwt book = Bookaml_amazon_ocsigen.book_from_isbn_exn ~credential isbn in
-			let book' =
-				{
-				title = book.Bookaml_book.title;
-				author = book.Bookaml_book.author;
-				publisher = book.Bookaml_book.publisher;
-				pubdate = book.Bookaml_book.pubdate;
-				page = book.Bookaml_book.page;
-				cover = match book.Bookaml_book.image_small with Some img -> Some img.Bookaml_book.url | None -> None;
-				} in
-			Lwt.return (`Okay (`Book book'))
-		with
-			| Bookaml_ISBN.Bad_ISBN_length _
-			| Bookaml_ISBN.Bad_ISBN_checksum _
-			| Bookaml_ISBN.Bad_ISBN_character _ -> Lwt.return (`Error (`Failed "bad isbn"))
-			| Bookaml_amazon.No_match _	    -> Lwt.return (`Error (`Failed "no match"))
-
-	let read_link ?rconfig href = match (rconfig, href) with
-		| (Some credential, x) when String.starts_with x "isbn:" -> get_book ~credential (String.lchop ~n:5 x)
-		| (_, x)						 -> Lwt.return (`Okay (`Other x))
-
-	let read_image ?rconfig _ =
-		Lwt.return (`Okay ())
-
-	let read_extinl ?rconfig _ _ =
-		assert false	(* This should never be called *)
-
-	let read_extblk ?rconfig tag extcomm = match (rconfig, tag, extcomm) with
-		| (Some credential, "bookpic", Extblk_simraw txt) ->
-			if String.starts_with txt "isbn:"
-			then get_book ~credential (String.lchop ~n:5 txt)
-			else Lwt.return (`Error `Unsupported)
-		| _ ->
-			Lwt.return (`Error `Unsupported)
-
-	let write_link ?wconfig href = function
-		| `Book book ->
-			let href = match book.page with Some page -> page | None -> href in
-			Lwt.return (href, Some [Inline.emph [Inline.plain book.title]])
-		| `Other href ->
-			Lwt.return (href, None)
-
-	let write_image ?wconfig href _ =
-		Lwt.return href
-
-	let write_extinl ?wconfig _ _ _ =
-		assert false	(* This should never be called *)
-
-	let write_extblk ?wconfig tag _ data = match (tag, data) with
-		| ("bookpic", `Book (book : book_t)) ->
-			let tl =
-				[
-				Inline.emph [Inline.plain book.title];
-				Inline.span [Inline.plain book.author];
-				] in
-			let xs = match book.cover with
-				| Some cover -> Inline.glyph cover "book cover" :: tl
-				| None	     -> tl in
-			Lwt.return [Block.paragraph xs]
-		| _ ->
-			assert false	(* This should never be called *)
-end
-
+module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
 module Tyxml_backend =
 struct
@@ -122,6 +30,72 @@ end
 
 (********************************************************************************)
 (**	{1 Functions and values}						*)
+(********************************************************************************)
+
+(********************************************************************************)
+(**	{2 Functions pertaining to the Lambdoc extension}			*)
+(********************************************************************************)
+
+let get_book comm maybe_credential raw_isbn =
+	let open Ast in
+	if String.starts_with raw_isbn "isbn:"
+	then match maybe_credential with
+		| Some credential ->
+			begin try_lwt
+				let isbn = Bookaml_ISBN.of_string (String.lchop ~n:5 raw_isbn) in
+				lwt book = Bookaml_amazon_ocsigen.book_from_isbn_exn ~credential isbn in
+				Lwt.return (`Okay book)
+			with
+				| Bookaml_ISBN.Bad_ISBN_length _ ->
+					Lwt.return (`Error [Error.Extension_error (comm.comm_tag, "bad ISBN length")])
+				| Bookaml_ISBN.Bad_ISBN_checksum _ ->
+					Lwt.return (`Error [Error.Extension_error (comm.comm_tag, "bad ISBN checksum")])
+				| Bookaml_ISBN.Bad_ISBN_character _ ->
+					Lwt.return (`Error [Error.Extension_error (comm.comm_tag, "bad ISBN character")])
+				| Bookaml_amazon.No_match _ ->
+					Lwt.return (`Error [Error.Extension_error (comm.comm_tag, "no matching book found")])
+			end
+		| None ->
+			Lwt.return (`Error [Error.Extension_error (comm.comm_tag, "please provide Amazon credentials")])
+	else
+		Lwt.return (`Error [Error.Extension_error (comm.comm_tag, "unknown protocol. Only '#isbn:#' is supported")])
+
+
+let book_extcomm maybe_credential =
+	let open Reader_extension in
+	let f comm raw maybe_astseq = match_lwt get_book comm maybe_credential raw with
+		| `Error msgs ->
+			Lwt.return (`Error msgs)
+		| `Okay book ->
+			let astseq = match maybe_astseq with
+				| Some astseq -> astseq
+				| None	      -> [(comm, Ast.Emph [(comm, Ast.Plain book.title)])] in
+			match book.page with
+				| Some page -> Lwt.return (`Okay [(comm, Ast.Link (page, Some astseq))])
+				| None	    -> Lwt.return (`Okay astseq)
+	in {inltag = "book"; inlfun = Inlfun_raw_seqopt f;}
+
+
+let bookpic_extcomm maybe_credential =
+	let open Reader_extension in
+	let f comm raw = match_lwt get_book comm maybe_credential raw with
+		| `Error msgs ->
+			Lwt.return (`Error msgs)
+		| `Okay book ->
+			let tl =
+				[
+				(comm, Ast.Emph [(comm, Ast.Plain book.title)]);
+				(comm, Ast.Span [(comm, Ast.Plain book.author)]);
+				] in
+			let xs = match book.image_small with
+				| Some img -> (comm, Ast.Glyph (img.url, "book cover")) :: tl
+				| None	   -> tl in
+			Lwt.return (`Okay [(comm, Ast.Paragraph xs)])
+	in {blktag = "bookpic"; blkfun = Blkfun_raw f; blkcat = [`Embeddable_blk];}
+
+
+(********************************************************************************)
+(**	{2 Lambcmd functions}							*)
 (********************************************************************************)
 
 let string_of_xhtml the_title xhtml =
@@ -153,33 +127,35 @@ let main () =
 			Idiosyncrasies.max_inline_depth = options.max_inline_depth;
 			Idiosyncrasies.max_block_depth = options.max_block_depth;
 		} in
-	let credential = match (options.amazon_locale, options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key) with
+	let maybe_credential = match (options.amazon_locale, options.amazon_associate_tag, options.amazon_access_key, options.amazon_secret_key) with
 		| (Some locale, Some associate_tag, Some access_key, Some secret_key) ->
 			Some (Bookaml_amazon.make_credential ~locale ~associate_tag ~access_key ~secret_key)
 		| _ ->
 			None in
+	let inline_extcomms = [book_extcomm maybe_credential] in
+	let block_extcomms = [bookpic_extcomm maybe_credential] in
 	lwt doc = match options.input_markup with
 		| `Lambtex ->
-			let module M = Lambdoc_read_lambtex.Make (Extension) in
-			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
+			let module M = Lambdoc_read_lambtex.Make (Reader_extension) in
+			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
 		| `Lambwiki ->
-			let module M = Lambdoc_read_lambwiki.Make (Extension) in
-			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
+			let module M = Lambdoc_read_lambwiki.Make (Reader_extension) in
+			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
 		| `Lambxml ->
-			let module M = Lambdoc_read_lambxml.Make (Extension) in
-			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
+			let module M = Lambdoc_read_lambxml.Make (Reader_extension) in
+			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
 		| `Markdown ->
-			let module M = Lambdoc_read_markdown.Make (Extension) in
-			M.ambivalent_from_string ?rconfig:credential ~idiosyncrasies input_str
+			let module M = Lambdoc_read_markdown.Make (Reader_extension) in
+			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
 		| `Sexp ->
-			Lwt.return (Lambdoc_core.Ambivalent.deserialize Extension.linkdata_t_of_sexp Extension.imagedata_t_of_sexp Extension.extinldata_t_of_sexp Extension.extblkdata_t_of_sexp input_str) in
+			Lwt.return (Lambdoc_core.Ambivalent.deserialize input_str) in
 	lwt output_str = match options.output_markup with
 		| `Sexp  ->
-			Lwt.return (Lambdoc_core.Ambivalent.serialize Extension.sexp_of_linkdata_t Extension.sexp_of_imagedata_t Extension.sexp_of_extinldata_t Extension.sexp_of_extblkdata_t doc)
+			Lwt.return (Lambdoc_core.Ambivalent.serialize doc)
 		| `Html5 ->
-			let module Html5_writer = Lambdoc_write_html5.Make (Extension) (Tyxml_backend) in
+			let module Html5_writer = Lambdoc_write_html5.Make_trivial (Tyxml_backend) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
-			lwt xhtml = Html5_writer.write_ambivalent ~valid_options doc in
+			let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
 			Lwt.return (string_of_xhtml options.title xhtml) in
 	output_string options.output_chan output_str;
 	options.input_cleaner options.input_chan;

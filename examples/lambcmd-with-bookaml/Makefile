@@ -1,4 +1,4 @@
-OCAMLBUILD_OPTS=-use-ocamlfind -cflags -w,+a-4-6-9-27-42
+OCAMLBUILD_OPTS=-use-ocamlfind -cflags -w,+a-4-6-9-27-40-42
 
 all:
 	ocamlbuild $(OCAMLBUILD_OPTS) lambcmd.byte lambcmd.native

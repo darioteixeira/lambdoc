@@ -16,14 +16,14 @@ open Lambdoc_reader
 
 let doc =
 	let src = BatIO.read_all (BatIO.input_channel (open_in "sample.lambtex")) in
-	Lambdoc_read_lambtex.Simple.ambivalent_from_string src
+	Lambdoc_read_lambtex.Trivial.ambivalent_from_string src
 
 
-let sexp_pickle = Lambdoc_core.Ambivalent.serialize_unitary doc
+let sexp_pickle = Lambdoc_core.Ambivalent.serialize doc
 let marshal_pickle = Marshal.to_string doc []
 
-let conv_to_sexp () = let _ = Lambdoc_core.Ambivalent.serialize_unitary doc in ()
-let conv_from_sexp () = let _ = Lambdoc_core.Ambivalent.deserialize_unitary sexp_pickle in ()
+let conv_to_sexp () = let _ = Lambdoc_core.Ambivalent.serialize doc in ()
+let conv_from_sexp () = let _ = Lambdoc_core.Ambivalent.deserialize sexp_pickle in ()
 
 let conv_to_marshal () = let _ = Marshal.to_string doc [] in ()
 let conv_from_marshal () = let _ = Marshal.from_string marshal_pickle 0 in ()

@@ -8,86 +8,41 @@
 
 (**	Part 4 of the Lambdoc+Ocsigen tutorial.
 
-	This fourth part of the tutorial illustrates the creation of a custom
-	extension attached to links.  The module [Extension] defines a Lambdoc
-	extension wrapped under the Lwt monad.  Whereas images pass through the
-	extension unmodified and custom inline/block commands are altogether
-	undefined, we check if links are using the protocol "user", in which
-	case they are specially processed (the actual processing is outside
-	the scope of this example, though).
+	This instalment of the tutorial illustrates the creation of a command
+	extension.  The custom command is named [banner] and takes a sequence
+	of raw text as parameter (in Lambtex, for instance, this command takes
+	the form [\banner{...}].  The command's output is a verbatim block
+	containing the result of feeding the raw parameter to the Unix command
+	[banner].  Note that this command generates a new block context, and
+	may be used inside a figure or any context that accepts an embeddable
+	block.
+
+	The banner extension is implemented by function {!banner_extcomm}.  Note
+	that it lives inside the Lwt monad, to avoid blocking on I/O during the
+	invocation of the Unix command [banner].  (On Debian-based systems make
+	sure to install the [sysvbanner] package.)
 *)
 
 open Eliom_content
 open Html5.F
-
-module String = BatString
+open Lambdoc_reader
 
 
 (********************************************************************************)
 (**	{1 Modules}								*)
 (********************************************************************************)
 
-module Extension =
-struct
-	module Monad = struct include Lwt let iter = Lwt_list.iter_p end
+module Lwt_monad = struct include Lwt let iter = Lwt_list.iter_p end
 
-	type linkdata_t = [ `User of string | `Other of string ]
-	type imagedata_t = unit
-	type extinldata_t = unit
-	type extblkdata_t = unit
-	type rconfig_t = unit
-	type wconfig_t = unit
+module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
-	let find_user name =
-		(* Insert code to check if user actually exists in the system *)
-		Lwt.return (`Okay (`User name))
+module Lambtex_reader = Lambdoc_read_lambtex.Make (Reader_extension)
 
-	let linkify_user name =
-		(* Insert code to create a link to the user's home page *)
-		name
+module Lambwiki_reader = Lambdoc_read_lambwiki.Make (Reader_extension)
 
-	let extinldefs = []	(* We do not define any custom inline commands *)
+module Lambxml_reader = Lambdoc_read_lambxml.Make (Reader_extension)
 
-	let extblkdefs = []	(* We do not define any custom block commands *)
-
-	let read_link ?rconfig href = match href with
-		| x when String.starts_with x "user:" -> find_user (String.lchop ~n:5 x)
-		| x				      -> Lwt.return (`Okay (`Other x))
-
-	let read_image ?rconfig href =
-		Lwt.return (`Okay ())
-
-	let read_extinl ?rconfig tag extcomm =
-		assert false	(* This should never be called, because we haven't defined any custom inline commands *)
-
-	let read_extblk ?rconfig tag extcomm =
-		assert false	(* This should never be called, because we haven't defined any custom block commands *)
-
-	let write_link ?wconfig href = function
-		| `User u ->
-			let open Lambdoc_core in
-			let href = linkify_user u in
-			let seq = [Inline.plain "Estimeed User "; Inline.bold [Inline.plain u]] in
-			Lwt.return (href, Some seq)
-		| `Other x ->
-			Lwt.return (href, None)
-
-	let write_image ?wconfig href _ =
-		Lwt.return href
-
-	let write_extinl ?wconfig tag extinl data =
-		assert false	(* This should never be called, because we haven't defined any custom inline commands *)
-
-	let write_extblk ?wconfig tag extblk data =
-		assert false	(* This should never be called, because we haven't defined any custom block commands *)
-end
-
-
-module Lambtex_reader = Lambdoc_read_lambtex.Make (Extension)
-module Lambwiki_reader = Lambdoc_read_lambwiki.Make (Extension)
-module Lambxml_reader = Lambdoc_read_lambxml.Make (Extension)
-module Markdown_reader = Lambdoc_read_markdown.Make (Extension)
-
+module Markdown_reader = Lambdoc_read_markdown.Make (Reader_extension)
 
 module Eliom_backend =
 struct
@@ -95,9 +50,7 @@ struct
 	module Svg = Eliom_content.Svg.F.Raw
 end
 
-
-module Lambdoc_writer = Lambdoc_write_html5.Make (Extension) (Eliom_backend)
-
+module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
 
 module Markup = Litiom_choice.Make
 (struct
@@ -126,6 +79,14 @@ end)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
+let banner_extcomm =
+	let open Reader_extension in
+	let f comm raw =
+		lwt banner = Lwt_process.pread ("", [| "banner"; raw |]) in
+		Lwt.return (`Okay [comm, Ast.Verbatim banner]) in
+	{blktag = "banner"; blkfun = Blkfun_raw f; blkcat = [`Figure_blk; `Embeddable_blk]}
+
+
 let make_page content =
 	let css_uri = make_uri (Eliom_service.static_dir ()) ["css"; "lambdoc.css"] in
 	(html
@@ -153,7 +114,7 @@ let rec step1_handler () () =
 		Markup.choose ~name:e_markup ~value:`Lambtex ();
 		br ();
 		label ~a:[a_for e_source] [pcdata "Source:"];
-		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum" ();
+		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum\n\n\\banner{hello}" ();
 		br ();
 		button ~button_type:`Submit [pcdata "Submit"];
 		] in
@@ -168,8 +129,8 @@ and step2_handler () (markup, source) =
 		| `Markdown -> Markdown_reader.ambivalent_from_string in
 	let feature_ruleset = [`Only `Feature_bold, `Deny] in
 	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~feature_ruleset () in
-	lwt doc = reader ~idiosyncrasies source in
-	lwt xdoc = Lambdoc_writer.write_ambivalent doc in
+	lwt doc = reader ~block_extcomms:[banner_extcomm] ~idiosyncrasies source in
+	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[
 		(xdoc : [ Html5_types.div ] Html5.F.elt :> [> Html5_types.div ] Html5.F.elt);

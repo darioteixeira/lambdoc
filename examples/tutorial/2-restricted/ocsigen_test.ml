@@ -28,7 +28,7 @@ struct
 end
 
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_simple (Eliom_backend)
+module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
 
 
 (********************************************************************************)
@@ -69,7 +69,7 @@ let rec step1_handler () () =
 and step2_handler () source =
 	let feature_ruleset = [`Only `Feature_bold, `Deny] in
 	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~feature_ruleset () in
-	let doc = Lambdoc_read_lambtex.Simple.ambivalent_from_string ~idiosyncrasies source in
+	let doc = Lambdoc_read_lambtex.Trivial.ambivalent_from_string ~idiosyncrasies source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

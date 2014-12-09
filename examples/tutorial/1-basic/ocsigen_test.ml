@@ -14,11 +14,11 @@
 	rendered Lambdoc document.  Note that in this example, the only supported
 	markup is Lambtex.
 
-	The built-in [Simple] Lambtex reader (ie, using a dummy extension wrapped
-	under the identity monad) is used for parsing with Lambdoc's defaults.
-	For outputting Html5 values, the [Make_simple] Html5 writer is given
-	Eliom's [Html5.F.Raw].  Note that the [Make_simple] functor is used
-	because a dummy extension wrapped under the identity monad suffices.
+	In this example, the built-in [Trivial] Lambtex reader (this reader uses
+	a dummy extension constructed from the identity monad) is used for parsing.
+	For outputting Html5 values, the [Make_trivial] Html5 writer is given Eliom's
+	[Html5.F.Raw].  Note that the [Make_trivial] functor is used because a dummy
+	extension built from the identity monad suffices.
 *)
 
 open Eliom_content
@@ -36,7 +36,7 @@ struct
 end
 
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_simple (Eliom_backend)
+module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
 
 
 (********************************************************************************)
@@ -75,7 +75,7 @@ let rec step1_handler () () =
 
 
 and step2_handler () source =
-	let doc = Lambdoc_read_lambtex.Simple.ambivalent_from_string source in
+	let doc = Lambdoc_read_lambtex.Trivial.ambivalent_from_string source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[
