@@ -19,6 +19,10 @@ open Lambdoc_core
 
 module Make: functor (Ext: Extension.S) ->
 sig
+	(**	This will be raised if one of the command extensions misbehaves.
+	*)
+	exception Internal_extension_error of Ast.command_t
+
 	(**	Process and (optionally) sort the errors by line number.
 	*)
 	val process_errors:

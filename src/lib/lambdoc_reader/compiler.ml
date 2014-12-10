@@ -22,14 +22,14 @@ module List = BatList
 
 
 (********************************************************************************)
-(**	{1 Exceptions}								*)
+(**	{1 Private exceptions}							*)
 (********************************************************************************)
 
 exception Mismatched_custom of Custom.kind_t * Custom.kind_t
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(**	{1 Private type definitions}						*)
 (********************************************************************************)
 
 type customdef_t =
@@ -46,6 +46,13 @@ module Make (Ext: Extension.S) =
 struct
 
 open Ext
+
+
+(********************************************************************************)
+(**	{1 Exceptions}								*)
+(********************************************************************************)
+
+exception Internal_extension_error of Ast.command_t
 
 
 (********************************************************************************)
@@ -517,7 +524,8 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			let elem attr _ =
 				let extcomm = List.find (fun x -> x.inltag = tag) inline_extcomms in
 				convert_extcomm_inl comm (pattern, extcomm.inlfun) >>= function
-					| `Okay astseq ->
+					| `Okay (astseq, ghosts) ->
+						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_seq_aux ~comm ~context ~depth ~args is_ref astseq
 					| `Error msgs ->
 						List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs;
@@ -973,7 +981,8 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				(* Note that we use List.find again. Hopefully OCaml will support "with guards" in the near future. *)
 				let extcomm = List.find (fun x -> x.blktag = tag) block_extcomms in
 				convert_extcomm_blk comm (pattern, extcomm.blkfun) >>= function
-					| `Okay astfrag ->
+					| `Okay (astfrag, ghosts) ->
+						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_frag_aux ~comm ~minipaged ~depth allowed astfrag
 					| `Error msgs ->
 						List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs;
@@ -1135,6 +1144,14 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		| (Ast.Blkpat_frag astfrag, Ext.Blkfun_frag f)		  -> f comm astfrag
 		| (Ast.Blkpat_raw_raw (txt1, txt2), Ext.Blkfun_raw_raw f) -> f comm txt1 txt2
 		| _							  -> assert false
+
+
+	and convert_ghost_frag ~comm astfrag =
+		let conv astblk = convert_block ~minipaged:false ~depth:0 `Super_blk astblk in
+		monadic_map conv astfrag >>= fun frags ->
+		match List.flatten frags with
+			| [] -> Monad.return ()
+			| _  -> Monad.fail (Internal_extension_error comm)
 
 
 	and convert_frag_aux ?comm ~minipaged ~depth allowed astfrag =

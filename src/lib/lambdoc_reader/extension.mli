@@ -54,9 +54,9 @@ sig
 
 	type image_reader_t = Href.t -> string result_t option Monad.t
 
-	type inline_function_result_t = Ast.seq_t result_t Monad.t
+	type inline_function_result_t = (Ast.seq_t * Ast.frag_t) result_t Monad.t
 
-	type block_function_result_t = Ast.frag_t result_t Monad.t
+	type block_function_result_t = (Ast.frag_t * Ast.frag_t) result_t Monad.t
 
 	type inline_function_t =
 		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)

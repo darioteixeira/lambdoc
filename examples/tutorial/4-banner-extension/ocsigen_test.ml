@@ -38,12 +38,6 @@ module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
 module Lambtex_reader = Lambdoc_read_lambtex.Make (Reader_extension)
 
-module Lambwiki_reader = Lambdoc_read_lambwiki.Make (Reader_extension)
-
-module Lambxml_reader = Lambdoc_read_lambxml.Make (Reader_extension)
-
-module Markdown_reader = Lambdoc_read_markdown.Make (Reader_extension)
-
 module Eliom_backend =
 struct
 	include Eliom_content.Html5.F.Raw
@@ -51,28 +45,6 @@ struct
 end
 
 module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
-
-module Markup = Litiom_choice.Make
-(struct
-	type t = [ `Lambtex | `Lambwiki | `Lambxml | `Markdown ]
-
-	let of_string = function
-		| "lambtex"  -> `Lambtex
-		| "lambwiki" -> `Lambwiki
-		| "lambxml"  -> `Lambxml
-		| "markdown" -> `Markdown
-		| x	     -> invalid_arg ("Markup.of_string: " ^ x)
-
-	let to_string = function
-		| `Lambtex  -> "lambtex"
-		| `Lambwiki -> "lambwiki"
-		| `Lambxml  -> "lambxml"
-		| `Markdown -> "markdown"
-
-	let describe = to_string
-
-	let all = [ `Lambtex; `Lambwiki; `Lambxml; `Markdown ]
-end)
 
 
 (********************************************************************************)
@@ -83,7 +55,7 @@ let banner_extcomm =
 	let open Reader_extension in
 	let f comm raw =
 		lwt banner = Lwt_process.pread ("", [| "banner"; raw |]) in
-		Lwt.return (`Okay [comm, Ast.Verbatim banner]) in
+		Lwt.return (`Okay ([comm, Ast.Verbatim banner], [])) in
 	{blktag = "banner"; blkfun = Blkfun_raw f; blkcat = [`Figure_blk; `Embeddable_blk]}
 
 
@@ -106,13 +78,10 @@ let rec step1_handler () () =
 	let step2_service = Eliom_registration.Html5.register_post_coservice
 		~scope:Eliom_common.default_session_scope
 		~fallback:main_service
-		~post_params:Eliom_parameter.(Markup.param "markup" ** string "source")
+		~post_params:(Eliom_parameter.string "source")
 		step2_handler in
-	let step2_form (e_markup, e_source) =
+	let step2_form e_source =
 		[
-		label ~a:[a_for e_markup] [pcdata "Markup:"];
-		Markup.choose ~name:e_markup ~value:`Lambtex ();
-		br ();
 		label ~a:[a_for e_source] [pcdata "Source:"];
 		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum\n\n\\banner{hello}" ();
 		br ();
@@ -121,15 +90,8 @@ let rec step1_handler () () =
 	Lwt.return (make_page [post_form step2_service step2_form ()])
 
 
-and step2_handler () (markup, source) =
-	let reader = match markup with
-		| `Lambtex  -> Lambtex_reader.ambivalent_from_string
-		| `Lambwiki -> Lambwiki_reader.ambivalent_from_string
-		| `Lambxml  -> Lambxml_reader.ambivalent_from_string
-		| `Markdown -> Markdown_reader.ambivalent_from_string in
-	let feature_ruleset = [`Only `Feature_bold, `Deny] in
-	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~feature_ruleset () in
-	lwt doc = reader ~block_extcomms:[banner_extcomm] ~idiosyncrasies source in
+and step2_handler () source =
+	lwt doc = Lambtex_reader.ambivalent_of_string ~block_extcomms:[banner_extcomm] source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

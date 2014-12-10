@@ -8,7 +8,7 @@
 
 (**	Part 3 of the Lambdoc+Ocsigen tutorial.
 
-	Again, this example is almost identical to the previous one.  The only
+	Again, this example is almost identical to the first one.  The only
 	difference this time is that the user may choose one of the four markup
 	languages currently supported by Lambdoc.  Note that this example uses
 	the Litiom_choice module to simplify the creation of a select box (make
@@ -100,9 +100,7 @@ and step2_handler () (markup, source) =
 		| `Lambwiki -> Lambdoc_read_lambwiki.Trivial.ambivalent_from_string
 		| `Lambxml  -> Lambdoc_read_lambxml.Trivial.ambivalent_from_string
 		| `Markdown -> Lambdoc_read_markdown.Trivial.ambivalent_from_string in
-	let feature_ruleset = [`Only `Feature_bold, `Deny] in
-	let idiosyncrasies = Lambdoc_core.Idiosyncrasies.make ~feature_ruleset () in
-	let doc = reader ~idiosyncrasies source in
+	let doc = reader source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

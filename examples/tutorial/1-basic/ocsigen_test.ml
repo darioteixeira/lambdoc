@@ -11,13 +11,13 @@
 	All examples in this tutorial illustrate a 2-step service: the first step
 	prompts the user with a textarea where the input text (formatted using
 	some supported markup) may be entered; the second step then shows the
-	rendered Lambdoc document.  Note that in this example, the only supported
-	markup is Lambtex.
+	rendered Lambdoc document (note that in this example, the only supported
+	markup is Lambtex).
 
-	In this example, the built-in [Trivial] Lambtex reader (this reader uses
-	a dummy extension constructed from the identity monad) is used for parsing.
-	For outputting Html5 values, the [Make_trivial] Html5 writer is given Eliom's
-	[Html5.F.Raw].  Note that the [Make_trivial] functor is used because a dummy
+	In this example, the built-in [Trivial] Lambtex reader is used for parsing
+	(this reader uses an extension constructed from the identity monad).  For
+	outputting Html5 values, the [Make_trivial] Html5 writer is given Eliom's
+	[Html5.F.Raw].  Note that the [Make_trivial] functor is used because an
 	extension built from the identity monad suffices.
 *)
 
