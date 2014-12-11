@@ -20,17 +20,17 @@ type output_t = [ `Sexp | `Html5 ]
 (********************************************************************************)
 
 let input_of_string x = match String.lowercase x with
-	| "lambtex"  -> `Lambtex
-	| "lambwiki" -> `Lambwiki
-	| "lambxml"  -> `Lambxml
-	| "markdown" -> `Markdown
-	| "sexp"     -> `Sexp
-	| _	     -> invalid_arg ("Markup.input_of_string: " ^ x)
+	| "lambtex" | "tex"	-> `Lambtex
+	| "lambwiki" | "wiki"	-> `Lambwiki
+	| "lambxml" | "xml"	-> `Lambxml
+	| "markdown" | "md"	-> `Markdown
+	| "sexp"		-> `Sexp
+	| _			-> invalid_arg ("Markup.input_of_string: " ^ x)
 
 let output_of_string x = match String.lowercase x with
-	| "sexp" -> `Sexp
-	| "html" -> `Html5
-	| x	 -> invalid_arg ("Markup.output_of_string: " ^ x)
+	| "sexp"		-> `Sexp
+	| "html" | "html5"	-> `Html5
+	| x			-> invalid_arg ("Markup.output_of_string: " ^ x)
 
 let to_string = function
 	| `Lambtex  -> "Lambtex"
@@ -39,8 +39,4 @@ let to_string = function
 	| `Markdown -> "Markdown"
 	| `Sexp     -> "Sexp"
 	| `Html5    -> "Html5"
-
-let default_input = `Lambtex
-
-let default_output = `Html5
 

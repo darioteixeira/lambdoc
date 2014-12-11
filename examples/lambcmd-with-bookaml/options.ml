@@ -8,6 +8,16 @@
 
 open BatOptParse
 
+(********************************************************************************)
+(**	{1 Private exceptions}							*)
+(********************************************************************************)
+
+exception Leftover_options
+exception Cannot_guess_input_markup_from_stdin
+exception Cannot_guess_input_markup_from_filename
+exception Cannot_guess_output_markup_from_stdout
+exception Cannot_guess_output_markup_from_filename
+
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -57,8 +67,8 @@ let amazon_associate_tag_opt = StdOpt.str_option ()
 let amazon_access_key_opt = StdOpt.str_option ()
 let amazon_secret_key_opt = StdOpt.str_option ()
 
-let input_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_input) Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
-let output_markup_opt = Opt.value_option "MARKUP" (Some Markup.default_output) Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
+let input_markup_opt = Opt.value_option "MARKUP" None Markup.input_of_string (fun exn str -> "Unknown input markup '" ^ str ^ "'")
+let output_markup_opt = Opt.value_option "MARKUP" None Markup.output_of_string (fun exn str -> "Unknown output markup '" ^ str ^ "'")
 
 let input_file_opt = StdOpt.str_option ~metavar:"FILE" ()
 let output_file_opt = StdOpt.str_option ~metavar:"FILE" ()
@@ -86,46 +96,78 @@ let () =
 	OptParser.add options ~group:amazon ~long_name:"amazon-access_key" ~help:"Amazon Web Services access key" amazon_access_key_opt;
 	OptParser.add options ~group:amazon ~long_name:"amazon-secret_key" ~help:"Amazon Web Services secret key" amazon_secret_key_opt;
 
-	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lambwiki', 'markdown', or 'sexp'; assume 'lambtex' if not specified)" input_markup_opt;
-	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; assume 'xhtml' if not specified)" output_markup_opt;
+	OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lambwiki', 'markdown', or 'sexp'; we try to guess based on file extension if not specified)" input_markup_opt;
+	OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; we try to guess based on file extension if not specified)" output_markup_opt;
 
 	OptParser.add options ~group:file ~short_name:'i' ~long_name:"in" ~help:"Input file name (read from STDIN if not specified)" input_file_opt;
 	OptParser.add options ~group:file ~short_name:'o' ~long_name:"out" ~help:"Output file name (write to STDOUT if not specified)" output_file_opt
 
 
-let parse () = match OptParser.parse_argv options with
-	| hd::tl ->
+let parse () =
+	let suffix name =
+		let idx = String.rindex name '.' in
+		String.sub name (idx + 1) (String.length name - idx - 1) in
+	try
+		begin match OptParser.parse_argv options with
+			| hd::tl ->
+				raise Leftover_options
+			| [] ->
+				let (input_name, input_chan, input_cleaner) = match Opt.opt input_file_opt with
+					| Some name -> (Some name, Pervasives.open_in name, Pervasives.close_in)
+					| None	    -> (None, Pervasives.stdin, fun _ -> ())
+				and (output_name, output_chan, output_cleaner) = match Opt.opt output_file_opt with
+					| Some name -> (Some name, Pervasives.open_out name, Pervasives.close_out)
+					| None	    -> (None, Pervasives.stdout, fun _ -> ())
+				in	{
+					debug = Opt.get debug_opt;
+					title = Opt.get title_opt;
+					language = Opt.get language_opt;
+
+					unrestricted = Opt.get unrestricted_opt;
+					max_macro_depth = Opt.opt max_macro_depth_opt;
+					max_inline_depth = Opt.opt max_inline_depth_opt;
+					max_block_depth = Opt.opt max_block_depth_opt;
+
+					input_markup =
+						begin match Opt.opt input_markup_opt with
+							| Some markup -> markup
+							| None -> match input_name with
+								| None -> raise Cannot_guess_input_markup_from_stdin
+								| Some name ->
+									try Markup.input_of_string (suffix name)
+									with _ -> raise Cannot_guess_input_markup_from_filename
+						end;
+
+					output_markup =
+						begin match Opt.opt output_markup_opt with
+							| Some markup -> markup
+							| None -> match output_name with
+								| None -> raise Cannot_guess_output_markup_from_stdout
+								| Some name ->
+									try Markup.output_of_string (suffix name) with
+									_ -> raise Cannot_guess_output_markup_from_filename
+						end;
+
+					amazon_locale = Opt.opt amazon_locale_opt;
+					amazon_associate_tag = Opt.opt amazon_associate_tag_opt;
+					amazon_access_key = Opt.opt amazon_access_key_opt;
+					amazon_secret_key = Opt.opt amazon_secret_key_opt;
+
+					input_chan = input_chan;
+					output_chan = output_chan;
+					input_cleaner = input_cleaner;
+					output_cleaner = output_cleaner;
+					}
+		end
+	with exc ->
+		let msg = match exc with
+			| Leftover_options			   -> "Invalid usage."
+			| Cannot_guess_input_markup_from_stdin	   -> "When using STDIN for input, you must explicitly specify input markup."
+			| Cannot_guess_input_markup_from_filename  -> "I'm unable to guess input markup based on filename. Please specify one."
+			| Cannot_guess_output_markup_from_stdout   -> "When using STDOUT for output, you must explicitly specify output markup"
+			| Cannot_guess_output_markup_from_filename -> "I'm unable to guess output markup based on filename. Please specify one."
+			| _					   -> raise exc in
 		OptParser.usage options ();
-		OptParser.error options "Error: invalid usage";
+		OptParser.error options ("Error: " ^ msg);
 		raise Exit
-	| [] ->
-		let (input_chan, input_cleaner) = match Opt.opt input_file_opt with
-			| Some name -> (Pervasives.open_in name, Pervasives.close_in)
-			| None	    -> (Pervasives.stdin, fun _ -> ())
-		and (output_chan, output_cleaner) = match Opt.opt output_file_opt with
-			| Some name -> (Pervasives.open_out name, Pervasives.close_out)
-			| None	    -> (Pervasives.stdout, fun _ -> ())
-		in	{
-			debug = Opt.get debug_opt;
-			title = Opt.get title_opt;
-			language = Opt.get language_opt;
-
-			unrestricted = Opt.get unrestricted_opt;
-			max_macro_depth = Opt.opt max_macro_depth_opt;
-			max_inline_depth = Opt.opt max_inline_depth_opt;
-			max_block_depth = Opt.opt max_block_depth_opt;
-
-			amazon_locale = Opt.opt amazon_locale_opt;
-			amazon_associate_tag = Opt.opt amazon_associate_tag_opt;
-			amazon_access_key = Opt.opt amazon_access_key_opt;
-			amazon_secret_key = Opt.opt amazon_secret_key_opt;
-
-			input_markup = Opt.get input_markup_opt;
-			output_markup = Opt.get output_markup_opt;
-
-			input_chan = input_chan;
-			output_chan = output_chan;
-			input_cleaner = input_cleaner;
-			output_cleaner = output_cleaner;
-			}
 
