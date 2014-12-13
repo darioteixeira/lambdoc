@@ -22,8 +22,6 @@ type _ handle_t =
 	| Linenums_hnd: bool handle_t
 	| Width_hnd: int option handle_t
 
-type errors_t = (int option * Error.error_msg_t) BatDynArray.t
-
 type parsing_t
 
 
@@ -31,8 +29,8 @@ type parsing_t
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val parse: Ast.command_t -> errors_t -> Attr.t * parsing_t ref
+val parse: Ast.command_t -> Attr.t * parsing_t ref * Error.error_msg_t list
 val consume1: parsing_t ref -> 'a handle_t * 'a -> 'a
 val consume2: parsing_t ref -> 'a handle_t * 'a -> 'b handle_t * 'b -> 'a * 'b
-val dispose: Ast.command_t -> errors_t -> parsing_t ref -> bool
+val dispose: Ast.command_t -> parsing_t ref -> Error.error_msg_t list
 

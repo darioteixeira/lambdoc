@@ -46,8 +46,6 @@ type _ handle_t =
 	| Linenums_hnd: bool handle_t
 	| Width_hnd: int option handle_t
 
-type errors_t = (int option * Error.error_msg_t) BatDynArray.t
-
 type parsing_t = (raw_t * decl_t) list
 
 
@@ -93,48 +91,45 @@ let decl_dict =
 
 let raws_of_string =
 	let kv_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>.+)$" in
-	fun comm errors ->
-		let conv str =
+	fun comm ->
+		let conv (accum_raw, accum_msg) str =
 			try
 				let _ = String.index str '=' in
 				begin try
 					let subs = Pcre.exec ~rex:kv_rex str in
 					let key = Pcre.get_named_substring kv_rex "key" subs in
 					let value = Pcre.get_named_substring kv_rex "value" subs in
-					Some (Named (key, value))
+					(Named (key, value) :: accum_raw, accum_msg)
 				with Not_found ->
 					let msg = Error.Invalid_style_bad_keyvalue (comm.comm_tag, str) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
-					None
+					(accum_raw, msg :: accum_msg)
 				end
 			with Not_found ->
 				if Readconv.Identifier_input.matches_classname str
 				then
-					Some (Unnamed str)
+					(Unnamed str :: accum_raw, accum_msg)
 				else
 					let msg = Error.Invalid_style_bad_classname (comm.comm_tag, str) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
-					None in
+					(accum_raw, msg :: accum_msg) in
 		match comm.comm_style with
-			| Some str -> String.nsplit str "," |> List.map String.strip |> List.filter_map conv
-			| None	   -> []
+			| Some str ->
+				String.nsplit str "," |>
+				List.map String.strip |>
+				List.fold_left conv ([], [])
+			| None ->
+				([], [])
 
 
-let decl_of_raw comm errors = function
+let decl_of_raw comm = function
 	| Unnamed str ->
-		Some (Classname_decl str)
+		`Okay (Classname_decl str)
 	| Named (key, value) ->
 		try
 			let maker = List.assoc key decl_dict in
-			Some (maker comm value)
+			`Okay (maker comm value)
 		with
-			| Not_found ->
-				let msg = Error.Invalid_style_unknown_keyvalue (comm.comm_tag, key, value) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				None
-			| Value_error msg ->
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
-				None
+			| Not_found	  -> `Error (Error.Invalid_style_unknown_keyvalue (comm.comm_tag, key, value))
+			| Value_error msg -> `Error msg
 
 
 let find_decl hnd parsing =
@@ -157,20 +152,20 @@ let find_decl hnd parsing =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let parse comm errors =
-	let make_parsing raw = match decl_of_raw comm errors raw with
-		| Some decl -> Some (raw, decl)
-		| None	    -> None in
-	let rec split attr_accum parsing_accum = function
+let parse comm =
+	let make_parsing (accum_parsing, accum_msg) raw = match decl_of_raw comm raw with
+		| `Okay decl -> ((raw, decl) :: accum_parsing, accum_msg)
+		| `Error msg -> (accum_parsing, msg :: accum_msg) in
+	let rec split accum_parsing accum_attr = function
 		| [] ->
-			(attr_accum, ref parsing_accum)
-		| ((_, decl) as hd) :: tl ->
-			match decl with
-				| Classname_decl x -> split (x :: attr_accum) parsing_accum tl
-				| _		   -> split attr_accum (hd :: parsing_accum) tl in
-	raws_of_string comm errors |>
-	List.filter_map make_parsing |>
-	split [] []
+			(accum_parsing, accum_attr)
+		| ((_, decl) as hd) :: tl -> match decl with
+			| Classname_decl x -> split accum_parsing (x :: accum_attr) tl
+			| _		   -> split (hd :: accum_parsing) accum_attr tl in
+	let (raws, msgs) = raws_of_string comm in
+	let (parsing, msgs) = List.fold_left make_parsing ([], msgs) raws in
+	let (parsing, attrs) = split [] [] parsing in
+	(attrs, ref parsing, List.rev msgs)	(* We use List.rev because compiler expects errors in ascending order of line number *)
 
 
 let consume1 parsing_ref (hnd, default) =
@@ -192,16 +187,12 @@ let consume2 parsing_ref (hnd1, default1) (hnd2, default2) =
 	(res1, res2)
 
 
-let dispose comm errors parsing_ref = match !parsing_ref with
+let dispose comm parsing_ref = match !parsing_ref with
 	| [] ->
-		true
+		[]
 	| xs ->
 		let aux (raw, _) = match raw with
-			| Named (key, value) ->
-				let msg = Error.Invalid_style_misplaced_keyvalue (comm.comm_tag, key, value) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg)
-			| Unnamed _ ->
-				assert false in
-		List.iter aux xs;
-		false
+			| Named (key, value) -> Error.Invalid_style_misplaced_keyvalue (comm.comm_tag, key, value)
+			| Unnamed _	     -> assert false in
+		List.rev_map aux xs
 

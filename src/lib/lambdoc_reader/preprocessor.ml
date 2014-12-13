@@ -24,12 +24,12 @@ exception Malformed_code_point
 *)
 let verify_utf8 s =
 	let line = ref 1 in
-	let error_lines = BatDynArray.create () in
+	let error_lines = ref [] in
 	let buf = Buffer.create (String.length s) in
 	let add_valid pos len =
 		Buffer.add_substring buf s pos len in
 	let add_invalid () =
-		BatDynArray.add error_lines !line;
+		error_lines := !line :: !error_lines;
 		Buffer.add_string buf "\xef\xbf\xbd" in	(* 0xfffd is the standard UTF-8 replacement character *)
 	let rec trail c i a =
 		if c = 0
@@ -80,7 +80,7 @@ let verify_utf8 s =
 			(add_invalid (); main (i + 1))
 	in
 		let sane = main 0 in
-		if not (BatDynArray.empty error_lines)
-		then raise (Malformed_source (sane, BatDynArray.to_list error_lines))
+		if !error_lines <> []
+		then raise (Malformed_source (sane, List.rev !error_lines))
 		else ()
 

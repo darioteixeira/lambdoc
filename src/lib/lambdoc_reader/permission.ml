@@ -74,21 +74,17 @@ let reason_why_invalid perm = function
 		end
 
 
-let check_permission_set errors comm (perm_label, perm_order) =
-	begin match reason_why_invalid perm_label comm.comm_label with
+let check_permission_set comm (perm_label, perm_order) =
+	let errors = match reason_why_invalid perm_label comm.comm_label with
 		| None ->
-			()
+			[]
 		| Some reason ->
-			let msg = Error.Misplaced_label_parameter (comm.comm_tag, reason) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg)
-	end;
-	begin match reason_why_invalid perm_order comm.comm_order with
+			[Error.Misplaced_label_parameter (comm.comm_tag, reason)] in
+	match reason_why_invalid perm_order comm.comm_order with
 		| None ->
-			()
+			errors
 		| Some reason ->
-			let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg)
-	end
+			Error.Misplaced_order_parameter (comm.comm_tag, reason) :: errors
 
 
 let rec classify = function
@@ -111,7 +107,7 @@ let run_ruleset verify ruleset default =
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors comm feature =
+let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feature =
 
 	let get_minipaged = function
 		| Some minipaged	-> minipaged
@@ -205,7 +201,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) errors co
 		| #Feature.block_feature_t as x    -> block_feature_set x
 		| #Feature.internal_feature_t as x -> internal_feature_set x
 
-	in check_permission_set errors comm permission_set
+	in check_permission_set comm permission_set
 
 
 let check_feature feature {feature_ruleset; feature_default; _} =

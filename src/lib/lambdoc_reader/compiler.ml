@@ -129,18 +129,18 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	(* Declaration of the mutable values used in the function.		*)
 	(************************************************************************)
 
-	let pointers = BatDynArray.create () in
-	let bibs = BatDynArray.create () in
-	let notes = BatDynArray.create () in
-	let toc = BatDynArray.create () in
-	let linkrefs = BatDynArray.create () in
-	let imagerefs = BatDynArray.create () in
+	let pointers = ref [] in
+	let bibs = ref [] in
+	let notes = ref [] in
+	let toc = ref [] in
+	let linkrefs = ref [] in
+	let imagerefs = ref [] in
 	let linkset = ref HrefSet.empty in
 	let imageset = ref HrefSet.empty in
         let labels = Hashtbl.create 10 in
 	let customisations = Hashtbl.create 10 in
 	let macros = Hashtbl.create 10 in
-	let errors = BatDynArray.create () in
+	let errors = ref [] in
 	let part_counter = Order_input.ordinal_counter () in
 	let section_counter = Order_input.hierarchical_counter () in
 	let appendix_counter = Order_input.hierarchical_counter () in
@@ -167,6 +167,12 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	(* Helper sub-functions.						*)
 	(************************************************************************)
 
+	(*	Add an error message to the list of errors.
+	*)
+	let add_error comm msg =
+		errors := (Some comm.comm_linenum, msg) :: !errors in
+
+
 	(*	This subfunction creates a new label.  It checks whether the user
 		explicitly provided a label (in which case we use the [User] variant),
 		or if no label was defined (in which case we automatically assign a
@@ -179,11 +185,16 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				if Identifier_input.matches_label thing
 				then
 					if Hashtbl.mem labels new_label
-					then BatDynArray.add errors (Some comm.comm_linenum, (Error.Duplicate_target (comm.comm_tag, thing)))
-					else Hashtbl.add labels new_label target
+					then
+						let msg = Error.Duplicate_target (comm.comm_tag, thing) in
+						add_error comm msg
+					else
+						Hashtbl.add labels new_label target
 				else
 					if thing <> ""
-					then BatDynArray.add errors (Some comm.comm_linenum, (Error.Invalid_label (comm.comm_tag, thing)))
+					then
+						let msg = Error.Invalid_label (comm.comm_tag, thing) in
+						add_error comm msg
 			end;
 			new_label
 		| None ->
@@ -200,7 +211,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		with
 			Order_input.Invalid_order_format str ->
 				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Order_input.user_ordinal "0"
 
 
@@ -213,11 +224,11 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		with
 			| Order_input.Invalid_order_format str ->
 				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Order_input.user_hierarchical (Level.section 1) "0"
 			| Order_input.Invalid_order_levels (str, expected, found) ->
 				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Order_input.user_hierarchical (Level.section 1) "0"
 
 
@@ -226,16 +237,16 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	and add_pointer target_checker comm pointer =
 		if Identifier_input.matches_label pointer
 		then
-			BatDynArray.add pointers (target_checker, comm, pointer)
+			pointers := (target_checker, comm, pointer) :: !pointers
 		else
 			let msg = Error.Invalid_label (comm.comm_tag, pointer) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg)
+			add_error comm msg
 
 
 	(*	Adds a new TOC entry.
 	*)
 	and add_toc_entry heading =
-		BatDynArray.add toc heading
+		toc := heading :: !toc
 
 
 	(*	Checker for inline/block commands.
@@ -245,19 +256,23 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			if not (Permission.check_classname feature classname idiosyncrasies)
 			then 
 				let msg = Error.Invalid_style_misplaced_classname (comm.comm_tag, classname) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg) in
+				add_error comm msg in
 		if Permission.check_feature feature idiosyncrasies
 		then begin
-			Permission.check_parameters ?maybe_minipaged ?maybe_wrapped errors comm feature;
-			let (attr, style_parsing) = Style.parse comm errors in
+			let permission_error_msgs = Permission.check_parameters ?maybe_minipaged ?maybe_wrapped comm feature in
+			List.iter (add_error comm) permission_error_msgs;
+			let (attr, style_parsing, style_error_msgs) = Style.parse comm in
+			List.iter (add_error comm) style_error_msgs;
 			List.iter check_classname attr;
 			elem attr style_parsing >>= fun element ->
-			if Style.dispose comm errors style_parsing
+			let dispose_error_msgs = Style.dispose comm style_parsing in
+			List.iter (add_error comm) dispose_error_msgs;
+			if dispose_error_msgs = []
 			then Monad.return (Some element)
 			else Monad.return None
 		end else
 			let msg = Error.Unavailable_feature (comm.comm_tag, Feature.describe feature) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			Monad.return None in
 
 
@@ -282,7 +297,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			[constructor (Math_input.from_mathtex mathtex)]
 		with _ ->
 			let msg = Error.Invalid_mathtex (comm.comm_tag, mathtex) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			[]
 
 
@@ -291,7 +306,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			[constructor (Math_input.from_mathml mathml)]
 		with _ ->
 			let msg = Error.Invalid_mathml (comm.comm_tag, mathml) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			[] in
 
 
@@ -312,7 +327,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					then Monad.return [Inline.plain ~attr (ustr :> string)]
 					else Monad.return [Inline.entity ~attr txt]
 				| `Error msg ->
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Monad.return [] in
 			check_inline_comm `Feature_entity comm elem
 
@@ -330,7 +345,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 
 		| Ast.Glyph (href, alt) ->
 			let elem attr _ =
-				BatDynArray.add imagerefs (comm, `Feature_glyph, href);
+				imagerefs := (comm, `Feature_glyph, href) :: !imagerefs;
 				imageset := HrefSet.add href !imageset;
 				Monad.return [Inline.glyph ~attr href alt] in
 			check_inline_comm `Feature_glyph comm elem
@@ -397,7 +412,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 
 		| Ast.Link (href, maybe_astseq) when not is_ref ->
 			let elem attr _ =
-				BatDynArray.add linkrefs (comm, `Feature_link, href);
+				linkrefs := (comm, `Feature_link, href) :: !linkrefs;
 				linkset := HrefSet.add href !linkset;
 				monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq >>= fun maybe_seq ->
 				Monad.return [Inline.link ~attr href maybe_seq] in
@@ -414,7 +429,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 						Monad.return [Inline.see ~attr refs]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Monad.return [] in
 			check_inline_comm `Feature_see comm elem
 
@@ -429,7 +444,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 						Monad.return [Inline.cite ~attr refs]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Monad.return [] in
 			check_inline_comm `Feature_cite comm elem
 
@@ -475,7 +490,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			let elem attr _ = match args with
 				| None ->
 					let msg = Error.Invalid_macro_argument_context in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Monad.return []
 				| Some x ->
 					try
@@ -485,7 +500,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 						| Failure _
 						| Invalid_argument _ ->
 							let msg = Error.Invalid_macro_argument_number (raw_num, List.length x) in
-							BatDynArray.add errors (Some comm.comm_linenum, msg);
+							add_error comm msg;
 							Monad.return [] in
 			check_inline_comm `Feature_macroarg comm elem
 
@@ -496,7 +511,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					if macro_nargs <> List.length arglist
 					then
 						let msg = Error.Invalid_macro_call (name, List.length arglist, macro_nargs) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Monad.return []
 					else 
 						let (context_comm, depth) = context in
@@ -511,12 +526,12 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) is_ref macro_astseq
 							| Some num ->
 								let msg = Error.Excessive_macro_depth (comm.comm_tag, num) in
-								BatDynArray.add errors (Some comm.comm_linenum, msg);
+								add_error comm msg;
 								Monad.return []
 				with
 					| Not_found ->
 						let msg = Error.Undefined_macro (comm.comm_tag, name) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Monad.return [] in
 			check_inline_comm `Feature_macrocall comm elem
 
@@ -528,13 +543,13 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_seq_aux ~comm ~context ~depth ~args is_ref astseq
 					| `Error msgs ->
-						List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs;
+						List.iter (add_error comm) msgs;
 						Monad.return [] in
 			check_inline_comm (`Feature_extcomm_inl tag) comm elem
 
 		| _ ->
 			let msg = Error.Unexpected_inline comm.comm_tag in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			Monad.return []
 
 
@@ -551,7 +566,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	and convert_inline_list ~comm ~context ~depth ~args is_ref astseq = match idiosyncrasies.max_inline_depth with
 		| Some max when depth >= max ->
 			let msg = Error.Excessive_inline_depth (comm.comm_tag, max) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			Monad.return [dummy_inline]
 		| _ ->
 			let coalesce_plain seq =
@@ -570,7 +585,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			match new_seq with
 				| [] ->
 					let msg = Error.Empty_sequence comm.comm_tag in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Monad.return [dummy_inline]
 				| xs ->
 					Monad.return xs
@@ -596,7 +611,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			with
 				Invalid_argument _ ->
 					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					(Tabular.Center, Tabular.Normal) in
 
 		let specs = Array.map (get_colspec comm) (Array.of_list (List.map String.of_char (String.explode tcols))) in
@@ -612,7 +627,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 							(colspan, Some (colspec, colspan, overline, underline))
 						with _ ->
 							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw) in
-							BatDynArray.add errors (Some comm.comm_linenum, msg);
+							add_error comm msg;
 							(1, None)
 					end
 				| None ->
@@ -632,7 +647,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			if !rowspan <> num_columns
 			then begin
 				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
-				BatDynArray.add errors (Some row_comm.comm_linenum, msg);
+				add_error comm msg;
 				tab_row
 			end else
 				tab_row in
@@ -710,7 +725,12 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				let trimmed = Literal_input.trim txt in
 				let hilite = Camlhighlight_parser.from_string ?lang trimmed in
 				let src = Source.make lang hilite linenums in
-				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_source comm.comm_tag) in
+				begin 
+					if trimmed = ""
+					then
+						let msg = Error.Empty_source comm.comm_tag in
+						add_error comm msg
+				end;
 				Monad.return [Block.source ~attr src] in
 			check_block_comm `Feature_source comm elem
 
@@ -729,13 +749,18 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		| Ast.Verbatim txt when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
 			let elem attr _ =
 				let trimmed = Literal_input.trim txt in
-				let () = if trimmed = "" then BatDynArray.add errors (Some comm.comm_linenum, Error.Empty_verbatim comm.comm_tag) in
+				begin
+					if trimmed = ""
+					then
+						let msg = Error.Empty_verbatim comm.comm_tag in
+						add_error comm msg
+				end;
 				Monad.return [Block.verbatim ~attr trimmed] in
 			check_block_comm `Feature_verbatim comm elem
 
 		| Ast.Picture (href, alt) when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
 			let elem attr dict =
-				BatDynArray.add imagerefs (comm, `Feature_picture, href);
+				imagerefs := (comm, `Feature_picture, href) :: !imagerefs;
 				imageset := HrefSet.add href !imageset;
 				let width = Style.consume1 dict (Width_hnd, None) in
 				Monad.return [Block.picture ~attr href alt width] in
@@ -752,7 +777,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			let elem attr _ =
 				let bad_order reason =
 					let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Order_input.no_order () in
 				try
 					let (kind, used, def) = Hashtbl.find customisations env in
@@ -782,11 +807,11 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				with
 					| Not_found ->
 						let msg = Error.Undefined_custom (comm.comm_tag, env) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Monad.return []
 					| Mismatched_custom (found, expected) ->
 						let msg = Error.Mismatched_custom (comm.comm_tag, env, found, expected) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Monad.return [] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
 
@@ -857,7 +882,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					try Level.section level
 					with Invalid_argument _ -> 
 						let msg = Error.Invalid_section_level (comm.comm_tag, level) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Level.section 1 in
 				let order = match comm.comm_order with
 					| None	     -> Order_input.auto_hierarchical level' counter
@@ -893,7 +918,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					try Level.title level
 					with Invalid_argument _ -> 
 						let msg = Error.Invalid_title_level (comm.comm_tag, level) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg);
+						add_error comm msg;
 						Level.title 1 in
 				convert_seq ~comm astseq >>= fun seq ->
 				Monad.return [Block.title ~attr level' seq] in
@@ -925,7 +950,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				match (author, title, resource) with
 					| (Some author, Some title, Some resource) ->
 						let bib = Bib.make label order author title resource in
-						BatDynArray.add bibs bib;
+						bibs := bib :: !bibs;
 						Monad.return []
 					| _ ->
 						Monad.return [] in
@@ -937,7 +962,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				let label = make_label comm (Target.note order) in
 				convert_frag_aux ~comm ~minipaged:true ~depth `Listable_blk astfrag >>= fun frag ->
 				let note = Note.make label order frag in
-				BatDynArray.add notes note;
+				notes := note :: !notes;
 				Monad.return [] in
 			check_block_comm `Feature_note comm elem
 
@@ -946,21 +971,21 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				if not (Identifier_input.matches_macrodef name)
 				then begin
 					let msg = Error.Invalid_macro (comm.comm_tag, name) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg)
+					add_error comm msg
 				end;
 				let num_args =
 					try int_of_string nargs
 					with Failure _ ->
 						let msg = Error.Invalid_macro_nargs (name, nargs) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg); 0 in
-				let errors_before = BatDynArray.length errors in
+						add_error comm msg; 0 in
+				let errors_before = List.length !errors in
 				convert_seq ~comm ~args:(List.make num_args [dummy_inline]) astseq >>= fun _ ->
-				let errors_after = BatDynArray.length errors in
+				let errors_after = List.length !errors in
 				begin
 					if Hashtbl.mem macros name
 					then
 						let msg = Error.Duplicate_macro (comm.comm_tag, name) in
-						BatDynArray.add errors (Some comm.comm_linenum, msg)
+						add_error comm msg
 					else
 						let new_astseq = if errors_after = errors_before then astseq else [(comm, Ast.Linebreak)] in
 						Hashtbl.add macros name (num_args, new_astseq)
@@ -985,13 +1010,13 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_frag_aux ~comm ~minipaged ~depth allowed astfrag
 					| `Error msgs ->
-						List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs;
+						List.iter (add_error comm) msgs;
 						Monad.return [] in
 			check_block_comm (`Feature_extcomm_blk tag) comm elem
 
 		| _ ->
 			let msg = Error.Unexpected_block (comm.comm_tag, allowed) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			Monad.return [dummy_block]
 
 
@@ -1016,7 +1041,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		match (order, maybe_seq) with
 			| (`None_given, None) ->
 				let msg = Error.Invalid_wrapper (comm.comm_tag, kind) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Monad.return (Wrapper.Unordered (label, [dummy_inline]))
 			| (`None_given, Some seq) ->
 				Monad.return (Wrapper.Unordered (label, seq))
@@ -1029,13 +1054,13 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		if not (Identifier_input.matches_customdef env)
 		then begin
 			let msg = Error.Invalid_custom (comm.comm_tag, env) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			Monad.return []
 		end
 		else if Hashtbl.mem customisations env
 		then begin
 			let msg = Error.Duplicate_custom (comm.comm_tag, env) in
-			BatDynArray.add errors (Some comm.comm_linenum, msg);
+			add_error comm msg;
 			Monad.return []
 		end
 		else match (maybe_caption, maybe_counter_name) with
@@ -1045,7 +1070,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				Monad.return []
 			| (None, Some counter_name) ->
 				let msg = Error.Unexpected_counter (comm.comm_tag, counter_name) in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Monad.return []
 			| (Some astseq, None) ->
 				convert_seq ~comm astseq >>= fun seq ->
@@ -1064,13 +1089,13 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				end
 				else begin
 					let msg = Error.Invalid_counter (comm.comm_tag, counter_name) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Monad.return []
 				end
 			| (Some astseq, Some counter_name) -> match Hashtbl.find custom_counters counter_name with
 				| (k, _) when k <> kind ->
 					let msg = Error.Mismatched_counter (comm.comm_tag, counter_name) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Monad.return []
 				| (_, counter) ->
 					convert_seq ~comm astseq >>= fun seq ->
@@ -1086,7 +1111,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		monadic_filter_map conv astfrags >>= function
 			| [] ->
 				let msg = Error.Empty_fragment comm.comm_tag in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Monad.return [dummy_block]
 			| frags ->
 				Monad.return [cons frags]
@@ -1102,7 +1127,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		monadic_filter_map conv astfrags >>= function
 			| [] ->
 				let msg = Error.Empty_fragment comm.comm_tag in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Monad.return [dummy_block]
 			| frags ->
 				Monad.return [cons frags]
@@ -1130,7 +1155,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		monadic_filter_map conv astfrags >>= function
 			| [] ->
 				let msg = Error.Empty_fragment comm.comm_tag in
-				BatDynArray.add errors (Some comm.comm_linenum, msg);
+				add_error comm msg;
 				Monad.return [dummy_block]
 			| frags ->
 				Monad.return [cons (List.flatten frags)]
@@ -1163,7 +1188,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 				then
 					let (comm, _) = astblk in
 					let msg = Error.Excessive_block_depth (comm.comm_tag, max) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg);
+					add_error comm msg;
 					Monad.return [dummy_block]
 				else
 					convert_block ~minipaged ~depth:(depth+1) allowed astblk in
@@ -1173,7 +1198,7 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					| Some comm -> (comm.comm_tag, Some comm.comm_linenum)
 					| None	    -> (None, None) in
 				let msg = Error.Empty_fragment tag in
-				BatDynArray.add errors (linenum, msg);
+				errors := (linenum, msg) :: !errors;
 				Monad.return [dummy_block]
 			| frag ->
 				Monad.return (List.flatten frag)
@@ -1196,19 +1221,19 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					()
 				| `Empty_target ->
 					let msg = Error.Empty_target (comm.comm_tag, label) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg)
+					add_error comm msg
 				| `Wrong_target expected ->
 					let suggestion = match target with
 						| Target.Visible_target _	-> Error.Target_label
 						| Target.Bib_target _		-> Error.Target_bib
 						| Target.Note_target _		-> Error.Target_note in
 					let msg = Error.Wrong_target (comm.comm_tag, label, expected, suggestion) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg)
+					add_error comm msg
 			with
 				Not_found ->
 					let msg = Error.Undefined_target (comm.comm_tag, label) in
-					BatDynArray.add errors (Some comm.comm_linenum, msg) in
-		BatDynArray.iter filter_pointer pointers in
+					add_error comm msg in
+		List.iter filter_pointer !pointers in
 
 
 	(************************************************************************)
@@ -1244,8 +1269,8 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 		let dict = Hashtbl.create (Hashtbl.length results) in
 		let process (comm, feature, href) = match Hashtbl.find results href with
 			| `Success v	-> Hashtbl.add dict href v
-			| `Failure msgs -> List.iter (fun msg -> BatDynArray.add errors (Some comm.comm_linenum, msg)) msgs in
-		let () = BatDynArray.iter process refs in
+			| `Failure msgs -> List.iter (add_error comm) msgs in
+		let () = List.iter process refs in
 		Monad.return dict in
 
 
@@ -1256,9 +1281,9 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	convert_frag ast >>= fun content ->
 	let customs = filter_customisations () in
 	let () = filter_pointers () in
-	process_hrefs link_readers !linkset linkrefs >>= fun links ->
-	process_hrefs image_readers !imageset imagerefs >>= fun images ->
-	Monad.return (content, BatDynArray.to_list bibs, BatDynArray.to_list notes, BatDynArray.to_list toc, labels, customs, links, images, BatDynArray.to_list errors)
+	process_hrefs link_readers !linkset (List.rev !linkrefs) >>= fun links ->
+	process_hrefs image_readers !imageset (List.rev !imagerefs) >>= fun images ->
+	Monad.return (content, List.rev !bibs, List.rev !notes, List.rev !toc, labels, customs, links, images, List.rev !errors)
 
 
 (********************************************************************************)

@@ -20,10 +20,9 @@ open Basic
 val check_parameters:
 	?maybe_minipaged:bool option ->
 	?maybe_wrapped:bool option ->
-	(int option * Error.error_msg_t) BatDynArray.t ->
 	Ast.command_t ->
 	Feature.t ->
-	unit
+	Error.error_msg_t list
 
 val check_feature:
 	Feature.t ->
