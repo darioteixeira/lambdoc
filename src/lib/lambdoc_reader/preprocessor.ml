@@ -29,8 +29,10 @@ let verify_utf8 s =
 	let add_valid pos len =
 		Buffer.add_substring buf s pos len in
 	let add_invalid () =
-		error_lines := !line :: !error_lines;
-		Buffer.add_string buf "\xef\xbf\xbd" in	(* 0xfffd is the standard UTF-8 replacement character *)
+		let () = match !error_lines with
+			| hd :: _ when hd = !line -> ()		(* Only one error per line *)
+			| _			  -> error_lines := !line :: !error_lines
+		in Buffer.add_string buf "\xef\xbf\xbd" in	(* 0xfffd is the standard UTF-8 replacement character *)
 	let rec trail c i a =
 		if c = 0
 		then a

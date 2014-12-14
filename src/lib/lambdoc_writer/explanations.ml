@@ -260,7 +260,7 @@ let explain_error = function
 		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
 
 	| Error.Malformed_code_point ->
-		sprintf "This line contains a malformed UTF-8 code point (represented by the character '#\xef\xbf\xbd#')."
+		sprintf "This line contains at least one malformed UTF-8 code point (represented by the character '#\xef\xbf\xbd#')."
 
 	| Error.Reading_error msg ->
 		sprintf "%s." (escape msg)
