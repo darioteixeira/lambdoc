@@ -978,9 +978,9 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 					with Failure _ ->
 						let msg = Error.Invalid_macro_nargs (name, nargs) in
 						add_error comm msg; 0 in
-				let errors_before = List.length !errors in
+				let errors_before = !errors in
 				convert_seq ~comm ~args:(List.make num_args [dummy_inline]) astseq >>= fun _ ->
-				let errors_after = List.length !errors in
+				let errors_after = !errors in
 				begin
 					if Hashtbl.mem macros name
 					then
