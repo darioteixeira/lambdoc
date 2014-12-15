@@ -73,7 +73,7 @@ let book_extcomm maybe_credential =
 			match book.page with
 				| Some page -> Lwt.return (`Okay ([(comm, Ast.Link (page, Some astseq))], []))
 				| None	    -> Lwt.return (`Okay (astseq, []))
-	in {inltag = "book"; inlfun = Inlfun_raw_seqopt f;}
+	in ("book", Inlextcomm (Inlfun_raw_seqopt f))
 
 
 let bookpic_extcomm maybe_credential =
@@ -91,7 +91,7 @@ let bookpic_extcomm maybe_credential =
 				| Some img -> (comm, Ast.Glyph (img.url, "book cover")) :: tl
 				| None	   -> tl in
 			Lwt.return (`Okay ([(comm, Ast.Paragraph xs)], []))
-	in {blktag = "bookpic"; blkfun = Blkfun_raw f; blkcat = [`Embeddable_blk];}
+	in ("bookpic", Blkextcomm (Blkfun_raw f, [`Embeddable_blk]))
 
 
 (********************************************************************************)
@@ -132,21 +132,20 @@ let main () =
 			Some (Bookaml_amazon.make_credential ~locale ~associate_tag ~access_key ~secret_key)
 		| _ ->
 			None in
-	let inline_extcomms = [book_extcomm maybe_credential] in
-	let block_extcomms = [bookpic_extcomm maybe_credential] in
+	let extcomms = [book_extcomm maybe_credential; bookpic_extcomm maybe_credential] in
 	lwt doc = match options.input_markup with
 		| `Lambtex ->
 			let module M = Lambdoc_read_lambtex.Make (Reader_extension) in
-			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
+			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Lambwiki ->
 			let module M = Lambdoc_read_lambwiki.Make (Reader_extension) in
-			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
+			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Lambxml ->
 			let module M = Lambdoc_read_lambxml.Make (Reader_extension) in
-			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
+			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Markdown ->
 			let module M = Lambdoc_read_markdown.Make (Reader_extension) in
-			M.ambivalent_from_string ~inline_extcomms ~block_extcomms ~idiosyncrasies input_str
+			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Sexp ->
 			Lwt.return (Lambdoc_core.Ambivalent.deserialize input_str) in
 	lwt output_str = match options.output_markup with

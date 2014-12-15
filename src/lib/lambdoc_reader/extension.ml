@@ -69,18 +69,11 @@ sig
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
 		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
 
-	type inline_extcomm_t =
-		{
-		inltag: Ident.t;
-		inlfun: inline_function_t;
-		}
+	type extcomm_def_t =
+		| Inlextcomm of inline_function_t
+		| Blkextcomm of block_function_t * Blkcat.t list
 
-	type block_extcomm_t =
-		{
-		blktag: Ident.t;
-		blkfun: block_function_t;
-		blkcat: Blkcat.t list;
-		}
+	type extcomm_t = Ident.t * extcomm_def_t
 end
 
 
@@ -118,18 +111,11 @@ struct
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
 		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
 
-	type inline_extcomm_t =
-		{
-		inltag: Ident.t;
-		inlfun: inline_function_t;
-		}
+	type extcomm_def_t =
+		| Inlextcomm of inline_function_t
+		| Blkextcomm of block_function_t * Blkcat.t list
 
-	type block_extcomm_t =
-		{
-		blktag: Ident.t;
-		blkfun: block_function_t;
-		blkcat: Blkcat.t list;
-		}
+	type extcomm_t = Ident.t * extcomm_def_t
 end
 
 

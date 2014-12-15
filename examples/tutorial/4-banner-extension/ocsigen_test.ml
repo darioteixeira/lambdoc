@@ -56,7 +56,7 @@ let banner_extcomm =
 	let f comm raw =
 		lwt banner = Lwt_process.pread ("", [| "banner"; raw |]) in
 		Lwt.return (`Okay ([comm, Ast.Verbatim banner], [])) in
-	{blktag = "banner"; blkfun = Blkfun_raw f; blkcat = [`Figure_blk; `Embeddable_blk]}
+	("banner", Blkextcomm (Blkfun_raw f, [`Figure_blk; `Embeddable_blk]))
 
 
 let make_page content =
@@ -91,7 +91,7 @@ let rec step1_handler () () =
 
 
 and step2_handler () source =
-	lwt doc = Lambtex_reader.ambivalent_of_string ~block_extcomms:[banner_extcomm] source in
+	lwt doc = Lambtex_reader.ambivalent_from_string ~extcomms:[banner_extcomm] source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

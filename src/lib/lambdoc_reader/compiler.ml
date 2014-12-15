@@ -100,11 +100,9 @@ let rec monadic_filter_map f = function
 (**	{2 Workhorse function}							*)
 (********************************************************************************)
 
-(**	Compiles an AST as provided by the parser, producing the corresponding
-	document.  In addition, a label dictionary, bibliography entries, notes,
-	and possible errors are also returned.
+(**	Compiles an AST as provided by the parser, producing the corresponding document.
 *)
-let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ast =
+let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ast =
 
 	(************************************************************************)
 	(* Declaration of some constant values used in the function.		*)
@@ -153,6 +151,16 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 	let custom_counters = Hashtbl.create 10 in
         let auto_label_counter = ref 0 in
 	let appendixed = ref false in
+
+	(************************************************************************)
+	(* Split the extcomms into inline and block variants.			*)
+	(************************************************************************)
+
+	let (inline_extcomms, block_extcomms) =
+		let unzip_extcomm (accum_inl, accum_blk) (tag, def) = match def with
+			| Inlextcomm inlfun            -> ((tag, inlfun) :: accum_inl, accum_blk)
+			| Blkextcomm (blkfun, blkcats) -> (accum_inl, (tag, (blkfun, blkcats)) :: accum_blk)
+		in List.fold_left unzip_extcomm ([], []) extcomms in
 
 
 	(************************************************************************)
@@ -537,8 +545,8 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 
 		| Ast.Extcomm_inl (tag, pattern) ->
 			let elem attr _ =
-				let extcomm = List.find (fun x -> x.inltag = tag) inline_extcomms in
-				convert_extcomm_inl comm (pattern, extcomm.inlfun) >>= function
+				let inlfun = List.assoc tag inline_extcomms in
+				convert_extcomm_inl comm (pattern, inlfun) >>= function
 					| `Okay (astseq, ghosts) ->
 						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_seq_aux ~comm ~context ~depth ~args is_ref astseq
@@ -1001,11 +1009,11 @@ let compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcom
 			let elem attr _ = convert_customdef comm env Custom.Theorem (Some caption) maybe_counter_name in
 			check_block_comm `Feature_theoremdef comm elem
 
-		| Ast.Extcomm_blk (tag, pattern) when Blkcat.subtype (List.find (fun x -> x.blktag = tag) block_extcomms).blkcat allowed ->
+		| Ast.Extcomm_blk (tag, pattern) when Blkcat.subtype (List.assoc tag block_extcomms |> snd) allowed ->
 			let elem attr _ =
 				(* Note that we use List.find again. Hopefully OCaml will support "with guards" in the near future. *)
-				let extcomm = List.find (fun x -> x.blktag = tag) block_extcomms in
-				convert_extcomm_blk comm (pattern, extcomm.blkfun) >>= function
+				let (blkfun, _) = List.assoc tag block_extcomms in
+				convert_extcomm_blk comm (pattern, blkfun) >>= function
 					| `Okay (astfrag, ghosts) ->
 						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_frag_aux ~comm ~minipaged ~depth allowed astfrag
@@ -1339,8 +1347,8 @@ let process_errors ~sort source errors =
 		| []   -> assert false
 
 
-let compile ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ~source ast =
-	compile_document ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ast >>=
+let compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast =
+	compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ast >>=
 	fun (content, bibs, notes, toc, labels, customs, links, images, errors) ->
 	match errors with
 		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images)

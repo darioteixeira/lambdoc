@@ -37,14 +37,12 @@ sig
 	type 'a monad_t
 	type link_reader_t
 	type image_reader_t
-	type inline_extcomm_t
-	type block_extcomm_t
+	type extcomm_t
 
 	val ambivalent_from_string:
 		?link_readers:link_reader_t list ->
 		?image_readers:image_reader_t list ->
-		?inline_extcomms:inline_extcomm_t list ->
-		?block_extcomms:block_extcomm_t list ->
+		?extcomms:extcomm_t list ->
 		?verify_utf8:bool ->
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
@@ -61,8 +59,7 @@ sig
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
-		type inline_extcomm_t = Ext.inline_extcomm_t and
-		type block_extcomm_t = Ext.block_extcomm_t
+		type extcomm_t = Ext.extcomm_t
 end
 
 
@@ -76,6 +73,5 @@ module Make:
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
-		type inline_extcomm_t = Ext.inline_extcomm_t and
-		type block_extcomm_t = Ext.block_extcomm_t
+		type extcomm_t = Ext.extcomm_t
 

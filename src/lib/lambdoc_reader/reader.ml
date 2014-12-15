@@ -30,14 +30,12 @@ sig
 	type 'a monad_t
 	type link_reader_t
 	type image_reader_t
-	type inline_extcomm_t
-	type block_extcomm_t
+	type extcomm_t
 
 	val ambivalent_from_string:
 		?link_readers:link_reader_t list ->
 		?image_readers:image_reader_t list ->
-		?inline_extcomms:inline_extcomm_t list ->
-		?block_extcomms:block_extcomm_t list ->
+		?extcomms:extcomm_t list ->
 		?verify_utf8:bool ->
 		?expand_entities:bool ->
 		?idiosyncrasies:Idiosyncrasies.t ->
@@ -52,8 +50,7 @@ sig
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
-		type inline_extcomm_t = Ext.inline_extcomm_t and
-		type block_extcomm_t = Ext.block_extcomm_t
+		type extcomm_t = Ext.extcomm_t
 end
 
 
@@ -65,46 +62,42 @@ module Make (Readable: READABLE) (Ext: Extension.S) : S with
 	type 'a monad_t = 'a Ext.Monad.t and
 	type link_reader_t = Ext.link_reader_t and
 	type image_reader_t = Ext.image_reader_t and
-	type inline_extcomm_t = Ext.inline_extcomm_t and
-	type block_extcomm_t = Ext.block_extcomm_t =
+	type extcomm_t = Ext.extcomm_t =
 struct
 	open Ext
+	open Extension
 
 	type 'a monad_t = 'a Ext.Monad.t
 	type link_reader_t = Ext.link_reader_t
 	type image_reader_t = Ext.image_reader_t
-	type inline_extcomm_t = Ext.inline_extcomm_t
-	type block_extcomm_t = Ext.block_extcomm_t
+	type extcomm_t = Ext.extcomm_t
 
 	module C = Compiler.Make (Ext)
 
-	let inline_extdef_of_extcomm extcomm =
-		let open Extension in
-		let inlsyn = match extcomm.inlfun with
-			| Inlfun_empty _	-> Inlsyn_empty
-			| Inlfun_seq _		-> Inlsyn_seq
-			| Inlfun_raw _		-> Inlsyn_raw
-			| Inlfun_raw_seq _	-> Inlsyn_raw_seq
-			| Inlfun_raw_seqopt _	-> Inlsyn_raw_seqopt
-			| Inlfun_raw_raw _	-> Inlsyn_raw_raw
-		in (extcomm.inltag, inlsyn)
-
-	let block_extdef_of_extcomm extcomm =
-		let open Extension in
-		let blksyn = match extcomm.blkfun with
-			| Blkfun_empty _	-> Blksyn_empty
-			| Blkfun_seq _		-> Blksyn_seq
-			| Blkfun_raw _		-> Blksyn_raw
-			| Blkfun_lit _		-> Blksyn_lit
-			| Blkfun_frag _		-> Blksyn_frag
-			| Blkfun_raw_raw _	-> Blksyn_raw_raw
-		in (extcomm.blktag, blksyn)
+	let extdef_of_extcomm (accum_inl, accum_blk) (tag, def) = match def with
+		| Inlextcomm inlfun ->
+			let inlsyn = match inlfun with
+				| Inlfun_empty _	-> Inlsyn_empty
+				| Inlfun_seq _		-> Inlsyn_seq
+				| Inlfun_raw _		-> Inlsyn_raw
+				| Inlfun_raw_seq _	-> Inlsyn_raw_seq
+				| Inlfun_raw_seqopt _	-> Inlsyn_raw_seqopt
+				| Inlfun_raw_raw _	-> Inlsyn_raw_raw
+			in ((tag, inlsyn) :: accum_inl, accum_blk)
+		| Blkextcomm (blkfun, _) ->
+			let blksyn = match blkfun with
+				| Blkfun_empty _	-> Blksyn_empty
+				| Blkfun_seq _		-> Blksyn_seq
+				| Blkfun_raw _		-> Blksyn_raw
+				| Blkfun_lit _		-> Blksyn_lit
+				| Blkfun_frag _		-> Blksyn_frag
+				| Blkfun_raw_raw _	-> Blksyn_raw_raw
+			in (accum_inl, (tag, blksyn) :: accum_blk)
 
 	let ambivalent_from_string
 		?(link_readers = [])
 		?(image_readers = [])
-		?(inline_extcomms = [])
-		?(block_extcomms = [])
+		?(extcomms = [])
 		?(verify_utf8 = true)
 		?(expand_entities = true)
 		?(idiosyncrasies = Idiosyncrasies.default)
@@ -112,10 +105,9 @@ struct
 		Monad.catch
 			begin fun () ->
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
-				let inline_extdefs = List.map inline_extdef_of_extcomm inline_extcomms in
-				let block_extdefs = List.map block_extdef_of_extcomm block_extcomms in
+				let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
 				let ast = Readable.ast_from_string ~inline_extdefs ~block_extdefs source in
-				C.compile ~link_readers ~image_readers ~inline_extcomms ~block_extcomms ~expand_entities ~idiosyncrasies ~source ast
+				C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
 			end
 			begin function
 				| Preprocessor.Malformed_source (sane_str, error_lines) ->

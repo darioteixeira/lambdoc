@@ -51,7 +51,7 @@ let inline_note_extcomm =
 			let ghosts = [(comm, Note [(labeless_comm, Paragraph astseq)])] in
 			let astseq' = [(labeless_comm, See [label])] in
 			`Okay (astseq', ghosts) in
-	{inltag = "note"; inlfun = Inlfun_seq f}
+	("inlnote", Inlextcomm (Inlfun_seq f))
 
 
 let make_page content =
@@ -86,7 +86,7 @@ let rec step1_handler () () =
 
 
 and step2_handler () source =
-	let doc = Lambdoc_read_lambtex.Trivial.ambivalent_from_string ~inline_extcomms:[inline_note_extcomm] source in
+	let doc = Lambdoc_read_lambtex.Trivial.ambivalent_from_string ~extcomms:[inline_note_extcomm] source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

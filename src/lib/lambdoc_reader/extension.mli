@@ -23,7 +23,7 @@ type inline_syntax_t =
 	| Inlsyn_raw		(* Parameter is single sequence of raw text. Eg: Macroarg *)
 	| Inlsyn_raw_raw	(* Parameters are two sequences of raw text. Eg: Glyph *)
 	| Inlsyn_raw_seq	(* Parameters are a sequence of raw text followed by an inline sequence. Eg: Mref *)
-	| Inlsyn_raw_seqopt	(* Parameters are a sequence of raw text followed optionally by an inline sequence. Eg: Link *)
+	| Inlsyn_raw_seqopt	(* Parameters are a sequence of raw text optionally followed by an inline sequence. Eg: Link *)
 
 type block_syntax_t =
 	| Blksyn_empty		(* No main parameters. Eg: Appendix *)
@@ -74,18 +74,11 @@ sig
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
 		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
 
-	type inline_extcomm_t =
-		{
-		inltag: Ident.t;
-		inlfun: inline_function_t;
-		}
+	type extcomm_def_t =
+		| Inlextcomm of inline_function_t
+		| Blkextcomm of block_function_t * Blkcat.t list
 
-	type block_extcomm_t =
-		{
-		blktag: Ident.t;
-		blkfun: block_function_t;
-		blkcat: Blkcat.t list;
-		}
+	type extcomm_t = Ident.t * extcomm_def_t
 end
 
 
