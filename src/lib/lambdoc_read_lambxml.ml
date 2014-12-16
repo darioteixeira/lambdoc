@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-include (Lambdoc_read_lambxml_impl.Main: Lambdoc_reader.Reader.PARTIAL)
+module Make = Lambdoc_read_lambxml_impl.Main.Make
 
 module Trivial = Make (Lambdoc_reader.Extension.Trivial)
 
