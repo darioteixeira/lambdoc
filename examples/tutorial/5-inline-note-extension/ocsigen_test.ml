@@ -9,8 +9,8 @@
 (**	Part 5 of the Lambdoc+Ocsigen tutorial.
 
 	In this instalment we create an extension enabling the new inline command
-	[\note{...}], which creates an endnote with the provided inline sequence
-	and replaces the [\note{...}] command with a [\see{...}] command pointing
+	[\inlnote{...}], which creates an endnote with the provided inline sequence
+	and replaces the [\inlnote{...}] command with a [\see{...}] command pointing
 	to the newly created note.
 *)
 
@@ -78,7 +78,7 @@ let rec step1_handler () () =
 	let step2_form e_source =
 		[
 		label ~a:[a_for e_source] [pcdata "Source:"];
-		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum dolor sit amet\\note[alpha]{Very original thought.}.\n\n\\notes" ();
+		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum dolor sit amet\\inlnote[alpha]{Very original thought.}.\n\n\\notes" ();
 		br ();
 		button ~button_type:`Submit [pcdata "Submit"];
 		] in
