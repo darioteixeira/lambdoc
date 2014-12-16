@@ -26,7 +26,7 @@ sig
 end
 
 
-module type S =
+module type READER =
 sig
 	type 'a monad_t
 	type link_reader_t
@@ -50,13 +50,13 @@ module type FULL =
 sig
 	module Readable: READABLE
 
-	module Make: functor (Ext: Extension.S) -> S with
+	module Make: functor (Ext: Extension.S) -> READER with
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
 		type extcomm_t = Ext.extcomm_t
 
-	module Trivial: S with
+	module Trivial: READER with
 		type 'a monad_t = 'a Extension.Trivial.Monad.t and
 		type link_reader_t = Extension.Trivial.link_reader_t and
 		type image_reader_t = Extension.Trivial.image_reader_t and
@@ -68,7 +68,7 @@ end
 (**	{1 Public modules and functors}						*)
 (********************************************************************************)
 
-module Make (Readable: READABLE) (Ext: Extension.S) : S with
+module Make (Readable: READABLE) (Ext: Extension.S) : READER with
 	type 'a monad_t = 'a Ext.Monad.t and
 	type link_reader_t = Ext.link_reader_t and
 	type image_reader_t = Ext.image_reader_t and

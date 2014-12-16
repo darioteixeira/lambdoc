@@ -16,7 +16,7 @@ open Lambdoc_core
 (**	{1 Public signatures}							*)
 (********************************************************************************)
 
-(**	The signature that all wannabe document readers must export.
+(**	The signature that all wannabe document readers must implement.
 *)
 module type READABLE =
 sig
@@ -31,9 +31,9 @@ sig
 end
 
 
-(**	The signature exported by the functor.
+(**	The signature of a document reader.
 *)
-module type S =
+module type READER =
 sig
 	type 'a monad_t
 	type link_reader_t
@@ -59,13 +59,13 @@ module type FULL =
 sig
 	module Readable: READABLE
 
-	module Make: functor (Ext: Extension.S) -> S with
+	module Make: functor (Ext: Extension.S) -> READER with
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
 		type extcomm_t = Ext.extcomm_t
 
-	module Trivial: S with
+	module Trivial: READER with
 		type 'a monad_t = 'a Extension.Trivial.Monad.t and
 		type link_reader_t = Extension.Trivial.link_reader_t and
 		type image_reader_t = Extension.Trivial.image_reader_t and
@@ -79,7 +79,7 @@ end
 
 module Make:
 	functor (Readable: READABLE) ->
-	functor (Ext: Extension.S) -> S with
+	functor (Ext: Extension.S) -> READER with
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
