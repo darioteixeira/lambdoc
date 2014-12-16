@@ -7,25 +7,26 @@
 (********************************************************************************)
 
 (**	Main interface to the Lambxml reader.
+	This module implements the {!Lambdoc_reader.Reader.READABLE} interface.
 *)
 
-open Lambdoc_reader
+
+(********************************************************************************)
+(**	{1 Exceptions}								*)
+(********************************************************************************)
+
+exception Reading_error of int * string
 
 
 (********************************************************************************)
-(**	{1 Reader module}							*)
+(**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-module Make = Reader.Make
-(struct
-	exception Reading_error of int * string
-
-	(* PXP does not provide raw access to line numbers, so we must parse the exception output. *)
-	let where_rex = Pcre.regexp "^(?<before>.*)at line (?<line>\\d+), position (?<pos>\\d+)(?<after>.*)$"
-
-	let ast_from_string ~inline_extdefs ~block_extdefs str =
+let ast_from_string =
+	let where_rex = Pcre.regexp "^(?<before>.*)at line (?<line>\\d+), position (?<pos>\\d+)(?<after>.*)$" in
+	fun ~linenum_offset ~inline_extdefs ~block_extdefs str ->
 		try
-			Parser.parse str
+			Parser.parse ~linenum_offset ~inline_extdefs ~block_extdefs str
 		with
 			| Pxp_types.At (where, exc) ->
 				let subs = Pcre.exec ~rex:where_rex where in
@@ -33,6 +34,7 @@ module Make = Reader.Make
 				let why = Pxp_types.string_of_exn exc in
 				let new_why =
 					try
+						(* PXP does not provide raw access to line numbers, so we must parse the exception output. *)
 						let subs = Pcre.exec ~rex:where_rex why in
 						let line = int_of_string (Pcre.get_named_substring where_rex "line" subs) in
 						let before = Pcre.get_named_substring where_rex "before" subs in
@@ -42,5 +44,4 @@ module Make = Reader.Make
 				in raise (Reading_error (line - 1, new_why))
 			| Failure msg ->
 				raise (Failure ("Internal parser error in " ^ msg))
-end)
 

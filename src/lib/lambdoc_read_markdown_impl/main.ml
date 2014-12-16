@@ -7,24 +7,24 @@
 (********************************************************************************)
 
 (**	Main interface to the Markdown reader.
+	This module implements the {!Lambdoc_reader.Reader.READABLE} interface.
 *)
 
-open Lambdoc_reader
+
+(********************************************************************************)
+(*	{1 Exceptions}								*)
+(********************************************************************************)
+
+exception Reading_error of int * string
 
 
 (********************************************************************************)
-(*	{2 Reader module}							*)
+(*	{1 Public functions and values}						*)
 (********************************************************************************)
 
-module Make = Reader.Make
-(struct
-	exception Reading_error of int * string
-
-	let ast_from_string ~inline_extdefs ~block_extdefs str =
-		try Omd.of_string str |> Mapper.ast_of_omd
-		with Mapper.Unsupported_feature x -> 
-			let msg = Printf.sprintf "The document uses an unsupported feature (%s)" x in
-			raise (Reading_error (0, msg))
-
-end)
+let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
+	try Omd.of_string str |> Mapper.ast_of_omd
+	with Mapper.Unsupported_feature x -> 
+		let msg = Printf.sprintf "The document uses an unsupported feature (%s)" x in
+		raise (Reading_error (linenum_offset, msg))
 

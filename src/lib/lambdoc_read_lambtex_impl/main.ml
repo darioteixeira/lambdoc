@@ -7,40 +7,47 @@
 (********************************************************************************)
 
 (**	Main interface to the Lambtex reader.
+	This module implements the {!Lambdoc_reader.Reader.READABLE} interface.
 *)
 
 open Lexing
-open Lambdoc_reader
 
 
 (********************************************************************************)
-(*	{2 Reader module}							*)
+(*	{1 Exceptions}								*)
 (********************************************************************************)
 
-module Make = Reader.Make
-(struct
-	exception Reading_error of int * string
+exception Reading_error of int * string
 
-	let menhir_with_ulex menhir_parser tokenizer lexbuf =
-		let lexer_maker () =
-			let ante_position = tokenizer#position in
-			let token = tokenizer#consume lexbuf in
-			let post_position = tokenizer#position in
-			(token, ante_position, post_position) in
-		let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser in
-		revised_parser lexer_maker
 
-	let ast_from_string ~inline_extdefs ~block_extdefs str =
-		let tokenizer = new Tokenizer.tokenizer ~inline_extdefs ~block_extdefs in
-		try
-			let lexbuf = Ulexing.from_utf8_string str in
-			menhir_with_ulex Parser.document tokenizer lexbuf
-		with
-			| Utf8.MalFormed ->
-				raise (Reading_error (tokenizer#position.pos_lnum, "Malformed UTF-8 sequence"))
-			| Globalenv.Pop_mismatch (found, expected) ->
-				raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected))
-			| Parser.Error ->
-				raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
-end)
+(********************************************************************************)
+(*	{1 Private functions and values}					*)
+(********************************************************************************)
+
+let menhir_with_ulex menhir_parser tokenizer lexbuf =
+	let lexer_maker () =
+		let ante_position = tokenizer#position in
+		let token = tokenizer#consume lexbuf in
+		let post_position = tokenizer#position in
+		(token, ante_position, post_position) in
+	let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser in
+	revised_parser lexer_maker
+
+
+(********************************************************************************)
+(*	{1 Public functions and values}						*)
+(********************************************************************************)
+
+let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
+	let tokenizer = new Tokenizer.tokenizer ~linenum_offset ~inline_extdefs ~block_extdefs in
+	try
+		let lexbuf = Ulexing.from_utf8_string str in
+		menhir_with_ulex Parser.document tokenizer lexbuf
+	with
+		| Utf8.MalFormed ->
+			raise (Reading_error (tokenizer#position.pos_lnum, "Malformed UTF-8 sequence"))
+		| Globalenv.Pop_mismatch (found, expected) ->
+			raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected))
+		| Parser.Error ->
+			raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
 

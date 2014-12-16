@@ -39,13 +39,13 @@ type context_t =
 (********************************************************************************)
 
 class tokenizer =
-let rex = Pcre.regexp "\\r\\n|\\n"	(* We expect lines to be terminated with '\r\n' or just '\n' *)
-in fun str ->
-let lines = Pcre.asplit ~rex ~max:(-1) str
-in object (self)
+let rex = Pcre.regexp "\\r\\n|\\n" in	(* We expect lines to be terminated with '\r\n' or just '\n' *)
+fun ~linenum_offset str ->
+let lines = Pcre.asplit ~rex ~max:(-1) str in
+object (self)
 
 	val lines = lines
-	val mutable line_counter = 0
+	val mutable line_counter = linenum_offset
 	val mutable quote_state = 0
 	val mutable list_state = []
 	val mutable par_state = false

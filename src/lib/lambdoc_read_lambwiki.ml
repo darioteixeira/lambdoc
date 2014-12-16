@@ -6,7 +6,9 @@
 *)
 (********************************************************************************)
 
-module Make = Lambdoc_read_lambwiki_impl.Main.Make
+module Readable = Lambdoc_read_lambwiki_impl.Main
+
+module Make = Lambdoc_reader.Reader.Make (Readable)
 
 module Trivial = Make (Lambdoc_reader.Extension.Trivial)
 

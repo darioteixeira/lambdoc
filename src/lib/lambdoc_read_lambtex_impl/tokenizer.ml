@@ -238,7 +238,7 @@ let issue_simple_command ~inline_extdefs ~sim_block_extdefs raw_comm position =
 (**	{1 Tokenizer class}							*)
 (********************************************************************************)
 
-class tokenizer ~(inline_extdefs:Extension.inline_extdef_t list) ~(block_extdefs:Extension.block_extdef_t list) =
+class tokenizer ~linenum_offset ~(inline_extdefs:Extension.inline_extdef_t list) ~(block_extdefs:Extension.block_extdef_t list) =
 	let (env_block_extdefs, sim_block_extdefs) = List.partition is_env block_extdefs in
 	let issue_begin_command = issue_begin_command ~env_block_extdefs in
 	let issue_simple_command = issue_simple_command ~inline_extdefs ~sim_block_extdefs in
@@ -255,7 +255,7 @@ object (self)
 	val mutable position =
 		{
 		pos_fname = "";
-		pos_lnum = 1;
+		pos_lnum = linenum_offset + 1;
 		pos_bol = 0;
 		pos_cnum = 0;
 		}

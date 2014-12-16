@@ -18,6 +18,7 @@ sig
 	exception Reading_error of int * string
 
 	val ast_from_string:
+		linenum_offset:int ->
 		inline_extdefs:Extension.inline_extdef_t list ->
 		block_extdefs:Extension.block_extdef_t list ->
 		string ->
@@ -33,6 +34,7 @@ sig
 	type extcomm_t
 
 	val ambivalent_from_string:
+		?linenum_offset:int ->
 		?link_readers:link_reader_t list ->
 		?image_readers:image_reader_t list ->
 		?extcomms:extcomm_t list ->
@@ -44,13 +46,21 @@ sig
 end
 
 
-module type PARTIAL =
+module type FULL =
 sig
+	module Readable: READABLE
+
 	module Make: functor (Ext: Extension.S) -> S with
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and
 		type image_reader_t = Ext.image_reader_t and
 		type extcomm_t = Ext.extcomm_t
+
+	module Trivial: S with
+		type 'a monad_t = 'a Extension.Trivial.Monad.t and
+		type link_reader_t = Extension.Trivial.link_reader_t and
+		type image_reader_t = Extension.Trivial.image_reader_t and
+		type extcomm_t = Extension.Trivial.extcomm_t
 end
 
 
@@ -95,6 +105,7 @@ struct
 			in (accum_inl, (tag, blksyn) :: accum_blk)
 
 	let ambivalent_from_string
+		?(linenum_offset = 0)
 		?(link_readers = [])
 		?(image_readers = [])
 		?(extcomms = [])
@@ -106,7 +117,7 @@ struct
 			begin fun () ->
 				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
 				let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
-				let ast = Readable.ast_from_string ~inline_extdefs ~block_extdefs source in
+				let ast = Readable.ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs source in
 				C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
 			end
 			begin function

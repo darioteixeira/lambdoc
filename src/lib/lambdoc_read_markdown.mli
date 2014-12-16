@@ -6,7 +6,5 @@
 *)
 (********************************************************************************)
 
-include Lambdoc_reader.Reader.PARTIAL
-
-module Trivial: module type of Make (Lambdoc_reader.Extension.Trivial)
+include Lambdoc_reader.Reader.FULL
 
