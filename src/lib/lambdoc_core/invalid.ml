@@ -13,7 +13,7 @@ open Sexplib.Std
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type t = Error.t list with sexp
+type t = Error.contextualized_t list with sexp
 
 
 (********************************************************************************)

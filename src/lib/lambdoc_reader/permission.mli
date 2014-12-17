@@ -22,7 +22,7 @@ val check_parameters:
 	?maybe_wrapped:bool option ->
 	Ast.command_t ->
 	Feature.t ->
-	Error.error_msg_t list
+	Error.msg_t list
 
 val check_feature:
 	Feature.t ->

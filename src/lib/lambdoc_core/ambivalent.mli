@@ -40,7 +40,7 @@ val make_valid:
 	images:Valid.hdata_t ->
 	t
 
-val make_invalid: Error.t list -> t
+val make_invalid: Error.contextualized_t list -> t
 
 
 (********************************************************************************)

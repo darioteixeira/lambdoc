@@ -14,5 +14,5 @@
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val explain: Lambdoc_core.Error.error_msg_t -> Lambdoc_core.Inline.seq_t
+val explain: Lambdoc_core.Error.msg_t -> Lambdoc_core.Inline.seq_t
 

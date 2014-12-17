@@ -23,13 +23,13 @@ sig
 	*)
 	exception Internal_extension_error of Ast.command_t
 
-	(**	Process and (optionally) sort the errors by line number.
+	(**	Contextualize and (optionally) sort the errors by line number.
 	*)
-	val process_errors:
+	val contextualize_errors:
 		sort:bool ->
 		string ->
-		(int option * Error.error_msg_t) list ->
-		Error.t list
+		Error.localized_t list ->
+		Error.contextualized_t list
 
 	(**	Compile a document AST into a manuscript.
 	*)

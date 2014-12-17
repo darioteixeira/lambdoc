@@ -43,7 +43,7 @@ module type S =
 sig
 	module Monad: Monadic.S
 
-	type 'a result_t = [ `Okay of 'a | `Error of Error.error_msg_t list ]
+	type 'a result_t = [ `Okay of 'a | `Error of Error.msg_t list ]
 
 	type link_reader_t = Href.t -> string result_t option Monad.t
 
@@ -85,7 +85,7 @@ module Make (M: Monadic.S): S with module Monad = M =
 struct
 	module Monad = M
 
-	type 'a result_t = [ `Okay of 'a | `Error of Error.error_msg_t list ]
+	type 'a result_t = [ `Okay of 'a | `Error of Error.msg_t list ]
 
 	type link_reader_t = Href.t -> Href.t result_t option Monad.t
 

@@ -20,7 +20,7 @@ sig
 		inline_extdefs:Extension.inline_extdef_t list ->
 		block_extdefs:Extension.block_extdef_t list ->
 		string ->
-		[ `Okay of Ast.t | `Error of (int option * string) list ]
+		[ `Okay of Ast.t | `Error of Error.reading_t list ]
 end
 
 
@@ -114,8 +114,8 @@ struct
 			let verified = if verify_utf8 then Preprocessor.verify_utf8 source else `Okay in
 			match verified with
 				| `Error (sane_str, error_lines) ->
-					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
-					let errors = C.process_errors ~sort:false sane_str msgs in
+					let localized = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
+					let errors = C.contextualize_errors ~sort:false sane_str localized in
 					Monad.return (Ambivalent.make_invalid errors)
 				| `Okay ->
 					let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
@@ -123,8 +123,8 @@ struct
 						| `Okay ast ->
 							C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
 						| `Error xs ->
-							let xs' = List.map (fun (line, msg) -> (line, Error.Reading_error msg)) xs in
-							let errors = C.process_errors ~sort:false source xs' in
+							let localized = List.map (fun (line, msg) -> (line, Error.Reading_error msg)) xs in
+							let errors = C.contextualize_errors ~sort:false source localized in
 							Monad.return (Ambivalent.make_invalid errors)
 						| exception exc ->
 							Monad.fail exc

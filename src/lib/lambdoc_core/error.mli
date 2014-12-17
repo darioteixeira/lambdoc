@@ -20,7 +20,7 @@ open Basic
 	of lines preceding the error, the error line proper, and a number
 	of lines that follow.
 *)
-type error_context_t =
+type context_t =
 	{
 	error_line_number: int;			(** Number of the line where the error occurred. *)
 	error_line_before: string list;		(** Lines immediately before the error line. *)
@@ -50,7 +50,7 @@ type target_t =
 
 (**	The various types of error messages.
 *)
-type error_msg_t =
+type msg_t =
 	| Misplaced_label_parameter of Ident.t option * invalid_parameter_reason_t
 	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
 
@@ -126,8 +126,18 @@ type error_msg_t =
 	with sexp
 
 
-(**	An error is a pair consisting of the context where the error
-	occurred (where applicable) and the error message itself.
+(**	A contextualised error is a pair consisting of the context where
+	the error occurred (where applicable) and the error message itself.
 *)
-type t = error_context_t option * error_msg_t with sexp
+type contextualized_t = context_t option * msg_t with sexp
+
+(**	A localized error is a pair consisting of the line number where
+	the error occurred (where applicable) and the error message itself.
+*)
+type localized_t = int option * msg_t
+
+(**	A reading error is a pair consisting of the line number where
+	the error occurred (where applicable) and a string message.
+*)
+type reading_t = int option * string
 

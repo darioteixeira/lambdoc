@@ -1327,7 +1327,7 @@ let collate_errors =
 (**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-let process_errors ~sort source errors =
+let contextualize_errors ~sort source errors =
 	let compare (anum, amsg) (bnum, bmsg) = match (anum, bnum) with
 		| (Some anum, Some bnum) ->
 			let res = BatInt.compare anum bnum in
@@ -1352,6 +1352,6 @@ let compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncras
 	fun (content, bibs, notes, toc, labels, customs, links, images, errors) ->
 	match errors with
 		| []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images)
-		| _::_ -> Monad.return (Ambivalent.make_invalid (process_errors ~sort:true source errors))
+		| _::_ -> Monad.return (Ambivalent.make_invalid (contextualize_errors ~sort:true source errors))
 end
 

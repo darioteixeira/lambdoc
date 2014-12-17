@@ -14,7 +14,7 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type error_context_t =
+type context_t =
 	{
 	error_line_number: int;
 	error_line_before: string list;
@@ -38,7 +38,7 @@ type target_t =
 	with sexp
 
 
-type error_msg_t =
+type msg_t =
 	| Misplaced_label_parameter of Ident.t option * invalid_parameter_reason_t
 	| Misplaced_order_parameter of Ident.t option * invalid_parameter_reason_t
 
@@ -114,5 +114,9 @@ type error_msg_t =
 	with sexp
 
 
-type t = error_context_t option * error_msg_t with sexp
+type contextualized_t = context_t option * msg_t with sexp
+
+type localized_t = int option * msg_t
+
+type reading_t = int option * string
 

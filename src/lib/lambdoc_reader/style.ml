@@ -19,7 +19,7 @@ module String = BatString
 (**	{1 Private exceptions}							*)
 (********************************************************************************)
 
-exception Value_error of Error.error_msg_t
+exception Value_error of Error.msg_t
 
 
 (********************************************************************************)

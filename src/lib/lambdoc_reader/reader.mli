@@ -25,7 +25,7 @@ sig
 		inline_extdefs:Extension.inline_extdef_t list ->
 		block_extdefs:Extension.block_extdef_t list ->
 		string ->
-		[ `Okay of Ast.t | `Error of (int option * string) list ]
+		[ `Okay of Ast.t | `Error of Error.reading_t list ]
 end
 
 
