@@ -60,6 +60,13 @@ end)
 (**	{1 Functions and values}						*)
 (********************************************************************************)
 
+let sample =
+	let ch = Pervasives.open_in "sample.lambtex" in
+	let sample = BatPervasives.input_all ch in
+	Pervasives.close_in ch;
+	sample
+
+
 let make_page content =
 	let css_uri = make_uri (Eliom_service.static_dir ()) ["css"; "lambdoc.css"] in
 	(html
@@ -87,7 +94,7 @@ let rec step1_handler () () =
 		Markup.choose ~name:e_markup ~value:`Lambtex ();
 		br ();
 		label ~a:[a_for e_source] [pcdata "Source:"];
-		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:"Lorem ipsum" ();
+		textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:sample ();
 		br ();
 		button ~button_type:`Submit [pcdata "Submit"];
 		] in
