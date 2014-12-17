@@ -23,8 +23,13 @@ exception Reading_error of int * string
 (********************************************************************************)
 
 let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
-	try Omd.of_string str |> Mapper.ast_of_omd
-	with Mapper.Unsupported_feature x -> 
-		let msg = Printf.sprintf "The document uses an unsupported feature (%s)" x in
-		raise (Reading_error (linenum_offset, msg))
+	try
+		`Okay (Omd.of_string str |> Mapper.ast_of_omd)
+	with exc ->
+		let msg = match exc with
+			| Mapper.Unsupported_feature x ->
+				Printf.sprintf "The document uses an unsupported feature (%s)" x
+			| exc ->
+				raise exc
+		in `Error [(None, msg)]
 

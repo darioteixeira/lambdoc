@@ -42,12 +42,16 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
 	let tokenizer = new Tokenizer.tokenizer ~linenum_offset ~inline_extdefs ~block_extdefs in
 	try
 		let lexbuf = Ulexing.from_utf8_string str in
-		menhir_with_ulex Parser.document tokenizer lexbuf
-	with
-		| Utf8.MalFormed ->
-			raise (Reading_error (tokenizer#position.pos_lnum, "Malformed UTF-8 sequence"))
-		| Globalenv.Pop_mismatch (found, expected) ->
-			raise (Reading_error (tokenizer#position.pos_lnum, Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected))
-		| Parser.Error ->
-			raise (Reading_error (tokenizer#position.pos_lnum, "Syntax error"))
+		`Okay (menhir_with_ulex Parser.document tokenizer lexbuf)
+	with exc ->
+		let msg = match exc with
+			| Utf8.MalFormed ->
+				"Malformed UTF-8 sequence"
+			| Globalenv.Pop_mismatch (found, expected) ->
+				Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected
+			| Parser.Error ->
+				"Syntax error"
+			| exc ->
+				raise exc
+		in `Error [(Some tokenizer#position.pos_lnum, msg)]
 

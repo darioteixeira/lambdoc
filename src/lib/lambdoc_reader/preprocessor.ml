@@ -6,11 +6,11 @@
 *)
 (********************************************************************************)
 
+
 (********************************************************************************)
-(**	{1 Exceptions}								*)
+(**	{1 Private exceptions}							*)
 (********************************************************************************)
 
-exception Malformed_source of string * int list
 exception Malformed_code_point
 
 
@@ -82,7 +82,7 @@ let verify_utf8 s =
 			(add_invalid (); main (i + 1))
 	in
 		let sane = main 0 in
-		if !error_lines <> []
-		then raise (Malformed_source (sane, List.rev !error_lines))
-		else ()
+		if !error_lines = []
+		then `Okay
+		else `Error (sane, List.rev !error_lines)
 

@@ -15,14 +15,12 @@ open Lambdoc_core
 
 module type READABLE =
 sig
-	exception Reading_error of int * string
-
 	val ast_from_string:
 		linenum_offset:int ->
 		inline_extdefs:Extension.inline_extdef_t list ->
 		block_extdefs:Extension.block_extdef_t list ->
 		string ->
-		Ast.t
+		[ `Okay of Ast.t | `Error of (int option * string) list ]
 end
 
 
@@ -113,23 +111,22 @@ struct
 		?(expand_entities = true)
 		?(idiosyncrasies = Idiosyncrasies.default)
 		source =
-		Monad.catch
-			begin fun () ->
-				let () = if verify_utf8 then Preprocessor.verify_utf8 source in
-				let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
-				let ast = Readable.ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs source in
-				C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
-			end
-			begin function
-				| Preprocessor.Malformed_source (sane_str, error_lines) ->
+			let verified = if verify_utf8 then Preprocessor.verify_utf8 source else `Okay in
+			match verified with
+				| `Error (sane_str, error_lines) ->
 					let msgs = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
 					let errors = C.process_errors ~sort:false sane_str msgs in
 					Monad.return (Ambivalent.make_invalid errors)
-				| Readable.Reading_error (line, msg) ->
-					let errors = C.process_errors ~sort:false source [(Some line, Error.Reading_error msg)] in
-					Monad.return (Ambivalent.make_invalid errors)
-				| exc ->
-					Monad.fail exc
-			end
+				| `Okay ->
+					let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
+					match Readable.ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs source with
+						| `Okay ast ->
+							C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
+						| `Error xs ->
+							let xs' = List.map (fun (line, msg) -> (line, Error.Reading_error msg)) xs in
+							let errors = C.process_errors ~sort:false source xs' in
+							Monad.return (Ambivalent.make_invalid errors)
+						| exception exc ->
+							Monad.fail exc
 end
 

@@ -20,14 +20,12 @@ open Lambdoc_core
 *)
 module type READABLE =
 sig
-	exception Reading_error of int * string
-
 	val ast_from_string:
 		linenum_offset:int ->
 		inline_extdefs:Extension.inline_extdef_t list ->
 		block_extdefs:Extension.block_extdef_t list ->
 		string ->
-		Ast.t
+		[ `Okay of Ast.t | `Error of (int option * string) list ]
 end
 
 
