@@ -43,9 +43,9 @@ let inline_note_extcomm =
 	let open Ast in
 	let f comm astseq = match comm.comm_label with
 		| None ->
-			`Error [Misplaced_label_parameter (comm.comm_tag, Reason_is_absent_when_mandatory)]
+			`Error [(Some comm.comm_linenum, Misplaced_label_parameter (comm.comm_tag, Reason_is_absent_when_mandatory))]
 		| Some "" ->
-			`Error [Misplaced_label_parameter (comm.comm_tag, Reason_is_empty_when_non_empty_mandatory)]
+			`Error [(Some comm.comm_linenum, Misplaced_label_parameter (comm.comm_tag, Reason_is_empty_when_non_empty_mandatory))]
 		| Some label ->
 			let labeless_comm = {comm with comm_label = None} in
 			let ghosts = [(comm, Note [(labeless_comm, Paragraph astseq)])] in

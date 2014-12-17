@@ -550,8 +550,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 					| `Okay (astseq, ghosts) ->
 						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_seq_aux ~comm ~context ~depth ~args is_ref astseq
-					| `Error msgs ->
-						List.iter (add_error comm) msgs;
+					| `Error xs ->
+						List.iter (fun error -> errors := error :: !errors) xs;
 						Monad.return [] in
 			check_inline_comm (`Feature_extcomm_inl tag) comm elem
 
@@ -1017,8 +1017,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 					| `Okay (astfrag, ghosts) ->
 						convert_ghost_frag ~comm ghosts >>= fun () ->
 						convert_frag_aux ~comm ~minipaged ~depth allowed astfrag
-					| `Error msgs ->
-						List.iter (add_error comm) msgs;
+					| `Error xs ->
+						List.iter (fun error -> errors := error :: !errors) xs;
 						Monad.return [] in
 			check_block_comm (`Feature_extcomm_blk tag) comm elem
 

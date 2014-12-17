@@ -43,15 +43,13 @@ module type S =
 sig
 	module Monad: Monadic.S
 
-	type 'a result_t = [ `Okay of 'a | `Error of Error.msg_t list ]
-
-	type link_reader_t = Href.t -> string result_t option Monad.t
-
-	type image_reader_t = Href.t -> string result_t option Monad.t
-
-	type inline_function_result_t = (Ast.seq_t * Ast.frag_t) result_t Monad.t
-
-	type block_function_result_t = (Ast.frag_t * Ast.frag_t) result_t Monad.t
+	type ('a, 'b) result_t = [ `Okay of 'a | `Error of 'b ]
+	type reader_result_t = (string, Error.msg_t list) result_t
+	type 'a function_result_t = ('a, Error.localized_t list) result_t
+	type link_reader_t = Href.t -> reader_result_t option Monad.t
+	type image_reader_t = Href.t -> reader_result_t option Monad.t
+	type inline_function_result_t = (Ast.seq_t * Ast.frag_t) function_result_t Monad.t
+	type block_function_result_t = (Ast.frag_t * Ast.frag_t) function_result_t Monad.t
 
 	type inline_function_t =
 		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
@@ -85,15 +83,13 @@ module Make (M: Monadic.S): S with module Monad = M =
 struct
 	module Monad = M
 
-	type 'a result_t = [ `Okay of 'a | `Error of Error.msg_t list ]
-
-	type link_reader_t = Href.t -> Href.t result_t option Monad.t
-
-	type image_reader_t = Href.t -> Href.t result_t option Monad.t
-
-	type inline_function_result_t = (Ast.seq_t * Ast.frag_t) result_t Monad.t
-
-	type block_function_result_t = (Ast.frag_t * Ast.frag_t) result_t Monad.t
+	type ('a, 'b) result_t = [ `Okay of 'a | `Error of 'b ]
+	type reader_result_t = (string, Error.msg_t list) result_t
+	type 'a function_result_t = ('a, Error.localized_t list) result_t
+	type link_reader_t = Href.t -> reader_result_t option Monad.t
+	type image_reader_t = Href.t -> reader_result_t option Monad.t
+	type inline_function_result_t = (Ast.seq_t * Ast.frag_t) function_result_t Monad.t
+	type block_function_result_t = (Ast.frag_t * Ast.frag_t) function_result_t Monad.t
 
 	type inline_function_t =
 		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
