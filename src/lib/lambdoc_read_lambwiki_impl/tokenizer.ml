@@ -45,7 +45,7 @@ let lines = Pcre.asplit ~rex ~max:(-1) str in
 object (self)
 
 	val lines = lines
-	val mutable line_counter = linenum_offset
+	val mutable line_counter = 0
 	val mutable quote_state = 0
 	val mutable list_state = []
 	val mutable par_state = false
@@ -60,7 +60,7 @@ object (self)
 		comm_label = None;
 		comm_order = None;
 		comm_style = None;
-		comm_linenum = line_counter + 1;
+		comm_linenum = linenum_offset + line_counter + 1;
 		}
 
 
@@ -71,7 +71,7 @@ object (self)
 		comm_label = label;
 		comm_order = order;
 		comm_style = style;
-		comm_linenum = line_counter + 1;
+		comm_linenum = linenum_offset + line_counter + 1;
 		}
 
 
@@ -247,7 +247,7 @@ object (self)
 	method position =
 		{
 		pos_fname = "";
-		pos_lnum = line_counter + 1;
+		pos_lnum = linenum_offset + line_counter + 1;
 		pos_bol = 0;
 		pos_cnum = 0;
 		}
