@@ -1,0 +1,16 @@
+\begin{tex}
+Embedded \b{Lambtex} is easy.
+\end{tex}
+
+\begin{wiki}
+Embedded **Lambwiki** is easy.
+\end{wiki}
+
+\begin{xml}
+<p>Embedded <b>Lambxml</b> is easy.</p>
+\end{xml}
+
+\begin{md}
+Embedded **Markdown** is easy.
+\end{md}
+
