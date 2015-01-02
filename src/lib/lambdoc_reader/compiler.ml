@@ -660,14 +660,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			end else
 				tab_row in
 
-		let convert_group feature (maybe_comm, rows) =
-			begin match maybe_comm with
-				| Some comm ->
-					check_inline_comm feature comm (fun _ _ -> Monad.return []) >>= fun _ ->
-					Monad.return ()
-				| None ->
-					Monad.return ()
-			end >>= fun () ->
+		let convert_group feature (comm, rows) =
+			check_inline_comm feature comm (fun _ _ -> Monad.return []) >>= fun _ ->
 			match rows with
 				| _::_ -> monadic_map convert_row rows >|= Tabular.make_group
 				| []   -> invalid_arg "Parser has given us an empty tabular group" in

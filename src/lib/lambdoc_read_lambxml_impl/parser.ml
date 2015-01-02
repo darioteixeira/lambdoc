@@ -380,9 +380,9 @@ and process_tabular store node =
 	let process_group node =
 		let comm = lazy (command_from_node node) in
 		match node#node_type with
-			| T_element "thead" -> thead := Some (Some !!comm, List.map process_row node#sub_nodes)
-			| T_element "tfoot" -> tfoot := Some (Some !!comm, List.map process_row node#sub_nodes)
-			| T_element "tbody" -> tbodies := (Some !!comm, List.map process_row node#sub_nodes) :: !tbodies
+			| T_element "thead" -> thead := Some (!!comm, List.map process_row node#sub_nodes)
+			| T_element "tfoot" -> tfoot := Some (!!comm, List.map process_row node#sub_nodes)
+			| T_element "tbody" -> tbodies := (!!comm, List.map process_row node#sub_nodes) :: !tbodies
 			| _		    -> failwith "process_group" in
 	List.iter process_group node#sub_nodes;
 	(cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})

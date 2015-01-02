@@ -81,7 +81,7 @@ type tabular_cell_t = command_t * string option * seq_t option
 
 type tabular_row_t = command_t * tabular_cell_t list
 
-type tabular_group_t = command_t option * tabular_row_t list
+type tabular_group_t = command_t * tabular_row_t list
 
 type tabular_t =
 	{

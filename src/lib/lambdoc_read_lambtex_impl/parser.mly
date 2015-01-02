@@ -266,11 +266,11 @@ env_blkpat:
 
 tabular:
 	| head? body+ foot?							{{Ast.thead = $1; Ast.tfoot = $3; Ast.tbodies = $2;}}
-	| row+ body* foot?							{{Ast.thead = None; Ast.tfoot = $3; Ast.tbodies = (None, $1) :: $2;}}
+	| row row* body* foot?							{{Ast.thead = None; Ast.tfoot = $4; Ast.tbodies = (fst $1, $1 :: $2) :: $3;}}
 
-head:	THEAD row+								{(Some $1, $2)}
-foot:	TFOOT row+								{(Some $1, $2)}
-body:	TBODY row+								{(Some $1, $2)}
+head:	THEAD row+								{($1, $2)}
+foot:	TFOOT row+								{($1, $2)}
+body:	TBODY row+								{($1, $2)}
 row:	cell+ ROW_END								{($2, $1)}
 cell:	CELL_MARK raw_bundle? option(inline+)					{($1, $2, $3)}
 
