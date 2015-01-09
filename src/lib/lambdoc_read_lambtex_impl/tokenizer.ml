@@ -103,10 +103,10 @@ let build_op position =
 let is_env (_, syntax) = match syntax with
 	| Blksyn_empty
 	| Blksyn_seq
-	| Blksyn_raw
-	| Blksyn_raw_raw -> false
+	| Blksyn_raw _
+	| Blksyn_raw_raw _ -> false
 	| Blksyn_lit
-	| Blksyn_frag	 -> true
+	| Blksyn_frag -> true
 
 
 (**	Issues the begin tag of an environment command.
@@ -219,18 +219,18 @@ let issue_simple_command ~inline_extdefs ~sim_block_extdefs raw_comm position =
 		| x ->
 			let maybe_assoc key xs = try Some (List.assoc key xs) with Not_found -> None in
 			match maybe_assoc x inline_extdefs with
-				| Some Inlsyn_empty	 -> (Inl, INLPAT_EMPTY (command, x))
-				| Some Inlsyn_seq	 -> (Inl, INLPAT_SEQ (command, x))
-				| Some Inlsyn_raw	 -> (Inl, INLPAT_RAW (command, x))
-				| Some Inlsyn_raw_raw	 -> (Inl, INLPAT_RAW_RAW (command, x))
-				| Some Inlsyn_raw_seq	 -> (Inl, INLPAT_RAW_SEQ (command, x))
-				| Some Inlsyn_raw_seqopt -> (Inl, INLPAT_RAW_SEQOPT (command, x))
+				| Some Inlsyn_empty	   -> (Inl, INLPAT_EMPTY (command, x))
+				| Some Inlsyn_seq	   -> (Inl, INLPAT_SEQ (command, x))
+				| Some Inlsyn_raw _	   -> (Inl, INLPAT_RAW (command, x))
+				| Some Inlsyn_raw_raw _	   -> (Inl, INLPAT_RAW_RAW (command, x))
+				| Some Inlsyn_raw_seq _	   -> (Inl, INLPAT_RAW_SEQ (command, x))
+				| Some Inlsyn_raw_seqopt _ -> (Inl, INLPAT_RAW_SEQOPT (command, x))
 				| None -> match maybe_assoc x sim_block_extdefs with
-					| Some Blksyn_empty   -> (Blk, BLKPAT_EMPTY (command, x))
-					| Some Blksyn_seq     -> (Blk, BLKPAT_SEQ (command, x))
-					| Some Blksyn_raw     -> (Blk, BLKPAT_RAW (command, x))
-					| Some Blksyn_raw_raw -> (Blk, BLKPAT_RAW_RAW (command, x))
-					| _		      -> (Inl, MACROCALL (command, x))
+					| Some Blksyn_empty	-> (Blk, BLKPAT_EMPTY (command, x))
+					| Some Blksyn_seq	-> (Blk, BLKPAT_SEQ (command, x))
+					| Some Blksyn_raw _	-> (Blk, BLKPAT_RAW (command, x))
+					| Some Blksyn_raw_raw _	-> (Blk, BLKPAT_RAW_RAW (command, x))
+					| _			-> (Inl, MACROCALL (command, x))
 	in (Set context, [token])
 
 

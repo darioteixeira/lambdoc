@@ -85,21 +85,21 @@ struct
 	let extdef_of_extcomm (accum_inl, accum_blk) (tag, def) = match def with
 		| Inlextcomm inlfun ->
 			let inlsyn = match inlfun with
-				| Inlfun_empty _	-> Inlsyn_empty
-				| Inlfun_seq _		-> Inlsyn_seq
-				| Inlfun_raw _		-> Inlsyn_raw
-				| Inlfun_raw_seq _	-> Inlsyn_raw_seq
-				| Inlfun_raw_seqopt _	-> Inlsyn_raw_seqopt
-				| Inlfun_raw_raw _	-> Inlsyn_raw_raw
+				| Inlfun_empty _		-> Inlsyn_empty
+				| Inlfun_seq _			-> Inlsyn_seq
+				| Inlfun_raw (a, _)		-> Inlsyn_raw a
+				| Inlfun_raw_seq (a, _)		-> Inlsyn_raw_seq a
+				| Inlfun_raw_seqopt (a, _)	-> Inlsyn_raw_seqopt a
+				| Inlfun_raw_raw (a1, a2, _)	-> Inlsyn_raw_raw (a1, a2)
 			in ((tag, inlsyn) :: accum_inl, accum_blk)
 		| Blkextcomm (blkfun, _) ->
 			let blksyn = match blkfun with
-				| Blkfun_empty _	-> Blksyn_empty
-				| Blkfun_seq _		-> Blksyn_seq
-				| Blkfun_raw _		-> Blksyn_raw
-				| Blkfun_lit _		-> Blksyn_lit
-				| Blkfun_frag _		-> Blksyn_frag
-				| Blkfun_raw_raw _	-> Blksyn_raw_raw
+				| Blkfun_empty _		-> Blksyn_empty
+				| Blkfun_seq _			-> Blksyn_seq
+				| Blkfun_raw (a, _)		-> Blksyn_raw a
+				| Blkfun_lit _			-> Blksyn_lit
+				| Blkfun_frag _			-> Blksyn_frag
+				| Blkfun_raw_raw (a1, a2, _)	-> Blksyn_raw_raw (a1, a2)
 			in (accum_inl, (tag, blksyn) :: accum_blk)
 
 	let ambivalent_from_string

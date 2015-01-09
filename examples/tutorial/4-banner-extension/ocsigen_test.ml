@@ -56,7 +56,7 @@ let banner_extcomm =
 	let f comm raw =
 		lwt banner = Lwt_process.pread ("", [| "banner"; raw |]) in
 		Lwt.return (`Okay ([comm, Ast.Verbatim banner], [])) in
-	("banner", Blkextcomm (Blkfun_raw f, [`Figure_blk; `Embeddable_blk]))
+	("banner", Blkextcomm (Blkfun_raw ("txt", f), [`Figure_blk; `Embeddable_blk]))
 
 
 let sample =

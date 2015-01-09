@@ -17,18 +17,18 @@ open Basic
 type inline_syntax_t =
 	| Inlsyn_empty
 	| Inlsyn_seq
-	| Inlsyn_raw
-	| Inlsyn_raw_raw
-	| Inlsyn_raw_seq
-	| Inlsyn_raw_seqopt
+	| Inlsyn_raw of string
+	| Inlsyn_raw_raw of string * string
+	| Inlsyn_raw_seq of string
+	| Inlsyn_raw_seqopt of string
 
 type block_syntax_t =
 	| Blksyn_empty
 	| Blksyn_seq
-	| Blksyn_raw
+	| Blksyn_raw of string
 	| Blksyn_lit
 	| Blksyn_frag
-	| Blksyn_raw_raw
+	| Blksyn_raw_raw of string * string
 
 type inline_extdef_t = Ident.t * inline_syntax_t
 
@@ -54,18 +54,18 @@ sig
 	type inline_function_t =
 		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
 		| Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
-		| Inlfun_raw of (Ast.command_t -> string -> inline_function_result_t)
-		| Inlfun_raw_raw of (Ast.command_t -> string -> string -> inline_function_result_t)
-		| Inlfun_raw_seq of (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
-		| Inlfun_raw_seqopt of (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+		| Inlfun_raw of string * (Ast.command_t -> string -> inline_function_result_t)
+		| Inlfun_raw_raw of string * string * (Ast.command_t -> string -> string -> inline_function_result_t)
+		| Inlfun_raw_seq of string * (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw_seqopt of string * (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
 
 	type block_function_t =
 		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
 		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
-		| Blkfun_raw of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
-		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
+		| Blkfun_raw_raw of string * string * (Ast.command_t -> string -> string -> block_function_result_t)
 
 	type extcomm_def_t =
 		| Inlextcomm of inline_function_t
@@ -94,18 +94,18 @@ struct
 	type inline_function_t =
 		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
 		| Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
-		| Inlfun_raw of (Ast.command_t -> string -> inline_function_result_t)
-		| Inlfun_raw_raw of (Ast.command_t -> string -> string -> inline_function_result_t)
-		| Inlfun_raw_seq of (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
-		| Inlfun_raw_seqopt of (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+		| Inlfun_raw of string * (Ast.command_t -> string -> inline_function_result_t)
+		| Inlfun_raw_raw of string * string * (Ast.command_t -> string -> string -> inline_function_result_t)
+		| Inlfun_raw_seq of string * (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw_seqopt of string * (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
 
 	type block_function_t =
 		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
 		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
-		| Blkfun_raw of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
-		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
+		| Blkfun_raw_raw of string * string * (Ast.command_t -> string -> string -> block_function_result_t)
 
 	type extcomm_def_t =
 		| Inlextcomm of inline_function_t

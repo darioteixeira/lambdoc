@@ -562,13 +562,13 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 
 	and convert_extcomm_inl comm = function
-		| (Ast.Inlpat_empty, Ext.Inlfun_empty f)				-> f comm
-		| (Ast.Inlpat_seq astseq, Ext.Inlfun_seq f)				-> f comm astseq
-		| (Ast.Inlpat_raw txt, Ext.Inlfun_raw f)				-> f comm txt
-		| (Ast.Inlpat_raw_raw (txt1, txt2), Ext.Inlfun_raw_raw f)		-> f comm txt1 txt2
-		| (Ast.Inlpat_raw_seq (txt, astseq), Ext.Inlfun_raw_seq f)		-> f comm txt astseq
-		| (Ast.Inlpat_raw_seqopt (txt, maybe_astseq), Ext.Inlfun_raw_seqopt f)	-> f comm txt maybe_astseq
-		| _									-> assert false
+		| (Ast.Inlpat_empty, Ext.Inlfun_empty f)					-> f comm
+		| (Ast.Inlpat_seq astseq, Ext.Inlfun_seq f)					-> f comm astseq
+		| (Ast.Inlpat_raw txt, Ext.Inlfun_raw (_, f))					-> f comm txt
+		| (Ast.Inlpat_raw_raw (txt1, txt2), Ext.Inlfun_raw_raw (_, _, f))		-> f comm txt1 txt2
+		| (Ast.Inlpat_raw_seq (txt, astseq), Ext.Inlfun_raw_seq (_, f))			-> f comm txt astseq
+		| (Ast.Inlpat_raw_seqopt (txt, maybe_astseq), Ext.Inlfun_raw_seqopt (_, f))	-> f comm txt maybe_astseq
+		| _										-> assert false
 
 
 	and convert_inline_list ~comm ~context ~depth ~args is_ref astseq = match idiosyncrasies.max_inline_depth with
@@ -1164,13 +1164,13 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 
 	and convert_extcomm_blk comm = function
-		| (Ast.Blkpat_empty, Ext.Blkfun_empty f)		  -> f comm
-		| (Ast.Blkpat_seq astseq, Ext.Blkfun_seq f)		  -> f comm astseq
-		| (Ast.Blkpat_raw txt, Ext.Blkfun_raw f)		  -> f comm txt
-		| (Ast.Blkpat_lit txt, Ext.Blkfun_lit f)		  -> f comm txt
-		| (Ast.Blkpat_frag astfrag, Ext.Blkfun_frag f)		  -> f comm astfrag
-		| (Ast.Blkpat_raw_raw (txt1, txt2), Ext.Blkfun_raw_raw f) -> f comm txt1 txt2
-		| _							  -> assert false
+		| (Ast.Blkpat_empty, Ext.Blkfun_empty f)			  -> f comm
+		| (Ast.Blkpat_seq astseq, Ext.Blkfun_seq f)			  -> f comm astseq
+		| (Ast.Blkpat_raw txt, Ext.Blkfun_raw (_, f))			  -> f comm txt
+		| (Ast.Blkpat_lit txt, Ext.Blkfun_lit f)			  -> f comm txt
+		| (Ast.Blkpat_frag astfrag, Ext.Blkfun_frag f)			  -> f comm astfrag
+		| (Ast.Blkpat_raw_raw (txt1, txt2), Ext.Blkfun_raw_raw (_, _, f)) -> f comm txt1 txt2
+		| _								  -> assert false
 
 
 	and convert_ghost_frag ~comm astfrag =

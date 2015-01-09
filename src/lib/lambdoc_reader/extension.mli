@@ -18,20 +18,20 @@ open Basic
 (********************************************************************************)
 
 type inline_syntax_t =
-	| Inlsyn_empty		(* No main parameters. Eg: Linebreak *)
-	| Inlsyn_seq		(* Parameter is an inline sequence. Eg: Bold *)
-	| Inlsyn_raw		(* Parameter is single sequence of raw text. Eg: Macroarg *)
-	| Inlsyn_raw_raw	(* Parameters are two sequences of raw text. Eg: Glyph *)
-	| Inlsyn_raw_seq	(* Parameters are a sequence of raw text followed by an inline sequence. Eg: Mref *)
-	| Inlsyn_raw_seqopt	(* Parameters are a sequence of raw text optionally followed by an inline sequence. Eg: Link *)
+	| Inlsyn_empty				(* No main parameters. Eg: Linebreak *)
+	| Inlsyn_seq				(* Parameter is an inline sequence. Eg: Bold *)
+	| Inlsyn_raw of string			(* Parameter is single sequence of raw text. Eg: Macroarg *)
+	| Inlsyn_raw_raw of string * string	(* Parameters are two sequences of raw text. Eg: Glyph *)
+	| Inlsyn_raw_seq of string		(* Parameters are a sequence of raw text followed by an inline sequence. Eg: Mref *)
+	| Inlsyn_raw_seqopt  of string		(* Parameters are a sequence of raw text optionally followed by an inline sequence. Eg: Link *)
 
 type block_syntax_t =
-	| Blksyn_empty		(* No main parameters. Eg: Appendix *)
-	| Blksyn_seq		(* Parameter is an inline sequence. Eg: Paragraph *)
-	| Blksyn_raw		(* Parameter is single sequence of raw text. *)
-	| Blksyn_lit		(* Parameter is a multiline sequence of raw text. *)
-	| Blksyn_frag		(* Parameter is a fragment (list of blocks). Eg: Quote *)
-	| Blksyn_raw_raw	(* Parameters are two sequences of raw text. Eg: Picture *)
+	| Blksyn_empty				(* No main parameters. Eg: Appendix *)
+	| Blksyn_seq				(* Parameter is an inline sequence. Eg: Paragraph *)
+	| Blksyn_raw of string			(* Parameter is single sequence of raw text. *)
+	| Blksyn_lit				(* Parameter is a multiline sequence of raw text. *)
+	| Blksyn_frag				(* Parameter is a fragment (list of blocks). Eg: Quote *)
+	| Blksyn_raw_raw of string * string	(* Parameters are two sequences of raw text. Eg: Picture *)
 
 type inline_extdef_t = Ident.t * inline_syntax_t
 
@@ -59,18 +59,18 @@ sig
 	type inline_function_t =
 		| Inlfun_empty of (Ast.command_t -> inline_function_result_t)
 		| Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
-		| Inlfun_raw of (Ast.command_t -> string -> inline_function_result_t)
-		| Inlfun_raw_raw of (Ast.command_t -> string -> string -> inline_function_result_t)
-		| Inlfun_raw_seq of (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
-		| Inlfun_raw_seqopt of (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+		| Inlfun_raw of string * (Ast.command_t -> string -> inline_function_result_t)
+		| Inlfun_raw_raw of string * string * (Ast.command_t -> string -> string -> inline_function_result_t)
+		| Inlfun_raw_seq of string * (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
+		| Inlfun_raw_seqopt of string * (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
 
 	type block_function_t =
 		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
 		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
-		| Blkfun_raw of (Ast.command_t -> string -> block_function_result_t)
+		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
-		| Blkfun_raw_raw of (Ast.command_t -> string -> string -> block_function_result_t)
+		| Blkfun_raw_raw of string * string * (Ast.command_t -> string -> string -> block_function_result_t)
 
 	type extcomm_def_t =
 		| Inlextcomm of inline_function_t

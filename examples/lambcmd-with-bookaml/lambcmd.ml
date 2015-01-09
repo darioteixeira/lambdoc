@@ -73,7 +73,7 @@ let book_extcomm maybe_credential =
 			match book.page with
 				| Some page -> Lwt.return (`Okay ([(comm, Ast.Link (page, Some astseq))], []))
 				| None	    -> Lwt.return (`Okay (astseq, []))
-	in ("book", Inlextcomm (Inlfun_raw_seqopt f))
+	in ("book", Inlextcomm (Inlfun_raw_seqopt ("href", f)))
 
 
 let bookpic_extcomm maybe_credential =
@@ -91,7 +91,7 @@ let bookpic_extcomm maybe_credential =
 				| Some img -> (comm, Ast.Glyph (img.url, "book cover")) :: tl
 				| None	   -> tl in
 			Lwt.return (`Okay ([(comm, Ast.Paragraph xs)], []))
-	in ("bookpic", Blkextcomm (Blkfun_raw f, [`Embeddable_blk]))
+	in ("bookpic", Blkextcomm (Blkfun_raw ("href", f), [`Embeddable_blk]))
 
 
 (********************************************************************************)
