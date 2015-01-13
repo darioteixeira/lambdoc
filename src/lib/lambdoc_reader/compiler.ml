@@ -1005,7 +1005,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 		| Ast.Extcomm_blk (tag, pattern) when Blkcat.subtype (List.assoc tag block_extcomms |> snd) allowed ->
 			let elem attr _ =
-				(* Note that we use List.find again. Hopefully OCaml will support "with guards" in the near future. *)
+				(* Note that we use List.assoc again. Hopefully OCaml will support "with guards" in the near future. *)
 				let (blkfun, _) = List.assoc tag block_extcomms in
 				convert_extcomm_blk comm (pattern, blkfun) >>= function
 					| `Okay (astfrag, ghosts) ->
