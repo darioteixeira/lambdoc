@@ -259,6 +259,12 @@ let explain_error = function
 	| Error.Unexpected_block (tag, blk) ->
 		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
 
+	| Error.Missing_bibliography ->
+		sprintf "This document cites bibliography entries but does not declare a bibliography section."
+
+	| Error.Missing_notes ->
+		sprintf "This document references end notes but does not declare a notes section."
+
 	| Error.Malformed_code_point ->
 		sprintf "This line contains at least one malformed UTF-8 code point (represented by the character '#\xef\xbf\xbd#')."
 

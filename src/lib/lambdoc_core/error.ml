@@ -106,6 +106,9 @@ type msg_t =
 	| Unexpected_inline of Ident.t option
 	| Unexpected_block of Ident.t option * Blkcat.t
 
+	| Missing_bibliography
+	| Missing_notes
+
 	| Malformed_code_point
 	| Reading_error of string
 	| Unavailable_feature of Ident.t option * string

@@ -151,6 +151,11 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 	let custom_counters = Hashtbl.create 10 in
         let auto_label_counter = ref 0 in
 	let appendixed = ref false in
+	let has_bibliography_refs = ref false in
+	let has_bibliography_section = ref false in
+	let has_notes_refs = ref false in
+	let has_notes_section = ref false in
+
 
 	(************************************************************************)
 	(* Split the extcomms into inline and block variants.			*)
@@ -434,6 +439,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				List.iter (add_pointer target_checker comm) refs;
 				match refs with
 					| _::_ ->
+						has_notes_refs := true;
 						Monad.return [Inline.see ~attr refs]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
@@ -449,6 +455,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				List.iter (add_pointer target_checker comm) refs;
 				match refs with
 					| _::_ ->
+						has_bibliography_refs := true;
 						Monad.return [Inline.cite ~attr refs]
 					| [] ->
 						let msg = Error.Empty_list comm.comm_tag in
@@ -906,9 +913,11 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 		| Ast.Bibliography when allowed = `Super_blk ->
+			has_bibliography_section := true;
 			convert_preset_sectional ~tocable:true ~minipaged Heading.bibliography `Feature_bibliography comm
 
 		| Ast.Notes when allowed = `Super_blk ->
+			has_notes_section := true;
 			convert_preset_sectional ~tocable:true ~minipaged Heading.notes `Feature_notes comm 
 
 		| Ast.Toc when allowed = `Super_blk ->
@@ -1253,6 +1262,15 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 
 	(************************************************************************)
+	(* Verify whether document with bibs/notes has corresponding section.	*)
+	(************************************************************************)
+
+	let verify_section msg has_refs has_section =
+		if has_refs && not has_section
+		then errors := (None, msg) :: !errors in
+
+
+	(************************************************************************)
 	(* Resolve referenced links/images.					*)
 	(************************************************************************)
 
@@ -1283,6 +1301,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 	convert_frag ast >>= fun content ->
 	let customs = filter_customisations () in
 	let () = filter_pointers () in
+	let () = verify_section Error.Missing_bibliography !has_bibliography_refs !has_bibliography_section in
+	let () = verify_section Error.Missing_notes !has_notes_refs !has_notes_section in
 	process_hrefs link_readers !linkset (List.rev !linkrefs) >>= fun links ->
 	process_hrefs image_readers !imageset (List.rev !imagerefs) >>= fun images ->
 	Monad.return (content, List.rev !bibs, List.rev !notes, List.rev !toc, labels, customs, links, images, List.rev !errors)
