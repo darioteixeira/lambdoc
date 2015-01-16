@@ -17,25 +17,18 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type inline_syntax_t =
-	| Inlsyn_empty				(* No main parameters. Eg: Linebreak *)
-	| Inlsyn_seq				(* Parameter is an inline sequence. Eg: Bold *)
-	| Inlsyn_raw of string			(* Parameter is single sequence of raw text. Eg: Macroarg *)
-	| Inlsyn_raw_raw of string * string	(* Parameters are two sequences of raw text. Eg: Glyph *)
-	| Inlsyn_raw_seq of string		(* Parameters are a sequence of raw text followed by an inline sequence. Eg: Mref *)
-	| Inlsyn_raw_seqopt  of string		(* Parameters are a sequence of raw text optionally followed by an inline sequence. Eg: Link *)
+type syntax_t =
+	| Syn_empty				(* No main parameters. Eg: Linebreak, Appendix *)
+	| Syn_seq				(* Parameter is an inline sequence. Eg: Bold, Paragraph *)
+	| Syn_lit				(* Parameter is a multiline sequence of raw text. Eg: Verbatim *)
+	| Syn_frag				(* Parameter is a fragment (list of blocks). Eg: Quote *)
+	| Syn_raw of string			(* Parameter is single sequence of raw text. Eg: Macroarg *)
+	| Syn_raw_raw of string * string	(* Parameters are two sequences of raw text. Eg: Glyph, Picture *)
+	| Syn_raw_seq of string			(* Parameters are a sequence of raw text followed by an inline sequence. Eg: Mref *)
+	| Syn_raw_seqopt of string		(* Parameters are a sequence of raw text optionally followed by an inline sequence. Eg: Link *)
 
-type block_syntax_t =
-	| Blksyn_empty				(* No main parameters. Eg: Appendix *)
-	| Blksyn_seq				(* Parameter is an inline sequence. Eg: Paragraph *)
-	| Blksyn_raw of string			(* Parameter is single sequence of raw text. *)
-	| Blksyn_lit				(* Parameter is a multiline sequence of raw text. *)
-	| Blksyn_frag				(* Parameter is a fragment (list of blocks). Eg: Quote *)
-	| Blksyn_raw_raw of string * string	(* Parameters are two sequences of raw text. Eg: Picture *)
 
-type inline_extdef_t = Ident.t * inline_syntax_t
-
-type block_extdef_t = Ident.t * block_syntax_t
+type extdef_t = Ident.t * syntax_t
 
 
 (********************************************************************************)

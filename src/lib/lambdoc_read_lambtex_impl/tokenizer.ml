@@ -101,12 +101,14 @@ let build_op position =
 (**	Does the given block syntax demand the use of an environment?
 *)
 let is_env (_, syntax) = match syntax with
-	| Blksyn_empty
-	| Blksyn_seq
-	| Blksyn_raw _
-	| Blksyn_raw_raw _ -> false
-	| Blksyn_lit
-	| Blksyn_frag -> true
+	| Syn_lit
+	| Syn_frag -> true
+	| Syn_empty
+	| Syn_seq
+	| Syn_raw _
+	| Syn_raw_raw _
+	| Syn_raw_seq _
+	| Syn_raw_seqopt _ -> false
 
 
 (**	Issues the begin tag of an environment command.
@@ -151,9 +153,9 @@ let issue_begin_command ~env_block_extdefs raw_comm position =
 				try
 					let (tag, syntax) = List.find (fun (tag, _) -> String.starts_with x tag) env_block_extdefs in
 					match syntax with
-						| Blksyn_lit  -> BEGIN_BLKPAT_LIT tag
-						| Blksyn_frag -> BEGIN_BLKPAT_FRAG tag
-						| _	      -> assert false
+						| Syn_lit  -> BEGIN_BLKPAT_LIT tag
+						| Syn_frag -> BEGIN_BLKPAT_FRAG tag
+						| _	   -> assert false
 				with
 					Not_found -> BEGIN_CUSTOM x
 	and second_token = BEGIN_DUMMY command in
@@ -219,17 +221,18 @@ let issue_simple_command ~inline_extdefs ~sim_block_extdefs raw_comm position =
 		| x ->
 			let maybe_assoc key xs = try Some (List.assoc key xs) with Not_found -> None in
 			match maybe_assoc x inline_extdefs with
-				| Some Inlsyn_empty	   -> (Inl, INLPAT_EMPTY (command, x))
-				| Some Inlsyn_seq	   -> (Inl, INLPAT_SEQ (command, x))
-				| Some Inlsyn_raw _	   -> (Inl, INLPAT_RAW (command, x))
-				| Some Inlsyn_raw_raw _	   -> (Inl, INLPAT_RAW_RAW (command, x))
-				| Some Inlsyn_raw_seq _	   -> (Inl, INLPAT_RAW_SEQ (command, x))
-				| Some Inlsyn_raw_seqopt _ -> (Inl, INLPAT_RAW_SEQOPT (command, x))
+				| Some Syn_empty	-> (Inl, INLPAT_EMPTY (command, x))
+				| Some Syn_seq		-> (Inl, INLPAT_SEQ (command, x))
+				| Some Syn_raw _	-> (Inl, INLPAT_RAW (command, x))
+				| Some Syn_raw_raw _	-> (Inl, INLPAT_RAW_RAW (command, x))
+				| Some Syn_raw_seq _	-> (Inl, INLPAT_RAW_SEQ (command, x))
+				| Some Syn_raw_seqopt _	-> (Inl, INLPAT_RAW_SEQOPT (command, x))
+				| Some _		-> assert false
 				| None -> match maybe_assoc x sim_block_extdefs with
-					| Some Blksyn_empty	-> (Blk, BLKPAT_EMPTY (command, x))
-					| Some Blksyn_seq	-> (Blk, BLKPAT_SEQ (command, x))
-					| Some Blksyn_raw _	-> (Blk, BLKPAT_RAW (command, x))
-					| Some Blksyn_raw_raw _	-> (Blk, BLKPAT_RAW_RAW (command, x))
+					| Some Syn_empty	-> (Blk, BLKPAT_EMPTY (command, x))
+					| Some Syn_seq		-> (Blk, BLKPAT_SEQ (command, x))
+					| Some Syn_raw _	-> (Blk, BLKPAT_RAW (command, x))
+					| Some Syn_raw_raw _	-> (Blk, BLKPAT_RAW_RAW (command, x))
 					| _			-> (Inl, MACROCALL (command, x))
 	in (Set context, [token])
 
@@ -238,7 +241,7 @@ let issue_simple_command ~inline_extdefs ~sim_block_extdefs raw_comm position =
 (**	{1 Tokenizer class}							*)
 (********************************************************************************)
 
-class tokenizer ~linenum_offset ~(inline_extdefs:Extension.inline_extdef_t list) ~(block_extdefs:Extension.block_extdef_t list) =
+class tokenizer ~linenum_offset ~(inline_extdefs:Extension.extdef_t list) ~(block_extdefs:Extension.extdef_t list) =
 	let (env_block_extdefs, sim_block_extdefs) = List.partition is_env block_extdefs in
 	let issue_begin_command = issue_begin_command ~env_block_extdefs in
 	let issue_simple_command = issue_simple_command ~inline_extdefs ~sim_block_extdefs in

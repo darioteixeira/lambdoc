@@ -14,25 +14,17 @@ open Basic
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type inline_syntax_t =
-	| Inlsyn_empty
-	| Inlsyn_seq
-	| Inlsyn_raw of string
-	| Inlsyn_raw_raw of string * string
-	| Inlsyn_raw_seq of string
-	| Inlsyn_raw_seqopt of string
+type syntax_t =
+	| Syn_empty
+	| Syn_seq
+	| Syn_lit
+	| Syn_frag
+	| Syn_raw of string
+	| Syn_raw_raw of string * string
+	| Syn_raw_seq of string
+	| Syn_raw_seqopt of string
 
-type block_syntax_t =
-	| Blksyn_empty
-	| Blksyn_seq
-	| Blksyn_raw of string
-	| Blksyn_lit
-	| Blksyn_frag
-	| Blksyn_raw_raw of string * string
-
-type inline_extdef_t = Ident.t * inline_syntax_t
-
-type block_extdef_t = Ident.t * block_syntax_t
+type extdef_t = Ident.t * syntax_t
 
 
 (********************************************************************************)

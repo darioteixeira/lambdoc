@@ -22,8 +22,8 @@ module type READABLE =
 sig
 	val ast_from_string:
 		linenum_offset:int ->
-		inline_extdefs:Extension.inline_extdef_t list ->
-		block_extdefs:Extension.block_extdef_t list ->
+		inline_extdefs:Extension.extdef_t list ->
+		block_extdefs:Extension.extdef_t list ->
 		string ->
 		[ `Okay of Ast.t | `Error of Error.reading_t list ]
 end
