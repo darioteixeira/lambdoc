@@ -96,9 +96,9 @@ struct
 			let blksyn = match blkfun with
 				| Blkfun_empty _		-> Syn_empty
 				| Blkfun_seq _			-> Syn_seq
-				| Blkfun_raw (a, _)		-> Syn_raw a
 				| Blkfun_lit _			-> Syn_lit
 				| Blkfun_frag _			-> Syn_frag
+				| Blkfun_raw (a, _)		-> Syn_raw a
 				| Blkfun_raw_raw (a1, a2, _)	-> Syn_raw_raw (a1, a2)
 			in (accum_inl, (tag, blksyn) :: accum_blk)
 

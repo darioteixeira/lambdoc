@@ -54,9 +54,9 @@ sig
 	type block_function_t =
 		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
 		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
-		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
+		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_raw_raw of string * string * (Ast.command_t -> string -> string -> block_function_result_t)
 
 	type extcomm_def_t =
@@ -94,9 +94,9 @@ struct
 	type block_function_t =
 		| Blkfun_empty of (Ast.command_t -> block_function_result_t)
 		| Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
-		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
+		| Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
 		| Blkfun_raw_raw of string * string * (Ast.command_t -> string -> string -> block_function_result_t)
 
 	type extcomm_def_t =

@@ -145,9 +145,9 @@ and qanda_t =
 and block_pattern_t =
 	| Blkpat_empty
 	| Blkpat_seq of seq_t
-	| Blkpat_raw of string
 	| Blkpat_lit of string
 	| Blkpat_frag of frag_t
+	| Blkpat_raw of string
 	| Blkpat_raw_raw of string * string
 
 

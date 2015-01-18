@@ -1175,9 +1175,9 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 	and convert_extcomm_blk comm = function
 		| (Ast.Blkpat_empty, Ext.Blkfun_empty f)			  -> f comm
 		| (Ast.Blkpat_seq astseq, Ext.Blkfun_seq f)			  -> f comm astseq
-		| (Ast.Blkpat_raw txt, Ext.Blkfun_raw (_, f))			  -> f comm txt
 		| (Ast.Blkpat_lit txt, Ext.Blkfun_lit f)			  -> f comm txt
 		| (Ast.Blkpat_frag astfrag, Ext.Blkfun_frag f)			  -> f comm astfrag
+		| (Ast.Blkpat_raw txt, Ext.Blkfun_raw (_, f))			  -> f comm txt
 		| (Ast.Blkpat_raw_raw (txt1, txt2), Ext.Blkfun_raw_raw (_, _, f)) -> f comm txt1 txt2
 		| _								  -> assert false
 
