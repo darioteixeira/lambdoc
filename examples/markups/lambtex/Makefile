@@ -1,4 +1,4 @@
-LAMBCMD=../../src/_build/lambcmd/lambcmd.native
+LAMBCMD=../../../src/_build/lambcmd/lambcmd.native
 
 all: index.html circle-tiny.png circle-small.png circle-big.png square-small.png square-big.png triangle-huge.png
 

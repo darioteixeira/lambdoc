@@ -1,4 +1,4 @@
-LAMBCMD=../../src/_build/lambcmd/lambcmd.native
+LAMBCMD=../../../src/_build/lambcmd/lambcmd.native
 
 all: index.html
 
