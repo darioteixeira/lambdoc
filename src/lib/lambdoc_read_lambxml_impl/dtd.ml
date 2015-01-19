@@ -15,6 +15,17 @@ module String = BatString
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
+(*	Create a new DTD according to the given inline/block extensions.  Note
+	that the textual definition of the base DTD (contained in "lambxml.dtd")
+	is patched to take into account the inline/block extensions.  Only then
+	is the patched DTD fed into function {!Pxp_dtd_parser.parse_dtd_entity}.
+	To avoid repatching and reparsing a previously seen DTD, a hash table
+	cache is used.
+
+	The alternative design -- parsing and saving the base DTD, and cloning it
+	upon each request before modifying it using the PXP API -- was abandoned
+	because there is no way to clone a DTD object in PXP.
+*)
 let make =
 	let dtd_cache = Hashtbl.create 4 in
 	let config = {Pxp_types.default_config with Pxp_types.encoding = `Enc_utf8} in
