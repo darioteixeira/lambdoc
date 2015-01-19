@@ -22,18 +22,18 @@
 	| bibliography | notes | toc
 	| title | subtitle | abstract | rule
 	| bib | note
-	| newmacro | newboxout | newtheorem">
+	| newmacro | newboxout | newtheorem $BLOCK">
 
-<!ENTITY % Node
+<!ENTITY % Inline
 	" entity | br | mathtexinl | mathmlinl | glyph
 	| bold | strong | b | emph | em | i | code | tt | caps
 	| ins | del | sup | sub | mbox | span | link | a
 	| see | cite | dref | sref | mref
-	| arg | call">
+	| arg | call $INLINE">
 
 <!ENTITY % Frag "(%Block;)*">
-<!ENTITY % Inline "(#PCDATA | %Node;)*">
-<!ENTITY % Flow "(#PCDATA | %Node; | %Block;)*">
+<!ENTITY % Seq "(#PCDATA | %Inline;)*">
+<!ENTITY % Flow "(#PCDATA | %Inline; | %Block;)*">
 
 <!ENTITY % Forbidden "">
 <!ENTITY % Common "label ID #IMPLIED order CDATA #IMPLIED style CDATA #IMPLIED">
@@ -46,10 +46,10 @@
 
 <!-- Main block elements -->
 
-<!ELEMENT paragraph %Inline;>
+<!ELEMENT paragraph %Seq;>
 <!ATTLIST paragraph %Common;>
 
-<!ELEMENT p %Inline;>
+<!ELEMENT p %Seq;>
 <!ATTLIST p %Common;>
 
 <!ELEMENT itemize (li)*>
@@ -127,37 +127,37 @@
 <!ELEMENT figure (caption?, (%Block;))>
 <!ATTLIST figure %Common;>
 
-<!ELEMENT part %Inline;>
+<!ELEMENT part %Seq;>
 <!ATTLIST part %Common;>
 
 <!ELEMENT appendix EMPTY>
 <!ATTLIST appendix %Common;>
 
-<!ELEMENT h1 %Inline;>
+<!ELEMENT h1 %Seq;>
 <!ATTLIST h1 %Common;>
 
-<!ELEMENT section %Inline;>
+<!ELEMENT section %Seq;>
 <!ATTLIST section %Common;>
 
-<!ELEMENT h2 %Inline;>
+<!ELEMENT h2 %Seq;>
 <!ATTLIST h2 %Common;>
 
-<!ELEMENT subsection %Inline;>
+<!ELEMENT subsection %Seq;>
 <!ATTLIST subsection %Common;>
 
-<!ELEMENT h3 %Inline;>
+<!ELEMENT h3 %Seq;>
 <!ATTLIST h3 %Common;>
 
-<!ELEMENT subsubsection %Inline;>
+<!ELEMENT subsubsection %Seq;>
 <!ATTLIST subsubsection %Common;>
 
-<!ELEMENT h4 %Inline;>
+<!ELEMENT h4 %Seq;>
 <!ATTLIST h4 %Common;>
 
-<!ELEMENT h5 %Inline;>
+<!ELEMENT h5 %Seq;>
 <!ATTLIST h5 %Common;>
 
-<!ELEMENT h6 %Inline;>
+<!ELEMENT h6 %Seq;>
 <!ATTLIST h6 %Common;>
 
 <!ELEMENT bibliography EMPTY>
@@ -169,10 +169,10 @@
 <!ELEMENT toc EMPTY>
 <!ATTLIST toc %Common;>
 
-<!ELEMENT title %Inline;>
+<!ELEMENT title %Seq;>
 <!ATTLIST title %Common;>
 
-<!ELEMENT subtitle %Inline;>
+<!ELEMENT subtitle %Seq;>
 <!ATTLIST subtitle %Common;>
 
 <!ELEMENT abstract %Frag;>
@@ -187,13 +187,13 @@
 <!ELEMENT note %Frag;>
 <!ATTLIST note %Common;>
 
-<!ELEMENT newmacro %Inline;>
+<!ELEMENT newmacro %Seq;>
 <!ATTLIST newmacro %Common; name CDATA #REQUIRED nargs CDATA #REQUIRED>
 
-<!ELEMENT newboxout %Inline;>
+<!ELEMENT newboxout %Seq;>
 <!ATTLIST newboxout %Common; name CDATA #REQUIRED counter CDATA #IMPLIED>
 
-<!ELEMENT newtheorem %Inline;>
+<!ELEMENT newtheorem %Seq;>
 <!ATTLIST newtheorem %Common; name CDATA #REQUIRED counter CDATA #IMPLIED>
 
 
@@ -202,7 +202,7 @@
 <!ELEMENT li %Flow;>
 <!ATTLIST li %Common;>
 
-<!ELEMENT dt %Inline;>
+<!ELEMENT dt %Seq;>
 <!ATTLIST dt %Common;>
 
 <!ELEMENT dd %Flow;>
@@ -220,16 +220,16 @@
 <!ELEMENT ranswer %Flow;>
 <!ATTLIST ranswer %Common;>
 
-<!ELEMENT caption %Inline;>
+<!ELEMENT caption %Seq;>
 <!ATTLIST caption %Forbidden;>
 
-<!ELEMENT who %Inline;>
+<!ELEMENT who %Seq;>
 <!ATTLIST who %Common;>
 
-<!ELEMENT what %Inline;>
+<!ELEMENT what %Seq;>
 <!ATTLIST what %Common;>
 
-<!ELEMENT where %Inline;>
+<!ELEMENT where %Seq;>
 <!ATTLIST where %Common;>
 
 
@@ -247,14 +247,14 @@
 <!ELEMENT tr (th | td)+>
 <!ATTLIST tr %Common;>
 
-<!ELEMENT th %Inline;>
+<!ELEMENT th %Seq;>
 <!ATTLIST th %Common; cell CDATA #IMPLIED>
 
-<!ELEMENT td %Inline;>
+<!ELEMENT td %Seq;>
 <!ATTLIST td %Common; cell CDATA #IMPLIED>
 
 
-<!-- Inline elements -->
+<!-- Seq elements -->
 
 <!ELEMENT entity (#PCDATA)>
 <!ATTLIST entity %Forbidden;>
@@ -271,55 +271,55 @@
 <!ELEMENT glyph EMPTY>
 <!ATTLIST glyph %Common; src CDATA #REQUIRED alt CDATA #REQUIRED>
 
-<!ELEMENT bold %Inline;>
+<!ELEMENT bold %Seq;>
 <!ATTLIST bold %Common;>
 
-<!ELEMENT strong %Inline;>
+<!ELEMENT strong %Seq;>
 <!ATTLIST strong %Common;>
 
-<!ELEMENT b %Inline;>
+<!ELEMENT b %Seq;>
 <!ATTLIST b %Common;>
 
-<!ELEMENT emph %Inline;>
+<!ELEMENT emph %Seq;>
 <!ATTLIST emph %Common;>
 
-<!ELEMENT em %Inline;>
+<!ELEMENT em %Seq;>
 <!ATTLIST em %Common;>
 
-<!ELEMENT i %Inline;>
+<!ELEMENT i %Seq;>
 <!ATTLIST i %Common;>
 
-<!ELEMENT code %Inline;>
+<!ELEMENT code %Seq;>
 <!ATTLIST code %Common;>
 
-<!ELEMENT tt %Inline;>
+<!ELEMENT tt %Seq;>
 <!ATTLIST tt %Common;>
 
-<!ELEMENT caps %Inline;>
+<!ELEMENT caps %Seq;>
 <!ATTLIST caps %Common;>
 
-<!ELEMENT ins %Inline;>
+<!ELEMENT ins %Seq;>
 <!ATTLIST ins %Common;>
 
-<!ELEMENT del %Inline;>
+<!ELEMENT del %Seq;>
 <!ATTLIST del %Common;>
 
-<!ELEMENT sup %Inline;>
+<!ELEMENT sup %Seq;>
 <!ATTLIST sup %Common;>
 
-<!ELEMENT sub %Inline;>
+<!ELEMENT sub %Seq;>
 <!ATTLIST sub %Common;>
 
-<!ELEMENT mbox %Inline;>
+<!ELEMENT mbox %Seq;>
 <!ATTLIST mbox %Common;>
 
-<!ELEMENT span %Inline;>
+<!ELEMENT span %Seq;>
 <!ATTLIST span %Common;>
 
-<!ELEMENT link %Inline;>
+<!ELEMENT link %Seq;>
 <!ATTLIST link %Common; href CDATA #REQUIRED>
 
-<!ELEMENT a %Inline;>
+<!ELEMENT a %Seq;>
 <!ATTLIST a %Common; href CDATA #REQUIRED>
 
 <!ELEMENT see EMPTY>
@@ -328,13 +328,13 @@
 <!ELEMENT cite EMPTY>
 <!ATTLIST cite %Common; href NMTOKENS #REQUIRED>
 
-<!ELEMENT dref %Inline;>
+<!ELEMENT dref %Seq;>
 <!ATTLIST dref %Common; href NMTOKEN #REQUIRED>
 
-<!ELEMENT sref %Inline;>
+<!ELEMENT sref %Seq;>
 <!ATTLIST sref %Common; href NMTOKEN #REQUIRED>
 
-<!ELEMENT mref %Inline;>
+<!ELEMENT mref %Seq;>
 <!ATTLIST mref %Common; href NMTOKEN #REQUIRED>
 
 <!ELEMENT arg EMPTY>
@@ -343,6 +343,6 @@
 <!ELEMENT call (with)*>
 <!ATTLIST call %Common; name CDATA #REQUIRED>
 
-<!ELEMENT with %Inline;>
+<!ELEMENT with %Seq;>
 <!ATTLIST with %Forbidden;>
 
