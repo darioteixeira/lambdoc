@@ -1,2 +1,0 @@
-true: use_menhir, use_thread, package(batteries), package(pcre), package(sexplib), package(ulex), package(menhirLib), package(pxp-engine), package(pxp-ulex-utf8), package(tyxml), package(omd), package(blahcaml), package(camlhighlight)
-<lib>: include

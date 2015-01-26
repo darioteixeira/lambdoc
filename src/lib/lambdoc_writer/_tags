@@ -1,2 +1,0 @@
-<emblang.ml>: package(ulex), syntax(camlp4o)
-<*.cmx>: for-pack(Lambdoc_writer)

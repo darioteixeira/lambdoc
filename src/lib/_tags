@@ -1,0 +1,26 @@
+true: no_alias_deps
+
+<lambdoc_core_ambivalent.*>:	pkg_sexplib.syntax
+<lambdoc_core_basic.*>:		pkg_sexplib.syntax
+<lambdoc_core_bib.*>:		pkg_sexplib.syntax
+<lambdoc_core_blkcat.*>:	pkg_sexplib.syntax
+<lambdoc_core_block.*>:		pkg_sexplib.syntax
+<lambdoc_core_custom.*>:	pkg_sexplib.syntax
+<lambdoc_core_error.*>:		pkg_sexplib.syntax
+<lambdoc_core_heading.*>:	pkg_sexplib.syntax
+<lambdoc_core_inline.*>:	pkg_sexplib.syntax
+<lambdoc_core_invalid.*>:	pkg_sexplib.syntax
+<lambdoc_core_label.*>:		pkg_sexplib.syntax
+<lambdoc_core_math.*>:		pkg_sexplib.syntax
+<lambdoc_core_note.*>:		pkg_sexplib.syntax
+<lambdoc_core_order.*>:		pkg_sexplib.syntax
+<lambdoc_core_qanda.*>:		pkg_sexplib.syntax
+<lambdoc_core_source.*>:	pkg_sexplib.syntax
+<lambdoc_core_tabular.*>:	pkg_sexplib.syntax
+<lambdoc_core_target.*>:	pkg_sexplib.syntax
+<lambdoc_core_valid.*>:		pkg_sexplib.syntax
+<lambdoc_core_wrapper.*>:	pkg_sexplib.syntax
+<lambdoc_rlambtex_scanner.ml>:	pkg_ulex, syntax_camlp4o
+<lambdoc_rlambwiki_scanner.ml>:	pkg_ulex, syntax_camlp4o
+<lambdoc_rlambxml_dtd.ml>:	pkg_xstrp4, syntax_camlp4o
+<lambdoc_writer_emblang.ml>:	pkg_ulex, syntax_camlp4o

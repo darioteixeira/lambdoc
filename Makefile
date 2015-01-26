@@ -1,57 +1,41 @@
-#
-# Makefile for Lambdoc.
-#
+# OASIS_START
+# DO NOT EDIT (digest: a3c674b4239234cbbe53afe090018954)
 
-#
-# Configuration options.
-#
+SETUP = ocaml setup.ml
 
-PKG_NAME=lambdoc
-SRC_DIR=src
-LIB_DIR=$(SRC_DIR)/_build/lib
-OCAMLBUILD_OPTS=-use-ocamlfind -no-links -cflags -w,+a-4-6-9-27-40-42-45-48
+build: setup.data
+	$(SETUP) -build $(BUILDFLAGS)
 
-LIBFILES=lambdoc.cma lambdoc.cmxa lambdoc.cmxs lambdoc.a
-COMPONENTS=lambdoc_core \
-	lambdoc_reader \
-	lambdoc_writer \
-	lambdoc_read_lambxml \
-	lambdoc_read_lambwiki \
-	lambdoc_read_lambtex \
-	lambdoc_read_markdown \
-	lambdoc_write_html5
-COMPONENTS_CMI=$(foreach ELEM, $(COMPONENTS), $(ELEM).cmi)
+doc: setup.data build
+	$(SETUP) -doc $(DOCFLAGS)
 
-TARGETS=$(LIBFILES) $(COMPONENTS_CMI)
-FQTARGETS=$(foreach TARGET, $(TARGETS), $(LIB_DIR)/$(TARGET))
-
-
-#
-# Rules.
-#
+test: setup.data build
+	$(SETUP) -test $(TESTFLAGS)
 
 all:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget lambcmd.otarget
+	$(SETUP) -all $(ALLFLAGS)
 
-lib:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lib.otarget
+install: setup.data
+	$(SETUP) -install $(INSTALLFLAGS)
 
-lambcmd:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambcmd.otarget
+uninstall: setup.data
+	$(SETUP) -uninstall $(UNINSTALLFLAGS)
 
-doc:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) lambdoc.docdir/index.html
-
-install: lib
-	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
-
-uninstall:
-	ocamlfind remove $(PKG_NAME)
-
-reinstall: lib
-	ocamlfind remove $(PKG_NAME)
-	ocamlfind install $(PKG_NAME) $(SRC_DIR)/META $(FQTARGETS)
+reinstall: setup.data
+	$(SETUP) -reinstall $(REINSTALLFLAGS)
 
 clean:
-	cd $(SRC_DIR) && ocamlbuild $(OCAMLBUILD_OPTS) -clean
+	$(SETUP) -clean $(CLEANFLAGS)
 
+distclean:
+	$(SETUP) -distclean $(DISTCLEANFLAGS)
+
+setup.data:
+	$(SETUP) -configure $(CONFIGUREFLAGS)
+
+configure:
+	$(SETUP) -configure $(CONFIGUREFLAGS)
+
+.PHONY: build doc test all install uninstall reinstall clean distclean configure
+
+# OASIS_STOP
