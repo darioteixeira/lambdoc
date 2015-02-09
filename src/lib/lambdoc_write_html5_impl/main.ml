@@ -741,7 +741,7 @@ let from_invalid ?(invalid_options = default_invalid_options) doc =
 		let prefix = opts.prefix ^ "_" in
 		fun str -> prefix ^ str in
 
-	let write_error (maybe_error_context, error_msg) =
+	let write_error ((maybe_error_context, _, _) as error) =
 		let context = match maybe_error_context with
 			| Some error_context ->
 				let line_number = error_context.Error.error_line_number
@@ -769,7 +769,7 @@ let from_invalid ?(invalid_options = default_invalid_options) doc =
 			| None ->
 				[Html5.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]] in
 		let explanation_doc = Valid.make
-			~content:[Block.paragraph (Explanations.explain error_msg)]
+			~content:[Block.paragraph (Explanations.explain error)]
 			~bibs:[]
 			~notes:[]
 			~toc:[]

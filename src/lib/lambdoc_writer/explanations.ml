@@ -84,48 +84,48 @@ let explain_wrapper = function
 	| Wrapper.Figure   -> "a figure"
 
 
-let explain_error = function
+let explain_message = function
 
-	| Error.Misplaced_label_parameter (tag, reason) ->
+	| Error.Misplaced_label_parameter reason ->
 		let exp_reason = explain_reason "a" "label" reason in
-		sprintf "Misplaced label parameter for %s: %s." (explain_tag tag) exp_reason
+		sprintf "Misplaced label parameter: %s." exp_reason
 
-	| Error.Misplaced_order_parameter (tag, reason) ->
+	| Error.Misplaced_order_parameter reason ->
 		let exp_reason = explain_reason "an" "order" reason in
-		sprintf "Misplaced order parameter for %s: %s." (explain_tag tag) exp_reason
+		sprintf "Misplaced order parameter: %s." exp_reason
 
-	| Error.Invalid_label (tag, label) ->
-		sprintf "Invalid label '#%s#' in %s. %s." (escape label) (explain_tag tag) (explain_with_colon "A label")
+	| Error.Invalid_label label ->
+		sprintf "Invalid label '#%s#'. %s." (escape label) (explain_with_colon "A label")
 
-	| Error.Invalid_order_format (tag, order) ->
-		sprintf "Unable to interpret the string '#%s#' in %s as an ordering." (escape order) (explain_tag tag)
+	| Error.Invalid_order_format order ->
+		sprintf "Unable to interpret the string '#%s#' as an ordering." (escape order)
 
-	| Error.Invalid_order_levels (tag, order, expected, found) ->
-		sprintf "Expected %d hierarchical levels in the ordering for %s, but the string '#%s#' contains %d instead." (explain_level expected) (explain_tag tag) (escape order) found
+	| Error.Invalid_order_levels (order, expected, found) ->
+		sprintf "Expected %d hierarchical levels in the ordering for this command, but the string '#%s#' contains %d instead." (explain_level expected) (escape order) found
 
-	| Error.Invalid_style_bad_boolean (tag, key, value) ->
-		sprintf "In the style parameters of %s, the key '#%s#' expects a boolean parameter, yet the assigned value '#%s#' cannot be interpreted as such.  Valid boolean values are 'true'/'on'/'yes' or 'false'/'off'/'no'." (explain_tag tag) (escape key) (escape value)
+	| Error.Invalid_style_bad_boolean (key, value) ->
+		sprintf "In the style parameters for this command, the key '#%s#' expects a boolean parameter, yet the assigned value '#%s#' cannot be interpreted as such. Valid boolean values are 'true'/'on'/'yes' or 'false'/'off'/'no'." (escape key) (escape value)
 
-	| Error.Invalid_style_bad_lang (tag, key, value) ->
-		sprintf "In the style parameters of %s, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such.  Valid languages are all those accepted by the Camlhighlight library." (explain_tag tag) (escape key) (escape value)
+	| Error.Invalid_style_bad_lang (key, value) ->
+		sprintf "In the style parameters for this command, the key '#%s#' expects a language specifier, yet the assigned value '#%s#' cannot be interpreted as such. Valid languages are all those accepted by the Camlhighlight library." (escape key) (escape value)
 
-	| Error.Invalid_style_bad_numeric (tag, key, value, low, high) ->
-		sprintf "In the style parameters of %s, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (explain_tag tag) (escape key) low high (escape value)
+	| Error.Invalid_style_bad_numeric (key, value, low, high) ->
+		sprintf "In the style parameters for this command, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (escape key) low high (escape value)
 
-	| Error.Invalid_style_bad_classname (tag, str) ->
-		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a classname. %s." (explain_tag tag) (escape str) (explain_without_colon "A classname")
+	| Error.Invalid_style_bad_classname str ->
+		sprintf "In the style parameters for this command, the assigned value '#%s#' cannot be interpreted as a classname. %s." (escape str) (explain_without_colon "A classname")
 
-	| Error.Invalid_style_bad_keyvalue (tag, str) ->
-		sprintf "In the style parameters of %s, the assigned value '#%s#' cannot be interpreted as a key/value pair." (explain_tag tag) (escape str)
+	| Error.Invalid_style_bad_keyvalue str ->
+		sprintf "In the style parameters for this command, the assigned value '#%s#' cannot be interpreted as a key/value pair." (escape str)
 
-	| Error.Invalid_style_misplaced_keyvalue (tag, key, value) ->
-		sprintf "In the style parameters of %s, the key/value pair '#%s#=#%s#' is not accepted for this particular command." (explain_tag tag) (escape key) (escape value)
+	| Error.Invalid_style_misplaced_keyvalue (key, value) ->
+		sprintf "In the style parameters for this command, the key/value pair '#%s#=#%s#' is not accepted for this particular command." (escape key) (escape value)
 
-	| Error.Invalid_style_misplaced_classname (tag, str) ->
-		sprintf "In the style parameters of %s, the assigned classname '#%s#' is not part of the whitelist for this particular command." (explain_tag tag) (escape str)
+	| Error.Invalid_style_misplaced_classname str ->
+		sprintf "In the style parameters for this command, the assigned classname '#%s#' is not part of the whitelist for this particular command." (escape str)
 
-	| Error.Invalid_style_unknown_keyvalue (tag, key, value) ->
-		sprintf "In the style parameters of %s, the key/value pair '#%s#=#%s#' cannot be interpreted." (explain_tag tag) (escape key) (escape value)
+	| Error.Invalid_style_unknown_keyvalue (key, value) ->
+		sprintf "In the style parameters for this command, the key/value pair '#%s#=#%s#' cannot be interpreted." (escape key) (escape value)
 
 	| Error.Invalid_entity_name ent ->
 		sprintf "Unknown entity '#%s#'." (escape ent)
@@ -137,94 +137,94 @@ let explain_error = function
 		sprintf "Invalid Unicode hexadecimal code point '#%s#'." (escape ent)
 
 	| Error.Invalid_macro_nargs (name, nargs) ->
-		sprintf "Invalid number of parameters '#%s#' for macro '#%s#'.  Please provide an integer." (escape nargs) name
+		sprintf "Invalid number of parameters '#%s#' for macro '#%s#'. Please provide an integer." (escape nargs) name
 
 	| Error.Invalid_macro_argument_context ->
-		"Invalid context for reference to a macro argument.  It may only be used inside a macro definition."
+		"Invalid context for reference to a macro argument. It may only be used inside a macro definition."
 
 	| Error.Invalid_macro_argument_number (found, expected) ->
 		let correct = match expected with
 			| 0 -> "This macro takes no arguments"
 			| 1 -> "This macro takes one argument referenced by the integer 1"
 			| x -> "This macro's arguments must be referenced by an integer ranging from 1 to " ^ (string_of_int x)
-		in sprintf "Invalid macro argument '%s'.  %s." (escape found) correct
+		in sprintf "Invalid macro argument '%s' for macro. %s." (escape found) correct
 
 	| Error.Invalid_macro_call (name, found, expected) ->
-		sprintf "Invalid macro invocation.  Macro '#%s#' expects %d argument(s) but found %d instead." (escape name) expected found
+		sprintf "Invalid macro invocation. Macro '#%s#' expects %d argument(s) but found %d instead." (escape name) expected found
 
-	| Error.Invalid_macro (tag, name) ->
-		sprintf "Invalid macro name '#%s#' in %s. %s." (escape name) (explain_tag tag) (explain_ident "A macro")
+	| Error.Invalid_macro name ->
+		sprintf "Invalid macro name '#%s#'. %s." (escape name) (explain_ident "A macro")
 
-	| Error.Duplicate_macro (tag, name) ->
-		sprintf "The definition of macro '#%s#' in %s duplicates a previously defined macro." (escape name) (explain_tag tag)
+	| Error.Duplicate_macro name ->
+		sprintf "The definition of macro '#%s#' duplicates a previously defined macro." (escape name)
 
-	| Error.Undefined_macro (tag, name) ->
-		sprintf "Reference to undefined macro '#%s#'.  Remember that macros must be defined before they are referenced and a macro may not invoke itself." (escape name)
+	| Error.Undefined_macro name ->
+		sprintf "Reference to undefined macro '#%s#'. Remember that macros must be defined before they are referenced and a macro may not invoke itself." (escape name)
 
-	| Error.Excessive_macro_depth (tag, max) ->
-		sprintf "Invocation of %s would cause depth of macro calls to go above maximum of %d." (explain_tag tag) max
+	| Error.Excessive_macro_depth max ->
+		sprintf "Invocation of this command would cause depth of macro calls to go above maximum of %d." max
 
-	| Error.Excessive_inline_depth (tag, max) ->
-		sprintf "Invocation of %s would cause depth of inline elements to go above maximum of %d." (explain_tag tag) max
+	| Error.Excessive_inline_depth max ->
+		sprintf "Invocation of this command would cause depth of inline elements to go above maximum of %d." max
 
-	| Error.Excessive_block_depth (tag, max) ->
-		sprintf "Invocation of %s would cause depth of block elements to go above maximum of %d." (explain_tag tag) max
+	| Error.Excessive_block_depth max ->
+		sprintf "Invocation of this command would cause depth of block elements to go above maximum of %d." max
 
-	| Error.Invalid_custom (tag, env) ->
-		sprintf "Invalid name '#%s#' for custom environment in %s. %s." (escape env) (explain_tag tag) (explain_ident "A custom environment")
+	| Error.Invalid_custom env ->
+		sprintf "Invalid name '#%s#' for custom environment. %s." (escape env) (explain_ident "A custom environment")
 
-	| Error.Mismatched_custom (tag, env, found, expected) ->
+	| Error.Mismatched_custom (env, found, expected) ->
 		let explain_custom = function
 			| Custom.Boxout  -> "boxout"
 			| Custom.Theorem -> "theorem"
-		in sprintf "In %s, the custom environment '#%s#' is used as a %s, but it was previously defined as a %s." (explain_tag tag) (escape env) (explain_custom found) (explain_custom expected)
+		in sprintf "The custom environment '#%s#' is used as a %s, but it was previously defined as a %s." (escape env) (explain_custom found) (explain_custom expected)
 
-	| Error.Duplicate_custom (tag, env) ->
-		sprintf "The definition of custom environment '#%s#' in %s duplicates a previously defined environment." (escape env) (explain_tag tag)
+	| Error.Duplicate_custom env ->
+		sprintf "The definition of custom environment '#%s#' duplicates a previously defined environment." (escape env)
 
-	| Error.Undefined_custom (tag, env) ->
-		sprintf "The environment '#%s#' used in %s has not been defined yet." (escape env) (explain_tag tag)
+	| Error.Undefined_custom env ->
+		sprintf "The environment '#%s#' used in this command has not been defined yet." (escape env)
 
-	| Error. Invalid_wrapper (tag, kind) ->
-		sprintf "In %s, you provided an empty ordering for %s without a caption.  You must either discard the empty ordering specification or provide a caption." (explain_tag tag) (explain_wrapper kind)
+	| Error. Invalid_wrapper kind ->
+		sprintf "You provided an empty ordering for %s without a caption. You must either discard the empty ordering specification or provide a caption." (explain_wrapper kind)
 
-	| Error. Invalid_section_level (tag, level) ->
-		sprintf "In %s, you requested a section level of %d, but the allowed maximum is %d." (explain_tag tag) level Level.max_section
+	| Error. Invalid_section_level level ->
+		sprintf "You requested a section level of %d, but the allowed maximum is %d." level Level.max_section
 
-	| Error. Invalid_title_level (tag, level) ->
-		sprintf "In %s, you requested a title level of %d, but the allowed maximum is %d." (explain_tag tag) level Level.max_title
+	| Error. Invalid_title_level level ->
+		sprintf "You requested a title level of %d, but the allowed maximum is %d." level Level.max_title
 
-	| Error.Invalid_counter (tag, counter) ->
-		sprintf "Invalid name '#%s#' for counter in %s. %s." (escape counter) (explain_tag tag) (explain_with_colon "A counter")
+	| Error.Invalid_counter counter ->
+		sprintf "Invalid name '#%s#' for counter. %s." (escape counter) (explain_with_colon "A counter")
 
-	| Error.Mismatched_counter (tag, counter) ->
-		sprintf "The counter '#%s#' requested in %s has been already assigned to a different class of custom environment." (escape counter) (explain_tag tag)
+	| Error.Mismatched_counter counter ->
+		sprintf "The counter '#%s#' has been already assigned to a different class of custom environment." (escape counter)
 
-	| Error.Unexpected_counter (tag, counter) ->
-		sprintf "You have requested counter '#%s#' for %s, but custom environments without a title may not have an associated counter." (escape counter) (explain_tag tag)
+	| Error.Unexpected_counter counter ->
+		sprintf "You have requested counter '#%s#', but custom environments without a title may not have an associated counter." (escape counter)
 
-	| Error.Invalid_mathtex (tag, txt) ->
-		sprintf "Invalid MathTeX expression '#%s#' in %s." (escape txt) (explain_tag tag)
+	| Error.Invalid_mathtex txt ->
+		sprintf "Invalid MathTeX expression '#%s#'." (escape txt)
 
-	| Error.Invalid_mathml (tag, txt) ->
-		sprintf "Invalid MathML expression '#%s#' in %s." (escape txt) (explain_tag tag)
+	| Error.Invalid_mathml txt ->
+		sprintf "Invalid MathML expression '#%s#'." (escape txt)
 
-	| Error.Invalid_column_number (tag, orig_tag, orig_linenum, found, expected) ->
-		sprintf "Wrong number of columns for a row declared by %s: found %d but expected %d columns.  This row belongs to the tabular environment declared in line %d by %s" (explain_tag tag) found expected orig_linenum (explain_tag orig_tag)
+	| Error.Invalid_column_number (orig_tag, orig_linenum, found, expected) ->
+		sprintf "Wrong number of columns for row: found %d but expected %d columns. This row belongs to the tabular environment declared in line %d by %s" found expected orig_linenum (explain_tag orig_tag)
 
-	| Error.Invalid_column_specifier (tag, spec) ->
-		sprintf "Unknown column specifier '#%s#' in %s.  Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." (escape spec) (explain_tag tag)
+	| Error.Invalid_column_specifier spec ->
+		sprintf "Unknown column specifier '#%s#'. Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." (escape spec)
 
-	| Error.Invalid_cell_specifier (tag, spec) ->
-		sprintf "Invalid cell specifier '#%s#' in %s.  Cell specifiers should consist of an integer indicating the span, followed by a single character (either c/C, l/L, r/R, j/J) indicating the alignment." (escape spec) (explain_tag tag)
+	| Error.Invalid_cell_specifier spec ->
+		sprintf "Invalid cell specifier '#%s#'. Cell specifiers should consist of an integer indicating the span, followed by a single character (either c/C, l/L, r/R, j/J) indicating the alignment." (escape spec)
 
-	| Error.Duplicate_target (tag, label) ->
-		sprintf "Attempt to redefine label '#%s#' in %s." (escape label) (explain_tag tag)
+	| Error.Duplicate_target label ->
+		sprintf "Attempt to redefine label '#%s#'." (escape label)
 
-	| Error.Empty_target (tag, label) ->
-		sprintf "Empty target for %s and label '#%s#'." (explain_tag tag) (escape label)
+	| Error.Empty_target label ->
+		sprintf "Empty target for label '#%s#'." (escape label)
 
-	| Error.Wrong_target (tag, label, expected, suggested) ->
+	| Error.Wrong_target (label, expected, suggested) ->
 		let str_expected = match expected with
 			| Error.Target_bib    -> "bibliography notes"
 			| Error.Target_note   -> "note definitions"
@@ -233,31 +233,31 @@ let explain_error = function
 			| Error.Target_bib    -> "'#\\cite'#"
 			| Error.Target_note   -> "'#\\see'#"
 			| Error.Target_label  -> "'#\\ref#', '#\\sref#', or '#\\mref#'"
-		in sprintf ("Wrong target '#%s#' for %s: this command should only be used to reference %s.  Considering your target, perhaps you mean to use command %s instead?") (escape label) (explain_tag tag) str_expected str_suggested
+		in sprintf ("Wrong target '#%s#'. This command should only be used to reference %s. Considering your target, perhaps you mean to use command %s instead?") (escape label) str_expected str_suggested
 
-	| Error.Undefined_target (tag, label) ->
-		sprintf "Reference to an undefined label '#%s#' in %s." (escape label) (explain_tag tag)
+	| Error.Undefined_target label ->
+		sprintf "Reference to an undefined label '#%s#'." (escape label)
 
-	| Error.Empty_source tag ->
-		sprintf "Empty source environment in %s." (explain_tag tag)
+	| Error.Empty_source ->
+		sprintf "Empty source."
 
-	| Error.Empty_verbatim tag ->
-		sprintf "Empty verbatim environment in %s." (explain_tag tag)
+	| Error.Empty_verbatim ->
+		sprintf "Empty verbatim."
 
-	| Error.Empty_list tag ->
-		sprintf "Empty list in %s." (explain_tag tag)
+	| Error.Empty_list ->
+		sprintf "Empty list."
 
-	| Error.Empty_sequence tag ->
-		sprintf "Empty inline sequence in %s." (explain_tag tag)
+	| Error.Empty_sequence ->
+		sprintf "Empty inline sequence."
 
-	| Error.Empty_fragment tag ->
-		sprintf "Empty fragment in %s." (explain_tag tag)
+	| Error.Empty_fragment ->
+		sprintf "Empty fragment."
 
-	| Error.Unexpected_inline tag ->
-		sprintf "Unexpected node %s in inline sequence.  Remember that nested links are not allowed!." (explain_tag tag)
+	| Error.Unexpected_inline ->
+		sprintf "Unexpected command for inline sequence. Remember that nested links are not allowed!"
 
-	| Error.Unexpected_block (tag, blk) ->
-		sprintf "Unexpected %s. %s." (explain_tag tag) (explain_nesting blk)
+	| Error.Unexpected_block blk ->
+		sprintf "Unexpected block command. %s." (explain_nesting blk)
 
 	| Error.Missing_bibliography ->
 		sprintf "This document cites bibliography entries but does not declare a bibliography section."
@@ -271,17 +271,17 @@ let explain_error = function
 	| Error.Reading_error msg ->
 		sprintf "%s." (escape msg)
 
-	| Error.Unavailable_feature (tag, description) ->
-		sprintf "The feature '%s' requested by %s is unavailable for this document." description (explain_tag tag)
+	| Error.Unavailable_feature description ->
+		sprintf "The feature '%s' requested by this command is unavailable for this document." description
 
-	| Error.Extension_error (tag, msg) ->
-		sprintf "Error in %s: %s." (explain_tag tag) msg
+	| Error.Extension_error msg ->
+		sprintf "%s." (escape msg)
 
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-let explain error =
-	Emblang.convert (explain_error error)
+let explain (_, error_tag, error_msg) =
+	Printf.sprintf "Error in %s. %s" (explain_tag error_tag) (explain_message error_msg) |> Emblang.convert
 

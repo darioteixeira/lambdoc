@@ -183,7 +183,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 	(*	Add an error message to the list of errors.
 	*)
 	let add_error comm msg =
-		errors := (Some comm.comm_linenum, msg) :: !errors in
+		errors := (Some comm.comm_linenum, comm.comm_tag, msg) :: !errors in
 
 
 	(*	This subfunction creates a new label.  It checks whether the user
@@ -199,14 +199,14 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				then
 					if Hashtbl.mem labels new_label
 					then
-						let msg = Error.Duplicate_target (comm.comm_tag, thing) in
+						let msg = Error.Duplicate_target thing in
 						add_error comm msg
 					else
 						Hashtbl.add labels new_label target
 				else
 					if thing <> ""
 					then
-						let msg = Error.Invalid_label (comm.comm_tag, thing) in
+						let msg = Error.Invalid_label thing in
 						add_error comm msg
 			end;
 			new_label
@@ -223,7 +223,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			Order_input.user_ordinal str
 		with
 			Order_input.Invalid_order_format str ->
-				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
+				let msg = Error.Invalid_order_format str in
 				add_error comm msg;
 				Order_input.user_ordinal "0"
 
@@ -236,11 +236,11 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			Order_input.user_hierarchical level str
 		with
 			| Order_input.Invalid_order_format str ->
-				let msg = Error.Invalid_order_format (comm.comm_tag, str) in
+				let msg = Error.Invalid_order_format str in
 				add_error comm msg;
 				Order_input.user_hierarchical (Level.section 1) "0"
 			| Order_input.Invalid_order_levels (str, expected, found) ->
-				let msg = Error.Invalid_order_levels (comm.comm_tag, str, expected, found) in
+				let msg = Error.Invalid_order_levels (str, expected, found) in
 				add_error comm msg;
 				Order_input.user_hierarchical (Level.section 1) "0"
 
@@ -252,7 +252,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		then
 			pointers := (target_checker, comm, pointer) :: !pointers
 		else
-			let msg = Error.Invalid_label (comm.comm_tag, pointer) in
+			let msg = Error.Invalid_label pointer in
 			add_error comm msg
 
 
@@ -268,7 +268,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		let check_classname classname =
 			if not (Permission.check_classname feature classname idiosyncrasies)
 			then 
-				let msg = Error.Invalid_style_misplaced_classname (comm.comm_tag, classname) in
+				let msg = Error.Invalid_style_misplaced_classname classname in
 				add_error comm msg in
 		if Permission.check_feature feature idiosyncrasies
 		then begin
@@ -284,7 +284,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			then Monad.return (Some element)
 			else Monad.return None
 		end else
-			let msg = Error.Unavailable_feature (comm.comm_tag, Feature.describe feature) in
+			let msg = Error.Unavailable_feature (Feature.describe feature) in
 			add_error comm msg;
 			Monad.return None in
 
@@ -309,7 +309,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		try
 			[constructor (Math_input.from_mathtex mathtex)]
 		with _ ->
-			let msg = Error.Invalid_mathtex (comm.comm_tag, mathtex) in
+			let msg = Error.Invalid_mathtex mathtex in
 			add_error comm msg;
 			[]
 
@@ -318,7 +318,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		try
 			[constructor (Math_input.from_mathml mathml)]
 		with _ ->
-			let msg = Error.Invalid_mathml (comm.comm_tag, mathml) in
+			let msg = Error.Invalid_mathml mathml in
 			add_error comm msg;
 			[] in
 
@@ -442,8 +442,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 						has_notes_refs := true;
 						Monad.return [Inline.see ~attr refs]
 					| [] ->
-						let msg = Error.Empty_list comm.comm_tag in
-						add_error comm msg;
+						add_error comm Error.Empty_list;
 						Monad.return [] in
 			check_inline_comm `Feature_see comm elem
 
@@ -458,8 +457,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 						has_bibliography_refs := true;
 						Monad.return [Inline.cite ~attr refs]
 					| [] ->
-						let msg = Error.Empty_list comm.comm_tag in
-						add_error comm msg;
+						add_error comm Error.Empty_list;
 						Monad.return [] in
 			check_inline_comm `Feature_cite comm elem
 
@@ -540,12 +538,12 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 								monadic_map (convert_inline_list ~comm ~context ~depth ~args is_ref) arglist >>= fun new_arglist ->
 								convert_inline_list ~comm ~context ~depth ~args:(Some new_arglist) is_ref macro_astseq
 							| Some num ->
-								let msg = Error.Excessive_macro_depth (comm.comm_tag, num) in
+								let msg = Error.Excessive_macro_depth num in
 								add_error comm msg;
 								Monad.return []
 				with
 					| Not_found ->
-						let msg = Error.Undefined_macro (comm.comm_tag, name) in
+						let msg = Error.Undefined_macro name in
 						add_error comm msg;
 						Monad.return [] in
 			check_inline_comm `Feature_macrocall comm elem
@@ -563,8 +561,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			check_inline_comm (`Feature_extcomm_inl tag) comm elem
 
 		| _ ->
-			let msg = Error.Unexpected_inline comm.comm_tag in
-			add_error comm msg;
+			add_error comm Error.Unexpected_inline;
 			Monad.return []
 
 
@@ -580,7 +577,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 	and convert_inline_list ~comm ~context ~depth ~args is_ref astseq = match idiosyncrasies.max_inline_depth with
 		| Some max when depth >= max ->
-			let msg = Error.Excessive_inline_depth (comm.comm_tag, max) in
+			let msg = Error.Excessive_inline_depth max in
 			add_error comm msg;
 			Monad.return [dummy_inline]
 		| _ ->
@@ -599,8 +596,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			let new_seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
 			match new_seq with
 				| [] ->
-					let msg = Error.Empty_sequence comm.comm_tag in
-					add_error comm msg;
+					add_error comm Error.Empty_sequence;
 					Monad.return [dummy_inline]
 				| xs ->
 					Monad.return xs
@@ -625,7 +621,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				Tabular_input.colspec_of_string spec
 			with
 				Invalid_argument _ ->
-					let msg = Error.Invalid_column_specifier (comm.comm_tag, spec) in
+					let msg = Error.Invalid_column_specifier spec in
 					add_error comm msg;
 					(Tabular.Center, Tabular.Normal) in
 
@@ -641,7 +637,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 							let (colspec, colspan, overline, underline) = Tabular_input.cellspec_of_string raw in
 							(colspan, Some (colspec, colspan, overline, underline))
 						with _ ->
-							let msg = Error.Invalid_cell_specifier (comm.comm_tag, raw) in
+							let msg = Error.Invalid_cell_specifier raw in
 							add_error comm msg;
 							(1, None)
 					end
@@ -661,7 +657,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				| []   -> invalid_arg "Parser has given us an empty tabular row" in
 			if !rowspan <> num_columns
 			then begin
-				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
+				let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
 				add_error comm msg;
 				tab_row
 			end else
@@ -734,12 +730,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				let trimmed = Literal_input.trim txt in
 				let hilite = Camlhighlight_parser.from_string ?lang trimmed in
 				let src = Source.make lang hilite linenums in
-				begin 
-					if trimmed = ""
-					then
-						let msg = Error.Empty_source comm.comm_tag in
-						add_error comm msg
-				end;
+				let () = if trimmed = "" then add_error comm Error.Empty_source in
 				Monad.return [Block.source ~attr src] in
 			check_block_comm `Feature_source comm elem
 
@@ -758,12 +749,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		| Ast.Verbatim txt when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
 			let elem attr _ =
 				let trimmed = Literal_input.trim txt in
-				begin
-					if trimmed = ""
-					then
-						let msg = Error.Empty_verbatim comm.comm_tag in
-						add_error comm msg
-				end;
+				let () = if trimmed = "" then add_error comm Error.Empty_verbatim in
 				Monad.return [Block.verbatim ~attr trimmed] in
 			check_block_comm `Feature_verbatim comm elem
 
@@ -785,7 +771,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		| Ast.Custom (maybe_kind, env, maybe_astseq, astfrag) when Blkcat.subtype [`Listable_blk] allowed ->
 			let elem attr _ =
 				let bad_order reason =
-					let msg = Error.Misplaced_order_parameter (comm.comm_tag, reason) in
+					let msg = Error.Misplaced_order_parameter reason in
 					add_error comm msg;
 					Order_input.no_order () in
 				try
@@ -815,11 +801,11 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 					Monad.return [block_maker maybe_seq frag]
 				with
 					| Not_found ->
-						let msg = Error.Undefined_custom (comm.comm_tag, env) in
+						let msg = Error.Undefined_custom env in
 						add_error comm msg;
 						Monad.return []
 					| Mismatched_custom (found, expected) ->
-						let msg = Error.Mismatched_custom (comm.comm_tag, env, found, expected) in
+						let msg = Error.Mismatched_custom (env, found, expected) in
 						add_error comm msg;
 						Monad.return [] in
 			check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem
@@ -890,7 +876,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				let level' =
 					try Level.section level
 					with Invalid_argument _ -> 
-						let msg = Error.Invalid_section_level (comm.comm_tag, level) in
+						let msg = Error.Invalid_section_level level in
 						add_error comm msg;
 						Level.section 1 in
 				let order = match comm.comm_order with
@@ -928,7 +914,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				let level' =
 					try Level.title level
 					with Invalid_argument _ -> 
-						let msg = Error.Invalid_title_level (comm.comm_tag, level) in
+						let msg = Error.Invalid_title_level level in
 						add_error comm msg;
 						Level.title 1 in
 				convert_seq ~comm astseq >>= fun seq ->
@@ -981,7 +967,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			let elem attr _ =
 				if not (Identifier_input.matches_macrodef name)
 				then begin
-					let msg = Error.Invalid_macro (comm.comm_tag, name) in
+					let msg = Error.Invalid_macro name in
 					add_error comm msg
 				end;
 				let num_args =
@@ -995,7 +981,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				begin
 					if Hashtbl.mem macros name
 					then
-						let msg = Error.Duplicate_macro (comm.comm_tag, name) in
+						let msg = Error.Duplicate_macro name in
 						add_error comm msg
 					else
 						let new_astseq = if errors_after = errors_before then astseq else [(comm, Ast.Linebreak)] in
@@ -1026,7 +1012,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			check_block_comm (`Feature_extcomm_blk tag) comm elem
 
 		| _ ->
-			let msg = Error.Unexpected_block (comm.comm_tag, allowed) in
+			let msg = Error.Unexpected_block allowed in
 			add_error comm msg;
 			Monad.return [dummy_block]
 
@@ -1051,7 +1037,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 		monadic_maybe (convert_seq ~comm) maybe_astseq >>= fun maybe_seq ->
 		match (order, maybe_seq) with
 			| (`None_given, None) ->
-				let msg = Error.Invalid_wrapper (comm.comm_tag, kind) in
+				let msg = Error.Invalid_wrapper kind in
 				add_error comm msg;
 				Monad.return (Wrapper.Unordered (label, [dummy_inline]))
 			| (`None_given, Some seq) ->
@@ -1064,13 +1050,13 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 	and convert_customdef comm env kind maybe_caption maybe_counter_name =
 		if not (Identifier_input.matches_customdef env)
 		then begin
-			let msg = Error.Invalid_custom (comm.comm_tag, env) in
+			let msg = Error.Invalid_custom env in
 			add_error comm msg;
 			Monad.return []
 		end
 		else if Hashtbl.mem customisations env
 		then begin
-			let msg = Error.Duplicate_custom (comm.comm_tag, env) in
+			let msg = Error.Duplicate_custom env in
 			add_error comm msg;
 			Monad.return []
 		end
@@ -1080,7 +1066,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				Hashtbl.add customisations env data;
 				Monad.return []
 			| (None, Some counter_name) ->
-				let msg = Error.Unexpected_counter (comm.comm_tag, counter_name) in
+				let msg = Error.Unexpected_counter counter_name in
 				add_error comm msg;
 				Monad.return []
 			| (Some astseq, None) ->
@@ -1099,13 +1085,13 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 					Monad.return []
 				end
 				else begin
-					let msg = Error.Invalid_counter (comm.comm_tag, counter_name) in
+					let msg = Error.Invalid_counter counter_name in
 					add_error comm msg;
 					Monad.return []
 				end
 			| (Some astseq, Some counter_name) -> match Hashtbl.find custom_counters counter_name with
 				| (k, _) when k <> kind ->
-					let msg = Error.Mismatched_counter (comm.comm_tag, counter_name) in
+					let msg = Error.Mismatched_counter counter_name in
 					add_error comm msg;
 					Monad.return []
 				| (_, counter) ->
@@ -1121,8 +1107,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			check_comm `Feature_item comm elem in
 		monadic_filter_map conv astfrags >>= function
 			| [] ->
-				let msg = Error.Empty_fragment comm.comm_tag in
-				add_error comm msg;
+				add_error comm Error.Empty_fragment;
 				Monad.return [dummy_block]
 			| frags ->
 				Monad.return [cons frags]
@@ -1137,8 +1122,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			check_comm `Feature_item comm elem in
 		monadic_filter_map conv astfrags >>= function
 			| [] ->
-				let msg = Error.Empty_fragment comm.comm_tag in
-				add_error comm msg;
+				add_error comm Error.Empty_fragment;
 				Monad.return [dummy_block]
 			| frags ->
 				Monad.return [cons frags]
@@ -1165,8 +1149,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			check_comm feature comm elem in
 		monadic_filter_map conv astfrags >>= function
 			| [] ->
-				let msg = Error.Empty_fragment comm.comm_tag in
-				add_error comm msg;
+				add_error comm Error.Empty_fragment;
 				Monad.return [dummy_block]
 			| frags ->
 				Monad.return [cons (List.flatten frags)]
@@ -1198,7 +1181,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				if depth >= max
 				then
 					let (comm, _) = astblk in
-					let msg = Error.Excessive_block_depth (comm.comm_tag, max) in
+					let msg = Error.Excessive_block_depth max in
 					add_error comm msg;
 					Monad.return [dummy_block]
 				else
@@ -1208,8 +1191,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				let (tag, linenum) = match comm with
 					| Some comm -> (comm.comm_tag, Some comm.comm_linenum)
 					| None	    -> (None, None) in
-				let msg = Error.Empty_fragment tag in
-				errors := (linenum, msg) :: !errors;
+				errors := (linenum, tag, Error.Empty_fragment) :: !errors;
 				Monad.return [dummy_block]
 			| frag ->
 				Monad.return (List.flatten frag)
@@ -1231,18 +1213,18 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				| `Valid_target ->
 					()
 				| `Empty_target ->
-					let msg = Error.Empty_target (comm.comm_tag, label) in
+					let msg = Error.Empty_target label in
 					add_error comm msg
 				| `Wrong_target expected ->
 					let suggestion = match target with
 						| Target.Visible_target _	-> Error.Target_label
 						| Target.Bib_target _		-> Error.Target_bib
 						| Target.Note_target _		-> Error.Target_note in
-					let msg = Error.Wrong_target (comm.comm_tag, label, expected, suggestion) in
+					let msg = Error.Wrong_target (label, expected, suggestion) in
 					add_error comm msg
 			with
 				Not_found ->
-					let msg = Error.Undefined_target (comm.comm_tag, label) in
+					let msg = Error.Undefined_target label in
 					add_error comm msg in
 		List.iter filter_pointer !pointers in
 
@@ -1267,7 +1249,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 	let verify_section msg has_refs has_section =
 		if has_refs && not has_section
-		then errors := (None, msg) :: !errors in
+		then errors := (None, None, msg) :: !errors in
 
 
 	(************************************************************************)
@@ -1309,19 +1291,15 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 
 (********************************************************************************)
-(**	{2 Error processing}							*)
+(**	{2 Public functions and values}						*)
 (********************************************************************************)
 
-(**	Error collation function.  It takes a list of errors containing each an
-	error message and an error line, and produces a proper error message
-	where the actual source lines are displayed.
-*)
-let collate_errors =
+let contextualize_errors =
 	let rex = Pcre.regexp "\\r\\n|\\n" in
-	fun source errors ->
+	fun ~sort source errors ->
 		let source_lines = Pcre.asplit ~rex ~max:(-1) source in
 		let num_lines = Array.length source_lines in
-		let format_error (error_linenum, error_msg) =
+		let format_error (error_linenum, error_tag, error_msg) =
 			let error_context = match error_linenum with
 				| Some num ->
 					let num = max 1 (min num num_lines) in
@@ -1333,32 +1311,21 @@ let collate_errors =
 						}
 				| None ->
 					None in
-			(error_context, error_msg) in
-		List.map format_error errors
-
-
-(********************************************************************************)
-(**	{2 Public functions and values}						*)
-(********************************************************************************)
-
-let contextualize_errors ~sort source errors =
-	let compare (anum, amsg) (bnum, bmsg) = match (anum, bnum) with
-		| (Some anum, Some bnum) ->
-			let res = BatInt.compare anum bnum in
-			if res = 0
-			then Pervasives.compare amsg bmsg
-			else res
-		| (Some _, None) ->
-			-1
-		| (None, Some _) ->
-			1
-		| (None, None) ->
-			Pervasives.compare amsg bmsg in
-	let sorted = if sort then List.sort_unique compare errors else errors in
-	let collated = collate_errors source sorted in
-	match collated with
-		| _::_ -> collated
-		| []   -> assert false
+			(error_context, error_tag, error_msg) in
+		let compare (anum, _, amsg) (bnum, _, bmsg) = match (anum, bnum) with
+			| (Some anum, Some bnum) ->
+				let res = BatInt.compare anum bnum in
+				if res = 0
+				then Pervasives.compare amsg bmsg
+				else res
+			| (Some _, None) ->
+				-1
+			| (None, Some _) ->
+				1
+			| (None, None) ->
+				Pervasives.compare amsg bmsg in
+		let sorted = if sort then List.sort_unique compare errors else errors in
+		List.map format_error sorted
 
 
 let compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast =
