@@ -47,18 +47,18 @@ let get_book comm maybe_credential raw_isbn =
 				Lwt.return (`Okay book)
 			with
 				| Bookaml_ISBN.Bad_ISBN_length _ ->
-					Lwt.return (`Error [(Some comm.comm_linenum, Error.Extension_error (comm.comm_tag, "bad ISBN length"))])
+					Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "bad ISBN length")])
 				| Bookaml_ISBN.Bad_ISBN_checksum _ ->
-					Lwt.return (`Error [(Some comm.comm_linenum, Error.Extension_error (comm.comm_tag, "bad ISBN checksum"))])
+					Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "bad ISBN checksum")])
 				| Bookaml_ISBN.Bad_ISBN_character _ ->
-					Lwt.return (`Error [(Some comm.comm_linenum, Error.Extension_error (comm.comm_tag, "bad ISBN character"))])
+					Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "bad ISBN character")])
 				| Bookaml_amazon.No_match _ ->
-					Lwt.return (`Error [(Some comm.comm_linenum, Error.Extension_error (comm.comm_tag, "no matching book found"))])
+					Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "no matching book found")])
 			end
 		| None ->
-			Lwt.return (`Error [(Some comm.comm_linenum, Error.Extension_error (comm.comm_tag, "please provide Amazon credentials"))])
+			Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "please provide Amazon credentials")])
 	else
-		Lwt.return (`Error [(Some comm.comm_linenum, Error.Extension_error (comm.comm_tag, "unknown protocol. Only '#isbn:#' is supported"))])
+		Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "unknown protocol. Only '#isbn:#' is supported")])
 
 
 let book_extcomm maybe_credential =
