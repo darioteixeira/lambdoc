@@ -82,11 +82,7 @@ let bookpic_extcomm maybe_credential =
 		| `Error msgs ->
 			Lwt.return (`Error msgs)
 		| `Okay book ->
-			let tl =
-				[
-				(comm, Ast.Emph [(comm, Ast.Plain book.title)]);
-				(comm, Ast.Span [(comm, Ast.Plain book.author)]);
-				] in
+			let tl = [(comm, Ast.Emph [(comm, Ast.Plain book.title)])] in
 			let xs = match book.image_small with
 				| Some img -> (comm, Ast.Glyph (img.url, "book cover")) :: tl
 				| None	   -> tl in
