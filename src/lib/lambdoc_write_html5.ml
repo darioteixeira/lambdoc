@@ -9,6 +9,10 @@
 module Make
 	(Ext: Lambdoc_writer.Extension.S)
 	(Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+	(*
+	The next version of Tyxml should support a simplified sig:
+	(Html5: Html5_sigs.NoWrap) =
+	*)
 struct
 	module Writable = Lambdoc_write_html5_impl.Main.Make (Html5)
 
@@ -16,5 +20,9 @@ struct
 end
 
 module Make_trivial (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+(*
+The next version of Tyxml should support a simplified sig:
+module Make_trivial (Html5: Html5_sigs.NoWrap) =
+*)
 	Make (Lambdoc_writer.Extension.Trivial) (Html5)
 
