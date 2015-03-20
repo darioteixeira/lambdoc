@@ -21,5 +21,4 @@ type t =
 	| New_answerer of Inline.seq_t option
 	| Same_questioner
 	| Same_answerer
-	with sexp
 

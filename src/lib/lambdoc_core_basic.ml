@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Lambdoc_core
 
 
@@ -16,13 +15,13 @@ open Lambdoc_core
 
 module Entity =
 struct
-	type t = string with sexp
+	type t = string
 end
 
 
 module Href =
 struct
-	type t = string with sexp
+	type t = string
 
 	let compare = String.compare
 end
@@ -30,13 +29,13 @@ end
 
 module Classname =
 struct
-	type t = string with sexp
+	type t = string
 end
 
 
 module Attr =
 struct
-	type t = Classname.t list with sexp
+	type t = Classname.t list
 
 	let default = []
 end
@@ -44,27 +43,27 @@ end
 
 module Ident =
 struct
-	type t = string with sexp
+	type t = string
 end
 
 
 module Extkey =
 struct
-	type t = int with sexp
+	type t = int
 end
 
 
 module Pointer =
 struct
-	type t = string with sexp
+	type t = string
 end
 
 
 module Level =
 struct
-	type section_t = int with sexp
+	type section_t = int
 
-	type title_t = int with sexp
+	type title_t = int
 
 	let max_section = 6
 

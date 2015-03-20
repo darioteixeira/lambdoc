@@ -16,7 +16,7 @@ type ranked_t =
 	| `Listable_blk
 	| `Quotable_blk
 	| `Embeddable_blk
-	] with sexp
+	]
 
 type unranked_t =
 	[ `Paragraph_blk
@@ -24,9 +24,9 @@ type unranked_t =
 	| `Printout_blk
 	| `Table_blk
 	| `Figure_blk
-	] with sexp
+	]
 
-type t = [ ranked_t | unranked_t ] with sexp
+type t = [ ranked_t | unranked_t ]
 
 
 (********************************************************************************)

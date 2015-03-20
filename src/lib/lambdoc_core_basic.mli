@@ -18,7 +18,7 @@
 *)
 module Entity:
 sig
-	type t = string with sexp
+	type t = string
 end
 
 
@@ -26,7 +26,7 @@ end
 *)
 module Href:
 sig
-	type t = string with sexp
+	type t = string
 	val compare: t -> t -> int
 end
 
@@ -35,7 +35,7 @@ end
 *)
 module Classname:
 sig
-	type t = string with sexp
+	type t = string
 end
 
 
@@ -43,7 +43,7 @@ end
 *)
 module Attr:
 sig
-	type t = Classname.t list with sexp
+	type t = Classname.t list
 
 	val default: t
 end
@@ -53,7 +53,7 @@ end
 *)
 module Ident:
 sig
-	type t = string with sexp
+	type t = string
 end
 
 
@@ -61,7 +61,7 @@ end
 *)
 module Extkey:
 sig
-	type t = int with sexp
+	type t = int
 end
 
 
@@ -69,7 +69,7 @@ end
 *)
 module Pointer:
 sig
-	type t = string with sexp
+	type t = string
 end
 
 
@@ -80,13 +80,13 @@ sig
 	(**     Definition of hierarchy levels for sections.  We support a
 		six-level hierarchy, equivalent to XHTML's H1 to H6.
 	*)
-	type section_t = private int with sexp
+	type section_t = private int
 
 	(**     Definition of hierarchy levels for titles.  We support a
 		two-level hierarchy, equivalent to XHTML's H1 and H2.
 		These can be interpreted as "title" and "subtitle".
 	*)
-	type title_t = private int with sexp
+	type title_t = private int
 
 	(**	Maximum accepted hierarchical level.
 	*)

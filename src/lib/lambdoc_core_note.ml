@@ -13,14 +13,14 @@ open Lambdoc_core
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
+type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t
 
 type t =
 	{
 	label: Label.t;
 	order: order_t;
 	content: Block.frag_t;
-	} with sexp
+	}
 
 
 (********************************************************************************)

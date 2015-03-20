@@ -21,22 +21,20 @@ type alignment_t =
 	| Left
 	| Right
 	| Justify
-	with sexp
 
 type weight_t =
 	| Normal
 	| Strong
-	with sexp
 
-type colspec_t = alignment_t * weight_t with sexp
+type colspec_t = alignment_t * weight_t
 
-type cellspec_t = colspec_t * int * bool * bool with sexp		(* column spec, column span, has overline, has underline *)
+type cellspec_t = colspec_t * int * bool * bool			(* column spec, column span, has overline, has underline *)
 
-type cell_t = cellspec_t option * Inline.seq_t option with sexp
+type cell_t = cellspec_t option * Inline.seq_t option
 
-type row_t = cell_t list with sexp
+type row_t = cell_t list
 
-type group_t = row_t list with sexp
+type group_t = row_t list
 
 type t =
 	{
@@ -44,7 +42,7 @@ type t =
 	thead: group_t option;
 	tfoot: group_t option;
 	tbodies: group_t list;
-	} with sexp
+	}
 
 
 (********************************************************************************)

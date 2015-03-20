@@ -9,8 +9,6 @@
 (**	Definition of highlighted source code.
 *)
 
-open Sexplib.Std
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -18,10 +16,10 @@ open Sexplib.Std
 
 type t =
 	{
-	lang: Camlhighlight_core.lang_t option;
-	hilite: Camlhighlight_core.t;
+	lang: string option;
+	hilite: string;
 	linenums: bool;
-	} with sexp
+	}
 
 
 (********************************************************************************)

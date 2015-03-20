@@ -14,19 +14,12 @@ open Lambdoc_core
 open Lambdoc_writer
 open Basic
 
-module String = BatString
-
 
 (********************************************************************************)
 (**	{1 Private functions and values}					*)
 (********************************************************************************)
 
-let escape str =
-	let replacer = function
-		| '\\' -> "\\\\"
-		| '#'  -> "\\#"
-		| x    -> String.of_char x
-	in String.replace_chars replacer str
+let escape str = str
 
 
 let explain_nesting blk =

@@ -20,7 +20,6 @@ open Basic
 type t =
 	| Auto of Pointer.t
 	| User of Pointer.t
-	with sexp
 
 
 (********************************************************************************)

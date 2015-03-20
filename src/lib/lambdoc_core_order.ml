@@ -6,19 +6,17 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type ordinal_t = int with sexp
+type ordinal_t = int
 
-type hierarchical_t = int list with sexp
+type hierarchical_t = int list
 
-type 'a auto_given_t = [ `Auto_given of 'a ] with sexp
-type 'a user_given_t = [ `User_given of 'a ] with sexp
-type none_given_t = [ `None_given ] with sexp
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ] with sexp
+type 'a auto_given_t = [ `Auto_given of 'a ]
+type 'a user_given_t = [ `User_given of 'a ]
+type none_given_t = [ `None_given ]
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given_t | 'a user_given_t | none_given_t ]
 

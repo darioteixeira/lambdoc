@@ -11,10 +11,6 @@ open Lambdoc_reader
 open Basic
 open Ast
 
-module Array = BatArray
-module List = BatList
-module String = BatString
-
 
 (********************************************************************************)
 (**	{1 Private exceptions}							*)
@@ -33,7 +29,7 @@ type raw_t =
 
 type decl_t =
 	| Classname_decl of Classname.t
-	| Lang_decl of Camlhighlight_core.lang_t option
+	| Lang_decl of string option
 	| Linenums_decl of bool
 	| Width_decl of int option
 
@@ -43,7 +39,7 @@ type decl_t =
 (********************************************************************************)
 
 type _ handle_t =
-	| Lang_hnd: Camlhighlight_core.lang_t option handle_t
+	| Lang_hnd: string option handle_t
 	| Linenums_hnd: bool handle_t
 	| Width_hnd: int option handle_t
 
@@ -58,7 +54,7 @@ let lang_of_string comm key = function
 	| "none" ->
 		None
 	| x ->
-		if Camlhighlight_parser.is_available_lang x
+		if true
 		then Some x
 		else raise (Value_error (Error.Invalid_style_bad_lang (comm.comm_tag, key, x)))
 
@@ -113,12 +109,8 @@ let raws_of_string =
 					let msg = Error.Invalid_style_bad_classname (comm.comm_tag, str) in
 					(accum_raw, msg :: accum_msg) in
 		match comm.comm_style with
-			| Some str ->
-				String.nsplit str "," |>
-				List.map String.strip |>
-				List.fold_left conv ([], [])
-			| None ->
-				([], [])
+			| Some str -> ([], [])
+			| None	   -> ([], [])
 
 
 let decl_of_raw comm = function

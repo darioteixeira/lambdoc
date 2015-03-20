@@ -20,17 +20,16 @@ open Basic
 type kind_t =
 	| Boxout
 	| Theorem
-	with sexp
 
-type key_t = Pointer.t with sexp
+type key_t = Pointer.t
 
-type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t
 
-type anonymous_t = [ `Anonymous of key_t * Label.t ] with sexp
+type anonymous_t = [ `Anonymous of key_t * Label.t ]
 
-type unnumbered_t = [ `Unnumbered of key_t * Label.t ] with sexp
+type unnumbered_t = [ `Unnumbered of key_t * Label.t ]
 
-type numbered_t = [ `Numbered of key_t * Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t ] with sexp
+type numbered_t = [ `Numbered of key_t * Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t ]
 
 type t = [ anonymous_t | unnumbered_t | numbered_t ]
 
@@ -52,7 +51,7 @@ val numbered: key_t -> Label.t -> order_t -> [> numbered_t ]
 
 module Boxout:
 sig
-	type t = [ anonymous_t | unnumbered_t | numbered_t ] with sexp
+	type t = [ anonymous_t | unnumbered_t | numbered_t ]
 
 	val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
 end
@@ -60,7 +59,7 @@ end
 
 module Theorem:
 sig
-	type t = [ unnumbered_t | numbered_t ] with sexp
+	type t = [ unnumbered_t | numbered_t ]
 
 	val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
 end

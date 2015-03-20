@@ -23,7 +23,7 @@ type ranked_t =
 	| `Listable_blk
 	| `Quotable_blk
 	| `Embeddable_blk
-	] with sexp
+	]
 
 (**	Unranked blocks refer to discrete block categories, and no subtyping
 	relation is defined between them.
@@ -34,9 +34,9 @@ type unranked_t =
 	| `Printout_blk
 	| `Table_blk
 	| `Figure_blk
-	] with sexp
+	]
 
-type t = [ ranked_t | unranked_t ] with sexp
+type t = [ ranked_t | unranked_t ]
 
 
 (********************************************************************************)

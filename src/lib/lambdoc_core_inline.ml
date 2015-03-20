@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Lambdoc_core
 open Basic
 
@@ -44,7 +43,7 @@ and t =
 	attr: Classname.t list;
 	}
 
-and seq_t = t list with sexp
+and seq_t = t list
 
 
 (********************************************************************************)

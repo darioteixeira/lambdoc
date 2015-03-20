@@ -49,12 +49,10 @@ struct
 	let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
 		let tokenizer = new Tokenizer.tokenizer ~linenum_offset ~inline_extdefs ~block_extdefs in
 		try
-			let lexbuf = Ulexing.from_utf8_string str in
+			let lexbuf = Lexing.from_string str in
 			`Okay (menhir_with_ulex Parser.document tokenizer lexbuf)
 		with exc ->
 			let msg = match exc with
-				| Utf8.MalFormed ->
-					"Malformed UTF-8 sequence"
 				| Globalenv.Pop_mismatch (found, expected) ->
 					Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected
 				| Parser.Error ->

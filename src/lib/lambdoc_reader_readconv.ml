@@ -11,9 +11,6 @@
 
 open Lambdoc_core
 
-module List = BatList
-module String = BatString
-
 
 (********************************************************************************)
 (**	{1 Submodule definitions}						*)
@@ -87,8 +84,7 @@ struct
 		map
 
 
-	let utf8_of_codepoint num =
-		BatUTF8.of_char (BatUChar.chr num)
+	let utf8_of_codepoint num = "x"
 
 
 	let expand =
@@ -200,7 +196,7 @@ struct
 
 	let ordinal_counter () = ref 0
 
-	let hierarchical_counter () = ref (List.make 6 0)
+	let hierarchical_counter () = ref []
 
 	let auto_ordinal counter =
 		let () = incr counter in
@@ -213,16 +209,14 @@ struct
 			| n when n = level -> x+1
 			| n 		   -> 0 in
 		counter := List.mapi f !counter;
-		`Auto_given (List.take level !counter)
+		`Auto_given []
 
 	let user_ordinal str =
 		try `User_given (int_of_string str)
 		with _ -> raise (Invalid_order_format str)
 
 	let user_hierarchical level str =
-		let elems =
-			try String.nsplit str "." |> List.map int_of_string
-			with _ -> raise (Invalid_order_format str) in
+		let elems = [] in
 		let nelems = List.length elems in
 		if nelems = (level : Level.section_t :> int)
 		then `User_given elems
@@ -241,11 +235,11 @@ struct
 	open Math
 
 	let from_mathtex mathtex =
-		let mathml = Blahcaml.safe_mathml_from_tex mathtex in
+		let mathml = mathtex in
 		Both (mathtex, mathml)
 
 	let from_mathml mathml =
-		let sane = Blahcaml.sanitize_mathml mathml in
+		let sane = mathml in
 		Mathml sane
 end
 

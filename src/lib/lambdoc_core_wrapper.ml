@@ -7,24 +7,21 @@
 (********************************************************************************)
 
 open Lambdoc_core
-open Sexplib.Std
 
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t
 
 type kind_t =
 	| Printout
 	| Equation
 	| Figure
 	| Table
-	with sexp
 
 type t =
 	| Ordered of Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t ]) Order.t * Inline.seq_t option
 	| Unordered of Label.t * Inline.seq_t
-	with sexp
 

@@ -16,7 +16,7 @@ open Lambdoc_core
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
+type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t
 
 type t =
 	{
@@ -25,7 +25,7 @@ type t =
 	author: Inline.seq_t;
 	title: Inline.seq_t;
 	resource: Inline.seq_t;
-	} with sexp
+	}
 
 
 (********************************************************************************)

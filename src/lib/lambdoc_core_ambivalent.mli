@@ -20,7 +20,6 @@ open Lambdoc_core
 type t =
 	| Valid of Valid.t
 	| Invalid of Invalid.t
-	with sexp
 
 
 (********************************************************************************)
@@ -43,12 +42,4 @@ val make_valid:
 	t
 
 val make_invalid: Error.contextualized_t list -> t
-
-
-(********************************************************************************)
-(**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-val serialize: t -> string
-val deserialize: string -> t
 

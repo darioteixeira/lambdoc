@@ -27,7 +27,7 @@ type context_t =
 	error_line_before: string list;		(** Lines immediately before the error line. *)
 	error_line_actual: string;		(** Contents of the line where the error is found. *)
 	error_line_after: string list;		(** Lines immediately after the error line. *)
-	} with sexp
+	}
 
 
 (**	Reasons why a parameter can be invalid.
@@ -37,7 +37,6 @@ type invalid_parameter_reason_t =
 	| Reason_is_empty_when_forbidden
 	| Reason_is_non_empty_when_forbidden of string
 	| Reason_is_absent_when_mandatory
-	with sexp
 
 
 (**	Expected targets.
@@ -46,7 +45,6 @@ type target_t =
 	| Target_bib
 	| Target_note
 	| Target_label
-	with sexp
 
 
 (**	The various types of error messages.
@@ -127,13 +125,12 @@ type msg_t =
 	| Unavailable_feature of Ident.t option * string
 	| Extension_error of Ident.t option * string
 
-	with sexp
 
 
 (**	A contextualised error is a pair consisting of the context where
 	the error occurred (where applicable) and the error message itself.
 *)
-type contextualized_t = context_t option * msg_t with sexp
+type contextualized_t = context_t option * msg_t
 
 (**	A localized error is a pair consisting of the line number where
 	the error occurred (where applicable) and the error message itself.

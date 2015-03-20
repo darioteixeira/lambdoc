@@ -16,7 +16,7 @@ open Lambdoc_core
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type t = Error.contextualized_t list with sexp
+type t = Error.contextualized_t list
 
 
 (********************************************************************************)
@@ -28,12 +28,4 @@ type t = Error.contextualized_t list with sexp
 (********************************************************************************)
 
 val make: Error.contextualized_t list -> t
-
-
-(********************************************************************************)
-(**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-val serialize: t -> string
-val deserialize: string -> t
 

@@ -16,7 +16,6 @@ open Lambdoc_core
 type t =
 	| Valid of Valid.t
 	| Invalid of Invalid.t
-	with sexp
 
 
 (********************************************************************************)
@@ -32,15 +31,4 @@ let make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images =
 
 let make_invalid errors =
 	Invalid (Invalid.make errors)
-
-
-(********************************************************************************)
-(**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-let serialize doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_t doc)
-
-let deserialize str =
-	t_of_sexp (Sexplib.Sexp.of_string str)
 

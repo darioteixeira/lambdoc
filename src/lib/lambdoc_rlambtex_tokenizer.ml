@@ -24,9 +24,6 @@ open Extension
 open Globalenv
 open Parser
 
-module Hashtbl = BatHashtbl
-module String = BatString
-
 
 (********************************************************************************)
 (**	{1 Type definitions}							*)
@@ -67,11 +64,8 @@ let simple_rex = Pcre.regexp ("^" ^ pat_simple ^ pat_optional ^ "$")
 	actually exists, and if so, removes the leading and trailing marker.
 *)
 let get_param rex name subs =
-	try
-		let res = Pcre.get_named_substring rex name subs in
-		Some (String.slice ~first:1 ~last:(-1) res)	(* safe because 'res' is Latin1 *)
-	with
-		_ -> None
+	try Some (Pcre.get_named_substring rex name subs)
+	with _ -> None
 
 
 (**	Builds a fully-featured {!Lambdoc_reader.Ast.command_t}.
@@ -119,15 +113,15 @@ let issue_begin_command ~env_block_extdefs raw_comm position =
 	let primary = Pcre.get_named_substring begin_rex "primary" subs in
 	let command = build_command primary begin_rex subs position in
 	let first_token =
-		if String.starts_with primary "mathtex"
+		if primary = "mathtex"
 		then BEGIN_MATHTEX_BLK primary
-		else if String.starts_with primary "mathml"
+		else if primary = "mathml"
 		then BEGIN_MATHML_BLK primary
-		else if String.starts_with primary "verbatim"
+		else if primary = "verbatim"
 		then BEGIN_VERBATIM primary
-		else if String.starts_with primary "pre"
+		else if primary = "pre"
 		then BEGIN_VERBATIM primary
-		else if String.starts_with primary "source"
+		else if primary = "source"
 		then BEGIN_SOURCE primary
 		else match primary with
 			| "abstract"	-> BEGIN_ABSTRACT primary
@@ -150,15 +144,7 @@ let issue_begin_command ~env_block_extdefs raw_comm position =
 			| "figure"	-> BEGIN_FIGURE primary
 			| "bib"		-> BEGIN_BIB primary
 			| "note"	-> BEGIN_NOTE primary
-			| x ->
-				try
-					let (tag, syntax) = List.find (fun (tag, _) -> String.starts_with x tag) env_block_extdefs in
-					match syntax with
-						| Syn_lit  -> BEGIN_BLKPAT_LIT tag
-						| Syn_frag -> BEGIN_BLKPAT_FRAG tag
-						| _	   -> assert false
-				with
-					Not_found -> BEGIN_CUSTOM x
+			| x		-> assert false
 	and second_token = BEGIN_DUMMY command in
 	(Set Blk, [first_token; second_token])
 
@@ -288,8 +274,8 @@ object (self)
 	*)
 	method private store token =
 		productions <- match (productions, token) with
-			| ([PLAIN (op1, txt1)], PLAIN (op2, txt2))	-> [PLAIN (op1, BatText.append txt1 txt2)]
-			| ([RAW txt1], RAW txt2)			-> [RAW (BatText.append txt1  txt2)]
+			| ([PLAIN (op1, txt1)], PLAIN (op2, txt2))	-> [PLAIN (op1, txt1 ^ txt2)]
+			| ([RAW txt1], RAW txt2)			-> [RAW (txt1 ^ txt2)]
 			| _						-> productions @ [token]
 
 
@@ -319,10 +305,10 @@ object (self)
 			| `Tok_row_end			-> (Set Tab, [ROW_END op])
 			| `Tok_eof			-> (Hold, [EOF])
 			| `Tok_parbreak			-> (Set Blk, [])
-			| `Tok_space when context = Inl	-> (Hold, [PLAIN (op, BatText.of_string " ")])
+			| `Tok_space when context = Inl	-> (Hold, [PLAIN (op, " ")])
 			| `Tok_space			-> (Hold, [])
-			| `Tok_raw txt			-> (Hold, [RAW (BatText.of_string txt)])
-			| `Tok_plain txt		-> (Set Inl, [PLAIN (op, BatText.of_string txt)])
+			| `Tok_raw txt			-> (Hold, [RAW txt])
+			| `Tok_plain txt		-> (Set Inl, [PLAIN (op, txt)])
 			| `Tok_entity ent		-> (Set Inl, [ENTITY (op, ent)]) in
 		let tokens = match (context, action) with
 			| (Blk, Set Inl) -> (NEW_PAR op) :: tokens

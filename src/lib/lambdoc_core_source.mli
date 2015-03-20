@@ -16,15 +16,15 @@
 
 type t =
 	{
-	lang: Camlhighlight_core.lang_t option;
-	hilite: Camlhighlight_core.t;
+	lang: string option;
+	hilite: string;
 	linenums: bool;
-	} with sexp
+	}
 
 
 (********************************************************************************)
 (**	{1 Public functions and values}						*)
 (********************************************************************************)
 
-val make: Camlhighlight_core.lang_t option -> Camlhighlight_core.t -> bool -> t
+val make: string option -> string -> bool -> t
 

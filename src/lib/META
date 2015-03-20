@@ -1,9 +1,8 @@
 # OASIS_START
-# DO NOT EDIT (digest: 85fca50c692b9df4b129c6078f6ac668)
+# DO NOT EDIT (digest: f32e425ad048d662d13fc0c5c00cdb09)
 version = "1.0-beta3"
 description = "Support for semantically rich documents in web applications"
-requires =
-"threads batteries pcre sexplib ulex menhirLib pxp-engine pxp-ulex-utf8 tyxml omd blahcaml camlhighlight"
+requires = "threads pcre menhirLib"
 archive(byte) = "lambdoc.cma"
 archive(byte, plugin) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"

@@ -18,9 +18,6 @@ open Readconv
 open Style
 open Idiosyncrasies
 
-module String = BatString
-module List = BatList
-
 
 (********************************************************************************)
 (**	{1 Private exceptions}							*)
@@ -511,7 +508,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 				| Some x ->
 					try
 						let num = (int_of_string raw_num) - 1 in
-						Monad.return (List.at x num)
+						Monad.return (List.hd x)
 					with
 						| Failure _
 						| Invalid_argument _ ->
@@ -630,7 +627,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 					add_error comm msg;
 					(Tabular.Center, Tabular.Normal) in
 
-		let specs = Array.map (get_colspec comm) (Array.of_list (List.map String.of_char (String.explode tcols))) in
+		let specs = Array.map (get_colspec comm) [||] in
 
 		let num_columns = Array.length specs in
 
@@ -733,7 +730,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 			let elem attr dict =
 				let (lang, linenums) = Style.consume2 dict (Lang_hnd, None) (Linenums_hnd, false) in
 				let trimmed = Literal_input.trim txt in
-				let hilite = Camlhighlight_parser.from_string ?lang trimmed in
+				let hilite = "x" in
 				let src = Source.make lang hilite linenums in
 				begin 
 					if trimmed = ""
@@ -991,7 +988,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 						let msg = Error.Invalid_macro_nargs (name, nargs) in
 						add_error comm msg; 0 in
 				let errors_before = !errors in
-				convert_seq ~comm ~args:(List.make num_args [dummy_inline]) astseq >>= fun _ ->
+				convert_seq ~comm ~args:[] astseq >>= fun _ ->
 				let errors_after = !errors in
 				begin
 					if Hashtbl.mem macros name
@@ -1345,7 +1342,7 @@ let collate_errors =
 let contextualize_errors ~sort source errors =
 	let compare (anum, amsg) (bnum, bmsg) = match (anum, bnum) with
 		| (Some anum, Some bnum) ->
-			let res = BatInt.compare anum bnum in
+			let res = Pervasives.compare anum bnum in
 			if res = 0
 			then Pervasives.compare amsg bmsg
 			else res
@@ -1355,7 +1352,7 @@ let contextualize_errors ~sort source errors =
 			1
 		| (None, None) ->
 			Pervasives.compare amsg bmsg in
-	let sorted = if sort then List.sort_unique compare errors else errors in
+	let sorted = if sort then List.sort compare errors else errors in
 	let collated = collate_errors source sorted in
 	match collated with
 		| _::_ -> collated

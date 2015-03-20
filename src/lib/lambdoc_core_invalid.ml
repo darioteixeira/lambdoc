@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Lambdoc_core
 
 
@@ -14,7 +13,7 @@ open Lambdoc_core
 (**	{1 Type definitions}							*)
 (********************************************************************************)
 
-type t = Error.contextualized_t list with sexp
+type t = Error.contextualized_t list
 
 
 (********************************************************************************)
@@ -26,15 +25,4 @@ type t = Error.contextualized_t list with sexp
 (********************************************************************************)
 
 let make errors = errors
-
-
-(********************************************************************************)
-(**	{2 Serialisation facilities}						*)
-(********************************************************************************)
-
-let serialize doc =
-	Sexplib.Sexp.to_string_mach (sexp_of_t doc)
-
-let deserialize str =
-	t_of_sexp (Sexplib.Sexp.of_string str)
 

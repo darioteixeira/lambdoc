@@ -6,7 +6,6 @@
 *)
 (********************************************************************************)
 
-open Sexplib.Std
 open Lambdoc_core
 open Basic
 
@@ -21,7 +20,7 @@ type context_t =
 	error_line_before: string list;
 	error_line_actual: string;
 	error_line_after: string list;
-	} with sexp
+	}
 
 
 type invalid_parameter_reason_t =
@@ -29,14 +28,12 @@ type invalid_parameter_reason_t =
 	| Reason_is_empty_when_forbidden
 	| Reason_is_non_empty_when_forbidden of string
 	| Reason_is_absent_when_mandatory
-	with sexp
 
 
 type target_t =
 	| Target_bib
 	| Target_note
 	| Target_label
-	with sexp
 
 
 type msg_t =
@@ -115,10 +112,9 @@ type msg_t =
 	| Unavailable_feature of Ident.t option * string
 	| Extension_error of Ident.t option * string
 
-	with sexp
 
 
-type contextualized_t = context_t option * msg_t with sexp
+type contextualized_t = context_t option * msg_t
 
 type localized_t = int option * msg_t
 

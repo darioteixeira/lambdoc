@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 71ff1e8384314368091c418d0bcca5be)
+# DO NOT EDIT (digest: 56a7819068c5afc9b4aebff564c2b92f)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -16,19 +16,11 @@ true: annot, bin_annot
 "_darcs": not_hygienic
 # Library lambdoc
 "src/lib/lambdoc.cmxs": use_lambdoc
-<src/lib/*.ml{,i,y}>: pkg_batteries
-<src/lib/*.ml{,i,y}>: pkg_blahcaml
-<src/lib/*.ml{,i,y}>: pkg_camlhighlight
 <src/lib/*.ml{,i,y}>: pkg_menhirLib
-<src/lib/*.ml{,i,y}>: pkg_omd
 <src/lib/*.ml{,i,y}>: pkg_pcre
-<src/lib/*.ml{,i,y}>: pkg_pxp-engine
-<src/lib/*.ml{,i,y}>: pkg_pxp-ulex-utf8
-<src/lib/*.ml{,i,y}>: pkg_sexplib
 <src/lib/*.ml{,i,y}>: pkg_threads
-<src/lib/*.ml{,i,y}>: pkg_tyxml
-<src/lib/*.ml{,i,y}>: pkg_ulex
 # OASIS_STOP
 true: use_menhir
+<src/lib/*>: no_alias_deps
 <examples>: -traverse
 <tests>: -traverse
