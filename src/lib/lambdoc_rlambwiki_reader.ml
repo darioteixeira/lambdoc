@@ -9,7 +9,8 @@
 (**	Main interface to the Lambwiki reader.
 *)
 
-open Lambdoc_rlambwiki
+module Parser = Lambdoc_rlambwiki_parser
+module Tokenizer = Lambdoc_rlambwiki_tokenizer
 
 
 (********************************************************************************)

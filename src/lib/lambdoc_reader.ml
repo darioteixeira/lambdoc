@@ -1,5 +1,5 @@
 module Ast = Lambdoc_reader_ast
-(*	Lambdoc_reader.ml
+module Compiler = Lambdoc_reader_compiler
 module Extension = Lambdoc_reader_extension
 module Maker = Lambdoc_reader_maker
 module Permission = Lambdoc_reader_permission

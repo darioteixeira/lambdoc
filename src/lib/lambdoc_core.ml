@@ -1,5 +1,5 @@
 module Ambivalent = Lambdoc_core_ambivalent
-(*	Lambdoc_core.ml
+module Basic = Lambdoc_core_basic
 module Bib = Lambdoc_core_bib
 module Blkcat = Lambdoc_core_blkcat
 module Block = Lambdoc_core_block

@@ -7,9 +7,10 @@
 /********************************************************************************/
 
 %{
-open Lambdoc_rlambtex
+module Globalenv = Lambdoc_rlambtex_globalenv
+
 open Lambdoc_reader
-open Lambdoc_rlambtex_globalenv
+open Globalenv
 %}
 
 

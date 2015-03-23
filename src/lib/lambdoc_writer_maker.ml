@@ -9,8 +9,9 @@
 (**	Document writer.
 *)
 
+module Extension = Lambdoc_writer_extension
+
 open Lambdoc_core
-open Lambdoc_writer
 
 
 (********************************************************************************)

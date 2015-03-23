@@ -9,7 +9,7 @@
 (**	Main interface to the Lambxml reader.
 *)
 
-open Lambdoc_rlambxml
+module Parser = Lambdoc_rlambxml_parser
 
 
 (********************************************************************************)

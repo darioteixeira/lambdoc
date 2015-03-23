@@ -6,7 +6,11 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_reader
+module Ast = Lambdoc_reader_ast
+module Compiler = Lambdoc_reader_compiler
+module Extension = Lambdoc_reader_extension
+module Preprocessor = Lambdoc_reader_preprocessor
+
 open Lambdoc_core
 
 

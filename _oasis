@@ -18,6 +18,7 @@ Description:
   (Tyxml) HTML5 value.
 
 Library "lambdoc"
+  FindlibName: lambdoc
   Path: src/lib
   Modules:
     Lambdoc_core, Lambdoc_core_basic, Lambdoc_core_label, Lambdoc_core_order, Lambdoc_core_custom,

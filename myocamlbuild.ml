@@ -621,30 +621,10 @@ let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 # 622 "myocamlbuild.ml"
 (* OASIS_STOP *)
 
-let lambdoc_modules =
-	[
-	("core", ["ambivalent"; "basic"; "bib"; "blkcat"; "block"; "custom"; "error"; "feature"; "heading"; "idiosyncrasies"; "inline"; "invalid"; "label"; "math"; "monadic"; "note"; "order"; "qanda"; "source"; "tabular"; "target"; "valid"; "wrapper"]);
-	("reader", ["ast"; "compiler"; "extension"; "maker"; "permission"; "preprocessor"; "readconv"; "style"]);
-	("rlambtex", ["globalenv"; "parser"; "reader"; "scanner"; "tokenizer"]);
-	("rlambwiki", ["parser"; "reader"; "scanner"; "tokenizer"]);
-	("rlambxml", ["dtd"; "parser"; "reader"]);
-	("rmarkdown", ["mapper"; "reader"]);
-	("writer", ["emblang"; "explanations"; "extension"; "maker"; "translations"; "writeconv"]);
-	("whtml5", ["writer"]);
-	]
-
 let my_dispatcher = function
 	| After_rules ->
+		(* Add dependency to lambxml.dtd *)
 		dep ["ocamldep"; "file:src/lib/lambdoc_rlambxml_dtd.ml"] ["src/lib/lambxml.dtd"];
-
-		let process_base (base, xs) =
-			let xbase = "src/lib/lambdoc_" ^ base ^ ".ml" in
-			let process_mod m =
-				let xm = "Lambdoc_" ^ base ^ "_" ^ m in
-				non_dependency xbase xm in
-			List.iter process_mod xs in
-		List.iter process_base lambdoc_modules
-
 	| _ -> ()
 
 let () =

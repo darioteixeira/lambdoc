@@ -9,10 +9,10 @@
 (**	Utility functions for converting {!Lambdoc_core} values to strings.
 *)
 
-open Lambdoc_core
-
 module List = BatList
 module String = BatString
+
+open Lambdoc_core
 
 
 (********************************************************************************)

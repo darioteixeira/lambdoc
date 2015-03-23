@@ -6,7 +6,13 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_core
+module Bib = Lambdoc_core_bib
+module Block = Lambdoc_core_block
+module Error = Lambdoc_core_error
+module Heading = Lambdoc_core_heading
+module Invalid = Lambdoc_core_invalid
+module Note = Lambdoc_core_note
+module Valid = Lambdoc_core_valid
 
 
 (********************************************************************************)

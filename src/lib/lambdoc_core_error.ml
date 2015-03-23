@@ -6,8 +6,12 @@
 *)
 (********************************************************************************)
 
+module Basic = Lambdoc_core_basic
+module Blkcat = Lambdoc_core_blkcat
+module Custom = Lambdoc_core_custom
+module Wrapper = Lambdoc_core_wrapper
+
 open Sexplib.Std
-open Lambdoc_core
 open Basic
 
 

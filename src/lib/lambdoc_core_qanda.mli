@@ -9,7 +9,7 @@
 (**	Definitions pertaining to Q&A environments.
 *)
 
-open Lambdoc_core
+module Inline = Lambdoc_core_inline
 
 
 (********************************************************************************)

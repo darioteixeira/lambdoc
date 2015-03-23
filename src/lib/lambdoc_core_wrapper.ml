@@ -6,7 +6,10 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_core
+module Inline = Lambdoc_core_inline
+module Label = Lambdoc_core_label
+module Order = Lambdoc_core_order
+
 open Sexplib.Std
 
 

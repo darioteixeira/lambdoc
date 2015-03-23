@@ -9,12 +9,13 @@
 (**	Tokenizer for the Lambwiki reader.
 *)
 
-open Lambdoc_rlambwiki
+module String = BatString
+module Parser = Lambdoc_rlambwiki_parser
+module Scanner = Lambdoc_rlambwiki_scanner
+
 open Lexing
 open Scanner
 open Parser
-
-module String = BatString
 
 
 (********************************************************************************)

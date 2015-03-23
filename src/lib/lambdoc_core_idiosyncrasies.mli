@@ -6,7 +6,9 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_core
+module Basic = Lambdoc_core_basic
+module Feature = Lambdoc_core_feature
+
 open Basic
 
 

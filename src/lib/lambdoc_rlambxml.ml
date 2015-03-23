@@ -1,3 +1,3 @@
 module Dtd = Lambdoc_rlambxml_dtd
-(*	Lambdoc_rlambxml.ml
+module Parser = Lambdoc_rlambxml_parser
 module Reader = Lambdoc_rlambxml_reader

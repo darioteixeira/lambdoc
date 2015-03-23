@@ -9,7 +9,16 @@
 (**	Definitions concerning valid documents.
 *)
 
-open Lambdoc_core
+module Basic = Lambdoc_core_basic
+module Bib = Lambdoc_core_bib
+module Block = Lambdoc_core_block
+module Custom = Lambdoc_core_custom
+module Heading = Lambdoc_core_heading
+module Inline = Lambdoc_core_inline
+module Label = Lambdoc_core_label
+module Note = Lambdoc_core_note
+module Target = Lambdoc_core_target
+
 open Basic
 
 

@@ -9,7 +9,10 @@
 (**	Custom document blocks.
 *)
 
-open Lambdoc_core
+module Basic = Lambdoc_core_basic
+module Label = Lambdoc_core_label
+module Order = Lambdoc_core_order
+
 open Basic
 
 

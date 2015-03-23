@@ -9,7 +9,8 @@
 (**	Parsing of style parameters.
 *)
 
-open Lambdoc_reader
+module Ast = Lambdoc_reader_ast
+
 open Lambdoc_core
 open Basic
 

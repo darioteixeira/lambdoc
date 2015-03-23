@@ -9,16 +9,16 @@
 (**	Parser for the Lambxml reader.
 *)
 
+module List = BatList
+module String = BatString
+module Dtd = Lambdoc_rlambxml_dtd
+
 open Pxp_document
 open Pxp_types
 open Lambdoc_core
 open Lambdoc_reader
-open Lambdoc_rlambxml
 open Ast
 open Extension
-
-module List = BatList
-module String = BatString
 
 
 (********************************************************************************)

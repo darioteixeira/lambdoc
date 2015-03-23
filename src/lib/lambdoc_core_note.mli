@@ -9,7 +9,9 @@
 (**	Definitions concerning note blocks.
 *)
 
-open Lambdoc_core
+module Block = Lambdoc_core_block
+module Label = Lambdoc_core_label
+module Order = Lambdoc_core_order
 
 
 (********************************************************************************)

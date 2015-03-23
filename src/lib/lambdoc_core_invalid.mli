@@ -9,7 +9,7 @@
 (**	Definitions concerning invalid documents.
 *)
 
-open Lambdoc_core
+module Error = Lambdoc_core_error
 
 
 (********************************************************************************)

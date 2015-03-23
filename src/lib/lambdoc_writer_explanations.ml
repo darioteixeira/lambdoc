@@ -9,12 +9,12 @@
 (**	Explains errors.
 *)
 
+module String = BatString
+module Emblang = Lambdoc_writer_emblang
+
 open Printf
 open Lambdoc_core
-open Lambdoc_writer
 open Basic
-
-module String = BatString
 
 
 (********************************************************************************)

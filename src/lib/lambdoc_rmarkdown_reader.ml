@@ -9,7 +9,7 @@
 (**	Main interface to the Markdown reader.
 *)
 
-open Lambdoc_rmarkdown
+module Mapper = Lambdoc_rmarkdown_mapper
 
 
 (********************************************************************************)

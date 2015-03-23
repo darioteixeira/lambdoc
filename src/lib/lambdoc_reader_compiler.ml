@@ -10,16 +10,20 @@
 	a document AST into a proper, final, ambivalent document.
 *)
 
-open Lambdoc_reader
+module String = BatString
+module List = BatList
+module Ast = Lambdoc_reader_ast
+module Extension = Lambdoc_reader_extension
+module Permission = Lambdoc_reader_permission
+module Readconv = Lambdoc_reader_readconv
+module Style = Lambdoc_reader_style
+
 open Lambdoc_core
 open Basic
 open Ast
 open Readconv
 open Style
 open Idiosyncrasies
-
-module String = BatString
-module List = BatList
 
 
 (********************************************************************************)

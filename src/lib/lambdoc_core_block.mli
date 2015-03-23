@@ -9,7 +9,16 @@
 (**	Definitions concerning block elements.
 *)
 
-open Lambdoc_core
+module Basic = Lambdoc_core_basic
+module Custom = Lambdoc_core_custom
+module Heading = Lambdoc_core_heading
+module Inline = Lambdoc_core_inline
+module Math = Lambdoc_core_math
+module Qanda = Lambdoc_core_qanda
+module Source = Lambdoc_core_source
+module Tabular = Lambdoc_core_tabular
+module Wrapper = Lambdoc_core_wrapper
+
 open Basic
 
 

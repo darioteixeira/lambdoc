@@ -9,7 +9,11 @@
 (**	Definitions concerning document targets.
 *)
 
-open Lambdoc_core
+module Bib = Lambdoc_core_bib
+module Custom = Lambdoc_core_custom
+module Heading = Lambdoc_core_heading
+module Note = Lambdoc_core_note
+module Wrapper = Lambdoc_core_wrapper
 
 
 (********************************************************************************)

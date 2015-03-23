@@ -9,7 +9,9 @@
 (**	Document reader.
 *)
 
-open Lambdoc_reader
+module Ast = Lambdoc_reader_ast
+module Extension = Lambdoc_reader_extension
+
 open Lambdoc_core
 
 

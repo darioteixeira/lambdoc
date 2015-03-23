@@ -6,8 +6,10 @@
 *)
 (********************************************************************************)
 
+module Basic = Lambdoc_core_basic
+module Math = Lambdoc_core_math
+
 open Sexplib.Std
-open Lambdoc_core
 open Basic
 
 

@@ -6,10 +6,11 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_core
-open Basic
-
 module List = BatList
+module Basic = Lambdoc_core_basic
+module Feature = Lambdoc_core_feature
+
+open Basic
 
 
 (********************************************************************************)

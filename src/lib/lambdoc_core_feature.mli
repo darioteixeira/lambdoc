@@ -9,7 +9,8 @@
 (**	Declarations concerning document features.
 *)
 
-open Lambdoc_core
+module Basic = Lambdoc_core_basic
+
 open Basic
 
 

@@ -16,16 +16,19 @@
 	appropriate scanner to invoke.
 *)
 
+module Hashtbl = BatHashtbl
+module String = BatString
+
+module Globalenv = Lambdoc_rlambtex_globalenv
+module Parser = Lambdoc_rlambtex_parser
+module Scanner = Lambdoc_rlambtex_scanner
+
 open Lexing
-open Lambdoc_rlambtex
 open Lambdoc_reader
 open Ast
 open Extension
 open Globalenv
 open Parser
-
-module Hashtbl = BatHashtbl
-module String = BatString
 
 
 (********************************************************************************)

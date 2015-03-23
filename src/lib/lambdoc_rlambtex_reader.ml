@@ -9,7 +9,9 @@
 (**	Main interface to the Lambtex reader.
 *)
 
-open Lambdoc_rlambtex
+module Globalenv = Lambdoc_rlambtex_globalenv
+module Parser = Lambdoc_rlambtex_parser
+module Tokenizer = Lambdoc_rlambtex_tokenizer
 
 
 (********************************************************************************)
