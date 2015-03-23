@@ -29,6 +29,6 @@ true: annot, bin_annot
 <src/lib/*.ml{,i,y}>: pkg_tyxml
 <src/lib/*.ml{,i,y}>: pkg_ulex
 # OASIS_STOP
-true: use_menhir
+true: use_menhir, no_alias_deps
 <examples>: -traverse
 <tests>: -traverse
