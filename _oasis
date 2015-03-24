@@ -8,6 +8,7 @@ License:		GPL-2
 LicenseFile:		LICENSE
 Plugins:		META (0.4), DevFiles (0.4)
 BuildTools:		ocamlbuild, make
+AlphaFeatures:		ocamlbuild_more_args
 Description:
   Lambdoc is a library providing support for semantically rich documents in web applications,
   built with Ocsigen/Eliom integration in mind.  It includes parsers for four different markup
@@ -17,8 +18,12 @@ Description:
   The library also includes the possibility of outputing any Lambdoc document as an Ocsigen
   (Tyxml) HTML5 value.
 
+Flag "cmd"
+  Description:		Build command line utility Lambcmd
+  Default:		true
+
 Library "lambdoc"
-  Path: src/lib
+  Path:			src/lib
   Modules:
     Lambdoc_core, Lambdoc_core_basic, Lambdoc_core_label, Lambdoc_core_order, Lambdoc_core_custom,
     Lambdoc_core_math, Lambdoc_core_inline, Lambdoc_core_wrapper, Lambdoc_core_heading, Lambdoc_core_bib,
@@ -38,10 +43,19 @@ Library "lambdoc"
     threads, batteries, pcre, sexplib, ulex, menhirLib, pxp-engine,
     pxp-ulex-utf8, tyxml, omd, blahcaml, camlhighlight
 
+Document "lambdoc"
+  Type:			ocamlbuild (0.4)
+  BuildTools:		ocamldoc
+  Title:		API reference for Lambdoc
+  XOCamlbuildPath:	.
+  XOCamlbuildExtraArgs:	"-docflags '-colorize-code -short-functors -charset utf-8'"
+  XOCamlbuildLibraries:	lambdoc
+
 Executable "lambcmd"
+  Build$:		flag(cmd)
+  Install$:		flag(cmd)
   Path:			src/lambcmd
   MainIs:		lambcmd.ml
-  Install:		true
   BuildTools:		ocamlbuild
   BuildDepends:		lambdoc
   CompiledObject:	best
