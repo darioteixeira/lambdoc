@@ -119,7 +119,7 @@ struct
 			let verified = if verify_utf8 then Preprocessor.verify_utf8 source else `Okay in
 			match verified with
 				| `Error (sane_str, error_lines) ->
-					let localized = List.map (fun line -> (Some line, Error.Malformed_code_point)) error_lines in
+					let localized = List.map (fun line -> (Some line, None, Error.Malformed_code_point)) error_lines in
 					let errors = C.contextualize_errors ~sort:false sane_str localized in
 					Monad.return (Ambivalent.make_invalid errors)
 				| `Okay ->
@@ -128,7 +128,7 @@ struct
 						| `Okay ast ->
 							C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
 						| `Error xs ->
-							let localized = List.map (fun (line, msg) -> (line, Error.Reading_error msg)) xs in
+							let localized = List.map (fun (line, msg) -> (line, None, Error.Reading_error msg)) xs in
 							let errors = C.contextualize_errors ~sort:false source localized in
 							Monad.return (Ambivalent.make_invalid errors)
 						| exception exc ->

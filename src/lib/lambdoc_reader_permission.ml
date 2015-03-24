@@ -78,15 +78,11 @@ let reason_why_invalid perm = function
 
 let check_permission_set comm (perm_label, perm_order) =
 	let errors = match reason_why_invalid perm_label comm.comm_label with
-		| None ->
-			[]
-		| Some reason ->
-			[Error.Misplaced_label_parameter (comm.comm_tag, reason)] in
+		| None	      -> []
+		| Some reason -> [Error.Misplaced_label_parameter reason] in
 	match reason_why_invalid perm_order comm.comm_order with
-		| None ->
-			errors
-		| Some reason ->
-			Error.Misplaced_order_parameter (comm.comm_tag, reason) :: errors
+		| None	      -> errors
+		| Some reason -> Error.Misplaced_order_parameter reason :: errors
 
 
 let rec classify = function
