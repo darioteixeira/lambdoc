@@ -18,7 +18,6 @@ Description:
   (Tyxml) HTML5 value.
 
 Library "lambdoc"
-  FindlibName: lambdoc
   Path: src/lib
   Modules:
     Lambdoc_core, Lambdoc_core_basic, Lambdoc_core_label, Lambdoc_core_order, Lambdoc_core_custom,
@@ -38,4 +37,12 @@ Library "lambdoc"
   BuildDepends:
     threads, batteries, pcre, sexplib, ulex, menhirLib, pxp-engine,
     pxp-ulex-utf8, tyxml, omd, blahcaml, camlhighlight
+
+Executable "lambcmd"
+  Path:			src/lambcmd
+  MainIs:		lambcmd.ml
+  Install:		true
+  BuildTools:		ocamlbuild
+  BuildDepends:		lambdoc
+  CompiledObject:	best
 

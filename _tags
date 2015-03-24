@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 71ff1e8384314368091c418d0bcca5be)
+# DO NOT EDIT (digest: 734d4f3a23202f1dca2be302e8daee68)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -28,6 +28,33 @@ true: annot, bin_annot
 <src/lib/*.ml{,i,y}>: pkg_threads
 <src/lib/*.ml{,i,y}>: pkg_tyxml
 <src/lib/*.ml{,i,y}>: pkg_ulex
+# Executable lambcmd
+<src/lambcmd/lambcmd.{native,byte}>: pkg_batteries
+<src/lambcmd/lambcmd.{native,byte}>: pkg_blahcaml
+<src/lambcmd/lambcmd.{native,byte}>: pkg_camlhighlight
+<src/lambcmd/lambcmd.{native,byte}>: pkg_menhirLib
+<src/lambcmd/lambcmd.{native,byte}>: pkg_omd
+<src/lambcmd/lambcmd.{native,byte}>: pkg_pcre
+<src/lambcmd/lambcmd.{native,byte}>: pkg_pxp-engine
+<src/lambcmd/lambcmd.{native,byte}>: pkg_pxp-ulex-utf8
+<src/lambcmd/lambcmd.{native,byte}>: pkg_sexplib
+<src/lambcmd/lambcmd.{native,byte}>: pkg_threads
+<src/lambcmd/lambcmd.{native,byte}>: pkg_tyxml
+<src/lambcmd/lambcmd.{native,byte}>: pkg_ulex
+<src/lambcmd/lambcmd.{native,byte}>: use_lambdoc
+<src/lambcmd/*.ml{,i,y}>: pkg_batteries
+<src/lambcmd/*.ml{,i,y}>: pkg_blahcaml
+<src/lambcmd/*.ml{,i,y}>: pkg_camlhighlight
+<src/lambcmd/*.ml{,i,y}>: pkg_menhirLib
+<src/lambcmd/*.ml{,i,y}>: pkg_omd
+<src/lambcmd/*.ml{,i,y}>: pkg_pcre
+<src/lambcmd/*.ml{,i,y}>: pkg_pxp-engine
+<src/lambcmd/*.ml{,i,y}>: pkg_pxp-ulex-utf8
+<src/lambcmd/*.ml{,i,y}>: pkg_sexplib
+<src/lambcmd/*.ml{,i,y}>: pkg_threads
+<src/lambcmd/*.ml{,i,y}>: pkg_tyxml
+<src/lambcmd/*.ml{,i,y}>: pkg_ulex
+<src/lambcmd/*.ml{,i,y}>: use_lambdoc
 # OASIS_STOP
 true: use_menhir, no_alias_deps
 <examples>: -traverse
