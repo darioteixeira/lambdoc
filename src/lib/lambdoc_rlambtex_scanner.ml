@@ -213,7 +213,8 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
 
 (**	Special scanner for raw environments.  Pretty much every character is
 	returned as raw text; the exceptions are the EOF character, escaped
-	characters, and the special "}" termination tag.
+	characters, and the special "\}" termination tag (note that the backslash
+	is there to satisfy OCamldoc and is not part of the terminator).
 *)
 let raw_scanner : (Ulexing.lexbuf -> int * [> raw_token_t]) = lexer
 	| end_marker		-> (0, `Tok_end)
@@ -224,7 +225,8 @@ let raw_scanner : (Ulexing.lexbuf -> int * [> raw_token_t]) = lexer
 
 (**	Special scanner for mathtex environments in an inline context.  No attempt
 	whatsoever is made to interpret the characters in the stream.  This scanner
-	only pays attention to the EOF character and the terminator "$]".
+	only pays attention to the EOF character and the terminator "$\]" (note that
+	the backslash is there to satisfy OCamldoc and is not part of the terminator).
 *)
 let mathtex_inl_scanner : (Ulexing.lexbuf -> int * [> mathtex_inl_token_t]) = lexer
 	| end_mathtex_inl	-> (0, `Tok_end_mathtex_inl)
