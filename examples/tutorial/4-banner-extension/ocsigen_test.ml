@@ -36,7 +36,7 @@ module Lwt_monad = struct include Lwt let iter = Lwt_list.iter_p end
 
 module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
-module Lambtex_reader = Lambdoc_read_lambtex.Make (Reader_extension)
+module Lambtex_reader = Lambdoc_rlambtex_reader.Make (Reader_extension)
 
 module Eliom_backend =
 struct
@@ -44,7 +44,7 @@ struct
 	module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
 
 
 (********************************************************************************)

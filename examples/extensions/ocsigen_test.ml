@@ -21,7 +21,7 @@ struct
 	module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
 
 
 (********************************************************************************)
@@ -148,12 +148,12 @@ let rec step1_handler () () =
 		~scope:Eliom_common.default_session_scope
 		~fallback:main_service
 		~post_params:(Eliom_parameter.string "source")
-		(step2_handler Lambdoc_read_lambtex.Trivial.ambivalent_from_string) in
+		(step2_handler Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string) in
 	let step2xml_service = Eliom_registration.Html5.register_post_coservice
 		~scope:Eliom_common.default_session_scope
 		~fallback:main_service
 		~post_params:(Eliom_parameter.string "source")
-		(step2_handler Lambdoc_read_lambxml.Trivial.ambivalent_from_string) in
+		(step2_handler Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string) in
 	let step2tex_form e_source =
 		[
 		label ~a:[a_for e_source] [pcdata "Lambtex source:"];

@@ -131,16 +131,16 @@ let main () =
 	let extcomms = [book_extcomm maybe_credential; bookpic_extcomm maybe_credential] in
 	lwt doc = match options.input_markup with
 		| `Lambtex ->
-			let module M = Lambdoc_read_lambtex.Make (Reader_extension) in
+			let module M = Lambdoc_rlambtex_reader.Make (Reader_extension) in
 			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Lambwiki ->
-			let module M = Lambdoc_read_lambwiki.Make (Reader_extension) in
+			let module M = Lambdoc_rlambwiki_reader.Make (Reader_extension) in
 			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Lambxml ->
-			let module M = Lambdoc_read_lambxml.Make (Reader_extension) in
+			let module M = Lambdoc_rlambxml_reader.Make (Reader_extension) in
 			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Markdown ->
-			let module M = Lambdoc_read_markdown.Make (Reader_extension) in
+			let module M = Lambdoc_rmarkdown_reader.Make (Reader_extension) in
 			M.ambivalent_from_string ~extcomms ~idiosyncrasies input_str
 		| `Sexp ->
 			Lwt.return (Lambdoc_core.Ambivalent.deserialize input_str) in
@@ -148,7 +148,7 @@ let main () =
 		| `Sexp  ->
 			Lwt.return (Lambdoc_core.Ambivalent.serialize doc)
 		| `Html5 ->
-			let module Html5_writer = Lambdoc_write_html5.Make_trivial (Tyxml_backend) in
+			let module Html5_writer = Lambdoc_whtml5_writer.Make_trivial (Tyxml_backend) in
 			let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
 			let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
 			Lwt.return (string_of_xhtml options.title xhtml) in

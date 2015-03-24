@@ -33,7 +33,7 @@ struct
 	module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
 
 
 (********************************************************************************)
@@ -44,7 +44,7 @@ let embed_markup tag ast_from_string =
 	let f comm txt =
 		match ast_from_string ~linenum_offset:Ast.(comm.comm_linenum-1) ~inline_extdefs:[] ~block_extdefs:[] txt with
 			| `Okay ast   -> `Okay (ast, [])
-			| `Error msgs -> `Error (List.map (fun (line, msg) -> (line, Error.Reading_error msg)) msgs)
+			| `Error msgs -> `Error (List.map (fun (line, msg) -> (line, None, Error.Reading_error msg)) msgs)
 	in (tag, Blkextcomm (Blkfun_lit f, [`Embeddable_blk]))
 
 
@@ -89,12 +89,12 @@ let rec step1_handler () () =
 and step2_handler () source =
 	let extcomms =
 		[
-		embed_markup "tex" Lambdoc_read_lambtex.Readable.ast_from_string;
-		embed_markup "wiki" Lambdoc_read_lambwiki.Readable.ast_from_string;
-		embed_markup "xml" Lambdoc_read_lambxml.Readable.ast_from_string;
-		embed_markup "md" Lambdoc_read_markdown.Readable.ast_from_string;
+		embed_markup "tex" Lambdoc_rlambtex_reader.Readable.ast_from_string;
+		embed_markup "wiki" Lambdoc_rlambwiki_reader.Readable.ast_from_string;
+		embed_markup "xml" Lambdoc_rlambxml_reader.Readable.ast_from_string;
+		embed_markup "md" Lambdoc_rmarkdown_reader.Readable.ast_from_string;
 		] in
-	let doc = Lambdoc_read_lambtex.Trivial.ambivalent_from_string ~extcomms source in
+	let doc = Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~extcomms source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

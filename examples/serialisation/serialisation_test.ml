@@ -16,7 +16,7 @@ open Lambdoc_reader
 
 let doc =
 	let src = BatIO.read_all (BatIO.input_channel (open_in "sample.lambtex")) in
-	Lambdoc_read_lambtex.Trivial.ambivalent_from_string src
+	Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string src
 
 
 let sexp_pickle = Lambdoc_core.Ambivalent.serialize doc

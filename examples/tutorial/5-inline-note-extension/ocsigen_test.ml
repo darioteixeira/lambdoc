@@ -30,7 +30,7 @@ struct
 	module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
 
 
 (********************************************************************************)
@@ -93,7 +93,7 @@ let rec step1_handler () () =
 
 
 and step2_handler () source =
-	let doc = Lambdoc_read_lambtex.Trivial.ambivalent_from_string ~extcomms:[inline_note_extcomm] source in
+	let doc = Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~extcomms:[inline_note_extcomm] source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
 		[

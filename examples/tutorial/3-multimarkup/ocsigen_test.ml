@@ -30,7 +30,7 @@ struct
 end
 
 
-module Lambdoc_writer = Lambdoc_write_html5.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
 
 
 module Markup = Litiom_choice.Make
@@ -103,10 +103,10 @@ let rec step1_handler () () =
 
 and step2_handler () (markup, source) =
 	let reader = match markup with
-		| `Lambtex  -> Lambdoc_read_lambtex.Trivial.ambivalent_from_string
-		| `Lambwiki -> Lambdoc_read_lambwiki.Trivial.ambivalent_from_string
-		| `Lambxml  -> Lambdoc_read_lambxml.Trivial.ambivalent_from_string
-		| `Markdown -> Lambdoc_read_markdown.Trivial.ambivalent_from_string in
+		| `Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string
+		| `Lambwiki -> Lambdoc_rlambwiki_reader.Trivial.ambivalent_from_string
+		| `Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string
+		| `Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string in
 	let doc = reader source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in
 	let contents =
