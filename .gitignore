@@ -1,4 +1,6 @@
-src/_build/
+_build/
+setup.data
+setup.log
 *.cm[aiox]
 *.cmx[as]
 *.a
