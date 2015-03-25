@@ -89,10 +89,10 @@ let rec step1_handler () () =
 and step2_handler () source =
 	let extcomms =
 		[
-		embed_markup "tex" Lambdoc_rlambtex_reader.Readable.ast_from_string;
-		embed_markup "wiki" Lambdoc_rlambwiki_reader.Readable.ast_from_string;
-		embed_markup "xml" Lambdoc_rlambxml_reader.Readable.ast_from_string;
-		embed_markup "md" Lambdoc_rmarkdown_reader.Readable.ast_from_string;
+		embed_markup "tex" Lambdoc_rlambtex_readable.ast_from_string;
+		embed_markup "wiki" Lambdoc_rlambwiki_readable.ast_from_string;
+		embed_markup "xml" Lambdoc_rlambxml_readable.ast_from_string;
+		embed_markup "md" Lambdoc_rmarkdown_readable.ast_from_string;
 		] in
 	let doc = Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~extcomms source in
 	let xdoc = Lambdoc_writer.write_ambivalent doc in

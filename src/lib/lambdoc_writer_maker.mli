@@ -45,7 +45,7 @@ end
 
 (**	The signature exported by the functor.
 *)
-module type S =
+module type WRITER =
 sig
 	type t
 	type valid_options_t
@@ -87,7 +87,7 @@ end
 *)
 module Make:
 	functor (Writable: WRITABLE) ->
-	functor (Ext: Extension.S) -> S with
+	functor (Ext: Extension.S) -> WRITER with
 	type t = Writable.t and
 	type valid_options_t = Writable.valid_options_t and
 	type invalid_options_t = Writable.invalid_options_t and

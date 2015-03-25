@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 2c9015c88c75cf408a3c3a88172f01dd)
+# DO NOT EDIT (digest: 97dac341f893e5d1ece72c60df022136)
 src/lib/Lambdoc_core
 src/lib/Lambdoc_core_basic
 src/lib/Lambdoc_core_label
@@ -38,18 +38,22 @@ src/lib/Lambdoc_rlambtex_globalenv
 src/lib/Lambdoc_rlambtex_parser
 src/lib/Lambdoc_rlambtex_scanner
 src/lib/Lambdoc_rlambtex_tokenizer
+src/lib/Lambdoc_rlambtex_readable
 src/lib/Lambdoc_rlambtex_reader
 src/lib/Lambdoc_rlambwiki
 src/lib/Lambdoc_rlambwiki_parser
 src/lib/Lambdoc_rlambwiki_scanner
 src/lib/Lambdoc_rlambwiki_tokenizer
+src/lib/Lambdoc_rlambwiki_readable
 src/lib/Lambdoc_rlambwiki_reader
 src/lib/Lambdoc_rlambxml
 src/lib/Lambdoc_rlambxml_dtd
 src/lib/Lambdoc_rlambxml_parser
+src/lib/Lambdoc_rlambxml_readable
 src/lib/Lambdoc_rlambxml_reader
 src/lib/Lambdoc_rmarkdown
 src/lib/Lambdoc_rmarkdown_mapper
+src/lib/Lambdoc_rmarkdown_readable
 src/lib/Lambdoc_rmarkdown_reader
 src/lib/Lambdoc_writer
 src/lib/Lambdoc_writer_emblang
@@ -59,5 +63,6 @@ src/lib/Lambdoc_writer_maker
 src/lib/Lambdoc_writer_translations
 src/lib/Lambdoc_writer_writeconv
 src/lib/Lambdoc_whtml5
+src/lib/Lambdoc_whtml5_writable
 src/lib/Lambdoc_whtml5_writer
 # OASIS_STOP

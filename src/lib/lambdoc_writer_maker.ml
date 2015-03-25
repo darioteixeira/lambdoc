@@ -45,7 +45,7 @@ end
 
 (**	The signature exported by the functor.
 *)
-module type S =
+module type WRITER =
 sig
 	type t
 	type valid_options_t
@@ -85,7 +85,7 @@ end
 
 (** The functor that creates a document writer.
 *)
-module Make (Writable: WRITABLE) (Ext: Extension.S) : S with
+module Make (Writable: WRITABLE) (Ext: Extension.S) : WRITER with
 	type t = Writable.t and
 	type valid_options_t = Writable.valid_options_t and
 	type invalid_options_t = Writable.invalid_options_t and

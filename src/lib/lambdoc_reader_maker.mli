@@ -58,8 +58,6 @@ end
 *)
 module type FULL =
 sig
-	module Readable: READABLE
-
 	module Make: functor (Ext: Extension.S) -> READER with
 		type 'a monad_t = 'a Ext.Monad.t and
 		type link_reader_t = Ext.link_reader_t and

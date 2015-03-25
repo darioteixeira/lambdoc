@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 7a0576c4891d007cd03e14af808f6db7)
+# DO NOT EDIT (digest: 973804e58fb5dae7d2efb3b0ec1255ac)
 Lambdoc_core
 Lambdoc_core_basic
 Lambdoc_core_label
@@ -38,18 +38,22 @@ Lambdoc_rlambtex_globalenv
 Lambdoc_rlambtex_parser
 Lambdoc_rlambtex_scanner
 Lambdoc_rlambtex_tokenizer
+Lambdoc_rlambtex_readable
 Lambdoc_rlambtex_reader
 Lambdoc_rlambwiki
 Lambdoc_rlambwiki_parser
 Lambdoc_rlambwiki_scanner
 Lambdoc_rlambwiki_tokenizer
+Lambdoc_rlambwiki_readable
 Lambdoc_rlambwiki_reader
 Lambdoc_rlambxml
 Lambdoc_rlambxml_dtd
 Lambdoc_rlambxml_parser
+Lambdoc_rlambxml_readable
 Lambdoc_rlambxml_reader
 Lambdoc_rmarkdown
 Lambdoc_rmarkdown_mapper
+Lambdoc_rmarkdown_readable
 Lambdoc_rmarkdown_reader
 Lambdoc_writer
 Lambdoc_writer_emblang
@@ -59,5 +63,6 @@ Lambdoc_writer_maker
 Lambdoc_writer_translations
 Lambdoc_writer_writeconv
 Lambdoc_whtml5
+Lambdoc_whtml5_writable
 Lambdoc_whtml5_writer
 # OASIS_STOP
