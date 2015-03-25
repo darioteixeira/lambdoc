@@ -1,1 +1,1204 @@
-../markups/lambtex/sample.lambtex
+\newmacro{fox}{0}{The quick brown fox jumps over the lazy dog.}
+
+\newmacro{short}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.}
+
+\newmacro{lorem}{0}{Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi.}
+
+\newmacro{elwho}{0}{John McAuthor}
+\newmacro{elwhat}{0}{Title of the article}
+\newmacro{elwhere}{0}{\link{http://www.wikipedia.org/}}
+
+\title{A complete sample of \caps{Lambtex}}
+\subtitle{Dario Teixeira}
+\subtitle{March 2013}
+
+\begin{abstract}
+\p{\lorem}
+\end{abstract}
+
+\toc
+
+\part[part:inline]{Inline features}
+
+\p<initial>{\lorem}
+
+Here we have examples of text in \bold{bold} and \emph{emphasised} and \code{monospaced}
+and in \caps{small-caps} and with \sup{superscripts} and \sub{subscripts}. You may also
+correct \del{perfect}\ins{broken} text.  Also, \mbox{\emph{all of this emphasised text
+should appear on the same line.}}
+
+It is possible to enter \caps{HTML} entities either by name (\code{\&euro;}
+produces '&euro;'), by decimal code point (\code{\&#8364;} produces '&#8364;'),
+or by hexadecimal code point (\code{\&#x20ac;} produces '&#x20ac;').  You can
+also enter en-dashes (\code{\-\-} produces '--'), em-dashes (\code{\-\-\-}
+produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
+\caps{utf-8}, so you can --- for example --- enter Japanese characters directly:
+おなかがいっぱいですからなにもたべたくないです.
+
+\short
+It is possible to embed images like \glyph{circle-tiny.png}{o} into an inline context.
+\short
+
+Here is a link to part number \dref{part:inline}, or smartly, \sref{part:inline}.
+Similarly, here is a link to section number \dref{sec:foobar}, or smartly,
+\sref{sec:foobar}.  And here is a link to \mref{sec:foobar}{that same
+section}.  You can also link to Tip \dref{tip:one}, or smarly \sref{tip:one},
+or a link to \mref{tip:one}{that same tip}. The bibliography is at the
+end\cite{bib:bib1}\cite{bib:bib2}\cite{bib:bib3}.  You can also place multiple
+citations in the same square brackets\cite{bib:bib1}{bib:bib2}{bib:bib3}. There is
+also\see{note:note1} a list\see{note:note2} of notes\see{note:note3}, which if you prefer
+you can reference them with a single command\see{note:note1}{note:note2}{note:note3}.
+
+\part{Block features}
+
+\section[sec:foobar]{Text paragraphs}
+
+\p{\lorem}
+\p{\lorem}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Unordered lists}
+
+\p{\lorem}
+\begin{itemize}
+\item \lorem
+\item \lorem
+\item \lorem
+\end{itemize}
+\p{\lorem}
+
+\section{Ordered lists}
+
+\p{\lorem}
+\begin{enumerate}
+\item \p{\lorem}
+\item \p{\lorem}
+\item \p{\lorem}
+\end{enumerate}
+\p{\lorem}
+
+\section{Description lists}
+
+\p{\lorem}
+\begin{description}
+\item{alpha} \p{\lorem}
+\item{beta} \p{\lorem}
+\item{gamma} \p{\lorem}
+\end{description}
+\p{\lorem}
+
+\section{Q&A environments}
+
+\p{\lorem}
+\begin{qanda}
+\question{Question:}
+	\p{\short}
+\answer{Answer:}
+	\p{\lorem}
+\question{Q:}
+	\p{\short}
+\answer{A:}
+	\p{\lorem}
+	\p{\lorem}
+\rquestion
+	\p{\lorem}
+\ranswer
+	\p{\lorem}
+\question
+	\p{\lorem}
+\answer
+	\p{\lorem}
+	\p{\lorem}
+\rquestion
+	\p{\lorem}
+\ranswer
+	\p{\lorem}
+\end{qanda}
+\p{\lorem}
+
+
+\section{Verse environments}
+
+\p{\lorem}
+\begin{verse}
+\p{\fox \br \fox \br \fox \br \fox}
+\p{\fox \br \fox \br \fox \br \fox}
+\p{\fox \br \fox \br \fox \br \fox}
+\end{verse}
+\p{\lorem}
+
+
+\section{Quote environments}
+
+\p{\lorem}
+\begin{quote}
+\p{\lorem}
+\end{quote}
+\p{\lorem}
+
+
+\section{MathTeX blocks}
+
+\p{\lorem}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\p{\lorem}
+
+
+\section{Presentation MathML blocks}
+
+\p{\lorem}
+\begin{mathml}
+<math>
+	<mrow>
+		<mi>x</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mrow>
+				<mo form="prefix">&minus;</mo>
+				<mi>b</mi>
+				<mo>&PlusMinus;</mo>
+				<msqrt>
+					<msup>
+						<mi>b</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>&minus;</mo>
+					<mn>4</mn>
+					<mo>&InvisibleTimes;</mo>
+					<mi>a</mi>
+					<mo>&InvisibleTimes;</mo>
+					<mi>c</mi>
+				</msqrt>
+			</mrow>
+			<mrow>
+				<mn>2</mn>
+				<mo>&InvisibleTimes;</mo>
+				<mi>a</mi>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+\end{mathml}
+\p{\lorem}
+
+
+\section{Content MathML blocks}
+
+\p{\lorem}
+\begin{mathml}
+<math>
+<apply><in/>
+<ci>x</ci>
+<set>
+<apply><divide/>
+<apply><plus/>
+<apply><minus/>
+<ci>b</ci>
+</apply>
+<apply><root/>
+<apply><minus/>
+<apply><power/>
+<ci>b</ci>
+<cn>2</cn>
+</apply>
+<apply><times/>
+<cn>4</cn>
+<ci>a</ci>
+<ci>c</ci>
+</apply>
+</apply>
+</apply>
+</apply>
+<apply><times/>
+<cn>2</cn>
+<ci>a</ci>
+</apply>
+</apply>
+<apply><divide/>
+<apply><minus/>
+<apply><minus/>
+<ci>b</ci>
+</apply>
+<apply><root/>
+<apply><minus/>
+<apply><power/>
+<ci>b</ci>
+<cn>2</cn>
+</apply>
+<apply><times/>
+<cn>4</cn>
+<ci>a</ci>
+<ci>c</ci>
+</apply>
+</apply>
+</apply>
+</apply>
+<apply><times/>
+<cn>2</cn>
+<ci>a</ci>
+</apply>
+</apply>
+</set>
+</apply>
+</math>
+\end{mathml}
+\p{\lorem}
+
+
+\section{Source environment: default with syntax highlighting}
+
+\p{\lorem}
+\begin<lang=caml>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: default with syntax highlighting and line numbers}
+
+\p{\lorem}
+\begin<lang=caml,nums=yes>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: plain with syntax highlighting}
+
+\p{\lorem}
+\begin<lang=caml,plain>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: plain with syntax highlighting and line numbers}
+
+\p{\lorem}
+\begin<lang=caml,nums=yes,plain>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: boxed with syntax highlighting}
+
+\p{\lorem}
+\begin<lang=caml,boxed>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: boxed with syntax highlighting and line numbers}
+
+\p{\lorem}
+\begin<lang=caml,nums=yes,boxed>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: zebra with syntax highlighting}
+
+\p{\lorem}
+\begin<lang=caml,zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: zebra with syntax highlighting and line numbers}
+
+\p{\lorem}
+\begin<lang=caml,nums=yes,zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: console}
+
+\p{\lorem}
+\begin<console>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+\end{source}
+\p{\lorem}
+
+
+\section{Source environment: console with line numbers}
+
+\p{\lorem}
+\begin<nums=yes,console>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+\end{source}
+\p{\lorem}
+
+
+\section{Tabular environments}
+
+\p{\lorem}
+\begin{tabular}{rll}
+\head
+|		|{2c_} Scientific name				|
+| Common name	| Genus			| Species		|
+\body
+| Wolf		| \emph{Canis}		| \emph{lupus}		|
+| Cat		| \emph{Felis}		| \emph{catus}		|
+| Chicken	| \emph{Gallus}		| \emph{gallus}		|
+| Lion		| \emph{Panthera}	| \emph{leo}		|
+| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+\body
+| English oak	| \emph{Quercus}	| \emph{robur}		|
+| European yew	| \emph{Taxus}		| \emph{baccata}	|
+\foot
+| Common name	| Genus			| Species		|
+|		|{2c^} Scientific name				|
+\end{tabular}
+\p{\lorem}
+
+
+\section{Subpage environments}
+
+\p{\lorem}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\p{\lorem}
+
+
+\section{Verbatim environments}
+
+\p{\lorem}
+\begin{verbatim}
+       -------
+       |  A  |
+       -------
+          |
+          |
+          |
+         / \
+        /   \
+       /     \
+      /       \
+     /         \
+    /           \
+-------       -------
+|  A  |       |  C  |
+-------       -------
+\end{verbatim}
+\p{\lorem}
+
+\begin<mult6>{verbatim}
+┏┻┓
+┫☃┣
+┗┳┛
+\end{verbatim}
+\p{\lorem}
+
+
+\section{Pictures}
+
+\p{\lorem}
+\picture{circle-big.png}{Big Circle}
+\p{\lorem}
+\picture<frame>{square-big.png}{Big Square}
+\p{\lorem}
+\picture{triangle-huge.png}{Huge Triangle}
+\p{\lorem}
+
+
+\section{Floating pictures}
+
+\subsection{Centered}
+\p{\lorem}
+\picture<center>{circle-small.png}{Small Circle}
+\p{\lorem}
+
+\subsection{Floating left}
+\p{\lorem}
+\picture<left>{circle-small.png}{Small Circle}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+\p{\lorem}
+\picture<right>{circle-small.png}{Small Circle}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating left and right}
+\p{\lorem}
+\picture<left>{circle-small.png}{Small Circle}
+\picture<right>{circle-small.png}{Small Circle}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating left and left}
+\p{\lorem}
+\picture<left>{circle-small.png}{Small Circle}
+\picture<left>{circle-small.png}{Small Circle}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right and right}
+\p{\lorem}
+\picture<right>{circle-small.png}{Small Circle}
+\picture<right>{circle-small.png}{Small Circle}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Pull-quote environments}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{pull}
+\fox
+\end{pull}
+\p{\lorem}
+
+\begin{pull}{John McAuthor}
+\fox
+\end{pull}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{pull}
+\fox
+\end{pull}
+\p{\lorem}
+\p{\lorem}
+
+\p{\lorem}
+\begin<left>{pull}{John McAuthor}
+\fox
+\end{pull}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{pull}
+\fox
+\end{pull}
+\p{\lorem}
+\p{\lorem}
+
+\p{\lorem}
+\begin<right>{pull}{John McAuthor}
+\fox
+\end{pull}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Custom Boxout environments}
+
+\newboxout{generic}
+\newboxout{warning}{Warning}
+\newboxout{tip}{Tip}{tip}
+
+\subsection{Generic without title}
+\p{\lorem}
+\begin{generic}
+\p{\lorem}
+\end{generic}
+\p{\lorem}
+
+\subsection{Generic with title}
+\p{\lorem}
+\begin{generic}{This is a title}
+\p{\lorem}
+\end{generic}
+\p{\lorem}
+
+\subsection{Warning without extra title}
+\p{\lorem}
+\begin{warning}
+\p{\lorem}
+\end{warning}
+\p{\lorem}
+
+\subsection{Warning with extra title}
+\p{\lorem}
+\begin{warning}{This is a title}
+\p{\lorem}
+\end{warning}
+\p{\lorem}
+
+\subsection{Tip without extra title}
+\p{\lorem}
+\begin[tip:one]{tip}
+\p{\lorem}
+\end{tip}
+\p{\lorem}
+
+\subsection{Tip with neither extra title nor order}
+\p{\lorem}
+\begin(){tip}
+\p{\lorem}
+\end{tip}
+\p{\lorem}
+
+\subsection{Tip with extra title}
+\p{\lorem}
+\begin{tip}{This is a title}
+\p{\lorem}
+\end{tip}
+\p{\lorem}
+
+\subsection{Tip with extra title but no order}
+\p{\lorem}
+\begin(){tip}{This is a title}
+\p{\lorem}
+\end{tip}
+\p{\lorem}
+
+\subsection{Centered}
+\p{\lorem}
+\begin{warning}
+\p{\lorem}
+\end{warning}
+\p{\lorem}
+
+\subsection{Floating left}
+\p{\lorem}
+\begin<left>{warning}
+\p{\lorem}
+\end{warning}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+\p{\lorem}
+\begin<right>{warning}
+\p{\lorem}
+\end{warning}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Custom theorem environments}
+
+\newtheorem{theorem}{Theorem}{theorem}
+\newtheorem{proof}{Proof}
+
+\p{\lorem}
+
+\begin{theorem}
+\p{\lorem}
+\end{theorem}
+
+\p{\lorem}
+
+\begin{theorem}{John McAuthor}
+\p{\lorem}
+\end{theorem}
+
+\begin{proof}
+\p{\lorem \sub{&#x220e;}}
+\end{proof}
+
+\p{\lorem}
+
+
+\section{Equation environments}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Equation environments without ordering}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin(){equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin()<left>{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin()<right>{equation}{\fox}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Equation environments without caption}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{equation}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{equation}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{equation}
+\begin{mathtex}
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+\end{mathtex}
+\end{equation}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Printout environments}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{printout}{\fox}
+\begin<lang=caml>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf		       -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+\end{printout}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{printout}{\fox}
+\begin<lang=caml,nums=no>{source}
+type t =
+    | Foo of int
+    | Bar of float
+
+let is_foo = function
+    | Foo _ -> true
+    | Bar _ -> false
+\end{source}
+\end{printout}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{printout}{\fox}
+\begin<lang=caml,nums=no>{source}
+type t =
+    | Foo of int
+    | Bar of float
+
+let is_foo = function
+    | Foo _ -> true
+    | Bar _ -> false
+\end{source}
+\end{printout}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Table environments}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{table}{\fox}
+\begin{tabular}{rll}
+\head
+|		|{2c_} Scientific name				|
+| Common name	| Genus			| Species		|
+\body
+| Wolf		| \emph{Canis}		| \emph{lupus}		|
+| Cat		| \emph{Felis}		| \emph{catus}		|
+| Chicken	| \emph{Gallus}		| \emph{gallus}		|
+| Lion		| \emph{Panthera}	| \emph{leo}		|
+| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+| English oak	| \emph{Quercus}	| \emph{robur}		|
+\foot
+| Common name	|{1c_} Genus		|{1c_} Species		|
+|		|{2c} Scientific name				|
+\end{tabular}
+\end{table}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{table}{\fox}
+\begin{tabular}{rl}
+\head
+| Common name	| Scientific name	|
+\body
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
+\end{tabular}
+\end{table}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{table}{\fox}
+\begin{tabular}{rl}
+\head
+| Common name	| Scientific name	|
+\body
+| Wolf		| \emph{Canis lupus}	|
+| Cat		| \emph{Felis catus}	|
+| Chicken	| \emph{Gallus gallus}	|
+\end{tabular}
+\end{table}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Figure environments around verbatim blocks}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{figure}{\fox}
+\begin{verbatim}
+       -------
+       |  A  |
+       -------
+          |
+          |
+          |
+         / \
+        /   \
+       /     \
+      /       \
+     /         \
+    /           \
+-------       -------
+|  A  |       |  C  |
+-------       -------
+\end{verbatim}
+\end{figure}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{figure}{\fox}
+\begin{verbatim}
+       -------
+       |  A  |
+       -------
+          |
+          |
+          |
+         / \
+        /   \
+       /     \
+      /       \
+     /         \
+    /           \
+-------       -------
+|  A  |       |  C  |
+-------       -------
+\end{verbatim}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{figure}{\fox}
+\begin{verbatim}
+       -------
+       |  A  |
+       -------
+          |
+          |
+          |
+         / \
+        /   \
+       /     \
+      /       \
+     /         \
+    /           \
+-------       -------
+|  A  |       |  C  |
+-------       -------
+\end{verbatim}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Figure environments around images}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{figure}{\fox}
+\picture{circle-big.png}{Big Circle}
+\end{figure}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{figure}{\fox}
+\picture{circle-small.png}{Small Circle}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{figure}{\fox}
+\picture{circle-small.png}{Small Circle}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+
+\section{Figure environments around subpages}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{figure}{\fox}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+
+\subsection{Centered with long caption}
+
+\p{\lorem}
+\begin{figure}{\fox \fox \fox \fox}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{figure}{\fox}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{figure}{\fox}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+\section{Figure environments without caption around subpages}
+
+\subsection{Centered}
+
+\p{\lorem}
+\begin{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+
+\subsection{Floating left}
+
+\p{\lorem}
+\begin<left>{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+\subsection{Floating right}
+
+\p{\lorem}
+\begin<right>{figure}
+\begin{subpage}
+\section(){Introduction}
+\p{\lorem}
+\end{subpage}
+\end{figure}
+\p{\lorem}
+\p{\lorem}
+
+
+\part{Sectioning}
+
+\h1{Level 1 section}
+\p{\lorem}
+\section{Level 1 section (alternative)}
+\p{\lorem}
+\h2{Level 2 section}
+\p{\lorem}
+\subsection{Level 2 section (alternative)}
+\p{\lorem}
+\h3{Level 3 section}
+\p{\lorem}
+\subsubsection{Level 3 section (alternative)}
+\p{\lorem}
+\h4{Level 4 section}
+\p{\lorem}
+\h5{Level 5 section}
+\p{\lorem}
+\h6{Level 6 section}
+\p{\lorem}
+
+\part{Backmatter}
+
+\bibliography
+
+\begin[bib:bib1]{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin[bib:bib2]{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin[bib:bib3]{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\begin{bib}
+\who{\elwho}
+\what{\elwhat}
+\where{\elwhere}
+\end{bib}
+
+\notes
+
+\begin[note:note1]{note}
+\p{\lorem}
+\end{note}
+
+\begin[note:note2]{note}
+\p{\lorem}
+\end{note}
+
+\begin[note:note3]{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
+\begin{note}
+\p{\lorem}
+\end{note}
+
