@@ -19,10 +19,12 @@ of Wiki Creole, and the last is the popular lightweight markup language.
 The library also includes the possibility of outputing any Lambdoc document
 as an Ocsigen (Tyxml) HTML5 value.
 
-Additional capabilities include the runtime customisation of available document
-features (you may, for example, declare that a certain class of users is
-only allowed to produce documents containing nothing more than paragraphs of
-plain text), detailed error messages, and the definition of basic macros.
+Additional capabilities include the runtime customisation of available
+document features (you may, for example, declare that a certain class of
+users is only allowed to produce documents containing nothing more than
+paragraphs of plain text), detailed error messages, and the definition of
+basic macros.  Particularly of note is a powerful extension mechanism that
+allows the definition of custom commands tailored to a particular application.
 It also ships with 'lambcmd', a CLI application that allows the conversion
 between any of the input formats into one of the supported output targets.
 
@@ -38,12 +40,9 @@ Camlhighlight [12].
 3. Building and installing
 ==========================
 
-To build only the library run 'make lib'.  To perform a Findlib installation of
-the library run 'make install' or 'make reinstall'.  To remove the package run
-'make uninstall'.  The API documentation can be built with 'make doc'.  If you
-also wish to build the lambcmd command line utility, issue 'make lambcmd'.
-Finally, if you wish to build everything (library + lambcmd) you may simply
-run 'make all' or just 'make'.
+The build system relies on OASIS.  The customary sequence of './configure',
+'make', and 'make install' is used to build and install the library and the
+lambcmd CLI application.  Run 'make doc' to generate the API documentation.
 
 
 4. License
