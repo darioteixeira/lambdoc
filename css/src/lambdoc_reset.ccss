@@ -1,10 +1,10 @@
 /********************************************************************************/
-/* Lambdoc_reset.ccss								*/
-/* CSS Resetting code according to Eric Meyer.					*/
+/* Lambdoc_reset.ccss                                                           */
+/* CSS Resetting code according to Eric Meyer.                                  */
 /********************************************************************************/
 
 /********************************************************************************/
-/* Eliminate margins, padding, borders, etc.					*/
+/* Eliminate margins, padding, borders, etc.                                    */
 /********************************************************************************/
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
@@ -12,60 +12,60 @@ blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
 font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody,
 tfoot, thead, tr, th, td, button
-	{
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-size: 100%;
-	font-family: inherit;
-	vertical-align: baseline;
-	}
+    {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+    }
 
 /********************************************************************************/
-/* Redefine focus style.							*/
+/* Redefine focus style.                                                        */
 /********************************************************************************/
 
 :focus
-	{
-	outline: 0;
-	}
+    {
+    outline: 0;
+    }
 
 /********************************************************************************/
-/* Set default colours and line height.						*/
+/* Set default colours and line height.                                         */
 /********************************************************************************/
 
 body
-	{
-	line-height: 1;
-	color: black;
-	background: white;
-	}
+    {
+    line-height: 1;
+    color: black;
+    background: white;
+    }
 
 /********************************************************************************/
-/* Clear list styles.								*/
+/* Clear list styles.                                                           */
 /********************************************************************************/
 
 ol, ul
-	{
-	list-style: none;
-	}
+    {
+    list-style: none;
+    }
 
 /********************************************************************************/
-/* Reset tables.								*/
+/* Reset tables.                                                                */
 /********************************************************************************/
 
-table	
-	{
-	border-collapse: separate;
-	border-spacing: 0;
-	}
+table   
+    {
+    border-collapse: separate;
+    border-spacing: 0;
+    }
 
 caption, th, td
-	{
-	text-align: left;
-	font-weight: normal;
-	}
+    {
+    text-align: left;
+    font-weight: normal;
+    }
 

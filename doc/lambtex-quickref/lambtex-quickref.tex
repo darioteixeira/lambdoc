@@ -1,31 +1,31 @@
 \documentclass[9pt]{extarticle}
 
-\usepackage{geometry}                           % To define page size, margins, etc.
-\usepackage[pdftex]{hyperref}                   % For hyper-references in the generated PDF.
-\usepackage[hyperref]{xcolor}                   % To use colours in the document.
-\usepackage[pdftex]{graphicx}                   % To import graphics.
-\usepackage{epstopdf}                           % For on-the-fly conversion of eps to pdf.
-\usepackage[british]{babel}                     % For British English hyphenation patterns.
-\usepackage[latin1]{inputenc}                   % For Latin1 (ISO-8859-1) input encoding.
-\usepackage[T1]{fontenc}                        % For T1 character encoding.
-\usepackage{textcomp}                           % For T1 character encoding.
-\usepackage{ae}                                 % For T1 encoding using Type 1 fonts.
-\usepackage{mathptmx}                           % For Type 1 "Times Roman" serif text and math.
-\usepackage[scaled=0.92]{helvet}                % For Type 1 "Helvetica" sans serif text.
-\usepackage{courier}                            % For Type 1 "Courier" monospaced text.
-\usepackage{pifont}				% For dingbat symbols.
-\usepackage{xspace}                             % For automatic handling of spaces after macros.
-\usepackage{multirow}				% For merging rows.
-\usepackage{colortbl}
-\usepackage{soul}				% For strike-through.
-\usepackage[titles]{tocloft}                    % For Table of Contents customisation.
-\usepackage{subfig}                             % For subfigures.
-\usepackage{fancyvrb}                           % For fancy verbatim environments.
-\usepackage[stable]{footmisc}                   % For stable footnotes.
-\usepackage{float}                              % For extra control over floats.
-\usepackage{titlesec}                           % To configure sections headings.
-\usepackage[nottoc]{tocbibind}                  % To put the Bibliography in the TOC.
-\usepackage{units}                              % To typeset units.
+\usepackage{geometry}               % To define page size, margins, etc.
+\usepackage[pdftex]{hyperref}       % For hyper-references in the generated PDF.
+\usepackage[hyperref]{xcolor}       % To use colours in the document.
+\usepackage[pdftex]{graphicx}       % To import graphics.
+\usepackage{epstopdf}               % For on-the-fly conversion of eps to pdf.
+\usepackage[british]{babel}         % For British English hyphenation patterns.
+\usepackage[latin1]{inputenc}       % For Latin1 (ISO-8859-1) input encoding.
+\usepackage[T1]{fontenc}            % For T1 character encoding.
+\usepackage{textcomp}               % For T1 character encoding.
+\usepackage{ae}                     % For T1 encoding using Type 1 fonts.
+\usepackage{mathptmx}               % For Type 1 "Times Roman" serif text and math.
+\usepackage[scaled=0.92]{helvet}    % For Type 1 "Helvetica" sans serif text.
+\usepackage{courier}                % For Type 1 "Courier" monospaced text.
+\usepackage{pifont}                 % For dingbat symbols.
+\usepackage{xspace}                 % For automatic handling of spaces after macros.
+\usepackage{multirow}               % For merging rows.
+\usepackage{colortbl}               % For color in tables
+\usepackage{soul}                   % For strike-through.
+\usepackage[titles]{tocloft}        % For Table of Contents customisation.
+\usepackage{subfig}                 % For subfigures.
+\usepackage{fancyvrb}               % For fancy verbatim environments.
+\usepackage[stable]{footmisc}       % For stable footnotes.
+\usepackage{float}                  % For extra control over floats.
+\usepackage{titlesec}               % To configure sections headings.
+\usepackage[nottoc]{tocbibind}      % To put the Bibliography in the TOC.
+\usepackage{units}                  % To typeset units.
 
 \geometry{dvipdfm,a4paper,portrait,centering,tmargin=1.5cm,bmargin=1.5cm,lmargin=2.5cm,rmargin=2.5cm,nomarginpar}
 
@@ -44,18 +44,18 @@
 
 
 \hypersetup{%
-	linkcolor=RoyalBlue,
-	urlcolor=RoyalBlue,
-	plainpages=false,
-	pdfpagelabels,
-	hyperindex,
-	colorlinks=true}
+    linkcolor=RoyalBlue,
+    urlcolor=RoyalBlue,
+    plainpages=false,
+    pdfpagelabels,
+    hyperindex,
+    colorlinks=true}
 
 \hypersetup{%
-	pdftitle={Lambtex Quick Reference},
-	pdfauthor={Dario Teixeira (dario.teixeira@nleyten.com)},
-	pdfsubject={lambtex},
-	pdfkeywords={lambtex, lambdoc}}
+    pdftitle={Lambtex Quick Reference},
+    pdfauthor={Dario Teixeira (dario.teixeira@nleyten.com)},
+    pdfsubject={lambtex},
+    pdfkeywords={lambtex, lambdoc}}
 
 \pagestyle{empty}
 
@@ -111,97 +111,97 @@
 
 \hline
 
-\rule{0ex}{2.6ex} & 			&		& \multicolumn{4}{c}{\hd{Parameters}}							& \\[0.2ex]
+\rule{0ex}{2.6ex} &             &       & \multicolumn{4}{c}{\hd{Parameters}}                           & \\[0.2ex]
 
 \cline{4-7}
 
-\rule{0ex}{2.6ex} & \hd{Command}	& \hd{Synonyms}	& \hd{Primary}			& \hd{Order}	& \hd{Label}	& \hd{Extra}		& \hd{T} \\[0.2ex]
+\rule{0ex}{2.6ex} & \hd{Command}    & \hd{Synonyms} & \hd{Primary}          & \hd{Order}    & \hd{Label}    & \hd{Extra}        & \hd{T} \\[0.2ex]
 
 \hline
 
 \multirow{19}{*}{\rotatebox{90}{\hd{Inline commands}}}
 
-& \simc{br}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \rule{0ex}{2.6ex}\\
-& \simc{glyph}		& \no				& \thelabel\raw			& \nein		& \nein		& \neinz		& \C \\
-& \simc{bold}		& \simc{b}, \simc{strong}	& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{emph}		& \simc{i}, \simc{em}		& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{code}		& \simc{tt}			& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{caps}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{ins}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{del}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{sup}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{sub}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{mbox}		& \no				& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{span}		& \no				& \inline			& \nein		& \nein		& \ex{class}		& \C \\
-& \simc{link}		& \simc{a}			& \raw\rexo{\inline}		& \nein		& \nein		& \neinz		& \C \\
-& \simm{cite}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
-& \simm{see}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
-& \simm{ref}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
-& \simm{sref}		& \no				& \thelabel			& \nein		& \nein		& \neinz		& \M \\
-& \simm{mref}		& \no				& \thelabel\inline		& \nein		& \nein		& \neinz		& \M \\
-& \simm{\emph{macro}}	& \no				& \rexp{\inline}		& \nein		& \nein		& \neinz		& \M \\
-& \simm{arg}		& \no				& \raw				& \nein		& \nein		& \neinz		& \M \\[0.2ex]
+& \simc{br}             & \no                       & \no                   & \nein     & \nein     & \neinz        & \C \rule{0ex}{2.6ex}\\
+& \simc{glyph}          & \no                       & \thelabel\raw         & \nein     & \nein     & \neinz        & \C \\
+& \simc{bold}           & \simc{b}, \simc{strong}   & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{emph}           & \simc{i}, \simc{em}       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{code}           & \simc{tt}                 & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{caps}           & \no                       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{ins}            & \no                       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{del}            & \no                       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{sup}            & \no                       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{sub}            & \no                       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{mbox}           & \no                       & \inline               & \nein     & \nein     & \neinz        & \C \\
+& \simc{span}           & \no                       & \inline               & \nein     & \nein     & \ex{class}    & \C \\
+& \simc{link}           & \simc{a}                  & \raw\rexo{\inline}    & \nein     & \nein     & \neinz        & \C \\
+& \simm{cite}           & \no                       & \thelabel             & \nein     & \nein     & \neinz        & \M \\
+& \simm{see}            & \no                       & \thelabel             & \nein     & \nein     & \neinz        & \M \\
+& \simm{ref}            & \no                       & \thelabel             & \nein     & \nein     & \neinz        & \M \\
+& \simm{sref}           & \no                       & \thelabel             & \nein     & \nein     & \neinz        & \M \\
+& \simm{mref}           & \no                       & \thelabel\inline      & \nein     & \nein     & \neinz        & \M \\
+& \simm{\emph{macro}}   & \no                       & \rexp{\inline}        & \nein     & \nein     & \neinz        & \M \\
+& \simm{arg}            & \no                       & \raw                  & \nein     & \nein     & \neinz        & \M \\[0.2ex]
 
 \hline
 
 \multirow{39}{*}{\rotatebox{90}{\hd{Block commands}}}
 
-& \simc{paragraph}	& \simc{p}			& \inline			& \nein		& \nein		& \ex{initial}, \ex{indent} & \C \rule{0ex}{2.6ex}\\
-& \envc{itemize}	& \envc{ul}, \envc{itemise}	& \no				& \nein		& \nein		& \ex{bul}		& \C \\
-& \envc{enumerate}	& \envc{ol}			& \no				& \nein		& \nein		& \ex{num}		& \C \\
-& \envc{description}	& \envc{dl}			& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envc{qanda}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envc{verse}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envc{quote}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envc{mathtex}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envc{mathml}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envc{source}		& \no				& \no				& \nein		& \nein		& \ex{lang}, \ex{style}, \ex{nums}& \C \\
-& \envc{tabular}	& \no				& \raw				& \nein		& \nein		& \neinz		& \C \\
-& \envc{verbatim}	& \envc{pre}			& \no				& \nein		& \nein		& \ex{mult}		& \C \\
-& \simc{picture}	& \no				& \thelabel\raw			& \nein		& \nein		& \ex{frame}, \ex{width}& \C \\
-& \envc{subpage}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \envm{decor}		& \no				& \no				& \nein		& \nein		& \ex{float}		& \M \\
-& \envm{pull}		& \no				& \rexo{\inline}		& \nein		& \nein		& \ex{float}		& \M \\
-& \envm{\emph{boxout}}	& \no				& \rexo{\inline}		& \depz		& \nein		& \ex{float}		& \M \\
-& \envm{\emph{theorem}}	& \no				& \rexo{\inline}		& \depz		& \nein		& \ex{float}		& \M \\
-& \envm{equation}	& \no				& \rexo{\inline}		& \depz		& \darf		& \ex{float}		& \M \\
-& \envm{printout}	& \no				& \rexo{\inline}		& \depz		& \darf		& \ex{float}		& \M \\
-& \envm{table}		& \no				& \rexo{\inline}		& \depz		& \darf		& \ex{float}		& \M \\
-& \envm{figure}		& \no				& \rexo{\inline}		& \depz		& \darf		& \ex{float}		& \M \\
-& \simm{part}		& \no				& \inline			& \depz		& \darf		& \neinz		& \M \\
-& \simm{appendix}	& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
-& \simm{section}	& \simm{h1}			& \inline			& \depz		& \darf		& \neinz		& \M \\
-& \simm{subsection}	& \simm{h2}			& \inline			& \depz		& \darf		& \neinz		& \M \\
-& \simm{subsubsection}	& \simm{h3}			& \inline			& \depz		& \darf		& \neinz		& \M \\
-& \simm{bibliography}	& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
-& \simm{notes}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
-& \simm{toc}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
-& \simm{title}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
-& \simm{subtitle}	& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
-& \envm{abstract}	& \no				& \no				& \nein		& \nein		& \neinz		& \M \\
-& \simm{rule}		& \simm{hr}			& \no				& \nein		& \nein		& \neinz		& \M \\
-& \envm{bib}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
-& \envm{note}		& \no				& \no				& \nein		& \darf		& \neinz		& \M \\
-& \envm{macrodef}	& \no				& \raw\raw\inline		& \nein		& \nein		& \neinz		& \M \\
-& \envm{boxoutdef}	& \no				& \raw\rexo{\inline\rexo{\raw}}	& \nein		& \nein		& \neinz		& \M \\
-& \envm{theoremdef}	& \no				& \raw\inline\rexo{\raw}	& \nein		& \nein		& \neinz		& \M \\[0.2ex]
+& \simc{paragraph}      & \simc{p}                  & \inline                       & \nein     & \nein     & \ex{initial}, \ex{indent}         & \C \rule{0ex}{2.6ex}\\
+& \envc{itemize}        & \envc{ul}, \envc{itemise} & \no                           & \nein     & \nein     & \ex{bul}                          & \C \\
+& \envc{enumerate}      & \envc{ol}                 & \no                           & \nein     & \nein     & \ex{num}                          & \C \\
+& \envc{description}    & \envc{dl}                 & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envc{qanda}          & \no                       & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envc{verse}          & \no                       & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envc{quote}          & \no                       & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envc{mathtex}        & \no                       & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envc{mathml}         & \no                       & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envc{source}         & \no                       & \no                           & \nein     & \nein     & \ex{lang}, \ex{style}, \ex{nums}  & \C \\
+& \envc{tabular}        & \no                       & \raw                          & \nein     & \nein     & \neinz                            & \C \\
+& \envc{verbatim}       & \envc{pre}                & \no                           & \nein     & \nein     & \ex{mult}                         & \C \\
+& \simc{picture}        & \no                       & \thelabel\raw                 & \nein     & \nein     & \ex{frame}, \ex{width}            & \C \\
+& \envc{subpage}        & \no                       & \no                           & \nein     & \nein     & \neinz                            & \C \\
+& \envm{decor}          & \no                       & \no                           & \nein     & \nein     & \ex{float}                        & \M \\
+& \envm{pull}           & \no                       & \rexo{\inline}                & \nein     & \nein     & \ex{float}                        & \M \\
+& \envm{\emph{boxout}}  & \no                       & \rexo{\inline}                & \depz     & \nein     & \ex{float}                        & \M \\
+& \envm{\emph{theorem}} & \no                       & \rexo{\inline}                & \depz     & \nein     & \ex{float}                        & \M \\
+& \envm{equation}       & \no                       & \rexo{\inline}                & \depz     & \darf     & \ex{float}                        & \M \\
+& \envm{printout}       & \no                       & \rexo{\inline}                & \depz     & \darf     & \ex{float}                        & \M \\
+& \envm{table}          & \no                       & \rexo{\inline}                & \depz     & \darf     & \ex{float}                        & \M \\
+& \envm{figure}         & \no                       & \rexo{\inline}                & \depz     & \darf     & \ex{float}                        & \M \\
+& \simm{part}           & \no                       & \inline                       & \depz     & \darf     & \neinz                            & \M \\
+& \simm{appendix}       & \no                       & \no                           & \nein     & \darf     & \neinz                            & \M \\
+& \simm{section}        & \simm{h1}                 & \inline                       & \depz     & \darf     & \neinz                            & \M \\
+& \simm{subsection}     & \simm{h2}                 & \inline                       & \depz     & \darf     & \neinz                            & \M \\
+& \simm{subsubsection}  & \simm{h3}                 & \inline                       & \depz     & \darf     & \neinz                            & \M \\
+& \simm{bibliography}   & \no                       & \no                           & \nein     & \darf     & \neinz                            & \M \\
+& \simm{notes}          & \no                       & \no                           & \nein     & \darf     & \neinz                            & \M \\
+& \simm{toc}            & \no                       & \no                           & \nein     & \darf     & \neinz                            & \M \\
+& \simm{title}          & \no                       & \inline                       & \nein     & \nein     & \neinz                            & \M \\
+& \simm{subtitle}       & \no                       & \inline                       & \nein     & \nein     & \neinz                            & \M \\
+& \envm{abstract}       & \no                       & \no                           & \nein     & \nein     & \neinz                            & \M \\
+& \simm{rule}           & \simm{hr}                 & \no                           & \nein     & \nein     & \neinz                            & \M \\
+& \envm{bib}            & \no                       & \no                           & \nein     & \darf     & \neinz                            & \M \\
+& \envm{note}           & \no                       & \no                           & \nein     & \darf     & \neinz                            & \M \\
+& \envm{macrodef}       & \no                       & \raw\raw\inline               & \nein     & \nein     & \neinz                            & \M \\
+& \envm{boxoutdef}      & \no                       & \raw\rexo{\inline\rexo{\raw}} & \nein     & \nein     & \neinz                            & \M \\
+& \envm{theoremdef}     & \no                       & \raw\inline\rexo{\raw}        & \nein     & \nein     & \neinz                            & \M \\[0.2ex]
 
 \hline
 
 \multirow{12}{*}{\rotatebox{90}{\hd{Auxiliary commands}}}
 
-& \simc{item}		& \simc{li}			& \no				& \nein		& \nein		& \neinz		& \C \rule{0ex}{2.6ex}\\
-& \simc{item}		& \simc{li}			& \inline			& \nein		& \nein		& \neinz		& \C \\
-& \simc{question}	& \no				& \rexo{\inline}		& \nein		& \nein		& \neinz		& \C \\
-& \simc{rquestion}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \simc{answer}		& \no				& \rexo{\inline}		& \nein		& \nein		& \neinz		& \C \\
-& \simc{ranswer}	& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \simc{head}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \simc{body}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \simc{foot}		& \no				& \no				& \nein		& \nein		& \neinz		& \C \\
-& \simm{who}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
-& \simm{what}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\
-& \simm{where}		& \no				& \inline			& \nein		& \nein		& \neinz		& \M \\[0.2ex]
+& \simc{item}       & \simc{li} & \no               & \nein     & \nein     & \neinz        & \C \rule{0ex}{2.6ex}\\
+& \simc{item}       & \simc{li} & \inline           & \nein     & \nein     & \neinz        & \C \\
+& \simc{question}   & \no       & \rexo{\inline}    & \nein     & \nein     & \neinz        & \C \\
+& \simc{rquestion}  & \no       & \no               & \nein     & \nein     & \neinz        & \C \\
+& \simc{answer}     & \no       & \rexo{\inline}    & \nein     & \nein     & \neinz        & \C \\
+& \simc{ranswer}    & \no       & \no               & \nein     & \nein     & \neinz        & \C \\
+& \simc{head}       & \no       & \no               & \nein     & \nein     & \neinz        & \C \\
+& \simc{body}       & \no       & \no               & \nein     & \nein     & \neinz        & \C \\
+& \simc{foot}       & \no       & \no               & \nein     & \nein     & \neinz        & \C \\
+& \simm{who}        & \no       & \inline           & \nein     & \nein     & \neinz        & \M \\
+& \simm{what}       & \no       & \inline           & \nein     & \nein     & \neinz        & \M \\
+& \simm{where}      & \no       & \inline           & \nein     & \nein     & \neinz        & \M \\[0.2ex]
  
 \hline
 

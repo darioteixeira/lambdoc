@@ -1,18 +1,18 @@
 /********************************************************************************/
-/* Lambdoc_root.ccss								*/
+/* Lambdoc_root.ccss                                                            */
 /********************************************************************************/
 
 /********************************************************************************/
-/* High-level document CSS.							*/
+/* High-level document CSS.                                                     */
 /********************************************************************************/
 
 .doc
-	{
-	margin: 1em auto;
-	width: 44em;
-	font-family: Doc_family_doc;
-	font-size: Doc_fsize_doc;
-	line-height: Doc_line_height_doc;
-	color: Doc_colour_normal;
-	}
+    {
+    margin: 1em auto;
+    width: 44em;
+    font-family: Doc_family_doc;
+    font-size: Doc_fsize_doc;
+    line-height: Doc_line_height_doc;
+    color: Doc_colour_normal;
+    }
 

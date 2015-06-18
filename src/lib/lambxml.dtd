@@ -1,7 +1,8 @@
-<!--	Lambxml.dtd
-        Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
-        This software is distributed under the terms of the GNU GPL version 2.
-        See LICENSE file for full license text.
+<!--
+    Lambxml.dtd
+    Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
+    This software is distributed under the terms of the GNU GPL version 2.
+    See LICENSE file for full license text.
 -->
 
 <!-- DTD for the Lambxml language. -->
@@ -9,27 +10,27 @@
 <!-- Entities -->
 
 <!ENTITY % Block
-	" paragraph | p
-	| itemize | ul | enumerate | ol | description | dl
-	| qanda | verse | quote
-	| mathtexblk | mathmlblk
-	| source | tabular 
-	| subpage | verbatim | pre | picture
-	| pull | boxout | theorem
-	| equation | printout | table | figure
-	| part | appendix
-	| h1 | section | h2 | subsection | h3 | subsubsection | h4 | h5 | h6
-	| bibliography | notes | toc
-	| title | subtitle | abstract | rule
-	| bib | note
-	| newmacro | newboxout | newtheorem $BLOCK">
+    " paragraph | p
+    | itemize | ul | enumerate | ol | description | dl
+    | qanda | verse | quote
+    | mathtexblk | mathmlblk
+    | source | tabular 
+    | subpage | verbatim | pre | picture
+    | pull | boxout | theorem
+    | equation | printout | table | figure
+    | part | appendix
+    | h1 | section | h2 | subsection | h3 | subsubsection | h4 | h5 | h6
+    | bibliography | notes | toc
+    | title | subtitle | abstract | rule
+    | bib | note
+    | newmacro | newboxout | newtheorem $BLOCK">
 
 <!ENTITY % Inline
-	" entity | br | mathtexinl | mathmlinl | glyph
-	| bold | strong | b | emph | em | i | code | tt | caps
-	| ins | del | sup | sub | mbox | span | link | a
-	| see | cite | dref | sref | mref
-	| arg | call $INLINE">
+    " entity | br | mathtexinl | mathmlinl | glyph
+    | bold | strong | b | emph | em | i | code | tt | caps
+    | ins | del | sup | sub | mbox | span | link | a
+    | see | cite | dref | sref | mref
+    | arg | call $INLINE">
 
 <!ENTITY % Frag "(%Block;)*">
 <!ENTITY % Seq "(#PCDATA | %Inline;)*">

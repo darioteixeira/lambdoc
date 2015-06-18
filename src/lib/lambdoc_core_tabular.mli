@@ -1,36 +1,36 @@
 (********************************************************************************)
-(*	Lambdoc_core_tabular.mli
-	Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
-	This software is distributed under the terms of the GNU GPL version 2.
-	See LICENSE file for full license text.
+(*  Lambdoc_core_tabular.mli
+    Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
+    This software is distributed under the terms of the GNU GPL version 2.
+    See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(**	Definitions concerning tabular environments.
+(** Definitions concerning tabular environments.
 *)
 
 module Inline = Lambdoc_core_inline
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
 type alignment_t =
-	| Center
-	| Left
-	| Right
-	| Justify
-	with sexp
+    | Center
+    | Left
+    | Right
+    | Justify
+    with sexp
 
 type weight_t =
-	| Normal
-	| Strong
-	with sexp
+    | Normal
+    | Strong
+    with sexp
 
 type colspec_t = alignment_t * weight_t with sexp
 
-type cellspec_t = colspec_t * int * bool * bool with sexp		(* column spec, column span, has overline, has underline *)
+type cellspec_t = colspec_t * int * bool * bool with sexp       (* column spec, column span, has overline, has underline *)
 
 type cell_t = cellspec_t option * Inline.seq_t option with sexp
 
@@ -39,16 +39,16 @@ type row_t = cell_t list with sexp
 type group_t = row_t list with sexp
 
 type t =
-	{
-	tcols: colspec_t array;
-	thead: group_t option;
-	tfoot: group_t option;
-	tbodies: group_t list;
-	} with sexp
+    {
+    tcols: colspec_t array;
+    thead: group_t option;
+    tfoot: group_t option;
+    tbodies: group_t list;
+    } with sexp
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
 val make_cell: cellspec_t option -> Inline.seq_t option -> cell_t

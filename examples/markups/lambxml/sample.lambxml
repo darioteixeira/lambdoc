@@ -1,23 +1,23 @@
 <newmacro name="fox" nargs="0">
-	The quick brown fox jumps over the lazy dog.
+    The quick brown fox jumps over the lazy dog.
 </newmacro>
 
 <newmacro name="short" nargs="0">
-	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
 </newmacro>
 
 <newmacro name="lorem" nargs="0">
-	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
-	eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-	montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
-	pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
-	aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
-	vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
-	dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
-	leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
-	dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
-	laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
-	ullamcorper ultricies nisi.
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula
+    eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+    montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
+    pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel,
+    aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis
+    vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras
+    dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean
+    leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante,
+    dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius
+    laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur
+    ullamcorper ultricies nisi.
 </newmacro>
 
 
@@ -83,9 +83,9 @@ can reference them with a single command<see href="note:one note:two note:three"
 
 <p><call name="lorem"/></p>
 <ul>
-	<li><call name="lorem"/></li>
-	<li><call name="lorem"/></li>
-	<li><call name="lorem"/></li>
+    <li><call name="lorem"/></li>
+    <li><call name="lorem"/></li>
+    <li><call name="lorem"/></li>
 </ul>
 <p><call name="lorem"/></p>
 
@@ -95,9 +95,9 @@ can reference them with a single command<see href="note:one note:two note:three"
 
 <p><call name="lorem"/></p>
 <ol>
-	<li><call name="lorem"/></li>
-	<li><call name="lorem"/></li>
-	<li><call name="lorem"/></li>
+    <li><call name="lorem"/></li>
+    <li><call name="lorem"/></li>
+    <li><call name="lorem"/></li>
 </ol>
 <p><call name="lorem"/></p>
 
@@ -107,14 +107,14 @@ can reference them with a single command<see href="note:one note:two note:three"
 
 <p><call name="lorem"/></p>
 <dl>
-	<dt>Alpha</dt>
-	<dd><call name="lorem"/></dd>
+    <dt>Alpha</dt>
+    <dd><call name="lorem"/></dd>
 
-	<dt>Beta</dt>
-	<dd><call name="lorem"/></dd>
+    <dt>Beta</dt>
+    <dd><call name="lorem"/></dd>
 
-	<dt>Gamma</dt>
-	<dd><call name="lorem"/></dd>
+    <dt>Gamma</dt>
+    <dd><call name="lorem"/></dd>
 </dl>
 <p><call name="lorem"/></p>
 
@@ -124,39 +124,39 @@ can reference them with a single command<see href="note:one note:two note:three"
 
 <p><call name="lorem"/></p>
 <qanda>
-	<question>
-		<dt>Q:</dt>
-		<dd><call name="lorem"/></dd>
-	</question>
+    <question>
+        <dt>Q:</dt>
+        <dd><call name="lorem"/></dd>
+    </question>
 
-	<answer>
-		<dt>A:</dt>
-		<dd><call name="lorem"/></dd>
-	</answer>
+    <answer>
+        <dt>A:</dt>
+        <dd><call name="lorem"/></dd>
+    </answer>
 
-	<rquestion>
-		<call name="lorem"/>
-	</rquestion>
+    <rquestion>
+        <call name="lorem"/>
+    </rquestion>
 
-	<ranswer>
-		<call name="lorem"/>
-	</ranswer>
+    <ranswer>
+        <call name="lorem"/>
+    </ranswer>
 
-	<question>
-		<dd><call name="lorem"/></dd>
-	</question>
+    <question>
+        <dd><call name="lorem"/></dd>
+    </question>
 
-	<answer>
-		<dd><call name="lorem"/></dd>
-	</answer>
+    <answer>
+        <dd><call name="lorem"/></dd>
+    </answer>
 
-	<rquestion>
-		<call name="lorem"/>
-	</rquestion>
+    <rquestion>
+        <call name="lorem"/>
+    </rquestion>
 
-	<ranswer>
-		<call name="lorem"/>
-	</ranswer>
+    <ranswer>
+        <call name="lorem"/>
+    </ranswer>
 </qanda>
 <p><call name="lorem"/></p>
 
@@ -166,26 +166,26 @@ can reference them with a single command<see href="note:one note:two note:three"
 
 <p><call name="lorem"/></p>
 <verse>
-	<p>
-	<call name="fox"/><br/>
-	<call name="fox"/><br/>
-	<call name="fox"/><br/>
-	<call name="fox"/>
-	</p>
+    <p>
+    <call name="fox"/><br/>
+    <call name="fox"/><br/>
+    <call name="fox"/><br/>
+    <call name="fox"/>
+    </p>
 
-	<p>
-	<call name="fox"/><br/>
-	<call name="fox"/><br/>
-	<call name="fox"/><br/>
-	<call name="fox"/>
-	</p>
+    <p>
+    <call name="fox"/><br/>
+    <call name="fox"/><br/>
+    <call name="fox"/><br/>
+    <call name="fox"/>
+    </p>
 
-	<p>
-	<call name="fox"/><br/>
-	<call name="fox"/><br/>
-	<call name="fox"/><br/>
-	<call name="fox"/>
-	</p>
+    <p>
+    <call name="fox"/><br/>
+    <call name="fox"/><br/>
+    <call name="fox"/><br/>
+    <call name="fox"/>
+    </p>
 </verse>
 <p><call name="lorem"/></p>
 
@@ -216,34 +216,34 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 <p><call name="lorem"/></p>
 <mathmlblk>
 <math>
-	<mrow>
-		<mi>x</mi>
-		<mo>=</mo>
-		<mfrac>
-			<mrow>
-				<mo form="prefix">&minus;</mo>
-				<mi>b</mi>
-				<mo>&PlusMinus;</mo>
-				<msqrt>
-					<msup>
-						<mi>b</mi>
-						<mn>2</mn>
-					</msup>
-					<mo>&minus;</mo>
-					<mn>4</mn>
-					<mo>&InvisibleTimes;</mo>
-					<mi>a</mi>
-					<mo>&InvisibleTimes;</mo>
-					<mi>c</mi>
-				</msqrt>
-			</mrow>
-			<mrow>
-				<mn>2</mn>
-				<mo>&InvisibleTimes;</mo>
-				<mi>a</mi>
-			</mrow>
-		</mfrac>
-	</mrow>
+    <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mfrac>
+            <mrow>
+                <mo form="prefix">&minus;</mo>
+                <mi>b</mi>
+                <mo>&PlusMinus;</mo>
+                <msqrt>
+                    <msup>
+                        <mi>b</mi>
+                        <mn>2</mn>
+                    </msup>
+                    <mo>&minus;</mo>
+                    <mn>4</mn>
+                    <mo>&InvisibleTimes;</mo>
+                    <mi>a</mi>
+                    <mo>&InvisibleTimes;</mo>
+                    <mi>c</mi>
+                </msqrt>
+            </mrow>
+            <mrow>
+                <mn>2</mn>
+                <mo>&InvisibleTimes;</mo>
+                <mi>a</mi>
+            </mrow>
+        </mfrac>
+    </mrow>
 </math>
 </mathmlblk>
 <p><call name="lorem"/></p>
@@ -335,44 +335,44 @@ let rec count = function
 <p><call name="lorem"/></p>
 <tabular cols="cccc">
 <thead>
-	<tr>
-		<td>1</td>
-		<td>2</td>
-		<td>3</td>
-		<td>4</td>
-	</tr>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4</td>
+    </tr>
 </thead>
 <tbody>
-	<tr>
-		<td>One</td>
-		<td>Two</td>
-		<td>Three</td>
-		<td>Four</td>
-	</tr>
+    <tr>
+        <td>One</td>
+        <td>Two</td>
+        <td>Three</td>
+        <td>Four</td>
+    </tr>
 </tbody>
 <tbody>
-	<tr>
-		<td>Um</td>
-		<td>Dois</td>
-		<td>Três</td>
-		<td>Quatro</td>
-	</tr>
+    <tr>
+        <td>Um</td>
+        <td>Dois</td>
+        <td>Três</td>
+        <td>Quatro</td>
+    </tr>
 </tbody>
 <tbody>
-	<tr>
-		<td>Alpha</td>
-		<td>Beta</td>
-		<td>Gamma</td>
-		<td>Delta</td>
-	</tr>
+    <tr>
+        <td>Alpha</td>
+        <td>Beta</td>
+        <td>Gamma</td>
+        <td>Delta</td>
+    </tr>
 </tbody>
 <tbody>
-	<tr>
-		<td>Alpha</td>
-		<td>Bravo</td>
-		<td>Charlie</td>
-		<td>Delta</td>
-	</tr>
+    <tr>
+        <td>Alpha</td>
+        <td>Bravo</td>
+        <td>Charlie</td>
+        <td>Delta</td>
+    </tr>
 </tbody>
 </tabular>
 <p><call name="lorem"/></p>
@@ -383,8 +383,8 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <subpage>
-	<h1 order="">Title in subpage</h1>
-	<p><call name="lorem"/></p>
+    <h1 order="">Title in subpage</h1>
+    <p><call name="lorem"/></p>
 </subpage>
 <p><call name="lorem"/></p>
 
@@ -426,7 +426,7 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <pull>
-	<p><call name="short"/></p>
+    <p><call name="short"/></p>
 </pull>
 <p><call name="lorem"/></p>
 
@@ -435,21 +435,21 @@ let rec count = function
 <h1>Custom boxout environments</h1>
 
 <newboxout name="warning">
-	Warning
+    Warning
 </newboxout>
 
 <newboxout name="tip" counter="tip">
-	Tip
+    Tip
 </newboxout>
 
 <p><call name="lorem"/></p>
 <boxout name="warning">
-	<p><call name="lorem"/></p>
+    <p><call name="lorem"/></p>
 </boxout>
 <p><call name="lorem"/></p>
 <boxout name="tip" label="tip:one">
-	<caption>This is a title</caption>
-	<p><call name="lorem"/></p>
+    <caption>This is a title</caption>
+    <p><call name="lorem"/></p>
 </boxout>
 <p><call name="lorem"/></p>
 
@@ -458,12 +458,12 @@ let rec count = function
 <h1>Custom theorem environments</h1>
 
 <newtheorem name="theorem" counter="thm">
-	Thereom
+    Thereom
 </newtheorem>
 
 <p><call name="lorem"/></p>
 <theorem name="theorem">
-	<p><call name="lorem"/></p>
+    <p><call name="lorem"/></p>
 </theorem>
 <p><call name="lorem"/></p>
 
@@ -473,10 +473,10 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <equation>
-	<caption><call name="short"/></caption>
-	<mathtexblk>
-	x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-	</mathtexblk>
+    <caption><call name="short"/></caption>
+    <mathtexblk>
+    x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+    </mathtexblk>
 </equation>
 <p><call name="lorem"/></p>
 
@@ -505,24 +505,24 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <table>
-	<caption><call name="short"/></caption>
-	<tabular cols="cccc">
-	<thead>
-		<tr>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td cell="2l">One</td>
-			<td>Three</td>
-			<td>Four</td>
-		</tr>
-	</tbody>
-	</tabular>
+    <caption><call name="short"/></caption>
+    <tabular cols="cccc">
+    <thead>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td cell="2l">One</td>
+            <td>Three</td>
+            <td>Four</td>
+        </tr>
+    </tbody>
+    </tabular>
 </table>
 <p><call name="lorem"/></p>
 
@@ -532,8 +532,8 @@ let rec count = function
 
 <p><call name="lorem"/></p>
 <figure>
-	<caption><call name="short"/></caption>
-	<picture src="circle-small.png" alt="Small Circle"/>
+    <caption><call name="short"/></caption>
+    <picture src="circle-small.png" alt="Small Circle"/>
 </figure>
 <p><call name="lorem"/></p>
 
@@ -568,21 +568,21 @@ let rec count = function
 <bibliography/>
 
 <bib label="bib:one">
-	<who>John McAuthor</who>
-	<what>Title of the article</what>
-	<where><a href="http://en.wikipedia.org/"/></where>
+    <who>John McAuthor</who>
+    <what>Title of the article</what>
+    <where><a href="http://en.wikipedia.org/"/></where>
 </bib>
 
 <bib label="bib:two">
-	<who>John McAuthor</who>
-	<what>Title of the article</what>
-	<where><a href="http://en.wikipedia.org/"/></where>
+    <who>John McAuthor</who>
+    <what>Title of the article</what>
+    <where><a href="http://en.wikipedia.org/"/></where>
 </bib>
 
 <bib label="bib:three">
-	<who>John McAuthor</who>
-	<what>Title of the article</what>
-	<where><a href="http://en.wikipedia.org/"/></where>
+    <who>John McAuthor</who>
+    <what>Title of the article</what>
+    <where><a href="http://en.wikipedia.org/"/></where>
 </bib>
 
 

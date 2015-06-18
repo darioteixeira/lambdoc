@@ -94,27 +94,27 @@ you can reference them with a single command\see{note:note1}{note:note2}{note:no
 \p{\lorem}
 \begin{qanda}
 \question{Question:}
-	\p{\short}
+    \p{\short}
 \answer{Answer:}
-	\p{\lorem}
+    \p{\lorem}
 \question{Q:}
-	\p{\short}
+    \p{\short}
 \answer{A:}
-	\p{\lorem}
-	\p{\lorem}
+    \p{\lorem}
+    \p{\lorem}
 \rquestion
-	\p{\lorem}
+    \p{\lorem}
 \ranswer
-	\p{\lorem}
+    \p{\lorem}
 \question
-	\p{\lorem}
+    \p{\lorem}
 \answer
-	\p{\lorem}
-	\p{\lorem}
+    \p{\lorem}
+    \p{\lorem}
 \rquestion
-	\p{\lorem}
+    \p{\lorem}
 \ranswer
-	\p{\lorem}
+    \p{\lorem}
 \end{qanda}
 \p{\lorem}
 
@@ -153,34 +153,34 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 \p{\lorem}
 \begin{mathml}
 <math>
-	<mrow>
-		<mi>x</mi>
-		<mo>=</mo>
-		<mfrac>
-			<mrow>
-				<mo form="prefix">&minus;</mo>
-				<mi>b</mi>
-				<mo>&PlusMinus;</mo>
-				<msqrt>
-					<msup>
-						<mi>b</mi>
-						<mn>2</mn>
-					</msup>
-					<mo>&minus;</mo>
-					<mn>4</mn>
-					<mo>&InvisibleTimes;</mo>
-					<mi>a</mi>
-					<mo>&InvisibleTimes;</mo>
-					<mi>c</mi>
-				</msqrt>
-			</mrow>
-			<mrow>
-				<mn>2</mn>
-				<mo>&InvisibleTimes;</mo>
-				<mi>a</mi>
-			</mrow>
-		</mfrac>
-	</mrow>
+    <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mfrac>
+            <mrow>
+                <mo form="prefix">&minus;</mo>
+                <mi>b</mi>
+                <mo>&PlusMinus;</mo>
+                <msqrt>
+                    <msup>
+                        <mi>b</mi>
+                        <mn>2</mn>
+                    </msup>
+                    <mo>&minus;</mo>
+                    <mn>4</mn>
+                    <mo>&InvisibleTimes;</mo>
+                    <mi>a</mi>
+                    <mo>&InvisibleTimes;</mo>
+                    <mi>c</mi>
+                </msqrt>
+            </mrow>
+            <mrow>
+                <mn>2</mn>
+                <mo>&InvisibleTimes;</mo>
+                <mi>a</mi>
+            </mrow>
+        </mfrac>
+    </mrow>
 </math>
 \end{mathml}
 \p{\lorem}
@@ -258,7 +258,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -273,7 +273,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -288,7 +288,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -303,7 +303,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -318,7 +318,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -333,7 +333,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -348,7 +348,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -363,7 +363,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf                     -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \p{\lorem}
@@ -400,20 +400,20 @@ index.html: HTML document text
 \p{\lorem}
 \begin{tabular}{rll}
 \head
-|		|{2c_} Scientific name				|
-| Common name	| Genus			| Species		|
+|               |{2c_} Scientific name                  |
+| Common name   | Genus             | Species           |
 \body
-| Wolf		| \emph{Canis}		| \emph{lupus}		|
-| Cat		| \emph{Felis}		| \emph{catus}		|
-| Chicken	| \emph{Gallus}		| \emph{gallus}		|
-| Lion		| \emph{Panthera}	| \emph{leo}		|
-| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
+| Wolf          | \emph{Canis}      | \emph{lupus}      |
+| Cat           | \emph{Felis}      | \emph{catus}      |
+| Chicken       | \emph{Gallus}     | \emph{gallus}     |
+| Lion          | \emph{Panthera}   | \emph{leo}        |
+| Bonobo        | \emph{Pan}        | \emph{paniscus}   |
 \body
-| English oak	| \emph{Quercus}	| \emph{robur}		|
-| European yew	| \emph{Taxus}		| \emph{baccata}	|
+| English oak   | \emph{Quercus}    | \emph{robur}      |
+| European yew  | \emph{Taxus}      | \emph{baccata}    |
 \foot
-| Common name	| Genus			| Species		|
-|		|{2c^} Scientific name				|
+| Common name   | Genus             | Species           |
+|               |{2c^} Scientific name                  |
 \end{tabular}
 \p{\lorem}
 
@@ -785,7 +785,7 @@ type 'a tree =
     | Node of 'a * 'a tree * 'a tree
 
 let rec count = function
-    | Leaf		       -> 0
+    | Leaf             -> 0
     | Node (node, left, right) -> 1 + count left + count right
 \end{source}
 \end{printout}
@@ -834,18 +834,18 @@ let is_foo = function
 \begin{table}{\fox}
 \begin{tabular}{rll}
 \head
-|		|{2c_} Scientific name				|
-| Common name	| Genus			| Species		|
+|                |{2c_} Scientific name                 |
+| Common name   | Genus             | Species           |
 \body
-| Wolf		| \emph{Canis}		| \emph{lupus}		|
-| Cat		| \emph{Felis}		| \emph{catus}		|
-| Chicken	| \emph{Gallus}		| \emph{gallus}		|
-| Lion		| \emph{Panthera}	| \emph{leo}		|
-| Bonobo	| \emph{Pan}		| \emph{paniscus}	|
-| English oak	| \emph{Quercus}	| \emph{robur}		|
+| Wolf          | \emph{Canis}      | \emph{lupus}      |
+| Cat           | \emph{Felis}      | \emph{catus}      |
+| Chicken       | \emph{Gallus}     | \emph{gallus}     |
+| Lion          | \emph{Panthera}   | \emph{leo}        |
+| Bonobo        | \emph{Pan}        | \emph{paniscus}   |
+| English oak   | \emph{Quercus}    | \emph{robur}      |
 \foot
-| Common name	|{1c_} Genus		|{1c_} Species		|
-|		|{2c} Scientific name				|
+| Common name   |{1c_} Genus        |{1c_} Species      |
+|               |{2c} Scientific name                   |
 \end{tabular}
 \end{table}
 \p{\lorem}
@@ -856,11 +856,11 @@ let is_foo = function
 \begin<left>{table}{\fox}
 \begin{tabular}{rl}
 \head
-| Common name	| Scientific name	|
+| Common name   | Scientific name       |
 \body
-| Wolf		| \emph{Canis lupus}	|
-| Cat		| \emph{Felis catus}	|
-| Chicken	| \emph{Gallus gallus}	|
+| Wolf          | \emph{Canis lupus}    |
+| Cat           | \emph{Felis catus}    |
+| Chicken       | \emph{Gallus gallus}  |
 \end{tabular}
 \end{table}
 \p{\lorem}
@@ -872,11 +872,11 @@ let is_foo = function
 \begin<right>{table}{\fox}
 \begin{tabular}{rl}
 \head
-| Common name	| Scientific name	|
+| Common name   | Scientific name       |
 \body
-| Wolf		| \emph{Canis lupus}	|
-| Cat		| \emph{Felis catus}	|
-| Chicken	| \emph{Gallus gallus}	|
+| Wolf          | \emph{Canis lupus}    |
+| Cat           | \emph{Felis catus}    |
+| Chicken       | \emph{Gallus gallus}  |
 \end{tabular}
 \end{table}
 \p{\lorem}

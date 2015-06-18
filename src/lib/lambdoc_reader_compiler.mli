@@ -1,13 +1,13 @@
 (********************************************************************************)
-(*	Lambdoc_reader_compiler.mli
-	Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
-	This software is distributed under the terms of the GNU GPL version 2.
-	See LICENSE file for full license text.
+(*  Lambdoc_reader_compiler.mli
+    Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
+    This software is distributed under the terms of the GNU GPL version 2.
+    See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(**	Compilation of a document AST.  These functions convert
-	a document AST into a proper, final, ambivalent document.
+(** Compilation of a document AST.  These functions convert
+    a document AST into a proper, final, ambivalent document.
 *)
 
 module Ast = Lambdoc_reader_ast
@@ -17,33 +17,33 @@ open Lambdoc_core
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
 module Make: functor (Ext: Extension.S) ->
 sig
-	(**	This will be raised if one of the command extensions misbehaves.
-	*)
-	exception Internal_extension_error of Ast.command_t
+    (** This will be raised if one of the command extensions misbehaves.
+    *)
+    exception Internal_extension_error of Ast.command_t
 
-	(**	Contextualize and (optionally) sort the errors by line number.
-	*)
-	val contextualize_errors:
-		sort:bool ->
-		string ->
-		Error.localized_t list ->
-		Error.contextualized_t list
+    (** Contextualize and (optionally) sort the errors by line number.
+    *)
+    val contextualize_errors:
+        sort:bool ->
+        string ->
+        Error.localized_t list ->
+        Error.contextualized_t list
 
-	(**	Compile a document AST into a manuscript.
-	*)
-	val compile:
-		link_readers:Ext.link_reader_t list ->
-		image_readers:Ext.image_reader_t list ->
-		extcomms:Ext.extcomm_t list ->
-		expand_entities:bool ->
-		idiosyncrasies:Idiosyncrasies.t ->
-		source:string ->
-		Ast.t ->
-		Ambivalent.t Ext.Monad.t
+    (** Compile a document AST into a manuscript.
+    *)
+    val compile:
+        link_readers:Ext.link_reader_t list ->
+        image_readers:Ext.image_reader_t list ->
+        extcomms:Ext.extcomm_t list ->
+        expand_entities:bool ->
+        idiosyncrasies:Idiosyncrasies.t ->
+        source:string ->
+        Ast.t ->
+        Ambivalent.t Ext.Monad.t
 end
 

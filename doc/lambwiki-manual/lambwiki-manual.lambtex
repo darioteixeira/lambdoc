@@ -52,14 +52,14 @@ of text you wish to format.  Note that in many cases the end marker is identical
 the begin marker.}
 \begin{tabular}{ccl}
 \head
-| Begin marker		| End marker		| Example					|
+| Begin marker      | End marker        | Example                                       |
 \body
-| \marker{*}		| \marker{*}		| You can make some passages be \bold{bold}.	|
-| \marker{/}		| \marker{/}		| Here's another way to \emph{emphasise} text.	|
-| \marker{\{}		| \marker{\}}		| You can also imitate a \code{typewriter}.	|
-| \marker{(}		| \marker{)}		| \lambwiki supports text in small-caps.	|
-| \marker{^}		| \marker{^}		| The 1\sup{st} of January has a superscript.	|
-| \marker{_}		| \marker{_}		| H\sub{2}O requires a subscript.		|
+| \marker{*}        | \marker{*}        | You can make some passages be \bold{bold}.    |
+| \marker{/}        | \marker{/}        | Here's another way to \emph{emphasise} text.  |
+| \marker{\{}       | \marker{\}}       | You can also imitate a \code{typewriter}.     |
+| \marker{(}        | \marker{)}        | \lambwiki supports text in small-caps.        |
+| \marker{^}        | \marker{^}        | The 1\sup{st} of January has a superscript.   |
+| \marker{_}        | \marker{_}        | H\sub{2}O requires a subscript.               |
 \end{tabular}
 \end{table}
 
@@ -120,9 +120,9 @@ you may enter it in either of the following three manners:
 
 \begin{tabular}{ccc}
 \head
-| Name                  | Decimal               | Hexadecimal           |
+| Name              | Decimal           | Hexadecimal       |
 \body
-| \code{\&euro;}        | \code{\&#8364;}       | \code{\&#x20ac;}      |
+| \code{\&euro;}    | \code{\&#8364;}   | \code{\&#x20ac;}  |
 \end{tabular}
 
 The reader will have noted that \lambwiki must interpret the character '\code{\&}'
@@ -153,12 +153,12 @@ Note that using dash(es) at the start of a line is the marker for unordered list
 (see \mref{sec:lists}{the next section} for details).}
 \begin{tabular}{cl}
 \head
-| Sequence		| Translation |
+| Sequence      | Translation                                                   |
 \body
-| \code{\-\-\-}		| Typographic em-dash\br (don't use at the beginning of a line)|
-| \code{\-\-}		| Typographic en-dash\br (don't use at the beginning of a line)|
-| \code{\`\`}		| Opening double quotes |
-| \code{\'\'}		| Closing double quotes |
+| \code{\-\-\-} | Typographic em-dash\br (don't use at the beginning of a line) |
+| \code{\-\-}   | Typographic en-dash\br (don't use at the beginning of a line) |
+| \code{\`\`}   | Opening double quotes                                         |
+| \code{\'\'}   | Closing double quotes                                         |
 \end{tabular}
 \end{table}
 
@@ -205,16 +205,16 @@ This is the result as produced by the composer:
 The reasons are four:
 
 \begin{ol}
-\li	This is the first reason;
-\li	This is the second reason; it is okay
-	to break a line within each item.
-\li	The third reason has a number of sub-clauses:
-	\begin{ul}
-	\li	Alpha
-	\li	Beta
-	\li	Gamma
-	\end{ul}
-\li	And here is the fourth and final reason.
+\li This is the first reason;
+\li This is the second reason; it is okay
+    to break a line within each item.
+\li The third reason has a number of sub-clauses:
+    \begin{ul}
+    \li Alpha
+    \li Beta
+    \li Gamma
+    \end{ul}
+\li And here is the fourth and final reason.
 \end{ol}
 \end{subpage}
 
@@ -380,7 +380,7 @@ to false.
 The obligatory example, showing an OCaml source-code fragment:
 
 \begin<boxed>{source}
-{{{lang=ocaml,nums=true,zebra
+{{{lang=caml,nums=true,zebra
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree
@@ -394,7 +394,7 @@ let rec count = function
 The result as produced from the composer is shown below.  Note the syntax-highlighting
 following OCaml conventions, the zebra lines, and the display of line numbers:
 
-\begin<lang=ocaml,nums=true,zebra>{source}
+\begin<lang=caml,nums=true,zebra>{source}
 type 'a tree =
     | Leaf
     | Node of 'a * 'a tree * 'a tree

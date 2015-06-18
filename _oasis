@@ -1,62 +1,62 @@
-OASISFormat:		0.4
-Name:			Lambdoc
-Version:		1.0-beta3
-Synopsis:		Support for semantically rich documents in web applications
-Authors:		Dario Teixeira <dario.teixeira@nleyten.com>
-Homepage:		http://lambdoc.forge.ocamlcore.org/
-License:		GPL-2
-LicenseFile:		LICENSE
-Plugins:		META (0.4), DevFiles (0.4)
-BuildTools:		ocamlbuild, make
-AlphaFeatures:		ocamlbuild_more_args
+OASISFormat:    0.4
+Name:           Lambdoc
+Version:        1.0-beta3
+Synopsis:       Support for semantically rich documents in web applications
+Authors:        Dario Teixeira <dario.teixeira@nleyten.com>
+Homepage:       http://lambdoc.forge.ocamlcore.org/
+License:        GPL-2
+LicenseFile:    LICENSE
+Plugins:        META (0.4), DevFiles (0.4)
+BuildTools:     ocamlbuild, make
+AlphaFeatures:  ocamlbuild_more_args
 Description:
-  Lambdoc is a library providing support for semantically rich documents in web applications,
-  built with Ocsigen/Eliom integration in mind.  It includes parsers for four different markup
-  languages: Lambtex, Lambxml, Lambwiki, and Markdown.  The first is inspired by LaTeX, the
-  second is an XML-based markup based on HTML, the third is a lightweight markup language in
-  the spirit of Wiki Creole, and the last is the popular lightweight markup language.
-  The library also includes the possibility of outputing any Lambdoc document as an Ocsigen
-  (Tyxml) HTML5 value.
+    Lambdoc is a library providing support for semantically rich documents in web applications,
+    built with Ocsigen/Eliom integration in mind.  It includes parsers for four different markup
+    languages: Lambtex, Lambxml, Lambwiki, and Markdown.  The first is inspired by LaTeX, the
+    second is an XML-based markup based on HTML, the third is a lightweight markup language in
+    the spirit of Wiki Creole, and the last is the popular lightweight markup language.
+    The library also includes the possibility of outputing any Lambdoc document as an Ocsigen
+    (Tyxml) HTML5 value.
 
 Flag "cmd"
-  Description:		Build command line utility Lambcmd
-  Default:		true
+    Description:    Build command line utility Lambcmd
+    Default:        true
 
 Library "lambdoc"
-  Path:			src/lib
-  Modules:
-    Lambdoc_core, Lambdoc_core_basic, Lambdoc_core_label, Lambdoc_core_order, Lambdoc_core_custom,
-    Lambdoc_core_math, Lambdoc_core_inline, Lambdoc_core_wrapper, Lambdoc_core_heading, Lambdoc_core_bib,
-    Lambdoc_core_qanda, Lambdoc_core_source, Lambdoc_core_tabular, Lambdoc_core_block, Lambdoc_core_note,
-    Lambdoc_core_target, Lambdoc_core_valid, Lambdoc_core_blkcat, Lambdoc_core_error, Lambdoc_core_invalid,
-    Lambdoc_core_ambivalent, Lambdoc_core_feature, Lambdoc_core_idiosyncrasies, Lambdoc_core_monadic,
-    Lambdoc_reader, Lambdoc_reader_ast, Lambdoc_reader_extension, Lambdoc_reader_compiler, Lambdoc_reader_maker,
-    Lambdoc_reader_permission, Lambdoc_reader_preprocessor, Lambdoc_reader_readconv, Lambdoc_reader_style,
-    Lambdoc_rlambtex, Lambdoc_rlambtex_globalenv, Lambdoc_rlambtex_parser, Lambdoc_rlambtex_scanner, Lambdoc_rlambtex_tokenizer, Lambdoc_rlambtex_readable, Lambdoc_rlambtex_reader,
-    Lambdoc_rlambwiki, Lambdoc_rlambwiki_parser, Lambdoc_rlambwiki_scanner, Lambdoc_rlambwiki_tokenizer, Lambdoc_rlambwiki_readable, Lambdoc_rlambwiki_reader,
-    Lambdoc_rlambxml, Lambdoc_rlambxml_dtd, Lambdoc_rlambxml_parser, Lambdoc_rlambxml_readable, Lambdoc_rlambxml_reader,
-    Lambdoc_rmarkdown, Lambdoc_rmarkdown_mapper, Lambdoc_rmarkdown_readable, Lambdoc_rmarkdown_reader,
-    Lambdoc_writer, Lambdoc_writer_emblang, Lambdoc_writer_explanations, Lambdoc_writer_extension,
-    Lambdoc_writer_maker, Lambdoc_writer_translations, Lambdoc_writer_writeconv,
-    Lambdoc_whtml5, Lambdoc_whtml5_writable, Lambdoc_whtml5_writer
+    Path: src/lib
+    Modules:
+        Lambdoc_core, Lambdoc_core_basic, Lambdoc_core_label, Lambdoc_core_order, Lambdoc_core_custom,
+        Lambdoc_core_math, Lambdoc_core_inline, Lambdoc_core_wrapper, Lambdoc_core_heading, Lambdoc_core_bib,
+        Lambdoc_core_qanda, Lambdoc_core_source, Lambdoc_core_tabular, Lambdoc_core_block, Lambdoc_core_note,
+        Lambdoc_core_target, Lambdoc_core_valid, Lambdoc_core_blkcat, Lambdoc_core_error, Lambdoc_core_invalid,
+        Lambdoc_core_ambivalent, Lambdoc_core_feature, Lambdoc_core_idiosyncrasies, Lambdoc_core_monadic,
+        Lambdoc_reader, Lambdoc_reader_ast, Lambdoc_reader_extension, Lambdoc_reader_compiler, Lambdoc_reader_maker,
+        Lambdoc_reader_permission, Lambdoc_reader_preprocessor, Lambdoc_reader_readconv, Lambdoc_reader_style,
+        Lambdoc_rlambtex, Lambdoc_rlambtex_globalenv, Lambdoc_rlambtex_parser, Lambdoc_rlambtex_scanner, Lambdoc_rlambtex_tokenizer, Lambdoc_rlambtex_readable, Lambdoc_rlambtex_reader,
+        Lambdoc_rlambwiki, Lambdoc_rlambwiki_parser, Lambdoc_rlambwiki_scanner, Lambdoc_rlambwiki_tokenizer, Lambdoc_rlambwiki_readable, Lambdoc_rlambwiki_reader,
+        Lambdoc_rlambxml, Lambdoc_rlambxml_dtd, Lambdoc_rlambxml_parser, Lambdoc_rlambxml_readable, Lambdoc_rlambxml_reader,
+        Lambdoc_rmarkdown, Lambdoc_rmarkdown_mapper, Lambdoc_rmarkdown_readable, Lambdoc_rmarkdown_reader,
+        Lambdoc_writer, Lambdoc_writer_emblang, Lambdoc_writer_explanations, Lambdoc_writer_extension,
+        Lambdoc_writer_maker, Lambdoc_writer_translations, Lambdoc_writer_writeconv,
+        Lambdoc_whtml5, Lambdoc_whtml5_writable, Lambdoc_whtml5_writer
   BuildDepends:
-    threads, batteries, pcre, sexplib, ulex, menhirLib, pxp-engine,
-    pxp-ulex-utf8, tyxml, omd, blahcaml, camlhighlight
+        threads, batteries, pcre, sexplib, ulex, menhirLib, pxp-engine,
+        pxp-ulex-utf8, tyxml, omd, blahcaml, camlhighlight
 
 Document "lambdoc"
-  Type:			ocamlbuild (0.4)
-  BuildTools:		ocamldoc
-  Title:		API reference for Lambdoc
-  XOCamlbuildPath:	.
-  XOCamlbuildExtraArgs:	"-docflags '-colorize-code -short-functors -charset utf-8'"
-  XOCamlbuildLibraries:	lambdoc
+    Type:                   ocamlbuild (0.4)
+    BuildTools:             ocamldoc
+    Title:                  API reference for Lambdoc
+    XOCamlbuildPath:        .
+    XOCamlbuildExtraArgs:   "-docflags '-colorize-code -short-functors -charset utf-8'"
+    XOCamlbuildLibraries:   lambdoc
 
 Executable "lambcmd"
-  Build$:		flag(cmd)
-  Install$:		flag(cmd)
-  Path:			src/lambcmd
-  MainIs:		lambcmd.ml
-  BuildTools:		ocamlbuild
-  BuildDepends:		lambdoc
-  CompiledObject:	best
+    Build$:         flag(cmd)
+    Install$:       flag(cmd)
+    Path:           src/lambcmd
+    MainIs:         lambcmd.ml
+    BuildTools:     ocamlbuild
+    BuildDepends:   lambdoc
+    CompiledObject: best
 

@@ -1,113 +1,113 @@
 /********************************************************************************/
-/* Lambdoc_config.ccss								*/
+/* Lambdoc_config.ccss                                                          */
 /********************************************************************************/
 
 /********************************************************************************/
-/* Colours.									*/
+/* Colours.                                                                     */
 /********************************************************************************/
 
-Doc_colour_normal:	#222;
-Doc_colour_faded:	#333;
-Doc_colour_fancy:	#501;
+Doc_colour_normal:  #222;
+Doc_colour_faded:   #333;
+Doc_colour_fancy:   #501;
 
 
 /********************************************************************************/
-/* Font stacks.									*/
-/* A font stack consists of a set of serif/sans/mono font lists where the	*/
-/* fonts in each list have similar metrics, and the sets go well together.	*/
-/* (Note that only one of these stacks is actually later selected).		*/
-/*										*/
-/* Within each list, fonts are listed by order of subjective prettyness, at	*/
-/* least as far as a standard X installation is concerned.  Note also that	*/
-/* each list should contain at least one font which is standard in Linux,	*/
-/* Windows, and Mac systems.							*/
+/* Font stacks.                                                                 */
+/* A font stack consists of a set of serif/sans/mono font lists where the       */
+/* fonts in each list have similar metrics, and the sets go well together.      */
+/* (Note that only one of these stacks is actually later selected).             */
+/*                                                                              */
+/* Within each list, fonts are listed by order of subjective prettyness, at     */
+/* least as far as a standard X installation is concerned.  Note also that      */
+/* each list should contain at least one font which is standard in Linux,       */
+/* Windows, and Mac systems.                                                    */
 /********************************************************************************/
 
 /* Stack with wide and large-looking fonts (works well with a base of 13px): */
 
-Doc_stack_wide_l_serif:		"DejaVu Serif", serif;
-Doc_stack_wide_l_sans:		"DejaVu Sans", "Verdana", "Geneva", sans-serif;
-Doc_stack_wide_l_mono:		"DejaVu Sans Mono", "Courier New", "Courier", monospace;
+Doc_stack_wide_l_serif:     "DejaVu Serif", serif;
+Doc_stack_wide_l_sans:      "DejaVu Sans", "Verdana", "Geneva", sans-serif;
+Doc_stack_wide_l_mono:      "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 
 
 /* Stack with wide and small-looking fonts (works well with a base of 14px): */
 
-Doc_stack_wide_s_serif:		"Georgia", serif;
+Doc_stack_wide_s_serif:     "Georgia", serif;
 
 
 /* Stack with narrow and small-looking fonts (works well with a base of 14px): */
 
-Doc_stack_narrow_s_sans:	"Helvetica", "Liberation Sans", "Arial", sans-serif;
+Doc_stack_narrow_s_sans:    "Helvetica", "Liberation Sans", "Arial", sans-serif;
 
 
 /* Stack with narrow and very small-looking fonts (works well with a base of 15px): */
 
-Doc_stack_narrow_xs_serif:	"Times New Roman", "Times", "Liberation Serif", serif;
+Doc_stack_narrow_xs_serif:  "Times New Roman", "Times", "Liberation Serif", serif;
 
 
 /********************************************************************************/
-/* Font families.								*/
-/* Here we select one of the declared font stacks.				*/
+/* Font families.                                                               */
+/* Here we select one of the declared font stacks.                              */
 /********************************************************************************/
 
-Doc_family_doc:		Doc_stack_wide_s_serif;
-Doc_family_heading:	Doc_stack_wide_s_serif;
-Doc_family_mono:	Doc_stack_wide_l_mono;
-
-
-/********************************************************************************/
-/* Font sizes.									*/
-/********************************************************************************/
-
-Doc_fsize_doc:		15px;	/* Base for all other values */
-
-Doc_fsize_note:		Doc_fsize_doc - 2px;
-Doc_fsize_pre:		Doc_fsize_doc - 2px;
-Doc_fsize_caption:	Doc_fsize_doc - 1px;
-Doc_fsize_small:	Doc_fsize_doc - 1px;
-Doc_fsize_large:	Doc_fsize_doc + 1px;
-Doc_fsize_title1:	Doc_fsize_doc + 8px;
-Doc_fsize_title2:	Doc_fsize_doc + 6px;
-Doc_fsize_part:		Doc_fsize_doc + 4px;
-Doc_fsize_h1:		Doc_fsize_doc + 3px;
-Doc_fsize_h2:		Doc_fsize_doc + 2px;
-Doc_fsize_h3:		Doc_fsize_doc + 1px;
-Doc_fsize_h4:		Doc_fsize_doc + 0px;
-Doc_fsize_h5:		Doc_fsize_doc + 0px;
-Doc_fsize_h6:		Doc_fsize_doc + 0px;
-Doc_fsize_pull:		Doc_fsize_doc + 1px;
-Doc_fsize_pull_head:	Doc_fsize_doc + 0px;
-Doc_fsize_error_head:	Doc_fsize_doc + 1px;
-
-Doc_line_height_doc:	1.6;
+Doc_family_doc:     Doc_stack_wide_s_serif;
+Doc_family_heading: Doc_stack_wide_s_serif;
+Doc_family_mono:    Doc_stack_wide_l_mono;
 
 
 /********************************************************************************/
-/* Box configuration.								*/
+/* Font sizes.                                                                  */
 /********************************************************************************/
 
-Doc_radius_box:		5px;
-Doc_shadow_box:		2px 2px 2px #666;
-Doc_border_box:		1px solid #333;
-Doc_padding_box:	1em;
+Doc_fsize_doc:          15px;   /* Base for all other values */
+
+Doc_fsize_note:         Doc_fsize_doc - 2px;
+Doc_fsize_pre:          Doc_fsize_doc - 2px;
+Doc_fsize_caption:      Doc_fsize_doc - 1px;
+Doc_fsize_small:        Doc_fsize_doc - 1px;
+Doc_fsize_large:        Doc_fsize_doc + 1px;
+Doc_fsize_title1:       Doc_fsize_doc + 8px;
+Doc_fsize_title2:       Doc_fsize_doc + 6px;
+Doc_fsize_part:         Doc_fsize_doc + 4px;
+Doc_fsize_h1:           Doc_fsize_doc + 3px;
+Doc_fsize_h2:           Doc_fsize_doc + 2px;
+Doc_fsize_h3:           Doc_fsize_doc + 1px;
+Doc_fsize_h4:           Doc_fsize_doc + 0px;
+Doc_fsize_h5:           Doc_fsize_doc + 0px;
+Doc_fsize_h6:           Doc_fsize_doc + 0px;
+Doc_fsize_pull:         Doc_fsize_doc + 1px;
+Doc_fsize_pull_head:    Doc_fsize_doc + 0px;
+Doc_fsize_error_head:   Doc_fsize_doc + 1px;
+
+Doc_line_height_doc:    1.6;
 
 
 /********************************************************************************/
-/* Spacing.									*/
+/* Box configuration.                                                           */
 /********************************************************************************/
 
-Doc_vmargin_short:		0.25em;
-Doc_vmargin_par:		0.5em;
-Doc_vmargin_textual:		1em;
-Doc_vmargin_hybrid:		1.5em;
-Doc_vmargin_boxish:		2em;
-Doc_vmargin_wrapper:		2em;
+Doc_radius_box:     5px;
+Doc_shadow_box:     2px 2px 2px #666;
+Doc_border_box:     1px solid #333;
+Doc_padding_box:    1em;
 
-Doc_hmargin_inset:		1em;
-Doc_hmargin_inline_small:	0.25em;
-Doc_hmargin_inline_large:	0.5em;
 
-Doc_vmargin_ghost_entry:	0.75em;
-Doc_hmargin_ghost_text:		3em;
-Doc_width_ghost_num:		2.5em;
+/********************************************************************************/
+/* Spacing.                                                                     */
+/********************************************************************************/
+
+Doc_vmargin_short:          0.25em;
+Doc_vmargin_par:            0.5em;
+Doc_vmargin_textual:        1em;
+Doc_vmargin_hybrid:         1.5em;
+Doc_vmargin_boxish:         2em;
+Doc_vmargin_wrapper:        2em;
+
+Doc_hmargin_inset:          1em;
+Doc_hmargin_inline_small:   0.25em;
+Doc_hmargin_inline_large:   0.5em;
+
+Doc_vmargin_ghost_entry:    0.75em;
+Doc_hmargin_ghost_text:     3em;
+Doc_width_ghost_num:        2.5em;
 

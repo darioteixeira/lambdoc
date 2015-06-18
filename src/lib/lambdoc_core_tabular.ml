@@ -1,8 +1,8 @@
 (********************************************************************************)
-(*	Lambdoc_core_tabular.ml
-	Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
-	This software is distributed under the terms of the GNU GPL version 2.
-	See LICENSE file for full license text.
+(*  Lambdoc_core_tabular.ml
+    Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
+    This software is distributed under the terms of the GNU GPL version 2.
+    See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
@@ -12,20 +12,20 @@ open Sexplib.Std
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
 type alignment_t =
-	| Center
-	| Left
-	| Right
-	| Justify
-	with sexp
+    | Center
+    | Left
+    | Right
+    | Justify
+    with sexp
 
 type weight_t =
-	| Normal
-	| Strong
-	with sexp
+    | Normal
+    | Strong
+    with sexp
 
 type colspec_t = alignment_t * weight_t with sexp
 
@@ -38,16 +38,16 @@ type row_t = cell_t list with sexp
 type group_t = row_t list with sexp
 
 type t =
-	{
-	tcols: colspec_t array;
-	thead: group_t option;
-	tfoot: group_t option;
-	tbodies: group_t list;
-	} with sexp
+    {
+    tcols: colspec_t array;
+    thead: group_t option;
+    tfoot: group_t option;
+    tbodies: group_t list;
+    } with sexp
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
 let make_cell cellspec maybe_seq = (cellspec, maybe_seq)

@@ -69,9 +69,9 @@ the simple notation was preferred.  The more verbose environment notation was ch
 only for those commands that satisfied at least one of the two following conditions:
 
 \begin{ul}
-\li	The command may be the parent of at least one block-level element.
-\li	The command declares a verbatim-like environment using the \caps{heredoc}
-	technique for delimitation (see \sref{sec:verbatim} for an example).
+\li The command may be the parent of at least one block-level element.
+\li The command declares a verbatim-like environment using the \caps{heredoc}
+    technique for delimitation (see \sref{sec:verbatim} for an example).
 \end{ul}
 \end{note}
 
@@ -101,13 +101,13 @@ Order, label, and style parameters are usually optional and are enclosed by
 round, square, and angle brackets, respectively.}
 \begin{tabular}{ccc}
 \head
-|		|{2c_} Markers			|
-| Parameter	| Begin		| End		|
+|           |{2c_} Markers          |
+| Parameter | Begin     | End       |
 \body
-| Order		| \code{(}	| \code{)}	|
-| Label		| \code{[}	| \code{]}	|
-| Style		| \code{<}	| \code{>}	|
-| Primary	| \code{\{}	| \code{\}}	|
+| Order     | \code{(}  | \code{)}  |
+| Label     | \code{[}  | \code{]}  |
+| Style     | \code{<}  | \code{>}  |
+| Primary   | \code{\{} | \code{\}} |
 \end{tabular}
 \end{table}
 
@@ -220,21 +220,21 @@ applicable.  All these commands take one parameter enclosed in
 curly brackets.  The parameter is a sequence of inline text.}
 \begin{tabular}{rl}
 \head
-| Command						| Example							|
+| Command                                   | Example                                                       |
 \body
-| \code{\\bold\{\emph{inline}\}}			| You can make some passages be \bold{bold}.\br
-							  (Synonyms: \code{\\strong} and \code{\\b})			|
-| \code{\\emph\{\emph{inline}\}}			| Here's another way to \emph{emphasise} text.\br
-							  (Synonyms: \code{\\em} and \code{\\i})			|
-| \code{\\code\{\emph{inline}\}}			| You can also imitate a \code{typewriter}.\br
-							  (Synonym: \code{\\tt})					|
-| \code{\\caps\{\emph{inline}\}}			| \lambtex supports text in small-caps.				|
-| \code{\\ins\{\emph{inline}\}}				| Sometimes it's \ins{very} handy to insert new text.		|
-| \code{\\del\{\emph{inline}\}}				| You may also fix \del{annoying} incorrect passages.		|
-| \code{\\sup\{\emph{inline}\}}				| The 1\sup{st} of January has a superscript.			|
-| \code{\\sub\{\emph{inline}\}}				| H\sub{2}O requires a subscript.				|
-| \code{\\mbox\{\emph{inline}\}}			| \mbox{This inline sequence should not be split across lines.}	|
-| \code{\\span\{\emph{inline}\}}			| \span{You may create spans with custom semantics.}		|
+| \code{\\bold\{\emph{inline}\}}            | You can make some passages be \bold{bold}.\br
+                                              (Synonyms: \code{\\strong} and \code{\\b})                    |
+| \code{\\emph\{\emph{inline}\}}            | Here's another way to \emph{emphasise} text.\br
+                                              (Synonyms: \code{\\em} and \code{\\i})                        |
+| \code{\\code\{\emph{inline}\}}            | You can also imitate a \code{typewriter}.\br
+                                              (Synonym: \code{\\tt})                                        |
+| \code{\\caps\{\emph{inline}\}}            | \lambtex supports text in small-caps.                         |
+| \code{\\ins\{\emph{inline}\}}             | Sometimes it's \ins{very} handy to insert new text.           |
+| \code{\\del\{\emph{inline}\}}             | You may also fix \del{annoying} incorrect passages.           |
+| \code{\\sup\{\emph{inline}\}}             | The 1\sup{st} of January has a superscript.                   |
+| \code{\\sub\{\emph{inline}\}}             | H\sub{2}O requires a subscript.                               |
+| \code{\\mbox\{\emph{inline}\}}            | \mbox{This inline sequence should not be split across lines.} |
+| \code{\\span\{\emph{inline}\}}            | \span{You may create spans with custom semantics.}            |
 \end{tabular}
 \end{table}
 
@@ -257,9 +257,9 @@ your keyboard, you may enter it in either of the following three manners:
 
 \begin{tabular}{ccc}
 \head
-| Name			| Decimal		| Hexadecimal		|
+| Name              | Decimal           | Hexadecimal       |
 \body
-| \code{\&euro;}	| \code{\&#8364;}	| \code{\&#x20ac;}	|
+| \code{\&euro;}    | \code{\&#8364;}   | \code{\&#x20ac;}  |
 \end{tabular}
 
 The reader will have noted that \lambtex must interpret the character '\code{\&}'
@@ -290,17 +290,17 @@ to use the backslash for escaping if you wish to input any of these sequences
 verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
 \begin{tabular}{cl}
 \head
-| Sequence		| Translation |
+| Sequence      | Translation |
 \body
-| \code{[\$}		| Beginning of inline \caps{TeX} mathematics |
-| \code{\$]}		| End of inline \caps{TeX} mathematics |
-| \code{<\$}		| Beginning of inline \caps{MathML} |
-| \code{\$>}		| End of inline \caps{MathML} |
+| \code{[\$}    | Beginning of inline \caps{TeX} mathematics |
+| \code{\$]}    | End of inline \caps{TeX} mathematics |
+| \code{<\$}    | Beginning of inline \caps{MathML} |
+| \code{\$>}    | End of inline \caps{MathML} |
 \body
-| \code{\-\-\-}		| Typographic em-dash |
-| \code{\-\-}		| Typographic en-dash |
-| \code{\`\`}		| Opening double quotes |
-| \code{\'\'}		| Closing double quotes |
+| \code{\-\-\-} | Typographic em-dash |
+| \code{\-\-}   | Typographic en-dash |
+| \code{\`\`}   | Opening double quotes |
+| \code{\'\'}   | Closing double quotes |
 \end{tabular}
 \end{table}
 
@@ -355,16 +355,16 @@ Here is a list of small furry mammals:
 \begin{itemize}
 \item Cat
 \item Some dog breeds:
-	\begin{description}
-	\item{poodle:} Small dogs kept for company
-	\item{greyhound:} Running dogs
-	\end{description}
+    \begin{description}
+    \item{poodle:} Small dogs kept for company
+    \item{greyhound:} Running dogs
+    \end{description}
 \item Various rodents ordered by size:
-	\begin{enumerate}
-	\item Capivara
-	\item Rat
-	\item Mouse
-	\end{enumerate}
+    \begin{enumerate}
+    \item Capivara
+    \item Rat
+    \item Mouse
+    \end{enumerate}
 \end{itemize}
 \end{source}
 
@@ -376,16 +376,16 @@ Here is a list of small furry mammals:
 \begin{itemize}
 \item Cat
 \item Some dog breeds:
-	\begin{description}
-	\item{poodle:} Small dogs kept for company
-	\item{greyhound:} Running dogs
-	\end{description}
+    \begin{description}
+    \item{poodle:} Small dogs kept for company
+    \item{greyhound:} Running dogs
+    \end{description}
 \item Various rodents ordered by size:
-	\begin{enumerate}
-	\item Capivara
-	\item Rat
-	\item Mouse
-	\end{enumerate}
+    \begin{enumerate}
+    \item Capivara
+    \item Rat
+    \item Mouse
+    \end{enumerate}
 \end{itemize}
 \end{subpage}
 
@@ -405,26 +405,26 @@ out-of-the-box for itemize environments:
 
 \begin{tabular}{rl}
 \head
-| Value			| Type of bullet		|
+| Value         | Type of bullet                |
 \body
-| \code{disc}		| A filled circle.		|
-| \code{circle}		| An empty circle.		|
-| \code{square}		| A square.			|
-| \code{none}		| Ommit the bullet altogether.	|
+| \code{disc}   | A filled circle.              |
+| \code{circle} | An empty circle.              |
+| \code{square} | A square.                     |
+| \code{none}   | Ommit the bullet altogether.  |
 \end{tabular}
 
 And the corresponding list for itemize environments:
 
 \begin{tabular}{rl}
 \head
-| Value			| Type of numbering				|
+| Value                 | Type of numbering                         |
 \body
-| \code{decimal}	| Decimal numbers.				|
-| \code{lower-roman}	| Lower-case Roman numerals.			|
-| \code{upper-roman}	| Upper-case Roman numerals.			|
-| \code{lower-alpha}	| Lower-case letters in the Latin alphabet.	|
-| \code{upper-alpha}	| Upper-case letters in the Latin alphabet.	|
-| \code{none}		| Ommit the numbering altogether.		|
+| \code{decimal}        | Decimal numbers.                          |
+| \code{lower-roman}    | Lower-case Roman numerals.                |
+| \code{upper-roman}    | Upper-case Roman numerals.                |
+| \code{lower-alpha}    | Lower-case letters in the Latin alphabet. |
+| \code{upper-alpha}    | Upper-case letters in the Latin alphabet. |
+| \code{none}           | Ommit the numbering altogether.           |
 \end{tabular}
 
 
@@ -665,13 +665,13 @@ an \link{http://caml.inria.fr/}{OCaml} fragment.  You can declare a source-code
 environment the following way:
 
 \begin<boxed>{source1}
-\begin<lang=ocaml>{source}
+\begin<lang=caml>{source}
 type 'a tree =
     | Leaf
     | Node of 'a tree * 'a * 'a tree
 
 let rec count = function
-    | Leaf		    -> 0
+    | Leaf                  -> 0
     | Node (left, x, right) -> 1 + count left + count right
 \end{source}
 \end{source1}
@@ -684,13 +684,13 @@ must have been used in the source for this manual to display the code above (thi
 manual is itself written in \lambtex --- we do eat our own dog food).  As for the
 actual result produced by the composer, it is as follows:
 
-\begin<lang=ocaml>{source}
+\begin<lang=caml>{source}
 type 'a tree =
     | Leaf
     | Node of 'a tree * 'a * 'a tree
 
 let rec count = function
-    | Leaf		    -> 0
+    | Leaf                  -> 0
     | Node (left, x, right) -> 1 + count left + count right
 \end{source}
 
@@ -714,28 +714,28 @@ one wishes to integrate tightly with the flow of the document.
 \item{'\code{boxed}'}
 Declares that the source code listing should be shown inside a decorative box.  Example:
 
-\begin<lang=ocaml,boxed>{source}
+\begin<lang=caml,boxed>{source}
 type 'a tree =
-	| Leaf of 'a
-	| Node of 'a tree * 'a tree
+    | Leaf of 'a
+    | Node of 'a tree * 'a tree
 
 let rec count_leaves = function
-	| Leaf _	-> 1
-	| Node (a, b)	-> count_leaves a + count_leaves b
+    | Leaf _      -> 1
+    | Node (a, b) -> count_leaves a + count_leaves b
 \end{source}
 
 \item{'\code{zebra}'}
 Besides placing the source-code inside a decorative box, this style will in addition
 give a different background to even and odd numbered rows:
 
-\begin<lang=ocaml,zebra>{source}
+\begin<lang=caml,zebra>{source}
 type 'a tree =
-	| Leaf of 'a
-	| Node of 'a tree * 'a tree
+    | Leaf of 'a
+    | Node of 'a tree * 'a tree
 
 let rec count_leaves = function
-	| Leaf _	-> 1
-	| Node (a, b)	-> count_leaves a + count_leaves b
+    | Leaf _      -> 1
+    | Node (a, b) -> count_leaves a + count_leaves b
 \end{source}
 
 \item{'\code{console}'}
@@ -771,12 +771,12 @@ record will be shown in a different row.  In brief, a table just like the one be
 
 \begin{tabular}{lll}
 \head
-| Name		| Phone		| Address	|
+| Name      | Phone     | Address   |
 \body
-| John		| 123456	| London	|
-| Mary		| 234567	| Paris		|
-| Mark		| 345678	| Moscow	|
-| Jane		| 456789	| Sydney	|
+| John      | 123456    | London    |
+| Mary      | 234567    | Paris     |
+| Mark      | 345678    | Moscow    |
+| Jane      | 456789    | Sydney    |
 \end{tabular}
 
 The tabular environment has one mandatory primary parameter: a string indicating the
@@ -791,16 +791,16 @@ for a list of all available column specifiers.
 A specifier tells \lambtex how each column should be formatted.}
 \begin{tabular}{rl}
 \head
-| Specifier	| Formatting |
+| Specifier | Formatting                            |
 \body
-| \code{l}	| Column is left-aligned. |
-| \code{L}	| Column is left-aligned and strong. |
-| \code{r}	| Column is right-aligned. |
-| \code{R}	| Column is right-aligned and strong. |
-| \code{c}	| Column is centre-aligned. |
-| \code{C}	| Column is centre-aligned and strong. |
-| \code{j}	| Column is justified. |
-| \code{J}	| Column is justified and strong. |
+| \code{l}  | Column is left-aligned.               |
+| \code{L}  | Column is left-aligned and strong.    |
+| \code{r}  | Column is right-aligned.              |
+| \code{R}  | Column is right-aligned and strong.   |
+| \code{c}  | Column is centre-aligned.             |
+| \code{C}  | Column is centre-aligned and strong.  |
+| \code{j}  | Column is justified.                  |
+| \code{J}  | Column is justified and strong.       |
 \end{tabular}
 \end{table}
 
@@ -826,12 +826,12 @@ character '\code{|}' is used to separate cells and rows.
 \begin<boxed>{source}
 \begin{tabular}{lll}
 \head
-| Name		| Phone			| Address	|
+| Name      | Phone     | Address   |
 \body
-| John		| 123456		| London	|
-| Mary		| 234567		| Paris		|
-| Mark		| 345678		| Moscow	|
-| Jane		| 456789		| Sydney	|
+| John      | 123456    | London    |
+| Mary      | 234567    | Paris     |
+| Mark      | 345678    | Moscow    |
+| Jane      | 456789    | Sydney    |
 \end{tabular}
 \end{source}
 
@@ -859,19 +859,19 @@ span two columns, be centered, and show a horizontal line below and above, respe
 \begin<boxed>{source}
 \begin{tabular}{rll}
 \head
-|		|{2c_} Scientific name			|
-| Common name	| Genus			| Species	|
+|               |{2c_} Scientific name                  |
+| Common name   | Genus                 | Species       |
 \body
-| Wolf		| \emph{Canis}		| \emph{lupus}	|
-| Cat		| \emph{Felis}		| \emph{catus}	|
-| Lion		| \emph{Panthera}	| \emph{leo}	|
+| Wolf          | \emph{Canis}          | \emph{lupus}  |
+| Cat           | \emph{Felis}          | \emph{catus}  |
+| Lion          | \emph{Panthera}       | \emph{leo}    |
 \body
-| English oak	| \emph{Quercus}	| \emph{robur}	|
-| Cork oak	| \emph{Quercus}	| \emph{suber}	|
-| European yew	| \emph{Taxus}		| \emph{baccata}|
+| English oak   | \emph{Quercus}        | \emph{robur}  |
+| Cork oak      | \emph{Quercus}        | \emph{suber}  |
+| European yew  | \emph{Taxus}          | \emph{baccata}|
 \foot
-| Common name	| Genus			| Species	|
-|		|{2c^} Scientific name			|
+| Common name   | Genus                 | Species       |
+|               |{2c^} Scientific name                  |
 \end{tabular}
 \end{source}
 
@@ -885,19 +885,19 @@ This is part of the advanced features of the language, and is discussed in
 of the advanced formatting facilities that enable customisation of individual cells.}
 \begin{tabular}{rll}
 \head
-|		|{2c_} Scientific name			|
-| Common name	| Genus			| Species	|
+|               |{2c_} Scientific name                  |
+| Common name   | Genus                 | Species       |
 \body
-| Wolf		| \emph{Canis}		| \emph{lupus}	|
-| Cat		| \emph{Felis}		| \emph{catus}	|
-| Lion		| \emph{Panthera}	| \emph{leo}	|
+| Wolf          | \emph{Canis}          | \emph{lupus}  |
+| Cat           | \emph{Felis}          | \emph{catus}  |
+| Lion          | \emph{Panthera}       | \emph{leo}    |
 \body
-| English oak	| \emph{Quercus}	| \emph{robur}	|
-| Cork oak	| \emph{Quercus}	| \emph{suber}	|
-| European yew	| \emph{Taxus}		| \emph{baccata}|
+| English oak   | \emph{Quercus}        | \emph{robur}  |
+| Cork oak      | \emph{Quercus}        | \emph{suber}  |
+| European yew  | \emph{Taxus}          | \emph{baccata}|
 \foot
-| Common name	| Genus			| Species	|
-|		|{2c^} Scientific name			|
+| Common name   | Genus                 | Species       |
+|               |{2c^} Scientific name                  |
 \end{tabular}
 \end{table}
 
@@ -944,34 +944,34 @@ namespacing requirements are automatically taken care of.
 \begin<boxed>{source}
 \begin{mathml}
 <math>
-	<mrow>
-	    <mi>x</mi>
-	    <mo>=</mo>
-	    <mfrac>
-		<mrow>
-		    <mo form="prefix">&minus;</mo>
-		    <mi>b</mi>
-		    <mo>&PlusMinus;</mo>
-		    <msqrt>
-			<msup>
-			    <mi>b</mi>
-			    <mn>2</mn>
-			</msup>
-			<mo>&minus;</mo>
-			<mn>4</mn>
-			<mo>&InvisibleTimes;</mo>
-			<mi>a</mi>
-			<mo>&InvisibleTimes;</mo>
-			<mi>c</mi>
-		    </msqrt>
-		</mrow>
-		<mrow>
-		    <mn>2</mn>
-		    <mo>&InvisibleTimes;</mo>
-		    <mi>a</mi>
-		</mrow>
-	    </mfrac>
-	</mrow>
+    <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mfrac>
+        <mrow>
+            <mo form="prefix">&minus;</mo>
+            <mi>b</mi>
+            <mo>&PlusMinus;</mo>
+            <msqrt>
+            <msup>
+                <mi>b</mi>
+                <mn>2</mn>
+            </msup>
+            <mo>&minus;</mo>
+            <mn>4</mn>
+            <mo>&InvisibleTimes;</mo>
+            <mi>a</mi>
+            <mo>&InvisibleTimes;</mo>
+            <mi>c</mi>
+            </msqrt>
+        </mrow>
+        <mrow>
+            <mn>2</mn>
+            <mo>&InvisibleTimes;</mo>
+            <mi>a</mi>
+        </mrow>
+        </mfrac>
+    </mrow>
 </math>
 \end{mathml}
 \end{source}
@@ -1229,17 +1229,17 @@ a link to the subfigure.
 \code{\emph{uri}} and \code{\emph{label}} sequences are interpreted as raw text.}
 \begin{tabular}{rl}
 \head
-| Command						| Description |
+| Command                                       | Description |
 \body
-| \mbox{\code{\\link\{\emph{uri}\}}}			| Inserts a link to an external resource. |
-| \mbox{\code{\\link\{\emph{uri}\}\{\emph{inline}\}}}	| Alternate form of \code{\\link}, which displays the inline sequence instead of the \caps{uri}. |
-| \mbox{\code{\\see\{\emph{label}\}}...}		| Refers to a document note (see \sref{sec:onnotes}). |
-| \mbox{\code{\\cite\{\emph{label}\}}...}		| Cites a bibliographic reference (see \sref{sec:onbiblio}). |
-| \mbox{\code{\\dref\{\emph{label}\}}}			| Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
-| \mbox{\code{\\dref\{\emph{label}\}\{\emph{inline}\}}}	| Alternate form of \code{\\dref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
-| \mbox{\code{\\sref\{\emph{label}\}}}			| Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
-| \mbox{\code{\\sref\{\emph{label}\}\{\emph{inline}\}}}	| Alternate form of \code{\\sref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
-| \mbox{\code{\\mref\{\emph{label}\}\{\emph{inline}\}}}	| Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
+| \mbox{\code{\\link\{\emph{uri}\}}}            | Inserts a link to an external resource. |
+| \mbox{\code{\\link\{\emph{uri}\}\{\emph{inline}\}}}   | Alternate form of \code{\\link}, which displays the inline sequence instead of the \caps{uri}. |
+| \mbox{\code{\\see\{\emph{label}\}}...}        | Refers to a document note (see \sref{sec:onnotes}). |
+| \mbox{\code{\\cite\{\emph{label}\}}...}       | Cites a bibliographic reference (see \sref{sec:onbiblio}). |
+| \mbox{\code{\\dref\{\emph{label}\}}}          | Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
+| \mbox{\code{\\dref\{\emph{label}\}\{\emph{inline}\}}} | Alternate form of \code{\\dref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
+| \mbox{\code{\\sref\{\emph{label}\}}}          | Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
+| \mbox{\code{\\sref\{\emph{label}\}\{\emph{inline}\}}} | Alternate form of \code{\\sref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
+| \mbox{\code{\\mref\{\emph{label}\}\{\emph{inline}\}}} | Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
 \end{tabular}
 \end{table}
 
@@ -1423,24 +1423,24 @@ different classes of wrappers available:
 
 \item{Equations}
 
-	These are declared via the environment command \code{equation},
-	and may be used for wrapping \code{mathtex} and \code{mathml} blocks.
+    These are declared via the environment command \code{equation},
+    and may be used for wrapping \code{mathtex} and \code{mathml} blocks.
 
 \item{Printouts}
 
-	These are used for wrapping \code{source} environments, and are
-	declared with the environment command \code{printout}.
+    These are used for wrapping \code{source} environments, and are
+    declared with the environment command \code{printout}.
 
 \item{Tables}
 
-	Tables may only be used for wrapping \code{tabular} environments,
-	and are declared with the environment command \code{table}.
+    Tables may only be used for wrapping \code{tabular} environments,
+    and are declared with the environment command \code{table}.
 
 \item{Figures}
 
-	Finally, figures are declared with the environment command
-	\code{figure}, and may be used for wrapping \code{verbatim},
-	\code{picture}, and \code{subpage} blocks.
+    Finally, figures are declared with the environment command
+    \code{figure}, and may be used for wrapping \code{verbatim},
+    \code{picture}, and \code{subpage} blocks.
 
 \end{description}
 
@@ -1836,23 +1836,23 @@ and \code{end} tags, even if they are synonyms.
 \begin[tab:synonyms]{table}{List of all available command synonyms.}
 \begin{tabular}{rl}
 \head
-| Canonical name		| Synonyms			|
+| Canonical name            | Synonyms                      |
 \body
-| \code{\\bold}			| \code{\\strong}, \code{\\b}	|
-| \code{\\code}			| \code{\\tt}			|
-| \code{\\emph}			| \code{\\em}, \code{\\i}	|
-| \code{\\item}			| \code{\\li}			|
-| \code{\\link}			| \code{\\a}			|
-| \code{\\paragraph}		| \code{\\p}			|
-| \code{\\rule}			| \code{\\hr}			|
-| \code{\\section}		| \code{\\h1}			|
-| \code{\\subsection}		| \code{\\h2}			|
-| \code{\\subsubsection}	| \code{\\h3}			|
+| \code{\\bold}             | \code{\\strong}, \code{\\b}   |
+| \code{\\code}             | \code{\\tt}                   |
+| \code{\\emph}             | \code{\\em}, \code{\\i}       |
+| \code{\\item}             | \code{\\li}                   |
+| \code{\\link}             | \code{\\a}                    |
+| \code{\\paragraph}        | \code{\\p}                    |
+| \code{\\rule}             | \code{\\hr}                   |
+| \code{\\section}          | \code{\\h1}                   |
+| \code{\\subsection}       | \code{\\h2}                   |
+| \code{\\subsubsection}    | \code{\\h3}                   |
 \body
-| \code{description}		| \code{dl}			|
-| \code{enumerate}		| \code{ol}			|
-| \code{itemize}		| \code{itemise}, \code{ul}	|
-| \code{verbatim}		| \code{pre}			|
+| \code{description}        | \code{dl}                     |
+| \code{enumerate}          | \code{ol}                     |
+| \code{itemize}            | \code{itemise}, \code{ul}     |
+| \code{verbatim}           | \code{pre}                    |
 \end{tabular}
 \end{table}
 
@@ -1878,12 +1878,12 @@ used is shown in \sref{tab:permdesc}.
 {Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
 \begin{tabular}{cl}
 \head
-| Permission		| Definition							|
+| Permission    | Definition                                                    |
 \body
-| \optional		| The parameter is optional, but may not be empty if present.	|
-| \mandatory0		| The parameter is mandatory, but it may be empty.		|
-| \forbidden		| The parameter is altogether forbidden.			|
-| \forbidden0		| The parameter is forbidden, unless it is empty.		|
+| \optional     | The parameter is optional, but may not be empty if present.   |
+| \mandatory0   | The parameter is mandatory, but it may be empty.              |
+| \forbidden    | The parameter is altogether forbidden.                        |
+| \forbidden0   | The parameter is forbidden, unless it is empty.               |
 \end{tabular}
 \end{table}
 
@@ -1901,75 +1901,75 @@ commands are shown alphabetically.  Furthermore, the commands \code{\emph{\\macr
 command name is user-defined.}
 \begin{tabular}{rll}
 \head
-| Command			| Order		| Label		|
+| Command                   | Order         | Label         |
 \body
-| \code{\\answer}		| \forbidden	| \forbidden	|
-| \code{\\appendix}		| \forbidden	| \optional	|
-| \code{\\arg}			| \forbidden	| \forbidden	|
-| \code{\\bibliography}		| \forbidden	| \optional	|
-| \code{\\body}			| \forbidden	| \forbidden	|
-| \code{\\bold}			| \forbidden	| \forbidden	|
-| \code{\\br}			| \forbidden	| \forbidden	|
-| \code{\\caps}			| \forbidden	| \forbidden	|
-| \code{\\cite}			| \forbidden	| \forbidden	|
-| \code{\\code}			| \forbidden	| \forbidden	|
-| \code{\\del}			| \forbidden	| \forbidden	|
-| \code{\\dref}			| \forbidden	| \forbidden	|
-| \code{\\foot}			| \forbidden	| \forbidden	|
-| \code{\\glyph}		| \forbidden	| \forbidden	|
-| \code{\\head}			| \forbidden	| \forbidden	|
-| \code{\\ins}			| \forbidden	| \forbidden	|
-| \code{\\item}			| \forbidden	| \forbidden	|
-| \code{\\link}			| \forbidden	| \forbidden	|
-| \code{\emph{\\macro}}		| \forbidden	| \forbidden	|
-| \code{\\mbox}			| \forbidden	| \forbidden	|
-| \code{\\mref}			| \forbidden	| \forbidden	|
-| \code{\\notes}		| \forbidden	| \optional	|
-| \code{\\paragraph}		| \forbidden	| \forbidden	|
-| \code{\\part}			| \depends0	| \optional	|
-| \code{\\picture}		| \forbidden	| \forbidden	|
-| \code{\\question}		| \forbidden	| \forbidden	|
-| \code{\\ranswer}		| \forbidden	| \forbidden	|
-| \code{\\rquestion}		| \forbidden	| \forbidden	|
-| \code{\\rule}			| \forbidden	| \forbidden	|
-| \code{\\section}		| \depends0	| \optional	|
-| \code{\\see}			| \forbidden	| \forbidden	|
-| \code{\\span}			| \forbidden	| \forbidden	|
-| \code{\\sref}			| \forbidden	| \forbidden	|
-| \code{\\sub}			| \forbidden	| \forbidden	|
-| \code{\\subsection}		| \depends0	| \optional	|
-| \code{\\subsubsection}	| \depends0	| \optional	|
-| \code{\\subtitle}		| \forbidden	| \forbidden	|
-| \code{\\sup}			| \forbidden	| \forbidden	|
-| \code{\\title}		| \forbidden	| \forbidden	|
-| \code{\\toc}			| \forbidden	| \optional	|
-| \code{\\what}			| \forbidden	| \forbidden	|
-| \code{\\where}		| \forbidden	| \forbidden	|
-| \code{\\who}			| \forbidden	| \forbidden	|
+| \code{\\answer}           | \forbidden    | \forbidden    |
+| \code{\\appendix}         | \forbidden    | \optional     |
+| \code{\\arg}              | \forbidden    | \forbidden    |
+| \code{\\bibliography}     | \forbidden    | \optional     |
+| \code{\\body}             | \forbidden    | \forbidden    |
+| \code{\\bold}             | \forbidden    | \forbidden    |
+| \code{\\br}               | \forbidden    | \forbidden    |
+| \code{\\caps}             | \forbidden    | \forbidden    |
+| \code{\\cite}             | \forbidden    | \forbidden    |
+| \code{\\code}             | \forbidden    | \forbidden    |
+| \code{\\del}              | \forbidden    | \forbidden    |
+| \code{\\dref}             | \forbidden    | \forbidden    |
+| \code{\\foot}             | \forbidden    | \forbidden    |
+| \code{\\glyph}            | \forbidden    | \forbidden    |
+| \code{\\head}             | \forbidden    | \forbidden    |
+| \code{\\ins}              | \forbidden    | \forbidden    |
+| \code{\\item}             | \forbidden    | \forbidden    |
+| \code{\\link}             | \forbidden    | \forbidden    |
+| \code{\emph{\\macro}}     | \forbidden    | \forbidden    |
+| \code{\\mbox}             | \forbidden    | \forbidden    |
+| \code{\\mref}             | \forbidden    | \forbidden    |
+| \code{\\notes}            | \forbidden    | \optional     |
+| \code{\\paragraph}        | \forbidden    | \forbidden    |
+| \code{\\part}             | \depends0     | \optional     |
+| \code{\\picture}          | \forbidden    | \forbidden    |
+| \code{\\question}         | \forbidden    | \forbidden    |
+| \code{\\ranswer}          | \forbidden    | \forbidden    |
+| \code{\\rquestion}        | \forbidden    | \forbidden    |
+| \code{\\rule}             | \forbidden    | \forbidden    |
+| \code{\\section}          | \depends0     | \optional     |
+| \code{\\see}              | \forbidden    | \forbidden    |
+| \code{\\span}             | \forbidden    | \forbidden    |
+| \code{\\sref}             | \forbidden    | \forbidden    |
+| \code{\\sub}              | \forbidden    | \forbidden    |
+| \code{\\subsection}       | \depends0     | \optional     |
+| \code{\\subsubsection}    | \depends0     | \optional     |
+| \code{\\subtitle}         | \forbidden    | \forbidden    |
+| \code{\\sup}              | \forbidden    | \forbidden    |
+| \code{\\title}            | \forbidden    | \forbidden    |
+| \code{\\toc}              | \forbidden    | \optional     |
+| \code{\\what}             | \forbidden    | \forbidden    |
+| \code{\\where}            | \forbidden    | \forbidden    |
+| \code{\\who}              | \forbidden    | \forbidden    |
 \body
-| \code{abstract}		| \forbidden	| \forbidden	|
-| \code{bib}			| \forbidden	| \optional	|
-| \code{\emph{boxout}}		| \depends0	| \optional	|
-| \code{decor}			| \forbidden	| \forbidden	|
-| \code{description}		| \forbidden	| \forbidden	|
-| \code{enumerate}		| \forbidden	| \forbidden	|
-| \code{equation}		| \depends0	| \optional	|
-| \code{figure}			| \depends0	| \optional	|
-| \code{itemize}		| \forbidden	| \forbidden	|
-| \code{mathml}			| \forbidden	| \forbidden	|
-| \code{mathtex}		| \forbidden	| \forbidden	|
-| \code{note}			| \forbidden	| \optional	|
-| \code{quote}			| \forbidden	| \forbidden	|
-| \code{printout}		| \depends0	| \optional	|
-| \code{pull}			| \forbidden	| \forbidden	|
-| \code{qanda}			| \forbidden	| \forbidden	|
-| \code{source}			| \forbidden	| \forbidden	|
-| \code{subpage}		| \forbidden	| \forbidden	|
-| \code{table}			| \depends0	| \optional	|
-| \code{tabular}		| \forbidden	| \forbidden	|
-| \code{\emph{theorem}}		| \depends0	| \optional	|
-| \code{verbatim}		| \forbidden	| \forbidden	|
-| \code{verse}			| \forbidden	| \forbidden	|
+| \code{abstract}           | \forbidden    | \forbidden    |
+| \code{bib}                | \forbidden    | \optional     |
+| \code{\emph{boxout}}      | \depends0     | \optional     |
+| \code{decor}              | \forbidden    | \forbidden    |
+| \code{description}        | \forbidden    | \forbidden    |
+| \code{enumerate}          | \forbidden    | \forbidden    |
+| \code{equation}           | \depends0     | \optional     |
+| \code{figure}             | \depends0     | \optional     |
+| \code{itemize}            | \forbidden    | \forbidden    |
+| \code{mathml}             | \forbidden    | \forbidden    |
+| \code{mathtex}            | \forbidden    | \forbidden    |
+| \code{note}               | \forbidden    | \optional     |
+| \code{quote}              | \forbidden    | \forbidden    |
+| \code{printout}           | \depends0     | \optional     |
+| \code{pull}               | \forbidden    | \forbidden    |
+| \code{qanda}              | \forbidden    | \forbidden    |
+| \code{source}             | \forbidden    | \forbidden    |
+| \code{subpage}            | \forbidden    | \forbidden    |
+| \code{table}              | \depends0     | \optional     |
+| \code{tabular}            | \forbidden    | \forbidden    |
+| \code{\emph{theorem}}     | \depends0     | \optional     |
+| \code{verbatim}           | \forbidden    | \forbidden    |
+| \code{verse}              | \forbidden    | \forbidden    |
 \end{tabular}
 \end{table}
 
@@ -1988,37 +1988,37 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 \begin{enumerate}
 
 \item
-	Only numbered elements may be referred to using \code{\\dref} and \code{\\sref}
-	commands:
+    Only numbered elements may be referred to using \code{\\dref} and \code{\\sref}
+    commands:
 
-	\p<noindent>{Unless the user explicitly demanded an empty ordering, sectional
-	commands and wrappers have by default a number.  In the case of custom
-	environments, the situation varies.}
+    \p<noindent>{Unless the user explicitly demanded an empty ordering, sectional
+    commands and wrappers have by default a number.  In the case of custom
+    environments, the situation varies.}
 
-	It makes sense that the hyperlinking commands that are supposed to produce
-	a number should only be used with numbered wrappers, numbered sectional
-	blocks, or numbered custom environments.  These commands are \code{\\dref}
-	and \code{\\sref}.  On the other hand, because \code{\\mref} does not output
-	a number, it is always allowed.
-
-\item
-	You must explicitly provide a manual ordering for sub-paged wrappers, sectional
-	blocks, or custom blocks:
-
-	\p<noindent>{A sub-paged element is one that is declared inside a \code{subpage}
-	block (see \sref{sec:subpage}).  Because they lie outside the main flow of the
-	document, these elements are not automatically numbered.  You must therefore
-	explicitly provide them with an ordering parameter by inserting the numbering
-	between parentheses.  Specifying an empty ordering is of course also allowed.}
+    It makes sense that the hyperlinking commands that are supposed to produce
+    a number should only be used with numbered wrappers, numbered sectional
+    blocks, or numbered custom environments.  These commands are \code{\\dref}
+    and \code{\\sref}.  On the other hand, because \code{\\mref} does not output
+    a number, it is always allowed.
 
 \item
-	You may not provide a manual ordering for wrappers, sectional blocks, or custom
-	blocks defined outside a sub-page:
+    You must explicitly provide a manual ordering for sub-paged wrappers, sectional
+    blocks, or custom blocks:
 
-	\p<noindent>{This rule is complementary to the previous one.  Because these
-	blocks are numbered automatically by \lambtex when present in the main document,
-	you may not interfere with that automatism by providing an explicit ordering.
-	Note, however, that an empty ordering is always allowed.}
+    \p<noindent>{A sub-paged element is one that is declared inside a \code{subpage}
+    block (see \sref{sec:subpage}).  Because they lie outside the main flow of the
+    document, these elements are not automatically numbered.  You must therefore
+    explicitly provide them with an ordering parameter by inserting the numbering
+    between parentheses.  Specifying an empty ordering is of course also allowed.}
+
+\item
+    You may not provide a manual ordering for wrappers, sectional blocks, or custom
+    blocks defined outside a sub-page:
+
+    \p<noindent>{This rule is complementary to the previous one.  Because these
+    blocks are numbered automatically by \lambtex when present in the main document,
+    you may not interfere with that automatism by providing an explicit ordering.
+    Note, however, that an empty ordering is always allowed.}
 
 \end{enumerate}
 

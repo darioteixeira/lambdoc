@@ -1,12 +1,12 @@
 (********************************************************************************)
-(*	Lambdoc_core_custom.mli
-	Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
-	This software is distributed under the terms of the GNU GPL version 2.
-	See LICENSE file for full license text.
+(*  Lambdoc_core_custom.mli
+    Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
+    This software is distributed under the terms of the GNU GPL version 2.
+    See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(**	Custom document blocks.
+(** Custom document blocks.
 *)
 
 module Basic = Lambdoc_core_basic
@@ -17,13 +17,13 @@ open Basic
 
 
 (********************************************************************************)
-(**	{1 Type definitions}							*)
+(** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
 type kind_t =
-	| Boxout
-	| Theorem
-	with sexp
+    | Boxout
+    | Theorem
+    with sexp
 
 type key_t = Pointer.t with sexp
 
@@ -39,7 +39,7 @@ type t = [ anonymous_t | unnumbered_t | numbered_t ]
 
 
 (********************************************************************************)
-(**	{1 Public functions and values}						*)
+(** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
 val anonymous: key_t -> Label.t -> order_t -> [> anonymous_t ]
@@ -50,21 +50,21 @@ val numbered: key_t -> Label.t -> order_t -> [> numbered_t ]
 
 
 (********************************************************************************)
-(**	{1 Public modules}							*)
+(** {1 Public modules}                                                          *)
 (********************************************************************************)
 
 module Boxout:
 sig
-	type t = [ anonymous_t | unnumbered_t | numbered_t ] with sexp
+    type t = [ anonymous_t | unnumbered_t | numbered_t ] with sexp
 
-	val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
+    val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
 end
 
 
 module Theorem:
 sig
-	type t = [ unnumbered_t | numbered_t ] with sexp
+    type t = [ unnumbered_t | numbered_t ] with sexp
 
-	val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
+    val make: [ anonymous_t | unnumbered_t | numbered_t ] -> t
 end
 

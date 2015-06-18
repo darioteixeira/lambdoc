@@ -1,33 +1,33 @@
 /********************************************************************************/
-/* Lambdoc_custom.ccss								*/
+/* Lambdoc_custom.ccss                                                          */
 /********************************************************************************/
 
 /********************************************************************************/
-/* Configure optional/mandatory/forbidden spans.				*/
+/* Configure optional/mandatory/forbidden spans.                                */
 /********************************************************************************/
 
-.doc_span_mandatory	{color: #006400; font-size: 1.154em;}
-.doc_span_optional	{color: #d06010; font-weight: bold; font-size: 1.154em;}
-.doc_span_forbidden	{color: #8b0000; font-size: 1.154em;}
+.doc_span_mandatory {color: #006400; font-size: 1.154em;}
+.doc_span_optional  {color: #d06010; font-weight: bold; font-size: 1.154em;}
+.doc_span_forbidden {color: #8b0000; font-size: 1.154em;}
 
 
 /********************************************************************************/
-/* Sample configuration of some common boxouts.					*/
+/* Sample configuration of some common boxouts.                                 */
 /********************************************************************************/
 
 .doc_boxout_env_warning {background: #fffcf0;}
 .doc_boxout_env_warning > .doc_boxout_head
-	{
-	padding-left: 28px;
-	color: #ff9;
-	background: #b30 url('boxout-warning.png') no-repeat 6px center;
-	}
+    {
+    padding-left: 28px;
+    color: #ff9;
+    background: #b30 url('boxout-warning.png') no-repeat 6px center;
+    }
 
 .doc_boxout_env_tip {background: #f7fcff;}
 .doc_boxout_env_tip > .doc_boxout_head
-	{
-	padding-left: 28px;
-	color: #fff;
-	background: #06c url('boxout-tip.png') no-repeat 6px center;
-	}
+    {
+    padding-left: 28px;
+    color: #fff;
+    background: #06c url('boxout-tip.png') no-repeat 6px center;
+    }
 

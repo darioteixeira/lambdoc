@@ -1,50 +1,50 @@
 /********************************************************************************/
-/* Lambdoc_invalid.ccss								*/
+/* Lambdoc_invalid.ccss                                                         */
 /********************************************************************************/
 
 /********************************************************************************/
-/* High-level document CSS.							*/
+/* High-level document CSS.                                                     */
 /********************************************************************************/
 
 .doc_error + .doc_error
-	{
-	margin-top: Doc_vmargin_boxish;
-	}
+    {
+    margin-top: Doc_vmargin_boxish;
+    }
 
 
 .doc_error_head
-	{
-	font-size: Doc_fsize_error_head;
-	}
+    {
+    font-size: Doc_fsize_error_head;
+    }
 
 .doc_error_lines
-	{
-	border: 1px dotted #666;
-	list-style-type: none;
-	font-size: Doc_fsize_pre;
-	font-family: monospace;
-	background: #ffc;
-	}
+    {
+    border: 1px dotted #666;
+    list-style-type: none;
+    font-size: Doc_fsize_pre;
+    font-family: monospace;
+    background: #ffc;
+    }
 
 .doc_error_linenum
-	{
-	display: block;
-	float: left;
-	clear: left;
-	width: 3em;
-	padding: 0.2em 0;
-	text-align: right;
-	font-weight: bold;
-	}
+    {
+    display: block;
+    float: left;
+    clear: left;
+    width: 3em;
+    padding: 0.2em 0;
+    text-align: right;
+    font-weight: bold;
+    }
 
 .doc_error_linestr
-	{
-	min-height: 1.6em;
-	display: block;
-	margin-left: 3.5em;
-	border-left: 1px solid #999;
-	padding: 0.2em 0.5em;
-	}
+    {
+    min-height: 1.6em;
+    display: block;
+    margin-left: 3.5em;
+    border-left: 1px solid #999;
+    padding: 0.2em 0.5em;
+    }
 
 .doc_error_around {background: #f9f9f9; color: #000;}
 .doc_error_actual {background: #f3f6fc; color: #c33;}
