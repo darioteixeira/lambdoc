@@ -10,6 +10,7 @@ module List = BatList
 module Basic = Lambdoc_core_basic
 module Feature = Lambdoc_core_feature
 
+open Sexplib.Std
 open Basic
 
 
@@ -17,13 +18,13 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type action_t = [ `Accept | `Deny ]
+type action_t = [ `Accept | `Deny ] with sexp
 
-type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier_t ]
+type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier_t ] with sexp
 
-type feature_ruleset_t = (Feature.t classifier_t * action_t) list
+type feature_ruleset_t = (Feature.t classifier_t * action_t) list with sexp
 
-type classname_ruleset_t = ((Feature.t classifier_t * Classname.t classifier_t) * action_t) list
+type classname_ruleset_t = ((Feature.t classifier_t * Classname.t classifier_t) * action_t) list with sexp
 
 type t =
     {
@@ -34,7 +35,7 @@ type t =
     max_macro_depth: int option;
     max_inline_depth: int option;
     max_block_depth: int option;
-    }
+    } with sexp
 
 
 (********************************************************************************)

@@ -25,7 +25,7 @@ type inline_feature_t =
     | `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
     | `Feature_mbox | `Feature_span | `Feature_link
     | `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref
-    | `Feature_extcomm_inl of Ident.t ]
+    | `Feature_extcomm_inl of Ident.t ] with sexp
 
 type block_feature_t =
     [ `Feature_paragraph 
@@ -42,7 +42,7 @@ type block_feature_t =
     | `Feature_abstract | `Feature_rule
     | `Feature_bib | `Feature_note
     | `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef
-    | `Feature_extcomm_blk of Ident.t ]
+    | `Feature_extcomm_blk of Ident.t ] with sexp
 
 type internal_feature_t =
     [ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
@@ -50,9 +50,9 @@ type internal_feature_t =
     | `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
     | `Feature_custom | `Feature_macrocall | `Feature_macroarg ]
 
-type public_feature_t = [ inline_feature_t | block_feature_t ]
+type public_feature_t = [ inline_feature_t | block_feature_t ] with sexp
 
-type t = [ public_feature_t | internal_feature_t ]
+type t = [ public_feature_t | internal_feature_t ] with sexp
 
 
 (********************************************************************************)
