@@ -659,7 +659,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
                 Monad.return cell in
             let tab_row = match row with
                 | _::_ -> monadic_map converter row >|= Tabular.make_row
-                | []   -> invalid_arg "Parser has given us an empty tabular row" in
+                | []   -> assert false in
             if !rowspan <> num_columns
             then begin
                 let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
@@ -672,13 +672,13 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
             check_inline_comm feature comm (fun _ _ -> Monad.return []) >>= fun _ ->
             match rows with
                 | _::_ -> monadic_map convert_row rows >|= Tabular.make_group
-                | []   -> invalid_arg "Parser has given us an empty tabular group" in
+                | []   -> assert false in
 
         monadic_maybe (convert_group `Feature_thead) tab.thead >>= fun thead ->
         monadic_maybe (convert_group `Feature_tfoot) tab.tfoot >>= fun tfoot ->
         match tab.tbodies with
             | _::_ -> monadic_map (convert_group `Feature_tbody) tab.tbodies >|= Tabular.make specs ?thead ?tfoot
-            | []   -> invalid_arg "Parser has given us an empty tabular body"
+            | []   -> assert false
 
 
     (****************************************************************************)

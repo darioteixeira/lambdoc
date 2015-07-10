@@ -41,11 +41,11 @@ type t = [ anonymous_t | unnumbered_t | numbered_t ]
 
 let anonymous key label = function
     | `None_given -> `Anonymous (key, label)
-    | _       -> invalid_arg "Custom.anonymous"
+    | _           -> invalid_arg "Lambdoc_core_custom.anonymous"
 
 let unnumbered key label = function
     | `None_given -> `Unnumbered (key, label)
-    | _       -> invalid_arg "Custom.unnumbered"
+    | _           -> invalid_arg "Lambdoc_core_custom.unnumbered"
 
 let numbered key label order = `Numbered (key, label, order)
 
@@ -67,8 +67,7 @@ struct
     type t = [ unnumbered_t | numbered_t ] with sexp
 
     let make = function
-        | `Anonymous _ -> invalid_arg "Custom.Theorem.make"
-        | #unnumbered_t
-        | #numbered_t as x -> x
+        | #unnumbered_t | #numbered_t as x -> x
+        | `Anonymous _                     -> invalid_arg "Lambdoc_core_custom.Theorem.make"
 end
 

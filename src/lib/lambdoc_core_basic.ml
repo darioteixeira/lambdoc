@@ -72,11 +72,11 @@ struct
     let section level =
         if level >= 1 && level <= max_section
         then level
-        else invalid_arg ("Level.section: " ^ string_of_int level)
+        else invalid_arg ("Lambdoc_core_basic.Level.section: " ^ string_of_int level)
 
     let title level =
         if level >= 1 && level <= max_title
         then level
-        else invalid_arg ("Level.title: " ^ string_of_int level)
+        else invalid_arg ("Lambdoc_core_basic.Level.title: " ^ string_of_int level)
 end
 

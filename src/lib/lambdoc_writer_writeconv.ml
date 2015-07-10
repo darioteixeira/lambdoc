@@ -83,10 +83,10 @@ struct
             | 7 -> [y; x; x]
             | 8 -> [y; x; x; x]
             | 9 -> [x; z]
-            | _ -> invalid_arg "Invalid digit" in
+            | _ -> assert false in
         let rec to_roman i =
             if i <= 0
-            then invalid_arg "Invalid roman numeral"
+            then assert false
             else if i >= 1000
                 then 'M' :: to_roman (i - 1000)
                 else if i >= 100

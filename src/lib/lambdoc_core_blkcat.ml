@@ -44,7 +44,7 @@ let ranked_of_int = function
     | 2 -> `Listable_blk
     | 1 -> `Quotable_blk
     | 0 -> `Embeddable_blk
-    | _ -> invalid_arg "Blkcat.ranked_of_int"
+    | _ -> assert false
 
 
 (********************************************************************************)
@@ -60,5 +60,5 @@ let subtype subs sup =
 
 let min x1 x2 = match (x1, x2) with
     | ((#ranked_t as x1), (#ranked_t as x2)) -> ranked_of_int (Pervasives.min (int_of_ranked x1) (int_of_ranked x2))
-    | _                                      -> invalid_arg "Blkcat.min"
+    | _                                      -> invalid_arg "Lambdoc_core_blkcat.min"
 

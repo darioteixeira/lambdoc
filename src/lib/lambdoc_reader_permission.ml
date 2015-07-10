@@ -109,7 +109,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
 
     let get_minipaged = function
         | Some minipaged -> minipaged
-        | None           -> invalid_arg "Feature requires that 'minipaged' be set but it is not!" in
+        | None           -> assert false in
 
     let inline_feature_set = function
         | `Feature_plain         -> forbidden_class

@@ -167,7 +167,7 @@ struct
         | "R" -> (Right, Strong)
         | "j" -> (Justify, Normal)
         | "J" -> (Justify, Strong)
-        | _   -> invalid_arg "colspec_of_string"
+        | _   -> invalid_arg "Lambdoc_reader_readconv.Tabular_input.colspec_of_string"
 
     let cellspec_of_string =
         let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$" in

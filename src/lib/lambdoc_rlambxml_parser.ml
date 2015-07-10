@@ -64,7 +64,7 @@ let pairify lst =
     let rec pairify_aux accum = function
         | one::two::tl  -> let new_accum = (one, two) :: accum in pairify_aux new_accum tl
         | []            -> accum
-        | _             -> invalid_arg "pairify"
+        | _             -> assert false
     in pairify_aux [] lst
 
 
