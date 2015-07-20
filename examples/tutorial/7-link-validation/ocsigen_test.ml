@@ -47,6 +47,7 @@ let pinger href =
     let open Cohttp in
     let open Cohttp_lwt_unix in
         try_lwt
+            Ocsigen_messages.warning (Printf.sprintf "Checking URL '%s'..." href);
             let uri = Uri.of_string href in
             lwt response = Client.head uri in
             response |> Response.status |> function
