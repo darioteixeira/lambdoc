@@ -77,16 +77,50 @@ let book_extcomm maybe_credential =
 
 
 let bookpic_extcomm maybe_credential =
+    let open Ast in
     let open Reader_extension in
     let f comm raw = match_lwt get_book comm maybe_credential raw with
         | `Error msgs ->
             Lwt.return (`Error msgs)
-        | `Okay book ->
-            let tl = [(comm, Ast.Emph [(comm, Ast.Plain book.title)])] in
-            let xs = match book.image_small with
-                | Some img -> (comm, Ast.Glyph (img.url, "book cover")) :: tl
-                | None     -> tl in
-            Lwt.return (`Okay ([(comm, Ast.Paragraph xs)], []))
+        | `Okay book -> match book.image_medium with
+            | Some img ->
+                let sprint = function
+                    | Some s -> Ast.Plain s
+                    | None   -> Ast.Entity "mdash" in
+                let trows =
+                    [
+                    (comm,
+                        [
+                        (comm, None, Some [(comm, Ast.Plain "Title:")]);
+                        (comm, None, Some [match book.page with
+                            | Some url -> (comm, Ast.Link (url, Some [(comm, Ast.Plain book.title)]))
+                            | None     -> (comm, Ast.Plain book.title)
+                        ])]);
+                    (comm,
+                        [
+                        (comm, None, Some [(comm, Ast.Plain "Author:")]);
+                        (comm, None, Some [(comm, sprint book.author)])
+                        ]);
+                    (comm,
+                        [
+                        (comm, None, Some [(comm, Ast.Plain "Publisher:")]);
+                        (comm, None, Some [(comm, sprint book.publisher)])
+                        ]);
+                    (comm,
+                        [
+                        (comm, None, Some [(comm, Ast.Plain "Publication date:")]);
+                        (comm, None, Some [(comm, sprint book.pubdate)])
+                        ]);
+                    ] in
+                let tbody = (comm, trows) in
+                let blocks =
+                    [
+                    (comm, Ast.Picture (img.url, "cover for \"" ^ book.title ^ "\""));
+                    (comm, Ast.Tabular ("Rl", {thead = None; tfoot = None; tbodies = [tbody]}));
+                    ] in
+                Lwt.return (`Okay (blocks, []))
+            | None ->
+                Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "cannot find picture for book")])
     in ("bookpic", Blkextcomm (Blkfun_raw ("href", f), [`Embeddable_blk]))
 
 
