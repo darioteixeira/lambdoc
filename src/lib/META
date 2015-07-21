@@ -1,6 +1,6 @@
 # OASIS_START
-# DO NOT EDIT (digest: 85fca50c692b9df4b129c6078f6ac668)
-version = "1.0-beta3"
+# DO NOT EDIT (digest: 0f46f172e4730b7812f8d21abda8dc12)
+version = "1.0-beta4"
 description = "Support for semantically rich documents in web applications"
 requires =
 "threads batteries pcre sexplib ulex menhirLib pxp-engine pxp-ulex-utf8 tyxml omd blahcaml camlhighlight"
