@@ -439,8 +439,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
         | Ast.See refs when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Note_target _  -> `Valid_target
-                    | _         -> `Wrong_target Error.Target_note in
+                    | Target.Note_target _ -> `Valid_target
+                    | _                    -> `Wrong_target Error.Target_note in
                 List.iter (add_pointer target_checker comm) refs;
                 match refs with
                     | _::_ ->
@@ -454,8 +454,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
         | Ast.Cite refs when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Bib_target _   -> `Valid_target
-                    | _         -> `Wrong_target Error.Target_bib in
+                    | Target.Bib_target _ -> `Valid_target
+                    | _                   -> `Wrong_target Error.Target_bib in
                 List.iter (add_pointer target_checker comm) refs;
                 match refs with
                     | _::_ ->
@@ -473,8 +473,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
                     | Target.Visible_target (Target.Wrapper_target (_, `None_given))
                     | Target.Visible_target (Target.Part_target `None_given)
                     | Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
-                    | Target.Visible_target _                    -> `Valid_target
-                    | _                              -> `Wrong_target Error.Target_label in
+                    | Target.Visible_target _                                        -> `Valid_target
+                    | _                                                              -> `Wrong_target Error.Target_label in
                 add_pointer target_checker comm pointer;
                 monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq >>= fun maybe_seq ->
                 Monad.return [Inline.dref ~attr pointer maybe_seq] in
@@ -487,8 +487,8 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
                     | Target.Visible_target (Target.Wrapper_target (_, `None_given))
                     | Target.Visible_target (Target.Part_target `None_given)
                     | Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
-                    | Target.Visible_target _                    -> `Valid_target
-                    | _                              -> `Wrong_target Error.Target_label in
+                    | Target.Visible_target _                                        -> `Valid_target
+                    | _                                                              -> `Wrong_target Error.Target_label in
                 add_pointer target_checker comm pointer;
                 monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq >>= fun maybe_seq ->
                 Monad.return [Inline.sref ~attr pointer maybe_seq] in
@@ -498,7 +498,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
             let elem attr _ =
                 let target_checker = function
                     | Target.Visible_target _ -> `Valid_target
-                    | _           -> `Wrong_target Error.Target_label in
+                    | _                       -> `Wrong_target Error.Target_label in
                 add_pointer target_checker comm pointer;
                 convert_seq_aux ~comm ~context ~depth ~args true astseq >>= fun seq ->
                 Monad.return [Inline.mref ~attr pointer seq] in
@@ -1243,7 +1243,7 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
         let adder key = function
             | (_, true, Unnumbered seq)
             | (_, true, Numbered (seq, _)) -> Hashtbl.add custom key seq
-            | _                -> () in
+            | _                            -> () in
         Hashtbl.iter adder customisations;
         custom in
 
