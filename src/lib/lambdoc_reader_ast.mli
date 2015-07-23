@@ -23,11 +23,11 @@ open Basic
 
 type command_t =
     {
-    comm_tag: Ident.t option;
-    comm_label: Pointer.t option;
-    comm_order: string option;
-    comm_style: string option;
-    comm_linenum: int;
+    comm_tag: Ident.t option;       (** Tag associated with command (some markups have anonymous, tagless commands) *)
+    comm_label: Pointer.t option;   (** Label parameter attached to command *)
+    comm_order: string option;      (** Order parameter attached to command *)
+    comm_style: string option;      (** Style parameter attached to command *)
+    comm_linenum: int;              (** Source line number where command was declared *)
     }
 
 
