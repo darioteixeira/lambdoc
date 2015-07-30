@@ -43,7 +43,7 @@ type inline_t =
 and t =
     {
     inl: inline_t;
-    attr: Classname.t list;
+    attr: Attr.t;
     }
 
 and seq_t = t list with sexp
