@@ -782,13 +782,7 @@ let from_invalid ?(invalid_options = default_invalid_options) doc =
                     ]
             | None ->
                 [Html5.h1 ~a:[a_class [!!"error_head"]] [pcdata "Global error:"]] in
-        let explanation_doc = Valid.make
-            ~content:[Block.paragraph (Explanations.explain error)]
-            ~bibs:[]
-            ~notes:[]
-            ~toc:[]
-            ~labels:(Hashtbl.create 0)
-            ~customs:(Hashtbl.create 0) in
+        let explanation_doc = Valid.make [Block.paragraph (Explanations.explain error)] in
         let valid_options = {default_valid_options with prefix = opts.prefix; base_classes = ["error_msg"]} in
         let explanation_out = from_valid ~valid_options explanation_doc in
         Html5.li ~a:[a_class [!!"error"]] (context @ [explanation_out]) in

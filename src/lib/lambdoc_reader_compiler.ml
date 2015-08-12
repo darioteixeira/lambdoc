@@ -1287,7 +1287,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     let () = filter_pointers () in
     let () = verify_section Error.Missing_bibliography !has_bibliography_refs !has_bibliography_section in
     let () = verify_section Error.Missing_notes !has_notes_refs !has_notes_section in
-    let valid = Valid.make ~content ~bibs:(List.rev !bibs) ~notes:(List.rev !notes) ~toc:(List.rev !toc) ~labels ~customs in
+    let valid = Valid.make ~bibs:(List.rev !bibs) ~notes:(List.rev !notes) ~toc:(List.rev !toc) ~labels ~customs content in
     begin match postprocessor with
         | None   -> Monad.return (!errors, valid)
         | Some p -> Foldmapper.(p.valid p !errors valid)

@@ -49,12 +49,12 @@ type t =
 (********************************************************************************)
 
 val make:
-    content:Block.frag_t ->
-    bibs:Bib.t list ->
-    notes:Note.t list ->
-    toc:Heading.t list ->
-    labels:labels_t ->
-    customs:customs_t ->
+    ?bibs:Bib.t list ->
+    ?notes:Note.t list ->
+    ?toc:Heading.t list ->
+    ?labels:labels_t ->
+    ?customs:customs_t ->
+    Block.frag_t ->
     t
 
 

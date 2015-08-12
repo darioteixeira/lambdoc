@@ -46,7 +46,7 @@ type t =
 (** {2 Constructors}                                                            *)
 (********************************************************************************)
 
-let make ~content ~bibs ~notes ~toc ~labels ~customs =
+let make ?(bibs = []) ?(notes = []) ?(toc = []) ?(labels = Hashtbl.create 0) ?(customs = Hashtbl.create 0) content =
     {content; bibs; notes; toc; labels; customs}
 
 
