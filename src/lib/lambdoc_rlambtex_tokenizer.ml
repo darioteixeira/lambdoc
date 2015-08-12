@@ -86,6 +86,7 @@ let build_command tag rex subs position =
     comm_order = get_param rex "order" subs;
     comm_style = get_param rex "style" subs;
     comm_linenum = position.pos_lnum;
+    comm_originator = Source;
     }
 
 
@@ -99,6 +100,7 @@ let build_op position =
     comm_order = None;
     comm_style = None;
     comm_linenum = position.pos_lnum;
+    comm_originator = Source;
     }
 
 

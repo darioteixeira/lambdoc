@@ -36,21 +36,17 @@ end
 *)
 module type READER =
 sig
-    type 'a monad_t
-    type link_reader_t
-    type image_reader_t
-    type extcomm_t
+    module Ext: Extension.S
 
     val ambivalent_from_string:
+        ?postprocessor:Error.localized_t list Ext.Foldmapper.t ->
+        ?extcomms:Ext.extcomm_t list ->
         ?linenum_offset:int ->
-        ?link_readers:link_reader_t list ->
-        ?image_readers:image_reader_t list ->
-        ?extcomms:extcomm_t list ->
         ?verify_utf8:bool ->
         ?expand_entities:bool ->
         ?idiosyncrasies:Idiosyncrasies.t ->
         string ->
-        Ambivalent.t monad_t
+        Ambivalent.t Ext.Monad.t
 end
 
 
@@ -58,17 +54,9 @@ end
 *)
 module type FULL =
 sig
-    module Make: functor (Ext: Extension.S) -> READER with
-        type 'a monad_t = 'a Ext.Monad.t and
-        type link_reader_t = Ext.link_reader_t and
-        type image_reader_t = Ext.image_reader_t and
-        type extcomm_t = Ext.extcomm_t
+    module Make: functor (Ext: Extension.S) -> READER with module Ext = Ext
 
-    module Trivial: READER with
-        type 'a monad_t = 'a Extension.Trivial.Monad.t and
-        type link_reader_t = Extension.Trivial.link_reader_t and
-        type image_reader_t = Extension.Trivial.image_reader_t and
-        type extcomm_t = Extension.Trivial.extcomm_t
+    module Trivial: READER with module Ext = Extension.Trivial
 end
 
 
@@ -78,9 +66,5 @@ end
 
 module Make:
     functor (Readable: READABLE) ->
-    functor (Ext: Extension.S) -> READER with
-        type 'a monad_t = 'a Ext.Monad.t and
-        type link_reader_t = Ext.link_reader_t and
-        type image_reader_t = Ext.image_reader_t and
-        type extcomm_t = Ext.extcomm_t
+    functor (Ext: Extension.S) -> READER with module Ext = Ext
 

@@ -33,7 +33,7 @@ type raw_t =
     | Named of string * string
 
 type decl_t =
-    | Classname_decl of Classname.t
+    | Classname_decl of classname_t
     | Lang_decl of Camlhighlight_core.lang_t option
     | Linenums_decl of bool
     | Width_decl of int option
@@ -158,16 +158,16 @@ let parse comm =
     let make_parsing (accum_parsing, accum_msg) raw = match decl_of_raw raw with
         | `Okay decl -> ((raw, decl) :: accum_parsing, accum_msg)
         | `Error msg -> (accum_parsing, msg :: accum_msg) in
-    let rec split accum_parsing accum_attr = function
+    let rec split accum_parsing accum_classname = function
         | [] ->
-            (accum_parsing, accum_attr)
+            (accum_parsing, accum_classname)
         | ((_, decl) as hd) :: tl -> match decl with
-            | Classname_decl x -> split accum_parsing (x :: accum_attr) tl
-            | _                -> split (hd :: accum_parsing) accum_attr tl in
+            | Classname_decl x -> split accum_parsing (x :: accum_classname) tl
+            | _                -> split (hd :: accum_parsing) accum_classname tl in
     let (raws, msgs) = raws_of_string comm in
     let (parsing, msgs) = List.fold_left make_parsing ([], msgs) raws in
-    let (parsing, attrs) = split [] [] parsing in
-    (attrs, ref parsing, List.rev msgs) (* We use List.rev because compiler expects errors in ascending order of line number *)
+    let (parsing, classnames) = split [] [] parsing in
+    (classnames, ref parsing, List.rev msgs) (* We use List.rev because compiler expects errors in ascending order of line number *)
 
 
 let consume1 parsing_ref (hnd, default) =

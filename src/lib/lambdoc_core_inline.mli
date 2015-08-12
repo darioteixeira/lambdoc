@@ -9,6 +9,7 @@
 (** Definitions concerning inline elements.
 *)
 
+module Attr = Lambdoc_core_attr
 module Basic = Lambdoc_core_basic
 module Math = Lambdoc_core_math
 
@@ -21,10 +22,10 @@ open Basic
 
 type inline_t =
     | Plain of string                   (** Plain, unadorned text *)
-    | Entity of Entity.t                (** Unicode character entity *)
+    | Entity of entity_t                (** Unicode character entity *)
     | Linebreak                         (** Line break within same paragraph *)
     | Mathinl of Math.t                 (** Inline mathematics *)
-    | Glyph of Href.t * string          (** Inline image *)
+    | Glyph of href_t * string          (** Inline image *)
     | Bold of seq_t                     (** Bold text *)
     | Emph of seq_t                     (** Emphasised text (italic) *)
     | Code of seq_t                     (** Inline source-code sequence (monospaced) *)
@@ -35,12 +36,12 @@ type inline_t =
     | Sub of seq_t                      (** Subscript *)
     | Mbox of seq_t                     (** Text sequence which should not be broken across lines *)
     | Span of seq_t                     (** A custom span of text *)
-    | Link of Href.t * seq_t option     (** Reference to an extenal resource *)
-    | See of Pointer.t list             (** Reference to an end note *)
-    | Cite of Pointer.t list            (** Citation of a bibliography entry *)
-    | Dref of Pointer.t * seq_t option  (** Dumb reference to an internal element *)
-    | Sref of Pointer.t * seq_t option  (** Smart reference to an internal element *)
-    | Mref of Pointer.t * seq_t         (** Manual reference to an internal element *)
+    | Link of href_t * seq_t option     (** Reference to an external resource *)
+    | See of pointer_t list             (** Reference to an end note *)
+    | Cite of pointer_t list            (** Citation of a bibliography entry *)
+    | Dref of pointer_t * seq_t option  (** Dumb reference to an internal element *)
+    | Sref of pointer_t * seq_t option  (** Smart reference to an internal element *)
+    | Mref of pointer_t * seq_t         (** Manual reference to an internal element *)
 
 and t =
     {
@@ -56,10 +57,10 @@ and seq_t = t list with sexp
 (********************************************************************************)
 
 val plain:     ?attr:Attr.t -> string -> t
-val entity:    ?attr:Attr.t -> Entity.t -> t
+val entity:    ?attr:Attr.t -> entity_t -> t
 val linebreak: ?attr:Attr.t -> unit -> t
 val mathinl:   ?attr:Attr.t -> Math.t -> t
-val glyph:     ?attr:Attr.t -> Href.t -> string -> t
+val glyph:     ?attr:Attr.t -> href_t -> string -> t
 val bold:      ?attr:Attr.t -> seq_t -> t
 val emph:      ?attr:Attr.t -> seq_t -> t
 val code:      ?attr:Attr.t -> seq_t -> t
@@ -70,10 +71,10 @@ val sup:       ?attr:Attr.t -> seq_t -> t
 val sub:       ?attr:Attr.t -> seq_t -> t
 val mbox:      ?attr:Attr.t -> seq_t -> t
 val span:      ?attr:Attr.t -> seq_t -> t
-val link:      ?attr:Attr.t -> Href.t -> seq_t option -> t
-val see:       ?attr:Attr.t -> Pointer.t list -> t
-val cite:      ?attr:Attr.t -> Pointer.t list -> t
-val dref:      ?attr:Attr.t -> Pointer.t -> seq_t option -> t
-val sref:      ?attr:Attr.t -> Pointer.t -> seq_t option -> t
-val mref:      ?attr:Attr.t -> Pointer.t -> seq_t -> t
+val link:      ?attr:Attr.t -> href_t -> seq_t option -> t
+val see:       ?attr:Attr.t -> pointer_t list -> t
+val cite:      ?attr:Attr.t -> pointer_t list -> t
+val dref:      ?attr:Attr.t -> pointer_t -> seq_t option -> t
+val sref:      ?attr:Attr.t -> pointer_t -> seq_t option -> t
+val mref:      ?attr:Attr.t -> pointer_t -> seq_t -> t
 

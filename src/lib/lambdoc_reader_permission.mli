@@ -33,7 +33,7 @@ val check_feature:
 
 val check_classname:
     Feature.t ->
-    Classname.t ->
+    classname_t ->
     Idiosyncrasies.t ->
     bool
 

@@ -32,7 +32,7 @@ open Lambdoc_reader
 (** {1 Modules}                                                                 *)
 (********************************************************************************)
 
-module Lwt_monad = struct include Lwt let iter = Lwt_list.iter_p end
+module Lwt_monad = struct include Lwt let fold_right = Lwt_list.fold_right_s end
 
 module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
@@ -44,7 +44,7 @@ struct
     module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make (Eliom_backend)
 
 
 (********************************************************************************)

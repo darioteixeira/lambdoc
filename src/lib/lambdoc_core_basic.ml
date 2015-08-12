@@ -10,73 +10,12 @@ open Sexplib.Std
 
 
 (********************************************************************************)
-(** {1 Public modules}                                                          *)
+(** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-module Entity =
-struct
-    type t = string with sexp
-end
-
-
-module Href =
-struct
-    type t = string with sexp
-
-    let compare = String.compare
-end
-
-
-module Classname =
-struct
-    type t = string with sexp
-end
-
-
-module Attr =
-struct
-    type t = Classname.t list with sexp
-
-    let default = []
-end
-
-
-module Ident =
-struct
-    type t = string with sexp
-end
-
-
-module Extkey =
-struct
-    type t = int with sexp
-end
-
-
-module Pointer =
-struct
-    type t = string with sexp
-end
-
-
-module Level =
-struct
-    type section_t = int with sexp
-
-    type title_t = int with sexp
-
-    let max_section = 6
-
-    let max_title = 2
-
-    let section level =
-        if level >= 1 && level <= max_section
-        then level
-        else invalid_arg ("Lambdoc_core_basic.Level.section: " ^ string_of_int level)
-
-    let title level =
-        if level >= 1 && level <= max_title
-        then level
-        else invalid_arg ("Lambdoc_core_basic.Level.title: " ^ string_of_int level)
-end
+type entity_t = string with sexp
+type href_t = string with sexp
+type classname_t = string with sexp
+type ident_t = string with sexp
+type pointer_t = string with sexp
 

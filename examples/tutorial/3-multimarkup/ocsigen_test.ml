@@ -30,7 +30,7 @@ struct
 end
 
 
-module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make (Eliom_backend)
 
 
 module Markup = Litiom_choice.Make

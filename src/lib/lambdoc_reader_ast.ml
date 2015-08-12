@@ -20,11 +20,12 @@ open Basic
 
 type command_t =
     {
-    comm_tag: Ident.t option;
-    comm_label: Pointer.t option;
+    comm_tag: ident_t option;
+    comm_label: pointer_t option;
     comm_order: string option;
     comm_style: string option;
     comm_linenum: int;
+    comm_originator: Attr.originator_t;
     }
 
 
@@ -59,7 +60,7 @@ type seq_t = inline_t list
     | Mref of string * seq_t                    (* Inlpat_raw_seq *)
     | Macroarg of string                        (* Inlpat_raw *)
     | Macrocall of string * seq_t list          (* Inlpat_raw_seqlist *)
-    | Extcomm_inl of Ident.t * inline_pattern_t
+    | Extcomm_inl of ident_t * inline_pattern_t
 
 and inline_pattern_t =
     | Inlpat_empty
@@ -131,7 +132,7 @@ type frag_t = block_t list
     | Macrodef of string * string * seq_t
     | Boxoutdef of string * seq_t option * string option
     | Theoremdef of string * seq_t * string option
-    | Extcomm_blk of Ident.t * block_pattern_t
+    | Extcomm_blk of ident_t * block_pattern_t
 
 and qanda_t =
     | New_questioner of seq_t option

@@ -19,7 +19,7 @@ sig
     val fail: exn -> 'a t
     val bind: 'a t -> ('a -> 'b t) -> 'b t
     val catch: (unit -> 'a t) -> (exn -> 'a t) -> 'a t
-    val iter: ('a -> unit t) -> 'a list -> unit t
+    val fold_right: ('a -> 'b -> 'b t) -> 'a list -> 'b -> 'b t
 end
 
 
@@ -35,6 +35,6 @@ struct
     let fail exc = raise exc
     let bind t f = f t
     let catch f g = try f () with exc -> g exc
-    let iter = List.iter
+    let fold_right = List.fold_right
 end
 

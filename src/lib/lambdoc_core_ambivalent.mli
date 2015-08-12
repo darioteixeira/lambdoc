@@ -6,16 +6,11 @@
 *)
 (********************************************************************************)
 
-(** Definitions concerning ambivalent documents.  An ambivalent document
-    is one which can either be valid or document.
+(** Definitions concerning ambivalent documents.
+    An ambivalent document is one which can either be valid or invalid.
 *)
 
-module Bib = Lambdoc_core_bib
-module Block = Lambdoc_core_block
-module Error = Lambdoc_core_error
-module Heading = Lambdoc_core_heading
 module Invalid = Lambdoc_core_invalid
-module Note = Lambdoc_core_note
 module Valid = Lambdoc_core_valid
 
 
@@ -37,18 +32,8 @@ type t =
 (** {2 Constructors}                                                            *)
 (********************************************************************************)
 
-val make_valid:
-    content:Block.frag_t ->
-    bibs:Bib.t list ->
-    notes:Note.t list ->
-    toc:Heading.t list ->
-    labels:Valid.labels_t ->
-    customs:Valid.customs_t ->
-    links:Valid.hdata_t ->
-    images:Valid.hdata_t ->
-    t
-
-val make_invalid: Error.contextualized_t list -> t
+val valid: Valid.t -> t
+val invalid: Invalid.t -> t
 
 
 (********************************************************************************)

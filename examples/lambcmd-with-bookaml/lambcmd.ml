@@ -17,7 +17,7 @@ module String = BatString
 (** {1 Modules}                                                                 *)
 (********************************************************************************)
 
-module Lwt_monad = struct include Lwt let iter = Lwt_list.iter_s end
+module Lwt_monad = struct include Lwt let fold_right = Lwt_list.fold_right_s end
 
 module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
@@ -42,15 +42,15 @@ let get_book comm maybe_credential raw_isbn =
     then match maybe_credential with
         | Some credential ->
             begin try_lwt
-                let isbn = Bookaml_ISBN.of_string (String.lchop ~n:5 raw_isbn) in
+                let isbn = Bookaml_isbn.of_string (String.lchop ~n:5 raw_isbn) in
                 lwt book = Bookaml_amazon_ocsigen.book_from_isbn_exn ~credential isbn in
                 Lwt.return (`Okay book)
             with
-                | Bookaml_ISBN.Bad_ISBN_length _ ->
+                | Bookaml_isbn.Bad_isbn_length _ ->
                     Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "bad ISBN length")])
-                | Bookaml_ISBN.Bad_ISBN_checksum _ ->
+                | Bookaml_isbn.Bad_isbn_checksum _ ->
                     Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "bad ISBN checksum")])
-                | Bookaml_ISBN.Bad_ISBN_character _ ->
+                | Bookaml_isbn.Bad_isbn_character _ ->
                     Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "bad ISBN character")])
                 | Bookaml_amazon.No_match _ ->
                     Lwt.return (`Error [(Some comm.comm_linenum, comm.comm_tag, Error.Extension_error "no matching book found")])
@@ -182,7 +182,7 @@ let main () =
         | `Sexp  ->
             Lwt.return (Lambdoc_core.Ambivalent.serialize doc)
         | `Html5 ->
-            let module Html5_writer = Lambdoc_whtml5_writer.Make_trivial (Tyxml_backend) in
+            let module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend) in
             let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
             let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
             Lwt.return (string_of_xhtml options.title xhtml) in

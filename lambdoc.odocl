@@ -1,7 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: 97dac341f893e5d1ece72c60df022136)
+# DO NOT EDIT (digest: 0fd9712b2e28a67ddc26ec1e2722ee25)
 src/lib/Lambdoc_core
 src/lib/Lambdoc_core_basic
+src/lib/Lambdoc_core_attr
+src/lib/Lambdoc_core_level
 src/lib/Lambdoc_core_label
 src/lib/Lambdoc_core_order
 src/lib/Lambdoc_core_custom
@@ -24,6 +26,7 @@ src/lib/Lambdoc_core_ambivalent
 src/lib/Lambdoc_core_feature
 src/lib/Lambdoc_core_idiosyncrasies
 src/lib/Lambdoc_core_monadic
+src/lib/Lambdoc_core_foldmap
 src/lib/Lambdoc_reader
 src/lib/Lambdoc_reader_ast
 src/lib/Lambdoc_reader_extension
@@ -58,7 +61,6 @@ src/lib/Lambdoc_rmarkdown_reader
 src/lib/Lambdoc_writer
 src/lib/Lambdoc_writer_emblang
 src/lib/Lambdoc_writer_explanations
-src/lib/Lambdoc_writer_extension
 src/lib/Lambdoc_writer_maker
 src/lib/Lambdoc_writer_translations
 src/lib/Lambdoc_writer_writeconv

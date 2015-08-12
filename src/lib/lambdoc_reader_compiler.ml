@@ -51,6 +51,7 @@ module Make (Ext: Extension.S) =
 struct
 
 open Ext
+open Foldmapper
 
 
 (********************************************************************************)
@@ -102,12 +103,47 @@ let rec monadic_filter_map f = function
 
 
 (********************************************************************************)
-(** {2 Workhorse function}                                                      *)
+(** {2 Public functions and values}                                             *)
 (********************************************************************************)
+
+let contextualize_errors =
+    let rex = Pcre.regexp "\\r\\n|\\n" in
+    fun ~sort source errors ->
+        let source_lines = Pcre.asplit ~rex ~max:(-1) source in
+        let num_lines = Array.length source_lines in
+        let format_error (error_linenum, error_tag, error_msg) =
+            let error_context = match error_linenum with
+                | Some num ->
+                    let num = max 1 (min num num_lines) in
+                    Some
+                        {
+                        Error.error_line_number = num;
+                        Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
+                        Error.error_line_actual = source_lines.(num - 1);
+                        Error.error_line_after = if num < num_lines then [source_lines.(num)] else []
+                        }
+                | None ->
+                    None in
+            (error_context, error_tag, error_msg) in
+        let compare (anum, _, amsg) (bnum, _, bmsg) = match (anum, bnum) with
+            | (Some anum, Some bnum) ->
+                let res = BatInt.compare anum bnum in
+                if res = 0
+                then Pervasives.compare amsg bmsg
+                else res
+            | (Some _, None) ->
+                -1
+            | (None, Some _) ->
+                1
+            | (None, None) ->
+                Pervasives.compare amsg bmsg in
+        let sorted = if sort then List.sort_unique compare errors else errors in
+        List.map format_error sorted
+
 
 (** Compiles an AST as provided by the parser, producing the corresponding document.
 *)
-let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ast =
+let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source ast =
 
     (****************************************************************************)
     (* Declaration of some constant values used in the function.                *)
@@ -122,13 +158,6 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 
     (****************************************************************************)
-    (* Declaration of the local modules used in the function.                   *)
-    (****************************************************************************)
-
-    let module HrefSet = Set.Make (Href) in
-
-
-    (****************************************************************************)
     (* Declaration of the mutable values used in the function.                  *)
     (****************************************************************************)
 
@@ -136,10 +165,6 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
     let bibs = ref [] in
     let notes = ref [] in
     let toc = ref [] in
-    let linkrefs = ref [] in
-    let imagerefs = ref [] in
-    let linkset = ref HrefSet.empty in
-    let imageset = ref HrefSet.empty in
     let labels = Hashtbl.create 10 in
     let customisations = Hashtbl.create 10 in
     let macros = Hashtbl.create 10 in
@@ -279,9 +304,11 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
         then begin
             let permission_error_msgs = Permission.check_parameters ?maybe_minipaged ?maybe_wrapped comm feature in
             List.iter (add_error comm) permission_error_msgs;
-            let (attr, style_parsing, style_error_msgs) = Style.parse comm in
+            let (classnames, style_parsing, style_error_msgs) = Style.parse comm in
             List.iter (add_error comm) style_error_msgs;
-            List.iter check_classname attr;
+            List.iter check_classname classnames;
+            let parsinfo = Attr.{tag = comm.comm_tag; linenum = comm.comm_linenum; originator = comm.comm_originator} in
+            let attr = Attr.make ~parsinfo classnames in
             elem attr style_parsing >>= fun element ->
             let dispose_error_msgs = Style.dispose comm style_parsing in
             List.iter (add_error comm) dispose_error_msgs;
@@ -363,8 +390,6 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
         | Ast.Glyph (href, alt) ->
             let elem attr _ =
-                imagerefs := (comm, `Feature_glyph, href) :: !imagerefs;
-                imageset := HrefSet.add href !imageset;
                 Monad.return [Inline.glyph ~attr href alt] in
             check_inline_comm `Feature_glyph comm elem
 
@@ -430,8 +455,6 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
         | Ast.Link (href, maybe_astseq) when not is_ref ->
             let elem attr _ =
-                linkrefs := (comm, `Feature_link, href) :: !linkrefs;
-                linkset := HrefSet.add href !linkset;
                 monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq >>= fun maybe_seq ->
                 Monad.return [Inline.link ~attr href maybe_seq] in
             check_inline_comm `Feature_link comm elem
@@ -760,8 +783,6 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
         | Ast.Picture (href, alt) when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
             let elem attr dict =
-                imagerefs := (comm, `Feature_picture, href) :: !imagerefs;
-                imageset := HrefSet.add href !imageset;
                 let width = Style.consume1 dict (Width_hnd, None) in
                 Monad.return [Block.picture ~attr href alt width] in
             check_block_comm `Feature_picture comm elem
@@ -1258,30 +1279,6 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
 
 
     (****************************************************************************)
-    (* Resolve referenced links/images.                                         *)
-    (****************************************************************************)
-
-    let process_hrefs readers set refs =
-        let results = Hashtbl.create (HrefSet.cardinal set) in
-        let process_href href =
-            let rec loop = function
-                | [] -> Monad.return (`Success None)
-                | hd :: tl -> hd href >>= function
-                    | None               -> loop tl
-                    | Some (`Okay res)   -> Monad.return (`Success (Some res))
-                    | Some (`Error msgs) -> Monad.return (`Failure msgs) in
-            loop readers >>= fun result ->
-            Monad.return (Hashtbl.add results href result) in
-        Monad.iter process_href (HrefSet.elements set) >>= fun () ->
-        let dict = Hashtbl.create (Hashtbl.length results) in
-        let process (comm, feature, href) = match Hashtbl.find results href with
-            | `Success v    -> Hashtbl.add dict href v
-            | `Failure msgs -> List.iter (add_error comm) msgs in
-        let () = List.iter process refs in
-        Monad.return dict in
-
-
-    (****************************************************************************)
     (* Wrap-up.                                                                 *)
     (****************************************************************************)
 
@@ -1290,55 +1287,12 @@ let compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~id
     let () = filter_pointers () in
     let () = verify_section Error.Missing_bibliography !has_bibliography_refs !has_bibliography_section in
     let () = verify_section Error.Missing_notes !has_notes_refs !has_notes_section in
-    process_hrefs link_readers !linkset (List.rev !linkrefs) >>= fun links ->
-    process_hrefs image_readers !imageset (List.rev !imagerefs) >>= fun images ->
-    Monad.return (content, List.rev !bibs, List.rev !notes, List.rev !toc, labels, customs, links, images, List.rev !errors)
-
-
-(************************************************************************************)
-(** {2 Public functions and values}                                                 *)
-(************************************************************************************)
-
-let contextualize_errors =
-    let rex = Pcre.regexp "\\r\\n|\\n" in
-    fun ~sort source errors ->
-        let source_lines = Pcre.asplit ~rex ~max:(-1) source in
-        let num_lines = Array.length source_lines in
-        let format_error (error_linenum, error_tag, error_msg) =
-            let error_context = match error_linenum with
-                | Some num ->
-                    let num = max 1 (min num num_lines) in
-                    Some
-                        {
-                        Error.error_line_number = num;
-                        Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
-                        Error.error_line_actual = source_lines.(num - 1);
-                        Error.error_line_after = if num < num_lines then [source_lines.(num)] else []
-                        }
-                | None ->
-                    None in
-            (error_context, error_tag, error_msg) in
-        let compare (anum, _, amsg) (bnum, _, bmsg) = match (anum, bnum) with
-            | (Some anum, Some bnum) ->
-                let res = BatInt.compare anum bnum in
-                if res = 0
-                then Pervasives.compare amsg bmsg
-                else res
-            | (Some _, None) ->
-                -1
-            | (None, Some _) ->
-                1
-            | (None, None) ->
-                Pervasives.compare amsg bmsg in
-        let sorted = if sort then List.sort_unique compare errors else errors in
-        List.map format_error sorted
-
-
-let compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast =
-    compile_document ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ast >>=
-    fun (content, bibs, notes, toc, labels, customs, links, images, errors) ->
-    match errors with
-        | []   -> Monad.return (Ambivalent.make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images)
-        | _::_ -> Monad.return (Ambivalent.make_invalid (contextualize_errors ~sort:true source errors))
+    let valid = Valid.make ~content ~bibs:(List.rev !bibs) ~notes:(List.rev !notes) ~toc:(List.rev !toc) ~labels ~customs in
+    begin match postprocessor with
+        | None   -> Monad.return (!errors, valid)
+        | Some p -> Foldmapper.(p.valid p !errors valid)
+    end >>= function
+        | ([], valid) -> Monad.return (Ambivalent.valid valid)
+        | (errors, _) -> Monad.return (Ambivalent.invalid (Invalid.make (contextualize_errors ~sort:true source errors)))
 end
 

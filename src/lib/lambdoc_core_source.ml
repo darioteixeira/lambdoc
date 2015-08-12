@@ -6,9 +6,6 @@
 *)
 (********************************************************************************)
 
-(** Definition of highlighted source code.
-*)
-
 open Sexplib.Std
 
 

@@ -9,8 +9,6 @@
 (** Document writer.
 *)
 
-module Extension = Lambdoc_writer_extension
-
 open Lambdoc_core
 
 
@@ -31,8 +29,6 @@ sig
 
     val from_valid:
         ?valid_options:valid_options_t ->
-        link_dict:Extension.link_dict_t ->
-        image_dict:Extension.image_dict_t ->
         Valid.t ->
         t
 
@@ -50,32 +46,25 @@ sig
     type t
     type valid_options_t
     type invalid_options_t
-    type 'a monad_t
-    type link_writer_t
-    type image_writer_t
 
     val default_valid_options: valid_options_t
     val default_invalid_options: invalid_options_t
 
     val write_valid:
         ?valid_options:valid_options_t ->
-        ?link_writers:link_writer_t list ->
-        ?image_writers:image_writer_t list ->
         Valid.t ->
-        t monad_t
+        t
 
     val write_invalid:
         ?invalid_options:invalid_options_t ->
         Invalid.t ->
-        t monad_t
+        t
 
     val write_ambivalent:
         ?valid_options:valid_options_t ->
         ?invalid_options:invalid_options_t ->
-        ?link_writers:link_writer_t list ->
-        ?image_writers:image_writer_t list ->
         Ambivalent.t ->
-        t monad_t
+        t
 end
 
 
@@ -85,50 +74,26 @@ end
 
 (** The functor that creates a document writer.
 *)
-module Make (Writable: WRITABLE) (Ext: Extension.S) : WRITER with
+module Make (Writable: WRITABLE): WRITER with
     type t = Writable.t and
     type valid_options_t = Writable.valid_options_t and
-    type invalid_options_t = Writable.invalid_options_t and
-    type 'a monad_t = 'a Ext.Monad.t and
-    type link_writer_t = Ext.link_writer_t and
-    type image_writer_t = Ext.image_writer_t =
+    type invalid_options_t = Writable.invalid_options_t =
 struct
     type t = Writable.t
     type valid_options_t = Writable.valid_options_t
     type invalid_options_t = Writable.invalid_options_t
-    type 'a monad_t = 'a Ext.Monad.t
-    type link_writer_t = Ext.link_writer_t
-    type image_writer_t = Ext.image_writer_t
 
     let default_valid_options = Writable.default_valid_options
     let default_invalid_options = Writable.default_invalid_options
 
-    let write_valid ?valid_options ?(link_writers = []) ?(image_writers = []) doc =
-        let open Ext in
-        let (>>=) = Monad.bind in
-        let process_hdata writers hdata =
-            let dict = Hashtbl.create (Hashtbl.length hdata) in
-            let hdata = Hashtbl.fold (fun k v accum -> (k, v) :: accum) hdata [] in
-            let process_hdatum (href, payload) =
-                let rec loop = function
-                    | []       -> Monad.return href
-                    | hd :: tl -> hd href payload >>= function
-                        | Some href' -> Monad.return href'
-                        | None       -> loop tl in
-                loop writers >>= fun href' ->
-                Hashtbl.add dict href href';
-                Monad.return ()  in
-            Monad.iter process_hdatum hdata >>= fun () ->
-            Monad.return dict in
-        process_hdata link_writers Valid.(doc.links) >>= fun link_dict ->
-        process_hdata image_writers Valid.(doc.images) >>= fun image_dict ->
-        Monad.return (Writable.from_valid ?valid_options ~link_dict ~image_dict doc)
+    let write_valid ?valid_options doc =
+        Writable.from_valid ?valid_options doc
 
     let write_invalid ?invalid_options doc =
-        Ext.Monad.return (Writable.from_invalid ?invalid_options doc)
+        Writable.from_invalid ?invalid_options doc
 
-    let write_ambivalent ?valid_options ?invalid_options ?link_writers ?image_writers = function
-        | Ambivalent.Valid doc   -> write_valid ?valid_options ?link_writers ?image_writers doc
+    let write_ambivalent ?valid_options ?invalid_options = function
+        | Ambivalent.Valid doc   -> write_valid ?valid_options doc
         | Ambivalent.Invalid doc -> write_invalid ?invalid_options doc
 end
 

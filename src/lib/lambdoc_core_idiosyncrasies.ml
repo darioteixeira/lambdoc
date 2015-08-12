@@ -24,7 +24,7 @@ type 'a classifier_t = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a cl
 
 type feature_ruleset_t = (Feature.t classifier_t * action_t) list with sexp
 
-type classname_ruleset_t = ((Feature.t classifier_t * Classname.t classifier_t) * action_t) list with sexp
+type classname_ruleset_t = ((Feature.t classifier_t * classname_t classifier_t) * action_t) list with sexp
 
 type t =
     {

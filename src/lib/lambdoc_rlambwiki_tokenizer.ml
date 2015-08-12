@@ -63,6 +63,7 @@ object (self)
         comm_order = None;
         comm_style = None;
         comm_linenum = linenum_offset + line_counter + 1;
+        comm_originator = Source;
         }
 
 
@@ -74,6 +75,7 @@ object (self)
         comm_order = order;
         comm_style = style;
         comm_linenum = linenum_offset + line_counter + 1;
+        comm_originator = Source;
         }
 
 

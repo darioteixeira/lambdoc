@@ -6,9 +6,7 @@
 *)
 (********************************************************************************)
 
-module Basic = Lambdoc_core_basic
-
-open Basic
+open Lambdoc_core_basic
 
 
 (********************************************************************************)
@@ -16,8 +14,8 @@ open Basic
 (********************************************************************************)
 
 type t =
-    | Auto of Pointer.t
-    | User of Pointer.t
+    | Auto of pointer_t
+    | User of pointer_t
     with sexp
 
 

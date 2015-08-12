@@ -9,10 +9,12 @@
 (** Definitions concerning block elements.
 *)
 
+module Attr = Lambdoc_core_attr
 module Basic = Lambdoc_core_basic
 module Custom = Lambdoc_core_custom
 module Heading = Lambdoc_core_heading
 module Inline = Lambdoc_core_inline
+module Level = Lambdoc_core_level
 module Math = Lambdoc_core_math
 module Qanda = Lambdoc_core_qanda
 module Source = Lambdoc_core_source
@@ -39,7 +41,7 @@ type block_t =
     | Tabular of Tabular.t
     | Subpage of frag_t
     | Verbatim of string
-    | Picture of Href.t * string * int option
+    | Picture of href_t * string * int option
     | Pullquote of Inline.seq_t option * frag_t
     | Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
     | Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
@@ -77,7 +79,7 @@ val source:      ?attr:Attr.t -> Source.t -> t
 val tabular:     ?attr:Attr.t -> Tabular.t -> t
 val subpage:     ?attr:Attr.t -> frag_t -> t
 val verbatim:    ?attr:Attr.t -> string -> t
-val picture:     ?attr:Attr.t -> Href.t -> string -> int option -> t
+val picture:     ?attr:Attr.t -> href_t -> string -> int option -> t
 val pullquote:   ?attr:Attr.t -> Inline.seq_t option -> frag_t -> t
 val boxout:      ?attr:Attr.t -> Custom.Boxout.t -> Inline.seq_t option -> frag_t -> t
 val theorem:     ?attr:Attr.t -> Custom.Theorem.t -> Inline.seq_t option -> frag_t -> t

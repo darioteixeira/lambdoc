@@ -128,19 +128,19 @@ open Globalenv
 %token <Lambdoc_reader_ast.command_t> BIB_RESOURCE
 
 %token <Lambdoc_reader_ast.command_t> MACROARG
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t > MACROCALL
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t > MACROCALL
 
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> INLPAT_EMPTY
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> INLPAT_SEQ
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> INLPAT_RAW
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> INLPAT_RAW_RAW
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> INLPAT_RAW_SEQ
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> INLPAT_RAW_SEQOPT
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_EMPTY
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_SEQ
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW_RAW
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW_SEQ
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW_SEQOPT
 
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> BLKPAT_EMPTY
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> BLKPAT_SEQ
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> BLKPAT_RAW
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.Ident.t> BLKPAT_RAW_RAW
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_EMPTY
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_SEQ
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_RAW
+%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_RAW_RAW
 
 
 /********************************************************************************/

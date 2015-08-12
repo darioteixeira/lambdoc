@@ -31,37 +31,25 @@ end
 
 module type READER =
 sig
-    type 'a monad_t
-    type link_reader_t
-    type image_reader_t
-    type extcomm_t
+    module Ext: Extension.S
 
     val ambivalent_from_string:
+        ?postprocessor:Error.localized_t list Ext.Foldmapper.t ->
+        ?extcomms:Ext.extcomm_t list ->
         ?linenum_offset:int ->
-        ?link_readers:link_reader_t list ->
-        ?image_readers:image_reader_t list ->
-        ?extcomms:extcomm_t list ->
         ?verify_utf8:bool ->
         ?expand_entities:bool ->
         ?idiosyncrasies:Idiosyncrasies.t ->
         string ->
-        Ambivalent.t monad_t
+        Ambivalent.t Ext.Monad.t
 end
 
 
 module type FULL =
 sig
-    module Make: functor (Ext: Extension.S) -> READER with
-        type 'a monad_t = 'a Ext.Monad.t and
-        type link_reader_t = Ext.link_reader_t and
-        type image_reader_t = Ext.image_reader_t and
-        type extcomm_t = Ext.extcomm_t
+    module Make: functor (Ext: Extension.S) -> READER with module Ext = Ext
 
-    module Trivial: READER with
-        type 'a monad_t = 'a Extension.Trivial.Monad.t and
-        type link_reader_t = Extension.Trivial.link_reader_t and
-        type image_reader_t = Extension.Trivial.image_reader_t and
-        type extcomm_t = Extension.Trivial.extcomm_t
+    module Trivial: READER with module Ext = Extension.Trivial
 end
 
 
@@ -69,21 +57,13 @@ end
 (** {1 Public modules and functors}                                             *)
 (********************************************************************************)
 
-module Make (Readable: READABLE) (Ext: Extension.S) : READER with
-    type 'a monad_t = 'a Ext.Monad.t and
-    type link_reader_t = Ext.link_reader_t and
-    type image_reader_t = Ext.image_reader_t and
-    type extcomm_t = Ext.extcomm_t =
+module Make (Readable: READABLE) (Ext: Extension.S) : READER with module Ext = Ext =
 struct
-    open Ext
+    module Ext = Ext
+    module Comp = Compiler.Make (Ext)
+
     open Extension
-
-    type 'a monad_t = 'a Ext.Monad.t
-    type link_reader_t = Ext.link_reader_t
-    type image_reader_t = Ext.image_reader_t
-    type extcomm_t = Ext.extcomm_t
-
-    module C = Compiler.Make (Ext)
+    open Ext
 
     let extdef_of_extcomm (accum_inl, accum_blk) (tag, def) = match def with
         | Inlextcomm inlfun ->
@@ -106,10 +86,9 @@ struct
             in (accum_inl, (tag, blksyn) :: accum_blk)
 
     let ambivalent_from_string
-        ?(linenum_offset = 0)
-        ?(link_readers = [])
-        ?(image_readers = [])
+        ?postprocessor
         ?(extcomms = [])
+        ?(linenum_offset = 0)
         ?(verify_utf8 = true)
         ?(expand_entities = true)
         ?(idiosyncrasies = Idiosyncrasies.default)
@@ -118,17 +97,17 @@ struct
             match verified with
                 | `Error (sane_str, error_lines) ->
                     let localized = List.map (fun line -> (Some line, None, Error.Malformed_code_point)) error_lines in
-                    let errors = C.contextualize_errors ~sort:false sane_str localized in
-                    Monad.return (Ambivalent.make_invalid errors)
+                    let errors = Comp.contextualize_errors ~sort:false sane_str localized in
+                    Monad.return (Ambivalent.invalid (Invalid.make errors))
                 | `Okay ->
                     let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
                     match Readable.ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs source with
                         | `Okay ast ->
-                            C.compile ~link_readers ~image_readers ~extcomms ~expand_entities ~idiosyncrasies ~source ast
+                            Comp.compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source ast
                         | `Error xs ->
                             let localized = List.map (fun (line, msg) -> (line, None, Error.Reading_error msg)) xs in
-                            let errors = C.contextualize_errors ~sort:false source localized in
-                            Monad.return (Ambivalent.make_invalid errors)
+                            let errors = Comp.contextualize_errors ~sort:false source localized in
+                            Monad.return (Ambivalent.invalid (Invalid.make errors))
                         | exception exc ->
                             Monad.fail exc
 end

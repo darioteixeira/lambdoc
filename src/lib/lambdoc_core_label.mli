@@ -6,9 +6,10 @@
 *)
 (********************************************************************************)
 
-module Basic = Lambdoc_core_basic
+(** Definition of document labels.
+*)
 
-open Basic
+open Lambdoc_core_basic
 
 
 (********************************************************************************)
@@ -19,8 +20,8 @@ open Basic
     by the system) or [User] (when they're manually attributed by the user).
 *)
 type t =
-    | Auto of Pointer.t
-    | User of Pointer.t
+    | Auto of pointer_t
+    | User of pointer_t
     with sexp
 
 

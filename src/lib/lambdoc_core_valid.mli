@@ -28,7 +28,6 @@ open Basic
 
 type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
 type customs_t = (Custom.key_t, Inline.seq_t) Hashtbl.t with sexp
-type hdata_t = (Href.t, string option) Hashtbl.t with sexp
 
 type t =
     {
@@ -38,8 +37,6 @@ type t =
     toc: Heading.t list;
     labels: labels_t;
     customs: customs_t;
-    links: hdata_t;
-    images: hdata_t;
     } with sexp
 
 
@@ -58,8 +55,6 @@ val make:
     toc:Heading.t list ->
     labels:labels_t ->
     customs:customs_t ->
-    links:hdata_t ->
-    images:hdata_t ->
     t
 
 

@@ -10,6 +10,7 @@ open Printf
 open Lambdoc_core
 open Lambdoc_writer
 open Basic
+open Attr
 open Inline
 open Block
 open Heading
@@ -48,7 +49,7 @@ type invalid_options_t =
 
 (*
     The next version of Tyxml should support a simplified sig:
-    (Html5: Html5_sigs.NoWrap)
+    (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list)
 *)
 
 module Make (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
@@ -141,7 +142,7 @@ let default_invalid_options =
 (** {3 Conversion of valid documents}                                           *)
 (********************************************************************************)
 
-let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict doc =
+let from_valid ?(valid_options = default_valid_options) doc =
 
     let opts = valid_options in
 
@@ -183,11 +184,11 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
         | Label.Auto pointer -> opts.namespace ^ ":a:" ^ pointer
         | Label.User pointer -> opts.namespace ^ ":u:" ^ pointer in
 
-    let make_link ?(attr = []) lnk content =
-        Html5.a ~a:[a_class (!!"lnk" :: attr); a_href (Html5.uri_of_string lnk)] content in
+    let make_link ?(classnames = []) lnk content =
+        Html5.a ~a:[a_class (!!"lnk" :: classnames); a_href (Html5.uri_of_string lnk)] content in
 
-    let make_internal_link ?attr pointer content =
-        make_link ?attr ("#" ^ (make_label pointer)) content in
+    let make_internal_link ?classnames pointer content =
+        make_link ?classnames ("#" ^ (make_label pointer)) content in
 
     let cons_of_level = function
         | 1 -> Html5.h1
@@ -200,11 +201,11 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
 
     let class_of_level level = !!("level" ^ string_of_int level) in
 
-    let make_heading cons label orderlst classname attr content =
-        cons ?a:(Some [a_id (make_label label); a_class (classname :: attr)]) (orderlst @ [Html5.span content]) in
+    let make_heading cons label orderlst classnames content =
+        cons ?a:(Some [a_id (make_label label); a_class classnames]) (orderlst @ [Html5.span content]) in
 
-    let make_sectional level label orderlst attr content =
-        make_heading (cons_of_level (level : Level.section_t :> int)) label orderlst !!"sec" attr content in
+    let make_sectional level label orderlst classnames content =
+        make_heading (cons_of_level (level : Level.section_t :> int)) label orderlst (!!"sec" :: classnames) content in
 
     let make_floatable forbidden =
         if forbidden then [] else [!!"floatable"] in
@@ -283,7 +284,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
         List.map write_inline seq
 
     and write_inline {inl; attr} =
-        let attr = List.map (!!!) attr in
+        let classnames = List.map (!!!) attr.classnames in
         match inl with
 
         | Plain txt ->
@@ -293,53 +294,51 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
             Html5.entity txt
 
         | Linebreak ->
-            Html5.br ~a:[a_class attr] ()
+            Html5.br ~a:[a_class classnames] ()
 
         | Mathinl math ->
             let html: [> Html5_types.span ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
-            Html5.span ~a:[a_class (!!"mathinl" :: attr)] [html]
+            Html5.span ~a:[a_class (!!"mathinl" :: classnames)] [html]
 
         | Glyph (href, alt) ->
-            let href = try Hashtbl.find image_dict href with Not_found -> href in
             let uri = Html5.uri_of_string href in
-            Html5.img ~a:[a_class (!!"glyph" :: attr)] ~src:uri ~alt ()
+            Html5.img ~a:[a_class (!!"glyph" :: classnames)] ~src:uri ~alt ()
 
         | Bold seq ->
-            Html5.b ~a:[a_class (!!"bold" :: attr)] (write_seq seq)
+            Html5.b ~a:[a_class (!!"bold" :: classnames)] (write_seq seq)
 
         | Emph seq ->
-            Html5.i ~a:[a_class (!!"emph" :: attr)] (write_seq seq)
+            Html5.i ~a:[a_class (!!"emph" :: classnames)] (write_seq seq)
 
         | Code seq ->
-            Html5.code ~a:[a_class (!!"code" :: attr)] (write_seq seq)
+            Html5.code ~a:[a_class (!!"code" :: classnames)] (write_seq seq)
 
         | Caps seq ->
-            Html5.span ~a:[a_class (!!"caps" :: attr)] (write_seq seq)
+            Html5.span ~a:[a_class (!!"caps" :: classnames)] (write_seq seq)
 
         | Ins seq ->
-            Html5.ins ~a:[a_class (!!"ins" :: attr)] (write_seq seq)
+            Html5.ins ~a:[a_class (!!"ins" :: classnames)] (write_seq seq)
 
         | Del seq ->
-            Html5.del ~a:[a_class (!!"del" :: attr)] (write_seq seq)
+            Html5.del ~a:[a_class (!!"del" :: classnames)] (write_seq seq)
 
         | Sup seq ->
-            Html5.sup ~a:[a_class (!!"sup" :: attr)] (write_seq seq)
+            Html5.sup ~a:[a_class (!!"sup" :: classnames)] (write_seq seq)
 
         | Sub seq ->
-            Html5.sub ~a:[a_class (!!"sub" :: attr)] (write_seq seq)
+            Html5.sub ~a:[a_class (!!"sub" :: classnames)] (write_seq seq)
 
         | Mbox seq ->
-            Html5.span ~a:[a_class (!!"mbox" :: attr)] (write_seq seq)
+            Html5.span ~a:[a_class (!!"mbox" :: classnames)] (write_seq seq)
 
         | Span seq ->
-            Html5.span ~a:[a_class attr] (write_seq seq)
+            Html5.span ~a:[a_class classnames] (write_seq seq)
 
         | Link (href, maybe_seq) ->
-            let href' = try Hashtbl.find link_dict href with Not_found -> href in
             let seq = match maybe_seq with
                 | Some seq -> seq
                 | None     -> [Inline.plain href] in
-            make_link ~attr href' (Obj.magic (write_seq seq))
+            make_link ~classnames href (Obj.magic (write_seq seq))
 
         | See pointers ->
             let link_maker pointer =
@@ -348,7 +347,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
                 match target with
                     | Target.Note_target order -> make_internal_link label (note_conv order)
                     | _                        -> raise (Command_see_with_non_note target) in
-            Html5.span ~a:[a_class (!!"see" :: attr)] (commafy ~prefix:"(" ~suffix:")" (List.map link_maker pointers))
+            Html5.span ~a:[a_class (!!"see" :: classnames)] (commafy ~prefix:"(" ~suffix:")" (List.map link_maker pointers))
 
         | Cite pointers ->
             let link_maker pointer =
@@ -357,13 +356,13 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
                 match target with
                     | Target.Bib_target order -> make_internal_link label (bib_conv order)
                     | _                       -> raise (Command_cite_with_non_bib target) in
-            Html5.span ~a:[a_class (!!"cite" :: attr)] (commafy ~prefix:"[" ~suffix:"]" (List.map link_maker pointers))
+            Html5.span ~a:[a_class (!!"cite" :: classnames)] (commafy ~prefix:"[" ~suffix:"]" (List.map link_maker pointers))
 
         | Dref (pointer, maybe_seq) ->
             let label = Label.User pointer in
             let target = Hashtbl.find labels label in
             let suffix = match maybe_seq with Some seq -> write_seq seq | None -> [] in
-            let make_dref order = make_internal_link ~attr label (Obj.magic (order @ suffix)) in
+            let make_dref order = make_internal_link ~classnames label (Obj.magic (order @ suffix)) in
             begin match target with
                 | Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
                     make_dref (boxout_conv order)
@@ -383,7 +382,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
             let label = Label.User pointer in
             let target = Hashtbl.find labels label in
             let suffix = match maybe_seq with Some seq -> write_seq seq | None -> [] in
-            let make_sref wseq order = make_internal_link ~attr label (Obj.magic (wseq @ order @ suffix)) in
+            let make_sref wseq order = make_internal_link ~classnames label (Obj.magic (wseq @ order @ suffix)) in
             begin match target with
                 | Target.Visible_target (Target.Custom_target (env, Custom.Boxout, order)) ->
                     make_sref (write_name (Name_custom env)) (boxout_conv ~prespace:true order)
@@ -491,7 +490,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
 
 
     and write_block ?(wrapped = false) {blk; attr} =
-        let attr = List.map (!!!) attr in
+        let classnames = List.map (!!!) attr.classnames in
         match blk with
 
         | Paragraph seq ->
@@ -499,22 +498,22 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
                 if opts.numbered_paragraphs
                 then (incr paragraph_counter; [a_title (Translations.(opts.translations.paragraph) ^ " #" ^ (string_of_int !paragraph_counter))])
                 else [] in
-            [Html5.p ~a:(a_class (!!"par" :: attr) :: extra) (write_seq seq)]
+            [Html5.p ~a:(a_class (!!"par" :: classnames) :: extra) (write_seq seq)]
 
         | Itemize frags ->
             let xs = List.map (fun frag -> Html5.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
-            [Html5.ul ~a:[a_class (!!"itemize" :: attr)] xs]
+            [Html5.ul ~a:[a_class (!!"itemize" :: classnames)] xs]
 
         | Enumerate frags ->
             let xs = List.map (fun frag -> Html5.li ~a:[a_class [!!"item"]] (write_frag frag)) frags in
-            [Html5.ol ~a:[a_class (!!"enumerate" :: attr)] xs]
+            [Html5.ol ~a:[a_class (!!"enumerate" :: classnames)] xs]
 
         | Description elems ->
             let write_dfrag (seq, frag) accum =
                 let dt = Html5.dt ~a:[a_class [!!"item"]] (write_seq seq) in
                 let dd = Html5.dd ~a:[a_class [!!"item"]] (write_frag frag) in
                 dt :: dd :: accum in
-            [Html5.dl ~a:[a_class (!!"description" :: attr)] (List.fold_right write_dfrag elems [])]
+            [Html5.dl ~a:[a_class (!!"description" :: classnames)] (List.fold_right write_dfrag elems [])]
 
         | Qanda elems ->
             let write_qfrag (qanda, frag) accum =
@@ -532,45 +531,44 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
                 let dt = Html5.dt ~a:[a_class (qora_class :: empty_class)] outseq in
                 let dd = Html5.dd ~a:[a_class [qora_class]] (write_frag frag) in
                 dt :: dd :: accum in
-            [Html5.dl ~a:[a_class (!!"qanda" :: attr)] (List.fold_right write_qfrag elems [])]
+            [Html5.dl ~a:[a_class (!!"qanda" :: classnames)] (List.fold_right write_qfrag elems [])]
 
         | Verse frag ->
             let aux = Html5.div ~a:[a_class [!!"verse_aux"]] (write_frag frag) in
-            [Html5.div ~a:[a_class (!!"verse" :: attr)] [aux]]
+            [Html5.div ~a:[a_class (!!"verse" :: classnames)] [aux]]
 
         | Quote frag ->
-            [Html5.blockquote ~a:[a_class (!!"quote" :: attr)] (write_frag frag)]
+            [Html5.blockquote ~a:[a_class (!!"quote" :: classnames)] (write_frag frag)]
 
         | Mathblk math ->
             let html: [> Html5_types.div ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
-            [Html5.div ~a:[a_class (!!"mathblk" :: attr)] [html]]
+            [Html5.div ~a:[a_class (!!"mathblk" :: classnames)] [html]]
 
         | Source src ->
-            [Source_writer.write ~class_prefix:!!"src_" ~extra_classes:attr ~linenums:src.linenums src.hilite]
+            [Source_writer.write ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:src.linenums src.hilite]
 
         | Tabular tab ->
             [write_tabular tab]
 
         | Subpage frag ->
-            [Html5.div ~a:[a_class (!!"subpage" :: attr)] (write_frag frag)]
+            [Html5.div ~a:[a_class (!!"subpage" :: classnames)] (write_frag frag)]
 
         | Verbatim txt ->
             let aux = Html5.div ~a:[a_class [!!"pre_aux"]] [Html5.pre ~a:[a_class [!!"pre_aux"]] [Html5.pcdata txt]] in
-            [Html5.div ~a:[a_class (!!"pre" :: attr @ make_floatable wrapped)] [aux]]
+            [Html5.div ~a:[a_class (!!"pre" :: classnames @ make_floatable wrapped)] [aux]]
 
         | Picture (href, alt, width) ->
             let wattr = match width with Some w -> [a_width w] | None -> [] in
-            let href = try Hashtbl.find image_dict href with Not_found -> href in
             let uri = Html5.uri_of_string href in
             let img = Html5.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [Html5.img ~a:(a_class [!!"pic"] :: wattr) ~src:uri ~alt ()] in
-            [Html5.div ~a:[a_class (!!"pic" :: attr @ make_floatable wrapped)] [img]]
+            [Html5.div ~a:[a_class (!!"pic" :: classnames @ make_floatable wrapped)] [img]]
 
         | Pullquote (maybe_seq, frag) ->
             let head = match maybe_seq with
                 | Some seq -> [Html5.h1 ~a:[a_class [!!"pull_head"]] ([Html5.entity "#x2014"; Html5.entity "#x2002"] @ (write_seq seq))]
                 | None     -> [] in
             let aux = Html5.div ~a:[a_class [!!"pull_aux"]] ((write_frag frag) @ head) in
-            [Html5.div ~a:[a_class (!!"pull" :: attr @ make_floatable false)] [aux]]
+            [Html5.div ~a:[a_class (!!"pull" :: classnames @ make_floatable false)] [aux]]
 
         | Boxout (data, maybe_seq, frag) ->
             let formatter = function
@@ -586,7 +584,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
                     seq2
                 | _ ->
                     [] in
-            [write_custom data maybe_seq frag !!"boxout" (attr @ make_floatable false) formatter]
+            [write_custom data maybe_seq frag !!"boxout" (classnames @ make_floatable false) formatter]
 
         | Theorem (data, maybe_seq, frag) ->
             let formatter triple =
@@ -608,61 +606,61 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
                     | [] -> []
                     | x  -> [Html5.span ~a:[a_class [!!"thmextra"]] x]
                 in caphead @ capbody in
-            [write_custom (data :> Custom.t) maybe_seq frag !!"theorem" attr formatter]
+            [write_custom (data :> Custom.t) maybe_seq frag !!"theorem" classnames formatter]
 
         | Equation (wrapper, blk) ->
-            [write_wrapper wrapper blk !!"equation" attr Name_equation]
+            [write_wrapper wrapper blk !!"equation" classnames Name_equation]
 
         | Printout (wrapper, blk) ->
-            [write_wrapper wrapper blk !!"printout" attr Name_printout]
+            [write_wrapper wrapper blk !!"printout" classnames Name_printout]
 
         | Table (wrapper, blk) ->
-            [write_wrapper wrapper blk !!"table" attr Name_table]
+            [write_wrapper wrapper blk !!"table" classnames Name_table]
 
         | Figure (wrapper, blk) ->
-            [write_wrapper wrapper blk !!"figure" attr Name_figure]
+            [write_wrapper wrapper blk !!"figure" classnames Name_figure]
 
         | Heading heading ->
-            write_heading_block attr heading
+            write_heading_block classnames heading
 
         | Title (level, seq) ->
-            [(cons_of_level (level :> int)) ~a:[a_class (!!"title" :: attr)] (write_seq seq)]
+            [(cons_of_level (level :> int)) ~a:[a_class (!!"title" :: classnames)] (write_seq seq)]
 
         | Abstract frag ->
             let aux = Html5.h1 ~a:[a_class [!!"sec"]] (write_name Name_abstract) :: (write_frag frag) in
-            [Html5.div ~a:[a_class (!!"abstract" :: attr)] aux]
+            [Html5.div ~a:[a_class (!!"abstract" :: classnames)] aux]
 
         | Rule ->
-            [Html5.hr ~a:[a_class (!!"rule" :: attr)] ()]
+            [Html5.hr ~a:[a_class (!!"rule" :: classnames)] ()]
 
 
-    and write_heading_block attr = function
+    and write_heading_block classnames = function
 
         | Part (label, order, Custom_part seq) ->
-            [make_heading Html5.h1 label (part_conv ~spanify:true order) !!"part" attr (write_seq seq)]
+            [make_heading Html5.h1 label (part_conv ~spanify:true order) (!!"part" :: classnames) (write_seq seq)]
 
         | Part (label, order, Appendix) ->
-            [make_heading Html5.h1 label (part_conv ~spanify:true order) !!"part" attr (write_name Name_appendix)]
+            [make_heading Html5.h1 label (part_conv ~spanify:true order) (!!"part" :: classnames) (write_name Name_appendix)]
 
         | Section (label, order, location, level, Custom_section seq) ->
-            [make_sectional level label (section_conv ~spanify:true location order) attr (write_seq seq)]
+            [make_sectional level label (section_conv ~spanify:true location order) classnames (write_seq seq)]
 
         | Section (label, order, location, level, Bibliography) ->
-            let title = make_sectional level label (section_conv ~spanify:true location order) attr (write_name Name_bibliography) in
+            let title = make_sectional level label (section_conv ~spanify:true location order) classnames (write_name Name_bibliography) in
             let bibs = match bibs with
                 | []   -> []
                 | _::_ -> [Html5.ol ~a:[a_class [!!"bibs"]] (List.map write_bib bibs)] in
             title :: bibs
 
         | Section (label, order, location, level, Notes) ->
-            let title = make_sectional level label (section_conv ~spanify:true location order) attr (write_name Name_notes) in
+            let title = make_sectional level label (section_conv ~spanify:true location order) classnames (write_name Name_notes) in
             let notes = match notes with
                 | []   -> []
                 | _::_ -> [Html5.ol ~a:[a_class [!!"notes"]] (List.map write_note notes)] in
             title :: notes
 
         | Section (label, order, location, level, Toc) ->
-            let title = make_sectional level label (section_conv ~spanify:true location order) attr (write_name Name_toc) in
+            let title = make_sectional level label (section_conv ~spanify:true location order) classnames (write_name Name_toc) in
             let entries = List.filter_map write_toc_entry toc in
             let toc_xhtml = match entries with
                 | []   -> []
@@ -670,7 +668,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
             title :: toc_xhtml
 
 
-    and write_custom data maybe_seq frag classname attr formatter =
+    and write_custom data maybe_seq frag classname classnames formatter =
         let (env, label, triple) = match data with
             | `Anonymous (env, label)       -> (env, label, (None, None, maybe write_seq maybe_seq))
             | `Unnumbered (env, label)      -> (env, label, (Some (write_name (Name_custom env)), None, maybe write_seq maybe_seq))
@@ -679,10 +677,10 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
             | [] -> []
             | xs -> [Html5.h1 ~a:[a_class [classname ^ "_head"]] xs] in
         let content = title @ [Html5.div ~a:[a_class [classname ^ "_body"]] (write_frag frag)] in
-        Html5.div ~a:[a_id (make_label label); a_class (classname :: (classname ^ "_env_"  ^ env) :: attr)] content
+        Html5.div ~a:[a_id (make_label label); a_class (classname :: (classname ^ "_env_"  ^ env) :: classnames)] content
 
 
-    and write_wrapper wrapper blk classname attr name =
+    and write_wrapper wrapper blk classname classnames name =
         let wrapper_content = match write_block ~wrapped:true blk with
             | [b] -> b
             | _   -> failwith "write_wrapper" in
@@ -696,7 +694,7 @@ let from_valid ?(valid_options = default_valid_options) ~link_dict ~image_dict d
             | Wrapper.Unordered (label, seq) ->
                 ("long", label, [Html5.p ~a:[a_class [!!"caption_body"]] (write_seq seq)]) in
         let caption = Html5.div ~a:[a_class [!!"caption"; "caption_" ^^ length]] [Html5.div ~a:[a_class [!!"caption_aux"]] caption_content] in
-        Html5.div ~a:[a_id (make_label label); a_class (!!"wrapper" :: !!"floatable" :: classname :: attr)] [wrapper_content; caption]
+        Html5.div ~a:[a_id (make_label label); a_class (!!"wrapper" :: !!"floatable" :: classname :: classnames)] [wrapper_content; caption]
 
 
     (****************************************************************************)
@@ -790,11 +788,9 @@ let from_invalid ?(invalid_options = default_invalid_options) doc =
             ~notes:[]
             ~toc:[]
             ~labels:(Hashtbl.create 0)
-            ~customs:(Hashtbl.create 0)
-            ~links:(Hashtbl.create 0)
-            ~images:(Hashtbl.create 0) in
+            ~customs:(Hashtbl.create 0) in
         let valid_options = {default_valid_options with prefix = opts.prefix; base_classes = ["error_msg"]} in
-        let explanation_out = from_valid ~valid_options ~link_dict:(Hashtbl.create 0) ~image_dict:(Hashtbl.create 0) explanation_doc in
+        let explanation_out = from_valid ~valid_options explanation_doc in
         Html5.li ~a:[a_class [!!"error"]] (context @ [explanation_out]) in
     let errors = List.map write_error doc in
     Html5.div ~a:[a_class (opts.prefix :: (List.map (!!) opts.base_classes) @ (List.map (!!) opts.extra_classes))] [ul ~a:[a_class [!!"errors"]] errors]

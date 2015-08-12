@@ -6,12 +6,7 @@
 *)
 (********************************************************************************)
 
-module Bib = Lambdoc_core_bib
-module Block = Lambdoc_core_block
-module Error = Lambdoc_core_error
-module Heading = Lambdoc_core_heading
 module Invalid = Lambdoc_core_invalid
-module Note = Lambdoc_core_note
 module Valid = Lambdoc_core_valid
 
 
@@ -33,11 +28,11 @@ type t =
 (** {2 Constructors}                                                            *)
 (********************************************************************************)
 
-let make_valid ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images =
-    Valid (Valid.make ~content ~bibs ~notes ~toc ~labels ~customs ~links ~images)
+let valid doc =
+    Valid doc
 
-let make_invalid errors =
-    Invalid (Invalid.make errors)
+let invalid errors =
+    Invalid errors
 
 
 (********************************************************************************)

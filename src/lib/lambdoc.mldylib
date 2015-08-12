@@ -1,7 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: 973804e58fb5dae7d2efb3b0ec1255ac)
+# DO NOT EDIT (digest: ce6a611b61efd3d9ff4c262aae1d2f55)
 Lambdoc_core
 Lambdoc_core_basic
+Lambdoc_core_attr
+Lambdoc_core_level
 Lambdoc_core_label
 Lambdoc_core_order
 Lambdoc_core_custom
@@ -24,6 +26,7 @@ Lambdoc_core_ambivalent
 Lambdoc_core_feature
 Lambdoc_core_idiosyncrasies
 Lambdoc_core_monadic
+Lambdoc_core_foldmap
 Lambdoc_reader
 Lambdoc_reader_ast
 Lambdoc_reader_extension
@@ -58,7 +61,6 @@ Lambdoc_rmarkdown_reader
 Lambdoc_writer
 Lambdoc_writer_emblang
 Lambdoc_writer_explanations
-Lambdoc_writer_extension
 Lambdoc_writer_maker
 Lambdoc_writer_translations
 Lambdoc_writer_writeconv

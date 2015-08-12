@@ -8,15 +8,10 @@
 
 open Lambdoc_writer
 
-module Make
-    (Ext: Extension.S)
-    (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+module Make (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
 struct
     module Writable = Lambdoc_whtml5_writable.Make (Html5)
 
-    include Lambdoc_writer_maker.Make (Writable) (Ext)
+    include Lambdoc_writer_maker.Make (Writable)
 end
-
-module Make_trivial (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
-    Make (Extension.Trivial) (Html5)
 

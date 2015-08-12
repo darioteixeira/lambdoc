@@ -9,8 +9,6 @@
 (** Document writer.
 *)
 
-module Extension = Lambdoc_writer_extension
-
 open Lambdoc_core
 
 
@@ -31,8 +29,6 @@ sig
 
     val from_valid:
         ?valid_options:valid_options_t ->
-        link_dict:Extension.link_dict_t ->
-        image_dict:Extension.image_dict_t ->
         Valid.t ->
         t
 
@@ -50,32 +46,25 @@ sig
     type t
     type valid_options_t
     type invalid_options_t
-    type 'a monad_t
-    type link_writer_t
-    type image_writer_t
 
     val default_valid_options: valid_options_t
     val default_invalid_options: invalid_options_t
 
     val write_valid:
         ?valid_options:valid_options_t ->
-        ?link_writers:link_writer_t list ->
-        ?image_writers:image_writer_t list ->
         Valid.t ->
-        t monad_t
+        t
 
     val write_invalid:
         ?invalid_options:invalid_options_t ->
         Invalid.t ->
-        t monad_t
+        t
 
     val write_ambivalent:
         ?valid_options:valid_options_t ->
         ?invalid_options:invalid_options_t ->
-        ?link_writers:link_writer_t list ->
-        ?image_writers:image_writer_t list ->
         Ambivalent.t ->
-        t monad_t
+        t
 end
 
 
@@ -86,12 +75,8 @@ end
 (** The functor that creates a document writer.
 *)
 module Make:
-    functor (Writable: WRITABLE) ->
-    functor (Ext: Extension.S) -> WRITER with
+    functor (Writable: WRITABLE) -> WRITER with
     type t = Writable.t and
     type valid_options_t = Writable.valid_options_t and
-    type invalid_options_t = Writable.invalid_options_t and
-    type 'a monad_t = 'a Ext.Monad.t and
-    type link_writer_t = Ext.link_writer_t and
-    type image_writer_t = Ext.image_writer_t
+    type invalid_options_t = Writable.invalid_options_t
 

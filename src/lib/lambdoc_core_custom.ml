@@ -22,7 +22,7 @@ type kind_t =
     | Theorem
     with sexp
 
-type key_t = Pointer.t with sexp
+type key_t = pointer_t with sexp
 
 type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
@@ -47,7 +47,8 @@ let unnumbered key label = function
     | `None_given -> `Unnumbered (key, label)
     | _           -> invalid_arg "Lambdoc_core_custom.unnumbered"
 
-let numbered key label order = `Numbered (key, label, order)
+let numbered key label order =
+    `Numbered (key, label, order)
 
 
 (********************************************************************************)

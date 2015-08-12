@@ -25,7 +25,7 @@ type kind_t =
     | Theorem
     with sexp
 
-type key_t = Pointer.t with sexp
+type key_t = pointer_t with sexp
 
 type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
 
@@ -43,9 +43,7 @@ type t = [ anonymous_t | unnumbered_t | numbered_t ]
 (********************************************************************************)
 
 val anonymous: key_t -> Label.t -> order_t -> [> anonymous_t ]
-
 val unnumbered: key_t -> Label.t -> order_t -> [> unnumbered_t ]
-
 val numbered: key_t -> Label.t -> order_t -> [> numbered_t ]
 
 

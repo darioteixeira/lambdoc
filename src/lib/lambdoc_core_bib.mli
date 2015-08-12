@@ -34,5 +34,5 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: Label.t -> order_t -> Inline.seq_t -> Inline.seq_t -> Inline.seq_t -> t
+val make: label:Label.t -> order:order_t -> author:Inline.seq_t -> title:Inline.seq_t -> resource:Inline.seq_t -> t
 

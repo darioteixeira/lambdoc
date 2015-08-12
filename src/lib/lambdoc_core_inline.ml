@@ -6,6 +6,7 @@
 *)
 (********************************************************************************)
 
+module Attr = Lambdoc_core_attr
 module Basic = Lambdoc_core_basic
 module Math = Lambdoc_core_math
 
@@ -19,10 +20,10 @@ open Basic
 
 type inline_t =
     | Plain of string
-    | Entity of Entity.t
+    | Entity of entity_t
     | Linebreak
     | Mathinl of Math.t
-    | Glyph of Href.t * string
+    | Glyph of href_t * string
     | Bold of seq_t
     | Emph of seq_t
     | Code of seq_t
@@ -33,12 +34,12 @@ type inline_t =
     | Sub of seq_t
     | Mbox of seq_t
     | Span of seq_t
-    | Link of Href.t * seq_t option
-    | See of Pointer.t list
-    | Cite of Pointer.t list
-    | Dref of Pointer.t * seq_t option
-    | Sref of Pointer.t * seq_t option
-    | Mref of Pointer.t * seq_t
+    | Link of href_t * seq_t option
+    | See of pointer_t list
+    | Cite of pointer_t list
+    | Dref of pointer_t * seq_t option
+    | Sref of pointer_t * seq_t option
+    | Mref of pointer_t * seq_t
 
 and t =
     {

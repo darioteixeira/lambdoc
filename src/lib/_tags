@@ -1,4 +1,5 @@
 <lambdoc_core_ambivalent.*>:     pkg_sexplib.syntax, syntax_camlp4o
+<lambdoc_core_attr.*>:           pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_basic.*>:          pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_bib.*>:            pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_blkcat.*>:         pkg_sexplib.syntax, syntax_camlp4o
@@ -11,6 +12,7 @@
 <lambdoc_core_inline.*>:         pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_invalid.*>:        pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_label.*>:          pkg_sexplib.syntax, syntax_camlp4o
+<lambdoc_core_level.*>:          pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_math.*>:           pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_note.*>:           pkg_sexplib.syntax, syntax_camlp4o
 <lambdoc_core_order.*>:          pkg_sexplib.syntax, syntax_camlp4o

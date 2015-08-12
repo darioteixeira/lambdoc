@@ -1,38 +1,44 @@
 (********************************************************************************)
-(*  Lambdoc_reader_style.mli
+(*  Lambdoc_core_attr.ml
     Copyright (c) 2009-2015 Dario Teixeira <dario.teixeira@nleyten.com>
     This software is distributed under the terms of the GNU GPL version 2.
     See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(** Parsing of style parameters.
-*)
-
-module Ast = Lambdoc_reader_ast
-
-open Lambdoc_core
-open Basic
+open Sexplib.Std
+open Lambdoc_core_basic
 
 
 (********************************************************************************)
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type _ handle_t =
-    | Lang_hnd: Camlhighlight_core.lang_t option handle_t
-    | Linenums_hnd: bool handle_t
-    | Width_hnd: int option handle_t
+type originator_t =
+    | Source
+    | Extension
+    with sexp
 
-type parsing_t
+type parsinfo_t =
+    {
+    tag: ident_t option;
+    linenum: int;
+    originator: originator_t;
+    } with sexp
+
+type t =
+    {
+    classnames: classname_t list;
+    parsinfo: parsinfo_t option;
+    } with sexp
 
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val parse: Ast.command_t -> classname_t list * parsing_t ref * Error.msg_t list
-val consume1: parsing_t ref -> 'a handle_t * 'a -> 'a
-val consume2: parsing_t ref -> 'a handle_t * 'a -> 'b handle_t * 'b -> 'a * 'b
-val dispose: Ast.command_t -> parsing_t ref -> Error.msg_t list
+let make ?parsinfo classnames =
+    {classnames; parsinfo}
+
+let default = make []
 

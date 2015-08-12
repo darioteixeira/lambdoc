@@ -26,7 +26,7 @@ type syntax_t =
     | Syn_raw_seq of string
     | Syn_raw_seqopt of string
 
-type extdef_t = Ident.t * syntax_t
+type extdef_t = ident_t * syntax_t
 
 
 (********************************************************************************)
@@ -36,12 +36,10 @@ type extdef_t = Ident.t * syntax_t
 module type S =
 sig
     module Monad: Monadic.S
+    module Foldmapper: Foldmap.S with module Monad = Monad
 
     type ('a, 'b) result_t = [ `Okay of 'a | `Error of 'b ]
-    type reader_result_t = (string, Error.msg_t list) result_t
     type 'a function_result_t = ('a, Error.localized_t list) result_t
-    type link_reader_t = Href.t -> reader_result_t option Monad.t
-    type image_reader_t = Href.t -> reader_result_t option Monad.t
     type inline_function_result_t = (Ast.seq_t * Ast.frag_t) function_result_t Monad.t
     type block_function_result_t = (Ast.frag_t * Ast.frag_t) function_result_t Monad.t
 
@@ -65,7 +63,7 @@ sig
         | Inlextcomm of inline_function_t
         | Blkextcomm of block_function_t * Blkcat.t list
 
-    type extcomm_t = Ident.t * extcomm_def_t
+    type extcomm_t = ident_t * extcomm_def_t
 end
 
 
@@ -76,12 +74,13 @@ end
 module Make (M: Monadic.S): S with module Monad = M =
 struct
     module Monad = M
+    module Foldmapper = Foldmap.Make (M)
 
     type ('a, 'b) result_t = [ `Okay of 'a | `Error of 'b ]
     type reader_result_t = (string, Error.msg_t list) result_t
     type 'a function_result_t = ('a, Error.localized_t list) result_t
-    type link_reader_t = Href.t -> reader_result_t option Monad.t
-    type image_reader_t = Href.t -> reader_result_t option Monad.t
+    type link_reader_t = href_t -> reader_result_t option Monad.t
+    type image_reader_t = href_t -> reader_result_t option Monad.t
     type inline_function_result_t = (Ast.seq_t * Ast.frag_t) function_result_t Monad.t
     type block_function_result_t = (Ast.frag_t * Ast.frag_t) function_result_t Monad.t
 
@@ -105,7 +104,7 @@ struct
         | Inlextcomm of inline_function_t
         | Blkextcomm of block_function_t * Blkcat.t list
 
-    type extcomm_t = Ident.t * extcomm_def_t
+    type extcomm_t = ident_t * extcomm_def_t
 end
 
 

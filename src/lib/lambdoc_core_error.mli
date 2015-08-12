@@ -12,6 +12,7 @@
 module Basic = Lambdoc_core_basic
 module Blkcat = Lambdoc_core_blkcat
 module Custom = Lambdoc_core_custom
+module Level = Lambdoc_core_level
 module Wrapper = Lambdoc_core_wrapper
 
 open Basic
@@ -59,7 +60,7 @@ type msg_t =
     | Misplaced_label_parameter of invalid_parameter_reason_t
     | Misplaced_order_parameter of invalid_parameter_reason_t
 
-    | Invalid_label of Pointer.t
+    | Invalid_label of pointer_t
     | Invalid_order_format of string
     | Invalid_order_levels of string * Level.section_t * int
 
@@ -76,43 +77,43 @@ type msg_t =
     | Invalid_entity_deci of string
     | Invalid_entity_hexa of string
 
-    | Invalid_macro_nargs of Pointer.t * string
+    | Invalid_macro_nargs of pointer_t * string
     | Invalid_macro_argument_context
     | Invalid_macro_argument_number of string * int
-    | Invalid_macro_call of Pointer.t * int * int
+    | Invalid_macro_call of pointer_t * int * int
 
-    | Invalid_macro of Pointer.t
-    | Duplicate_macro of Pointer.t
-    | Undefined_macro of Pointer.t
+    | Invalid_macro of pointer_t
+    | Duplicate_macro of pointer_t
+    | Undefined_macro of pointer_t
 
     | Excessive_macro_depth of int
     | Excessive_inline_depth of int
     | Excessive_block_depth of int
 
-    | Invalid_custom of Pointer.t
-    | Mismatched_custom of Pointer.t * Custom.kind_t * Custom.kind_t
-    | Duplicate_custom of Pointer.t
-    | Undefined_custom of Pointer.t
+    | Invalid_custom of pointer_t
+    | Mismatched_custom of pointer_t * Custom.kind_t * Custom.kind_t
+    | Duplicate_custom of pointer_t
+    | Undefined_custom of pointer_t
 
     | Invalid_wrapper of Wrapper.kind_t
 
     | Invalid_section_level of int
     | Invalid_title_level of int
 
-    | Invalid_counter of Pointer.t
-    | Mismatched_counter of Pointer.t
-    | Unexpected_counter of Pointer.t
+    | Invalid_counter of pointer_t
+    | Mismatched_counter of pointer_t
+    | Unexpected_counter of pointer_t
 
     | Invalid_mathtex of string
     | Invalid_mathml of string
-    | Invalid_column_number of Ident.t option * int * int * int
+    | Invalid_column_number of ident_t option * int * int * int
     | Invalid_column_specifier of string
     | Invalid_cell_specifier of string
 
-    | Duplicate_target of Pointer.t
-    | Empty_target of Pointer.t
-    | Wrong_target of Pointer.t * target_t * target_t
-    | Undefined_target of Pointer.t
+    | Duplicate_target of pointer_t
+    | Empty_target of pointer_t
+    | Wrong_target of pointer_t * target_t * target_t
+    | Undefined_target of pointer_t
 
     | Empty_source
     | Empty_verbatim
@@ -138,13 +139,13 @@ type msg_t =
     the error occurred (where applicable), the offending command (also
     where applicable)  and the error message itself.
 *)
-type contextualized_t = context_t option * Ident.t option * msg_t with sexp
+type contextualized_t = context_t option * ident_t option * msg_t with sexp
 
 (** A localized error is a triple consisting of the line number where
     the error occurred (where applicable), the offending command (also
     where applicable) and the error message itself.
 *)
-type localized_t = int option * Ident.t option * msg_t
+type localized_t = int option * ident_t option * msg_t
 
 (** A reading error is a pair consisting of the line number where
     the error occurred (where applicable) and a string message.

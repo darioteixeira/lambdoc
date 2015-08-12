@@ -41,6 +41,7 @@ let dummy =
     comm_order = None;
     comm_style = None;
     comm_linenum = 0;
+    comm_originator = Source;
     }
 
 

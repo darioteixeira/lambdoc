@@ -66,7 +66,7 @@ let () =
         | `Sexp  ->
             Lambdoc_core.Ambivalent.serialize doc
         | `Html5 ->
-            let module Html5_writer = Lambdoc_whtml5_writer.Make_trivial (Tyxml_backend) in
+            let module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend) in
             let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
             let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
             string_of_xhtml options.title xhtml in

@@ -37,8 +37,7 @@ sig
     (** Compile a document AST into a manuscript.
     *)
     val compile:
-        link_readers:Ext.link_reader_t list ->
-        image_readers:Ext.image_reader_t list ->
+        ?postprocessor:Error.localized_t list Ext.Foldmapper.t ->
         extcomms:Ext.extcomm_t list ->
         expand_entities:bool ->
         idiosyncrasies:Idiosyncrasies.t ->

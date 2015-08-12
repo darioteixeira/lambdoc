@@ -12,6 +12,7 @@
 module Basic = Lambdoc_core_basic
 module Inline = Lambdoc_core_inline
 module Label = Lambdoc_core_label
+module Level = Lambdoc_core_level
 module Order = Lambdoc_core_order
 
 open Basic

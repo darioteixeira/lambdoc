@@ -17,6 +17,7 @@
 
 open Eliom_content
 open Html5.F
+open Lambdoc_core
 open Lambdoc_reader
 
 
@@ -24,7 +25,7 @@ open Lambdoc_reader
 (** {1 Modules}                                                                 *)
 (********************************************************************************)
 
-module Lwt_monad = struct include Lwt let iter = Lwt_list.iter_p end
+module Lwt_monad = struct include Lwt let fold_right = Lwt_list.fold_right_s end
 
 module Reader_extension = Lambdoc_reader.Extension.Make (Lwt_monad)
 
@@ -36,16 +37,18 @@ struct
     module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_whtml5_writer.Make_trivial (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml5_writer.Make (Eliom_backend)
 
 
 (********************************************************************************)
 (** {1 Functions and values}                                                    *)
 (********************************************************************************)
 
-let pinger href =
+let postprocessor =
     let open Cohttp in
     let open Cohttp_lwt_unix in
+    let open Reader_extension.Foldmapper in
+    let pinger href =
         try_lwt
             Ocsigen_messages.warning (Printf.sprintf "Checking URL '%s'..." href);
             let uri = Uri.of_string href in
@@ -53,13 +56,30 @@ let pinger href =
             response |> Response.status |> function
                 | (#Code.client_error_status | #Code.server_error_status) as status ->
                     let code = Code.code_of_status status |> string_of_int in
-                    let error = Lambdoc_core_error.Extension_error ("Error fetching link URL: " ^ code) in
-                    Lwt.return (Some (`Error [error]))
+                    let msg = Lambdoc_core_error.Extension_error ("Error fetching link URL: " ^ code) in
+                    Lwt.return (`Error msg)
                 | _ ->
-                    Lwt.return (Some (`Okay ""))
+                    Lwt.return `Okay
         with exc ->
-            let error = Lambdoc_core_error.Extension_error ("Bad URL: " ^ Printexc.to_string exc) in
-            Lwt.return (Some (`Error [error]))
+            let msg = Lambdoc_core_error.Extension_error ("Bad URL: " ^ Printexc.to_string exc) in
+            Lwt.return (`Error msg)
+    in
+        {
+        Reader_extension.Foldmapper.identity with
+        link = (fun fm acc attr href maybe_seq ->
+            lwt (acc, maybe_seq) = aux_maybe fm.seq fm acc maybe_seq in
+            lwt (acc, attr) = fm.attr fm acc attr in
+            lwt acc = match_lwt pinger href with
+                | `Okay ->
+                    Lwt.return acc
+                | `Error msg ->
+                    let (linenum, tag) = match attr.parsinfo with
+                        | Some h -> (h.linenum, h.tag)
+                        | None   -> assert false in
+                    let error = (Some linenum, tag, msg) in
+                    Lwt.return (error :: acc) in
+            Lwt.return (acc, Inline.link ~attr href maybe_seq));
+        }
 
 
 let sample =
@@ -101,7 +121,7 @@ let rec step1_handler () () =
 
 
 and step2_handler () source =
-    lwt doc = Lambtex_reader.ambivalent_from_string ~link_readers:[pinger] source in
+    lwt doc = Lambtex_reader.ambivalent_from_string ~postprocessor source in
     let xdoc = Lambdoc_writer.write_ambivalent doc in
     let contents =
         [

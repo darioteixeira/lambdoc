@@ -31,6 +31,6 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let make label order author title resource =
+let make ~label ~order ~author ~title ~resource =
     {label; order; author; title; resource}
 

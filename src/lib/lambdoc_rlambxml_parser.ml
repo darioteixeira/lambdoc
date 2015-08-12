@@ -88,7 +88,8 @@ let command_from_node node =
     comm_label = node#optional_string_attribute "label";
     comm_order = node#optional_string_attribute "order";
     comm_style = node#optional_string_attribute "style";
-    comm_linenum = let (_, line, _) = node#position in line - 1;
+    comm_linenum = (let (_, line, _) = node#position in line - 1);
+    comm_originator = Source;
     }
 
 

@@ -22,7 +22,7 @@ sig
     val fail: exn -> 'a t
     val bind: 'a t -> ('a -> 'b t) -> 'b t
     val catch: (unit -> 'a t) -> (exn -> 'a t) -> 'a t
-    val iter: ('a -> unit t) -> 'a list -> unit t
+    val fold_right: ('a -> 'b -> 'b t) -> 'a list -> 'b -> 'b t
 end
 
 
