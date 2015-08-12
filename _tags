@@ -56,6 +56,6 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_ulex
 <src/lambcmd/*.ml{,i,y}>: use_lambdoc
 # OASIS_STOP
-true: use_menhir, no_alias_deps
+true: use_menhir, no_alias_deps, warn(-40)
 <examples>: -traverse
 <tests>: -traverse
