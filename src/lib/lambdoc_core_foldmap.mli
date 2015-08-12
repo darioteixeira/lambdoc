@@ -32,6 +32,13 @@ module type S =
 sig
     module Monad: Monadic.S
 
+
+    (****************************************************************************)
+    (** {2 Type definitions}                                                    *)
+    (****************************************************************************)
+
+    (** Type of the foldmapper itself.
+    *)
     type 'a t =
         {
         (** Top level manipulation function *)
@@ -101,6 +108,11 @@ sig
         rule:        'a t -> 'a -> Attr.t -> ('a * Block.t) Monad.t;
         }
 
+
+    (****************************************************************************)
+    (** {2 Auxiliary functions}                                                 *)
+    (****************************************************************************)
+
     val aux_list: ('a t -> 'a -> 'b -> ('a * 'c) Monad.t) -> 'a t -> 'a -> 'b list -> ('a * 'c list) Monad.t
     val aux_maybe: ('a t -> 'a -> 'b -> ('a * 'c) Monad.t) -> 'a t -> 'a -> 'b option -> ('a * 'c option) Monad.t
     val aux_seq: (?attr:Attr.t -> Inline.seq_t -> Inline.t) -> 'a t -> 'a -> Attr.t -> Inline.seq_t -> ('a * Inline.t) Monad.t
@@ -108,7 +120,22 @@ sig
     val aux_frags: (?attr:Attr.t -> Block.frag_t list -> Block.t) -> 'a t -> 'a -> Attr.t -> Block.frag_t list -> ('a * Block.t) Monad.t
     val aux_wrapper: (?attr:Attr.t -> Wrapper.t -> Block.t -> Block.t) -> 'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t
 
+
+    (****************************************************************************)
+    (** {2 Pre-built foldmappers}                                               *)
+    (****************************************************************************)
+
+    (** The identity foldmapper traverses the entire document tree, outputting
+        a new document identical in every aspect to the original one.  It provides
+        a useful base for writing custom foldmappers.
+    *)
     val identity: 'a t
+
+    (** The amnesiac foldmapper is based upon on the {!identity} foldmapper.
+        The sole difference is that it drops all the parsing information from
+        every attribute in the document tree.  The resulting document is thus
+        rendered amnesiac about its parsing history.
+    *)
     val amnesiac: 'a t
 end
 
