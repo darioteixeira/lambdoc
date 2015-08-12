@@ -32,7 +32,7 @@ module type S =
 sig
     module Monad: Monadic.S
 
-  type 'a t =
+    type 'a t =
         {
         (** Top level manipulation function *)
 
