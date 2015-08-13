@@ -51,11 +51,23 @@ Document "lambdoc"
     XOCamlbuildLibraries:   lambdoc
 
 Executable "lambcmd"
-    Build$:         flag(cmd)
-    Install$:       flag(cmd)
-    Path:           src/lambcmd
-    MainIs:         lambcmd.ml
-    BuildTools:     ocamlbuild
-    BuildDepends:   lambdoc
-    CompiledObject: best
+    Build$:                 flag(cmd)
+    Install$:               flag(cmd)
+    Path:                   src/lambcmd
+    MainIs:                 lambcmd.ml
+    BuildTools:             ocamlbuild
+    BuildDepends:           lambdoc
+    CompiledObject:         best
+
+Executable "test_lambtex"
+    Build$:                 flag(tests)
+    Path:                   tests
+    MainIs:                 test_lambtex.ml
+    Install:                false
+    BuildDepends:           lambdoc, alcotest
+    CompiledObject:         best
+
+Test "test_lambtex"
+    Run$:                   flag(tests)
+    Command:                $test_lambtex
 

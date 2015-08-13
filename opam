@@ -9,10 +9,13 @@ dev-repo: "https://github.com/darioteixeira/lambdoc.git"
 license: "GPL-2.0"
 ocaml-version: [>= "4.02.0"]
 build: [
-    ["./configure" "--prefix" prefix "--docdir" "%{doc}%/lambdoc"]
+    ["./configure" "--prefix" prefix
+                   "--docdir" "%{doc}%/lambdoc"
+                   "--%{alcotest:enable}%-tests"]
     [make]
     [make "doc"]
 ]
+build-test: [make "test"]
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" "lambdoc"]]
 depends: [
@@ -30,4 +33,5 @@ depends: [
     "omd" {>= "1.0.0"}
     "blahcaml"
     "camlhighlight" {>= "3.0" & < "4"}
+    "alcotest" {test}
 ]

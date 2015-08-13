@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 734d4f3a23202f1dca2be302e8daee68)
+# DO NOT EDIT (digest: 8c9f8decddf7da8c847641f6e6fd164c)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -55,6 +55,35 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_tyxml
 <src/lambcmd/*.ml{,i,y}>: pkg_ulex
 <src/lambcmd/*.ml{,i,y}>: use_lambdoc
+# Executable test_lambtex
+<tests/test_lambtex.{native,byte}>: pkg_alcotest
+<tests/test_lambtex.{native,byte}>: pkg_batteries
+<tests/test_lambtex.{native,byte}>: pkg_blahcaml
+<tests/test_lambtex.{native,byte}>: pkg_camlhighlight
+<tests/test_lambtex.{native,byte}>: pkg_menhirLib
+<tests/test_lambtex.{native,byte}>: pkg_omd
+<tests/test_lambtex.{native,byte}>: pkg_pcre
+<tests/test_lambtex.{native,byte}>: pkg_pxp-engine
+<tests/test_lambtex.{native,byte}>: pkg_pxp-ulex-utf8
+<tests/test_lambtex.{native,byte}>: pkg_sexplib
+<tests/test_lambtex.{native,byte}>: pkg_threads
+<tests/test_lambtex.{native,byte}>: pkg_tyxml
+<tests/test_lambtex.{native,byte}>: pkg_ulex
+<tests/test_lambtex.{native,byte}>: use_lambdoc
+<tests/*.ml{,i,y}>: pkg_alcotest
+<tests/*.ml{,i,y}>: pkg_batteries
+<tests/*.ml{,i,y}>: pkg_blahcaml
+<tests/*.ml{,i,y}>: pkg_camlhighlight
+<tests/*.ml{,i,y}>: pkg_menhirLib
+<tests/*.ml{,i,y}>: pkg_omd
+<tests/*.ml{,i,y}>: pkg_pcre
+<tests/*.ml{,i,y}>: pkg_pxp-engine
+<tests/*.ml{,i,y}>: pkg_pxp-ulex-utf8
+<tests/*.ml{,i,y}>: pkg_sexplib
+<tests/*.ml{,i,y}>: pkg_threads
+<tests/*.ml{,i,y}>: pkg_tyxml
+<tests/*.ml{,i,y}>: pkg_ulex
+<tests/*.ml{,i,y}>: use_lambdoc
 # OASIS_STOP
 true: use_menhir, no_alias_deps, warn(-40)
 <examples>: -traverse
