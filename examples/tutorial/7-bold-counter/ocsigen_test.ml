@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(** Part 8 of the Lambdoc+Ocsigen tutorial.
+(** Part 7 of the Lambdoc+Ocsigen tutorial.
 
     This instalment illustrates how the {!Lambdoc_core_foldmap} module can be used
     to perform deep traversals on documents.  Function {!count_bolds} below simply

@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(** Part 7 of the Lambdoc+Ocsigen tutorial.
+(** Part 8 of the Lambdoc+Ocsigen tutorial.
 
     This instalment depicts a common requirement for a web application:
     checking that the links in a document resolve successfully. Function
