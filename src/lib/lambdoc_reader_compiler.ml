@@ -300,7 +300,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             then 
                 let msg = Error.Invalid_style_misplaced_classname classname in
                 add_error comm msg in
-        if Permission.check_feature feature idiosyncrasies
+        if comm.comm_originator = Extension || Permission.check_feature feature idiosyncrasies
         then begin
             let permission_error_msgs = Permission.check_parameters ?maybe_minipaged ?maybe_wrapped comm feature in
             List.iter (add_error comm) permission_error_msgs;
