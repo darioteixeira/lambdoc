@@ -13,6 +13,6 @@ module Make:
     functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
     Maker.WRITER with
         type t = Html5_types.div Html5.elt and
-        type valid_options_t = Lambdoc_whtml5_writable.valid_options_t and
-        type invalid_options_t = Lambdoc_whtml5_writable.invalid_options_t
+        type valid_options = Lambdoc_whtml5_writable.valid_options and
+        type invalid_options = Lambdoc_whtml5_writable.invalid_options
 

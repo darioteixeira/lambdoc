@@ -22,7 +22,7 @@ open Lambdoc_core
 
 module Entity_input:
 sig
-    val expand: string -> [ `Okay of string * BatUTF8.t | `Error of Error.msg_t ]
+    val expand: string -> [ `Okay of string * BatUTF8.t | `Error of Error.msg ]
 end
 
 
@@ -58,8 +58,8 @@ module Tabular_input:
 sig
     open Tabular
 
-    val colspec_of_string: string -> colspec_t
-    val cellspec_of_string: string -> cellspec_t
+    val colspec_of_string: string -> colspec
+    val cellspec_of_string: string -> cellspec
 end
 
 
@@ -72,18 +72,18 @@ sig
     open Basic
 
     exception Invalid_order_format of string
-    exception Invalid_order_levels of string * Level.section_t * int
+    exception Invalid_order_levels of string * Level.section * int
 
-    type ordinal_counter_t
-    type hierarchical_counter_t
+    type ordinal_counter
+    type hierarchical_counter
 
-    val ordinal_counter: unit -> ordinal_counter_t ref
-    val hierarchical_counter: unit -> hierarchical_counter_t ref
+    val ordinal_counter: unit -> ordinal_counter ref
+    val hierarchical_counter: unit -> hierarchical_counter ref
 
-    val auto_ordinal: ordinal_counter_t ref -> [> `Auto_given of Order.ordinal_t ]
-    val auto_hierarchical: Level.section_t -> hierarchical_counter_t ref -> [> `Auto_given of Order.hierarchical_t ]
-    val user_ordinal: string -> [> `User_given of Order.ordinal_t ]
-    val user_hierarchical: Level.section_t -> string -> [> `User_given of Order.hierarchical_t ]
+    val auto_ordinal: ordinal_counter ref -> [> `Auto_given of Order.ordinal ]
+    val auto_hierarchical: Level.section -> hierarchical_counter ref -> [> `Auto_given of Order.hierarchical ]
+    val user_ordinal: string -> [> `User_given of Order.ordinal ]
+    val user_hierarchical: Level.section -> string -> [> `User_given of Order.hierarchical ]
     val no_order: unit -> [> `None_given ]
 end
 

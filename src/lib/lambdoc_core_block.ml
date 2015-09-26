@@ -26,39 +26,39 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type block_t =
-    | Paragraph of Inline.seq_t
-    | Itemize of frag_t list
-    | Enumerate of frag_t list
-    | Description of (Inline.seq_t * frag_t) list
-    | Qanda of (Qanda.t * frag_t) list
-    | Verse of frag_t
-    | Quote of frag_t
+type block =
+    | Paragraph of Inline.seq
+    | Itemize of frag list
+    | Enumerate of frag list
+    | Description of (Inline.seq * frag) list
+    | Qanda of (Qanda.t * frag) list
+    | Verse of frag
+    | Quote of frag
     | Mathblk of Math.t
     | Source of Source.t
     | Tabular of Tabular.t
-    | Subpage of frag_t
+    | Subpage of frag
     | Verbatim of string
-    | Picture of href_t * string * int option
-    | Pullquote of Inline.seq_t option * frag_t
-    | Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
-    | Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
+    | Picture of href * string * int option
+    | Pullquote of Inline.seq option * frag
+    | Boxout of Custom.Boxout.t * Inline.seq option * frag
+    | Theorem of Custom.Theorem.t * Inline.seq option * frag
     | Equation of Wrapper.t * t
     | Printout of Wrapper.t * t
     | Table of Wrapper.t * t
     | Figure of Wrapper.t * t
     | Heading of Heading.t
-    | Title of Level.title_t * Inline.seq_t
-    | Abstract of frag_t
+    | Title of Level.title * Inline.seq
+    | Abstract of frag
     | Rule
 
 and t =
     {
-    blk: block_t;
+    blk: block;
     attr: Attr.t;
     }
 
-and frag_t = t list with sexp
+and frag = t list with sexp
 
 
 (********************************************************************************)

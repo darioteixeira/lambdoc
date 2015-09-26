@@ -22,10 +22,10 @@ module type READABLE =
 sig
     val ast_from_string:
         linenum_offset:int ->
-        inline_extdefs:Extension.extdef_t list ->
-        block_extdefs:Extension.extdef_t list ->
+        inline_extdefs:Extension.extdef list ->
+        block_extdefs:Extension.extdef list ->
         string ->
-        [ `Okay of Ast.t | `Error of Error.reading_t list ]
+        [ `Okay of Ast.t | `Error of Error.reading list ]
 end
 
 
@@ -34,8 +34,8 @@ sig
     module Ext: Extension.S
 
     val ambivalent_from_string:
-        ?postprocessor:Error.localized_t list Ext.Foldmapper.t ->
-        ?extcomms:Ext.extcomm_t list ->
+        ?postprocessor:Error.localized list Ext.Foldmapper.t ->
+        ?extcomms:Ext.extcomm list ->
         ?linenum_offset:int ->
         ?verify_utf8:bool ->
         ?expand_entities:bool ->

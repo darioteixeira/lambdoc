@@ -22,12 +22,12 @@ open Globalenv
 %token BEGIN
 %token END
 
-%token <Lambdoc_reader_ast.command_t> NEW_PAR
-%token <Lambdoc_reader_ast.command_t> ROW_END
-%token <Lambdoc_reader_ast.command_t> CELL_MARK
+%token <Lambdoc_reader_ast.command> NEW_PAR
+%token <Lambdoc_reader_ast.command> ROW_END
+%token <Lambdoc_reader_ast.command> CELL_MARK
 
-%token <Lambdoc_reader_ast.command_t * BatText.t> PLAIN
-%token <Lambdoc_reader_ast.command_t * string> ENTITY
+%token <Lambdoc_reader_ast.command * BatText.t> PLAIN
+%token <Lambdoc_reader_ast.command * string> ENTITY
 %token <BatText.t> RAW
 
 
@@ -36,11 +36,11 @@ open Globalenv
 /* Presently the only existing environment operators are [$ $] and <$ $>.       */
 /********************************************************************************/
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_MATHTEX_INL
-%token <Lambdoc_reader_ast.command_t> END_MATHTEX_INL
+%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_INL
+%token <Lambdoc_reader_ast.command> END_MATHTEX_INL
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_MATHML_INL
-%token <Lambdoc_reader_ast.command_t> END_MATHML_INL
+%token <Lambdoc_reader_ast.command> BEGIN_MATHML_INL
+%token <Lambdoc_reader_ast.command> END_MATHML_INL
 
 
 /********************************************************************************/
@@ -81,73 +81,73 @@ open Globalenv
 /* Simple commands.                                                             */
 /********************************************************************************/
 
-%token <Lambdoc_reader_ast.command_t> LINEBREAK
-%token <Lambdoc_reader_ast.command_t> GLYPH
-%token <Lambdoc_reader_ast.command_t> BOLD
-%token <Lambdoc_reader_ast.command_t> EMPH
-%token <Lambdoc_reader_ast.command_t> CODE
-%token <Lambdoc_reader_ast.command_t> CAPS
-%token <Lambdoc_reader_ast.command_t> INS
-%token <Lambdoc_reader_ast.command_t> DEL
-%token <Lambdoc_reader_ast.command_t> SUP
-%token <Lambdoc_reader_ast.command_t> SUB
-%token <Lambdoc_reader_ast.command_t> MBOX
-%token <Lambdoc_reader_ast.command_t> SPAN
-%token <Lambdoc_reader_ast.command_t> LINK
-%token <Lambdoc_reader_ast.command_t> SEE
-%token <Lambdoc_reader_ast.command_t> CITE
-%token <Lambdoc_reader_ast.command_t> DREF
-%token <Lambdoc_reader_ast.command_t> SREF
-%token <Lambdoc_reader_ast.command_t> MREF
+%token <Lambdoc_reader_ast.command> LINEBREAK
+%token <Lambdoc_reader_ast.command> GLYPH
+%token <Lambdoc_reader_ast.command> BOLD
+%token <Lambdoc_reader_ast.command> EMPH
+%token <Lambdoc_reader_ast.command> CODE
+%token <Lambdoc_reader_ast.command> CAPS
+%token <Lambdoc_reader_ast.command> INS
+%token <Lambdoc_reader_ast.command> DEL
+%token <Lambdoc_reader_ast.command> SUP
+%token <Lambdoc_reader_ast.command> SUB
+%token <Lambdoc_reader_ast.command> MBOX
+%token <Lambdoc_reader_ast.command> SPAN
+%token <Lambdoc_reader_ast.command> LINK
+%token <Lambdoc_reader_ast.command> SEE
+%token <Lambdoc_reader_ast.command> CITE
+%token <Lambdoc_reader_ast.command> DREF
+%token <Lambdoc_reader_ast.command> SREF
+%token <Lambdoc_reader_ast.command> MREF
 
-%token <Lambdoc_reader_ast.command_t> PARAGRAPH
-%token <Lambdoc_reader_ast.command_t> PICTURE
-%token <Lambdoc_reader_ast.command_t> PART
-%token <Lambdoc_reader_ast.command_t> APPENDIX
-%token <Lambdoc_reader_ast.command_t * int> SECTION
-%token <Lambdoc_reader_ast.command_t> BIBLIOGRAPHY
-%token <Lambdoc_reader_ast.command_t> NOTES
-%token <Lambdoc_reader_ast.command_t> TOC
-%token <Lambdoc_reader_ast.command_t * int> TITLE
-%token <Lambdoc_reader_ast.command_t> RULE
-%token <Lambdoc_reader_ast.command_t> MACRODEF
-%token <Lambdoc_reader_ast.command_t> BOXOUTDEF
-%token <Lambdoc_reader_ast.command_t> THEOREMDEF
+%token <Lambdoc_reader_ast.command> PARAGRAPH
+%token <Lambdoc_reader_ast.command> PICTURE
+%token <Lambdoc_reader_ast.command> PART
+%token <Lambdoc_reader_ast.command> APPENDIX
+%token <Lambdoc_reader_ast.command * int> SECTION
+%token <Lambdoc_reader_ast.command> BIBLIOGRAPHY
+%token <Lambdoc_reader_ast.command> NOTES
+%token <Lambdoc_reader_ast.command> TOC
+%token <Lambdoc_reader_ast.command * int> TITLE
+%token <Lambdoc_reader_ast.command> RULE
+%token <Lambdoc_reader_ast.command> MACRODEF
+%token <Lambdoc_reader_ast.command> BOXOUTDEF
+%token <Lambdoc_reader_ast.command> THEOREMDEF
 
-%token <Lambdoc_reader_ast.command_t> ITEM
-%token <Lambdoc_reader_ast.command_t> QUESTION
-%token <Lambdoc_reader_ast.command_t> RQUESTION
-%token <Lambdoc_reader_ast.command_t> ANSWER
-%token <Lambdoc_reader_ast.command_t> RANSWER
+%token <Lambdoc_reader_ast.command> ITEM
+%token <Lambdoc_reader_ast.command> QUESTION
+%token <Lambdoc_reader_ast.command> RQUESTION
+%token <Lambdoc_reader_ast.command> ANSWER
+%token <Lambdoc_reader_ast.command> RANSWER
 
-%token <Lambdoc_reader_ast.command_t> THEAD
-%token <Lambdoc_reader_ast.command_t> TFOOT
-%token <Lambdoc_reader_ast.command_t> TBODY
-%token <Lambdoc_reader_ast.command_t> BIB_AUTHOR
-%token <Lambdoc_reader_ast.command_t> BIB_TITLE
-%token <Lambdoc_reader_ast.command_t> BIB_RESOURCE
+%token <Lambdoc_reader_ast.command> THEAD
+%token <Lambdoc_reader_ast.command> TFOOT
+%token <Lambdoc_reader_ast.command> TBODY
+%token <Lambdoc_reader_ast.command> BIB_AUTHOR
+%token <Lambdoc_reader_ast.command> BIB_TITLE
+%token <Lambdoc_reader_ast.command> BIB_RESOURCE
 
-%token <Lambdoc_reader_ast.command_t> MACROARG
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t > MACROCALL
+%token <Lambdoc_reader_ast.command> MACROARG
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident > MACROCALL
 
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_EMPTY
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_SEQ
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW_RAW
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW_SEQ
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> INLPAT_RAW_SEQOPT
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_EMPTY
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_SEQ
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW_SEQ
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW_SEQOPT
 
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_EMPTY
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_SEQ
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_RAW
-%token <Lambdoc_reader_ast.command_t * Lambdoc_core_basic.ident_t> BLKPAT_RAW_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_EMPTY
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_SEQ
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_RAW_RAW
 
 
 /********************************************************************************/
 /* Dummy tokens.                                                                */
 /********************************************************************************/
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_DUMMY
+%token <Lambdoc_reader_ast.command> BEGIN_DUMMY
 %token <string> END_DUMMY
 %token OPEN_DUMMY
 %token CLOSE_DUMMY
@@ -230,7 +230,7 @@ desc_item_frag:
 qanda_frag:
     | QUESTION inline_bundle? block*            {($1, Ast.New_questioner $2, $3)}
     | RQUESTION block*                          {($1, Ast.Same_questioner, $2)}
-    | ANSWER inline_bundle? block*                      {($1, Ast.New_answerer $2, $3)}
+    | ANSWER inline_bundle? block*              {($1, Ast.New_answerer $2, $3)}
     | RANSWER block*                            {($1, Ast.Same_answerer, $2)}
 
 bib_author:

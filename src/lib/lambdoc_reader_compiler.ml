@@ -30,17 +30,17 @@ open Idiosyncrasies
 (** {1 Private exceptions}                                                      *)
 (********************************************************************************)
 
-exception Mismatched_custom of Custom.kind_t * Custom.kind_t
+exception Mismatched_custom of Custom.kind * Custom.kind
 
 
 (********************************************************************************)
 (** {1 Private type definitions}                                                *)
 (********************************************************************************)
 
-type customdef_t =
+type customdef =
     | Anonymous
-    | Unnumbered of Inline.seq_t
-    | Numbered of Inline.seq_t * Order_input.ordinal_counter_t ref
+    | Unnumbered of Inline.seq
+    | Numbered of Inline.seq * Order_input.ordinal_counter ref
 
 
 (********************************************************************************)
@@ -58,7 +58,7 @@ open Foldmapper
 (** {1 Exceptions}                                                              *)
 (********************************************************************************)
 
-exception Internal_extension_error of Ast.command_t
+exception Internal_extension_error of Ast.command
 
 
 (********************************************************************************)

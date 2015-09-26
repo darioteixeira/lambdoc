@@ -24,26 +24,26 @@ open Basic
 
 (** Ordering type for part headings.
 *)
-type part_order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+type part_order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t with sexp
 
 
 (** Ordering type for section headings.
 *)
-type section_order_t = (Order.hierarchical_t, [Order.hierarchical_t Order.auto_given_t | Order.hierarchical_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+type section_order = (Order.hierarchical, [Order.hierarchical Order.auto_given | Order.hierarchical Order.user_given | Order.none_given ]) Order.t with sexp
 
 
 (** Part content.
 *)
-type part_content_t =
-    | Custom_part of Inline.seq_t
+type part_content =
+    | Custom_part of Inline.seq
     | Appendix
     with sexp
 
 
 (** Section content.
 *)
-type section_content_t =
-    | Custom_section of Inline.seq_t
+type section_content =
+    | Custom_section of Inline.seq
     | Bibliography
     | Notes
     | Toc
@@ -52,7 +52,7 @@ type section_content_t =
 
 (** Section locations.
 *)
-type section_location_t =
+type section_location =
     | Mainbody
     | Appendixed
     with sexp
@@ -61,8 +61,8 @@ type section_location_t =
 (** Heading blocks.
 *)
 type t =
-    | Part of Label.t * part_order_t * part_content_t
-    | Section of Label.t * section_order_t * section_location_t * Level.section_t * section_content_t
+    | Part of Label.t * part_order * part_content
+    | Section of Label.t * section_order * section_location * Level.section * section_content
     with sexp
 
 
@@ -70,9 +70,9 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val part: Label.t -> part_order_t -> Inline.seq_t -> t
+val part: Label.t -> part_order -> Inline.seq -> t
 val appendix: Label.t -> t
-val section: Label.t -> section_order_t -> section_location_t -> Level.section_t -> Inline.seq_t -> t
+val section: Label.t -> section_order -> section_location -> Level.section -> Inline.seq -> t
 val bibliography: Label.t -> t
 val notes: Label.t -> t
 val toc: Label.t -> t

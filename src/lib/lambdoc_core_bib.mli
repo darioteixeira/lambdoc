@@ -18,15 +18,15 @@ module Order = Lambdoc_core_order
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
+type order = (Order.ordinal, Order.ordinal Order.auto_given) Order.t with sexp
 
 type t =
     {
     label: Label.t;
-    order: order_t;
-    author: Inline.seq_t;
-    title: Inline.seq_t;
-    resource: Inline.seq_t;
+    order: order;
+    author: Inline.seq;
+    title: Inline.seq;
+    resource: Inline.seq;
     } with sexp
 
 
@@ -34,5 +34,5 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: label:Label.t -> order:order_t -> author:Inline.seq_t -> title:Inline.seq_t -> resource:Inline.seq_t -> t
+val make: label:Label.t -> order:order -> author:Inline.seq -> title:Inline.seq -> resource:Inline.seq -> t
 

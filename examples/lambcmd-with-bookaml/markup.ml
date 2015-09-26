@@ -10,9 +10,9 @@
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type input_t = [ `Lambtex | `Lambwiki | `Lambxml | `Markdown | `Sexp ]
+type input = [ `Lambtex | `Lambwiki | `Lambxml | `Markdown | `Sexp ]
 
-type output_t = [ `Sexp | `Html5 ]
+type output = [ `Sexp | `Html5 ]
 
 
 (********************************************************************************)

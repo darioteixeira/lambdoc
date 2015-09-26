@@ -35,12 +35,12 @@ open Parser
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type context_t = Blk | Inl | Tab
+type context = Blk | Inl | Tab
 
-type action_t =
+type action =
     | Hold
-    | Set of context_t
-    | Push of context_t
+    | Set of context
+    | Push of context
     | Pop
 
 
@@ -77,7 +77,7 @@ let get_param rex name subs =
         _ -> None
 
 
-(** Builds a fully-featured {!Lambdoc_reader.Ast.command_t}.
+(** Builds a fully-featured {!Lambdoc_reader.Ast.command}.
 *)
 let build_command tag rex subs position =
     {
@@ -90,7 +90,7 @@ let build_command tag rex subs position =
     }
 
 
-(** Builds a {!Lambdoc_reader.Ast.command_t} from an operator.
+(** Builds a {!Lambdoc_reader.Ast.command} from an operator.
     Only the line number field is actually set.
 *)
 let build_op position =
@@ -247,7 +247,7 @@ let issue_simple_command ~inline_extdefs ~sim_block_extdefs raw_comm position =
 (** {1 Tokenizer class}                         *)
 (********************************************************************************)
 
-class tokenizer ~linenum_offset ~(inline_extdefs:Extension.extdef_t list) ~(block_extdefs:Extension.extdef_t list) =
+class tokenizer ~linenum_offset ~(inline_extdefs:Extension.extdef list) ~(block_extdefs:Extension.extdef list) =
     let (env_block_extdefs, sim_block_extdefs) = List.partition is_env block_extdefs in
     let issue_begin_command = issue_begin_command ~env_block_extdefs in
     let issue_simple_command = issue_simple_command ~inline_extdefs ~sim_block_extdefs in

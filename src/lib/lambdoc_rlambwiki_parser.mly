@@ -18,43 +18,43 @@ open Lambdoc_reader
 %token EOF
 
 %token <string> RAW
-%token <Lambdoc_reader_ast.command_t * string> PLAIN
-%token <Lambdoc_reader_ast.command_t * string> ENTITY
+%token <Lambdoc_reader_ast.command * string> PLAIN
+%token <Lambdoc_reader_ast.command * string> ENTITY
 
-%token <Lambdoc_reader_ast.command_t> BOLD_MARK
-%token <Lambdoc_reader_ast.command_t> EMPH_MARK
-%token <Lambdoc_reader_ast.command_t> SUP_MARK
-%token <Lambdoc_reader_ast.command_t> SUB_MARK
-%token <Lambdoc_reader_ast.command_t> BEGIN_CAPS
-%token <Lambdoc_reader_ast.command_t> END_CAPS
-%token <Lambdoc_reader_ast.command_t> BEGIN_CODE
-%token <Lambdoc_reader_ast.command_t> END_CODE
-%token <Lambdoc_reader_ast.command_t> BEGIN_LINK
-%token <Lambdoc_reader_ast.command_t> END_LINK
-%token <Lambdoc_reader_ast.command_t> LINK_SEP
+%token <Lambdoc_reader_ast.command> BOLD_MARK
+%token <Lambdoc_reader_ast.command> EMPH_MARK
+%token <Lambdoc_reader_ast.command> SUP_MARK
+%token <Lambdoc_reader_ast.command> SUB_MARK
+%token <Lambdoc_reader_ast.command> BEGIN_CAPS
+%token <Lambdoc_reader_ast.command> END_CAPS
+%token <Lambdoc_reader_ast.command> BEGIN_CODE
+%token <Lambdoc_reader_ast.command> END_CODE
+%token <Lambdoc_reader_ast.command> BEGIN_LINK
+%token <Lambdoc_reader_ast.command> END_LINK
+%token <Lambdoc_reader_ast.command> LINK_SEP
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_PAR
-%token <Lambdoc_reader_ast.command_t> END_PAR
+%token <Lambdoc_reader_ast.command> BEGIN_PAR
+%token <Lambdoc_reader_ast.command> END_PAR
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_ITEMIZE
-%token <Lambdoc_reader_ast.command_t> END_ITEMIZE
+%token <Lambdoc_reader_ast.command> BEGIN_ITEMIZE
+%token <Lambdoc_reader_ast.command> END_ITEMIZE
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_ENUMERATE
-%token <Lambdoc_reader_ast.command_t> END_ENUMERATE
+%token <Lambdoc_reader_ast.command> BEGIN_ENUMERATE
+%token <Lambdoc_reader_ast.command> END_ENUMERATE
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_QUOTE
-%token <Lambdoc_reader_ast.command_t> END_QUOTE
+%token <Lambdoc_reader_ast.command> BEGIN_QUOTE
+%token <Lambdoc_reader_ast.command> END_QUOTE
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_SOURCE
-%token <Lambdoc_reader_ast.command_t> END_SOURCE
+%token <Lambdoc_reader_ast.command> BEGIN_SOURCE
+%token <Lambdoc_reader_ast.command> END_SOURCE
 
-%token <Lambdoc_reader_ast.command_t> BEGIN_VERBATIM
-%token <Lambdoc_reader_ast.command_t> END_VERBATIM
+%token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
+%token <Lambdoc_reader_ast.command> END_VERBATIM
 
-%token <Lambdoc_reader_ast.command_t * int> BEGIN_SECTION
-%token <Lambdoc_reader_ast.command_t> END_SECTION
+%token <Lambdoc_reader_ast.command * int> BEGIN_SECTION
+%token <Lambdoc_reader_ast.command> END_SECTION
 
-%token <Lambdoc_reader_ast.command_t> ITEM
+%token <Lambdoc_reader_ast.command> ITEM
 
 
 /********************************************************************************/

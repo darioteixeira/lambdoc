@@ -14,12 +14,12 @@
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type mathtex_t = string with sexp
-type mathml_t = string with sexp
+type mathtex = string with sexp
+type mathml = string with sexp
 
 type t =
-    | Mathtex of mathtex_t
-    | Mathml of mathml_t
-    | Both of mathtex_t * mathml_t
+    | Mathtex of mathtex
+    | Mathml of mathml
+    | Both of mathtex * mathml
     with sexp
 

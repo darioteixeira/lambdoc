@@ -21,14 +21,14 @@ open Basic
 (** {2 Parsing data associated with command tags}                               *)
 (********************************************************************************)
 
-type command_t =
+type command =
     {
-    comm_tag: ident_t option;           (** Tag associated with command (some markups have anonymous, tagless commands) *)
-    comm_label: pointer_t option;       (** Label parameter attached to command *)
+    comm_tag: ident option;             (** Tag associated with command (some markups have anonymous, tagless commands) *)
+    comm_label: pointer option;         (** Label parameter attached to command *)
     comm_order: string option;          (** Order parameter attached to command *)
     comm_style: string option;          (** Style parameter attached to command *)
     comm_linenum: int;                  (** Source line number where command was declared *)
-    comm_originator: Attr.originator_t; (** Where the command comes from *)
+    comm_originator: Attr.originator;   (** Where the command comes from *)
     }
 
 
@@ -36,118 +36,118 @@ type command_t =
 (** {2 Data types for inline context}                                           *)
 (********************************************************************************)
 
-type seq_t = inline_t list
- and inline_t = command_t * raw_inline_t
- and raw_inline_t =
-    | Plain of string                           (* Inlpat_raw *)
-    | Entity of string                          (* Inlpat_raw *)
-    | Linebreak                                 (* Inlpat_empty *)
-    | Mathtex_inl of string                     (* Inlpat_raw *)
-    | Mathml_inl of string                      (* Inlpat_raw *)
-    | Glyph of string * string                  (* Inlpat_raw_raw *)
-    | Bold of seq_t                             (* Inlpat_seq *)
-    | Emph of seq_t                             (* Inlpat_seq *)
-    | Code of seq_t                             (* Inlpat_seq *)
-    | Caps of seq_t                             (* Inlpat_seq *)
-    | Ins of seq_t                              (* Inlpat_seq *)
-    | Del of seq_t                              (* Inlpat_seq *)
-    | Sup of seq_t                              (* Inlpat_seq *)
-    | Sub of seq_t                              (* Inlpat_seq *)
-    | Mbox of seq_t                             (* Inlpat_seq *)
-    | Span of seq_t                             (* Inlpat_seq *)
-    | Link of string * seq_t option             (* Inlpat_raw_seqopt *)
-    | See of string list                        (* Inlpat_rawlist *)
-    | Cite of string list                       (* Inlpat_rawlist *)
-    | Dref of string * seq_t option             (* Inlpat_raw_seqopt *)
-    | Sref of string * seq_t option             (* Inlpat_raw_seqopt *)
-    | Mref of string * seq_t                    (* Inlpat_raw_seq *)
-    | Macroarg of string                        (* Inlpat_raw *)
-    | Macrocall of string * seq_t list          (* Inlpat_raw_seqlist *)
-    | Extcomm_inl of ident_t * inline_pattern_t
+type seq = inline list
+ and inline = command * raw_inline
+ and raw_inline =
+    | Plain of string                       (* Inlpat_raw *)
+    | Entity of string                      (* Inlpat_raw *)
+    | Linebreak                             (* Inlpat_empty *)
+    | Mathtex_inl of string                 (* Inlpat_raw *)
+    | Mathml_inl of string                  (* Inlpat_raw *)
+    | Glyph of string * string              (* Inlpat_raw_raw *)
+    | Bold of seq                           (* Inlpat_seq *)
+    | Emph of seq                           (* Inlpat_seq *)
+    | Code of seq                           (* Inlpat_seq *)
+    | Caps of seq                           (* Inlpat_seq *)
+    | Ins of seq                            (* Inlpat_seq *)
+    | Del of seq                            (* Inlpat_seq *)
+    | Sup of seq                            (* Inlpat_seq *)
+    | Sub of seq                            (* Inlpat_seq *)
+    | Mbox of seq                           (* Inlpat_seq *)
+    | Span of seq                           (* Inlpat_seq *)
+    | Link of string * seq option           (* Inlpat_raw_seqopt *)
+    | See of string list                    (* Inlpat_rawlist *)
+    | Cite of string list                   (* Inlpat_rawlist *)
+    | Dref of string * seq option           (* Inlpat_raw_seqopt *)
+    | Sref of string * seq option           (* Inlpat_raw_seqopt *)
+    | Mref of string * seq                  (* Inlpat_raw_seq *)
+    | Macroarg of string                    (* Inlpat_raw *)
+    | Macrocall of string * seq list        (* Inlpat_raw_seqlist *)
+    | Extcomm_inl of ident * inline_pattern
 
-and inline_pattern_t =
+and inline_pattern =
     | Inlpat_empty
-    | Inlpat_seq of seq_t
+    | Inlpat_seq of seq
     | Inlpat_raw of string
     | Inlpat_raw_raw of string * string
-    | Inlpat_raw_seq of string * seq_t
-    | Inlpat_raw_seqopt of string * seq_t option
+    | Inlpat_raw_seq of string * seq
+    | Inlpat_raw_seqopt of string * seq option
 
 
 (********************************************************************************)
 (** {2 Data types for document blocks}                                          *)
 (********************************************************************************)
 
-type tabular_cell_t = command_t * string option * seq_t option
+type tabular_cell = command * string option * seq option
 
-type tabular_row_t = command_t * tabular_cell_t list
+type tabular_row = command * tabular_cell list
 
-type tabular_group_t = command_t * tabular_row_t list
+type tabular_group = command * tabular_row list
 
-type tabular_t =
+type tabular =
     {
-    thead: tabular_group_t option;
-    tfoot: tabular_group_t option;
-    tbodies: tabular_group_t list;
+    thead: tabular_group option;
+    tfoot: tabular_group option;
+    tbodies: tabular_group list;
     }
 
-type bib_t =
+type bib =
     {
-    author: command_t * seq_t;
-    title: command_t * seq_t;
-    resource: command_t * seq_t;
+    author: command * seq;
+    title: command * seq;
+    resource: command * seq;
     }
 
-type frag_t = block_t list
- and block_t = command_t * raw_block_t
- and raw_block_t =
-    | Paragraph of seq_t                                                (* Blkpat_seq *)
-    | Itemize of (command_t * frag_t) list
-    | Enumerate of (command_t * frag_t) list
-    | Description of (command_t * seq_t * frag_t) list
-    | Qanda of (command_t * qanda_t * frag_t) list
-    | Verse of frag_t                                                   (* Blkpat_frag *)
-    | Quote of frag_t                                                   (* Blkpat_frag *)
-    | Mathtex_blk of string                                             (* Blkpat_lit *)
-    | Mathml_blk of string                                              (* Blkpat_lit *)
-    | Source of string                                                  (* Blkpat_lit *)
-    | Tabular of string * tabular_t                                     (* Blkpat_raw_tab *)
-    | Subpage of frag_t                                                 (* Blkpat_frag *)
-    | Verbatim of string                                                (* Blkpat_lit *)
-    | Picture of string * string                                        (* Blkpat_raw_raw *)
-    | Pullquote of seq_t option * frag_t                                (* Blkpat_seqopt_frag *)
-    | Custom of Custom.kind_t option * string * seq_t option * frag_t
-    | Equation of seq_t option * block_t                                (* Blkpat_seqopt_blk *)
-    | Printout of seq_t option * block_t                                (* Blkpat_seqopt_blk *)
-    | Table of seq_t option * block_t                                   (* Blkpat_seqopt_blk *)
-    | Figure of seq_t option * block_t                                  (* Blkpat_seqopt_blk *)
-    | Part of seq_t                                                     (* Blkpat_seq *)
-    | Appendix                                                          (* Blkpat_empty *)
-    | Section of int * seq_t                                            (* Blkpat_int_seq *)
-    | Bibliography                                                      (* Blkpat_empty *)
-    | Notes                                                             (* Blkpat_empty *)
-    | Toc                                                               (* Blkpat_empty *)
-    | Title of int * seq_t                                              (* Blkpat_int_seq *)
-    | Abstract of frag_t                                                (* Blkpat_frag *)
-    | Rule                                                              (* Blkpat_empty *)
-    | Bib of bib_t                                                      (* Blkpat_bib *)
-    | Note of frag_t                                                    (* Blkpat_frag *)
-    | Macrodef of string * string * seq_t
-    | Boxoutdef of string * seq_t option * string option
-    | Theoremdef of string * seq_t * string option
-    | Extcomm_blk of ident_t * block_pattern_t
+type frag = block list
+ and block = command * raw_block
+ and raw_block =
+    | Paragraph of seq                                              (* Blkpat_seq *)
+    | Itemize of (command * frag) list
+    | Enumerate of (command * frag) list
+    | Description of (command * seq * frag) list
+    | Qanda of (command * qanda * frag) list
+    | Verse of frag                                                 (* Blkpat_frag *)
+    | Quote of frag                                                 (* Blkpat_frag *)
+    | Mathtex_blk of string                                         (* Blkpat_lit *)
+    | Mathml_blk of string                                          (* Blkpat_lit *)
+    | Source of string                                              (* Blkpat_lit *)
+    | Tabular of string * tabular                                   (* Blkpat_raw_tab *)
+    | Subpage of frag                                               (* Blkpat_frag *)
+    | Verbatim of string                                            (* Blkpat_lit *)
+    | Picture of string * string                                    (* Blkpat_raw_raw *)
+    | Pullquote of seq option * frag                                (* Blkpat_seqopt_frag *)
+    | Custom of Custom.kind option * string * seq option * frag
+    | Equation of seq option * block                                (* Blkpat_seqopt_blk *)
+    | Printout of seq option * block                                (* Blkpat_seqopt_blk *)
+    | Table of seq option * block                                   (* Blkpat_seqopt_blk *)
+    | Figure of seq option * block                                  (* Blkpat_seqopt_blk *)
+    | Part of seq                                                   (* Blkpat_seq *)
+    | Appendix                                                      (* Blkpat_empty *)
+    | Section of int * seq                                          (* Blkpat_int_seq *)
+    | Bibliography                                                  (* Blkpat_empty *)
+    | Notes                                                         (* Blkpat_empty *)
+    | Toc                                                           (* Blkpat_empty *)
+    | Title of int * seq                                            (* Blkpat_int_seq *)
+    | Abstract of frag                                              (* Blkpat_frag *)
+    | Rule                                                          (* Blkpat_empty *)
+    | Bib of bib                                                    (* Blkpat_bib *)
+    | Note of frag                                                  (* Blkpat_frag *)
+    | Macrodef of string * string * seq
+    | Boxoutdef of string * seq option * string option
+    | Theoremdef of string * seq * string option
+    | Extcomm_blk of ident * block_pattern
 
-and qanda_t =
-    | New_questioner of seq_t option
-    | New_answerer of seq_t option
+and qanda =
+    | New_questioner of seq option
+    | New_answerer of seq option
     | Same_questioner
     | Same_answerer
 
-and block_pattern_t =
+and block_pattern =
     | Blkpat_empty
-    | Blkpat_seq of seq_t
+    | Blkpat_seq of seq
     | Blkpat_lit of string
-    | Blkpat_frag of frag_t
+    | Blkpat_frag of frag
     | Blkpat_raw of string
     | Blkpat_raw_raw of string * string
 
@@ -156,5 +156,5 @@ and block_pattern_t =
 (*  {2 The main type {!t} itself}                                               *)
 (********************************************************************************)
 
-type t = frag_t
+type t = frag
 

@@ -25,7 +25,7 @@ module String = BatString
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type valid_options_t =
+type valid_options =
     {
     numbered_paragraphs: bool;
     translations: Translations.t;
@@ -35,7 +35,7 @@ type valid_options_t =
     extra_classes: Html5_types.nmtokens;
     }
 
-type invalid_options_t =
+type invalid_options =
     {
     prefix: Html5_types.nmtoken;
     base_classes: Html5_types.nmtokens;
@@ -79,7 +79,7 @@ exception Command_sref_with_non_visible_block of Target.t
 (** {2 Private type definitions}                                                *)
 (********************************************************************************)
 
-type name_t =
+type name =
     | Name_custom of string
     | Name_equation
     | Name_printout
@@ -100,11 +100,11 @@ type name_t =
 
 type t = Html5_types.div Html5.elt
 
-type valid_options_u = valid_options_t
-type valid_options_t = valid_options_u
+type valid_options_u = valid_options
+type valid_options = valid_options_u
 
-type invalid_options_u = invalid_options_t
-type invalid_options_t = invalid_options_u
+type invalid_options_u = invalid_options
+type invalid_options = invalid_options_u
 
 
 (********************************************************************************)
@@ -205,7 +205,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
         cons ?a:(Some [a_id (make_label label); a_class classnames]) (orderlst @ [Html5.span content]) in
 
     let make_sectional level label orderlst classnames content =
-        make_heading (cons_of_level (level : Level.section_t :> int)) label orderlst (!!"sec" :: classnames) content in
+        make_heading (cons_of_level (level : Level.section :> int)) label orderlst (!!"sec" :: classnames) content in
 
     let make_floatable forbidden =
         if forbidden then [] else [!!"floatable"] in

@@ -21,8 +21,8 @@ type t =
     max_inline_depth: int option;
     max_block_depth: int option;
 
-    input_markup: Markup.input_t;
-    output_markup: Markup.output_t;
+    input_markup: Markup.input;
+    output_markup: Markup.output;
 
     input_chan: Pervasives.in_channel;
     output_chan: Pervasives.out_channel;

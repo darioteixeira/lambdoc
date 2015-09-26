@@ -13,7 +13,7 @@ open Lambdoc_writer
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type valid_options_t =
+type valid_options =
     {
     numbered_paragraphs: bool;
     translations: Translations.t;
@@ -23,7 +23,7 @@ type valid_options_t =
     extra_classes: Html5_types.nmtokens;
     }
 
-type invalid_options_t =
+type invalid_options =
     {
     prefix: Html5_types.nmtoken;
     base_classes: Html5_types.nmtokens;
@@ -39,6 +39,6 @@ module Make:
     functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
     Lambdoc_writer.Maker.WRITABLE with
         type t = Html5_types.div Html5.elt and
-        type valid_options_t = valid_options_t and
-        type invalid_options_t = invalid_options_t
+        type valid_options = valid_options and
+        type invalid_options = invalid_options
 

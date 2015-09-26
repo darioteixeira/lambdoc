@@ -113,7 +113,7 @@ let parse =
     let math_rex = Pcre.regexp ~flags:[`MULTILINE; `DOTALL] "<math(tex|ml)(inl|blk)\\b([^>]*?)>(.*?)</math\\1\\2>" in
     let entity_rex = Pcre.regexp "&(#?[a-zA-Z0-9]+);" in
     let entity_templ = Pcre.subst "<entity>$1</entity>" in
-    fun ~(linenum_offset:int) ~(inline_extdefs:Extension.extdef_t list) ~(block_extdefs:Extension.extdef_t list) str ->
+    fun ~(linenum_offset:int) ~(inline_extdefs:Extension.extdef list) ~(block_extdefs:Extension.extdef list) str ->
 
         let inline_elems = builtin_inline_elems @ (List.map fst inline_extdefs) in
 

@@ -24,9 +24,9 @@ exception Unsupported_feature of string
 (*  {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type context_t =
-    | Block of Ast.block_t
-    | Inline of Ast.inline_t
+type context =
+    | Block of Ast.block
+    | Inline of Ast.inline
     | Drop
 
 

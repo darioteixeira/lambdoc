@@ -16,22 +16,22 @@ open Lambdoc_core_basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type originator_t =
+type originator =
     | Source        (** Straight from the source as provided by the user *)
     | Extension     (** Synthesised from an extension *)
     with sexp
 
-type parsinfo_t =
+type parsinfo =
     {
-    tag: ident_t option;
+    tag: ident option;
     linenum: int;
-    originator: originator_t;
+    originator: originator;
     } with sexp
 
 type t =
     {
-    classnames: classname_t list;
-    parsinfo: parsinfo_t option;
+    classnames: classname list;
+    parsinfo: parsinfo option;
     } with sexp
 
 
@@ -39,6 +39,6 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: ?parsinfo:parsinfo_t -> classname_t list -> t
+val make: ?parsinfo:parsinfo -> classname list -> t
 val default: t
 

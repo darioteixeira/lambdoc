@@ -75,7 +75,7 @@ let explain_ident what =
     sprintf "%s must begin with a lowercase Roman letter, and is optionally followed by lowercase Roman letters, digits, or the character '#_#' (underscore)" what
 
 
-let explain_level level = (level : Level.section_t :> int)
+let explain_level level = (level : Level.section :> int)
 
 
 let explain_wrapper = function

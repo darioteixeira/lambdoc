@@ -18,7 +18,7 @@ exception Pop_mismatch of string * string
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type scanner_t =
+type scanner =
     | Scanner_general
     | Scanner_raw
     | Scanner_mathtex_inl
@@ -27,7 +27,7 @@ type scanner_t =
     | Scanner_literal of string
 
 
-type t = string option * scanner_t
+type t = string option * scanner
 
 
 (********************************************************************************)

@@ -22,9 +22,9 @@ open Basic
 val check_parameters:
     ?maybe_minipaged:bool option ->
     ?maybe_wrapped:bool option ->
-    Ast.command_t ->
+    Ast.command ->
     Feature.t ->
-    Error.msg_t list
+    Error.msg list
 
 val check_feature:
     Feature.t ->
@@ -33,7 +33,7 @@ val check_feature:
 
 val check_classname:
     Feature.t ->
-    classname_t ->
+    classname ->
     Idiosyncrasies.t ->
     bool
 

@@ -195,9 +195,9 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
         | `Feature_custom       -> custom_class in
 
     let permission_set = match feature with
-        | #Feature.inline_feature_t as x   -> inline_feature_set x
-        | #Feature.block_feature_t as x    -> block_feature_set x
-        | #Feature.internal_feature_t as x -> internal_feature_set x
+        | #Feature.inline_feature as x   -> inline_feature_set x
+        | #Feature.block_feature as x    -> block_feature_set x
+        | #Feature.internal_feature as x -> internal_feature_set x
 
     in check_permission_set comm permission_set
 

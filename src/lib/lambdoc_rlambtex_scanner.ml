@@ -19,67 +19,67 @@ module String = BatString
 (** The set of all tokens output by the various scanners.
 *)
 
-type tok_simple_comm_t = [ `Tok_simple_comm of string ]
-type tok_env_begin_t = [ `Tok_env_begin of string ]
-type tok_env_end_t = [ `Tok_env_end of string ]
-type tok_begin_t = [ `Tok_begin ]
-type tok_end_t = [ `Tok_end ]
-type tok_begin_mathtex_inl_t = [ `Tok_begin_mathtex_inl ]
-type tok_end_mathtex_inl_t = [ `Tok_end_mathtex_inl ]
-type tok_begin_mathml_inl_t = [ `Tok_begin_mathml_inl ]
-type tok_end_mathml_inl_t = [ `Tok_end_mathml_inl ]
-type tok_cell_mark_t = [ `Tok_cell_mark ]
-type tok_row_end_t = [ `Tok_row_end ]
-type tok_eof_t = [ `Tok_eof ]
-type tok_parbreak_t = [ `Tok_parbreak ]
-type tok_space_t = [ `Tok_space ]
-type tok_raw_t = [ `Tok_raw of string ]
-type tok_plain_t = [ `Tok_plain of string ]
-type tok_entity_t = [ `Tok_entity of string ]
+type tok_simple_comm = [ `Tok_simple_comm of string ]
+type tok_env_begin = [ `Tok_env_begin of string ]
+type tok_env_end = [ `Tok_env_end of string ]
+type tok_begin = [ `Tok_begin ]
+type tok_end = [ `Tok_end ]
+type tok_begin_mathtex_inl = [ `Tok_begin_mathtex_inl ]
+type tok_end_mathtex_inl = [ `Tok_end_mathtex_inl ]
+type tok_begin_mathml_inl = [ `Tok_begin_mathml_inl ]
+type tok_end_mathml_inl = [ `Tok_end_mathml_inl ]
+type tok_cell_mark = [ `Tok_cell_mark ]
+type tok_row_end = [ `Tok_row_end ]
+type tok_eof = [ `Tok_eof ]
+type tok_parbreak = [ `Tok_parbreak ]
+type tok_space = [ `Tok_space ]
+type tok_raw = [ `Tok_raw of string ]
+type tok_plain = [ `Tok_plain of string ]
+type tok_entity = [ `Tok_entity of string ]
 
-type general_token_t =
-    [ tok_simple_comm_t
-    | tok_env_begin_t | tok_env_end_t
-    | tok_begin_t | tok_end_t
-    | tok_begin_mathtex_inl_t
-    | tok_begin_mathml_inl_t
-    | tok_eof_t | tok_parbreak_t
-    | tok_space_t | tok_plain_t | tok_entity_t
+type general_token =
+    [ tok_simple_comm
+    | tok_env_begin | tok_env_end
+    | tok_begin | tok_end
+    | tok_begin_mathtex_inl
+    | tok_begin_mathml_inl
+    | tok_eof | tok_parbreak
+    | tok_space | tok_plain | tok_entity
     ]
 
-type tabular_token_t =
-    [ tok_simple_comm_t
-    | tok_env_begin_t | tok_env_end_t
-    | tok_begin_t | tok_end_t
-    | tok_begin_mathtex_inl_t
-    | tok_begin_mathml_inl_t
-    | tok_cell_mark_t | tok_row_end_t
-    | tok_eof_t | tok_parbreak_t
-    | tok_space_t | tok_plain_t | tok_entity_t
+type tabular_token =
+    [ tok_simple_comm
+    | tok_env_begin | tok_env_end
+    | tok_begin | tok_end
+    | tok_begin_mathtex_inl
+    | tok_begin_mathml_inl
+    | tok_cell_mark | tok_row_end
+    | tok_eof | tok_parbreak
+    | tok_space | tok_plain | tok_entity
     ]
 
-type raw_token_t =
-    [ tok_end_t
-    | tok_eof_t
-    | tok_raw_t
+type raw_token =
+    [ tok_end
+    | tok_eof
+    | tok_raw
     ]
 
-type mathtex_inl_token_t =
-    [ tok_end_mathtex_inl_t
-    | tok_eof_t
-    | tok_raw_t
+type mathtex_inl_token =
+    [ tok_end_mathtex_inl
+    | tok_eof
+    | tok_raw
     ]
 
-type mathml_inl_token_t =
-    [ tok_end_mathml_inl_t
-    | tok_eof_t
-    | tok_raw_t
+type mathml_inl_token =
+    [ tok_end_mathml_inl
+    | tok_eof
+    | tok_raw
     ]
 
-type literal_token_t =
-    [ tok_env_end_t
-    | tok_eof_t
-    | tok_raw_t
+type literal_token =
+    [ tok_env_end
+    | tok_eof
+    | tok_raw
     ]
 
 
@@ -161,7 +161,7 @@ let rtrim_lexbuf ~first lexbuf =
 
 (** General document scanner.
 *)
-let general_scanner : (Ulexing.lexbuf -> int * [> general_token_t]) = lexer
+let general_scanner : (Ulexing.lexbuf -> int * [> general_token]) = lexer
     | simple_comm       -> (0, `Tok_simple_comm (whole_lexbuf lexbuf))
     | env_begin         -> (0, `Tok_env_begin (whole_lexbuf lexbuf))
     | env_end           -> (0, `Tok_env_end (rtrim_lexbuf ~first:5 lexbuf))
@@ -187,7 +187,7 @@ let general_scanner : (Ulexing.lexbuf -> int * [> general_token_t]) = lexer
     to the inline scanner, but scans for characters that separate
     columns and terminate rows.
 *)
-let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
+let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token]) = lexer
     | simple_comm       -> (0, `Tok_simple_comm (whole_lexbuf lexbuf))
     | env_begin         -> (0, `Tok_env_begin (whole_lexbuf lexbuf))
     | env_end           -> (0, `Tok_env_end (rtrim_lexbuf ~first:5 lexbuf))
@@ -216,7 +216,7 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token_t]) = lexer
     characters, and the special "\}" termination tag (note that the backslash
     is there to satisfy OCamldoc and is not part of the terminator).
 *)
-let raw_scanner : (Ulexing.lexbuf -> int * [> raw_token_t]) = lexer
+let raw_scanner : (Ulexing.lexbuf -> int * [> raw_token]) = lexer
     | end_marker -> (0, `Tok_end)
     | eof        -> (0, `Tok_eof)
     | escape _   -> (count_lines lexbuf, `Tok_raw (sub_lexbuf ~pos:1 ~len:1 lexbuf))
@@ -228,7 +228,7 @@ let raw_scanner : (Ulexing.lexbuf -> int * [> raw_token_t]) = lexer
     only pays attention to the EOF character and the terminator "$\]" (note that
     the backslash is there to satisfy OCamldoc and is not part of the terminator).
 *)
-let mathtex_inl_scanner : (Ulexing.lexbuf -> int * [> mathtex_inl_token_t]) = lexer
+let mathtex_inl_scanner : (Ulexing.lexbuf -> int * [> mathtex_inl_token]) = lexer
     | end_mathtex_inl -> (0, `Tok_end_mathtex_inl)
     | eof             -> (0, `Tok_eof)
     | _               -> (count_lines lexbuf, `Tok_raw (whole_lexbuf lexbuf))
@@ -238,7 +238,7 @@ let mathtex_inl_scanner : (Ulexing.lexbuf -> int * [> mathtex_inl_token_t]) = le
     whatsoever is made to interpret the characters in the stream.  This scanner
     only pays attention to the EOF character and the terminator "$>".
 *)
-let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token_t]) = lexer
+let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token]) = lexer
     | end_mathml_inl -> (0, `Tok_end_mathml_inl)
     | eof            -> (0, `Tok_eof)
     | _              -> (count_lines lexbuf, `Tok_raw (whole_lexbuf lexbuf))
@@ -248,7 +248,7 @@ let mathml_inl_scanner : (Ulexing.lexbuf -> int * [> mathml_inl_token_t]) = lexe
     indicates the termination token for the environment.  The actual Lambtex
     environments using it are "verbatim", "source", "mathtex", and "mathml".
 *)
-let literal_scanner terminator : (Ulexing.lexbuf -> int * [> literal_token_t]) = lexer
+let literal_scanner terminator : (Ulexing.lexbuf -> int * [> literal_token]) = lexer
     | env_end ->
         let str = rtrim_lexbuf ~first:5 lexbuf in
         if str = terminator

@@ -24,17 +24,17 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type labels_t = (Label.t, Target.t) Hashtbl.t with sexp
-type customs_t = (Custom.key_t, Inline.seq_t) Hashtbl.t with sexp
+type labels = (Label.t, Target.t) Hashtbl.t with sexp
+type customs = (Custom.key, Inline.seq) Hashtbl.t with sexp
 
 type t =
     {
-    content: Block.frag_t;
+    content: Block.frag;
     bibs: Bib.t list;
     notes: Note.t list;
     toc: Heading.t list;
-    labels: labels_t;
-    customs: customs_t;
+    labels: labels;
+    customs: customs;
     } with sexp
 
 

@@ -24,21 +24,21 @@ module Make: functor (Ext: Extension.S) ->
 sig
     (** This will be raised if one of the command extensions misbehaves.
     *)
-    exception Internal_extension_error of Ast.command_t
+    exception Internal_extension_error of Ast.command
 
     (** Contextualize and (optionally) sort the errors by line number.
     *)
     val contextualize_errors:
         sort:bool ->
         string ->
-        Error.localized_t list ->
-        Error.contextualized_t list
+        Error.localized list ->
+        Error.contextualized list
 
     (** Compile a document AST into a manuscript.
     *)
     val compile:
-        ?postprocessor:Error.localized_t list Ext.Foldmapper.t ->
-        extcomms:Ext.extcomm_t list ->
+        ?postprocessor:Error.localized list Ext.Foldmapper.t ->
+        extcomms:Ext.extcomm list ->
         expand_entities:bool ->
         idiosyncrasies:Idiosyncrasies.t ->
         source:string ->

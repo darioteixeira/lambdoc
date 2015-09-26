@@ -19,7 +19,7 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type syntax_t =
+type syntax =
     | Syn_empty                         (* No main parameters. Eg: Linebreak, Appendix *)
     | Syn_seq                           (* Parameter is an inline sequence. Eg: Bold, Paragraph *)
     | Syn_lit                           (* Parameter is a multiline sequence of raw text. Eg: Verbatim *)
@@ -30,7 +30,7 @@ type syntax_t =
     | Syn_raw_seqopt of string          (* Parameters are a sequence of raw text optionally followed by an inline sequence. Eg: Link *)
 
 
-type extdef_t = ident_t * syntax_t
+type extdef = ident * syntax
 
 
 (********************************************************************************)
@@ -44,32 +44,32 @@ sig
     module Monad: Monadic.S
     module Foldmapper: Foldmap.S with module Monad = Monad
 
-    type ('a, 'b) result_t = [ `Okay of 'a | `Error of 'b ]
-    type 'a function_result_t = ('a, Error.localized_t list) result_t
-    type inline_function_result_t = (Ast.seq_t * Ast.frag_t) function_result_t Monad.t
-    type block_function_result_t = (Ast.frag_t * Ast.frag_t) function_result_t Monad.t
+    type ('a, 'b) result = [ `Okay of 'a | `Error of 'b ]
+    type 'a function_result = ('a, Error.localized list) result
+    type inline_function_result = (Ast.seq * Ast.frag) function_result Monad.t
+    type block_function_result = (Ast.frag * Ast.frag) function_result Monad.t
 
-    type inline_function_t =
-        | Inlfun_empty of (Ast.command_t -> inline_function_result_t)
-        | Inlfun_seq of (Ast.command_t -> Ast.seq_t -> inline_function_result_t)
-        | Inlfun_raw of string * (Ast.command_t -> string -> inline_function_result_t)
-        | Inlfun_raw_raw of string * string * (Ast.command_t -> string -> string -> inline_function_result_t)
-        | Inlfun_raw_seq of string * (Ast.command_t -> string -> Ast.seq_t -> inline_function_result_t)
-        | Inlfun_raw_seqopt of string * (Ast.command_t -> string -> Ast.seq_t option -> inline_function_result_t)
+    type inline_function =
+        | Inlfun_empty of (Ast.command -> inline_function_result)
+        | Inlfun_seq of (Ast.command -> Ast.seq -> inline_function_result)
+        | Inlfun_raw of string * (Ast.command -> string -> inline_function_result)
+        | Inlfun_raw_raw of string * string * (Ast.command -> string -> string -> inline_function_result)
+        | Inlfun_raw_seq of string * (Ast.command -> string -> Ast.seq -> inline_function_result)
+        | Inlfun_raw_seqopt of string * (Ast.command -> string -> Ast.seq option -> inline_function_result)
 
-    type block_function_t =
-        | Blkfun_empty of (Ast.command_t -> block_function_result_t)
-        | Blkfun_seq of (Ast.command_t -> Ast.seq_t -> block_function_result_t)
-        | Blkfun_lit of (Ast.command_t -> string -> block_function_result_t)
-        | Blkfun_frag of (Ast.command_t -> Ast.frag_t -> block_function_result_t)
-        | Blkfun_raw of string * (Ast.command_t -> string -> block_function_result_t)
-        | Blkfun_raw_raw of string * string * (Ast.command_t -> string -> string -> block_function_result_t)
+    type block_function =
+        | Blkfun_empty of (Ast.command -> block_function_result)
+        | Blkfun_seq of (Ast.command -> Ast.seq -> block_function_result)
+        | Blkfun_lit of (Ast.command -> string -> block_function_result)
+        | Blkfun_frag of (Ast.command -> Ast.frag -> block_function_result)
+        | Blkfun_raw of string * (Ast.command -> string -> block_function_result)
+        | Blkfun_raw_raw of string * string * (Ast.command -> string -> string -> block_function_result)
 
-    type extcomm_def_t =
-        | Inlextcomm of inline_function_t
-        | Blkextcomm of block_function_t * Blkcat.t list
+    type extcomm_def =
+        | Inlextcomm of inline_function
+        | Blkextcomm of block_function * Blkcat.t list
 
-    type extcomm_t = ident_t * extcomm_def_t
+    type extcomm = ident * extcomm_def
 end
 
 

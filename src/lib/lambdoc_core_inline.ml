@@ -18,36 +18,36 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type inline_t =
+type inline =
     | Plain of string
-    | Entity of entity_t
+    | Entity of entity
     | Linebreak
     | Mathinl of Math.t
-    | Glyph of href_t * string
-    | Bold of seq_t
-    | Emph of seq_t
-    | Code of seq_t
-    | Caps of seq_t
-    | Ins of seq_t
-    | Del of seq_t
-    | Sup of seq_t
-    | Sub of seq_t
-    | Mbox of seq_t
-    | Span of seq_t
-    | Link of href_t * seq_t option
-    | See of pointer_t list
-    | Cite of pointer_t list
-    | Dref of pointer_t * seq_t option
-    | Sref of pointer_t * seq_t option
-    | Mref of pointer_t * seq_t
+    | Glyph of href * string
+    | Bold of seq
+    | Emph of seq
+    | Code of seq
+    | Caps of seq
+    | Ins of seq
+    | Del of seq
+    | Sup of seq
+    | Sub of seq
+    | Mbox of seq
+    | Span of seq
+    | Link of href * seq option
+    | See of pointer list
+    | Cite of pointer list
+    | Dref of pointer * seq option
+    | Sref of pointer * seq option
+    | Mref of pointer * seq
 
 and t =
     {
-    inl: inline_t;
+    inl: inline;
     attr: Attr.t;
     }
 
-and seq_t = t list with sexp
+and seq = t list with sexp
 
 
 (********************************************************************************)

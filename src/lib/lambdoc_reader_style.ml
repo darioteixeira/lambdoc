@@ -21,19 +21,19 @@ open Ast
 (** {1 Private exceptions}                                                      *)
 (********************************************************************************)
 
-exception Value_error of Error.msg_t
+exception Value_error of Error.msg
 
 
 (********************************************************************************)
 (** {1 Private type definitions}                                                *)
 (********************************************************************************)
 
-type raw_t =
+type raw =
     | Unnamed of string
     | Named of string * string
 
-type decl_t =
-    | Classname_decl of classname_t
+type decl =
+    | Classname_decl of classname
     | Lang_decl of Camlhighlight_core.lang_t option
     | Linenums_decl of bool
     | Width_decl of int option
@@ -43,12 +43,12 @@ type decl_t =
 (** {1 Public type definitions}                                                 *)
 (********************************************************************************)
 
-type _ handle_t =
-    | Lang_hnd: Camlhighlight_core.lang_t option handle_t
-    | Linenums_hnd: bool handle_t
-    | Width_hnd: int option handle_t
+type _ handle =
+    | Lang_hnd: Camlhighlight_core.lang_t option handle
+    | Linenums_hnd: bool handle
+    | Width_hnd: int option handle
 
-type parsing_t = (raw_t * decl_t) list
+type parsing = (raw * decl) list
 
 
 (********************************************************************************)
@@ -135,7 +135,7 @@ let decl_of_raw = function
 
 
 let find_decl hnd parsing =
-    let matches: type a. a handle_t -> raw_t * decl_t -> a option = fun hnd (_, decl) -> match (hnd, decl) with
+    let matches: type a. a handle -> raw * decl -> a option = fun hnd (_, decl) -> match (hnd, decl) with
         | (Lang_hnd, Lang_decl x)         -> Some x
         | (Linenums_hnd, Linenums_decl x) -> Some x
         | (Width_hnd, Width_decl x)       -> Some x

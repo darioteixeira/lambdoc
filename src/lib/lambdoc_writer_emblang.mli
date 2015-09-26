@@ -15,5 +15,5 @@
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val convert: string -> Lambdoc_core.Inline.seq_t
+val convert: string -> Lambdoc_core.Inline.seq
 

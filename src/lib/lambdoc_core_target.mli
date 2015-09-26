@@ -20,17 +20,17 @@ module Wrapper = Lambdoc_core_wrapper
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type visible_target_t =
-    | Custom_target of Custom.key_t * Custom.kind_t * Custom.order_t
-    | Wrapper_target of Wrapper.kind_t * Wrapper.order_t
-    | Part_target of Heading.part_order_t
-    | Section_target of Heading.section_location_t * Heading.section_order_t
+type visible_target =
+    | Custom_target of Custom.key * Custom.kind * Custom.order
+    | Wrapper_target of Wrapper.kind * Wrapper.order
+    | Part_target of Heading.part_order
+    | Section_target of Heading.section_location * Heading.section_order
     with sexp
 
 type t =
-    | Visible_target of visible_target_t
-    | Bib_target of Bib.order_t
-    | Note_target of Note.order_t
+    | Visible_target of visible_target
+    | Bib_target of Bib.order
+    | Note_target of Note.order
     with sexp
 
 
@@ -38,10 +38,10 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val custom: Custom.key_t -> Custom.kind_t -> Custom.order_t -> t
-val wrapper: Wrapper.kind_t -> Wrapper.order_t -> t
-val part: Heading.part_order_t -> t
-val section: Heading.section_location_t -> Heading.section_order_t -> t
-val bib: Bib.order_t -> t
-val note: Note.order_t -> t
+val custom: Custom.key -> Custom.kind -> Custom.order -> t
+val wrapper: Wrapper.kind -> Wrapper.order -> t
+val part: Heading.part_order -> t
+val section: Heading.section_location -> Heading.section_order -> t
+val bib: Bib.order -> t
+val note: Note.order -> t
 

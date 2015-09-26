@@ -18,17 +18,17 @@ open Lambdoc_core
 
 type t =
     {
-    equation: Inline.seq_t;
-    printout: Inline.seq_t;
-    table: Inline.seq_t;
-    figure: Inline.seq_t;
-    part: Inline.seq_t;
-    appendix: Inline.seq_t;
-    section: Inline.seq_t;
-    bibliography: Inline.seq_t;
-    notes: Inline.seq_t;
-    toc: Inline.seq_t;
-    abstract: Inline.seq_t;
+    equation: Inline.seq;
+    printout: Inline.seq;
+    table: Inline.seq;
+    figure: Inline.seq;
+    part: Inline.seq;
+    appendix: Inline.seq;
+    section: Inline.seq;
+    bibliography: Inline.seq;
+    notes: Inline.seq;
+    toc: Inline.seq;
+    abstract: Inline.seq;
     paragraph: string;
     }
 
@@ -38,17 +38,17 @@ type t =
 (********************************************************************************)
 
 val make:
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
-    Lambdoc_core.Inline.seq_t ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
+    Lambdoc_core.Inline.seq ->
     string ->
     t
 

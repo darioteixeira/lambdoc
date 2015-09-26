@@ -15,34 +15,34 @@ open Sexplib.Std
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type alignment_t =
+type alignment =
     | Center
     | Left
     | Right
     | Justify
     with sexp
 
-type weight_t =
+type weight =
     | Normal
     | Strong
     with sexp
 
-type colspec_t = alignment_t * weight_t with sexp
+type colspec = alignment * weight with sexp
 
-type cellspec_t = colspec_t * int * bool * bool with sexp
+type cellspec = colspec * int * bool * bool with sexp
 
-type cell_t = cellspec_t option * Inline.seq_t option with sexp
+type cell = cellspec option * Inline.seq option with sexp
 
-type row_t = cell_t list with sexp
+type row = cell list with sexp
 
-type group_t = row_t list with sexp
+type group = row list with sexp
 
 type t =
     {
-    tcols: colspec_t array;
-    thead: group_t option;
-    tfoot: group_t option;
-    tbodies: group_t list;
+    tcols: colspec array;
+    thead: group option;
+    tfoot: group option;
+    tbodies: group list;
     } with sexp
 
 

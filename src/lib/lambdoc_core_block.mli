@@ -28,67 +28,67 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type block_t =
-    | Paragraph of Inline.seq_t
-    | Itemize of frag_t list
-    | Enumerate of frag_t list
-    | Description of (Inline.seq_t * frag_t) list
-    | Qanda of (Qanda.t * frag_t) list
-    | Verse of frag_t
-    | Quote of frag_t
+type block =
+    | Paragraph of Inline.seq
+    | Itemize of frag list
+    | Enumerate of frag list
+    | Description of (Inline.seq * frag) list
+    | Qanda of (Qanda.t * frag) list
+    | Verse of frag
+    | Quote of frag
     | Mathblk of Math.t
     | Source of Source.t
     | Tabular of Tabular.t
-    | Subpage of frag_t
+    | Subpage of frag
     | Verbatim of string
-    | Picture of href_t * string * int option
-    | Pullquote of Inline.seq_t option * frag_t
-    | Boxout of Custom.Boxout.t * Inline.seq_t option * frag_t
-    | Theorem of Custom.Theorem.t * Inline.seq_t option * frag_t
+    | Picture of href * string * int option
+    | Pullquote of Inline.seq option * frag
+    | Boxout of Custom.Boxout.t * Inline.seq option * frag
+    | Theorem of Custom.Theorem.t * Inline.seq option * frag
     | Equation of Wrapper.t * t
     | Printout of Wrapper.t * t
     | Table of Wrapper.t * t
     | Figure of Wrapper.t * t
     | Heading of Heading.t
-    | Title of Level.title_t * Inline.seq_t
-    | Abstract of frag_t
+    | Title of Level.title * Inline.seq
+    | Abstract of frag
     | Rule
 
 and t =
     {
-    blk: block_t;
+    blk: block;
     attr: Attr.t;
     }
 
-and frag_t = t list with sexp
+and frag = t list with sexp
 
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val paragraph:   ?attr:Attr.t -> Inline.seq_t -> t
-val itemize:     ?attr:Attr.t -> frag_t list -> t
-val enumerate:   ?attr:Attr.t -> frag_t list -> t
-val description: ?attr:Attr.t -> (Inline.seq_t * frag_t) list -> t
-val qanda:       ?attr:Attr.t -> (Qanda.t * frag_t) list -> t
-val verse:       ?attr:Attr.t -> frag_t -> t
-val quote:       ?attr:Attr.t -> frag_t -> t
+val paragraph:   ?attr:Attr.t -> Inline.seq -> t
+val itemize:     ?attr:Attr.t -> frag list -> t
+val enumerate:   ?attr:Attr.t -> frag list -> t
+val description: ?attr:Attr.t -> (Inline.seq * frag) list -> t
+val qanda:       ?attr:Attr.t -> (Qanda.t * frag) list -> t
+val verse:       ?attr:Attr.t -> frag -> t
+val quote:       ?attr:Attr.t -> frag -> t
 val mathblk:     ?attr:Attr.t -> Math.t -> t
 val source:      ?attr:Attr.t -> Source.t -> t
 val tabular:     ?attr:Attr.t -> Tabular.t -> t
-val subpage:     ?attr:Attr.t -> frag_t -> t
+val subpage:     ?attr:Attr.t -> frag -> t
 val verbatim:    ?attr:Attr.t -> string -> t
-val picture:     ?attr:Attr.t -> href_t -> string -> int option -> t
-val pullquote:   ?attr:Attr.t -> Inline.seq_t option -> frag_t -> t
-val boxout:      ?attr:Attr.t -> Custom.Boxout.t -> Inline.seq_t option -> frag_t -> t
-val theorem:     ?attr:Attr.t -> Custom.Theorem.t -> Inline.seq_t option -> frag_t -> t
+val picture:     ?attr:Attr.t -> href -> string -> int option -> t
+val pullquote:   ?attr:Attr.t -> Inline.seq option -> frag -> t
+val boxout:      ?attr:Attr.t -> Custom.Boxout.t -> Inline.seq option -> frag -> t
+val theorem:     ?attr:Attr.t -> Custom.Theorem.t -> Inline.seq option -> frag -> t
 val equation:    ?attr:Attr.t -> Wrapper.t -> t -> t
 val printout:    ?attr:Attr.t -> Wrapper.t -> t -> t
 val table:       ?attr:Attr.t -> Wrapper.t -> t -> t
 val figure:      ?attr:Attr.t -> Wrapper.t -> t -> t
 val heading:     ?attr:Attr.t -> Heading.t -> t
-val title:       ?attr:Attr.t -> Level.title_t -> Inline.seq_t -> t
-val abstract:    ?attr:Attr.t -> frag_t -> t
+val title:       ?attr:Attr.t -> Level.title -> Inline.seq -> t
+val abstract:    ?attr:Attr.t -> frag -> t
 val rule:        ?attr:Attr.t -> unit -> t
 

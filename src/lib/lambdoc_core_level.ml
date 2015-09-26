@@ -13,9 +13,9 @@ open Sexplib.Std
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type section_t = int with sexp
+type section = int with sexp
 
-type title_t = int with sexp
+type title = int with sexp
 
 
 (********************************************************************************)

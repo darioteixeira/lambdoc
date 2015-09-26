@@ -13,7 +13,7 @@ open Lambdoc_core
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type token_t =
+type token =
     | Code
     | Plain of string
 

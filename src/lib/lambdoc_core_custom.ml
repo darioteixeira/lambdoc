@@ -17,22 +17,22 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type kind_t =
+type kind =
     | Boxout
     | Theorem
     with sexp
 
-type key_t = pointer_t with sexp
+type key = pointer with sexp
 
-type order_t = (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t with sexp
+type order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t with sexp
 
-type anonymous_t = [ `Anonymous of key_t * Label.t ] with sexp
+type anonymous = [ `Anonymous of key * Label.t ] with sexp
 
-type unnumbered_t = [ `Unnumbered of key_t * Label.t ] with sexp
+type unnumbered = [ `Unnumbered of key * Label.t ] with sexp
 
-type numbered_t = [ `Numbered of key_t * Label.t * (Order.ordinal_t, [ Order.ordinal_t Order.auto_given_t | Order.ordinal_t Order.user_given_t | Order.none_given_t ]) Order.t ] with sexp
+type numbered = [ `Numbered of key * Label.t * (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t ] with sexp
 
-type t = [ anonymous_t | unnumbered_t | numbered_t ]
+type t = [ anonymous | unnumbered | numbered ]
 
 
 (********************************************************************************)
@@ -57,7 +57,7 @@ let numbered key label order =
 
 module Boxout =
 struct
-    type t = [ anonymous_t | unnumbered_t | numbered_t ] with sexp
+    type t = [ anonymous | unnumbered | numbered ] with sexp
 
     let make x = x
 end
@@ -65,10 +65,10 @@ end
 
 module Theorem =
 struct
-    type t = [ unnumbered_t | numbered_t ] with sexp
+    type t = [ unnumbered | numbered ] with sexp
 
     let make = function
-        | #unnumbered_t | #numbered_t as x -> x
-        | `Anonymous _                     -> invalid_arg "Lambdoc_core_custom.Theorem.make"
+        | #unnumbered | #numbered as x -> x
+        | `Anonymous _                 -> invalid_arg "Lambdoc_core_custom.Theorem.make"
 end
 

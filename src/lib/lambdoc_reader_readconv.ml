@@ -193,10 +193,10 @@ struct
     open Basic
 
     exception Invalid_order_format of string
-    exception Invalid_order_levels of string * Level.section_t * int
+    exception Invalid_order_levels of string * Level.section * int
 
-    type ordinal_counter_t = Order.ordinal_t
-    type hierarchical_counter_t = Order.hierarchical_t
+    type ordinal_counter = Order.ordinal
+    type hierarchical_counter = Order.hierarchical
 
     let ordinal_counter () = ref 0
 
@@ -207,7 +207,7 @@ struct
         `Auto_given !counter
 
     let auto_hierarchical level counter =
-        let level = (level : Level.section_t :> int) in
+        let level = (level : Level.section :> int) in
         let f i x = match i+1 with
             | n when n < level -> x
             | n when n = level -> x+1
@@ -224,7 +224,7 @@ struct
             try String.nsplit str "." |> List.map int_of_string
             with _ -> raise (Invalid_order_format str) in
         let nelems = List.length elems in
-        if nelems = (level : Level.section_t :> int)
+        if nelems = (level : Level.section :> int)
         then `User_given elems
         else raise (Invalid_order_levels (str, level, nelems))
 

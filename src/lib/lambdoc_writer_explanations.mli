@@ -14,5 +14,5 @@
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val explain: Lambdoc_core.Error.contextualized_t -> Lambdoc_core.Inline.seq_t
+val explain: Lambdoc_core.Error.contextualized -> Lambdoc_core.Inline.seq
 

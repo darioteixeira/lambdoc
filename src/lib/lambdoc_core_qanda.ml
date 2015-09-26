@@ -16,8 +16,8 @@ open Sexplib.Std
 (********************************************************************************)
 
 type t =
-    | New_questioner of Inline.seq_t option
-    | New_answerer of Inline.seq_t option
+    | New_questioner of Inline.seq option
+    | New_answerer of Inline.seq option
     | Same_questioner
     | Same_answerer
     with sexp

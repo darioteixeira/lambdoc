@@ -13,16 +13,16 @@ open Lambdoc_core_basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type inline_feature_t =
+type inline_feature =
     [ `Feature_plain | `Feature_entity | `Feature_linebreak
     | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
     | `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
     | `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
     | `Feature_mbox | `Feature_span | `Feature_link
     | `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref
-    | `Feature_extcomm_inl of ident_t ] with sexp
+    | `Feature_extcomm_inl of ident ] with sexp
 
-type block_feature_t =
+type block_feature =
     [ `Feature_paragraph
     | `Feature_itemize | `Feature_enumerate | `Feature_description
     | `Feature_qanda | `Feature_verse | `Feature_quote
@@ -37,17 +37,17 @@ type block_feature_t =
     | `Feature_abstract | `Feature_rule
     | `Feature_bib | `Feature_note
     | `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef
-    | `Feature_extcomm_blk of ident_t ] with sexp
+    | `Feature_extcomm_blk of ident ] with sexp
 
-type internal_feature_t =
+type internal_feature =
     [ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
     | `Feature_thead | `Feature_tbody | `Feature_tfoot
     | `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
     | `Feature_custom | `Feature_macrocall | `Feature_macroarg ] with sexp
 
-type public_feature_t = [ inline_feature_t | block_feature_t ] with sexp
+type public_feature = [ inline_feature | block_feature ] with sexp
 
-type t = [ public_feature_t | internal_feature_t ] with sexp
+type t = [ public_feature | internal_feature ] with sexp
 
 
 (********************************************************************************)
@@ -187,7 +187,7 @@ let features =
     public_features @ internal_features
 
 let describe = function
-    | #inline_feature_t as x   -> describe_inline_feature x
-    | #block_feature_t as x    -> describe_block_feature x
-    | #internal_feature_t as x -> describe_internal_feature x
+    | #inline_feature as x   -> describe_inline_feature x
+    | #block_feature as x    -> describe_block_feature x
+    | #internal_feature as x -> describe_internal_feature x
 

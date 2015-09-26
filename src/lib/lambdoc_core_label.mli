@@ -20,8 +20,8 @@ open Lambdoc_core_basic
     by the system) or [User] (when they're manually attributed by the user).
 *)
 type t =
-    | Auto of pointer_t
-    | User of pointer_t
+    | Auto of pointer
+    | User of pointer
     with sexp
 
 

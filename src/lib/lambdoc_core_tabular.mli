@@ -16,34 +16,34 @@ module Inline = Lambdoc_core_inline
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type alignment_t =
+type alignment =
     | Center
     | Left
     | Right
     | Justify
     with sexp
 
-type weight_t =
+type weight =
     | Normal
     | Strong
     with sexp
 
-type colspec_t = alignment_t * weight_t with sexp
+type colspec = alignment * weight with sexp
 
-type cellspec_t = colspec_t * int * bool * bool with sexp       (* column spec, column span, has overline, has underline *)
+type cellspec = colspec * int * bool * bool with sexp       (* column spec, column span, has overline, has underline *)
 
-type cell_t = cellspec_t option * Inline.seq_t option with sexp
+type cell = cellspec option * Inline.seq option with sexp
 
-type row_t = cell_t list with sexp
+type row = cell list with sexp
 
-type group_t = row_t list with sexp
+type group = row list with sexp
 
 type t =
     {
-    tcols: colspec_t array;
-    thead: group_t option;
-    tfoot: group_t option;
-    tbodies: group_t list;
+    tcols: colspec array;
+    thead: group option;
+    tfoot: group option;
+    tbodies: group list;
     } with sexp
 
 
@@ -51,8 +51,8 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make_cell: cellspec_t option -> Inline.seq_t option -> cell_t
-val make_row: cell_t list -> row_t
-val make_group: row_t list -> group_t
-val make: colspec_t array -> ?thead:group_t -> ?tfoot:group_t -> group_t list -> t
+val make_cell: cellspec option -> Inline.seq option -> cell
+val make_row: cell list -> row
+val make_group: row list -> group
+val make: colspec array -> ?thead:group -> ?tfoot:group -> group list -> t
 

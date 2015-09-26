@@ -17,13 +17,13 @@
 (** Definition of hierarchy levels for sections.  We support a
     six-level hierarchy, equivalent to XHTML's H1 to H6.
 *)
-type section_t = private int with sexp
+type section = private int with sexp
 
 (** Definition of hierarchy levels for titles.  We support a
     two-level hierarchy, equivalent to XHTML's H1 and H2.
     These can be interpreted as "title" and "subtitle".
 *)
-type title_t = private int with sexp
+type title = private int with sexp
 
 
 (********************************************************************************)
@@ -38,13 +38,13 @@ val max_section: int
 *)
 val max_title: int
 
-(** Constructor for {!section_t}.  We force the use
+(** Constructor for {!section}.  We force the use
     of this constructor by making the type private.
 *)
-val section: int -> section_t
+val section: int -> section
 
-(** Constructor for {!title_t}.  We force the use
+(** Constructor for {!title}.  We force the use
     of this constructor by making the type private.
 *)
-val title: int -> title_t
+val title: int -> title
 

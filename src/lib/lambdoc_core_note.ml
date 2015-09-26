@@ -15,13 +15,13 @@ module Order = Lambdoc_core_order
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type order_t = (Order.ordinal_t, Order.ordinal_t Order.auto_given_t) Order.t with sexp
+type order = (Order.ordinal, Order.ordinal Order.auto_given) Order.t with sexp
 
 type t =
     {
     label: Label.t;
-    order: order_t;
-    content: Block.frag_t;
+    order: order;
+    content: Block.frag;
     } with sexp
 
 

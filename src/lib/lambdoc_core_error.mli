@@ -26,7 +26,7 @@ open Basic
     of lines preceding the error, the error line proper, and a number
     of lines that follow.
 *)
-type context_t =
+type context =
     {
     error_line_number: int;         (** Number of the line where the error occurred. *)
     error_line_before: string list; (** Lines immediately before the error line. *)
@@ -37,7 +37,7 @@ type context_t =
 
 (** Reasons why a parameter can be invalid.
 *)
-type invalid_parameter_reason_t =
+type invalid_parameter_reason =
     | Reason_is_empty_when_non_empty_mandatory
     | Reason_is_empty_when_forbidden
     | Reason_is_non_empty_when_forbidden of string
@@ -47,7 +47,7 @@ type invalid_parameter_reason_t =
 
 (** Expected targets.
 *)
-type target_t =
+type target =
     | Target_bib
     | Target_note
     | Target_label
@@ -56,13 +56,13 @@ type target_t =
 
 (** The various types of error messages.
 *)
-type msg_t =
-    | Misplaced_label_parameter of invalid_parameter_reason_t
-    | Misplaced_order_parameter of invalid_parameter_reason_t
+type msg =
+    | Misplaced_label_parameter of invalid_parameter_reason
+    | Misplaced_order_parameter of invalid_parameter_reason
 
-    | Invalid_label of pointer_t
+    | Invalid_label of pointer
     | Invalid_order_format of string
-    | Invalid_order_levels of string * Level.section_t * int
+    | Invalid_order_levels of string * Level.section * int
 
     | Invalid_style_bad_boolean of string * string
     | Invalid_style_bad_lang of string * string
@@ -77,43 +77,43 @@ type msg_t =
     | Invalid_entity_deci of string
     | Invalid_entity_hexa of string
 
-    | Invalid_macro_nargs of pointer_t * string
+    | Invalid_macro_nargs of pointer * string
     | Invalid_macro_argument_context
     | Invalid_macro_argument_number of string * int
-    | Invalid_macro_call of pointer_t * int * int
+    | Invalid_macro_call of pointer * int * int
 
-    | Invalid_macro of pointer_t
-    | Duplicate_macro of pointer_t
-    | Undefined_macro of pointer_t
+    | Invalid_macro of pointer
+    | Duplicate_macro of pointer
+    | Undefined_macro of pointer
 
     | Excessive_macro_depth of int
     | Excessive_inline_depth of int
     | Excessive_block_depth of int
 
-    | Invalid_custom of pointer_t
-    | Mismatched_custom of pointer_t * Custom.kind_t * Custom.kind_t
-    | Duplicate_custom of pointer_t
-    | Undefined_custom of pointer_t
+    | Invalid_custom of pointer
+    | Mismatched_custom of pointer * Custom.kind * Custom.kind
+    | Duplicate_custom of pointer
+    | Undefined_custom of pointer
 
-    | Invalid_wrapper of Wrapper.kind_t
+    | Invalid_wrapper of Wrapper.kind
 
     | Invalid_section_level of int
     | Invalid_title_level of int
 
-    | Invalid_counter of pointer_t
-    | Mismatched_counter of pointer_t
-    | Unexpected_counter of pointer_t
+    | Invalid_counter of pointer
+    | Mismatched_counter of pointer
+    | Unexpected_counter of pointer
 
     | Invalid_mathtex of string
     | Invalid_mathml of string
-    | Invalid_column_number of ident_t option * int * int * int
+    | Invalid_column_number of ident option * int * int * int
     | Invalid_column_specifier of string
     | Invalid_cell_specifier of string
 
-    | Duplicate_target of pointer_t
-    | Empty_target of pointer_t
-    | Wrong_target of pointer_t * target_t * target_t
-    | Undefined_target of pointer_t
+    | Duplicate_target of pointer
+    | Empty_target of pointer
+    | Wrong_target of pointer * target * target
+    | Undefined_target of pointer
 
     | Empty_source
     | Empty_verbatim
@@ -139,16 +139,16 @@ type msg_t =
     the error occurred (where applicable), the offending command (also
     where applicable)  and the error message itself.
 *)
-type contextualized_t = context_t option * ident_t option * msg_t with sexp
+type contextualized = context option * ident option * msg with sexp
 
 (** A localized error is a triple consisting of the line number where
     the error occurred (where applicable), the offending command (also
     where applicable) and the error message itself.
 *)
-type localized_t = int option * ident_t option * msg_t
+type localized = int option * ident option * msg
 
 (** A reading error is a pair consisting of the line number where
     the error occurred (where applicable) and a string message.
 *)
-type reading_t = int option * string
+type reading = int option * string
 

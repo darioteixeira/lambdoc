@@ -22,7 +22,7 @@ open Lambdoc_core
 
 module Tabular_output:
 sig
-    val string_of_alignment: Tabular.alignment_t -> string
+    val string_of_alignment: Tabular.alignment -> string
 end
 
 
@@ -32,16 +32,16 @@ end
 
 module Order_output:
 sig
-    type ordinal_converter_t = Order.ordinal_t -> string
-    type hierarchical_converter_t = (int -> string) list
+    type ordinal_converter = Order.ordinal -> string
+    type hierarchical_converter = (int -> string) list
 
-    val format_arabic: ordinal_converter_t
-    val format_roman: ordinal_converter_t
-    val format_mainbody: hierarchical_converter_t
-    val format_appendixed: hierarchical_converter_t
+    val format_arabic: ordinal_converter
+    val format_roman: ordinal_converter
+    val format_mainbody: hierarchical_converter
+    val format_appendixed: hierarchical_converter
 
-    val maybe_string_of_ordinal: ordinal_converter_t -> (Order.ordinal_t, 'b) Order.t -> string option
-    val maybe_string_of_hierarchical: hierarchical_converter_t -> (Order.hierarchical_t, 'b) Order.t -> string option
+    val maybe_string_of_ordinal: ordinal_converter -> (Order.ordinal, 'b) Order.t -> string option
+    val maybe_string_of_hierarchical: hierarchical_converter -> (Order.hierarchical, 'b) Order.t -> string option
 end
 
 
@@ -56,7 +56,7 @@ sig
     exception Mathtex_undefined
     exception Mathml_undefined
 
-    val get_mathtex: t -> mathtex_t
-    val get_mathml: t -> mathml_t
+    val get_mathtex: t -> mathtex
+    val get_mathml: t -> mathml
 end
 

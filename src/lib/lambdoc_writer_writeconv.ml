@@ -45,8 +45,8 @@ end
 
 module Order_output =
 struct
-    type ordinal_converter_t = Order.ordinal_t -> string
-    type hierarchical_converter_t = (int -> string) list
+    type ordinal_converter = Order.ordinal -> string
+    type hierarchical_converter = (int -> string) list
 
     (** This function converts an ordinal number into a sequence of uppercase
         letters used for numbering appendices.  Ordinal 1 is converted to "A",

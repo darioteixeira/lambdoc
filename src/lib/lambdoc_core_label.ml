@@ -14,8 +14,8 @@ open Lambdoc_core_basic
 (********************************************************************************)
 
 type t =
-    | Auto of pointer_t
-    | User of pointer_t
+    | Auto of pointer
+    | User of pointer
     with sexp
 
 

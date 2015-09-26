@@ -18,7 +18,7 @@
     at the top (they are the supertype of any block) and [Embeddable] blocks
     sit at the bottom.
 *)
-type ranked_t =
+type ranked =
     [ `Super_blk
     | `Listable_blk
     | `Quotable_blk
@@ -28,7 +28,7 @@ type ranked_t =
 (** Unranked blocks refer to discrete block categories, and no subtyping
     relation is defined between them.
 *)
-type unranked_t =
+type unranked =
     [ `Paragraph_blk
     | `Equation_blk
     | `Printout_blk
@@ -36,7 +36,7 @@ type unranked_t =
     | `Figure_blk
     ] with sexp
 
-type t = [ ranked_t | unranked_t ] with sexp
+type t = [ ranked | unranked ] with sexp
 
 
 (********************************************************************************)

@@ -11,14 +11,14 @@
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type ranked_t =
+type ranked =
     [ `Super_blk
     | `Listable_blk
     | `Quotable_blk
     | `Embeddable_blk
     ] with sexp
 
-type unranked_t =
+type unranked =
     [ `Paragraph_blk
     | `Equation_blk
     | `Printout_blk
@@ -26,7 +26,7 @@ type unranked_t =
     | `Figure_blk
     ] with sexp
 
-type t = [ ranked_t | unranked_t ] with sexp
+type t = [ ranked | unranked ] with sexp
 
 
 (********************************************************************************)
@@ -53,12 +53,12 @@ let ranked_of_int = function
 
 let subtype subs sup =
     let is_subtype sub = match (sub, sup) with
-        | (x, y) when x = y                        -> true
-        | ((#ranked_t as sub), (#ranked_t as sup)) -> int_of_ranked sub <= int_of_ranked sup
-        | _                                        -> false in
+        | (x, y) when x = y                    -> true
+        | ((#ranked as sub), (#ranked as sup)) -> int_of_ranked sub <= int_of_ranked sup
+        | _                                    -> false in
     List.exists is_subtype subs
 
 let min x1 x2 = match (x1, x2) with
-    | ((#ranked_t as x1), (#ranked_t as x2)) -> ranked_of_int (Pervasives.min (int_of_ranked x1) (int_of_ranked x2))
-    | _                                      -> invalid_arg "Lambdoc_core_blkcat.min"
+    | ((#ranked as x1), (#ranked as x2)) -> ranked_of_int (Pervasives.min (int_of_ranked x1) (int_of_ranked x2))
+    | _                                  -> invalid_arg "Lambdoc_core_blkcat.min"
 

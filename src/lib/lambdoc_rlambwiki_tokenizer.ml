@@ -30,7 +30,7 @@ exception Invalid_olist_level of int * int
 (*  {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type context_t =
+type context =
     | General
     | Source
     | Verbatim

@@ -16,11 +16,11 @@ module String = BatString
 (*  {2 Type definitions}                                                        *)
 (********************************************************************************)
 
-type list_t =
+type listing =
     | Ulist
     | Olist
 
-type text_t =
+type text =
     | Plain of string
     | Entity of string
     | Bold_mark
@@ -31,12 +31,12 @@ type text_t =
     | Begin_code | End_code
     | Begin_link | End_link | Link_sep
 
-type line_t =
+type line =
     | Begin_source of string | End_source
     | Begin_verbatim of string | End_verbatim
     | Raw of string
-    | Section of int * text_t list
-    | Par of int * (list_t * int) option * text_t list
+    | Section of int * text list
+    | Par of int * (listing * int) option * text list
 
 
 (********************************************************************************)

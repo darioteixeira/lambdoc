@@ -19,20 +19,20 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type _ handle_t =
-    | Lang_hnd: Camlhighlight_core.lang_t option handle_t
-    | Linenums_hnd: bool handle_t
-    | Width_hnd: int option handle_t
+type _ handle =
+    | Lang_hnd: Camlhighlight_core.lang_t option handle
+    | Linenums_hnd: bool handle
+    | Width_hnd: int option handle
 
-type parsing_t
+type parsing
 
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val parse: Ast.command_t -> classname_t list * parsing_t ref * Error.msg_t list
-val consume1: parsing_t ref -> 'a handle_t * 'a -> 'a
-val consume2: parsing_t ref -> 'a handle_t * 'a -> 'b handle_t * 'b -> 'a * 'b
-val dispose: Ast.command_t -> parsing_t ref -> Error.msg_t list
+val parse: Ast.command -> classname list * parsing ref * Error.msg list
+val consume1: parsing ref -> 'a handle * 'a -> 'a
+val consume2: parsing ref -> 'a handle * 'a -> 'b handle * 'b -> 'a * 'b
+val dispose: Ast.command -> parsing ref -> Error.msg list
 
