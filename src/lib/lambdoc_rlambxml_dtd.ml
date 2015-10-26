@@ -29,7 +29,7 @@ open Lambdoc_reader.Extension
 let make =
     let dtd_cache = Hashtbl.create 4 in
     let config = {Pxp_types.default_config with Pxp_types.encoding = `Enc_utf8} in
-    let source = include_file "lambxml.dtd" in
+    let source = [%blob "src/lib/lambxml.dtd"] in
     fun ~inline_extdefs ~block_extdefs ->
         try
             Hashtbl.find dtd_cache (inline_extdefs, block_extdefs)

@@ -25,13 +25,13 @@ depends: [
     "menhir"
     "ulex"
     "sexplib"
-    "ppx_sexp_conv"
     "pcre"
     "pxp"
-    "xstrp4"
     "tyxml" {>= "3.2" & < "4"}
     "omd" {>= "1.0.0"}
     "blahcaml"
     "camlhighlight" {>= "4"}
+    "ppx_sexp_conv"
+    "ppx_blob"
     "alcotest" {test}
 ]

@@ -24,6 +24,6 @@
 <lambdoc_core_wrapper.*>:        pkg_ppx_sexp_conv
 <lambdoc_rlambtex_scanner.ml>:   pkg_ulex, syntax_camlp4o
 <lambdoc_rlambwiki_scanner.ml>:  pkg_ulex, syntax_camlp4o
-<lambdoc_rlambxml_dtd.ml>:       pkg_xstrp4, syntax_camlp4o
+<lambdoc_rlambxml_dtd.ml>:       pkg_ppx_blob
 <lambdoc_writer_emblang.ml>:     pkg_ulex, syntax_camlp4o
 
