@@ -32,6 +32,6 @@ depends: [
     "tyxml" {>= "3.2" & < "4"}
     "omd" {>= "1.0.0"}
     "blahcaml"
-    "camlhighlight" {>= "3.0" & < "4"}
+    "camlhighlight" {>= "4"}
     "alcotest" {test}
 ]

@@ -16,7 +16,7 @@
 
 type t =
     {
-    lang: Camlhighlight_core.lang_t option;
+    lang: Camlhighlight_core.lang option;
     hilite: Camlhighlight_core.t;
     linenums: bool;
     } with sexp
@@ -26,5 +26,5 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: Camlhighlight_core.lang_t option -> Camlhighlight_core.t -> bool -> t
+val make: Camlhighlight_core.lang option -> Camlhighlight_core.t -> bool -> t
 

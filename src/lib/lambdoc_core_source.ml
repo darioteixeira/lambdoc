@@ -15,7 +15,7 @@ open Sexplib.Std
 
 type t =
     {
-    lang: Camlhighlight_core.lang_t option;
+    lang: Camlhighlight_core.lang option;
     hilite: Camlhighlight_core.t;
     linenums: bool;
     } with sexp

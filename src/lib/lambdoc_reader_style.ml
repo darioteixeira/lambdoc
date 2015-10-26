@@ -34,7 +34,7 @@ type raw =
 
 type decl =
     | Classname_decl of classname
-    | Lang_decl of Camlhighlight_core.lang_t option
+    | Lang_decl of Camlhighlight_core.lang option
     | Linenums_decl of bool
     | Width_decl of int option
 
@@ -44,7 +44,7 @@ type decl =
 (********************************************************************************)
 
 type _ handle =
-    | Lang_hnd: Camlhighlight_core.lang_t option handle
+    | Lang_hnd: Camlhighlight_core.lang option handle
     | Linenums_hnd: bool handle
     | Width_hnd: int option handle
 

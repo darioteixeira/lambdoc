@@ -20,7 +20,7 @@ open Basic
 (********************************************************************************)
 
 type _ handle =
-    | Lang_hnd: Camlhighlight_core.lang_t option handle
+    | Lang_hnd: Camlhighlight_core.lang option handle
     | Linenums_hnd: bool handle
     | Width_hnd: int option handle
 
