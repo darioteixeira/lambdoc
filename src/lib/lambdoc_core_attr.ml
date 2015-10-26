@@ -17,20 +17,20 @@ open Lambdoc_core_basic
 type originator =
     | Source
     | Extension
-    with sexp
+    [@@deriving sexp]
 
 type parsinfo =
     {
     tag: ident option;
     linenum: int;
     originator: originator;
-    } with sexp
+    } [@@deriving sexp]
 
 type t =
     {
     classnames: classname list;
     parsinfo: parsinfo option;
-    } with sexp
+    } [@@deriving sexp]
 
 
 (********************************************************************************)

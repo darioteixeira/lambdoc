@@ -26,8 +26,8 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type labels = (Label.t, Target.t) Hashtbl.t with sexp
-type customs = (Custom.key, Inline.seq) Hashtbl.t with sexp
+type labels = (Label.t, Target.t) Hashtbl.t [@@deriving sexp]
+type customs = (Custom.key, Inline.seq) Hashtbl.t [@@deriving sexp]
 
 type t =
     {
@@ -37,7 +37,7 @@ type t =
     toc: Heading.t list;
     labels: labels;
     customs: customs;
-    } with sexp
+    } [@@deriving sexp]
 
 
 (********************************************************************************)

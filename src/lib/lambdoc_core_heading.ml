@@ -19,31 +19,31 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type part_order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t with sexp
+type part_order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t [@@deriving sexp]
 
-type section_order = (Order.hierarchical, [Order.hierarchical Order.auto_given | Order.hierarchical Order.user_given | Order.none_given ]) Order.t with sexp
+type section_order = (Order.hierarchical, [Order.hierarchical Order.auto_given | Order.hierarchical Order.user_given | Order.none_given ]) Order.t [@@deriving sexp]
 
 type part_content =
     | Custom_part of Inline.seq
     | Appendix
-    with sexp
+    [@@deriving sexp]
 
 type section_content =
     | Custom_section of Inline.seq
     | Bibliography
     | Notes
     | Toc
-    with sexp
+    [@@deriving sexp]
 
 type section_location =
     | Mainbody
     | Appendixed
-    with sexp
+    [@@deriving sexp]
 
 type t =
     | Part of Label.t * part_order * part_content
     | Section of Label.t * section_order * section_location * Level.section * section_content
-    with sexp
+    [@@deriving sexp]
 
 
 (********************************************************************************)

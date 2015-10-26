@@ -16,7 +16,7 @@ module Error = Lambdoc_core_error
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type t = Error.contextualized list with sexp
+type t = Error.contextualized list [@@deriving sexp]
 
 
 (********************************************************************************)

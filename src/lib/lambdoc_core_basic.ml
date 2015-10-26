@@ -13,9 +13,9 @@ open Sexplib.Std
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type entity = string with sexp
-type href = string with sexp
-type classname = string with sexp
-type ident = string with sexp
-type pointer = string with sexp
+type entity = string [@@deriving sexp]
+type href = string [@@deriving sexp]
+type classname = string [@@deriving sexp]
+type ident = string [@@deriving sexp]
+type pointer = string [@@deriving sexp]
 

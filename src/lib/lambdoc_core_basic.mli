@@ -14,9 +14,9 @@
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type entity = string with sexp        (** HTML entities *)
-type href = string with sexp          (** References to external resources *)
-type classname = string with sexp     (** CSS classnames *)
-type ident = string with sexp         (** Identifiers *)
-type pointer = string with sexp       (** Internal references *)
+type entity = string [@@deriving sexp]      (** HTML entities *)
+type href = string [@@deriving sexp]        (** References to external resources *)
+type classname = string [@@deriving sexp]   (** CSS classnames *)
+type ident = string [@@deriving sexp]       (** Identifiers *)
+type pointer = string [@@deriving sexp]     (** Internal references *)
 

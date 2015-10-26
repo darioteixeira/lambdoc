@@ -21,7 +21,7 @@ module Valid = Lambdoc_core_valid
 type t =
     | Valid of Valid.t
     | Invalid of Invalid.t
-    with sexp
+    [@@deriving sexp]
 
 
 (********************************************************************************)

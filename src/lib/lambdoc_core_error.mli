@@ -32,7 +32,7 @@ type context =
     error_line_before: string list; (** Lines immediately before the error line. *)
     error_line_actual: string;      (** Contents of the line where the error is found. *)
     error_line_after: string list;  (** Lines immediately after the error line. *)
-    } with sexp
+    } [@@deriving sexp]
 
 
 (** Reasons why a parameter can be invalid.
@@ -42,7 +42,7 @@ type invalid_parameter_reason =
     | Reason_is_empty_when_forbidden
     | Reason_is_non_empty_when_forbidden of string
     | Reason_is_absent_when_mandatory
-    with sexp
+    [@@deriving sexp]
 
 
 (** Expected targets.
@@ -51,7 +51,7 @@ type target =
     | Target_bib
     | Target_note
     | Target_label
-    with sexp
+    [@@deriving sexp]
 
 
 (** The various types of error messages.
@@ -132,14 +132,14 @@ type msg =
     | Unavailable_feature of string
     | Extension_error of string
 
-    with sexp
+    [@@deriving sexp]
 
 
 (** A contextualised error is a triple consisting of the context where
     the error occurred (where applicable), the offending command (also
     where applicable)  and the error message itself.
 *)
-type contextualized = context option * ident option * msg with sexp
+type contextualized = context option * ident option * msg [@@deriving sexp]
 
 (** A localized error is a triple consisting of the line number where
     the error occurred (where applicable), the offending command (also

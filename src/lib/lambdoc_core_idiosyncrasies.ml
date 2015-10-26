@@ -18,13 +18,13 @@ open Basic
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type action = [ `Accept | `Deny ] with sexp
+type action = [ `Accept | `Deny ] [@@deriving sexp]
 
-type 'a classifier = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier ] with sexp
+type 'a classifier = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier ] [@@deriving sexp]
 
-type feature_ruleset = (Feature.t classifier * action) list with sexp
+type feature_ruleset = (Feature.t classifier * action) list [@@deriving sexp]
 
-type classname_ruleset = ((Feature.t classifier * classname classifier) * action) list with sexp
+type classname_ruleset = ((Feature.t classifier * classname classifier) * action) list [@@deriving sexp]
 
 type t =
     {
@@ -35,7 +35,7 @@ type t =
     max_macro_depth: int option;
     max_inline_depth: int option;
     max_block_depth: int option;
-    } with sexp
+    } [@@deriving sexp]
 
 
 (********************************************************************************)

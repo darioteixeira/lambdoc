@@ -25,13 +25,13 @@ type visible_target =
     | Wrapper_target of Wrapper.kind * Wrapper.order
     | Part_target of Heading.part_order
     | Section_target of Heading.section_location * Heading.section_order
-    with sexp
+    [@@deriving sexp]
 
 type t =
     | Visible_target of visible_target
     | Bib_target of Bib.order
     | Note_target of Note.order
-    with sexp
+    [@@deriving sexp]
 
 
 (********************************************************************************)

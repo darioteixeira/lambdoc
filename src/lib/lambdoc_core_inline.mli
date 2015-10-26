@@ -49,7 +49,7 @@ and t =
     attr: Attr.t;
     }
 
-and seq = t list with sexp
+and seq = t list [@@deriving sexp]
 
 
 (********************************************************************************)

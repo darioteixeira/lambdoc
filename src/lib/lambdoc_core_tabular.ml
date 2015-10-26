@@ -20,22 +20,22 @@ type alignment =
     | Left
     | Right
     | Justify
-    with sexp
+    [@@deriving sexp]
 
 type weight =
     | Normal
     | Strong
-    with sexp
+    [@@deriving sexp]
 
-type colspec = alignment * weight with sexp
+type colspec = alignment * weight [@@deriving sexp]
 
-type cellspec = colspec * int * bool * bool with sexp
+type cellspec = colspec * int * bool * bool [@@deriving sexp]
 
-type cell = cellspec option * Inline.seq option with sexp
+type cell = cellspec option * Inline.seq option [@@deriving sexp]
 
-type row = cell list with sexp
+type row = cell list [@@deriving sexp]
 
-type group = row list with sexp
+type group = row list [@@deriving sexp]
 
 type t =
     {
@@ -43,7 +43,7 @@ type t =
     thead: group option;
     tfoot: group option;
     tbodies: group list;
-    } with sexp
+    } [@@deriving sexp]
 
 
 (********************************************************************************)

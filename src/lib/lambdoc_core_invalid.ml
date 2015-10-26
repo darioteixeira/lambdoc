@@ -15,7 +15,7 @@ open Sexplib.Std
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type t = Error.contextualized list with sexp
+type t = Error.contextualized list [@@deriving sexp]
 
 
 (********************************************************************************)

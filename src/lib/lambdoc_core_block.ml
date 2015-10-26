@@ -58,7 +58,7 @@ and t =
     attr: Attr.t;
     }
 
-and frag = t list with sexp
+and frag = t list [@@deriving sexp]
 
 
 (********************************************************************************)

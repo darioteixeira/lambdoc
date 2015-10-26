@@ -26,7 +26,7 @@ type context =
     error_line_before: string list;
     error_line_actual: string;
     error_line_after: string list;
-    } with sexp
+    } [@@deriving sexp]
 
 
 type invalid_parameter_reason =
@@ -34,14 +34,14 @@ type invalid_parameter_reason =
     | Reason_is_empty_when_forbidden
     | Reason_is_non_empty_when_forbidden of string
     | Reason_is_absent_when_mandatory
-    with sexp
+    [@@deriving sexp]
 
 
 type target =
     | Target_bib
     | Target_note
     | Target_label
-    with sexp
+    [@@deriving sexp]
 
 
 type msg =
@@ -120,10 +120,10 @@ type msg =
     | Unavailable_feature of string
     | Extension_error of string
 
-    with sexp
+    [@@deriving sexp]
 
 
-type contextualized = context option * ident option * msg with sexp
+type contextualized = context option * ident option * msg [@@deriving sexp]
 
 type localized = int option * ident option * msg
 

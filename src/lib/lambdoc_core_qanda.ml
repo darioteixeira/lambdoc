@@ -20,5 +20,5 @@ type t =
     | New_answerer of Inline.seq option
     | Same_questioner
     | Same_answerer
-    with sexp
+    [@@deriving sexp]
 

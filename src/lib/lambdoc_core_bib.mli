@@ -18,7 +18,7 @@ module Order = Lambdoc_core_order
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type order = (Order.ordinal, Order.ordinal Order.auto_given) Order.t with sexp
+type order = (Order.ordinal, Order.ordinal Order.auto_given) Order.t [@@deriving sexp]
 
 type t =
     {
@@ -27,7 +27,7 @@ type t =
     author: Inline.seq;
     title: Inline.seq;
     resource: Inline.seq;
-    } with sexp
+    } [@@deriving sexp]
 
 
 (********************************************************************************)

@@ -16,7 +16,7 @@ open Lambdoc_core_basic
 type t =
     | Auto of pointer
     | User of pointer
-    with sexp
+    [@@deriving sexp]
 
 
 (********************************************************************************)

@@ -24,12 +24,12 @@ open Basic
 
 (** Ordering type for part headings.
 *)
-type part_order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t with sexp
+type part_order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t [@@deriving sexp]
 
 
 (** Ordering type for section headings.
 *)
-type section_order = (Order.hierarchical, [Order.hierarchical Order.auto_given | Order.hierarchical Order.user_given | Order.none_given ]) Order.t with sexp
+type section_order = (Order.hierarchical, [Order.hierarchical Order.auto_given | Order.hierarchical Order.user_given | Order.none_given ]) Order.t [@@deriving sexp]
 
 
 (** Part content.
@@ -37,7 +37,7 @@ type section_order = (Order.hierarchical, [Order.hierarchical Order.auto_given |
 type part_content =
     | Custom_part of Inline.seq
     | Appendix
-    with sexp
+    [@@deriving sexp]
 
 
 (** Section content.
@@ -47,7 +47,7 @@ type section_content =
     | Bibliography
     | Notes
     | Toc
-    with sexp
+    [@@deriving sexp]
 
 
 (** Section locations.
@@ -55,7 +55,7 @@ type section_content =
 type section_location =
     | Mainbody
     | Appendixed
-    with sexp
+    [@@deriving sexp]
 
 
 (** Heading blocks.
@@ -63,7 +63,7 @@ type section_location =
 type t =
     | Part of Label.t * part_order * part_content
     | Section of Label.t * section_order * section_location * Level.section * section_content
-    with sexp
+    [@@deriving sexp]
 
 
 (********************************************************************************)

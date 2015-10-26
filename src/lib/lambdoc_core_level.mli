@@ -17,13 +17,13 @@
 (** Definition of hierarchy levels for sections.  We support a
     six-level hierarchy, equivalent to XHTML's H1 to H6.
 *)
-type section = private int with sexp
+type section = private int [@@deriving sexp]
 
 (** Definition of hierarchy levels for titles.  We support a
     two-level hierarchy, equivalent to XHTML's H1 and H2.
     These can be interpreted as "title" and "subtitle".
 *)
-type title = private int with sexp
+type title = private int [@@deriving sexp]
 
 
 (********************************************************************************)

@@ -14,9 +14,9 @@
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type ordinal = int with sexp
+type ordinal = int [@@deriving sexp]
 
-type hierarchical = int list with sexp
+type hierarchical = int list [@@deriving sexp]
 
 
 (** A block's ordering can be assigned by any of three sources: [`Auto_given] means that
@@ -28,8 +28,8 @@ type hierarchical = int list with sexp
     an ordering scheme when [`None_given] is used, for example).
 *)
 
-type 'a auto_given = [ `Auto_given of 'a ] with sexp
-type 'a user_given = [ `User_given of 'a ] with sexp
-type none_given = [ `None_given ] with sexp
-type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given | 'a user_given | none_given ] with sexp
+type 'a auto_given = [ `Auto_given of 'a ] [@@deriving sexp]
+type 'a user_given = [ `User_given of 'a ] [@@deriving sexp]
+type none_given = [ `None_given ] [@@deriving sexp]
+type ('a, 'b) t = 'b constraint 'b = [< 'a auto_given | 'a user_given | none_given ] [@@deriving sexp]
 

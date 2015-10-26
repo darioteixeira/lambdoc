@@ -20,17 +20,17 @@ open Basic
 type kind =
     | Boxout
     | Theorem
-    with sexp
+    [@@deriving sexp]
 
-type key = pointer with sexp
+type key = pointer [@@deriving sexp]
 
-type order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t with sexp
+type order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t [@@deriving sexp]
 
-type anonymous = [ `Anonymous of key * Label.t ] with sexp
+type anonymous = [ `Anonymous of key * Label.t ] [@@deriving sexp]
 
-type unnumbered = [ `Unnumbered of key * Label.t ] with sexp
+type unnumbered = [ `Unnumbered of key * Label.t ] [@@deriving sexp]
 
-type numbered = [ `Numbered of key * Label.t * (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t ] with sexp
+type numbered = [ `Numbered of key * Label.t * (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t ] [@@deriving sexp]
 
 type t = [ anonymous | unnumbered | numbered ]
 
@@ -57,7 +57,7 @@ let numbered key label order =
 
 module Boxout =
 struct
-    type t = [ anonymous | unnumbered | numbered ] with sexp
+    type t = [ anonymous | unnumbered | numbered ] [@@deriving sexp]
 
     let make x = x
 end
@@ -65,7 +65,7 @@ end
 
 module Theorem =
 struct
-    type t = [ unnumbered | numbered ] with sexp
+    type t = [ unnumbered | numbered ] [@@deriving sexp]
 
     let make = function
         | #unnumbered | #numbered as x -> x

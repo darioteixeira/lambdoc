@@ -18,17 +18,17 @@ module Order = Lambdoc_core_order
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t with sexp
+type order = (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given | Order.none_given ]) Order.t [@@deriving sexp]
 
 type kind =
     | Printout
     | Equation
     | Figure
     | Table
-    with sexp
+    [@@deriving sexp]
 
 type t =
     | Ordered of Label.t * (Order.ordinal, [ Order.ordinal Order.auto_given | Order.ordinal Order.user_given ]) Order.t * Inline.seq option
     | Unordered of Label.t * Inline.seq
-    with sexp
+    [@@deriving sexp]
 
