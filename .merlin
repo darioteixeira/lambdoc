@@ -11,3 +11,4 @@ PKG tyxml
 PKG omd
 PKG blahcaml
 PKG camlhighlight
+FLG -w -40
