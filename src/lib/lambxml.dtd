@@ -90,7 +90,7 @@
 <!ATTLIST source %Common;>
 
 <!ELEMENT tabular (thead?, tbody*, tfoot?)>
-<!ATTLIST tabular %Common; cols CDATA #REQUIRED>
+<!ATTLIST tabular %Common;>
 
 <!ELEMENT subpage %Frag;>
 <!ATTLIST subpage %Common;>
@@ -249,10 +249,10 @@
 <!ATTLIST tr %Common;>
 
 <!ELEMENT th %Seq;>
-<!ATTLIST th %Common; cell CDATA #IMPLIED>
+<!ATTLIST th %Common;>
 
 <!ELEMENT td %Seq;>
-<!ATTLIST td %Common; cell CDATA #IMPLIED>
+<!ATTLIST td %Common;>
 
 
 <!-- Seq elements -->

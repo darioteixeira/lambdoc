@@ -113,6 +113,12 @@ let explain_message = function
     | Error.Invalid_style_bad_numeric (key, value, low, high) ->
         sprintf "In the style parameters for this command, the key '#%s#' expects an integer x such that %d <= x <= %d, yet the assigned value '#%s#' cannot be interpreted as such." (escape key) low high (escape value)
 
+    | Error.Invalid_style_bad_colsfmt (key, spec) ->
+        sprintf "In the style parameters for this command, the key '#%s#' expects a columns specification, yet the assigned value '#%s#' cannot be interpreted as such. Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." (escape key) spec
+
+    | Error.Invalid_style_bad_cellfmt (key, spec) ->
+        sprintf "In the style parameters for this command, the key '#%s#' expects a cell format specification, yet the assigned value '#%s#' cannot be interpreted as such. A cell format should consist of an integer indicating the span, followed by a single character (either c/C, l/L, r/R, j/J) indicating the alignment." (escape key) spec
+
     | Error.Invalid_style_bad_classname str ->
         sprintf "In the style parameters for this command, the assigned value '#%s#' cannot be interpreted as a classname. %s." (escape str) (explain_without_colon "A classname")
 
@@ -213,11 +219,8 @@ let explain_message = function
     | Error.Invalid_column_number (orig_tag, orig_linenum, found, expected) ->
         sprintf "Wrong number of columns for row: found %d but expected %d columns. This row belongs to the tabular environment declared in line %d by %s" found expected orig_linenum (explain_tag orig_tag)
 
-    | Error.Invalid_column_specifier spec ->
-        sprintf "Unknown column specifier '#%s#'. Valid column specifiers are c/C (for centred columns), l/L (for left aligned columns), r/R (for right aligned columns), and j/J (for justified columns)." (escape spec)
-
-    | Error.Invalid_cell_specifier spec ->
-        sprintf "Invalid cell specifier '#%s#'. Cell specifiers should consist of an integer indicating the span, followed by a single character (either c/C, l/L, r/R, j/J) indicating the alignment." (escape spec)
+    | Error.Mismatched_column_numbers cols_per_row ->
+            sprintf "In this tabular environment not all rows have the same number of columns. The number of columns per row is [%s]" (List.map string_of_int cols_per_row |> String.join "; ")
 
     | Error.Duplicate_target label ->
         sprintf "Attempt to redefine label '#%s#'." (escape label)

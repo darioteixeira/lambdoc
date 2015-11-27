@@ -9,6 +9,7 @@
 (** Definitions concerning tabular environments.
 *)
 
+module Attr = Lambdoc_core_attr
 module Inline = Lambdoc_core_inline
 
 
@@ -28,11 +29,22 @@ type weight =
     | Strong
     [@@deriving sexp]
 
-type colspec = alignment * weight [@@deriving sexp]
+type colfmt = alignment * weight [@@deriving sexp]
 
-type cellspec = colspec * int * bool * bool [@@deriving sexp]   (* column spec, column span, has overline, has underline *)
+type cellfmt =
+    {
+    colfmt: colfmt;
+    colspan: int;
+    overline: bool;
+    underline: bool;
+    } [@@deriving sexp]
 
-type cell = cellspec option * Inline.seq option [@@deriving sexp]
+type cell =
+    {
+    attr: Attr.t;
+    cellfmt: cellfmt option;
+    seq: Inline.seq option;
+    } [@@deriving sexp]
 
 type row = cell list [@@deriving sexp]
 
@@ -40,7 +52,7 @@ type group = row list [@@deriving sexp]
 
 type t =
     {
-    tcols: colspec array;
+    tcols: colfmt array option;
     thead: group option;
     tfoot: group option;
     tbodies: group list;
@@ -51,8 +63,9 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make_cell: cellspec option -> Inline.seq option -> cell
+val make_cellfmt: colfmt:colfmt -> colspan:int -> overline:bool -> underline:bool -> cellfmt
+val make_cell: ?attr:Attr.t -> ?cellfmt:cellfmt -> Inline.seq option -> cell
 val make_row: cell list -> row
 val make_group: row list -> group
-val make: colspec array -> ?thead:group -> ?tfoot:group -> group list -> t
+val make: ?tcols:colfmt array -> ?thead:group -> ?tfoot:group -> group list -> t
 

@@ -44,7 +44,7 @@ type block_feature =
 
 type internal_feature =
     [ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
-    | `Feature_thead | `Feature_tbody | `Feature_tfoot
+    | `Feature_cell | `Feature_thead | `Feature_tbody | `Feature_tfoot
     | `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
     | `Feature_custom | `Feature_macrocall | `Feature_macroarg ]
 

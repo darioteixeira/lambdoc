@@ -263,8 +263,8 @@ let parse =
                 | T_element "source" ->
                     (!!comm, Ast.Source node#data)
                 | T_element "tabular" ->
-                    let (cols, tabular) = process_tabular store node in
-                    (!!comm, Ast.Tabular (cols, tabular))
+                    let tabular = process_tabular store node in
+                    (!!comm, Ast.Tabular tabular)
                 | T_element "subpage" ->
                     (!!comm, Ast.Subpage (process_frag store node))
                 | T_element "verbatim"
@@ -401,15 +401,13 @@ let parse =
             in List.rev_map process_node frag_root#sub_nodes
 
         and process_tabular store node =
-            let cols = node#required_string_attribute "cols"
-            and thead = ref None
+            let thead = ref None
             and tfoot = ref None
             and tbodies = ref [] in
             let process_cell node =
                 let comm = lazy (command_from_node node) in
-                let cellspec = node#optional_string_attribute "cell" in
                 let maybe_seq = match process_seq store node with [] -> None | x -> Some x in
-                (!!comm, cellspec, maybe_seq) in
+                (!!comm, maybe_seq) in
             let process_row node =
                 (command_from_node node, List.map process_cell node#sub_nodes) in
             let process_group node =
@@ -420,7 +418,7 @@ let parse =
                     | T_element "tbody" -> tbodies := (!!comm, List.map process_row node#sub_nodes) :: !tbodies
                     | _                 -> failwith "process_group" in
             List.iter process_group node#sub_nodes;
-            (cols, {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;})
+            {thead = !thead; tfoot = !tfoot; tbodies = List.rev !tbodies;}
 
         and process_custom store node = match node#sub_nodes with
             | hd :: tl when hd#node_type = T_element "caption" ->

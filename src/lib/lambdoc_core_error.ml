@@ -55,6 +55,8 @@ type msg =
     | Invalid_style_bad_boolean of string * string
     | Invalid_style_bad_lang of string * string
     | Invalid_style_bad_numeric of string * string * int * int
+    | Invalid_style_bad_colsfmt of string * string
+    | Invalid_style_bad_cellfmt of string * string
     | Invalid_style_bad_classname of string
     | Invalid_style_bad_keyvalue of string
     | Invalid_style_misplaced_keyvalue of string * string
@@ -94,9 +96,9 @@ type msg =
 
     | Invalid_mathtex of string
     | Invalid_mathml of string
+
     | Invalid_column_number of ident option * int * int * int
-    | Invalid_column_specifier of string
-    | Invalid_cell_specifier of string
+    | Mismatched_column_numbers of int list
 
     | Duplicate_target of pointer
     | Empty_target of pointer

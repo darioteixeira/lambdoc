@@ -19,7 +19,6 @@ module Readconv = Lambdoc_reader_readconv
 module Style = Lambdoc_reader_style
 
 open Lambdoc_core
-open Basic
 open Ast
 open Readconv
 open Style
@@ -100,6 +99,16 @@ let rec monadic_filter_map f = function
                 Monad.return (hd' :: tl')
             | None ->
                 monadic_filter_map f tl
+
+
+(********************************************************************************)
+(** {2 Other miscelaneous auxiliary functions}                                  *)
+(********************************************************************************)
+
+let rec all_equal = function
+    | []           -> true
+    | [_]          -> true
+    | x :: y :: tl -> x = y && all_equal (y :: tl)
 
 
 (********************************************************************************)
@@ -203,6 +212,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     (****************************************************************************)
 
     let dummy_inline = Inline.linebreak () in
+    let dummy_cell = Tabular.make_cell None in
     let dummy_block = Block.paragraph [dummy_inline] in
 
 
@@ -642,54 +652,43 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     (* Compilation functions for tabular environment.                           *)
     (****************************************************************************)
 
-    and convert_tabular comm tcols tab =
+    and convert_tabular tab_comm tcols asttab =
 
-        let get_colspec comm spec =
-            try
-                Tabular_input.colspec_of_string spec
-            with
-                Invalid_argument _ ->
-                    let msg = Error.Invalid_column_specifier spec in
-                    add_error comm msg;
-                    (Tabular.Center, Tabular.Normal) in
+        let ncols = match tcols with Some x -> Some (Array.length x) | None -> None in
+        let cols_per_row = ref [] in
 
-        let specs = Array.map (get_colspec comm) (Array.of_list (List.map String.of_char (String.explode tcols))) in
-
-        let num_columns = Array.length specs in
-
-        let convert_cell (comm, raw_cellspec, maybe_astseq) =
-            let (colspan, cellspec) = match raw_cellspec with
-                | Some raw ->
-                    begin
-                        try
-                            let (colspec, colspan, overline, underline) = Tabular_input.cellspec_of_string raw in
-                            (colspan, Some (colspec, colspan, overline, underline))
-                        with _ ->
-                            let msg = Error.Invalid_cell_specifier raw in
-                            add_error comm msg;
-                            (1, None)
-                    end
-                | None ->
-                    (1, None) in
-            monadic_maybe (convert_seq ~comm) maybe_astseq >>= fun maybe_seq ->
-            Monad.return (colspan, Tabular.make_cell cellspec maybe_seq) in
+        let convert_cell (cell_comm, maybe_astseq) =
+            let f attr style_parsing =
+                let cellfmt = Style.consume1 style_parsing (Cell_hnd, None) in
+                let colspan = match cellfmt with
+                    | Some {colspan; _} -> colspan
+                    | None              -> 1 in
+                monadic_maybe (convert_seq ~comm:cell_comm) maybe_astseq >>= fun maybe_seq ->
+                Monad.return (colspan, Tabular.make_cell ~attr ?cellfmt maybe_seq) in
+            check_comm `Feature_cell cell_comm f in
 
         let convert_row (row_comm, row) =
             let rowspan = ref 0 in
             let converter raw_cell =
-                convert_cell raw_cell >>= fun (colspan, cell) ->
-                let () = rowspan := !rowspan + colspan in
-                Monad.return cell in
+                convert_cell raw_cell >>= function
+                    | Some (colspan, cell) ->
+                        let () = rowspan := !rowspan + colspan in
+                        Monad.return cell
+                    | None ->
+                        Monad.return dummy_cell in
             let tab_row = match row with
                 | _::_ -> monadic_map converter row >|= Tabular.make_row
                 | []   -> assert false in
-            if !rowspan <> num_columns
-            then begin
-                let msg = Error.Invalid_column_number (row_comm.comm_tag, comm.comm_linenum, !rowspan, num_columns) in
-                add_error comm msg;
-                tab_row
-            end else
-                tab_row in
+            match ncols with
+                | Some n when n <> !rowspan ->
+                    let msg = Error.Invalid_column_number (tab_comm.comm_tag, tab_comm.comm_linenum, !rowspan, n) in
+                    add_error row_comm msg;
+                    tab_row
+                | Some _ ->
+                    tab_row
+                | None ->
+                    cols_per_row := !rowspan :: !cols_per_row;
+                    tab_row in
 
         let convert_group feature (comm, rows) =
             check_inline_comm feature comm (fun _ _ -> Monad.return []) >>= fun _ ->
@@ -697,11 +696,18 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 | _::_ -> monadic_map convert_row rows >|= Tabular.make_group
                 | []   -> assert false in
 
-        monadic_maybe (convert_group `Feature_thead) tab.thead >>= fun thead ->
-        monadic_maybe (convert_group `Feature_tfoot) tab.tfoot >>= fun tfoot ->
-        match tab.tbodies with
-            | _::_ -> monadic_map (convert_group `Feature_tbody) tab.tbodies >|= Tabular.make specs ?thead ?tfoot
+        monadic_maybe (convert_group `Feature_thead) asttab.thead >>= fun thead ->
+        monadic_maybe (convert_group `Feature_tfoot) asttab.tfoot >>= fun tfoot ->
+        begin match asttab.tbodies with
+            | _::_ -> monadic_map (convert_group `Feature_tbody) asttab.tbodies >|= Tabular.make ?tcols ?thead ?tfoot
             | []   -> assert false
+        end >>= fun tabular ->
+        if not (all_equal !cols_per_row)
+        then begin
+            let msg = Error.Mismatched_column_numbers (List.rev !cols_per_row) in
+            add_error tab_comm msg
+        end;
+        Monad.return tabular
 
 
     (****************************************************************************)
@@ -762,8 +768,9 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 Monad.return [Block.source ~attr src] in
             check_block_comm `Feature_source comm elem
 
-        | Ast.Tabular (tcols, asttab) when Blkcat.subtype [`Table_blk; `Embeddable_blk] allowed ->
-            let elem attr _ =
+        | Ast.Tabular asttab when Blkcat.subtype [`Table_blk; `Embeddable_blk] allowed ->
+            let elem attr dict =
+                let tcols = Style.consume1 dict (Cols_hnd, None) in
                 convert_tabular comm tcols asttab >>= fun tab ->
                 Monad.return [Block.tabular ~attr tab] in
             check_block_comm `Feature_tabular comm elem

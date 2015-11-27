@@ -13,6 +13,7 @@ module Ast = Lambdoc_reader_ast
 module Readconv = Lambdoc_reader_readconv
 
 open Lambdoc_core
+open Tabular
 open Basic
 open Ast
 
@@ -37,6 +38,8 @@ type decl =
     | Lang_decl of Camlhighlight_core.lang option
     | Linenums_decl of bool
     | Width_decl of int option
+    | Cols_decl of Tabular.colfmt array option
+    | Cell_decl of Tabular.cellfmt option
 
 
 (********************************************************************************)
@@ -47,6 +50,8 @@ type _ handle =
     | Lang_hnd: Camlhighlight_core.lang option handle
     | Linenums_hnd: bool handle
     | Width_hnd: int option handle
+    | Cols_hnd: Tabular.colfmt array option handle
+    | Cell_hnd: Tabular.cellfmt option handle
 
 type parsing = (raw * decl) list
 
@@ -83,11 +88,47 @@ let numeric_of_string key ~low ~high = function
         else raise exc
 
 
+let colfmt_of_string = function
+    | "c" -> (Center, Normal)
+    | "C" -> (Center, Strong)
+    | "l" -> (Left, Normal)
+    | "L" -> (Left, Strong)
+    | "r" -> (Right, Normal)
+    | "R" -> (Right, Strong)
+    | "j" -> (Justify, Normal)
+    | "J" -> (Justify, Strong)
+    | x   -> invalid_arg ("Lambdoc_reader_style.colfmt_of_string: " ^ x)
+
+
+let cols_of_string key str =
+    try Some (String.explode str |> List.map (fun c -> String.of_char c |> colfmt_of_string) |> Array.of_list)
+    with _ -> raise (Value_error (Error.Invalid_style_bad_colsfmt (key, str)))
+
+
+let cellfmt_of_string =
+    let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colfmt>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$" in
+    fun str ->
+        let subs = Pcre.exec ~rex str in
+        let colspan = int_of_string (Pcre.get_named_substring rex "colspan" subs)
+        and colfmt = colfmt_of_string (Pcre.get_named_substring rex "colfmt" subs)
+        and (overline, underline) = match Pcre.get_named_substring rex "hline" subs with
+            | "^_" | "_^" -> (true, true)
+            | "^"         -> (true, false)
+            | "_"         -> (false, true)
+            | _           -> (false, false)
+        in Tabular.make_cellfmt ~colfmt ~colspan ~overline ~underline
+
+let cell_of_string key str =
+    try Some (cellfmt_of_string str)
+    with _ -> raise (Value_error (Error.Invalid_style_bad_cellfmt (key, str)))
+
 let decl_dict =
     [
     ("lang", fun v -> Lang_decl (lang_of_string "lang" v));
     ("nums", fun v -> Linenums_decl (boolean_of_string "nums" v));
     ("width", fun v -> Width_decl (numeric_of_string "width" ~low:1 ~high:100 v));
+    ("cols", fun v -> Cols_decl (cols_of_string "cols" v));
+    ("cell", fun v -> Cell_decl (cell_of_string "cell" v));
     ]
 
 
@@ -139,6 +180,8 @@ let find_decl hnd parsing =
         | (Lang_hnd, Lang_decl x)         -> Some x
         | (Linenums_hnd, Linenums_decl x) -> Some x
         | (Width_hnd, Width_decl x)       -> Some x
+        | (Cols_hnd, Cols_decl x)         -> Some x
+        | (Cell_hnd, Cell_decl x)         -> Some x
         | _                               -> None in
     let rec finder accum = function
         | [] ->

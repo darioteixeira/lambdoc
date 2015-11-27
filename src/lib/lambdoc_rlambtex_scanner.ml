@@ -28,7 +28,7 @@ type tok_begin_mathtex_inl = [ `Tok_begin_mathtex_inl ]
 type tok_end_mathtex_inl = [ `Tok_end_mathtex_inl ]
 type tok_begin_mathml_inl = [ `Tok_begin_mathml_inl ]
 type tok_end_mathml_inl = [ `Tok_end_mathml_inl ]
-type tok_cell_mark = [ `Tok_cell_mark ]
+type tok_cell_mark = [ `Tok_cell_mark of string ]
 type tok_row_end = [ `Tok_row_end ]
 type tok_eof = [ `Tok_eof ]
 type tok_parbreak = [ `Tok_parbreak ]
@@ -116,7 +116,7 @@ let regexp escape = '\\'
 let regexp eol = space* newline space*
 let regexp parbreak = eol eol+
 
-let regexp cell_mark = space* '|' space*
+let regexp cell_mark = space* '|' optional? space*
 let regexp row_end = space* '|' space* newline
 
 let regexp entity = '&' '#'? (alpha | deci)+ ';'
@@ -197,8 +197,8 @@ let tabular_scanner : (Ulexing.lexbuf -> int * [> tabular_token]) = lexer
     | end_mathtex_inl   -> (0, `Tok_end_mathtex_inl)
     | begin_mathml_inl  -> (0, `Tok_begin_mathml_inl)
     | end_mathml_inl    -> (0, `Tok_end_mathml_inl)
-    | cell_mark         -> (0, `Tok_cell_mark)          (* new compared to general *)
-    | row_end           -> (count_lines lexbuf, `Tok_row_end)   (* new compared to general *)
+    | cell_mark         -> (0, `Tok_cell_mark (whole_lexbuf lexbuf))    (* new compared to general *)
+    | row_end           -> (count_lines lexbuf, `Tok_row_end)           (* new compared to general *)
     | eof               -> (0, `Tok_eof)
     | parbreak          -> (count_lines lexbuf, `Tok_parbreak)
     | space+ | eol      -> (count_lines lexbuf, `Tok_space)

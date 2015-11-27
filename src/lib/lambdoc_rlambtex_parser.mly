@@ -207,7 +207,7 @@ env_block:
     | begin_block(blk_mathtex_blk) RAW end_block                        {let (comm, _) = $1 in (comm, Ast.Mathtex_blk (BatText.to_string $2))}
     | begin_block(blk_mathml_blk) RAW end_block                         {let (comm, _) = $1 in (comm, Ast.Mathml_blk (BatText.to_string $2))}
     | begin_block(blk_source) RAW end_block                             {let (comm, _) = $1 in (comm, Ast.Source (BatText.to_string $2))}
-    | begin_block(blk_tabular) raw_bundle tabular end_block             {let (comm, _) = $1 in (comm, Ast.Tabular ($2, $3))}
+    | begin_block(blk_tabular) tabular end_block                        {let (comm, _) = $1 in (comm, Ast.Tabular $2)}
     | begin_block(blk_subpage) block* end_block                         {let (comm, _) = $1 in (comm, Ast.Subpage $2)}
     | begin_block(blk_verbatim) RAW end_block                           {let (comm, _) = $1 in (comm, Ast.Verbatim (BatText.to_string $2))}
     | begin_block(blk_pullquote) inline_bundle? block* end_block        {let (comm, _) = $1 in (comm, Ast.Pullquote ($2, $3))}
@@ -274,7 +274,7 @@ head:   THEAD row+                              {($1, $2)}
 foot:   TFOOT row+                              {($1, $2)}
 body:   TBODY row+                              {($1, $2)}
 row:    cell+ ROW_END                           {($2, $1)}
-cell:   CELL_MARK raw_bundle? option(inline+)   {($1, $2, $3)}
+cell:   CELL_MARK option(inline+)               {($1, $2)}
 
 
 /********************************************************************************/

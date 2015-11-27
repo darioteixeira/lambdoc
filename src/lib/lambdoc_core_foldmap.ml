@@ -387,9 +387,10 @@ struct
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Block.source ~attr data));
         tabular = (fun fm acc attr data ->
-            let aux_cell fm acc (maybe_cellspec, maybe_seq) =
-                aux_maybe fm.seq fm acc maybe_seq >>= fun (acc, maybe_seq) ->
-                Monad.return (acc, (maybe_cellspec, maybe_seq)) in
+            let aux_cell fm acc {attr; cellfmt; seq} =
+                aux_maybe fm.seq fm acc seq >>= fun (acc, maybe_seq) ->
+                fm.attr fm acc attr >>= fun (acc, attr) ->
+                Monad.return (acc, Tabular.make_cell ~attr ?cellfmt maybe_seq) in
             let aux_row fm acc row =
                 aux_list aux_cell fm acc row in
             let aux_group fm acc group =

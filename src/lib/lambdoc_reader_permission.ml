@@ -186,6 +186,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
         | `Feature_rquestion    -> forbidden_class
         | `Feature_answer       -> forbidden_class
         | `Feature_ranswer      -> forbidden_class
+        | `Feature_cell         -> forbidden_class
         | `Feature_thead        -> forbidden_class
         | `Feature_tbody        -> forbidden_class
         | `Feature_tfoot        -> forbidden_class

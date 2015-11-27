@@ -398,9 +398,9 @@ index.html: HTML document text
 \section{Tabular environments}
 
 \p{\lorem}
-\begin{tabular}{rll}
+\begin<cols=rll>{tabular}
 \head
-|               |{2c_} Scientific name                  |
+|               |<cell=2c_> Scientific name             |
 | Common name   | Genus             | Species           |
 \body
 | Wolf          | \emph{Canis}      | \emph{lupus}      |
@@ -413,7 +413,7 @@ index.html: HTML document text
 | European yew  | \emph{Taxus}      | \emph{baccata}    |
 \foot
 | Common name   | Genus             | Species           |
-|               |{2c^} Scientific name                  |
+|               |<cell=2c^> Scientific name             |
 \end{tabular}
 \p{\lorem}
 
@@ -832,9 +832,9 @@ let is_foo = function
 
 \p{\lorem}
 \begin{table}{\fox}
-\begin{tabular}{rll}
+\begin<cols=rll>{tabular}
 \head
-|               |{2c_} Scientific name                  |
+|               |<cell=2c_> Scientific name             |
 | Common name   | Genus             | Species           |
 \body
 | Wolf          | \emph{Canis}      | \emph{lupus}      |
@@ -844,8 +844,8 @@ let is_foo = function
 | Bonobo        | \emph{Pan}        | \emph{paniscus}   |
 | English oak   | \emph{Quercus}    | \emph{robur}      |
 \foot
-| Common name   |{1c_} Genus        |{1c_} Species      |
-|               |{2c} Scientific name                   |
+| Common name   |<cell=1c_> Genus   |<cell=1c_> Species |
+|               |<cell=2c> Scientific name              |
 \end{tabular}
 \end{table}
 \p{\lorem}
@@ -854,7 +854,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<left>{table}{\fox}
-\begin{tabular}{rl}
+\begin<cols=rl>{tabular}
 \head
 | Common name   | Scientific name       |
 \body
@@ -870,7 +870,7 @@ let is_foo = function
 
 \p{\lorem}
 \begin<right>{table}{\fox}
-\begin{tabular}{rl}
+\begin<cols=rl>{tabular}
 \head
 | Common name   | Scientific name       |
 \body

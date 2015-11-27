@@ -60,6 +60,7 @@ let pat_optional = "(" ^ pat_order ^ "|" ^ pat_style ^ "|" ^ pat_label ^")*"
 
 let begin_rex = Pcre.regexp ("^" ^ pat_begin ^ pat_optional ^ pat_primary ^ "$")
 let simple_rex = Pcre.regexp ("^" ^ pat_simple ^ pat_optional ^ "$")
+let cell_rex = Pcre.regexp ("^\\|" ^ pat_optional ^ "$")
 
 
 (********************************************************************************)
@@ -243,6 +244,21 @@ let issue_simple_command ~inline_extdefs ~sim_block_extdefs raw_comm position =
     in (Set context, [token])
 
 
+(* Issues a cell mark *)
+let issue_cell_mark raw_comm position =
+    let subs = Pcre.exec ~rex:cell_rex (String.trim raw_comm) in
+    let comm =
+        {
+        comm_tag = None;
+        comm_label = get_param cell_rex "label" subs;
+        comm_order = get_param cell_rex "order" subs;
+        comm_style = get_param cell_rex "style" subs;
+        comm_linenum = position.pos_lnum;
+        comm_originator = Source;
+        }
+    in (Set Tab, [CELL_MARK comm])
+
+
 (********************************************************************************)
 (** {1 Tokenizer class}                         *)
 (********************************************************************************)
@@ -320,7 +336,7 @@ object (self)
             | `Tok_end_mathtex_inl          -> (Hold, [CLOSE_DUMMY; END_MATHTEX_INL op])
             | `Tok_begin_mathml_inl         -> (Set Inl, [BEGIN_MATHML_INL op; OPEN_DUMMY])
             | `Tok_end_mathml_inl           -> (Hold, [CLOSE_DUMMY; END_MATHML_INL op])
-            | `Tok_cell_mark                -> (Set Tab, [CELL_MARK op])
+            | `Tok_cell_mark comm           -> issue_cell_mark comm self#position
             | `Tok_row_end                  -> (Set Tab, [ROW_END op])
             | `Tok_eof                      -> (Hold, [EOF])
             | `Tok_parbreak                 -> (Set Blk, [])

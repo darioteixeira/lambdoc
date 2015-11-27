@@ -443,18 +443,22 @@ let from_valid ?(valid_options = default_valid_options) doc =
     (*  {4 Writers for tabular environment}                                     *)
     (****************************************************************************)
 
-    let write_tabular tab =
+    let write_tabular classnames tab =
 
-        let write_cell ord (maybe_cellspec, maybe_seq) =
-            let ((alignment, weight), maybe_colspan, overline, underline) = match maybe_cellspec with
-                | Some (spec, span, overline, underline) -> (spec, Some span, overline, underline)
-                | None                                   -> (Array.get tab.Tabular.tcols ord, None, false, false) in
-            let cell_class = ["cell_" ^^ Tabular_output.string_of_alignment alignment] in
-            let oline_class = if overline then [!!"oline"] else [] in
-            let uline_class = if underline then [!!"uline"] else [] in
-            let a_hd = a_class (cell_class @ oline_class @ uline_class) in
+        let open Tabular in
+
+        let write_cell ord {attr; cellfmt; seq} =
+            let ((alignment, weight), maybe_colspan, overline, underline) = match (cellfmt, tab.tcols) with
+                | (Some {colfmt; colspan; overline; underline}, _) -> (colfmt, Some colspan, overline, underline)
+                | (None, Some tcols)                               -> (Array.get tcols ord, None, false, false)
+                | (None, None)                                     -> ((Tabular.Left, Tabular.Normal), None, false, false) in
+            let classnames = List.map (!!!) attr.classnames in
+            let classnames = ("cell_" ^^ Tabular_output.string_of_alignment alignment) :: classnames in
+            let classnames = if overline then !!"oline" :: classnames else classnames in
+            let classnames = if underline then !!"uline" :: classnames else classnames in
+            let a_hd = a_class classnames in
             let a_tl = match maybe_colspan with Some n -> [a_colspan n] | None -> [] in
-            let out_seq = match maybe_seq with Some seq -> write_seq seq | None -> [] in
+            let out_seq = match seq with Some seq -> write_seq seq | None -> [] in
             match weight with
                 | Tabular.Normal -> Html5.td ~a:(a_hd :: a_tl) (out_seq :> Html5_types.td_content_fun Html5.elt list)
                 | Tabular.Strong -> Html5.th ~a:(a_hd :: a_tl) (out_seq :> Html5_types.th_content_fun Html5.elt list) in
@@ -465,20 +469,20 @@ let from_valid ?(valid_options = default_valid_options) doc =
         let write_group grp =
             List.map write_row grp in
 
-        let thead = match tab.Tabular.thead with
+        let thead = match tab.thead with
             | None     -> None
             | Some grp -> Some (Html5.thead ~a:[a_class [!!"tgroup"]] (write_group grp)) in
 
         let tbodies =
             let write_tbody grp =
                 Html5.tbody ~a:[a_class [!!"tgroup"]] (write_group grp) in
-            List.map write_tbody tab.Tabular.tbodies in
+            List.map write_tbody Tabular.(tab.tbodies) in
 
-        let tfoot = match tab.Tabular.tfoot with
+        let tfoot = match tab.tfoot with
             | None     -> None
             | Some grp -> Some (Html5.tfoot ~a:[a_class [!!"tgroup"]] (write_group grp)) in
 
-        Html5.div ~a:[a_class [!!"tab"]] [Html5.div ~a:[a_class [!!"tab_aux"]]  [Html5.tablex ?thead ?tfoot tbodies]] in
+        Html5.div ~a:[a_class (!!"tab" :: classnames)] [Html5.div ~a:[a_class [!!"tab_aux"]]  [Html5.tablex ?thead ?tfoot tbodies]] in
 
 
     (****************************************************************************)
@@ -548,7 +552,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
             [Source_writer.write ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:src.linenums src.hilite]
 
         | Tabular tab ->
-            [write_tabular tab]
+            [write_tabular classnames tab]
 
         | Subpage frag ->
             [Html5.div ~a:[a_class (!!"subpage" :: classnames)] (write_frag frag)]
@@ -702,22 +706,24 @@ let from_valid ?(valid_options = default_valid_options) doc =
     (****************************************************************************)
 
     and write_note note =
-        Html5.li ~a:[a_id (make_label note.Note.label); a_class [!!"note"]]
+        let open Note in
+        Html5.li ~a:[a_id (make_label note.label); a_class [!!"note"]]
             [
-            Html5.span ~a:[a_class [!!"note_head"]] (pcdata "(" :: (note_conv note.Note.order) @ [pcdata ")"]);
-            Html5.div ~a:[a_class [!!"note_body"]] (write_frag note.Note.content);
+            Html5.span ~a:[a_class [!!"note_head"]] (pcdata "(" :: (note_conv note.order) @ [pcdata ")"]);
+            Html5.div ~a:[a_class [!!"note_body"]] (write_frag note.content);
             ]
 
 
     and write_bib bib =
-        Html5.li ~a:[a_id (make_label bib.Bib.label); a_class [!!"bib"]]
+        let open Bib in
+        Html5.li ~a:[a_id (make_label bib.label); a_class [!!"bib"]]
             [
-            Html5.span ~a:[a_class [!!"bib_head"]] (pcdata "[" :: (bib_conv bib.Bib.order) @ [pcdata "]"]);
+            Html5.span ~a:[a_class [!!"bib_head"]] (pcdata "[" :: (bib_conv bib.order) @ [pcdata "]"]);
             Html5.p ~a:[a_class [!!"bib_body"]]
                 [
-                Html5.span ~a:[a_class [!!"bib_author"]] (write_seq bib.Bib.author);
-                Html5.span ~a:[a_class [!!"bib_title"]] (write_seq bib.Bib.title);
-                Html5.span ~a:[a_class [!!"bib_resource"]] (write_seq bib.Bib.resource);
+                Html5.span ~a:[a_class [!!"bib_author"]] (write_seq bib.author);
+                Html5.span ~a:[a_class [!!"bib_title"]] (write_seq bib.title);
+                Html5.span ~a:[a_class [!!"bib_resource"]] (write_seq bib.resource);
                 ]
             ]
 

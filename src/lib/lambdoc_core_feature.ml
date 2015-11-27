@@ -41,7 +41,7 @@ type block_feature =
 
 type internal_feature =
     [ `Feature_item | `Feature_question | `Feature_rquestion | `Feature_answer | `Feature_ranswer
-    | `Feature_thead | `Feature_tbody | `Feature_tfoot
+    | `Feature_cell | `Feature_thead | `Feature_tbody | `Feature_tfoot
     | `Feature_bib_author | `Feature_bib_title | `Feature_bib_resource
     | `Feature_custom | `Feature_macrocall | `Feature_macroarg ] [@@deriving sexp]
 
@@ -127,6 +127,7 @@ let describe_internal_feature = function
     | `Feature_rquestion    -> "repeat question in a Q&A block"
     | `Feature_answer       -> "answer in a Q&A block"
     | `Feature_ranswer      -> "repeat answer in a Q&A block"
+    | `Feature_cell         -> "individual cell within a tabular block"
     | `Feature_thead        -> "start of a header group in a tabular block"
     | `Feature_tbody        -> "start of a block group in a tabular block"
     | `Feature_tfoot        -> "start of a footer group in a tabular block"
@@ -175,7 +176,7 @@ let block_features =
 let internal_features =
     [
     `Feature_item; `Feature_question; `Feature_rquestion; `Feature_answer; `Feature_ranswer;
-    `Feature_thead; `Feature_tbody; `Feature_tfoot;
+    `Feature_cell; `Feature_thead; `Feature_tbody; `Feature_tfoot;
     `Feature_bib_author; `Feature_bib_title; `Feature_bib_resource;
     `Feature_custom; `Feature_macrocall; `Feature_macroarg;
     ]

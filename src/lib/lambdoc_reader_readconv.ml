@@ -151,40 +151,6 @@ end
 
 
 (********************************************************************************)
-(** {2 Tabular values}                                                          *)
-(********************************************************************************)
-
-module Tabular_input =
-struct
-    open Tabular
-
-    let colspec_of_string = function
-        | "c" -> (Center, Normal)
-        | "C" -> (Center, Strong)
-        | "l" -> (Left, Normal)
-        | "L" -> (Left, Strong)
-        | "r" -> (Right, Normal)
-        | "R" -> (Right, Strong)
-        | "j" -> (Justify, Normal)
-        | "J" -> (Justify, Strong)
-        | _   -> invalid_arg "Lambdoc_reader_readconv.Tabular_input.colspec_of_string"
-
-    let cellspec_of_string =
-        let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colspec>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$" in
-        fun str ->
-            let subs = Pcre.exec ~rex str in
-            let colspan = int_of_string (Pcre.get_named_substring rex "colspan" subs)
-            and colspec = colspec_of_string (Pcre.get_named_substring rex "colspec" subs)
-            and (overline, underline) = match Pcre.get_named_substring rex "hline" subs with
-                | "^_" | "_^" -> (true, true)
-                | "^"         -> (true, false)
-                | "_"         -> (false, true)
-                | _           -> (false, false)
-            in (colspec, colspan, overline, underline)
-end
-
-
-(********************************************************************************)
 (** {2 Order values}                                                            *)
 (********************************************************************************)
 

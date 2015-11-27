@@ -78,7 +78,7 @@ and inline_pattern =
 (** {2 Data types for document blocks}                                          *)
 (********************************************************************************)
 
-type tabular_cell = command * string option * seq option
+type tabular_cell = command * seq option
 
 type tabular_row = command * tabular_cell list
 
@@ -111,7 +111,7 @@ type frag = block list
     | Mathtex_blk of string                                         (* Blkpat_lit *)
     | Mathml_blk of string                                          (* Blkpat_lit *)
     | Source of string                                              (* Blkpat_lit *)
-    | Tabular of string * tabular                                   (* Blkpat_raw_tab *)
+    | Tabular of tabular                                            (* Blkpat_tab *)
     | Subpage of frag                                               (* Blkpat_frag *)
     | Verbatim of string                                            (* Blkpat_lit *)
     | Picture of string * string                                    (* Blkpat_raw_raw *)

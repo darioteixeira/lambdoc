@@ -333,7 +333,7 @@ let rec count = function
 <h1>Tabular environments</h1>
 
 <p><call name="lorem"/></p>
-<tabular cols="cccc">
+<tabular style="cols=cccc">
 <thead>
     <tr>
         <td>1</td>
@@ -506,7 +506,7 @@ let rec count = function
 <p><call name="lorem"/></p>
 <table>
     <caption><call name="short"/></caption>
-    <tabular cols="cccc">
+    <tabular style="cols=cccc">
     <thead>
         <tr>
             <td>1</td>
@@ -517,7 +517,7 @@ let rec count = function
     </thead>
     <tbody>
         <tr>
-            <td cell="2l">One</td>
+            <td style="cell=2l">One</td>
             <td>Three</td>
             <td>Four</td>
         </tr>
