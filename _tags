@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 1d74ce05c4c233b454ec0078d2943435)
+# DO NOT EDIT (digest: b449c51c770157123351e03a0d086110)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -61,23 +61,23 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_tyxml
 <src/lambcmd/*.ml{,i,y}>: pkg_ulex
 <src/lambcmd/*.ml{,i,y}>: use_lambdoc
-# Executable test_lambtex
-<tests/test_lambtex.{native,byte}>: pkg_alcotest
-<tests/test_lambtex.{native,byte}>: pkg_batteries
-<tests/test_lambtex.{native,byte}>: pkg_blahcaml
-<tests/test_lambtex.{native,byte}>: pkg_camlhighlight
-<tests/test_lambtex.{native,byte}>: pkg_menhirLib
-<tests/test_lambtex.{native,byte}>: pkg_omd
-<tests/test_lambtex.{native,byte}>: pkg_pcre
-<tests/test_lambtex.{native,byte}>: pkg_pxp-engine
-<tests/test_lambtex.{native,byte}>: pkg_pxp-ulex-utf8
-<tests/test_lambtex.{native,byte}>: pkg_re
-<tests/test_lambtex.{native,byte}>: pkg_sedlex
-<tests/test_lambtex.{native,byte}>: pkg_sexplib
-<tests/test_lambtex.{native,byte}>: pkg_threads
-<tests/test_lambtex.{native,byte}>: pkg_tyxml
-<tests/test_lambtex.{native,byte}>: pkg_ulex
-<tests/test_lambtex.{native,byte}>: use_lambdoc
+# Executable test_lambdoc
+<tests/test_lambdoc.{native,byte}>: pkg_alcotest
+<tests/test_lambdoc.{native,byte}>: pkg_batteries
+<tests/test_lambdoc.{native,byte}>: pkg_blahcaml
+<tests/test_lambdoc.{native,byte}>: pkg_camlhighlight
+<tests/test_lambdoc.{native,byte}>: pkg_menhirLib
+<tests/test_lambdoc.{native,byte}>: pkg_omd
+<tests/test_lambdoc.{native,byte}>: pkg_pcre
+<tests/test_lambdoc.{native,byte}>: pkg_pxp-engine
+<tests/test_lambdoc.{native,byte}>: pkg_pxp-ulex-utf8
+<tests/test_lambdoc.{native,byte}>: pkg_re
+<tests/test_lambdoc.{native,byte}>: pkg_sedlex
+<tests/test_lambdoc.{native,byte}>: pkg_sexplib
+<tests/test_lambdoc.{native,byte}>: pkg_threads
+<tests/test_lambdoc.{native,byte}>: pkg_tyxml
+<tests/test_lambdoc.{native,byte}>: pkg_ulex
+<tests/test_lambdoc.{native,byte}>: use_lambdoc
 <tests/*.ml{,i,y}>: pkg_alcotest
 <tests/*.ml{,i,y}>: pkg_batteries
 <tests/*.ml{,i,y}>: pkg_blahcaml

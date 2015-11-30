@@ -59,15 +59,16 @@ Executable "lambcmd"
     BuildDepends:           lambdoc
     CompiledObject:         best
 
-Executable "test_lambtex"
+Executable "test_lambdoc"
     Build$:                 flag(tests)
     Path:                   tests
-    MainIs:                 test_lambtex.ml
+    MainIs:                 test_lambdoc.ml
     Install:                false
     BuildDepends:           lambdoc, alcotest
     CompiledObject:         best
 
-Test "test_lambtex"
+Test "test_lambdoc"
     Run$:                   flag(tests)
-    Command:                $test_lambtex
+    Command:                $test_lambdoc
+    WorkingDirectory:       tests/testsets
 

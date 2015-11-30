@@ -1,0 +1,96 @@
+\begin<lang=caml>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,nums=yes>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,plain>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,nums=yes,plain>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,boxed>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,nums=yes,boxed>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<lang=caml,nums=yes,zebra>{source}
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+\end{source}
+
+\begin<console>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+\end{source}
+
+\begin<nums=yes,console>{source}
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+\end{source}
+

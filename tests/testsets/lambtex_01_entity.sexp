@@ -1,0 +1,1 @@
+(Valid((content(((blk(Paragraph(((inl(Plain"Character entity: & Numeric entity: & Ndash: \226\128\147 Mdash: \226\128\148 Quotes: \226\128\156Hello\226\128\157"))(attr((classnames())(parsinfo(((tag())(linenum 1)(originator Source))))))))))(attr((classnames())(parsinfo(((tag())(linenum 1)(originator Source)))))))))(bibs())(notes())(toc())(labels())(customs())))
