@@ -549,7 +549,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
             [Html5.div ~a:[a_class (!!"mathblk" :: classnames)] [html]]
 
         | Source src ->
-            [Source_writer.write ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:src.linenums src.hilite]
+            [Source_writer.write_block ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:src.linenums src.hilite]
 
         | Tabular tab ->
             [write_tabular classnames tab]
