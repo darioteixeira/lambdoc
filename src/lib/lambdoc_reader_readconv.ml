@@ -92,7 +92,7 @@ struct
 
 
     let expand =
-        let rex = Pcre.regexp "^(?:(?:#x([a-zA-Z0-9]+))|(?:#([a-zA-Z0-9]+))|([[a-zA-Z0-9]+))$" in
+        let rex = Pcre.regexp "^(?:(?:#x([a-zA-Z0-9]+))|(?:#([a-zA-Z0-9]+))|([a-zA-Z0-9]+))$" in
         fun ent ->
             try match Pcre.get_opt_substrings (Pcre.exec ~rex ent) with
                 | [| _; Some x; None; None |] ->
