@@ -6,11 +6,9 @@
 *)
 (********************************************************************************)
 
-module Globalenv = Lambdoc_rlambtex_globalenv
+module Context = Lambdoc_rlambtex_context
 module Parser = Lambdoc_rlambtex_parser
 module Tokenizer = Lambdoc_rlambtex_tokenizer
-
-open Lexing
 
 
 (********************************************************************************)
@@ -21,37 +19,30 @@ exception Reading_error of int * string
 
 
 (********************************************************************************)
-(*  {2 Private functions and values}                                            *)
-(********************************************************************************)
-
-let menhir_with_ulex menhir_parser tokenizer lexbuf =
-    let lexer_maker () =
-        let ante_position = tokenizer#position in
-        let token = tokenizer#consume lexbuf in
-        let post_position = tokenizer#position in
-        (token, ante_position, post_position) in
-    let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser in
-    revised_parser lexer_maker
-
-
-(********************************************************************************)
 (*  {2 Public functions and values}                                             *)
 (********************************************************************************)
 
 let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
-    let tokenizer = new Tokenizer.tokenizer ~linenum_offset ~inline_extdefs ~block_extdefs in
+    let module C = Context.Make (struct end) in
+    let module P = Parser.Make (C) in
+    let module T = Tokenizer.Make (C) (P) in
+    let lexbuf = Sedlexing.Utf8.from_string str in
+    let tokenizer = T.make ~linenum_offset ~inline_extdefs ~block_extdefs ~lexbuf in
+    let lexer_maker () =
+        let ante_position = T.get_position tokenizer in
+        let token = T.next_token tokenizer in
+        let post_position = T.get_position tokenizer in
+        (token, ante_position, post_position) in
     try
-        let lexbuf = Ulexing.from_utf8_string str in
-        `Okay (menhir_with_ulex Parser.document tokenizer lexbuf)
+        `Okay (MenhirLib.Convert.Simplified.traditional2revised P.main lexer_maker)
     with exc ->
+        let position = T.get_position tokenizer in
         let msg = match exc with
             | Utf8.MalFormed ->
                 "Malformed UTF-8 sequence"
-            | Globalenv.Pop_mismatch (found, expected) ->
-                Printf.sprintf "Invalid closing for environment command: found '%s' but expected '%s'" found expected
-            | Parser.Error ->
+            | P.Error ->
                 "Syntax error"
             | exc ->
                 raise exc
-        in `Error [(Some tokenizer#position.pos_lnum, msg)]
+        in `Error [(Some position.pos_lnum, msg)]
 

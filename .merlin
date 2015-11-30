@@ -1,14 +1,16 @@
 S src/**
 B _build/**
 PKG batteries
-PKG pcre
-PKG sexplib
-PKG ulex
-PKG menhirLib
-PKG pxp-engine
-PKG pxp-ulex-utf8
-PKG tyxml
-PKG omd
 PKG blahcaml
 PKG camlhighlight
+PKG menhirLib
+PKG omd
+PKG pcre
+PKG pxp-engine
+PKG pxp-ulex-utf8
+PKG re
+PKG sedlex
+PKG sexplib
+PKG tyxml
+PKG ulex
 FLG -w -40

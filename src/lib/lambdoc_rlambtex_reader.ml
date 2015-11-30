@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(** Main interface to the Lambtex reader.
+(** Main interface to the Lambtek reader.
 *)
 
 module Make = Lambdoc_reader.Maker.Make (Lambdoc_rlambtex_readable)

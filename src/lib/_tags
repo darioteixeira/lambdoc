@@ -22,7 +22,7 @@
 <lambdoc_core_target.*>:         pkg_ppx_sexp_conv
 <lambdoc_core_valid.*>:          pkg_ppx_sexp_conv
 <lambdoc_core_wrapper.*>:        pkg_ppx_sexp_conv
-<lambdoc_rlambtex_scanner.ml>:   pkg_ulex, syntax_camlp4o
+<lambdoc_rlambtex_lexer.ml>:     pkg_sedlex
 <lambdoc_rlambwiki_scanner.ml>:  pkg_ulex, syntax_camlp4o
 <lambdoc_rlambxml_dtd.ml>:       pkg_ppx_blob
 <lambdoc_writer_emblang.ml>:     pkg_ulex, syntax_camlp4o

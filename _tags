@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 8c9f8decddf7da8c847641f6e6fd164c)
+# DO NOT EDIT (digest: 1d74ce05c4c233b454ec0078d2943435)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -24,6 +24,8 @@ true: annot, bin_annot
 <src/lib/*.ml{,i,y}>: pkg_pcre
 <src/lib/*.ml{,i,y}>: pkg_pxp-engine
 <src/lib/*.ml{,i,y}>: pkg_pxp-ulex-utf8
+<src/lib/*.ml{,i,y}>: pkg_re
+<src/lib/*.ml{,i,y}>: pkg_sedlex
 <src/lib/*.ml{,i,y}>: pkg_sexplib
 <src/lib/*.ml{,i,y}>: pkg_threads
 <src/lib/*.ml{,i,y}>: pkg_tyxml
@@ -37,6 +39,8 @@ true: annot, bin_annot
 <src/lambcmd/lambcmd.{native,byte}>: pkg_pcre
 <src/lambcmd/lambcmd.{native,byte}>: pkg_pxp-engine
 <src/lambcmd/lambcmd.{native,byte}>: pkg_pxp-ulex-utf8
+<src/lambcmd/lambcmd.{native,byte}>: pkg_re
+<src/lambcmd/lambcmd.{native,byte}>: pkg_sedlex
 <src/lambcmd/lambcmd.{native,byte}>: pkg_sexplib
 <src/lambcmd/lambcmd.{native,byte}>: pkg_threads
 <src/lambcmd/lambcmd.{native,byte}>: pkg_tyxml
@@ -50,6 +54,8 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_pcre
 <src/lambcmd/*.ml{,i,y}>: pkg_pxp-engine
 <src/lambcmd/*.ml{,i,y}>: pkg_pxp-ulex-utf8
+<src/lambcmd/*.ml{,i,y}>: pkg_re
+<src/lambcmd/*.ml{,i,y}>: pkg_sedlex
 <src/lambcmd/*.ml{,i,y}>: pkg_sexplib
 <src/lambcmd/*.ml{,i,y}>: pkg_threads
 <src/lambcmd/*.ml{,i,y}>: pkg_tyxml
@@ -65,6 +71,8 @@ true: annot, bin_annot
 <tests/test_lambtex.{native,byte}>: pkg_pcre
 <tests/test_lambtex.{native,byte}>: pkg_pxp-engine
 <tests/test_lambtex.{native,byte}>: pkg_pxp-ulex-utf8
+<tests/test_lambtex.{native,byte}>: pkg_re
+<tests/test_lambtex.{native,byte}>: pkg_sedlex
 <tests/test_lambtex.{native,byte}>: pkg_sexplib
 <tests/test_lambtex.{native,byte}>: pkg_threads
 <tests/test_lambtex.{native,byte}>: pkg_tyxml
@@ -79,6 +87,8 @@ true: annot, bin_annot
 <tests/*.ml{,i,y}>: pkg_pcre
 <tests/*.ml{,i,y}>: pkg_pxp-engine
 <tests/*.ml{,i,y}>: pkg_pxp-ulex-utf8
+<tests/*.ml{,i,y}>: pkg_re
+<tests/*.ml{,i,y}>: pkg_sedlex
 <tests/*.ml{,i,y}>: pkg_sexplib
 <tests/*.ml{,i,y}>: pkg_threads
 <tests/*.ml{,i,y}>: pkg_tyxml

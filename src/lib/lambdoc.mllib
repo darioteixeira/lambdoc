@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: ce6a611b61efd3d9ff4c262aae1d2f55)
+# DO NOT EDIT (digest: c610f211c5d18c8f47b8d48a28524311)
 Lambdoc_core
 Lambdoc_core_basic
 Lambdoc_core_attr
@@ -37,9 +37,9 @@ Lambdoc_reader_preprocessor
 Lambdoc_reader_readconv
 Lambdoc_reader_style
 Lambdoc_rlambtex
-Lambdoc_rlambtex_globalenv
+Lambdoc_rlambtex_context
+Lambdoc_rlambtex_lexer
 Lambdoc_rlambtex_parser
-Lambdoc_rlambtex_scanner
 Lambdoc_rlambtex_tokenizer
 Lambdoc_rlambtex_readable
 Lambdoc_rlambtex_reader
