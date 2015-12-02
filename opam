@@ -9,29 +9,30 @@ dev-repo: "https://github.com/darioteixeira/lambdoc.git"
 license: "GPL-2.0"
 available: [ocaml-version >= "4.02.0"]
 build: [
-    ["./configure" "--prefix" prefix
-                   "--docdir" "%{doc}%/lambdoc"
-                   "--%{alcotest:enable}%-tests"]
-    [make]
-    [make "doc"]
+  ["./configure" "--prefix" prefix
+                 "--docdir" "%{doc}%/lambdoc"
+                 "--%{alcotest:enable}%-tests"]
+  [make]
+  [make "doc"]
 ]
 build-test: [make "test"]
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" "lambdoc"]]
 depends: [
-    "ocamlfind"
-    "camlp4"
-    "batteries" {>= "2"}
-    "menhir"
-    "ulex"
-    "sexplib"
-    "pcre"
-    "pxp"
-    "tyxml" {>= "3.2" & < "4"}
-    "omd" {>= "1.0.0"}
-    "blahcaml"
-    "camlhighlight" {>= "4"}
-    "ppx_sexp_conv"
-    "ppx_blob"
-    "alcotest" {test}
+  "ocamlfind"
+  "camlp4"
+  "batteries" {>= "2"}
+  "menhir"
+  "ulex"
+  "sexplib"
+  "pcre"
+  "pxp"
+  "tyxml" {>= "3.2" & < "4"}
+  "omd" {>= "1.0.0"}
+  "blahcaml"
+  "camlhighlight" {>= "4"}
+  "ppx_sexp_conv"
+  "ppx_blob"
+  "alcotest" {test}
+  "ocamlbuild" {build}
 ]
