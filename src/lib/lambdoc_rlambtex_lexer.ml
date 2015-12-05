@@ -153,7 +153,7 @@ let general lexbuf =
             return ~lexbuf accum (Cell_mark (whole_lexbuf lexbuf |> String.trim))
         | row_end ->
             return ~lexbuf accum Row_end
-        | eof ->
+        | Opt eol, eof ->
             return accum Eof
         | parbreak ->
             return ~lexbuf accum Par_break
