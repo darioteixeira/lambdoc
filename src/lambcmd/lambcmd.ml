@@ -71,6 +71,7 @@ let () =
             let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
             string_of_xhtml options.title xhtml in
     output_string options.output_chan output_str;
+    output_char options.output_chan '\n';
     options.input_cleaner options.input_chan;
     options.output_cleaner options.output_chan;
     exit (match doc with Ambivalent.Valid _ -> 0 | Ambivalent.Invalid _ -> 3)
