@@ -10,7 +10,26 @@
     a document AST into a proper, final, ambivalent document.
 *)
 
-module String = BatString
+module String =
+struct
+    include BatString
+
+    let lstrip ?(chars = " \t\r\n") s =
+        let p = ref 0 in
+        let l = length s in
+        while !p < l && contains chars (unsafe_get s !p) do
+            incr p;
+        done;
+        sub s !p (l - !p)
+
+    let rstrip ?(chars = " \t\r\n") s =
+      let l = ref (length s - 1) in
+      while !l >= 0 && contains chars (unsafe_get s !l) do
+        decr l;
+      done;
+      sub s 0 (!l + 1)
+end
+
 module List = BatList
 module Ast = Lambdoc_reader_ast
 module Extension = Lambdoc_reader_extension
@@ -629,10 +648,20 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                     | [] ->
                         accum in
                 List.rev (coalesce_plain_aux [] seq) in
+            let trim_whitespace seq =
+                let rec aux accum = function
+                    | [{Inline.inl = Inline.Plain txt; attr}] -> (Inline.plain ~attr (String.rstrip txt)) :: accum
+                    | hd :: tl                                -> aux (hd :: accum) tl
+                    | []                                      -> accum in
+                match seq with
+                    | [{Inline.inl = Inline.Plain txt; attr}]     -> [Inline.plain ~attr (String.strip txt)]
+                    | {Inline.inl = Inline.Plain txt; attr} :: tl -> (Inline.plain ~attr (String.lstrip txt)) :: List.rev (aux [] tl)
+                    | xs                                          -> List.rev (aux [] xs) in
             monadic_map (convert_inline ~context ~depth:(depth+1) ~args is_ref) astseq >>= fun seq ->
             let seq = List.flatten seq in
-            let new_seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
-            match new_seq with
+            let seq = if macros_authorised || expand_entities then coalesce_plain seq else seq in
+            let seq = if depth = 0 then trim_whitespace seq else seq in
+            match seq with
                 | [] ->
                     add_error comm Error.Empty_sequence;
                     Monad.return [dummy_inline]
