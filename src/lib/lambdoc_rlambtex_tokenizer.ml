@@ -284,22 +284,6 @@ struct
             literal = None;
             }
 
-    let debug = function
-        | OPEN            -> "OPEN"
-        | CLOSE           -> "CLOSE"
-        | BEGIN_TABULAR _ -> "BEGIN_TABULAR"
-        | END_TABULAR     -> "END_TABULAR"
-        | TEXT (_, txt)   -> "TEXT: " ^ txt
-        | SPACE _         -> "SPACE"
-        | PAR_BREAK _     -> "PAR_BREAK"
-        | EOF             -> "EOF"
-        | CELL_MARK _     -> "CELL_MARK"
-        | ROW_END _       -> "ROW_END"
-        | THEAD _         -> "THEAD"
-        | TFOOT _         -> "TFOOT"
-        | TBODY _         -> "TBODY"
-        | _               -> "???"
-
     let next_token tokenizer =
         let (lexeme, nlines) = next_lexing_pair tokenizer in
         let token = token_of_lexeme tokenizer lexeme in
