@@ -1,0 +1,39 @@
+<newboxout name="generic"/>
+<newboxout name="warning">Warning</newboxout>
+<newboxout name="tip" counter="tip">Tip</newboxout>
+
+<boxout name="generic">
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="generic">
+    <caption>This is a title</caption>
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="warning">
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="warning">
+    <caption>This is a title</caption>
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="tip" label="tip:one">
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="tip" order="">
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="tip">
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+
+<boxout name="tip" order="">
+    <caption>This is a title</caption>
+    <p>Lorem ipsum dolor sit amet.</p>
+</boxout>
+

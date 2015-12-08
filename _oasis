@@ -64,7 +64,7 @@ Executable "test_lambdoc"
     Path:                   tests
     MainIs:                 test_lambdoc.ml
     Install:                false
-    BuildDepends:           lambdoc, alcotest
+    BuildDepends:           alcotest, batteries, lambdoc, re, tyxml, unix
     CompiledObject:         best
 
 Test "test_lambdoc"
