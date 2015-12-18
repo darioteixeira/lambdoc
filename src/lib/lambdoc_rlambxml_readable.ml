@@ -43,10 +43,10 @@ struct
     let to_reading errors =
         let f (comm, msg) =
             let desc = match msg with
-                | Unknown_attribute _ -> "Attribute is unknown"
-                | Missing_attribute _ -> "Attribute is missing"
-                | Unknown_tag         -> "Tag is unknown"
-                | Expected_empty      -> "Tag should be empty"
+                | Unknown_attribute a -> Printf.sprintf "Attribute '#%s#' does not belong to this element" a
+                | Missing_attribute a -> Printf.sprintf "Mandatory attribute '#%s#' has not been provided" a
+                | Unknown_tag         -> "Element is unknown"
+                | Expected_empty      -> "Element should be empty"
                 | Inline_in_block     -> "Inline content where block expected"
             in (Some comm.comm_linenum, comm.comm_tag, desc)
         in List.rev_map f !errors

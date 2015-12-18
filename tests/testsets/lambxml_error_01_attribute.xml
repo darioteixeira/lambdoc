@@ -1,0 +1,16 @@
+<doc>
+
+<p>Lorem ipsum dolor sit amet.</p>
+<p style="hello">Lorem ipsum dolor sit amet.</p>
+<p extra="dummy" style="hello">Lorem ipsum dolor sit amet.</p>
+<p extra="dummy">Lorem ipsum dolor sit amet.</p>
+
+<picture extra="dummy" src="source.png" alt="This is a picture"/>
+<picture style="hello" src="source.png" alt="This is a picture"/>
+<picture src="source.png" alt="This is a picture"/>
+<picture src="source.png"/>
+<picture alt="This is a picture"/>
+<picture/>
+
+</doc>
+
