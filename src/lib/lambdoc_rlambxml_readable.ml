@@ -379,7 +379,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
                 in (comm, Extcomm_blk (tag, blkpat))
             with Not_found ->
                 if Stringset.mem tag !newcustoms
-                then make0 comm prop errors (fun () -> let (s, f) = seq_and_frag_of_trees xs in Custom (None, tag, s, f))
+                then make0 comm prop errors (fun () -> let (s, f) = seq_and_frag_of_trees xs in Custom (tag, s, f))
                 else (Errors.add errors comm Unknown_tag; (comm, dummy_block))
 
     and flow_of_trees comm xs =

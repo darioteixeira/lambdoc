@@ -180,12 +180,6 @@ let explain_message = function
     | Error.Invalid_custom env ->
         sprintf "Invalid name '#%s#' for custom environment. %s." (escape env) (explain_ident "A custom environment")
 
-    | Error.Mismatched_custom (env, found, expected) ->
-        let explain_custom = function
-            | Custom.Boxout  -> "boxout"
-            | Custom.Theorem -> "theorem"
-        in sprintf "The custom environment '#%s#' is used as a %s, but it was previously defined as a %s." (escape env) (explain_custom found) (explain_custom expected)
-
     | Error.Duplicate_custom env ->
         sprintf "The definition of custom environment '#%s#' duplicates a previously defined environment." (escape env)
 

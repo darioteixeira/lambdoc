@@ -113,7 +113,7 @@ type frag = block list
     | Verbatim of string                                            (* Blkpat_lit *)
     | Picture of string * string                                    (* Blkpat_raw_raw *)
     | Pullquote of seq option * frag                                (* Blkpat_seqopt_frag *)
-    | Custom of Custom.kind option * string * seq option * frag
+    | Custom of string * seq option * frag
     | Equation of seq option * block                                (* Blkpat_seqopt_blk *)
     | Printout of seq option * block                                (* Blkpat_seqopt_blk *)
     | Table of seq option * block                                   (* Blkpat_seqopt_blk *)

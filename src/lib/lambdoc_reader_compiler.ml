@@ -45,13 +45,6 @@ open Idiosyncrasies
 
 
 (********************************************************************************)
-(** {1 Private exceptions}                                                      *)
-(********************************************************************************)
-
-exception Mismatched_custom of Custom.kind * Custom.kind
-
-
-(********************************************************************************)
 (** {1 Private type definitions}                                                *)
 (********************************************************************************)
 
@@ -830,7 +823,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 Monad.return [Block.pullquote ~attr maybe_seq frag] in
             check_block_comm `Feature_pullquote comm elem
 
-        | Ast.Custom (maybe_kind, env, maybe_astseq, astfrag) when Blkcat.subtype [`Listable_blk] allowed ->
+        | Ast.Custom (env, maybe_astseq, astfrag) when Blkcat.subtype [`Listable_blk] allowed ->
             let elem attr _ =
                 let bad_order reason =
                     let msg = Error.Misplaced_order_parameter reason in
@@ -838,7 +831,6 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                     Order_input.no_order () in
                 try
                     let (kind, used, def) = Hashtbl.find customisations env in
-                    let () = match maybe_kind with Some k when k <> kind -> raise (Mismatched_custom (k, kind)) | _ -> () in
                     let () = if not used then Hashtbl.replace customisations env (kind, true, def) in
                     let order = match (def, comm.comm_order, minipaged) with
                         | Numbered _, None, true             -> bad_order Error.Reason_is_absent_when_mandatory
@@ -864,10 +856,6 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 with
                     | Not_found ->
                         let msg = Error.Undefined_custom env in
-                        add_error comm msg;
-                        Monad.return []
-                    | Mismatched_custom (found, expected) ->
-                        let msg = Error.Mismatched_custom (env, found, expected) in
                         add_error comm msg;
                         Monad.return [] in
             check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_custom comm elem

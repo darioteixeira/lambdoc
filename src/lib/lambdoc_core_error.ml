@@ -81,7 +81,6 @@ type msg =
     | Excessive_block_depth of int
 
     | Invalid_custom of pointer
-    | Mismatched_custom of pointer * Custom.kind * Custom.kind
     | Duplicate_custom of pointer
     | Undefined_custom of pointer
 

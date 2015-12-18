@@ -251,7 +251,7 @@ env_block:
     | set_literal BEGIN_SOURCE set_general TEXT END_SOURCE              {($2, Ast.Source (snd $4))}
     | set_literal BEGIN_VERBATIM set_general TEXT END_VERBATIM          {($2, Ast.Verbatim (snd $4))}
     | env_blkpat                                                        {let (comm, tag, blkpat) = $1 in (comm, Ast.Extcomm_blk (tag, blkpat))}
-    | BEGIN_CUSTOM inline_bundle? frag END_CUSTOM                       {(fst $1, Ast.Custom (None, snd $1, $2, $3))}
+    | BEGIN_CUSTOM inline_bundle? frag END_CUSTOM                       {(fst $1, Ast.Custom (snd $1, $2, $3))}
 
 env_blkpat:
     | set_literal BEGIN_BLKPAT_LIT set_general TEXT END_BLKPAT_LIT      {(fst $2, snd $2, Ast.Blkpat_lit (snd $4))}
