@@ -44,5 +44,5 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
                 "Syntax error"
             | exc ->
                 raise exc
-        in `Error [(Some position.pos_lnum, msg)]
+        in `Error [(Some position.pos_lnum, None, msg)]
 

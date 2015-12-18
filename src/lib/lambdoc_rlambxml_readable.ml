@@ -48,7 +48,7 @@ struct
                 | Unknown_tag         -> "Tag is unknown"
                 | Expected_empty      -> "Tag should be empty"
                 | Inline_in_block     -> "Inline content where block expected"
-            in (Some comm.comm_linenum, desc)
+            in (Some comm.comm_linenum, comm.comm_tag, desc)
         in List.rev_map f !errors
 end
 

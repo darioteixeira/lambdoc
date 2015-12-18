@@ -105,7 +105,7 @@ struct
                         | `Okay ast ->
                             Comp.compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source ast
                         | `Error xs ->
-                            let localized = List.map (fun (line, msg) -> (line, None, Error.Reading_error msg)) xs in
+                            let localized = List.map (fun (line, ident, msg) -> (line, ident, Error.Reading_error msg)) xs in
                             let errors = Comp.contextualize_errors ~sort:false source localized in
                             Monad.return (Ambivalent.invalid (Invalid.make errors))
                         | exception exc ->

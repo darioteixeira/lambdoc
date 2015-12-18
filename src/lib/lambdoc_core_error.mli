@@ -148,8 +148,9 @@ type contextualized = context option * ident option * msg [@@deriving sexp]
 *)
 type localized = int option * ident option * msg
 
-(** A reading error is a pair consisting of the line number where
-    the error occurred (where applicable) and a string message.
+(** A reading error is a triple consisting of the line number where
+    the error occurred (where applicable), the offending command (also
+    where applicable) and a string message.
 *)
-type reading = int option * string
+type reading = int option * ident option * string
 

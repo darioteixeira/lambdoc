@@ -128,5 +128,5 @@ type contextualized = context option * ident option * msg [@@deriving sexp]
 
 type localized = int option * ident option * msg
 
-type reading = int option * string
+type reading = int option * ident option * string
 

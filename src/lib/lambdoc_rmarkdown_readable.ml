@@ -29,5 +29,5 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
                 Printf.sprintf "The document uses an unsupported feature (%s)" x
             | exc ->
                 raise exc
-        in `Error [(None, msg)]
+        in `Error [(None, None, msg)]
 
