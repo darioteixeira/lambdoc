@@ -267,13 +267,13 @@ let explain_message = function
         sprintf "This line contains at least one malformed UTF-8 code point (represented by the character '#\xef\xbf\xbd#')."
 
     | Error.Reading_error msg ->
-        sprintf "%s." (escape msg)
+        sprintf "%s." msg
 
     | Error.Unavailable_feature description ->
         sprintf "The feature '%s' requested by this command is unavailable for this document." description
 
     | Error.Extension_error msg ->
-        sprintf "%s." (escape msg)
+        sprintf "%s." msg
 
 
 (********************************************************************************)
