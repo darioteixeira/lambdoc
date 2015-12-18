@@ -1,0 +1,123 @@
+<doc>
+
+<tabular>
+    <thead>
+        <tr>
+            <td>One</td>
+            <td>Two</td>
+            <td>Three</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>A</td>
+            <td>B</td>
+            <td>C</td>
+        </tr>
+        <tr>
+            <td>α</td>
+            <td>β</td>
+            <td>γ</td>
+        </tr>
+        <tr>
+            <td>Α</td>
+            <td>Β</td>
+            <td>Γ</td>
+        </tr>
+    </tbody>
+</tabular>
+
+<tabular style="cols=rlc">
+    <thead>
+        <tr>
+            <td>One</td>
+            <td>Two</td>
+            <td>Three</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>A</td>
+            <td>B</td>
+            <td>C</td>
+        </tr>
+        <tr>
+            <td>α</td>
+            <td>β</td>
+            <td>γ</td>
+        </tr>
+        <tr>
+            <td>Α</td>
+            <td>Β</td>
+            <td>Γ</td>
+        </tr>
+    </tbody>
+</tabular>
+
+
+<tabular style="cols=rll">
+    <thead>
+        <tr>
+            <td/>
+            <td style="cell=2c_">Scientific name</td>
+        </tr>
+        <tr>
+            <td>Common name</td>
+            <td>Genus</td>
+            <td>Species</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Wolf</td>
+            <td><emph>Canis</emph></td>
+            <td><emph>lupus</emph></td>
+        </tr>
+        <tr>
+            <td>Cat</td>
+            <td><emph>Felis</emph></td>
+            <td><emph>catus</emph></td>
+        </tr>
+        <tr>
+            <td>Chicken</td>
+            <td><emph>Gallus</emph></td>
+            <td><emph>gallus</emph></td>
+        </tr>
+        <tr>
+            <td>Lion</td>
+            <td><emph>Panthera</emph></td>
+            <td><emph>leo</emph></td>
+        </tr>
+        <tr>
+            <td>Bonobo</td>
+            <td><emph>Pan</emph></td>
+            <td><emph>paniscus</emph></td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td>English oak</td>
+            <td><emph>Quercus</emph></td>
+            <td><emph>robur</emph></td>
+        </tr>
+        <tr>
+            <td>European yew</td>
+            <td><emph>Taxus</emph></td>
+            <td><emph>baccata</emph></td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Common name</td>
+            <td>Genus</td>
+            <td>Species</td>
+        </tr>
+        <tr>
+            <td/>
+            <td style="cell=2c^">Scientific name</td>
+        </tr>
+    </tfoot>
+</tabular>
+
+</doc>
+

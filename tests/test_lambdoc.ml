@@ -20,31 +20,34 @@ module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend)
 module Filetype =
 struct
     type source = Lambtex | Lambxml
-    type target = Html5 | Sexp
+    type target = Html5 | Sexp | Asexp
     type t = Source of source | Target of target
 
     let of_string = function
-        | "tex"  -> Source Lambtex
-        | "xml"  -> Source Lambxml
-        | "html" -> Target Html5
-        | "sexp" -> Target Sexp
-        | x      -> invalid_arg ("Filetype.of_string: " ^ x)
+        | "tex"   -> Source Lambtex
+        | "xml"   -> Source Lambxml
+        | "html"  -> Target Html5
+        | "sexp"  -> Target Sexp
+        | "asexp" -> Target Asexp
+        | x       -> invalid_arg ("Filetype.of_string: " ^ x)
 
     let string_of_source = function
         | Lambtex -> "tex"
         | Lambxml -> "xml"
 
     let string_of_target = function
-        | Html5 -> "html"
-        | Sexp  -> "sexp"
+        | Html5  -> "html"
+        | Sexp   -> "sexp"
+        | Asexp  -> "asexp"
 
     let describe_source = function
         | Lambtex -> "Lambtex"
         | Lambxml -> "Lambxml"
 
     let describe_target = function
-        | Html5 -> "Html5"
-        | Sexp  -> "Sexp"
+        | Html5  -> "Html5"
+        | Sexp   -> "Sexp"
+        | Asexp  -> "Amnesiac Sexp"
 
     let to_string = function
         | Source s -> string_of_source s
@@ -119,15 +122,24 @@ let execute fname source target () =
         | Lambtex -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string
         | Lambxml -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string in
     let writer = match target with
-        | Html5 -> fun doc -> Html5_writer.write_ambivalent doc |> string_of_xhtml
-        | Sexp  -> Ambivalent.serialize in
+        | Html5  -> fun doc -> Html5_writer.write_ambivalent doc |> string_of_xhtml
+        | Sexp   -> Ambivalent.serialize
+        | Asexp  -> fun doc ->
+            let doc' = match doc with
+                | Valid doc ->
+                    let foldmapper = Foldmap.Identity.amnesiac in
+                    foldmapper.valid foldmapper () doc |> snd |> Ambivalent.valid
+                | Invalid _ ->
+                    doc in
+            Ambivalent.serialize doc' in
     let doc = reader source_contents in
     let str = writer doc ^ "\n" in
     Alcotest.(check string) fname str target_contents
 
 
-let build_test set =
+let build_test ~prefix set =
     let foreach (base_desc, fname) accum =
+        let fname = prefix ^ "_" ^ fname in
         let (sources, targets) = Hashtbl.find dict fname in
         let foreach_source source accum =
             let foreach_target target accum =
@@ -141,47 +153,57 @@ let build_test set =
 
 let feature_set =
     [
-    ("Plain text", "feature_00_plain");
-    ("Entities", "feature_01_entity");
-    ("Inline elements", "feature_02_inline");
-    ("Paragraphs", "feature_03_paragraph");
-    ("Lists", "feature_04_list");
-    ("Q&A environments", "feature_05_qa");
-    ("Verse environments", "feature_06_verse");
-    ("Quote environments", "feature_07_quote");
-    ("Mathematics", "feature_08_math");
-    ("Source environments", "feature_09_source");
-    ("Tabular environments", "feature_10_tabular");
-    ("Subpage environments", "feature_11_subpage");
-    ("Verbatim environments", "feature_12_verbatim");
-    ("Images", "feature_13_image");
-    ("Pull-quotes", "feature_14_pullquote");
-    ("Boxout environments", "feature_15_boxout");
-    ("Theorem environments", "feature_16_theorem");
-    ("Wrapper environments", "feature_17_wrapper");
-    ("Sectioning", "feature_18_sectioning");
-    ("Bibliography", "feature_19_bibliography");
-    ("End notes", "feature_20_notes");
-    ("Macros", "feature_21_macro");
-    ("Titles", "feature_22_title");
-    ("Abstract", "feature_23_abstract");
-    ("Table of contents", "feature_24_toc");
+    ("Plain text", "00_plain");
+    ("Entities", "01_entity");
+    ("Unicode text", "02_unicode");
+    ("Inline elements", "03_inline");
+    ("Paragraphs", "04_paragraph");
+    ("Lists", "05_list");
+    ("Q&A environments", "06_qa");
+    ("Verse environments", "07_verse");
+    ("Quote environments", "08_quote");
+    ("Mathematics", "09_math");
+    ("Source environments", "10_source");
+    ("Tabular environments", "11_tabular");
+    ("Subpage environments", "12_subpage");
+    ("Verbatim environments", "13_verbatim");
+    ("Images", "14_image");
+    ("Pull-quotes", "15_pullquote");
+    ("Boxout environments", "16_boxout");
+    ("Theorem environments", "17_theorem");
+    ("Wrapper environments", "18_wrapper");
+    ("Sectioning", "19_sectioning");
+    ("Bibliography", "20_bibliography");
+    ("End notes", "21_notes");
+    ("Macros", "22_macro");
+    ("Titles", "23_title");
+    ("Abstract", "24_abstract");
+    ("Table of contents", "25_toc");
+    ("Rules", "26_rule");
+    ("Internal and external references", "27_reference");
     ]
 
-let error_set =
+let lambxml_error_set =
     [
-    ("Misplaced label parameter", "error_00_misplaced_label");
-    ("Misplaced order parameter", "error_01_misplaced_order");
-    ("Invalid label parameter", "error_02_invalid_label");
-    ("Invalid order parameter", "error_03_invalid_order");
-    ("Invalid style parameter", "error_04_invalid_style");
-    ("Invalid entity", "error_05_invalid_entity");
+    ("Non-empty elements", "00_notempty");
+    ]
+
+let semantic_error_set =
+    [
+    ("Misplaced label parameter", "00_misplaced_label");
+    ("Misplaced order parameter", "01_misplaced_order");
+    ("Invalid label parameter", "02_invalid_label");
+    ("Invalid order parameter", "03_invalid_order");
+    ("Invalid style parameter", "04_invalid_style");
+    ("Invalid entity", "05_invalid_entity");
     ]
 
 let tests =
     [
-    ("Features", build_test feature_set);
-    ("Error messages", build_test error_set);
+    ("Lambtex features", build_test ~prefix:"lambtex_feature" feature_set);
+    ("Lambxml features", build_test ~prefix:"lambxml_feature" feature_set);
+    ("Lambxml errors", build_test ~prefix:"lambxml_error" lambxml_error_set);
+    ("Semantic errors", build_test ~prefix:"semantic_error" semantic_error_set);
     ]
 
 let () =

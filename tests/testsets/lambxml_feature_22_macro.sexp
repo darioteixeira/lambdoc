@@ -1,0 +1,1 @@
+(Valid((content(((blk(Paragraph(((inl(Plain"The quick brown fox jumps over the lazy dog."))(attr((classnames())(parsinfo(((tag())(linenum 3)(originator Source))))))))))(attr((classnames())(parsinfo(((tag(p))(linenum 5)(originator Source)))))))))(bibs())(notes())(toc())(labels())(customs())))

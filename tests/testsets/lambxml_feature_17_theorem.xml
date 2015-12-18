@@ -1,0 +1,20 @@
+<doc>
+
+<newtheorem name="theorem" counter="theorem">Theorem</newtheorem>
+<newtheorem name="proof">Proof</newtheorem>
+
+<theorem>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</theorem>
+
+<theorem>
+    <dt>John McAuthor</dt>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</theorem>
+
+<proof>
+    <dd>Lorem ipsum dolor sit amet. <sub>&#x220e;</sub></dd>
+</proof>
+
+</doc>
+

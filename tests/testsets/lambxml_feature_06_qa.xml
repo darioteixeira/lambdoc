@@ -1,0 +1,48 @@
+<doc>
+
+<qanda>
+    <question>
+        <dt>Question:</dt>
+        <dd>This is a question?</dd>
+    </question>
+    
+    <answer>
+        <dt>Answer:</dt>
+        <dd>This is an answer.</dd>
+    </answer>
+
+    <question>
+        <dt>Q:</dt>
+        <dd>One?</dd>
+    </question>
+
+    <answer>
+        <dt>A:</dt>
+        <dd>
+            <p>Alpha.</p>
+            <p>Beta.</p>
+        </dd>
+    </answer>
+
+    <rquestion>Two?</rquestion>
+
+    <ranswer>Gamma.</ranswer>
+
+    <question>
+        <dd>Three?</dd>
+    </question>
+
+    <answer>
+        <dd>
+            <p>Delta</p>
+            <p>Epsilon.</p>
+        </dd>
+    </answer>
+
+    <rquestion>Four?</rquestion>
+    
+    <ranswer>Zeta.</ranswer>
+</qanda>
+
+</doc>
+

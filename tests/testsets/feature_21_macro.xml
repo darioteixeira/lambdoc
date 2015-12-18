@@ -1,4 +1,0 @@
-<newmacro name="fox" nargs="0">The quick brown fox jumps over the lazy dog.</newmacro>
-
-<p><call name="fox"/></p>
-

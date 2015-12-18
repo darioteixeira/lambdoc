@@ -1,0 +1,100 @@
+<doc>
+
+<source style="lang=caml">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,nums=yes">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,plain">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,nums=yes,plain">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,boxed">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,nums=yes,boxed">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,zebra">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="lang=caml,nums=yes,zebra">
+type 'a tree =
+    | Leaf
+    | Node of 'a * 'a tree * 'a tree
+
+let rec count = function
+    | Leaf                     -> 0
+    | Node (node, left, right) -> 1 + count left + count right
+</source>
+
+<source style="console">
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+</source>
+
+<source style="nums=yes,console">
+dario@localhost:~/lambtex$ make
+lambcmd -f lambtex -t xhtml -i sample.lambtex -o index.html
+
+dario@localhost:~/lambtex$ file index.html
+index.html: HTML document text
+</source>
+
+</doc>
+

@@ -1,0 +1,44 @@
+<doc>
+
+<newboxout name="generic"/>
+<newboxout name="warning">Warning</newboxout>
+<newboxout name="tip" counter="tip">Tip</newboxout>
+
+<generic>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</generic>
+
+<generic>
+    <dt>This is a title</dt>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</generic>
+
+<warning>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</warning>
+
+<warning>
+    <dt>This is a title</dt>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</warning>
+
+<tip label="tip:one">
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</tip>
+
+<tip order="">
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</tip>
+
+<tip>
+    <dt>This is a title</dt>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</tip>
+
+<tip order="">
+    <dt>This is a title</dt>
+    <dd>Lorem ipsum dolor sit amet.</dd>
+</tip>
+
+</doc>
+

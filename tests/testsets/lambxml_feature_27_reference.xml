@@ -1,0 +1,64 @@
+<doc>
+
+<section label="sec:ref">Internal and external references</section>
+
+<p>Checkout <link href="http://ocaml.org/"/>.</p>
+
+<p>Checkout the <link href="http://ocaml.org/">OCaml</link> home page.</p>
+
+<p>Checkout the <a href="http://ocsigen.org/">Ocsigen</a> home page.</p>
+
+<p>See this<see href="note:one"/> note.</p>
+
+<p>See these<see href="note:two note:three"/> notes.</p>
+
+<p>Please consult this bibliography entry<cite href="bib:one"/>.</p>
+
+<p>Please consult these bibliography entries<cite href="bib:two bib:three"/>.</p>
+
+<p>Checkout section <dref href="sec:ref"/>.</p>
+
+<p>Checkout section <dref href="sec:ref">test</dref>.</p>
+
+<p>Checkout <sref href="sec:ref"/>.</p>
+
+<p>Checkout <sref href="sec:ref">test</sref>.</p>
+
+<p>Checkout <mref href="sec:ref">this section</mref>.</p>
+
+<notes/>
+
+<note label="note:one">
+    <p>This is note one.</p>
+</note>
+
+<note label="note:two">
+    <p>This is note two.</p>
+</note>
+
+<note label="note:three">
+    <p>This is note three.</p>
+</note>
+
+<bibliography/>
+
+<bib label="bib:one">
+    <who>Who one</who>
+    <what>What one</what>
+    <where>Where one</where>
+</bib>
+
+<bib label="bib:two">
+    <who>Who two</who>
+    <what>What two</what>
+    <where>Where two</where>
+</bib>
+
+<bib label="bib:three">
+    <who>Who three</who>
+    <what>What three</what>
+    <where>Where three</where>
+</bib>
+
+</doc>
+

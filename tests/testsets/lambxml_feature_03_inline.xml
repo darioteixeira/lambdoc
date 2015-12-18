@@ -1,0 +1,10 @@
+<doc>
+<p>Here we have examples of text in <bold>bold</bold> and <emph>emphasised</emph>.</p>
+<p>Here's <code>monospaced</code> and <caps>small-caps</caps> text.</p>
+<p>You can use <sup>superscripts</sup> and <sub>subscripts</sub>.</p>
+<p>You may also correct <del>perfect</del><ins>broken</ins> text.</p>
+<p>Also, <mbox>all of this text should appear on the same line.</mbox></p>
+<p>You can also create <span>custom</span> spans of text.</p>
+<p>Inline <bold>elements <emph>may <caps>be</caps> deeply</emph> nested</bold>.</p>
+</doc>
+

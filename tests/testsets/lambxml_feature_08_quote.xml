@@ -1,0 +1,17 @@
+<doc>
+
+<quote>
+    <p>Lorem ipsum dolor sit amet.</p>
+    <quote>
+        <quote>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </quote>
+    </quote>
+    <p>Lorem ipsum dolor sit amet.</p>
+    <quote>
+        <p>Lorem ipsum dolor sit amet.</p>
+    </quote>
+</quote>
+
+</doc>
+

@@ -1,0 +1,8 @@
+<doc>
+
+<p>Here's an inline image: <glyph src="inline.png" alt="This is an inline image"/>.</p>
+
+<picture src="block.png" alt="This is a block image."/>
+
+</doc>
+
