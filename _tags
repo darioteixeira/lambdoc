@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: ec260d6384b6385a2902e34394759f11)
+# DO NOT EDIT (digest: 7a0ba32d9398dfc72c6fded39645f70c)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -22,14 +22,13 @@ true: annot, bin_annot
 <src/lib/*.ml{,i,y}>: pkg_menhirLib
 <src/lib/*.ml{,i,y}>: pkg_omd
 <src/lib/*.ml{,i,y}>: pkg_pcre
-<src/lib/*.ml{,i,y}>: pkg_pxp-engine
-<src/lib/*.ml{,i,y}>: pkg_pxp-ulex-utf8
 <src/lib/*.ml{,i,y}>: pkg_re
 <src/lib/*.ml{,i,y}>: pkg_sedlex
 <src/lib/*.ml{,i,y}>: pkg_sexplib
 <src/lib/*.ml{,i,y}>: pkg_threads
 <src/lib/*.ml{,i,y}>: pkg_tyxml
 <src/lib/*.ml{,i,y}>: pkg_ulex
+<src/lib/*.ml{,i,y}>: pkg_xmlm
 # Executable lambcmd
 <src/lambcmd/lambcmd.{native,byte}>: pkg_batteries
 <src/lambcmd/lambcmd.{native,byte}>: pkg_blahcaml
@@ -37,14 +36,13 @@ true: annot, bin_annot
 <src/lambcmd/lambcmd.{native,byte}>: pkg_menhirLib
 <src/lambcmd/lambcmd.{native,byte}>: pkg_omd
 <src/lambcmd/lambcmd.{native,byte}>: pkg_pcre
-<src/lambcmd/lambcmd.{native,byte}>: pkg_pxp-engine
-<src/lambcmd/lambcmd.{native,byte}>: pkg_pxp-ulex-utf8
 <src/lambcmd/lambcmd.{native,byte}>: pkg_re
 <src/lambcmd/lambcmd.{native,byte}>: pkg_sedlex
 <src/lambcmd/lambcmd.{native,byte}>: pkg_sexplib
 <src/lambcmd/lambcmd.{native,byte}>: pkg_threads
 <src/lambcmd/lambcmd.{native,byte}>: pkg_tyxml
 <src/lambcmd/lambcmd.{native,byte}>: pkg_ulex
+<src/lambcmd/lambcmd.{native,byte}>: pkg_xmlm
 <src/lambcmd/lambcmd.{native,byte}>: use_lambdoc
 <src/lambcmd/*.ml{,i,y}>: pkg_batteries
 <src/lambcmd/*.ml{,i,y}>: pkg_blahcaml
@@ -52,14 +50,13 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_menhirLib
 <src/lambcmd/*.ml{,i,y}>: pkg_omd
 <src/lambcmd/*.ml{,i,y}>: pkg_pcre
-<src/lambcmd/*.ml{,i,y}>: pkg_pxp-engine
-<src/lambcmd/*.ml{,i,y}>: pkg_pxp-ulex-utf8
 <src/lambcmd/*.ml{,i,y}>: pkg_re
 <src/lambcmd/*.ml{,i,y}>: pkg_sedlex
 <src/lambcmd/*.ml{,i,y}>: pkg_sexplib
 <src/lambcmd/*.ml{,i,y}>: pkg_threads
 <src/lambcmd/*.ml{,i,y}>: pkg_tyxml
 <src/lambcmd/*.ml{,i,y}>: pkg_ulex
+<src/lambcmd/*.ml{,i,y}>: pkg_xmlm
 <src/lambcmd/*.ml{,i,y}>: use_lambdoc
 # Executable test_lambdoc
 <tests/test_lambdoc.{native,byte}>: pkg_alcotest
@@ -69,8 +66,6 @@ true: annot, bin_annot
 <tests/test_lambdoc.{native,byte}>: pkg_menhirLib
 <tests/test_lambdoc.{native,byte}>: pkg_omd
 <tests/test_lambdoc.{native,byte}>: pkg_pcre
-<tests/test_lambdoc.{native,byte}>: pkg_pxp-engine
-<tests/test_lambdoc.{native,byte}>: pkg_pxp-ulex-utf8
 <tests/test_lambdoc.{native,byte}>: pkg_re
 <tests/test_lambdoc.{native,byte}>: pkg_sedlex
 <tests/test_lambdoc.{native,byte}>: pkg_sexplib
@@ -78,6 +73,7 @@ true: annot, bin_annot
 <tests/test_lambdoc.{native,byte}>: pkg_tyxml
 <tests/test_lambdoc.{native,byte}>: pkg_ulex
 <tests/test_lambdoc.{native,byte}>: pkg_unix
+<tests/test_lambdoc.{native,byte}>: pkg_xmlm
 <tests/test_lambdoc.{native,byte}>: use_lambdoc
 <tests/*.ml{,i,y}>: pkg_alcotest
 <tests/*.ml{,i,y}>: pkg_batteries
@@ -86,8 +82,6 @@ true: annot, bin_annot
 <tests/*.ml{,i,y}>: pkg_menhirLib
 <tests/*.ml{,i,y}>: pkg_omd
 <tests/*.ml{,i,y}>: pkg_pcre
-<tests/*.ml{,i,y}>: pkg_pxp-engine
-<tests/*.ml{,i,y}>: pkg_pxp-ulex-utf8
 <tests/*.ml{,i,y}>: pkg_re
 <tests/*.ml{,i,y}>: pkg_sedlex
 <tests/*.ml{,i,y}>: pkg_sexplib
@@ -95,6 +89,7 @@ true: annot, bin_annot
 <tests/*.ml{,i,y}>: pkg_tyxml
 <tests/*.ml{,i,y}>: pkg_ulex
 <tests/*.ml{,i,y}>: pkg_unix
+<tests/*.ml{,i,y}>: pkg_xmlm
 <tests/*.ml{,i,y}>: use_lambdoc
 # OASIS_STOP
 true: use_menhir, no_alias_deps, warn(-40)

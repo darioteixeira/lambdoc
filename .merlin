@@ -7,11 +7,10 @@ PKG camlhighlight
 PKG menhirLib
 PKG omd
 PKG pcre
-PKG pxp-engine
-PKG pxp-ulex-utf8
 PKG re
 PKG sedlex
 PKG sexplib
 PKG tyxml
 PKG ulex
+PKG xmlm
 FLG -w -40

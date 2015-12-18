@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 0ae707e313cd32f7407684e72a0663bc)
+# DO NOT EDIT (digest: ef3c9833787bcb8ad90cd189085722e1)
 src/lib/Lambdoc_core
 src/lib/Lambdoc_core_basic
 src/lib/Lambdoc_core_attr
@@ -50,8 +50,6 @@ src/lib/Lambdoc_rlambwiki_tokenizer
 src/lib/Lambdoc_rlambwiki_readable
 src/lib/Lambdoc_rlambwiki_reader
 src/lib/Lambdoc_rlambxml
-src/lib/Lambdoc_rlambxml_dtd
-src/lib/Lambdoc_rlambxml_parser
 src/lib/Lambdoc_rlambxml_readable
 src/lib/Lambdoc_rlambxml_reader
 src/lib/Lambdoc_rmarkdown

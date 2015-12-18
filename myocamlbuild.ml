@@ -620,13 +620,4 @@ let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 
 # 622 "myocamlbuild.ml"
 (* OASIS_STOP *)
-
-let my_dispatcher = function
-    | After_rules ->
-        (* Add dependency to lambxml.dtd *)
-        dep ["ocamldep"; "file:src/lib/lambdoc_rlambxml_dtd.ml"] ["src/lib/lambxml.dtd"];
-    | _ -> ()
-
-let () =
-    Ocamlbuild_plugin.dispatch (MyOCamlbuildBase.dispatch_combine [dispatch_default; my_dispatcher])
-
+Ocamlbuild_plugin.dispatch dispatch_default;;
