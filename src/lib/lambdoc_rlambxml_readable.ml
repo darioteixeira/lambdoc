@@ -476,11 +476,9 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         {thead; tfoot; tbodies = List.rev tbodies}
 
     and wrapper_of_trees = function
-        | [(comm, prop, node) as tree] ->
-            cleanup comm prop errors;
+        | [tree] ->
             (None, block_of_tree tree)
-        | [(comm1, prop1, node1) as tree1; (comm2, prop2, node2)] ->
-            cleanup comm1 prop1 errors;
+        | [tree1; (comm2, prop2, node2)] ->
             cleanup comm2 prop2 errors;
             let seq = match node2 with
                 | E ("caption", xs) -> seq_of_trees xs
