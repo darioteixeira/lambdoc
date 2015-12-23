@@ -1,3 +1,5 @@
+<doc>
+
 <newmacro name="fox" nargs="0">
     The quick brown fox jumps over the lazy dog.
 </newmacro>
@@ -28,7 +30,7 @@
 <subtitle>January 2010</subtitle>
 
 <abstract>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 </abstract>
 
 <toc/>
@@ -47,9 +49,9 @@ emphasised text should appear on the same line.</i></mbox>
 </p>
 
 <p>
-<call name="short"/>
+<short/>
 It is possible to embed images like <glyph src="circle-tiny.png" alt="o"/> into an inline context.
-<call name="short"/>
+<short/>
 </p>
 
 <p>
@@ -72,148 +74,148 @@ can reference them with a single command<see href="note:one note:two note:three"
 <!-- ****************************************************************** -->
 <h1 label="sec:foobar">Text paragraphs</h1>
 
-<p><call name="lorem"/></p>
-<p><call name="lorem"/></p>
-<p><call name="lorem"/></p>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
+<p><lorem/></p>
+<p><lorem/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Unordered lists</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <ul>
-    <li><call name="lorem"/></li>
-    <li><call name="lorem"/></li>
-    <li><call name="lorem"/></li>
+    <li><lorem/></li>
+    <li><lorem/></li>
+    <li><lorem/></li>
 </ul>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Ordered lists</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <ol>
-    <li><call name="lorem"/></li>
-    <li><call name="lorem"/></li>
-    <li><call name="lorem"/></li>
+    <li><lorem/></li>
+    <li><lorem/></li>
+    <li><lorem/></li>
 </ol>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Definition lists</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <dl>
     <dt>Alpha</dt>
-    <dd><call name="lorem"/></dd>
+    <dd><lorem/></dd>
 
     <dt>Beta</dt>
-    <dd><call name="lorem"/></dd>
+    <dd><lorem/></dd>
 
     <dt>Gamma</dt>
-    <dd><call name="lorem"/></dd>
+    <dd><lorem/></dd>
 </dl>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Q&amp;A environments</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <qanda>
     <question>
         <dt>Q:</dt>
-        <dd><call name="lorem"/></dd>
+        <dd><lorem/></dd>
     </question>
 
     <answer>
         <dt>A:</dt>
-        <dd><call name="lorem"/></dd>
+        <dd><lorem/></dd>
     </answer>
 
     <rquestion>
-        <call name="lorem"/>
+        <lorem/>
     </rquestion>
 
     <ranswer>
-        <call name="lorem"/>
+        <lorem/>
     </ranswer>
 
     <question>
-        <dd><call name="lorem"/></dd>
+        <dd><lorem/></dd>
     </question>
 
     <answer>
-        <dd><call name="lorem"/></dd>
+        <dd><lorem/></dd>
     </answer>
 
     <rquestion>
-        <call name="lorem"/>
+        <lorem/>
     </rquestion>
 
     <ranswer>
-        <call name="lorem"/>
+        <lorem/>
     </ranswer>
 </qanda>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Verse environments</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <verse>
     <p>
-    <call name="fox"/><br/>
-    <call name="fox"/><br/>
-    <call name="fox"/><br/>
-    <call name="fox"/>
+    <fox/><br/>
+    <fox/><br/>
+    <fox/><br/>
+    <fox/>
     </p>
 
     <p>
-    <call name="fox"/><br/>
-    <call name="fox"/><br/>
-    <call name="fox"/><br/>
-    <call name="fox"/>
+    <fox/><br/>
+    <fox/><br/>
+    <fox/><br/>
+    <fox/>
     </p>
 
     <p>
-    <call name="fox"/><br/>
-    <call name="fox"/><br/>
-    <call name="fox"/><br/>
-    <call name="fox"/>
+    <fox/><br/>
+    <fox/><br/>
+    <fox/><br/>
+    <fox/>
     </p>
 </verse>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Quote environments</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <quote>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 </quote>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Mathtex blocks</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <mathtexblk>
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 </mathtexblk>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Presentation Mathml blocks</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <mathmlblk>
 <math>
     <mrow>
@@ -246,13 +248,13 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
     </mrow>
 </math>
 </mathmlblk>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Content Mathml blocks</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <mathmlblk>
 <math>
 <apply><in/>
@@ -310,13 +312,13 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 </apply>
 </math>
 </mathmlblk>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Source environments</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <source style="lang=caml">
 type 'a tree =
     | Leaf
@@ -326,13 +328,13 @@ let rec count = function
     | Leaf                     -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 </source>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Tabular environments</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <tabular style="cols=cccc">
 <thead>
     <tr>
@@ -375,24 +377,24 @@ let rec count = function
     </tr>
 </tbody>
 </tabular>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Subpages</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <subpage>
     <h1 order="">Title in subpage</h1>
-    <p><call name="lorem"/></p>
+    <p><lorem/></p>
 </subpage>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Verbatim environments</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <pre>
        -------
        |  A  |
@@ -410,83 +412,76 @@ let rec count = function
 |  A  |       |  C  |
 -------       -------
 </pre>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Pictures</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <picture src="circle-small.png" alt="Small Circle"/>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Pull-quotes</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <pull>
-    <p><call name="short"/></p>
+    <dd><short/></dd>
 </pull>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Custom boxout environments</h1>
 
-<newboxout name="warning">
-    Warning
-</newboxout>
+<newboxout name="warning">Warning</newboxout>
 
-<newboxout name="tip" counter="tip">
-    Tip
-</newboxout>
+<newboxout name="tip" counter="tip">Tip</newboxout>
 
-<p><call name="lorem"/></p>
-<boxout name="warning">
-    <p><call name="lorem"/></p>
-</boxout>
-<p><call name="lorem"/></p>
-<boxout name="tip" label="tip:one">
-    <caption>This is a title</caption>
-    <p><call name="lorem"/></p>
-</boxout>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
+<warning>
+    <dd><lorem/></dd>
+</warning>
+<p><lorem/></p>
+<tip label="tip:one">
+    <dt>This is a title</dt>
+    <dd><lorem/></dd>
+</tip>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Custom theorem environments</h1>
 
-<newtheorem name="theorem" counter="thm">
-    Thereom
-</newtheorem>
+<newtheorem name="theorem" counter="thm">Thereom</newtheorem>
 
-<p><call name="lorem"/></p>
-<theorem name="theorem">
-    <p><call name="lorem"/></p>
+<p><lorem/></p>
+<theorem>
+    <dd><lorem/></dd>
 </theorem>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Equation wrapper</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <equation>
-    <caption><call name="short"/></caption>
     <mathtexblk>
     x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
     </mathtexblk>
+    <caption><short/></caption>
 </equation>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Printout wrapper</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <printout>
-<caption><call name="short"/></caption>
 <source style="lang=caml">
 type 'a tree =
     | Leaf
@@ -496,16 +491,16 @@ let rec count = function
     | Leaf                     -> 0
     | Node (node, left, right) -> 1 + (count left) + (count right);;
 </source>
+<caption><short/></caption>
 </printout>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Table wrapper</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <table>
-    <caption><call name="short"/></caption>
     <tabular style="cols=cccc">
     <thead>
         <tr>
@@ -523,41 +518,42 @@ let rec count = function
         </tr>
     </tbody>
     </tabular>
+    <caption><short/></caption>
 </table>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <h1>Figure wrapper</h1>
 
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 <figure>
-    <caption><call name="short"/></caption>
     <picture src="circle-small.png" alt="Small Circle"/>
+    <caption><short/></caption>
 </figure>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
 <part order="">Sectioning</part>
 
 <h1 label="sec:intro">Level 1 section</h1>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 <h2>Level 2 section</h2>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 <h3>Level 3 section</h3>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 <h4>Level 4 section</h4>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 <h5>Level 5 section</h5>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 <h6>Level 6 section</h6>
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 
 
 <!-- ****************************************************************** -->
@@ -590,14 +586,16 @@ let rec count = function
 <notes/>
 
 <note label="note:one">
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 </note>
 
 <note label="note:two">
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 </note>
 
 <note label="note:three">
-<p><call name="lorem"/></p>
+<p><lorem/></p>
 </note>
+
+</doc>
 
