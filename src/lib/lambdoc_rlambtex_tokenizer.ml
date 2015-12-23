@@ -54,7 +54,7 @@ struct
         inline_extdefs: Extension.extdef list;
         sim_block_extdefs: Extension.extdef list;
         env_block_extdefs: Extension.extdef list;
-        lexbuf: Sedlexing.lexbuf;
+        buffer: Lexer.buffer;
         mutable position: Lexing.position;
         mutable waiting: Lexer.pair option;
         mutable literal: string option;
@@ -257,7 +257,7 @@ struct
                 | C.Literal    -> match tokenizer.literal with
                     | Some l -> Lexer.literal l
                     | None   -> assert false in
-            let outcome = lexer tokenizer.lexbuf in
+            let outcome = lexer tokenizer.buffer in
             match outcome.previous with
                 | Some previous ->
                     tokenizer.waiting <- Some outcome.current;
@@ -278,7 +278,7 @@ struct
             inline_extdefs;
             env_block_extdefs;
             sim_block_extdefs;
-            lexbuf;
+            buffer = Lexer.make_buffer lexbuf;
             position;
             waiting = None;
             literal = None;

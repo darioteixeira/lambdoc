@@ -14,6 +14,10 @@
 (** {1 Type definitions}                                                        *)
 (********************************************************************************)
 
+(** A lexing buffer.
+*)
+type buffer
+
 (** The set of all lexemes output by the various lexers.
 *)
 type lexeme =
@@ -53,33 +57,37 @@ type outcome =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
+(** Make a new lexing buffer.
+*)
+val make_buffer: Sedlexing.lexbuf -> buffer
+
 (** General document lexer.
 *)
-val general: Sedlexing.lexbuf -> outcome
+val general: buffer -> outcome
 
 (** Special lexer for raw environments.  Pretty much every character
     is returned as text; the exceptions are the EOF character, escaped
     characters, and the special "\}" termination tag (note that the backslash
     is there to satisfy OCamldoc and is not part of the terminator).
 *)
-val raw: Sedlexing.lexbuf -> outcome
+val raw: buffer -> outcome
 
 (** Special lexer for mathtex environments in an inline context.
     No attempt is made to interpret the characters in the stream,
     except for the EOF character and the environment terminator $].
 *)
-val mathtexinl: Sedlexing.lexbuf -> outcome
+val mathtexinl: buffer -> outcome
 
 (** Special lexer for mathml environments in an inline context.
     No attempt is made to interpret the characters in the stream,
     except for the EOF character and the environment terminator $>.
 *)
-val mathmlinl: Sedlexing.lexbuf -> outcome
+val mathmlinl: buffer -> outcome
 
-(** Special parametrised lexer for verbatim-like environments.
+(** Special parameterised lexer for verbatim-like environments.
     The string parameter indicates the termination string.
     No attempt is made to interpret the characters in the stream,
     except for the EOF character and the termination string.
 *)
-val literal: string -> Sedlexing.lexbuf -> outcome
+val literal: string -> buffer -> outcome
 
