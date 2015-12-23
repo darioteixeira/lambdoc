@@ -13,9 +13,11 @@
 
 let () =
     let src_lambtex = BatIO.read_all (BatIO.input_channel (open_in "sample.lambtex")) in
+    let src_lambxml = BatIO.read_all (BatIO.input_channel (open_in "sample.lambxml")) in
     let tests =
         [
         ("Parsing with Lambtex", (fun src -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string src), src_lambtex);
+        ("Parsing with Lambxml", (fun src -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string src), src_lambxml);
         ]
-    in Benchmark.(latencyN ~min_cpu:0.9 100L tests |> tabulate)
+    in Benchmark.(latencyN ~min_cpu:0.5 1000L tests |> tabulate)
 
