@@ -19,5 +19,5 @@ let () =
         ("Parsing with Lambtex", (fun src -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string src), src_lambtex);
         ("Parsing with Lambxml", (fun src -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string src), src_lambxml);
         ]
-    in Benchmark.(latencyN ~min_cpu:0.5 1000L tests |> tabulate)
+    in Benchmark.(throughputN ~min_count:100L 30 tests |> tabulate)
 
