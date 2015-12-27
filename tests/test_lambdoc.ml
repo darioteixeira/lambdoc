@@ -19,12 +19,13 @@ module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend)
 
 module Filetype =
 struct
-    type source = Lambtex | Lambxml
+    type source = Lambtex | Lambwiki | Lambxml
     type target = Html5 | Sexp | Asexp
     type t = Source of source | Target of target
 
     let of_string = function
         | "tex"   -> Source Lambtex
+        | "wiki"  -> Source Lambwiki
         | "xml"   -> Source Lambxml
         | "html"  -> Target Html5
         | "sexp"  -> Target Sexp
@@ -32,8 +33,9 @@ struct
         | x       -> invalid_arg ("Filetype.of_string: " ^ x)
 
     let string_of_source = function
-        | Lambtex -> "tex"
-        | Lambxml -> "xml"
+        | Lambtex  -> "tex"
+        | Lambwiki -> "wiki"
+        | Lambxml  -> "xml"
 
     let string_of_target = function
         | Html5  -> "html"
@@ -41,8 +43,9 @@ struct
         | Asexp  -> "asexp"
 
     let describe_source = function
-        | Lambtex -> "Lambtex"
-        | Lambxml -> "Lambxml"
+        | Lambtex  -> "Lambtex"
+        | Lambwiki -> "Lambwiki"
+        | Lambxml  -> "Lambxml"
 
     let describe_target = function
         | Html5  -> "Html5"
@@ -119,8 +122,9 @@ let execute fname source target () =
     let source_contents = read_file fname (Source source) in
     let target_contents = read_file fname (Target target) in
     let reader = match source with
-        | Lambtex -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string
-        | Lambxml -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string in
+        | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string
+        | Lambwiki -> Lambdoc_rlambwiki_reader.Trivial.ambivalent_from_string
+        | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string in
     let writer = match target with
         | Html5  -> fun doc -> Html5_writer.write_ambivalent doc |> string_of_xhtml
         | Sexp   -> Ambivalent.serialize
@@ -151,7 +155,7 @@ let build_test ~prefix set =
     List.fold_right foreach set []
         
 
-let feature_set =
+let feature1_set =
     [
     ("Plain text", "00_plain");
     ("Entities", "01_entity");
@@ -159,20 +163,25 @@ let feature_set =
     ("Inline elements", "03_inline");
     ("Paragraphs", "04_paragraph");
     ("Lists", "05_list");
+    ("Quote environments", "08_quote");
+    ("Source environments", "10_source");
+    ("Verbatim environments", "13_verbatim");
+    ("Sectioning", "19_sectioning");
+    ]
+
+
+let feature2_set =
+    [
     ("Q&A environments", "06_qa");
     ("Verse environments", "07_verse");
-    ("Quote environments", "08_quote");
     ("Mathematics", "09_math");
-    ("Source environments", "10_source");
     ("Tabular environments", "11_tabular");
     ("Subpage environments", "12_subpage");
-    ("Verbatim environments", "13_verbatim");
     ("Images", "14_image");
     ("Pull-quotes", "15_pullquote");
     ("Boxout environments", "16_boxout");
     ("Theorem environments", "17_theorem");
     ("Wrapper environments", "18_wrapper");
-    ("Sectioning", "19_sectioning");
     ("Bibliography", "20_bibliography");
     ("End notes", "21_notes");
     ("Macros", "22_macro");
@@ -200,8 +209,9 @@ let semantic_error_set =
 
 let tests =
     [
-    ("Lambtex features", build_test ~prefix:"lambtex_feature" feature_set);
-    ("Lambxml features", build_test ~prefix:"lambxml_feature" feature_set);
+    ("Lambtex features", build_test ~prefix:"lambtex_feature" (feature1_set @ feature2_set));
+    ("Lambwiki features", build_test ~prefix:"lambwiki_feature" feature1_set);
+    ("Lambxml features", build_test ~prefix:"lambxml_feature" (feature1_set @ feature2_set));
     ("Lambxml errors", build_test ~prefix:"lambxml_error" lambxml_error_set);
     ("Semantic errors", build_test ~prefix:"semantic_error" semantic_error_set);
     ]

@@ -1,0 +1,2 @@
+The input charset is ((utf-8)), so you can, for example, enter Japanese characters directly: おなかがいっぱいですからなにもたべたくないです.
+
