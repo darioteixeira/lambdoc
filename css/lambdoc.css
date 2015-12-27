@@ -356,7 +356,7 @@ dd.doc_answer
 	margin-bottom: 0;
 	}
 
-.doc_src_main
+.doc_src_block
 	{
 	clear: both;
 	margin: 1.5em 1em;
@@ -366,12 +366,12 @@ dd.doc_answer
 	overflow: auto;
 	}
 
-.doc_src_main:first-child
+.doc_src_block:first-child
 	{
 	margin-top: 0;
 	}
 
-.doc_src_main:last-child
+.doc_src_block:last-child
 	{
 	margin-bottom: 0;
 	}

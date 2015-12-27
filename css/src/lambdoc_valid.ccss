@@ -231,7 +231,7 @@ Doc_line_height_src:        1.8em;
 Doc_border_src_console:     1px solid #ffb720;
 Doc_border_src_consnums:    1px solid #ffb720;
 
-.doc_src_main
+.doc_src_block
     {
     clear: both;
     margin: Doc_vmargin_hybrid Doc_hmargin_inset;       /* Default Doc_vmargin is equal to "plain" */
@@ -241,8 +241,8 @@ Doc_border_src_consnums:    1px solid #ffb720;
     overflow: auto;
     }
 
-.doc_src_main:first-child {margin-top: 0;}
-.doc_src_main:last-child {margin-bottom: 0;}
+.doc_src_block:first-child {margin-top: 0;}
+.doc_src_block:last-child {margin-bottom: 0;}
 
 .doc_src_nums
     {
