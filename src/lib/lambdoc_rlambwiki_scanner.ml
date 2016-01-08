@@ -9,7 +9,7 @@
 (** Scanner for Lambwiki reader.  We use Ulex for handling the UTF-8 parsing.
 *)
 
-module String = BatString
+module String = Lambdoc_reader_utils.String
 
 
 (********************************************************************************)

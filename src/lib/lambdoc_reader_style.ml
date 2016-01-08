@@ -106,17 +106,18 @@ let cols_of_string key str =
 
 
 let cellfmt_of_string =
-    let rex = Pcre.regexp "^(?<colspan>[0-9]+)(?<colfmt>[a-zA-Z]+)(?<hline>(_|\\^|_\\^|\\^_)?)$" in
+    let rex = Re.(compile (seq [bos; group (rep1 (rg '0' '9')); group (rep1 (alt [rg 'a' 'z'; rg 'A' 'Z'])); group (rep (set "^_")); eos])) in
     fun str ->
-        let subs = Pcre.exec ~rex str in
-        let colspan = int_of_string (Pcre.get_named_substring rex "colspan" subs)
-        and colfmt = colfmt_of_string (Pcre.get_named_substring rex "colfmt" subs)
-        and (overline, underline) = match Pcre.get_named_substring rex "hline" subs with
+        let groups = Re.exec rex str in
+        let colspan = int_of_string (Re.get groups 1) in
+        let colfmt = colfmt_of_string (Re.get groups 2) in
+        let (overline, underline) = match Re.get groups 3 with
             | "^_" | "_^" -> (true, true)
             | "^"         -> (true, false)
             | "_"         -> (false, true)
             | _           -> (false, false)
         in Tabular.make_cellfmt ~colfmt ~colspan ~overline ~underline
+            
 
 let cell_of_string key str =
     try Some (cellfmt_of_string str)
@@ -133,15 +134,15 @@ let decl_dict =
 
 
 let raws_of_string =
-    let kv_rex = Pcre.regexp "^(?<key>[a-z]+)=(?<value>.+)$" in
+    let rex = Re.(compile (seq [bos; group (rep1 (rg 'a' 'z')); char '='; group (rep1 any); eos])) in
     fun comm ->
         let conv (accum_raw, accum_msg) str =
             try
                 let _ = String.index str '=' in
                 begin try
-                    let subs = Pcre.exec ~rex:kv_rex str in
-                    let key = Pcre.get_named_substring kv_rex "key" subs in
-                    let value = Pcre.get_named_substring kv_rex "value" subs in
+                    let groups = Re.exec rex str in
+                    let key = Re.get groups 1 in
+                    let value = Re.get groups 2 in
                     (Named (key, value) :: accum_raw, accum_msg)
                 with Not_found ->
                     let msg = Error.Invalid_style_bad_keyvalue str in

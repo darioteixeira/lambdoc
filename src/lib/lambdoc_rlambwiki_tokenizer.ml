@@ -9,7 +9,7 @@
 (** Tokenizer for the Lambwiki reader.
 *)
 
-module String = BatString
+module String = Lambdoc_reader_utils.String
 module Parser = Lambdoc_rlambwiki_parser
 module Scanner = Lambdoc_rlambwiki_scanner
 
@@ -40,13 +40,10 @@ type context =
 (*  {1 Tokenizer class}                                                         *)
 (********************************************************************************)
 
-class tokenizer =
-let rex = Pcre.regexp "\\r\\n|\\n" in   (* We expect lines to be terminated with '\r\n' or just '\n' *)
-fun ~linenum_offset str ->
-let lines = Pcre.asplit ~rex ~max:(-1) str in
+class tokenizer ~linenum_offset str =
 object (self)
 
-    val lines = lines
+    val lines = String.asplit str
     val mutable line_counter = 0
     val mutable quote_state = 0
     val mutable list_state = []

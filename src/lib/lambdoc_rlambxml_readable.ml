@@ -174,8 +174,8 @@ let tagged_comm tag (lnum, _) prop =
 
 
 let is_whitespace =
-    let rex = Pcre.regexp "^\\s+$" in
-    fun str -> Pcre.pmatch ~rex str
+    let rex = Re.(compile (seq [bos; rep1 Re.space; eos])) in
+    fun str -> Re.execp rex str
 
 
 let rec tree_of_input i =

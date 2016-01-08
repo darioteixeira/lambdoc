@@ -10,27 +10,8 @@
     a document AST into a proper, final, ambivalent document.
 *)
 
-module String =
-struct
-    include BatString
-
-    let lstrip ?(chars = " \t\r\n") s =
-        let p = ref 0 in
-        let l = length s in
-        while !p < l && contains chars (unsafe_get s !p) do
-            incr p;
-        done;
-        sub s !p (l - !p)
-
-    let rstrip ?(chars = " \t\r\n") s =
-      let l = ref (length s - 1) in
-      while !l >= 0 && contains chars (unsafe_get s !l) do
-        decr l;
-      done;
-      sub s 0 (!l + 1)
-end
-
 module List = BatList
+module String = Lambdoc_reader_utils.String
 module Ast = Lambdoc_reader_ast
 module Extension = Lambdoc_reader_extension
 module Permission = Lambdoc_reader_permission
@@ -127,39 +108,37 @@ let rec all_equal = function
 (** {2 Public functions and values}                                             *)
 (********************************************************************************)
 
-let contextualize_errors =
-    let rex = Pcre.regexp "\\r\\n|\\n" in
-    fun ~sort source errors ->
-        let source_lines = Pcre.asplit ~rex ~max:(-1) source in
-        let num_lines = Array.length source_lines in
-        let format_error (error_linenum, error_tag, error_msg) =
-            let error_context = match error_linenum with
-                | Some num ->
-                    let num = max 1 (min num num_lines) in
-                    Some
-                        {
-                        Error.error_line_number = num;
-                        Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
-                        Error.error_line_actual = source_lines.(num - 1);
-                        Error.error_line_after = if num < num_lines then [source_lines.(num)] else []
-                        }
-                | None ->
-                    None in
-            (error_context, error_tag, error_msg) in
-        let compare (anum, _, amsg) (bnum, _, bmsg) = match (anum, bnum) with
-            | (Some anum, Some bnum) ->
-                let res = BatInt.compare anum bnum in
-                if res = 0
-                then Pervasives.compare amsg bmsg
-                else res
-            | (Some _, None) ->
-                -1
-            | (None, Some _) ->
-                1
-            | (None, None) ->
-                Pervasives.compare amsg bmsg in
-        let sorted = if sort then List.sort_unique compare errors else errors in
-        List.map format_error sorted
+let contextualize_errors ~sort source errors =
+    let source_lines = String.asplit source in
+    let num_lines = Array.length source_lines in
+    let format_error (error_linenum, error_tag, error_msg) =
+        let error_context = match error_linenum with
+            | Some num ->
+                let num = max 1 (min num num_lines) in
+                Some
+                    {
+                    Error.error_line_number = num;
+                    Error.error_line_before = if num >= 2 then [source_lines.(num - 2)] else [];
+                    Error.error_line_actual = source_lines.(num - 1);
+                    Error.error_line_after = if num < num_lines then [source_lines.(num)] else []
+                    }
+            | None ->
+                None in
+        (error_context, error_tag, error_msg) in
+    let compare (anum, _, amsg) (bnum, _, bmsg) = match (anum, bnum) with
+        | (Some anum, Some bnum) ->
+            let res = BatInt.compare anum bnum in
+            if res = 0
+            then Pervasives.compare amsg bmsg
+            else res
+        | (Some _, None) ->
+            -1
+        | (None, Some _) ->
+            1
+        | (None, None) ->
+            Pervasives.compare amsg bmsg in
+    let sorted = if sort then List.sort_unique compare errors else errors in
+    List.map format_error sorted
 
 
 (** Compiles an AST as provided by the parser, producing the corresponding document.

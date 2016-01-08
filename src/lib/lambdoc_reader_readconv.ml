@@ -10,7 +10,7 @@
 *)
 
 module List = BatList
-module String = BatString
+module String = Lambdoc_reader_utils.String
 
 open Lambdoc_core
 
@@ -92,20 +92,23 @@ struct
 
 
     let expand =
-        let rex = Pcre.regexp "^(?:(?:#x([a-zA-Z0-9]+))|(?:#([a-zA-Z0-9]+))|([a-zA-Z0-9]+))$" in
+        let rex_alpha = Re.(alt [rg 'a' 'z'; rg 'A' 'Z'; rg '0' '9']) in
+        let rex_name = Re.(group (rep1 rex_alpha)) in
+        let rex_hexa = Re.(seq [str "#x"; group (rep1 rex_alpha)]) in
+        let rex_deci = Re.(seq [char '#'; group (rep1 rex_alpha)]) in
+        let rex = Re.(compile (seq [bos; alt [rex_name; rex_hexa; rex_deci;]; eos])) in
         fun ent ->
-            try match Pcre.get_opt_substrings (Pcre.exec ~rex ent) with
-                | [| _; Some x; None; None |] ->
-                    (try `Okay (ent, utf8_of_codepoint (int_of_string ("0x" ^ x))) with _ -> `Error (Error.Invalid_entity_hexa ent))
-                | [| _; None; Some x; None |] ->
-                    (try `Okay (ent, utf8_of_codepoint (int_of_string x)) with _ -> `Error (Error.Invalid_entity_deci ent))
-                | [| _; None; None; Some x |] ->
-                    (try `Okay (ent, utf8_of_codepoint (Hashtbl.find entity_map x)) with _-> `Error (Error.Invalid_entity_name ent))
-                | _ ->
-                    `Error (Error.Invalid_entity_name ent)
-            with
-                | _ ->
-                    `Error (Error.Invalid_entity_name ent)
+            try
+                let groups = Re.exec rex ent in
+                if Re.test groups 1
+                then (try `Okay (ent, utf8_of_codepoint (Hashtbl.find entity_map (Re.get groups 1))) with _-> `Error (Error.Invalid_entity_name ent))
+                else if Re.test groups 2
+                then (try `Okay (ent, utf8_of_codepoint (int_of_string ("0x" ^ (Re.get groups 2)))) with _ -> `Error (Error.Invalid_entity_hexa ent))
+                else if Re.test groups 3
+                then (try `Okay (ent, utf8_of_codepoint (int_of_string (Re.get groups 3))) with _ -> `Error (Error.Invalid_entity_deci ent))
+                else `Error (Error.Invalid_entity_name ent)
+            with Not_found ->
+                `Error (Error.Invalid_entity_name ent)
 end
 
 
@@ -115,17 +118,20 @@ end
 
 module Identifier_input =
 struct
+    let rex_alpha = Re.rg 'a' 'z'
+    let rex_digit = Re.rg '0' '9'
+
     let matches_with_colon =
-        let rex = Pcre.regexp "^[a-z][a-z0-9:_\\-]*$" in
-        fun str -> Pcre.pmatch ~rex str
+        let rex = Re.(compile (seq [bos; rex_alpha; rep (alt [rex_alpha; rex_digit; set ":_-"]); eos])) in
+        fun str -> Re.execp rex str
 
     let matches_without_colon =
-        let rex = Pcre.regexp "^[a-z][a-z0-9_\\-]*$" in
-        fun str -> Pcre.pmatch ~rex str
+        let rex = Re.(compile (seq [bos; rex_alpha; rep (alt [rex_alpha; rex_digit; set "_-"]); eos])) in
+        fun str -> Re.execp rex str
 
     let matches_ident =
-        let rex = Pcre.regexp "^[a-z][a-z0-9_]*$" in
-        fun str -> Pcre.pmatch ~rex str
+        let rex = Re.(compile (seq [bos; rex_alpha; rep (alt [rex_alpha; rex_digit; set "_"]); eos])) in
+        fun str -> Re.execp rex str
 
     let matches_classname = matches_without_colon
     let matches_label = matches_with_colon
@@ -142,11 +148,14 @@ end
 module Literal_input =
 struct
     let trim =
-        let left_rex = Pcre.regexp "^(\\s*[\n\r]+)*(.)" in
-        let right_rex = Pcre.regexp "(\\s*[\n\r]+)*\\s*$" in
+        let spacish = Re.set " \t" in
+        let newline = Re.set "\n\r" in
+        let left_rex = Re.(compile (seq [bos; rep (seq [rep spacish; rep1 newline])])) in
+        let right_rex = Re.(compile (seq [rep (seq [rep spacish; rep1 newline]); rep spacish; eos])) in
         fun str ->
-            let left_trimmed = Pcre.replace_first ~rex:left_rex ~templ:"$2" str in
-            Pcre.replace_first ~rex:right_rex ~templ:"" left_trimmed
+            str |>
+            Re.replace_string ~all:false left_rex ~by:"" |>
+            Re.replace_string ~all:false right_rex ~by:""
 end
 
 
