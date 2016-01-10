@@ -136,7 +136,8 @@ let execute fname source target () =
                 | Invalid _ ->
                     doc in
             Ambivalent.serialize doc' in
-    let doc = reader source_contents in
+    let idiosyncrasies = Lambdoc_core_idiosyncrasies.make ~max_macro_depth:(Some 4) ~max_inline_depth:(Some 4) ~max_block_depth:(Some 4) () in
+    let doc = reader ~idiosyncrasies source_contents in
     let str = writer doc ^ "\n" in
     Alcotest.(check string) fname str target_contents
 
@@ -205,6 +206,10 @@ let semantic_error_set =
     ("Invalid order parameter", "03_invalid_order");
     ("Invalid style parameter", "04_invalid_style");
     ("Invalid entity", "05_invalid_entity");
+    ("Macro errors", "06_macro");
+    ("Invalid macro/inline/block depth", "07_depth");
+    ("Custom block errors", "08_custom");
+    ("Wrapper errors", "09_wrapper");
     ]
 
 let tests =
