@@ -16,7 +16,7 @@ open Lexing
 (*  {2 Private functions and values}                                            *)
 (********************************************************************************)
 
-let menhir_with_ulex menhir_parser tokenizer =
+let menhir_with_sedlex menhir_parser tokenizer =
     let lexer_maker () =
         let ante_position = tokenizer#position in
         let token = tokenizer#consume in
@@ -33,7 +33,7 @@ let menhir_with_ulex menhir_parser tokenizer =
 let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
     let tokenizer = new Tokenizer.tokenizer ~linenum_offset str in
     try
-        `Okay (menhir_with_ulex Parser.document tokenizer)
+        `Okay (menhir_with_sedlex Parser.document tokenizer)
     with exc ->
         let msg = match exc with
             | Tokenizer.Invalid_ulist_level (current, found) ->

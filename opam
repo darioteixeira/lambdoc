@@ -19,20 +19,19 @@ build-test: [make "test"]
 install: [[make "install"]]
 remove: [["ocamlfind" "remove" "lambdoc"]]
 depends: [
-  "ocamlfind"
-  "camlp4"
+  "alcotest" {test}
   "batteries" {>= "2"}
-  "menhir"
-  "ulex"
-  "sexplib"
-  "pcre"
-  "pxp"
-  "tyxml" {>= "3.2" & < "4"}
-  "omd" {>= "1.0.0"}
   "blahcaml"
   "camlhighlight" {>= "4"}
-  "ppx_sexp_conv"
-  "ppx_blob"
-  "alcotest" {test}
+  "menhir"
   "ocamlbuild" {build}
+  "ocamlfind"
+  "omd" {>= "1.0.0"}
+  "ppx_blob"
+  "ppx_sexp_conv"
+  "re"
+  "sedlex"
+  "sexplib"
+  "tyxml" {>= "3.2" & < "4"}
+  "xmlm"
 ]

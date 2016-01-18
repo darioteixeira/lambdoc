@@ -10,11 +10,11 @@
 *)
 
 module String = Lambdoc_reader_utils.String
+module Lexer = Lambdoc_rlambwiki_lexer
 module Parser = Lambdoc_rlambwiki_parser
-module Scanner = Lambdoc_rlambwiki_scanner
 
 open Lexing
-open Scanner
+open Lexer
 open Parser
 
 
@@ -204,12 +204,12 @@ object (self)
             productions <- productions @ [EOF]
         end
         else begin
-            let scanner = match context with
-                | General  -> Scanner.general_scanner
-                | Source   -> Scanner.source_scanner
-                | Verbatim -> Scanner.verbatim_scanner in
-            let lexbuf = Ulexing.from_utf8_string lines.(line_counter) in
-            let tok = scanner lexbuf in
+            let lexer = match context with
+                | General  -> Lexer.general
+                | Source   -> Lexer.source
+                | Verbatim -> Lexer.verbatim in
+            let lexbuf = Sedlexing.Utf8.from_string lines.(line_counter) in
+            let tok = lexer lexbuf in
             let () = match tok with
                 | Begin_source style ->
                     self#unwind_list 0;
