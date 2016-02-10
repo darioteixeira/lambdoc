@@ -752,11 +752,15 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             check_block_comm `Feature_quote comm elem
 
         | Ast.Mathtex_blk txt when Blkcat.subtype [`Equation_blk; `Embeddable_blk] allowed ->
-            let elem attr _ = Monad.return (convert_mathtex (Block.mathblk ~attr) comm txt) in
+            let elem attr _ =
+                let trimmed = Literal_input.trim txt in
+                Monad.return (convert_mathtex (Block.mathblk ~attr) comm trimmed) in
             check_block_comm `Feature_mathtex_blk comm elem
 
         | Ast.Mathml_blk txt when Blkcat.subtype [`Equation_blk; `Embeddable_blk] allowed ->
-            let elem attr _ = Monad.return (convert_mathml (Block.mathblk ~attr) comm txt) in
+            let elem attr _ =
+                let trimmed = Literal_input.trim txt in
+                Monad.return (convert_mathml (Block.mathblk ~attr) comm trimmed) in
             check_block_comm `Feature_mathml_blk comm elem
 
         | Ast.Source txt when Blkcat.subtype [`Printout_blk; `Embeddable_blk] allowed ->
