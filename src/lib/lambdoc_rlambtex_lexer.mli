@@ -27,29 +27,28 @@ type lexeme =
     | End_mathtexinl
     | Begin_mathmlinl
     | End_mathmlinl
-    | Open
-    | Close
     | Simple of string
-    | Cell_mark of string
-    | Row_end
-    | Par_break
-    | Space
     | Text of string
     | Entity of string
+    | Cell_mark of string
+    | Row_end
+    | Open
+    | Close
+    | Eop
     | Eof
 
-(** Together with the lexeme proper we also return
-    the number of newlines found within the lexeme.
+(** Together with the lexeme proper we also return the number
+    of newlines found before the lexeme and within the lexeme.
 *)
-type pair = lexeme * int
+type triple = lexeme * int * int
 
 (** A lexing outcome consists of an optional previous lexing pair
     (if there was leftover text in the buffer), and the current pair.
 *)
 type outcome =
     {
-    previous: pair option;
-    current: pair;
+    previous: triple option;
+    current: triple;
     }
 
 
@@ -61,9 +60,13 @@ type outcome =
 *)
 val make_buffer: Sedlexing.lexbuf -> buffer
 
-(** General document lexer.
+(** Lexer for block context.  Whitespace is not significant.
 *)
-val general: buffer -> outcome
+val block: buffer -> outcome
+
+(** Lexer for inline context.  Whitespace is significant.
+*)
+val inline: buffer -> outcome
 
 (** Special lexer for raw environments.  Pretty much every character
     is returned as text; the exceptions are the EOF character, escaped

@@ -26,24 +26,25 @@ type lexeme =
     | End_mathtexinl
     | Begin_mathmlinl
     | End_mathmlinl
-    | Open
-    | Close
     | Simple of string
-    | Cell_mark of string
-    | Row_end
-    | Par_break
-    | Space
     | Text of string
     | Entity of string
+    | Cell_mark of string
+    | Row_end
+    | Open
+    | Close
+    | Eop
     | Eof
 
-type pair = lexeme * int
+type triple = lexeme * int * int
 
 type outcome =
     {
-    previous: pair option;
-    current: pair;
+    previous: triple option;
+    current: triple;
     }
+
+type context = Block | Inline
 
 
 (********************************************************************************)
@@ -77,7 +78,7 @@ let newline = [%sedlex.regexp? "\r\n" | '\n']
 let space = [%sedlex.regexp? Chars " \t"]
 let escape = [%sedlex.regexp? '\\']
 let eol = [%sedlex.regexp? Star space, newline, Star space]
-let parbreak = [%sedlex.regexp? eol, Plus eol]
+let eop = [%sedlex.regexp? eol, Plus eol]
 
 let cell_mark = [%sedlex.regexp? Star space, '|', optional, Star space]
 let row_end = [%sedlex.regexp? Star space, '|', Star space, newline]
@@ -106,21 +107,78 @@ let count_newlines lexbuf =
     let adder acc el = if el = 0x0a then acc+1 else acc in
     Array.fold_left adder 0 (Sedlexing.lexeme lexbuf)
 
-let return ?lexbuf nlines txtbuf current_lexeme =
-    let current_nlines = match lexbuf with
+let return ?lexbuf before during txtbuf current_lexeme =
+    let current_during = match lexbuf with
         | Some lexbuf -> count_newlines lexbuf
         | None        -> 0 in
-    let previous =
+    let (previous, current_before) =
         if Buffer.length txtbuf = 0
         then
-            None
+            (None, before)
         else begin
             let text = Buffer.contents txtbuf in
             Buffer.clear txtbuf;
-            Some (Text text, nlines)
+            (Some (Text text, before, during), 0)
         end in
-    let current = (current_lexeme, current_nlines) in
+    let current = (current_lexeme, current_before, current_during) in
     {previous; current;}
+
+let general ~context {lexbuf; txtbuf} =
+    let rec loop before during = match%sedlex lexbuf with
+        | begin_env ->
+            return before during txtbuf (Begin_env (whole_lexbuf lexbuf))
+        | end_env ->
+            return before during txtbuf (End_env (whole_lexbuf lexbuf))
+        | begin_mathtexinl ->
+            return before during txtbuf Begin_mathtexinl
+        | end_mathtexinl ->
+            return before during txtbuf End_mathtexinl
+        | begin_mathmlinl ->
+            return before during txtbuf Begin_mathmlinl
+        | end_mathmlinl ->
+            return before during txtbuf End_mathmlinl
+        | open_marker ->
+            return before during txtbuf Open
+        | close_marker ->
+            return before during txtbuf Close
+        | simple ->
+            return before during txtbuf (Simple (whole_lexbuf lexbuf))
+        | cell_mark ->
+            return ~lexbuf before during txtbuf (Cell_mark (whole_lexbuf lexbuf |> String.trim))
+        | row_end ->
+            return ~lexbuf before during txtbuf Row_end
+        | eof ->
+            return before during txtbuf Eof
+        | eop ->
+            return ~lexbuf before during txtbuf Eop
+        | Plus space | eol ->
+            (if Buffer.length txtbuf <> 0 || context = Inline then Buffer.add_char txtbuf ' ');
+            if Buffer.length txtbuf <> 0
+            then loop before (during + count_newlines lexbuf)
+            else loop (before + count_newlines lexbuf) during
+        | entity ->
+            return before during txtbuf (Entity (trim_lexbuf ~left:1 ~right:1 lexbuf))
+        | ndash ->
+            return before during txtbuf (Entity "ndash")
+        | mdash ->
+            return before during txtbuf (Entity "mdash")
+        | ldquo ->
+            return before during txtbuf (Entity "ldquo")
+        | rdquo ->
+            return before during txtbuf (Entity "rdquo")
+        | escape, newline ->
+            if Buffer.length txtbuf <> 0
+            then loop before (during+1)
+            else loop (before+1) during
+        | escape, any ->
+            Buffer.add_string txtbuf (sub_lexbuf ~pos:1 ~len:1 lexbuf);
+            loop before during
+        | any ->
+            Buffer.add_string txtbuf (whole_lexbuf lexbuf);
+            loop before during
+        | _ ->
+            assert false
+    in loop 0 0
 
 
 (********************************************************************************)
@@ -130,134 +188,84 @@ let return ?lexbuf nlines txtbuf current_lexeme =
 let make_buffer lexbuf =
     {lexbuf; txtbuf = Buffer.create 80}
 
-let general {lexbuf; txtbuf} =
-    let rec loop nlines = match%sedlex lexbuf with
-        | begin_env, Star space, Opt newline ->
-            return ~lexbuf nlines txtbuf (Begin_env (whole_lexbuf lexbuf |> String.trim))
-        | end_env, Star space, Opt newline ->
-            return ~lexbuf nlines txtbuf (End_env (whole_lexbuf lexbuf |> String.trim))
-        | begin_mathtexinl ->
-            return nlines txtbuf Begin_mathtexinl
-        | end_mathtexinl ->
-            return nlines txtbuf End_mathtexinl
-        | begin_mathmlinl ->
-            return nlines txtbuf Begin_mathmlinl
-        | end_mathmlinl ->
-            return nlines txtbuf End_mathmlinl
-        | open_marker ->
-            return nlines txtbuf Open
-        | close_marker ->
-            return nlines txtbuf Close
-        | simple ->
-            return nlines txtbuf (Simple (whole_lexbuf lexbuf))
-        | cell_mark ->
-            return ~lexbuf nlines txtbuf (Cell_mark (whole_lexbuf lexbuf |> String.trim))
-        | row_end ->
-            return ~lexbuf nlines txtbuf Row_end
-        | Opt eol, eof ->
-            return nlines txtbuf Eof
-        | parbreak ->
-            return ~lexbuf nlines txtbuf Par_break
-        | Plus space | eol ->
-            return ~lexbuf nlines txtbuf Space
-        | entity ->
-            return nlines txtbuf (Entity (trim_lexbuf ~left:1 ~right:1 lexbuf))
-        | ndash ->
-            return nlines txtbuf (Entity "ndash")
-        | mdash ->
-            return nlines txtbuf (Entity "mdash")
-        | ldquo ->
-            return nlines txtbuf (Entity "ldquo")
-        | rdquo ->
-            return nlines txtbuf (Entity "rdquo")
-        | escape, newline ->
-            loop (nlines+1)
-        | escape, any ->
-            Buffer.add_string txtbuf (sub_lexbuf ~pos:1 ~len:1 lexbuf);
-            loop nlines
-        | any ->
-            Buffer.add_string txtbuf (whole_lexbuf lexbuf);
-            loop nlines
-        | _ ->
-            assert false
-    in loop 0
+let block buffer =
+    general ~context:Block buffer
 
+let inline buffer =
+    general ~context:Inline buffer
 
 let raw {lexbuf; txtbuf} =
-    let rec loop nlines = match%sedlex lexbuf with
+    let rec loop during = match%sedlex lexbuf with
         | close_marker ->
-            return nlines txtbuf Close
+            return 0 during txtbuf Close
         | eof ->
-            return nlines txtbuf Eof
+            return 0 during txtbuf Eof
         | newline ->
             Buffer.add_char txtbuf '\n';
-            loop (nlines+1)
+            loop (during+1)
         | escape, newline ->
-            loop (nlines+1)
+            loop (during+1)
         | escape, any ->
             Buffer.add_string txtbuf (sub_lexbuf ~pos:1 ~len:1 lexbuf);
-            loop nlines
+            loop during
         | any ->
             Buffer.add_string txtbuf (whole_lexbuf lexbuf);
-            loop nlines
+            loop during
         | _ ->
             assert false
     in loop 0
-
 
 let mathtexinl {lexbuf; txtbuf} =
-    let rec loop nlines = match%sedlex lexbuf with
+    let rec loop during = match%sedlex lexbuf with
         | end_mathtexinl ->
-            return nlines txtbuf End_mathtexinl
+            return 0 during txtbuf End_mathtexinl
         | eof ->
-            return nlines txtbuf Eof
+            return 0 during txtbuf Eof
         | newline ->
             Buffer.add_char txtbuf '\n';
-            loop (nlines+1)
+            loop (during+1)
         | any ->
             Buffer.add_string txtbuf (whole_lexbuf lexbuf);
-            loop nlines
+            loop during
         | _ ->
             assert false
     in loop 0
-
 
 let mathmlinl {lexbuf; txtbuf} =
-    let rec loop nlines = match%sedlex lexbuf with
+    let rec loop during = match%sedlex lexbuf with
         | end_mathmlinl ->
-            return nlines txtbuf End_mathmlinl
+            return 0 during txtbuf End_mathmlinl
         | eof ->
-            return nlines txtbuf Eof
+            return 0 during txtbuf Eof
         | newline ->
             Buffer.add_char txtbuf '\n';
-            loop (nlines+1)
+            loop (during+1)
         | any ->
             Buffer.add_string txtbuf (whole_lexbuf lexbuf);
-            loop nlines
+            loop during
         | _ ->
             assert false
     in loop 0
 
-
 let literal terminator {lexbuf; txtbuf} =
-    let rec loop nlines = match%sedlex lexbuf with
-        | Opt newline, end_env, Star space, Opt newline ->
-            let trimmed = whole_lexbuf lexbuf |> String.trim in
-            if (String.slice ~first:5 ~last:(-1) trimmed) = terminator
+    let rec loop during = match%sedlex lexbuf with
+        | end_env ->
+            let content = whole_lexbuf lexbuf in
+            if (String.slice ~first:5 ~last:(-1) content) = terminator
             then
-                return ~lexbuf nlines txtbuf (End_env trimmed)
+                return 0 during txtbuf (End_env content)
             else begin
-                Buffer.add_string txtbuf (whole_lexbuf lexbuf);
-                loop (nlines + count_newlines lexbuf)
+                Buffer.add_string txtbuf content;
+                loop during
             end
         | eof ->
-            return nlines txtbuf Eof
+            return 0 during txtbuf Eof
         | newline ->
             Buffer.add_char txtbuf '\n';
-            loop (nlines+1)
+            loop (during+1)
         | any ->
             Buffer.add_string txtbuf (whole_lexbuf lexbuf);
-            loop nlines
+            loop during
         | _ ->
             assert false in
     loop 0

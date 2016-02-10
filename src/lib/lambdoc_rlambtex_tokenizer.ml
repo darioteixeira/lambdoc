@@ -19,6 +19,13 @@ open Lexing
 
 
 (********************************************************************************)
+(** {1 Type definitions}                                                        *)
+(********************************************************************************)
+
+type trigger = Blk | Inl
+
+
+(********************************************************************************)
 (*  {1 Auxiliary regular expressions}                                           *)
 (********************************************************************************)
 
@@ -56,7 +63,8 @@ struct
         env_block_extdefs: Extension.extdef list;
         buffer: Lexer.buffer;
         mutable position: Lexing.position;
-        mutable waiting: Lexer.pair option;
+        mutable waiting_lexeme: Lexer.triple option;
+        mutable waiting_token: P.token option;
         mutable literal: string option;
         }
 
@@ -100,71 +108,71 @@ struct
         let simple = Re.get groups 1 in
         let command = build_command tokenizer ("\\" ^ simple) groups 2 in
         match simple with
-            | "br"                    -> LINEBREAK command
-            | "glyph"                 -> GLYPH command
-            | "bold" | "strong" | "b" -> BOLD command
-            | "emph" | "em" | "i"     -> EMPH command
-            | "code" | "tt"           -> CODE command
-            | "caps"                  -> CAPS command
-            | "ins"                   -> INS command
-            | "del"                   -> DEL command
-            | "sup"                   -> SUP command
-            | "sub"                   -> SUB command
-            | "mbox"                  -> MBOX command
-            | "span"                  -> SPAN command
-            | "link" | "a"            -> LINK command
-            | "see"                   -> SEE command
-            | "cite"                  -> CITE command
-            | "dref"                  -> DREF command
-            | "sref"                  -> SREF command
-            | "mref"                  -> MREF command
-            | "paragraph" | "p"       -> PARAGRAPH command
-            | "picture"               -> PICTURE command
-            | "part"                  -> PART command
-            | "appendix"              -> APPENDIX command
-            | "h1" | "section"        -> SECTION (command, 1)
-            | "h2" | "subsection"     -> SECTION (command, 2)
-            | "h3" | "subsubsection"  -> SECTION (command, 3)
-            | "h4"                    -> SECTION (command, 4)
-            | "h5"                    -> SECTION (command, 5)
-            | "h6"                    -> SECTION (command, 6)
-            | "bibliography"          -> BIBLIOGRAPHY command
-            | "notes"                 -> NOTES command
-            | "toc"                   -> TOC command
-            | "title"                 -> TITLE (command, 1)
-            | "subtitle"              -> TITLE (command, 2)
-            | "rule" | "hr"           -> RULE command
-            | "newmacro"              -> MACRODEF command
-            | "newboxout"             -> BOXOUTDEF command
-            | "newtheorem"            -> THEOREMDEF command
-            | "item" | "li"           -> ITEM command
-            | "question"              -> QUESTION command
-            | "rquestion"             -> RQUESTION command
-            | "answer"                -> ANSWER command
-            | "ranswer"               -> RANSWER command
-            | "head"                  -> THEAD command
-            | "foot"                  -> TFOOT command
-            | "body"                  -> TBODY command
-            | "who"                   -> BIB_AUTHOR command
-            | "what"                  -> BIB_TITLE command
-            | "where"                 -> BIB_RESOURCE command
-            | "arg"                   -> MACROARG command
+            | "br"                    -> (Some Inl, LINEBREAK command)
+            | "glyph"                 -> (Some Inl, GLYPH command)
+            | "bold" | "strong" | "b" -> (Some Inl, BOLD command)
+            | "emph" | "em" | "i"     -> (Some Inl, EMPH command)
+            | "code" | "tt"           -> (Some Inl, CODE command)
+            | "caps"                  -> (Some Inl, CAPS command)
+            | "ins"                   -> (Some Inl, INS command)
+            | "del"                   -> (Some Inl, DEL command)
+            | "sup"                   -> (Some Inl, SUP command)
+            | "sub"                   -> (Some Inl, SUB command)
+            | "mbox"                  -> (Some Inl, MBOX command)
+            | "span"                  -> (Some Inl, SPAN command)
+            | "link" | "a"            -> (Some Inl, LINK command)
+            | "see"                   -> (Some Inl, SEE command)
+            | "cite"                  -> (Some Inl, CITE command)
+            | "dref"                  -> (Some Inl, DREF command)
+            | "sref"                  -> (Some Inl, SREF command)
+            | "mref"                  -> (Some Inl, MREF command)
+            | "paragraph" | "p"       -> (Some Blk, PARAGRAPH command)
+            | "picture"               -> (Some Blk, PICTURE command)
+            | "part"                  -> (Some Blk, PART command)
+            | "appendix"              -> (Some Blk, APPENDIX command)
+            | "h1" | "section"        -> (Some Blk, SECTION (command, 1))
+            | "h2" | "subsection"     -> (Some Blk, SECTION (command, 2))
+            | "h3" | "subsubsection"  -> (Some Blk, SECTION (command, 3))
+            | "h4"                    -> (Some Blk, SECTION (command, 4))
+            | "h5"                    -> (Some Blk, SECTION (command, 5))
+            | "h6"                    -> (Some Blk, SECTION (command, 6))
+            | "bibliography"          -> (Some Blk, BIBLIOGRAPHY command)
+            | "notes"                 -> (Some Blk, NOTES command)
+            | "toc"                   -> (Some Blk, TOC command)
+            | "title"                 -> (Some Blk, TITLE (command, 1))
+            | "subtitle"              -> (Some Blk, TITLE (command, 2))
+            | "rule" | "hr"           -> (Some Blk, RULE command)
+            | "newmacro"              -> (Some Blk, MACRODEF command)
+            | "newboxout"             -> (Some Blk, BOXOUTDEF command)
+            | "newtheorem"            -> (Some Blk, THEOREMDEF command)
+            | "item" | "li"           -> (Some Blk, ITEM command)
+            | "question"              -> (Some Blk, QUESTION command)
+            | "rquestion"             -> (Some Blk, RQUESTION command)
+            | "answer"                -> (Some Blk, ANSWER command)
+            | "ranswer"               -> (Some Blk, RANSWER command)
+            | "head"                  -> (None, THEAD command)
+            | "foot"                  -> (None, TFOOT command)
+            | "body"                  -> (None, TBODY command)
+            | "who"                   -> (Some Blk, BIB_AUTHOR command)
+            | "what"                  -> (Some Blk, BIB_TITLE command)
+            | "where"                 -> (Some Blk, BIB_RESOURCE command)
+            | "arg"                   -> (None, MACROARG command)
             | x ->
                 let maybe_assoc key xs = try Some (List.assoc key xs) with Not_found -> None in
                 match maybe_assoc x tokenizer.inline_extdefs with
-                    | Some Syn_empty        -> INLPAT_EMPTY (command, x)
-                    | Some Syn_seq          -> INLPAT_SEQ (command, x)
-                    | Some Syn_raw _        -> INLPAT_RAW (command, x)
-                    | Some Syn_raw_raw _    -> INLPAT_RAW_RAW (command, x)
-                    | Some Syn_raw_seq _    -> INLPAT_RAW_SEQ (command, x)
-                    | Some Syn_raw_seqopt _ -> INLPAT_RAW_SEQOPT (command, x)
+                    | Some Syn_empty        -> (Some Inl, INLPAT_EMPTY (command, x))
+                    | Some Syn_seq          -> (Some Inl, INLPAT_SEQ (command, x))
+                    | Some Syn_raw _        -> (Some Inl, INLPAT_RAW (command, x))
+                    | Some Syn_raw_raw _    -> (Some Inl, INLPAT_RAW_RAW (command, x))
+                    | Some Syn_raw_seq _    -> (Some Inl, INLPAT_RAW_SEQ (command, x))
+                    | Some Syn_raw_seqopt _ -> (Some Inl, INLPAT_RAW_SEQOPT (command, x))
                     | Some _                -> assert false
                     | None -> match maybe_assoc x tokenizer.sim_block_extdefs with
-                        | Some Syn_empty     -> BLKPAT_EMPTY (command, x)
-                        | Some Syn_seq       -> BLKPAT_SEQ (command, x)
-                        | Some Syn_raw _     -> BLKPAT_RAW (command, x)
-                        | Some Syn_raw_raw _ -> BLKPAT_RAW_RAW (command, x)
-                        | _                  -> MACROCALL (command, x)
+                        | Some Syn_empty     -> (Some Blk, BLKPAT_EMPTY (command, x))
+                        | Some Syn_seq       -> (Some Blk, BLKPAT_SEQ (command, x))
+                        | Some Syn_raw _     -> (Some Blk, BLKPAT_RAW (command, x))
+                        | Some Syn_raw_raw _ -> (Some Blk, BLKPAT_RAW_RAW (command, x))
+                        | _                  -> (Some Inl, MACROCALL (command, x))
 
 
     let environment_command tokenizer raw_comm =
@@ -227,30 +235,30 @@ struct
         in CELL_MARK comm
 
     let token_of_lexeme tokenizer = function
-        | Begin_env raw_comm -> begin_command tokenizer raw_comm
-        | End_env raw_comm   -> end_command tokenizer raw_comm
-        | Begin_mathtexinl   -> BEGIN_MATHTEXINL (build_op tokenizer)
-        | End_mathtexinl     -> END_MATHTEXINL (build_op tokenizer)
-        | Begin_mathmlinl    -> BEGIN_MATHMLINL (build_op tokenizer)
-        | End_mathmlinl      -> END_MATHMLINL (build_op tokenizer)
-        | Open               -> OPEN
-        | Close              -> CLOSE
+        | Begin_env raw_comm -> (Some Blk, begin_command tokenizer raw_comm)
+        | End_env raw_comm   -> (Some Blk, end_command tokenizer raw_comm)
+        | Begin_mathtexinl   -> (Some Inl, BEGIN_MATHTEXINL (build_op tokenizer))
+        | End_mathtexinl     -> (None, END_MATHTEXINL)
+        | Begin_mathmlinl    -> (Some Inl, BEGIN_MATHMLINL (build_op tokenizer))
+        | End_mathmlinl      -> (None, END_MATHMLINL)
         | Simple raw_comm    -> simple_command tokenizer raw_comm
-        | Cell_mark raw_comm -> cell_mark tokenizer raw_comm
-        | Row_end            -> ROW_END (build_op tokenizer)
-        | Eof                -> EOF
-        | Par_break          -> PAR_BREAK (build_op tokenizer)
-        | Space              -> SPACE (build_op tokenizer)
-        | Text txt           -> TEXT (build_op tokenizer, txt)
-        | Entity ent         -> ENTITY (build_op tokenizer, ent)
+        | Text txt           -> (Some Inl, TEXT (build_op tokenizer, txt))
+        | Entity ent         -> (Some Inl, ENTITY (build_op tokenizer, ent))
+        | Cell_mark raw_comm -> (Some Blk, cell_mark tokenizer raw_comm)
+        | Row_end            -> (Some Blk, ROW_END (build_op tokenizer))
+        | Open               -> (None, OPEN)
+        | Close              -> (None, CLOSE)
+        | Eop                -> (Some Blk, END_INLINE)
+        | Eof                -> (Some Blk, EOF)
 
-    let next_lexing_pair tokenizer = match tokenizer.waiting with
-        | Some lexing_pair ->
-            tokenizer.waiting <- None;
-            lexing_pair
+    let next_lexing_triple tokenizer = match tokenizer.waiting_lexeme with
+        | Some lexing_triple ->
+            tokenizer.waiting_lexeme <- None;
+            lexing_triple
         | None ->
             let lexer = match C.get () with
-                | C.General    -> Lexer.general
+                | C.Block      -> Lexer.block
+                | C.Inline     -> Lexer.inline
                 | C.Raw        -> Lexer.raw
                 | C.Mathtexinl -> Lexer.mathtexinl
                 | C.Mathmlinl  -> Lexer.mathmlinl
@@ -260,7 +268,7 @@ struct
             let outcome = lexer tokenizer.buffer in
             match outcome.previous with
                 | Some previous ->
-                    tokenizer.waiting <- Some outcome.current;
+                    tokenizer.waiting_lexeme <- Some outcome.current;
                     previous
                 | None ->
                     outcome.current
@@ -280,15 +288,33 @@ struct
             sim_block_extdefs;
             buffer = Lexer.make_buffer lexbuf;
             position;
-            waiting = None;
+            waiting_lexeme = None;
+            waiting_token = None;
             literal = None;
             }
 
-    let next_token tokenizer =
-        let (lexeme, nlines) = next_lexing_pair tokenizer in
-        let token = token_of_lexeme tokenizer lexeme in
-        tokenizer.position <- {tokenizer.position with pos_lnum = tokenizer.position.pos_lnum + nlines};
-        token
+    let rec next_token tokenizer = match tokenizer.waiting_token with
+        | Some token ->
+            tokenizer.waiting_token <- None;
+            token
+        | None ->
+            let (lexeme, before, during) = next_lexing_triple tokenizer in
+            tokenizer.position <- {tokenizer.position with pos_lnum = tokenizer.position.pos_lnum + before};
+            let (trigger, token) = token_of_lexeme tokenizer lexeme in
+            tokenizer.position <- {tokenizer.position with pos_lnum = tokenizer.position.pos_lnum + during};
+            match (C.get (), trigger, token) with
+                | (C.Block, Some Inl, _) ->
+                    tokenizer.waiting_token <- Some token;
+                    BEGIN_INLINE
+                | (C.Inline, Some Blk, END_INLINE) ->
+                    END_INLINE
+                | (C.Inline, Some Blk, _) ->
+                    tokenizer.waiting_token <- Some token;
+                    END_INLINE
+                | (C.Block, _, END_INLINE) ->
+                    next_token tokenizer
+                | _ ->
+                    token
 
     let get_position tokenizer =
         tokenizer.position

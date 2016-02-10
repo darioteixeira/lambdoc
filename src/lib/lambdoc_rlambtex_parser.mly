@@ -17,12 +17,21 @@ open Lambdoc_reader
 (********************************************************************************)
 
 %token <Lambdoc_reader_ast.command> BEGIN_MATHTEXINL    (* Operator [$ *)
-%token <Lambdoc_reader_ast.command> END_MATHTEXINL      (* Operator $] *)
 %token <Lambdoc_reader_ast.command> BEGIN_MATHMLINL     (* Operator <$ *)
-%token <Lambdoc_reader_ast.command> END_MATHMLINL       (* Operator $> *)
+
+%token END_MATHTEXINL   (* Operator $] *)
+%token END_MATHMLINL    (* Operator $> *)
 
 %token BEGIN_MATHTEXINL_DUMMY
 %token BEGIN_MATHMLINL_DUMMY
+
+
+(********************************************************************************)
+(* Tokens for delimiting unwrapped inline sequences.                            *)
+(********************************************************************************)
+
+%token BEGIN_INLINE
+%token END_INLINE
 
 
 (********************************************************************************)
@@ -149,22 +158,11 @@ open Lambdoc_reader
 (* Miscelaneous tokens.                                                         *)
 (********************************************************************************)
 
-%token <Lambdoc_reader_ast.command> SPACE
-%token <Lambdoc_reader_ast.command> PAR_BREAK
 %token <Lambdoc_reader_ast.command> ROW_END
 %token <Lambdoc_reader_ast.command> CELL_MARK
 %token <Lambdoc_reader_ast.command * string> TEXT
 %token <Lambdoc_reader_ast.command * string> ENTITY
 %token OPEN CLOSE EOF
-
-
-(********************************************************************************)
-(* Priority.                                                                    *)
-(********************************************************************************)
-
-%nonassoc _inline_SPACE_ _inline_list_EMPTY_
-%nonassoc SPACE
-%nonassoc TEXT ENTITY LINEBREAK GLYPH BOLD EMPH CODE CAPS INS DEL SUP SUB MBOX SPAN LINK SEE CITE DREF SREF MREF MACROARG MACROCALL INLPAT_EMPTY INLPAT_SEQ INLPAT_RAW INLPAT_RAW_RAW INLPAT_RAW_SEQ INLPAT_RAW_SEQOPT BEGIN_MATHTEXINL_DUMMY BEGIN_MATHMLINL_DUMMY
 
 
 (********************************************************************************)
@@ -193,17 +191,10 @@ main:
 (********************************************************************************)
 
 frag:
-    | spaceish? blockish*                                               {$2}
-
-spaceish:
-    | SPACE                                                             {()}
-    | PAR_BREAK                                                         {()}
-
-blockish:
-    | block spaceish?                                                   {$1}
+    | block*                                                            {$1}
 
 block:
-    | inline_without_space inline_list                                  {(fst $1, Ast.Paragraph ($1 :: $2))}
+    | inline_undelim                                                    {(fst (List.hd $1), Ast.Paragraph $1)}
     | simple_block                                                      {$1}
     | env_block                                                         {$1}
 
@@ -239,22 +230,22 @@ env_block:
     | BEGIN_TABULAR tabular END_TABULAR                                 {($1, Ast.Tabular $2)}
     | BEGIN_SUBPAGE frag END_SUBPAGE                                    {($1, Ast.Subpage $2)}
     | BEGIN_PULLQUOTE inline_bundle? frag END_PULLQUOTE                 {($1, Ast.Pullquote ($2, $3))}
-    | BEGIN_EQUATION wrapper END_EQUATION                               {let (cap, blk) = $2 in ($1, Ast.Equation (cap, blk))}
-    | BEGIN_PRINTOUT wrapper END_PRINTOUT                               {let (cap, blk) = $2 in ($1, Ast.Printout (cap, blk))}
-    | BEGIN_TABLE wrapper END_TABLE                                     {let (cap, blk) = $2 in ($1, Ast.Table (cap, blk))}
-    | BEGIN_FIGURE wrapper END_FIGURE                                   {let (cap, blk) = $2 in ($1, Ast.Figure (cap, blk))}
+    | BEGIN_EQUATION inline_bundle? block END_EQUATION                  {($1, Ast.Equation ($2, $3))}
+    | BEGIN_PRINTOUT inline_bundle? block END_PRINTOUT                  {($1, Ast.Printout ($2, $3))}
+    | BEGIN_TABLE inline_bundle? block END_TABLE                        {($1, Ast.Table ($2, $3))}
+    | BEGIN_FIGURE inline_bundle? block END_FIGURE                      {($1, Ast.Figure ($2, $3))}
     | BEGIN_ABSTRACT frag END_ABSTRACT                                  {($1, Ast.Abstract $2)}
     | BEGIN_BIB bib_author bib_title bib_resource END_BIB               {($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
     | BEGIN_NOTE frag END_NOTE                                          {($1, Ast.Note $2)}
-    | set_literal BEGIN_MATHTEXBLK set_general TEXT END_MATHTEXBLK      {($2, Ast.Mathtex_blk (snd $4))}
-    | set_literal BEGIN_MATHMLBLK set_general TEXT END_MATHMLBLK        {($2, Ast.Mathml_blk (snd $4))}
-    | set_literal BEGIN_SOURCE set_general TEXT END_SOURCE              {($2, Ast.Source (snd $4))}
-    | set_literal BEGIN_VERBATIM set_general TEXT END_VERBATIM          {($2, Ast.Verbatim (snd $4))}
+    | push_literal BEGIN_MATHTEXBLK TEXT pop END_MATHTEXBLK             {($2, Ast.Mathtex_blk (snd $3))}
+    | push_literal BEGIN_MATHMLBLK TEXT pop END_MATHMLBLK               {($2, Ast.Mathml_blk (snd $3))}
+    | push_literal BEGIN_SOURCE TEXT pop END_SOURCE                     {($2, Ast.Source (snd $3))}
+    | push_literal BEGIN_VERBATIM TEXT pop END_VERBATIM                 {($2, Ast.Verbatim (snd $3))}
     | env_blkpat                                                        {let (comm, tag, blkpat) = $1 in (comm, Ast.Extcomm_blk (tag, blkpat))}
     | BEGIN_CUSTOM inline_bundle? frag END_CUSTOM                       {(fst $1, Ast.Custom (snd $1, $2, $3))}
 
 env_blkpat:
-    | set_literal BEGIN_BLKPAT_LIT set_general TEXT END_BLKPAT_LIT      {(fst $2, snd $2, Ast.Blkpat_lit (snd $4))}
+    | push_literal BEGIN_BLKPAT_LIT TEXT pop END_BLKPAT_LIT             {(fst $2, snd $2, Ast.Blkpat_lit (snd $3))}
     | BEGIN_BLKPAT_FRAG frag END_BLKPAT_FRAG                            {(fst $1, snd $1, Ast.Blkpat_frag $2)}
 
 anon_item_frag:
@@ -269,17 +260,14 @@ qanda_frag:
     | ANSWER inline_bundle? frag                                        {($1, Ast.New_answerer $2, $3)}
     | RANSWER frag                                                      {($1, Ast.Same_answerer, $2)}
 
-wrapper:
-    | inline_bundle? spaceish? block spaceish?                          {($1, $3)}
-
 bib_author:
-    | BIB_AUTHOR inline_bundle SPACE?                                   {($1, $2)}
+    | BIB_AUTHOR inline_bundle                                          {($1, $2)}
 
 bib_title:
-    | BIB_TITLE inline_bundle SPACE?                                    {($1, $2)}
+    | BIB_TITLE inline_bundle                                           {($1, $2)}
 
 bib_resource:
-    | BIB_RESOURCE inline_bundle SPACE?                                 {($1, $2)}
+    | BIB_RESOURCE inline_bundle                                        {($1, $2)}
 
 boxoutdef:
     | /* empty */                                                       {(None, None)}
@@ -291,7 +279,6 @@ theoremdef:
     | inline_bundle raw_bundle                                          {($1, Some $2)}
 
 
-
 (********************************************************************************)
 (* Rules for tabular environment.                                               *)
 (********************************************************************************)
@@ -300,18 +287,18 @@ tabular:
     | head? body+ foot?                                                 {{Ast.thead = $1; Ast.tfoot = $3; Ast.tbodies = $2;}}
     | row row* body* foot?                                              {{Ast.thead = None; Ast.tfoot = $4; Ast.tbodies = (fst $1, $1 :: $2) :: $3;}}
 
-head: THEAD SPACE row+                                                  {($1, $3)}
-foot: TFOOT SPACE row+                                                  {($1, $3)}
-body: TBODY SPACE row+                                                  {($1, $3)}
+head: THEAD row+                                                        {($1, $2)}
+foot: TFOOT row+                                                        {($1, $2)}
+body: TBODY row+                                                        {($1, $2)}
 row:  cell+ ROW_END                                                     {($2, $1)}
-cell: CELL_MARK option(inline+)                                         {($1, $2)}
+cell: CELL_MARK option(inline_undelim)                                  {($1, $2)}
 
 
 (********************************************************************************)
 (* Inline context.                                                              *)
 (********************************************************************************)
 
-inline_without_space:
+inline:
     | TEXT                                                              {(fst $1, Ast.Plain (snd $1))}
     | ENTITY                                                            {(fst $1, Ast.Entity (snd $1))}
     | LINEBREAK                                                         {($1, Ast.Linebreak)}
@@ -334,8 +321,8 @@ inline_without_space:
     | MREF raw_bundle inline_bundle                                     {($1, Ast.Mref ($2, $3))}
     | MACROARG raw_bundle                                               {($1, Ast.Macroarg $2)}
     | MACROCALL inline_bundle*                                          {(fst $1, Ast.Macrocall (snd $1, $2))}
-    | set_mathtexinl BEGIN_MATHTEXINL TEXT set_general END_MATHTEXINL   {($2, Ast.Mathtex_inl (snd $3))}
-    | set_mathmlinl BEGIN_MATHMLINL TEXT set_general END_MATHMLINL      {($2, Ast.Mathml_inl (snd $3))}
+    | push_mathtexinl BEGIN_MATHTEXINL TEXT pop END_MATHTEXINL          {($2, Ast.Mathtex_inl (snd $3))}
+    | push_mathmlinl BEGIN_MATHMLINL TEXT pop END_MATHMLINL             {($2, Ast.Mathml_inl (snd $3))}
     | sim_inlpat                                                        {let (comm, tag, inlpat) = $1 in (comm, Ast.Extcomm_inl (tag, inlpat))}
 
 sim_inlpat:
@@ -346,38 +333,35 @@ sim_inlpat:
     | INLPAT_RAW_SEQ raw_bundle inline_bundle                           {let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_raw_seq ($2, $3))}
     | INLPAT_RAW_SEQOPT raw_bundle inline_bundle?                       {let (comm, tag) = $1 in (comm, tag, Ast.Inlpat_raw_seqopt ($2, $3))}
 
-inline:
-    | SPACE %prec _inline_SPACE_                                        {($1, Ast.Plain " ")}
-    | SPACE TEXT                                                        {($1, Ast.Plain (" " ^ snd $2))}
-    | inline_without_space                                              {$1}
+inline_undelim:
+    | push_inline BEGIN_INLINE inline+ pop END_INLINE                   {$3}
 
 inline_bundle:
-    | OPEN inline_list CLOSE                                            {$2}
-
-inline_list:
-    | (* empty *) %prec _inline_list_EMPTY_                             {[]}
-    | inline inline_list                                                {$1 :: $2}
+    | push_inline OPEN inline* pop CLOSE                                {$3}
 
 raw_bundle:
-    | set_raw OPEN set_general TEXT CLOSE                               {snd $4}
+    | push_raw OPEN TEXT pop CLOSE                                      {snd $3}
 
 
 (********************************************************************************)
 (* Set lexing context via side-effect.                                          *)
 (********************************************************************************)
 
-set_general:
-    | /* empty */                                                       {C.(set General)}
+push_inline:
+    | (* empty *)                                                       {C.(push Inline)}
 
-set_raw:
-    | /* empty */                                                       {C.(set Raw)}
+push_raw:
+    | (* empty *)                                                       {C.(push Raw)}
 
-set_mathtexinl:
-    | BEGIN_MATHTEXINL_DUMMY                                            {C.(set Mathtexinl)}
+push_mathtexinl:
+    | BEGIN_MATHTEXINL_DUMMY                                            {C.(push Mathtexinl)}
 
-set_mathmlinl:
-    | BEGIN_MATHMLINL_DUMMY                                             {C.(set Mathmlinl)}
+push_mathmlinl:
+    | BEGIN_MATHMLINL_DUMMY                                             {C.(push Mathmlinl)}
 
-set_literal:
-    | /* empty */                                                       {C.(set Literal)}
+push_literal:
+    | (* empty *)                                                       {C.(push Literal)}
+
+pop:
+    | (* empty *)                                                       {C.pop ()}
 

@@ -13,9 +13,10 @@
 
 module type S =
 sig
-    type t = General | Raw | Mathtexinl | Mathmlinl | Literal
+    type t = Block | Inline | Raw | Mathtexinl | Mathmlinl | Literal
 
-    val set: t -> unit
+    val push: t -> unit
+    val pop: unit -> unit
     val get: unit -> t
 end
 
