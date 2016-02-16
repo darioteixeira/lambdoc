@@ -56,8 +56,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> BEGIN_NOTE
 %token <Lambdoc_reader_ast.command> BEGIN_MATHTEXBLK
 %token <Lambdoc_reader_ast.command> BEGIN_MATHMLBLK
+%token <Lambdoc_reader_ast.command> BEGIN_SOURCEBLK
 %token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
-%token <Lambdoc_reader_ast.command> BEGIN_SOURCE
 %token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_BLKPAT_LIT
 %token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_BLKPAT_FRAG
 %token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_CUSTOM
@@ -85,8 +85,8 @@ open Lambdoc_reader
 %token END_NOTE
 %token END_MATHTEXBLK
 %token END_MATHMLBLK
+%token END_SOURCEBLK
 %token END_VERBATIM
-%token END_SOURCE
 %token END_BLKPAT_LIT
 %token END_BLKPAT_FRAG
 %token END_CUSTOM
@@ -98,6 +98,7 @@ open Lambdoc_reader
 
 %token <Lambdoc_reader_ast.command> LINEBREAK
 %token <Lambdoc_reader_ast.command> GLYPH
+%token <Lambdoc_reader_ast.command> SOURCEINL
 %token <Lambdoc_reader_ast.command> BOLD
 %token <Lambdoc_reader_ast.command> EMPH
 %token <Lambdoc_reader_ast.command> MONO
@@ -239,7 +240,7 @@ env_block:
     | BEGIN_NOTE frag END_NOTE                                          {($1, Ast.Note $2)}
     | push_literal BEGIN_MATHTEXBLK TEXT pop END_MATHTEXBLK             {($2, Ast.Mathtex_blk (snd $3))}
     | push_literal BEGIN_MATHMLBLK TEXT pop END_MATHMLBLK               {($2, Ast.Mathml_blk (snd $3))}
-    | push_literal BEGIN_SOURCE TEXT pop END_SOURCE                     {($2, Ast.Source (snd $3))}
+    | push_literal BEGIN_SOURCEBLK TEXT pop END_SOURCEBLK               {($2, Ast.Source_blk (snd $3))}
     | push_literal BEGIN_VERBATIM TEXT pop END_VERBATIM                 {($2, Ast.Verbatim (snd $3))}
     | env_blkpat                                                        {let (comm, tag, blkpat) = $1 in (comm, Ast.Extcomm_blk (tag, blkpat))}
     | BEGIN_CUSTOM inline_bundle? frag END_CUSTOM                       {(fst $1, Ast.Custom (snd $1, $2, $3))}
@@ -304,6 +305,7 @@ inline:
     | LINEBREAK                                                         {($1, Ast.Linebreak)}
     | push_mathtexinl BEGIN_MATHTEXINL TEXT pop END_MATHTEXINL          {($2, Ast.Mathtex_inl (snd $3))}
     | push_mathmlinl BEGIN_MATHMLINL TEXT pop END_MATHMLINL             {($2, Ast.Mathml_inl (snd $3))}
+    | SOURCEINL raw_bundle                                              {($1, Ast.Source_inl $2)}
     | GLYPH raw_bundle raw_bundle                                       {($1, Ast.Glyph ($2, $3))}
     | BOLD inline_bundle                                                {($1, Ast.Bold $2)}
     | EMPH inline_bundle                                                {($1, Ast.Emph $2)}

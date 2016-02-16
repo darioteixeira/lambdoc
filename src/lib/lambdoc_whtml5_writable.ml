@@ -300,6 +300,9 @@ let from_valid ?(valid_options = default_valid_options) doc =
             let html: [> Html5_types.span ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
             Html5.span ~a:[a_class (!!"mathinl" :: classnames)] [html]
 
+        | Sourceinl src ->
+            Source_writer.write_inline ~class_prefix:!!"src_" ~extra_classes:classnames src.hilite
+
         | Glyph (href, alt) ->
             let uri = Html5.uri_of_string href in
             Html5.img ~a:[a_class (!!"glyph" :: classnames)] ~src:uri ~alt ()
@@ -548,7 +551,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
             let html: [> Html5_types.div ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
             [Html5.div ~a:[a_class (!!"mathblk" :: classnames)] [html]]
 
-        | Source src ->
+        | Sourceblk src ->
             [Source_writer.write_block ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:src.linenums src.hilite]
 
         | Tabular tab ->

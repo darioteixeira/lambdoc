@@ -15,7 +15,7 @@ open Lambdoc_core_basic
 
 type inline_feature =
     [ `Feature_plain | `Feature_entity | `Feature_linebreak
-    | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
+    | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_source_inl | `Feature_glyph
     | `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps
     | `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
     | `Feature_mbox | `Feature_span | `Feature_link
@@ -27,7 +27,7 @@ type block_feature =
     | `Feature_itemize | `Feature_enumerate | `Feature_description
     | `Feature_qanda | `Feature_verse | `Feature_quote
     | `Feature_mathtex_blk | `Feature_mathml_blk 
-    | `Feature_source | `Feature_tabular 
+    | `Feature_source_blk | `Feature_tabular 
     | `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_pullquote
     | `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
     | `Feature_part | `Feature_appendix
@@ -60,6 +60,7 @@ let describe_inline_feature = function
     | `Feature_linebreak       -> "line break within paragraph"
     | `Feature_mathtex_inl     -> "inline TeX math"
     | `Feature_mathml_inl      -> "inline MathML math"
+    | `Feature_source_inl      -> "inline source code"
     | `Feature_glyph           -> "inline image"
     | `Feature_bold            -> "bold text"
     | `Feature_emph            -> "emphasised text"
@@ -89,7 +90,7 @@ let describe_block_feature = function
     | `Feature_quote           -> "quote block"
     | `Feature_mathtex_blk     -> "TeX math block"
     | `Feature_mathml_blk      -> "MathML block"
-    | `Feature_source          -> "source-code block"
+    | `Feature_source_blk      -> "source-code block"
     | `Feature_tabular         -> "tabular"
     | `Feature_subpage         -> "subpage block"
     | `Feature_verbatim        -> "verbatim block"
@@ -146,7 +147,7 @@ let describe_internal_feature = function
 let inline_features =
     [
     `Feature_plain; `Feature_entity; `Feature_linebreak;
-    `Feature_mathtex_inl; `Feature_mathml_inl; `Feature_glyph;
+    `Feature_mathtex_inl; `Feature_mathml_inl; `Feature_source_inl; `Feature_glyph;
     `Feature_bold; `Feature_emph; `Feature_mono; `Feature_caps;
     `Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
     `Feature_mbox; `Feature_span; `Feature_link;
@@ -160,7 +161,7 @@ let block_features =
     `Feature_itemize; `Feature_enumerate; `Feature_description;
     `Feature_qanda; `Feature_verse; `Feature_quote;
     `Feature_mathtex_blk; `Feature_mathml_blk;
-    `Feature_source; `Feature_tabular;
+    `Feature_source_blk; `Feature_tabular;
     `Feature_subpage; `Feature_verbatim; `Feature_picture; `Feature_pullquote;
     `Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
     `Feature_part; `Feature_appendix;

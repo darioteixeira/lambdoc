@@ -36,6 +36,11 @@ produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
 おなかがいっぱいですからなにもたべたくないです.
 
 \short
+You can also embed highlighted source-code like \code<lang=caml>{type t = Alpha | Beta}
+into an inline context.
+\short
+
+\short
 It is possible to embed images like \glyph{circle-tiny.png}{o} into an inline context.
 \short
 

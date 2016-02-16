@@ -117,6 +117,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
         | `Feature_linebreak     -> forbidden_class
         | `Feature_mathtex_inl   -> forbidden_class
         | `Feature_mathml_inl    -> forbidden_class
+        | `Feature_source_inl    -> forbidden_class
         | `Feature_glyph         -> forbidden_class
         | `Feature_bold          -> forbidden_class
         | `Feature_emph          -> forbidden_class
@@ -146,7 +147,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
         | `Feature_quote         -> forbidden_class
         | `Feature_mathtex_blk   -> forbidden_class
         | `Feature_mathml_blk    -> forbidden_class
-        | `Feature_source        -> forbidden_class
+        | `Feature_source_blk    -> forbidden_class
         | `Feature_tabular       -> forbidden_class
         | `Feature_subpage       -> forbidden_class
         | `Feature_verbatim      -> forbidden_class

@@ -45,8 +45,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> BEGIN_QUOTE
 %token <Lambdoc_reader_ast.command> END_QUOTE
 
-%token <Lambdoc_reader_ast.command> BEGIN_SOURCE
-%token <Lambdoc_reader_ast.command> END_SOURCE
+%token <Lambdoc_reader_ast.command> BEGIN_SOURCEBLK
+%token <Lambdoc_reader_ast.command> END_SOURCEBLK
 
 %token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
 %token <Lambdoc_reader_ast.command> END_VERBATIM
@@ -80,7 +80,7 @@ block:
     | BEGIN_ITEMIZE item+ END_ITEMIZE        {($1, Ast.Itemize $2)}
     | BEGIN_ENUMERATE item+ END_ENUMERATE    {($1, Ast.Enumerate $2)}
     | BEGIN_QUOTE block+ END_QUOTE           {($1, Ast.Quote $2)}
-    | BEGIN_SOURCE RAW END_SOURCE            {($1, Ast.Source $2)}
+    | BEGIN_SOURCEBLK RAW END_SOURCEBLK      {($1, Ast.Source_blk $2)}
     | BEGIN_VERBATIM RAW END_VERBATIM        {($1, Ast.Verbatim $2)}
     | BEGIN_SECTION inline+ END_SECTION      {let (comm, level) = $1 in (comm, Ast.Section (level, $2))}
 

@@ -29,7 +29,7 @@ type text =
     | Begin_link | End_link | Link_sep
 
 type line =
-    | Begin_source of string | End_source
+    | Begin_sourceblk of string | End_sourceblk
     | Begin_verbatim of string | End_verbatim
     | Raw of string
     | Section of int * text list
@@ -67,8 +67,8 @@ let mdash = [%sedlex.regexp? "---"]
 let ldquo = [%sedlex.regexp? "``"]
 let rdquo = [%sedlex.regexp? "''"]
 
-let begin_source = [%sedlex.regexp? "{{{"]
-let end_source = [%sedlex.regexp? "}}}"]
+let begin_sourceblk = [%sedlex.regexp? "{{{"]
+let end_sourceblk = [%sedlex.regexp? "}}}"]
 let begin_verbatim = [%sedlex.regexp? "((("]
 let end_verbatim = [%sedlex.regexp? ")))"]
 
@@ -125,9 +125,9 @@ let text lexbuf =
 (********************************************************************************)
 
 let source lexbuf = match%sedlex lexbuf with
-    | end_source, Star blank, eof -> End_source
-    | Star any                    -> Raw (Sedlexing.Utf8.lexeme lexbuf)
-    | _                           -> assert false
+    | end_sourceblk, Star blank, eof -> End_sourceblk
+    | Star any                       -> Raw (Sedlexing.Utf8.lexeme lexbuf)
+    | _                              -> assert false
 
 
 let verbatim lexbuf = match%sedlex lexbuf with
@@ -137,10 +137,10 @@ let verbatim lexbuf = match%sedlex lexbuf with
 
 
 let general lexbuf = match%sedlex lexbuf with
-    | begin_source, Star non_blank, Star blank, eof ->
-        Begin_source (Sedlexing.Utf8.sub_lexeme lexbuf 3 ((Sedlexing.lexeme_length lexbuf) - 3))
-    | end_source, Star blank, eof ->
-        End_source
+    | begin_sourceblk, Star non_blank, Star blank, eof ->
+        Begin_sourceblk (Sedlexing.Utf8.sub_lexeme lexbuf 3 ((Sedlexing.lexeme_length lexbuf) - 3))
+    | end_sourceblk, Star blank, eof ->
+        End_sourceblk
     | begin_verbatim, Star non_blank, Star blank, eof ->
         Begin_verbatim (Sedlexing.Utf8.sub_lexeme lexbuf 3 ((Sedlexing.lexeme_length lexbuf) - 3))
     | end_verbatim, Star blank, eof ->

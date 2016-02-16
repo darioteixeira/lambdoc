@@ -37,7 +37,7 @@ type block =
     | Verse of frag
     | Quote of frag
     | Mathblk of Math.t
-    | Source of Source.t
+    | Sourceblk of Source.t
     | Tabular of Tabular.t
     | Subpage of frag
     | Verbatim of string
@@ -75,7 +75,7 @@ val qanda:       ?attr:Attr.t -> (Qanda.t * frag) list -> t
 val verse:       ?attr:Attr.t -> frag -> t
 val quote:       ?attr:Attr.t -> frag -> t
 val mathblk:     ?attr:Attr.t -> Math.t -> t
-val source:      ?attr:Attr.t -> Source.t -> t
+val sourceblk:   ?attr:Attr.t -> Source.t -> t
 val tabular:     ?attr:Attr.t -> Tabular.t -> t
 val subpage:     ?attr:Attr.t -> frag -> t
 val verbatim:    ?attr:Attr.t -> string -> t

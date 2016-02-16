@@ -12,6 +12,7 @@
 module Attr = Lambdoc_core_attr
 module Basic = Lambdoc_core_basic
 module Math = Lambdoc_core_math
+module Source = Lambdoc_core_source
 
 open Basic
 
@@ -25,6 +26,7 @@ type inline =
     | Entity of entity              (** Unicode character entity *)
     | Linebreak                     (** Line break within same paragraph *)
     | Mathinl of Math.t             (** Inline mathematics *)
+    | Sourceinl of Source.t         (** Inline source-code *)
     | Glyph of href * string        (** Inline image *)
     | Bold of seq                   (** Bold text *)
     | Emph of seq                   (** Emphasised text (italic) *)
@@ -60,6 +62,7 @@ val plain:     ?attr:Attr.t -> string -> t
 val entity:    ?attr:Attr.t -> entity -> t
 val linebreak: ?attr:Attr.t -> unit -> t
 val mathinl:   ?attr:Attr.t -> Math.t -> t
+val sourceinl: ?attr:Attr.t -> Source.t -> t
 val glyph:     ?attr:Attr.t -> href -> string -> t
 val bold:      ?attr:Attr.t -> seq -> t
 val emph:      ?attr:Attr.t -> seq -> t

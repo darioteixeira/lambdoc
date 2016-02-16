@@ -74,7 +74,7 @@ let default =
         ((`Only `Feature_paragraph, `Member ["initial"; "indent"; "noindent"]), `Accept);
         ((`Only `Feature_itemize, `Member ["disc"; "circle"; "square"; "none"]), `Accept);
         ((`Only `Feature_enumerate, `Member ["decimal"; "lower-roman"; "upper-roman"; "lower-alpha"; "upper-alpha"; "none"]), `Accept);
-        ((`Only `Feature_source, `Member ["plain"; "boxed"; "zebra"; "console"]), `Accept);
+        ((`Only `Feature_source_blk, `Member ["plain"; "boxed"; "zebra"; "console"]), `Accept);
         ((`Only `Feature_verbatim, `Member (List.init 10 string_of_int |> List.map (fun x -> "mult" ^ x))), `Accept);
         ((`Only `Feature_picture, `Only "frame"), `Accept);
         ((`Member [`Feature_verbatim; `Feature_picture; `Feature_pullquote; `Feature_custom; `Feature_equation; `Feature_printout; `Feature_table; `Feature_figure], `Member ["center"; "right"; "left"]), `Accept);

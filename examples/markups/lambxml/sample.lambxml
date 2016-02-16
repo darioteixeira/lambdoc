@@ -50,6 +50,14 @@ emphasised text should appear on the same line.</i></mbox>
 
 <p>
 <short/>
+You can also embed highlighted source-code like <code style="lang=caml">type t = Alpha | Beta</code>
+into an inline context.
+<short/>
+</p>
+
+
+<p>
+<short/>
 It is possible to embed images like <glyph src="circle-tiny.png" alt="o"/> into an inline context.
 <short/>
 </p>

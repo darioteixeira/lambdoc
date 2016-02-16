@@ -26,8 +26,8 @@ Library "lambdoc"
     Path: src/lib
     Modules:
         Lambdoc_core, Lambdoc_core_basic, Lambdoc_core_attr, Lambdoc_core_level, Lambdoc_core_label, Lambdoc_core_order,
-        Lambdoc_core_custom, Lambdoc_core_math, Lambdoc_core_inline, Lambdoc_core_wrapper, Lambdoc_core_heading, Lambdoc_core_bib,
-        Lambdoc_core_qanda, Lambdoc_core_source, Lambdoc_core_tabular, Lambdoc_core_block, Lambdoc_core_note,
+        Lambdoc_core_custom, Lambdoc_core_math, Lambdoc_core_source, Lambdoc_core_inline, Lambdoc_core_wrapper, Lambdoc_core_heading,
+        Lambdoc_core_bib, Lambdoc_core_qanda, Lambdoc_core_tabular, Lambdoc_core_block, Lambdoc_core_note,
         Lambdoc_core_target, Lambdoc_core_valid, Lambdoc_core_blkcat, Lambdoc_core_error, Lambdoc_core_invalid,
         Lambdoc_core_ambivalent, Lambdoc_core_feature, Lambdoc_core_idiosyncrasies, Lambdoc_core_monadic, Lambdoc_core_foldmap,
         Lambdoc_reader, Lambdoc_reader_ast, Lambdoc_reader_extension, Lambdoc_reader_compiler, Lambdoc_reader_maker,

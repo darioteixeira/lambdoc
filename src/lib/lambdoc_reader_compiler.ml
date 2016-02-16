@@ -385,6 +385,15 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             let elem attr _ = Monad.return (convert_mathtex (Inline.mathinl ~attr) comm txt) in
             check_inline_comm `Feature_mathtex_inl comm elem
 
+        | Ast.Source_inl txt ->
+            let elem attr dict =
+                let lang = Style.consume1 dict (Lang_hnd, None) in
+                let hilite = Camlhighlight_parser.from_string ?lang txt in
+                let src = Source.make lang hilite false in
+                let () = if txt = "" then add_error comm Error.Empty_source in
+                Monad.return [Inline.sourceinl ~attr src] in
+            check_inline_comm `Feature_source_inl comm elem
+
         | Ast.Mathml_inl txt ->
             let elem attr _ = Monad.return (convert_mathml (Inline.mathinl ~attr) comm txt) in
             check_inline_comm `Feature_mathml_inl comm elem
@@ -763,15 +772,15 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 Monad.return (convert_mathml (Block.mathblk ~attr) comm trimmed) in
             check_block_comm `Feature_mathml_blk comm elem
 
-        | Ast.Source txt when Blkcat.subtype [`Printout_blk; `Embeddable_blk] allowed ->
+        | Ast.Source_blk txt when Blkcat.subtype [`Printout_blk; `Embeddable_blk] allowed ->
             let elem attr dict =
                 let (lang, linenums) = Style.consume2 dict (Lang_hnd, None) (Linenums_hnd, false) in
                 let trimmed = Literal_input.trim txt in
                 let hilite = Camlhighlight_parser.from_string ?lang trimmed in
                 let src = Source.make lang hilite linenums in
                 let () = if trimmed = "" then add_error comm Error.Empty_source in
-                Monad.return [Block.source ~attr src] in
-            check_block_comm `Feature_source comm elem
+                Monad.return [Block.sourceblk ~attr src] in
+            check_block_comm `Feature_source_blk comm elem
 
         | Ast.Tabular asttab when Blkcat.subtype [`Table_blk; `Embeddable_blk] allowed ->
             let elem attr dict =

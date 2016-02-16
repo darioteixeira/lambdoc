@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 0cf8070943082c3fd477c8d11c41c181)
+# DO NOT EDIT (digest: 476080e7b8c7c5b0aae9663cde87d764)
 src/lib/Lambdoc_core
 src/lib/Lambdoc_core_basic
 src/lib/Lambdoc_core_attr
@@ -8,12 +8,12 @@ src/lib/Lambdoc_core_label
 src/lib/Lambdoc_core_order
 src/lib/Lambdoc_core_custom
 src/lib/Lambdoc_core_math
+src/lib/Lambdoc_core_source
 src/lib/Lambdoc_core_inline
 src/lib/Lambdoc_core_wrapper
 src/lib/Lambdoc_core_heading
 src/lib/Lambdoc_core_bib
 src/lib/Lambdoc_core_qanda
-src/lib/Lambdoc_core_source
 src/lib/Lambdoc_core_tabular
 src/lib/Lambdoc_core_block
 src/lib/Lambdoc_core_note

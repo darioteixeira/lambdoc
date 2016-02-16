@@ -30,7 +30,7 @@ type text =
     | Begin_link | End_link | Link_sep
 
 type line =
-    | Begin_source of string | End_source
+    | Begin_sourceblk of string | End_sourceblk
     | Begin_verbatim of string | End_verbatim
     | Raw of string
     | Section of int * text list
