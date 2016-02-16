@@ -28,7 +28,7 @@ type inline =
     | Glyph of href * string        (** Inline image *)
     | Bold of seq                   (** Bold text *)
     | Emph of seq                   (** Emphasised text (italic) *)
-    | Code of seq                   (** Inline source-code sequence (monospaced) *)
+    | Mono of seq                   (** Monospaced sequence *)
     | Caps of seq                   (** All-caps text *)
     | Ins of seq                    (** Text replacing wrong text *)
     | Del of seq                    (** Text to be replaced (strike-through) *)
@@ -63,7 +63,7 @@ val mathinl:   ?attr:Attr.t -> Math.t -> t
 val glyph:     ?attr:Attr.t -> href -> string -> t
 val bold:      ?attr:Attr.t -> seq -> t
 val emph:      ?attr:Attr.t -> seq -> t
-val code:      ?attr:Attr.t -> seq -> t
+val mono:      ?attr:Attr.t -> seq -> t
 val caps:      ?attr:Attr.t -> seq -> t
 val ins:       ?attr:Attr.t -> seq -> t
 val del:       ?attr:Attr.t -> seq -> t

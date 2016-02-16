@@ -65,7 +65,7 @@ sig
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
-        code:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
+        mono:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         caps:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         ins:         'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         del:         'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;

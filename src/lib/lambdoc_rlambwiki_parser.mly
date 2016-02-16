@@ -27,8 +27,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> SUB_MARK
 %token <Lambdoc_reader_ast.command> BEGIN_CAPS
 %token <Lambdoc_reader_ast.command> END_CAPS
-%token <Lambdoc_reader_ast.command> BEGIN_CODE
-%token <Lambdoc_reader_ast.command> END_CODE
+%token <Lambdoc_reader_ast.command> BEGIN_MONO
+%token <Lambdoc_reader_ast.command> END_MONO
 %token <Lambdoc_reader_ast.command> BEGIN_LINK
 %token <Lambdoc_reader_ast.command> END_LINK
 %token <Lambdoc_reader_ast.command> LINK_SEP
@@ -94,7 +94,7 @@ inline:
     | SUP_MARK plain SUP_MARK                {($1, Ast.Sup [$2])}
     | SUB_MARK plain SUB_MARK                {($1, Ast.Sub [$2])}
     | BEGIN_CAPS plain END_CAPS              {($1, Ast.Caps [$2])}
-    | BEGIN_CODE plain END_CODE              {($1, Ast.Code [$2])}
+    | BEGIN_MONO plain END_MONO              {($1, Ast.Mono [$2])}
     | BEGIN_LINK raw END_LINK                {($1, Ast.Link ($2, None))}
     | BEGIN_LINK raw LINK_SEP plain END_LINK {($1, Ast.Link ($2, Some [$4]))}
 

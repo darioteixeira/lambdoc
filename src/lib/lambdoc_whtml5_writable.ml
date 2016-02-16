@@ -310,8 +310,8 @@ let from_valid ?(valid_options = default_valid_options) doc =
         | Emph seq ->
             Html5.i ~a:[a_class (!!"emph" :: classnames)] (write_seq seq)
 
-        | Code seq ->
-            Html5.code ~a:[a_class (!!"code" :: classnames)] (write_seq seq)
+        | Mono seq ->
+            Html5.code ~a:[a_class (!!"mono" :: classnames)] (write_seq seq)
 
         | Caps seq ->
             Html5.span ~a:[a_class (!!"caps" :: classnames)] (write_seq seq)

@@ -406,11 +406,11 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 Monad.return [Inline.emph ~attr seq] in
             check_inline_comm `Feature_emph comm elem
 
-        | Ast.Code astseq ->
+        | Ast.Mono astseq ->
             let elem attr _ =
                 convert_seq_aux ~comm ~context ~depth ~args is_ref astseq >>= fun seq ->
-                Monad.return [Inline.code ~attr seq] in
-            check_inline_comm `Feature_code comm elem
+                Monad.return [Inline.mono ~attr seq] in
+            check_inline_comm `Feature_mono comm elem
 
         | Ast.Caps astseq ->
             let elem attr _ =

@@ -26,7 +26,7 @@ type inline =
     | Glyph of href * string
     | Bold of seq
     | Emph of seq
-    | Code of seq
+    | Mono of seq
     | Caps of seq
     | Ins of seq
     | Del of seq
@@ -61,7 +61,7 @@ let mathinl   ?(attr = Attr.default) data = {inl = Mathinl data; attr}
 let glyph     ?(attr = Attr.default) href alt = {inl = Glyph (href, alt); attr}
 let bold      ?(attr = Attr.default) seq = {inl = Bold seq; attr}
 let emph      ?(attr = Attr.default) seq = {inl = Emph seq; attr}
-let code      ?(attr = Attr.default) seq = {inl = Code seq; attr}
+let mono      ?(attr = Attr.default) seq = {inl = Mono seq; attr}
 let caps      ?(attr = Attr.default) seq = {inl = Caps seq; attr}
 let ins       ?(attr = Attr.default) seq = {inl = Ins seq; attr}
 let del       ?(attr = Attr.default) seq = {inl = Del seq; attr}

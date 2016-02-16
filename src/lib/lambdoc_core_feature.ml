@@ -16,7 +16,7 @@ open Lambdoc_core_basic
 type inline_feature =
     [ `Feature_plain | `Feature_entity | `Feature_linebreak
     | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_glyph
-    | `Feature_bold | `Feature_emph | `Feature_code | `Feature_caps
+    | `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps
     | `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
     | `Feature_mbox | `Feature_span | `Feature_link
     | `Feature_see | `Feature_cite | `Feature_dref | `Feature_sref | `Feature_mref
@@ -63,7 +63,7 @@ let describe_inline_feature = function
     | `Feature_glyph           -> "inline image"
     | `Feature_bold            -> "bold text"
     | `Feature_emph            -> "emphasised text"
-    | `Feature_code            -> "code (monospaced) text"
+    | `Feature_mono            -> "monospaced text"
     | `Feature_caps            -> "small caps text"
     | `Feature_ins             -> "corrected text"
     | `Feature_del             -> "deleted text"
@@ -147,7 +147,7 @@ let inline_features =
     [
     `Feature_plain; `Feature_entity; `Feature_linebreak;
     `Feature_mathtex_inl; `Feature_mathml_inl; `Feature_glyph;
-    `Feature_bold; `Feature_emph; `Feature_code; `Feature_caps;
+    `Feature_bold; `Feature_emph; `Feature_mono; `Feature_caps;
     `Feature_ins; `Feature_del; `Feature_sup; `Feature_sub;
     `Feature_mbox; `Feature_span; `Feature_link;
     `Feature_see; `Feature_cite; `Feature_dref; `Feature_sref; `Feature_mref;

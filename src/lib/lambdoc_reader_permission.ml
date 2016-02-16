@@ -120,7 +120,7 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
         | `Feature_glyph         -> forbidden_class
         | `Feature_bold          -> forbidden_class
         | `Feature_emph          -> forbidden_class
-        | `Feature_code          -> forbidden_class
+        | `Feature_mono          -> forbidden_class
         | `Feature_caps          -> forbidden_class
         | `Feature_ins           -> forbidden_class
         | `Feature_del           -> forbidden_class

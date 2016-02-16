@@ -47,7 +47,7 @@ type seq = inline list
     | Glyph of string * string              (* Inlpat_raw_raw *)
     | Bold of seq                           (* Inlpat_seq *)
     | Emph of seq                           (* Inlpat_seq *)
-    | Code of seq                           (* Inlpat_seq *)
+    | Mono of seq                           (* Inlpat_seq *)
     | Caps of seq                           (* Inlpat_seq *)
     | Ins of seq                            (* Inlpat_seq *)
     | Del of seq                            (* Inlpat_seq *)

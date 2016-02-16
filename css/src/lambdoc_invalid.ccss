@@ -49,5 +49,5 @@
 .doc_error_around {background: #f9f9f9; color: #000;}
 .doc_error_actual {background: #f3f6fc; color: #c33;}
 
-.doc_error_msg > .doc_par > .doc_code {color: #9f1f1f;}
+.doc_error_msg > .doc_par > .doc_mono {color: #9f1f1f;}
 

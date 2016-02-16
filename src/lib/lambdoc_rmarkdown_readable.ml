@@ -87,7 +87,7 @@ let ast_of_omd frag =
         | Omd.Text txt           -> Inline (dummy, Ast.Plain txt)
         | Omd.Emph seq           -> Inline (dummy, Ast.Emph (convert_seq seq))
         | Omd.Bold seq           -> Inline (dummy, Ast.Bold (convert_seq seq))
-        | Omd.Code (_, txt)      -> Inline (dummy, Ast.Code [(dummy, Ast.Plain txt)])
+        | Omd.Code (_, txt)      -> Inline (dummy, Ast.Mono [(dummy, Ast.Plain txt)])
         | Omd.Br                 -> Inline (dummy, Ast.Linebreak)
         | Omd.NL                 -> Inline (dummy, Ast.Plain " ")
         | Omd.Url (href, seq, _) -> Inline (dummy, Ast.Link (href, Some (convert_seq seq)))

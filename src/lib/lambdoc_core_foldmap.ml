@@ -57,7 +57,7 @@ sig
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
-        code:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
+        mono:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         caps:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         ins:         'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         del:         'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -136,7 +136,7 @@ struct
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
-        code:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
+        mono:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         caps:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         ins:         'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         del:         'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -237,7 +237,7 @@ struct
             | Glyph (href, alt)         -> fm.glyph fm acc attr href alt
             | Bold seq                  -> fm.bold fm acc attr seq
             | Emph seq                  -> fm.emph fm acc attr seq
-            | Code seq                  -> fm.code fm acc attr seq
+            | Mono seq                  -> fm.mono fm acc attr seq
             | Caps seq                  -> fm.caps fm acc attr seq
             | Ins seq                   -> fm.ins fm acc attr seq
             | Del seq                   -> fm.del fm acc attr seq
@@ -302,8 +302,8 @@ struct
             aux_seq Inline.bold fm acc attr seq);
         emph = (fun fm acc attr seq ->
             aux_seq Inline.emph fm acc attr seq);
-        code = (fun fm acc attr seq ->
-            aux_seq Inline.code fm acc attr seq);
+        mono = (fun fm acc attr seq ->
+            aux_seq Inline.mono fm acc attr seq);
         caps = (fun fm acc attr seq ->
             aux_seq Inline.caps fm acc attr seq);
         ins = (fun fm acc attr seq ->

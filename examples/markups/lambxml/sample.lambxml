@@ -42,7 +42,7 @@
 <p>
 You can declare HTML entities by name (ex: &euro;), by decimal code point (ex:
 &#8364;), or by hexadecimal code point (ex: &#x20ac;).  Here we have examples
-of text in <b>bold</b> and <i>emphasised</i> and <code>monospaced</code> and in
+of text in <b>bold</b> and <i>emphasised</i> and <mono>monospaced</mono> and in
 <caps>small-caps</caps> and with <sup>superscripts</sup> and <sub>subscripts</sub>. You
 may also correct <del>perfect</del><ins>broken</ins> text.  Also, <mbox><i>all of this
 emphasised text should appear on the same line.</i></mbox>

@@ -112,7 +112,7 @@ struct
             | "glyph"                 -> (Some Inl, GLYPH command)
             | "bold" | "strong" | "b" -> (Some Inl, BOLD command)
             | "emph" | "em" | "i"     -> (Some Inl, EMPH command)
-            | "code" | "tt"           -> (Some Inl, CODE command)
+            | "mono" | "tt"           -> (Some Inl, MONO command)
             | "caps"                  -> (Some Inl, CAPS command)
             | "ins"                   -> (Some Inl, INS command)
             | "del"                   -> (Some Inl, DEL command)

@@ -275,7 +275,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         | E ("glyph", xs)                   -> make2 ~empty:xs comm prop errors (Req "src") (Req "alt") (fun src alt -> Ast.Glyph (src, alt))
         | E (("bold" | "strong" | "b"), xs) -> make0 comm prop errors (fun () -> Ast.Bold (seq_of_trees xs))
         | E (("emph" | "em" | "i"), xs)     -> make0 comm prop errors (fun () -> Ast.Emph (seq_of_trees xs))
-        | E (("code" | "tt"), xs)           -> make0 comm prop errors (fun () -> Ast.Code (seq_of_trees xs))
+        | E (("mono" | "tt"), xs)           -> make0 comm prop errors (fun () -> Ast.Mono (seq_of_trees xs))
         | E ("caps", xs)                    -> make0 comm prop errors (fun () -> Ast.Caps (seq_of_trees xs))
         | E ("ins", xs)                     -> make0 comm prop errors (fun () -> Ast.Ins (seq_of_trees xs))
         | E ("del", xs)                     -> make0 comm prop errors (fun () -> Ast.Del (seq_of_trees xs))

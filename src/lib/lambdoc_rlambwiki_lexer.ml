@@ -25,7 +25,7 @@ type text =
     | Sup_mark
     | Sub_mark
     | Begin_caps | End_caps
-    | Begin_code | End_code
+    | Begin_mono | End_mono
     | Begin_link | End_link | Link_sep
 
 type line =
@@ -55,8 +55,8 @@ let sup_mark = [%sedlex.regexp? "^^"]
 let sub_mark = [%sedlex.regexp? "__"]
 let begin_caps = [%sedlex.regexp? "(("]
 let end_caps = [%sedlex.regexp? "))"]
-let begin_code = [%sedlex.regexp? "{{"]
-let end_code = [%sedlex.regexp? "}}"]
+let begin_mono = [%sedlex.regexp? "{{"]
+let end_mono = [%sedlex.regexp? "}}"]
 let begin_link = [%sedlex.regexp? "[["]
 let end_link = [%sedlex.regexp? "]]"]
 let link_sep = [%sedlex.regexp? '|']
@@ -98,8 +98,8 @@ let text lexbuf =
         | sub_mark    -> main_scanner (Sub_mark :: accum)
         | begin_caps  -> main_scanner (Begin_caps :: accum)
         | end_caps    -> main_scanner (End_caps :: accum)
-        | begin_code  -> main_scanner (Begin_code :: accum)
-        | end_code    -> main_scanner (End_code :: accum)
+        | begin_mono  -> main_scanner (Begin_mono :: accum)
+        | end_mono    -> main_scanner (End_mono :: accum)
         | begin_link  -> link_scanner (Begin_link :: accum)
         | end_link    -> main_scanner (End_link :: accum)
         | link_sep    -> main_scanner (Link_sep :: accum)

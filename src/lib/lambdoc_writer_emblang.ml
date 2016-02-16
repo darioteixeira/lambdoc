@@ -14,8 +14,8 @@ open Lambdoc_core
 (********************************************************************************)
 
 type token =
-    | Code
-    | Plain of string
+    | Special
+    | Normal of string
 
 
 (********************************************************************************)
@@ -24,11 +24,11 @@ type token =
 
 let tokenize lexbuf =
     let aggregate x1 = function
-        | (Plain x2) :: tl -> (Plain (x2 ^ x1)) :: tl
-        | xs               -> (Plain x1) :: xs in
+        | (Normal x2) :: tl -> (Normal (x2 ^ x1)) :: tl
+        | xs                -> (Normal x1) :: xs in
     let rec tokenize_aux accum = match%sedlex lexbuf with
         | '\\', any                 -> tokenize_aux (aggregate (Sedlexing.Utf8.sub_lexeme lexbuf 1 1) accum)
-        | '#'                       -> tokenize_aux (Code :: accum)
+        | '#'                       -> tokenize_aux (Special :: accum)
         | Plus (Compl ('#' | '\\')) -> tokenize_aux (aggregate (Sedlexing.Utf8.lexeme lexbuf) accum)
         | eof                       -> accum
         | _                         -> assert false
@@ -36,10 +36,10 @@ let tokenize lexbuf =
 
 
 let rec process = function
-    | Plain s :: tl                 -> Inline.plain s :: process tl
-    | Code :: Plain s :: Code :: tl -> Inline.code [Inline.plain s] :: process tl
-    | []                            -> []
-    | _                             -> assert false
+    | Normal s :: tl                       -> Inline.plain s :: process tl
+    | Special :: Normal s :: Special :: tl -> Inline.mono [Inline.plain s] :: process tl
+    | []                                   -> []
+    | _                                    -> assert false
 
 
 (********************************************************************************)

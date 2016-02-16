@@ -100,7 +100,7 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> GLYPH
 %token <Lambdoc_reader_ast.command> BOLD
 %token <Lambdoc_reader_ast.command> EMPH
-%token <Lambdoc_reader_ast.command> CODE
+%token <Lambdoc_reader_ast.command> MONO
 %token <Lambdoc_reader_ast.command> CAPS
 %token <Lambdoc_reader_ast.command> INS
 %token <Lambdoc_reader_ast.command> DEL
@@ -305,7 +305,7 @@ inline:
     | GLYPH raw_bundle raw_bundle                                       {($1, Ast.Glyph ($2, $3))}
     | BOLD inline_bundle                                                {($1, Ast.Bold $2)}
     | EMPH inline_bundle                                                {($1, Ast.Emph $2)}
-    | CODE inline_bundle                                                {($1, Ast.Code $2)}
+    | MONO inline_bundle                                                {($1, Ast.Mono $2)}
     | CAPS inline_bundle                                                {($1, Ast.Caps $2)}
     | INS inline_bundle                                                 {($1, Ast.Ins $2)}
     | DEL inline_bundle                                                 {($1, Ast.Del $2)}

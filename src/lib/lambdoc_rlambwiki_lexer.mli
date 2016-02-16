@@ -26,7 +26,7 @@ type text =
     | Sup_mark
     | Sub_mark
     | Begin_caps | End_caps
-    | Begin_code | End_code
+    | Begin_mono | End_mono
     | Begin_link | End_link | Link_sep
 
 type line =

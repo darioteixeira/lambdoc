@@ -50,7 +50,7 @@ caption, th, td
 	font-style: italic;
 	}
 
-.doc_code
+.doc_mono
 	{
 	font-family: "DejaVu Sans Mono", "Courier New", "Courier", monospace;
 	font-weight: bold;
@@ -1425,7 +1425,7 @@ h2.doc_title + h2.doc_title
 	color: #c33;
 	}
 
-.doc_error_msg > .doc_par > .doc_code
+.doc_error_msg > .doc_par > .doc_mono
 	{
 	color: #9f1f1f;
 	}

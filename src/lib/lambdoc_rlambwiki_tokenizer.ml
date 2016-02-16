@@ -93,8 +93,8 @@ object (self)
             | Sub_mark   -> SUB_MARK self#op
             | Begin_caps -> BEGIN_CAPS self#op
             | End_caps   -> END_CAPS self#op
-            | Begin_code -> BEGIN_CODE self#op
-            | End_code   -> END_CODE self#op
+            | Begin_mono -> BEGIN_MONO self#op
+            | End_mono   -> END_MONO self#op
             | Begin_link -> BEGIN_LINK self#op
             | End_link   -> END_LINK self#op
             | Link_sep   -> LINK_SEP self#op
