@@ -302,6 +302,8 @@ inline:
     | TEXT                                                              {(fst $1, Ast.Plain (snd $1))}
     | ENTITY                                                            {(fst $1, Ast.Entity (snd $1))}
     | LINEBREAK                                                         {($1, Ast.Linebreak)}
+    | push_mathtexinl BEGIN_MATHTEXINL TEXT pop END_MATHTEXINL          {($2, Ast.Mathtex_inl (snd $3))}
+    | push_mathmlinl BEGIN_MATHMLINL TEXT pop END_MATHMLINL             {($2, Ast.Mathml_inl (snd $3))}
     | GLYPH raw_bundle raw_bundle                                       {($1, Ast.Glyph ($2, $3))}
     | BOLD inline_bundle                                                {($1, Ast.Bold $2)}
     | EMPH inline_bundle                                                {($1, Ast.Emph $2)}
@@ -321,8 +323,6 @@ inline:
     | MREF raw_bundle inline_bundle                                     {($1, Ast.Mref ($2, $3))}
     | MACROARG raw_bundle                                               {($1, Ast.Macroarg $2)}
     | MACROCALL inline_bundle*                                          {(fst $1, Ast.Macrocall (snd $1, $2))}
-    | push_mathtexinl BEGIN_MATHTEXINL TEXT pop END_MATHTEXINL          {($2, Ast.Mathtex_inl (snd $3))}
-    | push_mathmlinl BEGIN_MATHMLINL TEXT pop END_MATHMLINL             {($2, Ast.Mathml_inl (snd $3))}
     | sim_inlpat                                                        {let (comm, tag, inlpat) = $1 in (comm, Ast.Extcomm_inl (tag, inlpat))}
 
 sim_inlpat:
