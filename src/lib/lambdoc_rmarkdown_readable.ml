@@ -87,7 +87,7 @@ let ast_of_omd frag =
         | Omd.Text txt           -> Inline (dummy, Ast.Plain txt)
         | Omd.Emph seq           -> Inline (dummy, Ast.Emph (convert_seq seq))
         | Omd.Bold seq           -> Inline (dummy, Ast.Bold (convert_seq seq))
-        | Omd.Code (lang, txt)   -> Inline (add_style "lang" lang, Ast.Source_inl txt)
+        | Omd.Code (lang, txt)   -> Inline (add_style "lang" lang, Ast.Code txt)
         | Omd.Br                 -> Inline (dummy, Ast.Linebreak)
         | Omd.NL                 -> Inline (dummy, Ast.Plain " ")
         | Omd.Url (href, seq, _) -> Inline (dummy, Ast.Link (href, Some (convert_seq seq)))
@@ -113,7 +113,7 @@ let ast_of_omd frag =
         | Omd.Ol frags               -> Block (dummy, Ast.Enumerate (convert_list frags))
         | Omd.Ulp frags              -> Block (dummy, Ast.Itemize (convert_list frags))
         | Omd.Olp frags              -> Block (dummy, Ast.Enumerate (convert_list frags))
-        | Omd.Code_block (lang, txt) -> Block (add_style "lang" lang, Ast.Source_blk txt)
+        | Omd.Code_block (lang, txt) -> Block (add_style "lang" lang, Ast.Source txt)
         | Omd.Hr                     -> Block (dummy, Ast.Rule)
         | Omd.NL                     -> Drop
         | Omd.Html _                 -> raise (Unsupported_feature "Html")

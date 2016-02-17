@@ -35,7 +35,7 @@ type block =
     | Verse of frag
     | Quote of frag
     | Mathblk of Math.t
-    | Sourceblk of Source.t
+    | Source of Source.t
     | Tabular of Tabular.t
     | Subpage of frag
     | Verbatim of string
@@ -73,7 +73,7 @@ let qanda       ?(attr = Attr.default) qafrags = {blk = Qanda qafrags; attr}
 let verse       ?(attr = Attr.default) frag = {blk = Verse frag; attr}
 let quote       ?(attr = Attr.default) frag = {blk = Quote frag; attr}
 let mathblk     ?(attr = Attr.default) data = {blk = Mathblk data; attr}
-let sourceblk   ?(attr = Attr.default) data = {blk = Sourceblk data; attr}
+let source      ?(attr = Attr.default) data = {blk = Source data; attr}
 let tabular     ?(attr = Attr.default) data = {blk = Tabular data; attr}
 let subpage     ?(attr = Attr.default) frag = {blk = Subpage frag; attr}
 let verbatim    ?(attr = Attr.default) txt = {blk = Verbatim txt; attr}

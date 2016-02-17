@@ -24,7 +24,7 @@ type inline =
     | Entity of entity
     | Linebreak
     | Mathinl of Math.t
-    | Sourceinl of Source.t
+    | Code of Source.t
     | Glyph of href * string
     | Bold of seq
     | Emph of seq
@@ -60,7 +60,7 @@ let plain     ?(attr = Attr.default) txt = {inl = Plain txt; attr}
 let entity    ?(attr = Attr.default) ent = {inl = Entity ent; attr}
 let linebreak ?(attr = Attr.default) () = {inl = Linebreak; attr}
 let mathinl   ?(attr = Attr.default) data = {inl = Mathinl data; attr}
-let sourceinl ?(attr = Attr.default) data = {inl = Sourceinl data; attr}
+let code      ?(attr = Attr.default) data = {inl = Code data; attr}
 let glyph     ?(attr = Attr.default) href alt = {inl = Glyph (href, alt); attr}
 let bold      ?(attr = Attr.default) seq = {inl = Bold seq; attr}
 let emph      ?(attr = Attr.default) seq = {inl = Emph seq; attr}

@@ -18,7 +18,7 @@ open Lambdoc_core_basic
 
 type inline_feature =
     [ `Feature_plain | `Feature_entity | `Feature_linebreak
-    | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_source_inl | `Feature_glyph
+    | `Feature_mathtex_inl | `Feature_mathml_inl | `Feature_code | `Feature_glyph
     | `Feature_bold | `Feature_emph | `Feature_mono | `Feature_caps
     | `Feature_ins | `Feature_del | `Feature_sup | `Feature_sub
     | `Feature_mbox | `Feature_span | `Feature_link
@@ -30,7 +30,7 @@ type block_feature =
     | `Feature_itemize | `Feature_enumerate | `Feature_description
     | `Feature_qanda | `Feature_verse | `Feature_quote
     | `Feature_mathtex_blk | `Feature_mathml_blk 
-    | `Feature_source_blk | `Feature_tabular 
+    | `Feature_source | `Feature_tabular 
     | `Feature_subpage | `Feature_verbatim | `Feature_picture | `Feature_pullquote
     | `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
     | `Feature_part | `Feature_appendix

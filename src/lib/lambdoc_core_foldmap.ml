@@ -54,7 +54,7 @@ sig
         entity:      'a t -> 'a -> Attr.t -> entity -> ('a * Inline.t) Monad.t;
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
         mathinl:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
-        sourceinl:   'a t -> 'a -> Attr.t -> Source.t -> ('a * Inline.t) Monad.t;
+        code:        'a t -> 'a -> Attr.t -> Source.t -> ('a * Inline.t) Monad.t;
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -81,7 +81,7 @@ sig
         verse:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         quote:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         mathblk:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Block.t) Monad.t;
-        sourceblk:   'a t -> 'a -> Attr.t -> Source.t -> ('a * Block.t) Monad.t;
+        source:      'a t -> 'a -> Attr.t -> Source.t -> ('a * Block.t) Monad.t;
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         verbatim:    'a t -> 'a -> Attr.t -> string -> ('a * Block.t) Monad.t;
@@ -134,7 +134,7 @@ struct
         entity:      'a t -> 'a -> Attr.t -> entity -> ('a * Inline.t) Monad.t;
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
         mathinl:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
-        sourceinl:   'a t -> 'a -> Attr.t -> Source.t -> ('a * Inline.t) Monad.t;
+        code:        'a t -> 'a -> Attr.t -> Source.t -> ('a * Inline.t) Monad.t;
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -161,7 +161,7 @@ struct
         verse:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         quote:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         mathblk:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Block.t) Monad.t;
-        sourceblk:   'a t -> 'a -> Attr.t -> Source.t -> ('a * Block.t) Monad.t;
+        source:      'a t -> 'a -> Attr.t -> Source.t -> ('a * Block.t) Monad.t;
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         verbatim:    'a t -> 'a -> Attr.t -> string -> ('a * Block.t) Monad.t;
@@ -236,7 +236,7 @@ struct
             | Entity ent                -> fm.entity fm acc attr ent
             | Linebreak                 -> fm.linebreak fm acc attr
             | Mathinl data              -> fm.mathinl fm acc attr data
-            | Sourceinl data            -> fm.sourceinl fm acc attr data
+            | Code data                 -> fm.code fm acc attr data
             | Glyph (href, alt)         -> fm.glyph fm acc attr href alt
             | Bold seq                  -> fm.bold fm acc attr seq
             | Emph seq                  -> fm.emph fm acc attr seq
@@ -264,7 +264,7 @@ struct
             | Verse frag                      -> fm.verse fm acc attr frag
             | Quote frag                      -> fm.quote fm acc attr frag
             | Mathblk data                    -> fm.mathblk fm acc attr data
-            | Sourceblk data                  -> fm.sourceblk fm acc attr data
+            | Source data                     -> fm.source fm acc attr data
             | Tabular data                    -> fm.tabular fm acc attr data
             | Subpage frag                    -> fm.subpage fm acc attr frag
             | Verbatim txt                    -> fm.verbatim fm acc attr txt
@@ -298,9 +298,9 @@ struct
         mathinl = (fun fm acc attr data ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Inline.mathinl ~attr data));
-        sourceinl = (fun fm acc attr data ->
+        code = (fun fm acc attr data ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
-            Monad.return (acc, Inline.sourceinl ~attr data));
+            Monad.return (acc, Inline.code ~attr data));
         glyph = (fun fm acc attr href alt ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Inline.glyph ~attr href alt));
@@ -389,9 +389,9 @@ struct
         mathblk = (fun fm acc attr data ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Block.mathblk ~attr data));
-        sourceblk = (fun fm acc attr data ->
+        source = (fun fm acc attr data ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
-            Monad.return (acc, Block.sourceblk ~attr data));
+            Monad.return (acc, Block.source ~attr data));
         tabular = (fun fm acc attr data ->
             let aux_cell fm acc {attr; cellfmt; seq} =
                 aux_maybe fm.seq fm acc seq >>= fun (acc, maybe_seq) ->

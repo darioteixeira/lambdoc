@@ -110,7 +110,7 @@ struct
         match simple with
             | "br"                    -> (Some Inl, LINEBREAK command)
             | "glyph"                 -> (Some Inl, GLYPH command)
-            | "code"                  -> (Some Inl, SOURCEINL command)
+            | "code"                  -> (Some Inl, CODE command)
             | "bold" | "strong" | "b" -> (Some Inl, BOLD command)
             | "emph" | "em" | "i"     -> (Some Inl, EMPH command)
             | "mono" | "tt"           -> (Some Inl, MONO command)
@@ -201,7 +201,7 @@ struct
             | x when String.starts_with x "mathml"   -> tokenizer.literal <- Some x; (BEGIN_MATHMLBLK command, END_MATHMLBLK)
             | x when String.starts_with x "verbatim" -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
             | x when String.starts_with x "pre"      -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
-            | x when String.starts_with x "source"   -> tokenizer.literal <- Some x; (BEGIN_SOURCEBLK command, END_SOURCEBLK)
+            | x when String.starts_with x "source"   -> tokenizer.literal <- Some x; (BEGIN_SOURCE command, END_SOURCE)
             | x ->
                 try
                     let (tag, syntax) = List.find (fun (tag, _) -> String.starts_with x tag) tokenizer.env_block_extdefs in

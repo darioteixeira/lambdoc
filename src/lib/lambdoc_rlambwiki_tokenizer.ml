@@ -211,14 +211,14 @@ object (self)
             let lexbuf = Sedlexing.Utf8.from_string lines.(line_counter) in
             let tok = lexer lexbuf in
             let () = match tok with
-                | Begin_sourceblk style ->
+                | Begin_source style ->
                     self#unwind_list 0;
                     context <- Source;
                     let style = if String.length style = 0 then None else Some style in
-                    self#store (BEGIN_SOURCEBLK (self#comm ~tag:(Some "{{{") ~style ()))
-                | End_sourceblk ->
+                    self#store (BEGIN_SOURCE (self#comm ~tag:(Some "{{{") ~style ()))
+                | End_source ->
                     context <- General;
-                    self#store (END_SOURCEBLK self#op)
+                    self#store (END_SOURCE self#op)
                 | Begin_verbatim style ->
                     self#unwind_list 0;
                     context <- Verbatim;
