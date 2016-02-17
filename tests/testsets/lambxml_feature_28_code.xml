@@ -1,0 +1,8 @@
+<doc>
+
+<p>Here's highlighted inline code: <code style="lang=caml">type t = Alpha | Beta</code> (OCaml).</p>
+
+<p>And here's inline code without highlighting: <code>type t = Alpha | Beta</code> (also OCaml).</p>
+
+</doc>
+

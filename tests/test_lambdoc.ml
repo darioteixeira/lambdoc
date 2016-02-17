@@ -191,6 +191,7 @@ let feature2_set =
     ("Table of contents", "25_toc");
     ("Rules", "26_rule");
     ("Internal and external references", "27_reference");
+    ("Inline highlighted source-code", "28_code");
     ]
 
 let lambxml_error_set =
