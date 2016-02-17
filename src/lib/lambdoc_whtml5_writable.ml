@@ -14,7 +14,7 @@ open Attr
 open Inline
 open Block
 open Heading
-open Source
+open Hilite
 open Writeconv
 
 module List = BatList
@@ -62,7 +62,7 @@ open Html5
 (** {2 Private modules}                                                         *)
 (********************************************************************************)
 
-module Source_writer = Camlhighlight_write_html5.Make (Html5)
+module Hilite_writer = Camlhighlight_write_html5.Make (Html5)
 
 
 (********************************************************************************)
@@ -300,8 +300,8 @@ let from_valid ?(valid_options = default_valid_options) doc =
             let html: [> Html5_types.span ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
             Html5.span ~a:[a_class (!!"mathinl" :: classnames)] [html]
 
-        | Code src ->
-            Source_writer.write_inline ~class_prefix:!!"src_" ~extra_classes:classnames src.hilite
+        | Code hilite ->
+            Hilite_writer.write_inline ~class_prefix:!!"src_" ~extra_classes:classnames hilite.data
 
         | Glyph (href, alt) ->
             let uri = Html5.uri_of_string href in
@@ -551,8 +551,8 @@ let from_valid ?(valid_options = default_valid_options) doc =
             let html: [> Html5_types.div ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
             [Html5.div ~a:[a_class (!!"mathblk" :: classnames)] [html]]
 
-        | Source src ->
-            [Source_writer.write_block ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:src.linenums src.hilite]
+        | Source hilite ->
+            [Hilite_writer.write_block ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:hilite.linenums hilite.data]
 
         | Tabular tab ->
             [write_tabular classnames tab]

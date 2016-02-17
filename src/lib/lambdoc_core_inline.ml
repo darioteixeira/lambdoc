@@ -9,7 +9,7 @@
 module Attr = Lambdoc_core_attr
 module Basic = Lambdoc_core_basic
 module Math = Lambdoc_core_math
-module Source = Lambdoc_core_source
+module Hilite = Lambdoc_core_hilite
 
 open Sexplib.Std
 open Basic
@@ -24,7 +24,7 @@ type inline =
     | Entity of entity
     | Linebreak
     | Mathinl of Math.t
-    | Code of Source.t
+    | Code of Hilite.t
     | Glyph of href * string
     | Bold of seq
     | Emph of seq

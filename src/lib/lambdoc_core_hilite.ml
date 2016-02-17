@@ -1,13 +1,12 @@
 (********************************************************************************)
-(*  Lambdoc_core_source.mli
+(*  Lambdoc_core_hilite.ml
     Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
     This software is distributed under the terms of the GNU GPL version 2.
     See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-(** Definition of highlighted source code.
-*)
+open Sexplib.Std
 
 
 (********************************************************************************)
@@ -17,7 +16,7 @@
 type t =
     {
     lang: Camlhighlight_core.lang option;
-    hilite: Camlhighlight_core.t;
+    data: Camlhighlight_core.t;
     linenums: bool;
     } [@@deriving sexp]
 
@@ -26,5 +25,6 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: Camlhighlight_core.lang option -> Camlhighlight_core.t -> bool -> t
+let make lang data linenums =
+    {lang; data; linenums}
 

@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 959259e0dd372e1ef406e6d7fbc24db8)
+# DO NOT EDIT (digest: 7279463aa47667b323e3fd97abf6ec22)
 Lambdoc_core
 Lambdoc_core_basic
 Lambdoc_core_attr
@@ -8,7 +8,7 @@ Lambdoc_core_label
 Lambdoc_core_order
 Lambdoc_core_custom
 Lambdoc_core_math
-Lambdoc_core_source
+Lambdoc_core_hilite
 Lambdoc_core_inline
 Lambdoc_core_wrapper
 Lambdoc_core_heading

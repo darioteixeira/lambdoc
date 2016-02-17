@@ -16,7 +16,7 @@ module Level = Lambdoc_core_level
 module Math = Lambdoc_core_math
 module Monadic = Lambdoc_core_monadic
 module Qanda = Lambdoc_core_qanda
-module Source = Lambdoc_core_source
+module Hilite = Lambdoc_core_hilite
 module Tabular = Lambdoc_core_tabular
 module Valid = Lambdoc_core_valid
 module Wrapper = Lambdoc_core_wrapper
@@ -62,7 +62,7 @@ sig
         entity:      'a t -> 'a -> Attr.t -> entity -> ('a * Inline.t) Monad.t;
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
         mathinl:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
-        code:        'a t -> 'a -> Attr.t -> Source.t -> ('a * Inline.t) Monad.t;
+        code:        'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Inline.t) Monad.t;
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -91,7 +91,7 @@ sig
         verse:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         quote:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         mathblk:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Block.t) Monad.t;
-        source:      'a t -> 'a -> Attr.t -> Source.t -> ('a * Block.t) Monad.t;
+        source:      'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Block.t) Monad.t;
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         verbatim:    'a t -> 'a -> Attr.t -> string -> ('a * Block.t) Monad.t;

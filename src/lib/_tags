@@ -17,7 +17,7 @@
 <lambdoc_core_note.*>:           pkg_ppx_sexp_conv
 <lambdoc_core_order.*>:          pkg_ppx_sexp_conv
 <lambdoc_core_qanda.*>:          pkg_ppx_sexp_conv
-<lambdoc_core_source.*>:         pkg_ppx_sexp_conv
+<lambdoc_core_hilite.*>:         pkg_ppx_sexp_conv
 <lambdoc_core_tabular.*>:        pkg_ppx_sexp_conv
 <lambdoc_core_target.*>:         pkg_ppx_sexp_conv
 <lambdoc_core_valid.*>:          pkg_ppx_sexp_conv
