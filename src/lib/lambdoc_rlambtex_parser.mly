@@ -16,14 +16,14 @@ open Lambdoc_reader
 (* Presently the only existing environment operators are [$ $] and <$ $>.       *)
 (********************************************************************************)
 
-%token <Lambdoc_reader_ast.command> BEGIN_MATHTEXINL    (* Operator [$ *)
-%token <Lambdoc_reader_ast.command> BEGIN_MATHMLINL     (* Operator <$ *)
+%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_INL   (* Operator [$ *)
+%token <Lambdoc_reader_ast.command> BEGIN_MATHML_INL    (* Operator <$ *)
 
-%token END_MATHTEXINL   (* Operator $] *)
-%token END_MATHMLINL    (* Operator $> *)
+%token END_MATHTEX_INL  (* Operator $] *)
+%token END_MATHML_INL   (* Operator $> *)
 
-%token BEGIN_MATHTEXINL_DUMMY
-%token BEGIN_MATHMLINL_DUMMY
+%token BEGIN_MATHTEX_INL_DUMMY
+%token BEGIN_MATHML_INL_DUMMY
 
 
 (********************************************************************************)
@@ -54,8 +54,8 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> BEGIN_FIGURE
 %token <Lambdoc_reader_ast.command> BEGIN_BIB
 %token <Lambdoc_reader_ast.command> BEGIN_NOTE
-%token <Lambdoc_reader_ast.command> BEGIN_MATHTEXBLK
-%token <Lambdoc_reader_ast.command> BEGIN_MATHMLBLK
+%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_BLK
+%token <Lambdoc_reader_ast.command> BEGIN_MATHML_BLK
 %token <Lambdoc_reader_ast.command> BEGIN_SOURCE
 %token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
 %token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_BLKPAT_LIT
@@ -83,8 +83,8 @@ open Lambdoc_reader
 %token END_FIGURE
 %token END_BIB
 %token END_NOTE
-%token END_MATHTEXBLK
-%token END_MATHMLBLK
+%token END_MATHTEX_BLK
+%token END_MATHML_BLK
 %token END_SOURCE
 %token END_VERBATIM
 %token END_BLKPAT_LIT
@@ -238,8 +238,8 @@ env_block:
     | BEGIN_ABSTRACT frag END_ABSTRACT                                  {($1, Ast.Abstract $2)}
     | BEGIN_BIB bib_author bib_title bib_resource END_BIB               {($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
     | BEGIN_NOTE frag END_NOTE                                          {($1, Ast.Note $2)}
-    | push_literal BEGIN_MATHTEXBLK TEXT pop END_MATHTEXBLK             {($2, Ast.Mathtex_blk (snd $3))}
-    | push_literal BEGIN_MATHMLBLK TEXT pop END_MATHMLBLK               {($2, Ast.Mathml_blk (snd $3))}
+    | push_literal BEGIN_MATHTEX_BLK TEXT pop END_MATHTEX_BLK           {($2, Ast.Mathtex_blk (snd $3))}
+    | push_literal BEGIN_MATHML_BLK TEXT pop END_MATHML_BLK             {($2, Ast.Mathml_blk (snd $3))}
     | push_literal BEGIN_SOURCE TEXT pop END_SOURCE                     {($2, Ast.Source (snd $3))}
     | push_literal BEGIN_VERBATIM TEXT pop END_VERBATIM                 {($2, Ast.Verbatim (snd $3))}
     | env_blkpat                                                        {let (comm, tag, blkpat) = $1 in (comm, Ast.Extcomm_blk (tag, blkpat))}
@@ -303,8 +303,8 @@ inline:
     | TEXT                                                              {(fst $1, Ast.Plain (snd $1))}
     | ENTITY                                                            {(fst $1, Ast.Entity (snd $1))}
     | LINEBREAK                                                         {($1, Ast.Linebreak)}
-    | push_mathtexinl BEGIN_MATHTEXINL TEXT pop END_MATHTEXINL          {($2, Ast.Mathtex_inl (snd $3))}
-    | push_mathmlinl BEGIN_MATHMLINL TEXT pop END_MATHMLINL             {($2, Ast.Mathml_inl (snd $3))}
+    | push_mathtex_inl BEGIN_MATHTEX_INL TEXT pop END_MATHTEX_INL       {($2, Ast.Mathtex_inl (snd $3))}
+    | push_mathml_inl BEGIN_MATHML_INL TEXT pop END_MATHML_INL          {($2, Ast.Mathml_inl (snd $3))}
     | CODE raw_bundle                                                   {($1, Ast.Code $2)}
     | GLYPH raw_bundle raw_bundle                                       {($1, Ast.Glyph ($2, $3))}
     | BOLD inline_bundle                                                {($1, Ast.Bold $2)}
@@ -355,11 +355,11 @@ push_inline:
 push_raw:
     | (* empty *)                                                       {C.(push Raw)}
 
-push_mathtexinl:
-    | BEGIN_MATHTEXINL_DUMMY                                            {C.(push Mathtexinl)}
+push_mathtex_inl:
+    | BEGIN_MATHTEX_INL_DUMMY                                           {C.(push Mathtex_inl)}
 
-push_mathmlinl:
-    | BEGIN_MATHMLINL_DUMMY                                             {C.(push Mathmlinl)}
+push_mathml_inl:
+    | BEGIN_MATHML_INL_DUMMY                                            {C.(push Mathml_inl)}
 
 push_literal:
     | (* empty *)                                                       {C.(push Literal)}

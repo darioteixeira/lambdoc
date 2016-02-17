@@ -36,7 +36,7 @@ type block =
     | Qanda of (Qanda.t * frag) list
     | Verse of frag
     | Quote of frag
-    | Mathblk of Math.t
+    | Math_blk of Math.t
     | Source of Hilite.t
     | Tabular of Tabular.t
     | Subpage of frag
@@ -74,7 +74,7 @@ val description: ?attr:Attr.t -> (Inline.seq * frag) list -> t
 val qanda:       ?attr:Attr.t -> (Qanda.t * frag) list -> t
 val verse:       ?attr:Attr.t -> frag -> t
 val quote:       ?attr:Attr.t -> frag -> t
-val mathblk:     ?attr:Attr.t -> Math.t -> t
+val math_blk:    ?attr:Attr.t -> Math.t -> t
 val source:      ?attr:Attr.t -> Hilite.t -> t
 val tabular:     ?attr:Attr.t -> Tabular.t -> t
 val subpage:     ?attr:Attr.t -> frag -> t

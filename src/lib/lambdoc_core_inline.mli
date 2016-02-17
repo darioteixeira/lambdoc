@@ -25,7 +25,7 @@ type inline =
     | Plain of string               (** Plain, unadorned text *)
     | Entity of entity              (** Unicode character entity *)
     | Linebreak                     (** Line break within same paragraph *)
-    | Mathinl of Math.t             (** Inline mathematics *)
+    | Math_inl of Math.t            (** Inline mathematics *)
     | Code of Hilite.t              (** Inline highlighted source-code *)
     | Glyph of href * string        (** Inline image *)
     | Bold of seq                   (** Bold text *)
@@ -61,7 +61,7 @@ and seq = t list [@@deriving sexp]
 val plain:     ?attr:Attr.t -> string -> t
 val entity:    ?attr:Attr.t -> entity -> t
 val linebreak: ?attr:Attr.t -> unit -> t
-val mathinl:   ?attr:Attr.t -> Math.t -> t
+val math_inl:  ?attr:Attr.t -> Math.t -> t
 val code:      ?attr:Attr.t -> Hilite.t -> t
 val glyph:     ?attr:Attr.t -> href -> string -> t
 val bold:      ?attr:Attr.t -> seq -> t

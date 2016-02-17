@@ -13,7 +13,7 @@
 
 module type S =
 sig
-    type t = Block | Inline | Raw | Mathtexinl | Mathmlinl | Literal
+    type t = Block | Inline | Raw | Mathtex_inl | Mathml_inl | Literal
 
     val push: t -> unit
     val pop: unit -> unit
@@ -27,7 +27,7 @@ end
 
 module Make (M: sig end): S =
 struct
-    type t = Block | Inline | Raw | Mathtexinl | Mathmlinl | Literal
+    type t = Block | Inline | Raw | Mathtex_inl | Mathml_inl | Literal
 
     let stack = ref []
 

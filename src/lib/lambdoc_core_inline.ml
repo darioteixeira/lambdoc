@@ -23,7 +23,7 @@ type inline =
     | Plain of string
     | Entity of entity
     | Linebreak
-    | Mathinl of Math.t
+    | Math_inl of Math.t
     | Code of Hilite.t
     | Glyph of href * string
     | Bold of seq
@@ -59,7 +59,7 @@ and seq = t list [@@deriving sexp]
 let plain     ?(attr = Attr.default) txt = {inl = Plain txt; attr}
 let entity    ?(attr = Attr.default) ent = {inl = Entity ent; attr}
 let linebreak ?(attr = Attr.default) () = {inl = Linebreak; attr}
-let mathinl   ?(attr = Attr.default) data = {inl = Mathinl data; attr}
+let math_inl  ?(attr = Attr.default) data = {inl = Math_inl data; attr}
 let code      ?(attr = Attr.default) data = {inl = Code data; attr}
 let glyph     ?(attr = Attr.default) href alt = {inl = Glyph (href, alt); attr}
 let bold      ?(attr = Attr.default) seq = {inl = Bold seq; attr}

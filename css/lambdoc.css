@@ -339,19 +339,19 @@ dd.doc_answer
 	margin-bottom: 0;
 	}
 
-.doc_mathblk
+.doc_math_blk
 	{
 	clear: both;
 	margin: 1em 1em;
 	text-align: center;
 	}
 
-.doc_mathblk:first-child
+.doc_math_blk:first-child
 	{
 	margin-top: 0;
 	}
 
-.doc_mathblk:last-child
+.doc_math_blk:last-child
 	{
 	margin-bottom: 0;
 	}
@@ -1094,7 +1094,7 @@ pre.doc_pre_aux
 	margin-bottom: 0;
 	}
 
-.doc_wrapper > .doc_mathblk, .doc_wrapper > .doc_src, .doc_wrapper > .doc_tab, .doc_wrapper > .doc_pre, .doc_wrapper > .doc_pic, .doc_wrapper > .doc_subpage
+.doc_wrapper > .doc_math_blk, .doc_wrapper > .doc_src, .doc_wrapper > .doc_tab, .doc_wrapper > .doc_pre, .doc_wrapper > .doc_pic, .doc_wrapper > .doc_subpage
 	{
 	margin: 0;
 	}

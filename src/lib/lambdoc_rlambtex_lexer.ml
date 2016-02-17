@@ -22,10 +22,10 @@ type buffer =
 type lexeme =
     | Begin_env of string
     | End_env of string
-    | Begin_mathtexinl
-    | End_mathtexinl
-    | Begin_mathmlinl
-    | End_mathmlinl
+    | Begin_mathtex_inl
+    | End_mathtex_inl
+    | Begin_mathml_inl
+    | End_mathml_inl
     | Simple of string
     | Text of string
     | Entity of string
@@ -54,10 +54,10 @@ type context = Block | Inline
 let open_marker = [%sedlex.regexp? '{']
 let close_marker = [%sedlex.regexp? '}']
 
-let begin_mathtexinl = [%sedlex.regexp? "[$"]
-let end_mathtexinl = [%sedlex.regexp? "$]"]
-let begin_mathmlinl = [%sedlex.regexp? "<$"]
-let end_mathmlinl = [%sedlex.regexp? "$>"]
+let begin_mathtex_inl = [%sedlex.regexp? "[$"]
+let end_mathtex_inl = [%sedlex.regexp? "$]"]
+let begin_mathml_inl = [%sedlex.regexp? "<$"]
+let end_mathml_inl = [%sedlex.regexp? "$>"]
 
 let lower = [%sedlex.regexp? 'a' .. 'z']
 let alpha = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z']
@@ -129,14 +129,14 @@ let general ~context {lexbuf; txtbuf} =
             return before during txtbuf (Begin_env (whole_lexbuf lexbuf))
         | end_env ->
             return before during txtbuf (End_env (whole_lexbuf lexbuf))
-        | begin_mathtexinl ->
-            return before during txtbuf Begin_mathtexinl
-        | end_mathtexinl ->
-            return before during txtbuf End_mathtexinl
-        | begin_mathmlinl ->
-            return before during txtbuf Begin_mathmlinl
-        | end_mathmlinl ->
-            return before during txtbuf End_mathmlinl
+        | begin_mathtex_inl ->
+            return before during txtbuf Begin_mathtex_inl
+        | end_mathtex_inl ->
+            return before during txtbuf End_mathtex_inl
+        | begin_mathml_inl ->
+            return before during txtbuf Begin_mathml_inl
+        | end_mathml_inl ->
+            return before during txtbuf End_mathml_inl
         | open_marker ->
             return before during txtbuf Open
         | close_marker ->
@@ -215,10 +215,10 @@ let raw {lexbuf; txtbuf} =
             assert false
     in loop 0
 
-let mathtexinl {lexbuf; txtbuf} =
+let mathtex_inl {lexbuf; txtbuf} =
     let rec loop during = match%sedlex lexbuf with
-        | end_mathtexinl ->
-            return 0 during txtbuf End_mathtexinl
+        | end_mathtex_inl ->
+            return 0 during txtbuf End_mathtex_inl
         | eof ->
             return 0 during txtbuf Eof
         | newline ->
@@ -231,10 +231,10 @@ let mathtexinl {lexbuf; txtbuf} =
             assert false
     in loop 0
 
-let mathmlinl {lexbuf; txtbuf} =
+let mathml_inl {lexbuf; txtbuf} =
     let rec loop during = match%sedlex lexbuf with
-        | end_mathmlinl ->
-            return 0 during txtbuf End_mathmlinl
+        | end_mathml_inl ->
+            return 0 during txtbuf End_mathml_inl
         | eof ->
             return 0 during txtbuf Eof
         | newline ->

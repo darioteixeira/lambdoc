@@ -296,9 +296,9 @@ let from_valid ?(valid_options = default_valid_options) doc =
         | Linebreak ->
             Html5.br ~a:[a_class classnames] ()
 
-        | Mathinl math ->
+        | Math_inl math ->
             let html: [> Html5_types.span ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
-            Html5.span ~a:[a_class (!!"mathinl" :: classnames)] [html]
+            Html5.span ~a:[a_class (!!"math_inl" :: classnames)] [html]
 
         | Code hilite ->
             Hilite_writer.write_inline ~class_prefix:!!"src_" ~extra_classes:classnames hilite.data
@@ -547,9 +547,9 @@ let from_valid ?(valid_options = default_valid_options) doc =
         | Quote frag ->
             [Html5.blockquote ~a:[a_class (!!"quote" :: classnames)] (write_frag frag)]
 
-        | Mathblk math ->
+        | Math_blk math ->
             let html: [> Html5_types.div ] Html5.elt = Html5.Unsafe.data (Math_output.get_mathml math) in
-            [Html5.div ~a:[a_class (!!"mathblk" :: classnames)] [html]]
+            [Html5.div ~a:[a_class (!!"math_blk" :: classnames)] [html]]
 
         | Source hilite ->
             [Hilite_writer.write_block ~class_prefix:!!"src_" ~extra_classes:classnames ~linenums:hilite.linenums hilite.data]

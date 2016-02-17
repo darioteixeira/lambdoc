@@ -212,15 +212,15 @@ dd.doc_answer {margin: Doc_vmargin_par 0 Doc_vmargin_textual Doc_hmargin_answer;
 /* Mathematics environments.                                                    */
 /********************************************************************************/
 
-.doc_mathblk
+.doc_math_blk
     {
     clear: both;
     margin: Doc_vmargin_textual Doc_hmargin_inset;
     text-align: center;
     }
 
-.doc_mathblk:first-child {margin-top: 0;}
-.doc_mathblk:last-child {margin-bottom: 0;}
+.doc_math_blk:first-child {margin-top: 0;}
+.doc_math_blk:last-child {margin-bottom: 0;}
 
 
 /********************************************************************************/
@@ -632,7 +632,7 @@ Doc_border_pull: 2px dotted Doc_colour_fancy;
 .doc_wrapper:first-child {margin-top: 0;}
 .doc_wrapper:last-child  {margin-bottom: 0;}
 
-.doc_wrapper > .doc_mathblk,
+.doc_wrapper > .doc_math_blk,
 .doc_wrapper > .doc_src,
 .doc_wrapper > .doc_tab,
 .doc_wrapper > .doc_pre,

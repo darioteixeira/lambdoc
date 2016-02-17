@@ -197,8 +197,8 @@ struct
             | "figure"                               -> (BEGIN_FIGURE command, END_FIGURE)
             | "bib"                                  -> (BEGIN_BIB command, END_BIB)
             | "note"                                 -> (BEGIN_NOTE command, END_NOTE)
-            | x when String.starts_with x "mathtex"  -> tokenizer.literal <- Some x; (BEGIN_MATHTEXBLK command, END_MATHTEXBLK)
-            | x when String.starts_with x "mathml"   -> tokenizer.literal <- Some x; (BEGIN_MATHMLBLK command, END_MATHMLBLK)
+            | x when String.starts_with x "mathtex"  -> tokenizer.literal <- Some x; (BEGIN_MATHTEX_BLK command, END_MATHTEX_BLK)
+            | x when String.starts_with x "mathml"   -> tokenizer.literal <- Some x; (BEGIN_MATHML_BLK command, END_MATHML_BLK)
             | x when String.starts_with x "verbatim" -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
             | x when String.starts_with x "pre"      -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
             | x when String.starts_with x "source"   -> tokenizer.literal <- Some x; (BEGIN_SOURCE command, END_SOURCE)
@@ -238,10 +238,10 @@ struct
     let token_of_lexeme tokenizer = function
         | Begin_env raw_comm -> (Some Blk, begin_command tokenizer raw_comm)
         | End_env raw_comm   -> (Some Blk, end_command tokenizer raw_comm)
-        | Begin_mathtexinl   -> (Some Inl, BEGIN_MATHTEXINL (build_op tokenizer))
-        | End_mathtexinl     -> (None, END_MATHTEXINL)
-        | Begin_mathmlinl    -> (Some Inl, BEGIN_MATHMLINL (build_op tokenizer))
-        | End_mathmlinl      -> (None, END_MATHMLINL)
+        | Begin_mathtex_inl  -> (Some Inl, BEGIN_MATHTEX_INL (build_op tokenizer))
+        | End_mathtex_inl    -> (None, END_MATHTEX_INL)
+        | Begin_mathml_inl   -> (Some Inl, BEGIN_MATHML_INL (build_op tokenizer))
+        | End_mathml_inl     -> (None, END_MATHML_INL)
         | Simple raw_comm    -> simple_command tokenizer raw_comm
         | Text txt           -> (Some Inl, TEXT (build_op tokenizer, txt))
         | Entity ent         -> (Some Inl, ENTITY (build_op tokenizer, ent))
@@ -258,12 +258,12 @@ struct
             lexing_triple
         | None ->
             let lexer = match C.get () with
-                | C.Block      -> Lexer.block
-                | C.Inline     -> Lexer.inline
-                | C.Raw        -> Lexer.raw
-                | C.Mathtexinl -> Lexer.mathtexinl
-                | C.Mathmlinl  -> Lexer.mathmlinl
-                | C.Literal    -> match tokenizer.literal with
+                | C.Block       -> Lexer.block
+                | C.Inline      -> Lexer.inline
+                | C.Raw         -> Lexer.raw
+                | C.Mathtex_inl -> Lexer.mathtex_inl
+                | C.Mathml_inl  -> Lexer.mathml_inl
+                | C.Literal     -> match tokenizer.literal with
                     | Some l -> Lexer.literal l
                     | None   -> assert false in
             let outcome = lexer tokenizer.buffer in

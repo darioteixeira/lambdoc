@@ -61,7 +61,7 @@ sig
         plain:       'a t -> 'a -> Attr.t -> string -> ('a * Inline.t) Monad.t;
         entity:      'a t -> 'a -> Attr.t -> entity -> ('a * Inline.t) Monad.t;
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
-        mathinl:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
+        math_inl:    'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
         code:        'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Inline.t) Monad.t;
         glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -90,7 +90,7 @@ sig
         qanda:       'a t -> 'a -> Attr.t -> (Qanda.t * Block.frag) list -> ('a * Block.t) Monad.t;
         verse:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         quote:       'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
-        mathblk:     'a t -> 'a -> Attr.t -> Math.t -> ('a * Block.t) Monad.t;
+        math_blk:    'a t -> 'a -> Attr.t -> Math.t -> ('a * Block.t) Monad.t;
         source:      'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Block.t) Monad.t;
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;

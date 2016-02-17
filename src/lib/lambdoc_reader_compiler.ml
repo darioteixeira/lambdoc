@@ -382,11 +382,11 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             check_inline_comm `Feature_linebreak comm elem
 
         | Ast.Mathtex_inl txt ->
-            let elem attr _ = Monad.return (convert_mathtex (Inline.mathinl ~attr) comm txt) in
+            let elem attr _ = Monad.return (convert_mathtex (Inline.math_inl ~attr) comm txt) in
             check_inline_comm `Feature_mathtex_inl comm elem
 
         | Ast.Mathml_inl txt ->
-            let elem attr _ = Monad.return (convert_mathml (Inline.mathinl ~attr) comm txt) in
+            let elem attr _ = Monad.return (convert_mathml (Inline.math_inl ~attr) comm txt) in
             check_inline_comm `Feature_mathml_inl comm elem
 
         | Ast.Code txt ->
@@ -763,13 +763,13 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | Ast.Mathtex_blk txt when Blkcat.subtype [`Equation_blk; `Embeddable_blk] allowed ->
             let elem attr _ =
                 let trimmed = Literal_input.trim txt in
-                Monad.return (convert_mathtex (Block.mathblk ~attr) comm trimmed) in
+                Monad.return (convert_mathtex (Block.math_blk ~attr) comm trimmed) in
             check_block_comm `Feature_mathtex_blk comm elem
 
         | Ast.Mathml_blk txt when Blkcat.subtype [`Equation_blk; `Embeddable_blk] allowed ->
             let elem attr _ =
                 let trimmed = Literal_input.trim txt in
-                Monad.return (convert_mathml (Block.mathblk ~attr) comm trimmed) in
+                Monad.return (convert_mathml (Block.math_blk ~attr) comm trimmed) in
             check_block_comm `Feature_mathml_blk comm elem
 
         | Ast.Source txt when Blkcat.subtype [`Printout_blk; `Embeddable_blk] allowed ->

@@ -34,7 +34,7 @@ type block =
     | Qanda of (Qanda.t * frag) list
     | Verse of frag
     | Quote of frag
-    | Mathblk of Math.t
+    | Math_blk of Math.t
     | Source of Hilite.t
     | Tabular of Tabular.t
     | Subpage of frag
@@ -72,7 +72,7 @@ let description ?(attr = Attr.default) dfrags = {blk = Description dfrags; attr}
 let qanda       ?(attr = Attr.default) qafrags = {blk = Qanda qafrags; attr}
 let verse       ?(attr = Attr.default) frag = {blk = Verse frag; attr}
 let quote       ?(attr = Attr.default) frag = {blk = Quote frag; attr}
-let mathblk     ?(attr = Attr.default) data = {blk = Mathblk data; attr}
+let math_blk    ?(attr = Attr.default) data = {blk = Math_blk data; attr}
 let source      ?(attr = Attr.default) data = {blk = Source data; attr}
 let tabular     ?(attr = Attr.default) data = {blk = Tabular data; attr}
 let subpage     ?(attr = Attr.default) frag = {blk = Subpage frag; attr}
