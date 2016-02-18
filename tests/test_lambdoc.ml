@@ -158,59 +158,59 @@ let build_test ~prefix set =
 
 let feature1_set =
     [
-    ("Plain text", "00_plain");
-    ("Entities", "01_entity");
-    ("Unicode text", "02_unicode");
-    ("Inline elements", "03_inline");
-    ("Paragraphs", "04_paragraph");
-    ("Lists", "05_list");
-    ("Quote environments", "08_quote");
-    ("Source environments", "10_source");
-    ("Verbatim environments", "13_verbatim");
-    ("Sectioning", "19_sectioning");
+    ("Plain text", "plain");
+    ("Entities", "entity");
+    ("Unicode text", "unicode");
+    ("Inline elements", "inline");
+    ("Paragraphs", "paragraph");
+    ("Lists", "list");
+    ("Quote environments", "quote");
+    ("Source environments", "source");
+    ("Verbatim environments", "verbatim");
+    ("Sectioning", "sectioning");
     ]
 
 
 let feature2_set =
     [
-    ("Q&A environments", "06_qa");
-    ("Verse environments", "07_verse");
-    ("Mathematics", "09_math");
-    ("Tabular environments", "11_tabular");
-    ("Subpage environments", "12_subpage");
-    ("Images", "14_image");
-    ("Pull-quotes", "15_pullquote");
-    ("Boxout environments", "16_boxout");
-    ("Theorem environments", "17_theorem");
-    ("Wrapper environments", "18_wrapper");
-    ("Bibliography", "20_bibliography");
-    ("End notes", "21_notes");
-    ("Macros", "22_macro");
-    ("Titles", "23_title");
-    ("Abstract", "24_abstract");
-    ("Table of contents", "25_toc");
-    ("Rules", "26_rule");
-    ("Internal and external references", "27_reference");
-    ("Inline highlighted source-code", "28_code");
+    ("Q&A environments", "qa");
+    ("Verse environments", "verse");
+    ("Mathematics", "math");
+    ("Tabular environments", "tabular");
+    ("Subpage environments", "subpage");
+    ("Images", "image");
+    ("Pull-quotes", "pullquote");
+    ("Boxout environments", "boxout");
+    ("Theorem environments", "theorem");
+    ("Wrapper environments", "wrapper");
+    ("Bibliography", "bibliography");
+    ("End notes", "notes");
+    ("Macros", "macro");
+    ("Titles", "title");
+    ("Abstract", "abstract");
+    ("Table of contents", "toc");
+    ("Rules", "rule");
+    ("Internal and external references", "reference");
+    ("Inline highlighted source-code", "code");
     ]
 
 let lambxml_error_set =
     [
-    ("Non-empty elements", "00_notempty");
+    ("Non-empty elements", "notempty");
     ]
 
 let semantic_error_set =
     [
-    ("Misplaced label parameter", "00_misplaced_label");
-    ("Misplaced order parameter", "01_misplaced_order");
-    ("Invalid label parameter", "02_invalid_label");
-    ("Invalid order parameter", "03_invalid_order");
-    ("Invalid style parameter", "04_invalid_style");
-    ("Invalid entity", "05_invalid_entity");
-    ("Macro errors", "06_macro");
-    ("Invalid macro/inline/block depth", "07_depth");
-    ("Custom block errors", "08_custom");
-    ("Wrapper errors", "09_wrapper");
+    ("Misplaced label parameter", "misplaced_label");
+    ("Misplaced order parameter", "misplaced_order");
+    ("Invalid label parameter", "invalid_label");
+    ("Invalid order parameter", "invalid_order");
+    ("Invalid style parameter", "invalid_style");
+    ("Invalid entity", "invalid_entity");
+    ("Macro errors", "macro");
+    ("Invalid macro/inline/block depth", "depth");
+    ("Custom block errors", "custom");
+    ("Wrapper errors", "wrapper");
     ]
 
 let tests =
