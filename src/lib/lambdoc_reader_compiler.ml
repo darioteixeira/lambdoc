@@ -394,7 +394,6 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 let lang = Style.consume1 dict (Lang_hnd, None) in
                 let data = Camlhighlight_parser.from_string ?lang txt in
                 let hilite = Hilite.make lang data false in
-                let () = if txt = "" then add_error comm Error.Empty_source in
                 Monad.return [Inline.code ~attr hilite] in
             check_inline_comm `Feature_code comm elem
 
