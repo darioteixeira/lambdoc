@@ -211,6 +211,10 @@ let semantic_error_set =
     ("Invalid macro/inline/block depth", "depth");
     ("Custom block errors", "custom");
     ("Wrapper errors", "wrapper");
+    ("Invalid level", "level");
+    ("Counter errors", "counter");
+    ("Column errors", "column");
+    ("Target errors", "target");
     ]
 
 let tests =

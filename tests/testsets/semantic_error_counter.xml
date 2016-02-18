@@ -1,0 +1,12 @@
+<doc>
+    
+<newboxout name="error" counter="0">Error</newboxout>
+
+<newboxout name="warning" counter="cnt0"/>
+
+<newtheorem name="lemma" counter="cnt1">Lemma</newtheorem>
+
+<newboxout name="tip" counter="cnt1">Tip</newboxout>
+
+</doc>
+
