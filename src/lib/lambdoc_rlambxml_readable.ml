@@ -21,43 +21,6 @@ module String = BatString
 
 module Stringset = Set.Make (String)
 
-module Errors =
-struct
-    type msg =
-        | Unknown_attribute of string
-        | Missing_attribute of string
-        | Unknown_tag
-        | Expected_empty
-        | Inline_in_block
-        | Bad_dl
-        | Expected_seq_and_frag
-        | Raw_text
-
-    type error = Ast.command * msg
-
-    type t = error list ref
-
-    let make () =
-        ref []
-
-    let add errors comm msg =
-        errors := (comm, msg) :: !errors
-
-    let to_reading errors =
-        let f (comm, msg) =
-            let desc = match msg with
-                | Unknown_attribute a   -> Printf.sprintf "Attribute '#%s#' does not belong to this element" a
-                | Missing_attribute a   -> Printf.sprintf "Mandatory attribute '#%s#' has not been provided" a
-                | Unknown_tag           -> "Element is unknown"
-                | Expected_empty        -> "Element should be empty"
-                | Inline_in_block       -> "Inline content where block expected"
-                | Bad_dl                -> "Bad description list"
-                | Expected_seq_and_frag -> "Expected seq and frag"
-                | Raw_text              -> "Raw text"
-            in (Some comm.comm_linenum, comm.comm_tag, desc)
-        in List.rev_map f !errors
-end
-
 module Prop =
 struct
     type t =
@@ -110,6 +73,61 @@ type tree = Ast.command * Prop.t * node
 and node =
     | E of string * tree list
     | D of string
+
+
+(********************************************************************************)
+(** {1 Private modules}                                                         *)
+(********************************************************************************)
+
+module Errors =
+struct
+    type msg =
+        | Unknown_attribute of string
+        | Missing_attribute of string
+        | Expected_empty
+        | Expected_data
+        | Expected_seq_and_frag
+        | Expected_wrapper
+        | Expected_bib
+        | Expected_tags of string list * node
+        | Repeated_tag of string
+        | Unknown_tag
+        | Inline_in_block
+        | Bad_dl
+        | Raw_text
+
+    type error = Ast.command * msg
+
+    type t = error list ref
+
+    let make () =
+        ref []
+
+    let add errors comm msg =
+        errors := (comm, msg) :: !errors
+
+    let to_reading errors =
+        let describe = function
+            | E (tag, _) -> Printf.sprintf "tag '#%s#'" tag
+            | D _        -> "text" in
+        let f (comm, msg) =
+            let desc = match msg with
+                | Unknown_attribute a       -> Printf.sprintf "Attribute '#%s#' does not belong to this element" a
+                | Missing_attribute a       -> Printf.sprintf "Mandatory attribute '#%s#' has not been provided" a
+                | Expected_empty            -> "Element should be empty"
+                | Expected_data             -> "Expected data"
+                | Expected_seq_and_frag     -> "Expected sequence and fragment"
+                | Expected_wrapper          -> "Expected wrapper"
+                | Expected_bib              -> "Expected bibliography entry"
+                | Expected_tags (good, bad) -> Printf.sprintf "Expected a tag from set [%s] but found %s instead" (String.join "; " good) (describe bad)
+                | Repeated_tag tag          -> Printf.sprintf "Repeated tag '#%s#'" tag
+                | Unknown_tag               -> "Element is unknown"
+                | Inline_in_block           -> "Inline content where block expected"
+                | Bad_dl                    -> "Expected description list"
+                | Raw_text                  -> "Raw text"
+            in (Some comm.comm_linenum, comm.comm_tag, desc)
+        in List.rev_map f !errors
+end
 
 
 (********************************************************************************)
@@ -257,9 +275,9 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
     let newmacros = ref Stringset.empty in
     let newcustoms = ref Stringset.empty in
 
-    let literal_of_trees = function
+    let literal_of_trees comm = function
         | [(_, _, D txt)] -> txt
-        | _               -> assert false in
+        | _               -> Errors.(add errors comm Expected_data); "" in
 
     let rec seq_of_trees xs = List.map inline_of_tree xs
 
@@ -270,9 +288,9 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
     and inline_of_tree (comm, prop, node) = match node with
         | D txt                             -> make0 comm prop errors (fun () -> Ast.Plain txt)
         | E ("br", xs)                      -> make0 ~empty:xs comm prop errors (fun () -> Ast.Linebreak)
-        | E ("mathtexinl", xs)              -> make0 comm prop errors (fun () -> Ast.Mathtex_inl (literal_of_trees xs))
+        | E ("mathtexinl", xs)              -> make0 comm prop errors (fun () -> Ast.Mathtex_inl (literal_of_trees comm xs))
         | E ("mathmlinl", xs)               -> make0 comm prop errors (fun () -> Ast.Mathml_inl (deep_copy xs))
-        | E ("code", xs)                    -> make0 comm prop errors (fun () -> Ast.Code (literal_of_trees xs))
+        | E ("code", xs)                    -> make0 comm prop errors (fun () -> Ast.Code (literal_of_trees comm xs))
         | E ("glyph", xs)                   -> make2 ~empty:xs comm prop errors (Req "src") (Req "alt") (fun src alt -> Ast.Glyph (src, alt))
         | E (("bold" | "strong" | "b"), xs) -> make0 comm prop errors (fun () -> Ast.Bold (seq_of_trees xs))
         | E (("emph" | "em" | "i"), xs)     -> make0 comm prop errors (fun () -> Ast.Emph (seq_of_trees xs))
@@ -300,7 +318,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
                     | Syn_raw_raw (a1, a2) -> make2 comm prop errors (Req a1) (Req a2) (fun a1 a2 -> Inlpat_raw_raw (a1, a2))
                     | Syn_raw_seq a        -> make1 ~empty:xs comm prop errors (Req a) (fun a -> Inlpat_raw_seq (a, seq_of_trees xs))
                     | Syn_raw_seqopt a     -> make1 ~empty:xs comm prop errors (Req a) (fun a -> Inlpat_raw_seqopt (a, maybe_seq_of_trees xs))
-                    | _ -> assert false
+                    | _                    -> assert false
                 in (comm, Extcomm_inl (tag, inlpat))
             with Not_found ->
                 if Stringset.mem tag !newmacros
@@ -318,18 +336,18 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         | E ("qanda", xs)                  -> make0 comm prop errors (fun () -> Qanda (qanda_frags_of_trees xs))
         | E ("verse", xs)                  -> make0 comm prop errors (fun () -> Verse (frag_of_trees xs))
         | E ("quote", xs)                  -> make0 comm prop errors (fun () -> Quote (frag_of_trees xs))
-        | E ("mathtexblk", xs)             -> make0 comm prop errors (fun () -> Mathtex_blk (literal_of_trees xs))
+        | E ("mathtexblk", xs)             -> make0 comm prop errors (fun () -> Mathtex_blk (literal_of_trees comm xs))
         | E ("mathmlblk", xs)              -> make0 comm prop errors (fun () -> Mathml_blk (deep_copy xs))
-        | E ("source", xs)                 -> make0 comm prop errors (fun () -> Source (literal_of_trees xs))
+        | E ("source", xs)                 -> make0 comm prop errors (fun () -> Source (literal_of_trees comm xs))
         | E ("tabular", xs)                -> make0 comm prop errors (fun () -> Tabular (tabular_of_trees xs))
         | E ("subpage", xs)                -> make0 comm prop errors (fun () -> Subpage (frag_of_trees xs))
-        | E (("verbatim" | "pre"), xs)     -> make0 comm prop errors (fun () -> Verbatim (literal_of_trees xs))
+        | E (("verbatim" | "pre"), xs)     -> make0 comm prop errors (fun () -> Verbatim (literal_of_trees comm xs))
         | E ("picture", xs)                -> make2 ~empty:xs comm prop errors (Req "src") (Req "alt") (fun src alt -> Picture (src, alt))
         | E ("pull", xs)                   -> make0 comm prop errors (fun () -> let (s, f) = seq_and_frag_of_trees comm xs in Pullquote (s, f))
-        | E ("equation", xs)               -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees xs in Equation (s, b))
-        | E ("printout", xs)               -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees xs in Printout (s, b))
-        | E ("table", xs)                  -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees xs in Table (s, b))
-        | E ("figure", xs)                 -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees xs in Figure (s, b))
+        | E ("equation", xs)               -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees comm xs in Equation (s, b))
+        | E ("printout", xs)               -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees comm xs in Printout (s, b))
+        | E ("table", xs)                  -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees comm xs in Table (s, b))
+        | E ("figure", xs)                 -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees comm xs in Figure (s, b))
         | E ("part", xs)                   -> make0 comm prop errors (fun () -> Part (seq_of_trees xs))
         | E ("appendix", xs)               -> make0 ~empty:xs comm prop errors (fun () -> Appendix)
         | E (("h1" | "section"), xs)       -> make0 comm prop errors (fun () -> Section (1, seq_of_trees xs))
@@ -345,7 +363,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         | E ("subtitle", xs)               -> make0 comm prop errors (fun () -> Title (2, seq_of_trees xs))
         | E ("abstract", xs)               -> make0 comm prop errors (fun () -> Abstract (frag_of_trees xs))
         | E (("rule" | "hr"), xs)          -> make0 ~empty:xs comm prop errors (fun () -> Rule)
-        | E ("bib", xs)                    -> make0 comm prop errors (fun () -> Bib (bib_of_trees xs))
+        | E ("bib", xs)                    -> make0 comm prop errors (fun () -> Bib (bib_of_trees comm xs))
         | E ("note", xs)                   -> make0 comm prop errors (fun () -> Note (frag_of_trees xs))
         | E ("newmacro", xs) ->
             make2 comm prop errors (Req "name") (Req "nargs")
@@ -370,7 +388,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
                 let (comm, blkpat) = match List.assoc tag block_extdefs with
                     | Syn_empty            -> make0 ~empty:xs comm prop errors (fun () -> Blkpat_empty)
                     | Syn_seq              -> make0 comm prop errors (fun () -> Blkpat_seq (seq_of_trees xs))
-                    | Syn_lit              -> make0 comm prop errors (fun () -> Blkpat_lit (literal_of_trees xs))
+                    | Syn_lit              -> make0 comm prop errors (fun () -> Blkpat_lit (literal_of_trees comm xs))
                     | Syn_frag             -> make0 comm prop errors (fun () -> Blkpat_frag (frag_of_trees xs))
                     | Syn_raw a            -> make1 ~empty:xs comm prop errors (Req a) (fun a -> Blkpat_raw a)
                     | Syn_raw_raw (a1, a2) -> make2 ~empty:xs comm prop errors (Req a1) (Req a2) (fun a1 a2 -> Blkpat_raw_raw (a1, a2))
@@ -416,7 +434,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
             cleanup comm prop errors;
             match node with
                 | E ("li", xs) -> (comm, flow_of_trees comm xs)
-                | _            -> assert false in
+                | x            -> Errors.(add errors comm (Expected_tags (["li"], x))); (comm, []) in
         List.map f xs
 
     and desc_frags_of_trees comm xs =
@@ -441,12 +459,12 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
 
     and qanda_frags_of_trees xs =
         let f (comm, prop, node) = match node with
-            | E ("question", xs)  -> let (s, f) = seq_and_frag_of_trees comm xs in (comm, New_questioner s, f)
-            | E ("answer", xs)    -> let (s, f) = seq_and_frag_of_trees comm xs in (comm, New_answerer s, f)
-            | E ("rquestion", xs) -> (comm, Same_questioner, flow_of_trees comm xs)
-            | E ("ranswer", xs)   -> (comm, Same_answerer, flow_of_trees comm xs)
-            | _                   -> assert false in
-        List.map f xs
+            | E ("question", xs)  -> let (s, f) = seq_and_frag_of_trees comm xs in Some (comm, New_questioner s, f)
+            | E ("answer", xs)    -> let (s, f) = seq_and_frag_of_trees comm xs in Some (comm, New_answerer s, f)
+            | E ("rquestion", xs) -> Some (comm, Same_questioner, flow_of_trees comm xs)
+            | E ("ranswer", xs)   -> Some (comm, Same_answerer, flow_of_trees comm xs)
+            | x                   -> Errors.(add errors comm (Expected_tags (["question"; "answer"; "rquestion"; "ranswer"], x))); None in
+        List.filter_map f xs
 
     and tabular_of_trees xs =
         let conv_cells cells =
@@ -455,40 +473,50 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
                 match node with
                     | E (("th" | "td"), []) -> (comm, None)
                     | E (("th" | "td"), xs) -> (comm, Some (seq_of_trees xs))
-                    | _                     -> assert false in
+                    | x                     -> Errors.(add errors comm (Expected_tags (["th"; "td"], x))); (comm, None) in
             List.map conv_cell cells in
         let conv_rows rows =
             let conv_row (comm, prop, node) =
                 cleanup comm prop errors;
                 match node with
                     | E ("tr", cells) -> (comm, conv_cells cells)
-                    | _               -> assert false in
+                    | x               -> Errors.(add errors comm (Expected_tags (["tr"], x))); (comm, []) in
             List.map conv_row rows in
         let conv_group (thead, tfoot, tbodies) (comm, prop, node) =
             cleanup comm prop errors;
             match node with
-                | E ("thead", rows) when thead = None -> (Some (comm, conv_rows rows), tfoot, tbodies)
-                | E ("thead", rows)                   -> assert false
-                | E ("tfoot", rows) when tfoot = None -> (thead, Some (comm, conv_rows rows), tbodies)
-                | E ("tfoot", rows)                   -> assert false
-                | E ("tbody", rows)                   -> (thead, tfoot, (comm, conv_rows rows) :: tbodies)
-                | _                                   -> assert false in
+                | E ("thead", rows) when thead = None ->
+                    (Some (comm, conv_rows rows), tfoot, tbodies)
+                | E ("thead", rows) ->
+                    Errors.(add errors comm (Repeated_tag "thead"));
+                    (Some (comm, conv_rows rows), tfoot, tbodies)
+                | E ("tfoot", rows) when tfoot = None ->
+                    (thead, Some (comm, conv_rows rows), tbodies)
+                | E ("tfoot", rows) ->
+                    Errors.(add errors comm (Repeated_tag "tfoot"));
+                    (thead, Some (comm, conv_rows rows), tbodies)
+                | E ("tbody", rows) ->
+                    (thead, tfoot, (comm, conv_rows rows) :: tbodies)
+                | x ->
+                    Errors.(add errors comm (Expected_tags (["thead"; "tfoot"; "tbody"], x)));
+                    (thead, tfoot, tbodies) in
         let (thead, tfoot, tbodies) = List.fold_left conv_group (None, None, []) xs in
         {thead; tfoot; tbodies = List.rev tbodies}
 
-    and wrapper_of_trees = function
+    and wrapper_of_trees comm = function
         | [tree] ->
             (None, block_of_tree tree)
         | [tree1; (comm2, prop2, node2)] ->
             cleanup comm2 prop2 errors;
             let seq = match node2 with
                 | E ("caption", xs) -> seq_of_trees xs
-                | _                 -> assert false in
+                | x                 -> Errors.(add errors comm2 (Expected_tags (["caption"], x))); [] in
             (Some seq, block_of_tree tree1)
         | _ ->
-            assert false
+            Errors.(add errors comm Expected_wrapper);
+            (None, (comm, dummy_block))
 
-    and bib_of_trees = function
+    and bib_of_trees comm = function
         | [ (who_comm, who_prop, E ("who", who_xs));
             (what_comm, what_prop, E ("what", what_xs));
             (where_comm, where_prop, E ("where", where_xs))] ->
@@ -497,18 +525,24 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
             let resource = cleanup where_comm where_prop errors; (where_comm, seq_of_trees where_xs) in
             {author; title; resource}
         | _ ->
-            assert false in
+            Errors.(add errors comm Expected_bib);
+            {author = (comm, []); title = (comm, []); resource = (comm, [])} in
         
     let ast_of_tree (comm, prop, node) = match node with
         | E ("doc", xs) -> cleanup comm prop errors; frag_of_trees xs
-        | _             -> assert false in
+        | x             -> Errors.(add errors comm (Expected_tags (["doc"], x))); [] in
 
     let entity x = match Readconv.Entity_input.expand x with
         | `Okay (_, utf8) -> Some utf8
         | `Error _        -> Some ("&" ^ x ^ ";") in
 
-    let ast = Xmlm.make_input ~entity (`String (0, str)) |> tree_of_input |> ast_of_tree in
-    match Errors.to_reading errors with
-        | [] -> `Okay ast
-        | xs -> `Error xs
+    try
+        let input = Xmlm.make_input ~entity (`String (0, str)) in
+        let tree = tree_of_input input in
+        let ast = ast_of_tree tree in
+        match Errors.to_reading errors with
+            | [] -> `Okay ast
+            | xs -> `Error xs
+    with
+        Xmlm.Error ((line, _), error) -> `Error [(Some line, None, Xmlm.error_message error)]
 
