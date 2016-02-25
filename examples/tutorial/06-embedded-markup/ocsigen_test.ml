@@ -44,7 +44,7 @@ let embed_markup tag ast_from_string =
     let f comm txt =
         match ast_from_string ~linenum_offset:Ast.(comm.comm_linenum-1) ~inline_extdefs:[] ~block_extdefs:[] txt with
             | `Okay ast   -> `Okay (ast, [])
-            | `Error msgs -> `Error (List.map (fun (line, msg) -> (line, None, Error.Reading_error msg)) msgs)
+            | `Error msgs -> `Error (List.map (fun (line, ident, msg) -> (line, ident, Error.Reading_error msg)) msgs)
     in (tag, Blkextcomm (Blkfun_lit f, [`Embeddable_blk]))
 
 
