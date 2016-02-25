@@ -156,22 +156,22 @@ let rec step1_handler () () =
         (step2_handler Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string) in
     let step2tex_form e_source =
         [
-        label ~a:[a_for e_source] [pcdata "Lambtex source:"];
-        textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:lambtex_sample ();
+        label [pcdata "Lambtex source:"];
+        Form.textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:lambtex_sample ();
         br ();
-        button ~button_type:`Submit [pcdata "Submit"];
+        Form.button_no_value ~button_type:`Submit [pcdata "Submit"];
         ] in
     let step2xml_form e_source =
         [
-        label ~a:[a_for e_source] [pcdata "Lambxml source:"];
-        textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:lambxml_sample ();
+        label [pcdata "Lambxml source:"];
+        Form.textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:lambxml_sample ();
         br ();
-        button ~button_type:`Submit [pcdata "Submit"];
+        Form.button_no_value ~button_type:`Submit [pcdata "Submit"];
         ] in
     let content =
         [
-        post_form step2tex_service step2tex_form ();
-        post_form step2xml_service step2xml_form ();
+        Form.post_form step2tex_service step2tex_form ();
+        Form.post_form step2xml_service step2xml_form ();
         ] in
     Lwt.return (make_page content)
 

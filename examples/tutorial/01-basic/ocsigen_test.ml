@@ -73,12 +73,12 @@ let rec step1_handler () () =
         step2_handler in
     let step2_form e_source =
         [
-        label ~a:[a_for e_source] [pcdata "Source:"];
-        textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:sample ();
+        label [pcdata "Source:"];
+        Form.textarea ~a:[a_rows 8; a_cols 80] ~name:e_source ~value:sample ();
         br ();
-        button ~button_type:`Submit [pcdata "Submit"];
+        Form.button_no_value ~button_type:`Submit [pcdata "Submit"];
         ] in
-    Lwt.return (make_page [post_form step2_service step2_form ()])
+    Lwt.return (make_page [Form.post_form step2_service step2_form ()])
 
 
 and step2_handler () source =
