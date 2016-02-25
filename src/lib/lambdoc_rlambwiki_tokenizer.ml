@@ -9,10 +9,10 @@
 (** Tokenizer for the Lambwiki reader.
 *)
 
-module String = Lambdoc_reader_utils.String
 module Lexer = Lambdoc_rlambwiki_lexer
 module Parser = Lambdoc_rlambwiki_parser
 
+open Lambdoc_prelude
 open Lexing
 open Lexer
 open Parser

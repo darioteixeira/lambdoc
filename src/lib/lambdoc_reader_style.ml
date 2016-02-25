@@ -6,12 +6,10 @@
 *)
 (********************************************************************************)
 
-module Array = BatArray
-module List = BatList
-module String = BatString
 module Ast = Lambdoc_reader_ast
 module Readconv = Lambdoc_reader_readconv
 
+open Lambdoc_prelude
 open Lambdoc_core
 open Tabular
 open Basic

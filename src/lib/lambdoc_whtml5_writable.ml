@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Printf
+open Lambdoc_prelude
 open Lambdoc_core
 open Lambdoc_writer
 open Basic
@@ -16,9 +17,6 @@ open Block
 open Heading
 open Hilite
 open Writeconv
-
-module List = BatList
-module String = BatString
 
 
 (********************************************************************************)

@@ -9,9 +9,7 @@
 (** Utility functions for converting {!Ast} values to {!Lambdoc_core} values.
 *)
 
-module List = BatList
-module String = Lambdoc_reader_utils.String
-
+open Lambdoc_prelude
 open Lambdoc_core
 
 

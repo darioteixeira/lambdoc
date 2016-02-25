@@ -6,9 +6,7 @@
 *)
 (********************************************************************************)
 
-module List = BatList
-module String = BatString
-
+open Lambdoc_prelude
 open Lambdoc_reader
 open Ast
 

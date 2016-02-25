@@ -6,13 +6,10 @@
 *)
 (********************************************************************************)
 
+open Lambdoc_prelude
 open Lambdoc_reader
 open Extension
 open Ast
-
-module Hashtbl = BatHashtbl
-module List = BatList
-module String = BatString
 
 
 (********************************************************************************)
@@ -35,7 +32,7 @@ struct
         | List: string -> string list param
 
     let to_string prop =
-        List.map (fun ((_, k), v) -> Printf.sprintf " %s=\"%s\"" k v) prop.attrs |> String.join ""
+        List.map (fun ((_, k), v) -> Printf.sprintf " %s=\"%s\"" k v) prop.attrs |> String.concat ""
 
     let make attrs =
         let prop = {attrs; dict = Hashtbl.create 10} in
@@ -119,7 +116,7 @@ struct
                 | Expected_seq_and_frag     -> "Expected sequence and fragment"
                 | Expected_wrapper          -> "Expected wrapper"
                 | Expected_bib              -> "Expected bibliography entry"
-                | Expected_tags (good, bad) -> Printf.sprintf "Expected a tag from set [%s] but found %s instead" (String.join "; " good) (describe bad)
+                | Expected_tags (good, bad) -> Printf.sprintf "Expected a tag from set [%s] but found %s instead" (String.concat "; " good) (describe bad)
                 | Repeated_tag tag          -> Printf.sprintf "Repeated tag '#%s#'" tag
                 | Unknown_tag               -> "Element is unknown"
                 | Inline_in_block           -> "Inline content where block expected"

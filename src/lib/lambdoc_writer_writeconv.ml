@@ -9,9 +9,7 @@
 (** Utility functions for converting {!Lambdoc_core} values to strings.
 *)
 
-module List = BatList
-module String = BatString
-
+open Lambdoc_prelude
 open Lambdoc_core
 
 
@@ -115,7 +113,7 @@ struct
             let rec mapper fs ls = match (fs, ls) with
                 | (fhd :: ftl, lhd :: ltl) -> fhd lhd :: mapper ftl ltl
                 | _            -> [] in
-            Some (String.join "." (mapper conv order))
+            Some (String.concat "." (mapper conv order))
         | `None_given ->
             None
 end

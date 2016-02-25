@@ -10,14 +10,13 @@
     a document AST into a proper, final, ambivalent document.
 *)
 
-module List = BatList
-module String = Lambdoc_reader_utils.String
 module Ast = Lambdoc_reader_ast
 module Extension = Lambdoc_reader_extension
 module Permission = Lambdoc_reader_permission
 module Readconv = Lambdoc_reader_readconv
 module Style = Lambdoc_reader_style
 
+open Lambdoc_prelude
 open Lambdoc_core
 open Ast
 open Readconv
@@ -137,7 +136,7 @@ let contextualize_errors ~sort source errors =
             1
         | (None, None) ->
             Pervasives.compare amsg bmsg in
-    let sorted = if sort then List.sort_unique compare errors else errors in
+    let sorted = if sort then List.sort_uniq compare errors else errors in
     List.map format_error sorted
 
 

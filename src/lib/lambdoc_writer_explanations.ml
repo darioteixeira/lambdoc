@@ -9,10 +9,10 @@
 (** Explains errors.
 *)
 
-module String = BatString
 module Emblang = Lambdoc_writer_emblang
 
 open Printf
+open Lambdoc_prelude
 open Lambdoc_core
 open Basic
 
@@ -214,7 +214,7 @@ let explain_message = function
         sprintf "Wrong number of columns for row: found %d but expected %d columns. This row belongs to the tabular environment declared in line %d by %s" found expected orig_linenum (explain_tag orig_tag)
 
     | Error.Mismatched_column_numbers cols_per_row ->
-            sprintf "In this tabular environment not all rows have the same number of columns. The number of columns per row is [%s]" (List.map string_of_int cols_per_row |> String.join "; ")
+            sprintf "In this tabular environment not all rows have the same number of columns. The number of columns per row is [%s]" (List.map string_of_int cols_per_row |> String.concat "; ")
 
     | Error.Duplicate_target label ->
         sprintf "Attempt to redefine label '#%s#'." (escape label)

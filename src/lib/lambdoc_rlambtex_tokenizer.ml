@@ -6,11 +6,11 @@
 *)
 (********************************************************************************)
 
-module String = BatString
 module Context = Lambdoc_rlambtex_context
 module Parser = Lambdoc_rlambtex_parser
 module Lexer = Lambdoc_rlambtex_lexer
 
+open Lambdoc_prelude
 open Lambdoc_core
 open Lambdoc_reader
 open Ast
