@@ -36,7 +36,7 @@ type invalid_options =
 (********************************************************************************)
 
 module Make:
-    functor (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) ->
+    functor (Html5: Html5_sigs.NoWrap) ->
     Lambdoc_writer.Maker.WRITABLE with
         type t = Html5_types.div Html5.elt and
         type valid_options = valid_options and

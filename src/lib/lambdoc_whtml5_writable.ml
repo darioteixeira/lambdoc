@@ -47,12 +47,7 @@ type invalid_options =
 (** {1 Public functors}                                                         *)
 (********************************************************************************)
 
-(*
-    The next version of Tyxml should support a simplified sig:
-    (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list)
-*)
-
-module Make (Html5: Html5_sigs.T with type 'a Xml.wrap = 'a and type 'a wrap = 'a and type 'a list_wrap = 'a list) =
+module Make (Html5: Html5_sigs.NoWrap) =
 struct
 
 open Html5
@@ -463,8 +458,8 @@ let from_valid ?(valid_options = default_valid_options) doc =
             let a_tl = match maybe_colspan with Some n -> [a_colspan n] | None -> [] in
             let out_seq = match seq with Some seq -> write_seq seq | None -> [] in
             match weight with
-                | Tabular.Normal -> Html5.td ~a:(a_hd :: a_tl) (out_seq :> Html5_types.td_content_fun Html5.elt list)
-                | Tabular.Strong -> Html5.th ~a:(a_hd :: a_tl) (out_seq :> Html5_types.th_content_fun Html5.elt list) in
+                | Tabular.Normal -> Html5.td ~a:(a_hd :: a_tl) (out_seq: Html5_types.phrasing Html5.elt list :> Html5_types.td_content_fun Html5.elt list)
+                | Tabular.Strong -> Html5.th ~a:(a_hd :: a_tl) (out_seq: Html5_types.phrasing Html5.elt list :> Html5_types.th_content_fun Html5.elt list) in
 
         let write_row cells =
             Html5.tr (List.mapi write_cell cells) in
