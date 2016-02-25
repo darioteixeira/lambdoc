@@ -91,32 +91,32 @@ let bookpic_extcomm maybe_credential =
                     [
                     (comm,
                         [
-                        (comm, None, Some [(comm, Ast.Plain "Title:")]);
-                        (comm, None, Some [match book.page with
+                        (comm, Some [(comm, Ast.Plain "Title:")]);
+                        (comm, Some [match book.page with
                             | Some url -> (comm, Ast.Link (url, Some [(comm, Ast.Plain book.title)]))
                             | None     -> (comm, Ast.Plain book.title)
                         ])]);
                     (comm,
                         [
-                        (comm, None, Some [(comm, Ast.Plain "Author:")]);
-                        (comm, None, Some [(comm, sprint book.author)])
+                        (comm, Some [(comm, Ast.Plain "Author:")]);
+                        (comm, Some [(comm, sprint book.author)])
                         ]);
                     (comm,
                         [
-                        (comm, None, Some [(comm, Ast.Plain "Publisher:")]);
-                        (comm, None, Some [(comm, sprint book.publisher)])
+                        (comm, Some [(comm, Ast.Plain "Publisher:")]);
+                        (comm, Some [(comm, sprint book.publisher)])
                         ]);
                     (comm,
                         [
-                        (comm, None, Some [(comm, Ast.Plain "Publication date:")]);
-                        (comm, None, Some [(comm, sprint book.pubdate)])
+                        (comm, Some [(comm, Ast.Plain "Publication date:")]);
+                        (comm, Some [(comm, sprint book.pubdate)])
                         ]);
                     ] in
                 let tbody = (comm, trows) in
                 let blocks =
                     [
                     (comm, Ast.Picture (img.url, "cover for \"" ^ book.title ^ "\""));
-                    (comm, Ast.Tabular ("Rl", {thead = None; tfoot = None; tbodies = [tbody]}));
+                    (comm, Ast.Tabular {thead = None; tfoot = None; tbodies = [tbody]});
                     ] in
                 Lwt.return (`Okay (blocks, []))
             | None ->
