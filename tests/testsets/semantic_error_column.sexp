@@ -1,0 +1,1 @@
+(Invalid(((((error_line_number 1)(error_line_before())(error_line_actual"\\begin{tabular}")(error_line_after("| A | B | C |"))))(tabular)(Mismatched_column_numbers(3 4)))((((error_line_number 8)(error_line_before("| A | B | C |"))(error_line_actual"| 1 | 2 | 3 | 4 |")(error_line_after("\\end{tabular}"))))()(Invalid_column_number(tabular)6 4 3))))
