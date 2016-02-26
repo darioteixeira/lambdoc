@@ -82,7 +82,7 @@ struct
         | Unknown_attribute of string
         | Missing_attribute of string
         | Expected_empty
-        | Expected_data
+        | Expected_text
         | Expected_seq_and_frag
         | Expected_wrapper
         | Expected_bib
@@ -112,7 +112,7 @@ struct
                 | Unknown_attribute a       -> Printf.sprintf "Attribute '#%s#' does not belong to this element" a
                 | Missing_attribute a       -> Printf.sprintf "Mandatory attribute '#%s#' has not been provided" a
                 | Expected_empty            -> "Element should be empty"
-                | Expected_data             -> "Expected data"
+                | Expected_text             -> "Contents must be consist only of text"
                 | Expected_seq_and_frag     -> "Expected sequence and fragment"
                 | Expected_wrapper          -> "Expected wrapper"
                 | Expected_bib              -> "Expected bibliography entry"
@@ -274,7 +274,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
 
     let literal_of_trees comm = function
         | [(_, _, D txt)] -> txt
-        | _               -> Errors.(add errors comm Expected_data); "" in
+        | _               -> Errors.(add errors comm Expected_text); "" in
 
     let rec seq_of_trees xs = List.map inline_of_tree xs
 
@@ -541,5 +541,5 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
             | [] -> `Okay ast
             | xs -> `Error xs
     with
-        Xmlm.Error ((line, _), error) -> `Error [(Some line, None, Xmlm.error_message error)]
+        Xmlm.Error ((line, _), error) -> `Error [(Some line, None, String.capitalize (Xmlm.error_message error))]
 
