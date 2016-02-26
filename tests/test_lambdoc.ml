@@ -196,7 +196,12 @@ let feature2_set =
 
 let lambxml_error_set =
     [
+    ("Attributes", "attribute");
+    ("Lists", "list");
+    ("Text-only content", "literal");
+    ("Malformed document", "malformed");
     ("Non-empty elements", "notempty");
+    ("Q&A environments", "qa");
     ]
 
 let semantic_error_set =

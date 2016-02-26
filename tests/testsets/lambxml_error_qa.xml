@@ -1,0 +1,21 @@
+<doc>
+
+<qanda>
+    <question>
+        <dt>Question:</dt>
+        <dd>This is a question?</dd>
+    </question>
+    
+    <answer>
+        <dt>Answer:</dt>
+        <dd>This is an answer.</dd>
+    </answer>
+
+    <li>Alpha</li>
+
+    Beta
+
+</qanda>
+
+</doc>
+

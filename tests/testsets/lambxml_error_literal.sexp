@@ -1,0 +1,1 @@
+(Invalid(((((error_line_number 2)(error_line_before(<doc>))(error_line_actual"    <p><mathtexinl><x>x</x></mathtexinl></p>")(error_line_after(</doc>))))(mathtexinl)(Reading_error"Contents must be consist only of text"))))
