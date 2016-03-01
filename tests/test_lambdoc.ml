@@ -220,6 +220,10 @@ let semantic_error_set =
     ("Counter errors", "counter");
     ("Column errors", "column");
     ("Target errors", "target");
+    ("Empty elements", "empty");
+    ("Nesting in inline context", "inline_nesting");
+    ("Nesting in block context", "block_nesting");
+    ("Missing notes and bibliography", "missing");
     ]
 
 let tests =
