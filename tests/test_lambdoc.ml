@@ -187,6 +187,11 @@ let feature2_set =
     ("Inline highlighted source-code", "code");
     ]
 
+let lambtex_feature_set =
+    [
+    ("Heredoc", "heredoc");
+    ]
+
 let lambxml_error_set =
     [
     ("Attributes", "attribute");
@@ -221,7 +226,7 @@ let semantic_error_set =
 
 let tests =
     [
-    ("Lambtex features", build_test ~prefix:"lambtex_feature" (feature1_set @ feature2_set));
+    ("Lambtex features", build_test ~prefix:"lambtex_feature" (feature1_set @ feature2_set @ lambtex_feature_set));
     ("Lambwiki features", build_test ~prefix:"lambwiki_feature" feature1_set);
     ("Lambxml features", build_test ~prefix:"lambxml_feature" (feature1_set @ feature2_set));
     ("Lambxml errors", build_test ~prefix:"lambxml_error" lambxml_error_set);

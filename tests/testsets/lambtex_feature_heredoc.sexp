@@ -1,0 +1,1 @@
+(Valid((content(((blk(Source((lang())(data(((Norm"\\begin{source}"))((Norm"\\end{source}"))))(linenums false))))(attr((classnames())(parsinfo(((tag(source1))(linenum 1)(originator Source)))))))((blk(Verbatim"\\begin{verbatim}\n\\end{verbatim}"))(attr((classnames())(parsinfo(((tag(verbatim1))(linenum 6)(originator Source)))))))))(bibs())(notes())(toc())(labels())(customs())))
