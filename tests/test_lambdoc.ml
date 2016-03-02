@@ -58,7 +58,6 @@ struct
 end
 
 
-
 (********************************************************************************)
 (** {1 Functions and values}                                                    *)
 (********************************************************************************)
@@ -86,7 +85,6 @@ let dict =
     end;
     dict
 
-
 let read_file =
     let cache = Hashtbl.create 10 in
     fun fname ftype ->
@@ -102,7 +100,6 @@ let read_file =
             Hashtbl.replace cache ftype (fname, contents);
             contents
 
-
 let string_of_xhtml xhtml =
     let open Html5.M in
     let page = (html
@@ -116,7 +113,6 @@ let string_of_xhtml xhtml =
     let buf = Buffer.create 1024 in
     Html5.P.print ~output:(Buffer.add_string buf) page;
     Buffer.contents buf
-
 
 let execute fname source target () =
     let source_contents = read_file fname (Source source) in
@@ -141,7 +137,6 @@ let execute fname source target () =
     let str = writer doc ^ "\n" in
     Alcotest.(check string) fname str target_contents
 
-
 let build_test ~prefix set =
     let foreach (base_desc, fname) accum =
         let fname = prefix ^ "_" ^ fname in
@@ -154,7 +149,6 @@ let build_test ~prefix set =
             List.fold_right foreach_target (List.sort Pervasives.compare targets) accum in
         List.fold_right foreach_source (List.sort Pervasives.compare sources) accum in
     List.fold_right foreach set []
-        
 
 let feature1_set =
     [
@@ -169,7 +163,6 @@ let feature1_set =
     ("Verbatim environments", "verbatim");
     ("Sectioning", "sectioning");
     ]
-
 
 let feature2_set =
     [
