@@ -19,7 +19,7 @@ module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend)
 
 module Filetype =
 struct
-    type source = Lambtex | Lambwiki | Lambxml
+    type source = Lambtex | Lambwiki | Lambxml | Markdown
     type target = Html5 | Sexp | Asexp
     type t = Source of source | Target of target
 
@@ -27,6 +27,7 @@ struct
         | "tex"   -> Source Lambtex
         | "wiki"  -> Source Lambwiki
         | "xml"   -> Source Lambxml
+        | "md"    -> Source Markdown
         | "html"  -> Target Html5
         | "sexp"  -> Target Sexp
         | "asexp" -> Target Asexp
@@ -36,6 +37,7 @@ struct
         | Lambtex  -> "tex"
         | Lambwiki -> "wiki"
         | Lambxml  -> "xml"
+        | Markdown -> "md"
 
     let string_of_target = function
         | Html5  -> "html"
@@ -46,6 +48,7 @@ struct
         | Lambtex  -> "Lambtex"
         | Lambwiki -> "Lambwiki"
         | Lambxml  -> "Lambxml"
+        | Markdown -> "Markdown"
 
     let describe_target = function
         | Html5  -> "Html5"
@@ -120,7 +123,8 @@ let execute fname source target () =
     let reader = match source with
         | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string
         | Lambwiki -> Lambdoc_rlambwiki_reader.Trivial.ambivalent_from_string
-        | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string in
+        | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string
+        | Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string in
     let writer = match target with
         | Html5  -> fun doc -> Html5_writer.write_ambivalent doc |> string_of_xhtml
         | Sexp   -> Ambivalent.serialize
@@ -150,28 +154,37 @@ let build_test ~prefix set =
         List.fold_right foreach_source (List.sort Pervasives.compare sources) accum in
     List.fold_right foreach set []
 
-let feature1_set =
+let common_feature_set1 =   (* Common to all markups *)
     [
     ("Plain text", "plain");
-    ("Entities", "entity");
     ("Unicode text", "unicode");
     ("Inline elements", "inline");
     ("Paragraphs", "paragraph");
     ("Lists", "list");
     ("Quote environments", "quote");
     ("Source environments", "source");
-    ("Verbatim environments", "verbatim");
     ("Sectioning", "sectioning");
     ]
 
-let feature2_set =
+let common_feature_set2 =   (* Common to Lambtex/Lambwiki/Lambxml *)
+    [
+    ("Entities", "entity");
+    ("Verbatim environments", "verbatim");
+    ]
+
+let common_feature_set3 =   (* Common to Lambtex/Lambxml/Markdown *)
+    [
+    ("Images", "image");
+    ("Rules", "rule");
+    ]
+
+let common_feature_set4 =   (* Common to Lambtex/Lambxml *)
     [
     ("Q&A environments", "qa");
     ("Verse environments", "verse");
     ("Mathematics", "math");
     ("Tabular environments", "tabular");
     ("Subpage environments", "subpage");
-    ("Images", "image");
     ("Pull-quotes", "pullquote");
     ("Boxout environments", "boxout");
     ("Theorem environments", "theorem");
@@ -182,7 +195,6 @@ let feature2_set =
     ("Titles", "title");
     ("Abstract", "abstract");
     ("Table of contents", "toc");
-    ("Rules", "rule");
     ("Internal and external references", "reference");
     ("Inline highlighted source-code", "code");
     ]
@@ -226,11 +238,18 @@ let semantic_error_set =
 
 let tests =
     [
-    ("Lambtex features", build_test ~prefix:"lambtex_feature" (feature1_set @ feature2_set @ lambtex_feature_set));
-    ("Lambwiki features", build_test ~prefix:"lambwiki_feature" feature1_set);
-    ("Lambxml features", build_test ~prefix:"lambxml_feature" (feature1_set @ feature2_set));
-    ("Lambxml errors", build_test ~prefix:"lambxml_error" lambxml_error_set);
-    ("Semantic errors", build_test ~prefix:"semantic_error" semantic_error_set);
+    ("Lambtex features", build_test ~prefix:"lambtex_feature"
+        (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4 @ lambtex_feature_set));
+    ("Lambwiki features", build_test ~prefix:"lambwiki_feature"
+        (common_feature_set1 @ common_feature_set2));
+    ("Lambxml features", build_test ~prefix:"lambxml_feature"
+        (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4));
+    ("Markdown features", build_test ~prefix:"markdown_feature"
+        (common_feature_set1 @ common_feature_set3));
+    ("Lambxml errors", build_test ~prefix:"lambxml_error"
+        lambxml_error_set);
+    ("Semantic errors", build_test ~prefix:"semantic_error"
+        semantic_error_set);
     ]
 
 let () =
