@@ -396,9 +396,9 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 Monad.return [Inline.code ~attr hilite] in
             check_inline_comm `Feature_code comm elem
 
-        | Ast.Glyph (href, alt) ->
+        | Ast.Glyph (href, alt, title) ->
             let elem attr _ =
-                Monad.return [Inline.glyph ~attr href alt] in
+                Monad.return [Inline.glyph ~attr href alt title] in
             check_inline_comm `Feature_glyph comm elem
 
         | Ast.Bold astseq ->
@@ -800,10 +800,10 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 Monad.return [Block.verbatim ~attr trimmed] in
             check_block_comm `Feature_verbatim comm elem
 
-        | Ast.Picture (href, alt) when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
+        | Ast.Picture (href, alt, title) when Blkcat.subtype [`Figure_blk; `Embeddable_blk] allowed ->
             let elem attr dict =
                 let width = Style.consume1 dict (Width_hnd, None) in
-                Monad.return [Block.picture ~attr href alt width] in
+                Monad.return [Block.picture ~attr href alt title width] in
             check_block_comm `Feature_picture comm elem
 
         | Ast.Pullquote (maybe_astseq, astfrag) when Blkcat.subtype [`Listable_blk] allowed ->

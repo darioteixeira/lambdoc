@@ -60,6 +60,11 @@ let add_style key = function
     | v  -> {dummy with comm_style = Some (key ^ "=" ^ v)}
 
 
+let title_of_string = function
+    | "" -> None
+    | x  -> Some x
+
+
 let blockify xs =
     let rec aux accum xs =
         let rec fuse accum = function
@@ -119,8 +124,8 @@ let ast_of_omd frag =
                 | Some ent -> Inline (dummy, Ast.Entity ent)
                 | None     -> raise (Unsupported_raw raw)
             end
-        | Omd.Img (alt, src, _title) ->
-            Inline (dummy, Ast.Glyph (src, alt))
+        | Omd.Img (alt, src, title) ->
+            Inline (dummy, Ast.Glyph (src, alt, title_of_string title))
         | x ->
             raise (Unsupported_inline x)
 
@@ -172,12 +177,12 @@ let ast_of_omd frag =
             Drop
         | Omd.Blockquote frag ->
             Block (dummy, Ast.Quote (convert_frag frag))
-        | Omd.Img (alt, src, _title) ->
-            Block (dummy, Ast.Picture (src, alt))
-        | Omd.Img_ref (ref, link, txt, fallback) ->
+        | Omd.Img (alt, src, title) ->
+            Block (dummy, Ast.Picture (src, alt, title_of_string title))
+        | Omd.Img_ref (ref, link, alt, fallback) ->
             begin match ref#get_ref link with
-                | Some (href, _title) -> Block (dummy, Ast.Picture (href, txt))
-                | None                -> Block (dummy, Ast.Paragraph ([dummy, Ast.Plain fallback#to_string]))
+                | Some (href, title) -> Block (dummy, Ast.Picture (href, alt, title_of_string title))
+                | None               -> Block (dummy, Ast.Paragraph ([dummy, Ast.Plain fallback#to_string]))
             end
         | (Omd.Html _ | Omd.Html_block _ | Omd.Html_comment _ | Omd.Raw _ | Omd.Raw_block _ | Omd.X _) as x ->
             raise (Unsupported_block x)

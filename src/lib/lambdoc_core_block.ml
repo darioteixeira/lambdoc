@@ -39,7 +39,7 @@ type block =
     | Tabular of Tabular.t
     | Subpage of frag
     | Verbatim of string
-    | Picture of href * string * int option
+    | Picture of href * string * string option * int option
     | Pullquote of Inline.seq option * frag
     | Boxout of Custom.Boxout.t * Inline.seq option * frag
     | Theorem of Custom.Theorem.t * Inline.seq option * frag
@@ -77,7 +77,7 @@ let source      ?(attr = Attr.default) data = {blk = Source data; attr}
 let tabular     ?(attr = Attr.default) data = {blk = Tabular data; attr}
 let subpage     ?(attr = Attr.default) frag = {blk = Subpage frag; attr}
 let verbatim    ?(attr = Attr.default) txt = {blk = Verbatim txt; attr}
-let picture     ?(attr = Attr.default) href alt width = {blk = Picture (href, alt, width); attr}
+let picture     ?(attr = Attr.default) href alt title width = {blk = Picture (href, alt, title, width); attr}
 let pullquote   ?(attr = Attr.default) maybe_seq frag = {blk = Pullquote (maybe_seq, frag); attr}
 let boxout      ?(attr = Attr.default) data maybe_seq frag = {blk = Boxout (data, maybe_seq, frag); attr}
 let theorem     ?(attr = Attr.default) data maybe_seq frag = {blk = Theorem (data, maybe_seq, frag); attr}

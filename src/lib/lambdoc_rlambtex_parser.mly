@@ -201,7 +201,7 @@ block:
 
 simple_block:
     | PARAGRAPH inline_bundle                                           {($1, Ast.Paragraph $2)}
-    | PICTURE raw_bundle raw_bundle                                     {($1, Ast.Picture ($2, $3))}
+    | PICTURE raw_bundle raw_bundle raw_bundle?                         {($1, Ast.Picture ($2, $3, $4))}
     | PART inline_bundle                                                {($1, Ast.Part $2)}
     | APPENDIX                                                          {($1, Ast.Appendix)}
     | SECTION inline_bundle                                             {(fst $1, Ast.Section (snd $1, $2))}
@@ -306,7 +306,7 @@ inline:
     | push_mathtex_inl BEGIN_MATHTEX_INL TEXT pop END_MATHTEX_INL       {($2, Ast.Mathtex_inl (snd $3))}
     | push_mathml_inl BEGIN_MATHML_INL TEXT pop END_MATHML_INL          {($2, Ast.Mathml_inl (snd $3))}
     | CODE raw_bundle                                                   {($1, Ast.Code $2)}
-    | GLYPH raw_bundle raw_bundle                                       {($1, Ast.Glyph ($2, $3))}
+    | GLYPH raw_bundle raw_bundle raw_bundle?                           {($1, Ast.Glyph ($2, $3, $4))}
     | BOLD inline_bundle                                                {($1, Ast.Bold $2)}
     | EMPH inline_bundle                                                {($1, Ast.Emph $2)}
     | MONO inline_bundle                                                {($1, Ast.Mono $2)}

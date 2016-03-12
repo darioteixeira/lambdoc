@@ -63,7 +63,7 @@ sig
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
         math_inl:    'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
         code:        'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Inline.t) Monad.t;
-        glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
+        glyph:       'a t -> 'a -> Attr.t -> href -> string -> string option -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         mono:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -95,7 +95,7 @@ sig
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         verbatim:    'a t -> 'a -> Attr.t -> string -> ('a * Block.t) Monad.t;
-        picture:     'a t -> 'a -> Attr.t -> href -> string -> int option -> ('a * Block.t) Monad.t;
+        picture:     'a t -> 'a -> Attr.t -> href -> string -> string option -> int option -> ('a * Block.t) Monad.t;
         pullquote:   'a t -> 'a -> Attr.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
         boxout:      'a t -> 'a -> Attr.t -> Custom.Boxout.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
         theorem:     'a t -> 'a -> Attr.t -> Custom.Theorem.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;

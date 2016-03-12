@@ -296,9 +296,10 @@ let from_valid ?(valid_options = default_valid_options) doc =
         | Code hilite ->
             Hilite_writer.write_inline ~class_prefix:!!"src_" ~extra_classes:classnames hilite.data
 
-        | Glyph (href, alt) ->
+        | Glyph (href, alt, title) ->
+            let suffix = match title with Some t -> [a_title t] | None -> [] in
             let uri = Html5.uri_of_string href in
-            Html5.img ~a:[a_class (!!"glyph" :: classnames)] ~src:uri ~alt ()
+            Html5.img ~a:(a_class (!!"glyph" :: classnames) :: suffix) ~src:uri ~alt ()
 
         | Bold seq ->
             Html5.b ~a:[a_class (!!"bold" :: classnames)] (write_seq seq)
@@ -557,11 +558,12 @@ let from_valid ?(valid_options = default_valid_options) doc =
             let aux = Html5.div ~a:[a_class [!!"pre_aux"]] [Html5.pre ~a:[a_class [!!"pre_aux"]] [Html5.pcdata txt]] in
             [Html5.div ~a:[a_class (!!"pre" :: classnames @ make_floatable wrapped)] [aux]]
 
-        | Picture (href, alt, width) ->
+        | Picture (href, alt, title, width) ->
+            let suffix = match title with Some t -> [a_title t] | None -> [] in
             let wattr = match width with Some w -> [a_width w] | None -> [] in
             let uri = Html5.uri_of_string href in
             let img = Html5.a ~a:[a_href uri; a_class [!!"pic_lnk"]] [Html5.img ~a:(a_class [!!"pic"] :: wattr) ~src:uri ~alt ()] in
-            [Html5.div ~a:[a_class (!!"pic" :: classnames @ make_floatable wrapped)] [img]]
+            [Html5.div ~a:(a_class (!!"pic" :: classnames @ make_floatable wrapped) :: suffix) [img]]
 
         | Pullquote (maybe_seq, frag) ->
             let head = match maybe_seq with

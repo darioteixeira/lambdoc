@@ -55,7 +55,7 @@ sig
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
         math_inl:    'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
         code:        'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Inline.t) Monad.t;
-        glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
+        glyph:       'a t -> 'a -> Attr.t -> href -> string -> string option -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         mono:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -85,7 +85,7 @@ sig
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         verbatim:    'a t -> 'a -> Attr.t -> string -> ('a * Block.t) Monad.t;
-        picture:     'a t -> 'a -> Attr.t -> href -> string -> int option -> ('a * Block.t) Monad.t;
+        picture:     'a t -> 'a -> Attr.t -> href -> string -> string option -> int option -> ('a * Block.t) Monad.t;
         pullquote:   'a t -> 'a -> Attr.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
         boxout:      'a t -> 'a -> Attr.t -> Custom.Boxout.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
         theorem:     'a t -> 'a -> Attr.t -> Custom.Theorem.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
@@ -135,7 +135,7 @@ struct
         linebreak:   'a t -> 'a -> Attr.t -> ('a * Inline.t) Monad.t;
         math_inl:    'a t -> 'a -> Attr.t -> Math.t -> ('a * Inline.t) Monad.t;
         code:        'a t -> 'a -> Attr.t -> Hilite.t -> ('a * Inline.t) Monad.t;
-        glyph:       'a t -> 'a -> Attr.t -> href -> string -> ('a * Inline.t) Monad.t;
+        glyph:       'a t -> 'a -> Attr.t -> href -> string -> string option -> ('a * Inline.t) Monad.t;
         bold:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         emph:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
         mono:        'a t -> 'a -> Attr.t -> Inline.seq -> ('a * Inline.t) Monad.t;
@@ -165,7 +165,7 @@ struct
         tabular:     'a t -> 'a -> Attr.t -> Tabular.t -> ('a * Block.t) Monad.t;
         subpage:     'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         verbatim:    'a t -> 'a -> Attr.t -> string -> ('a * Block.t) Monad.t;
-        picture:     'a t -> 'a -> Attr.t -> href -> string -> int option -> ('a * Block.t) Monad.t;
+        picture:     'a t -> 'a -> Attr.t -> href -> string -> string option -> int option -> ('a * Block.t) Monad.t;
         pullquote:   'a t -> 'a -> Attr.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
         boxout:      'a t -> 'a -> Attr.t -> Custom.Boxout.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
         theorem:     'a t -> 'a -> Attr.t -> Custom.Theorem.t -> Inline.seq option -> Block.frag -> ('a * Block.t) Monad.t;
@@ -237,7 +237,7 @@ struct
             | Linebreak                 -> fm.linebreak fm acc attr
             | Math_inl data             -> fm.math_inl fm acc attr data
             | Code data                 -> fm.code fm acc attr data
-            | Glyph (href, alt)         -> fm.glyph fm acc attr href alt
+            | Glyph (href, alt, title)  -> fm.glyph fm acc attr href alt title
             | Bold seq                  -> fm.bold fm acc attr seq
             | Emph seq                  -> fm.emph fm acc attr seq
             | Mono seq                  -> fm.mono fm acc attr seq
@@ -256,30 +256,30 @@ struct
             | Mref (pointer, seq)       -> fm.mref fm acc attr pointer seq);
 
         block = (fun fm acc {blk; attr} -> match blk with
-            | Paragraph seq                   -> fm.paragraph fm acc attr seq
-            | Itemize frags                   -> fm.itemize fm acc attr frags
-            | Enumerate frags                 -> fm.enumerate fm acc attr frags
-            | Description dfrags              -> fm.description fm acc attr dfrags
-            | Qanda qafrags                   -> fm.qanda fm acc attr qafrags
-            | Verse frag                      -> fm.verse fm acc attr frag
-            | Quote frag                      -> fm.quote fm acc attr frag
-            | Math_blk data                   -> fm.math_blk fm acc attr data
-            | Source data                     -> fm.source fm acc attr data
-            | Tabular data                    -> fm.tabular fm acc attr data
-            | Subpage frag                    -> fm.subpage fm acc attr frag
-            | Verbatim txt                    -> fm.verbatim fm acc attr txt
-            | Picture (href, alt, width)      -> fm.picture fm acc attr href alt width
-            | Pullquote (maybe_seq, frag)     -> fm.pullquote fm acc attr maybe_seq frag
-            | Boxout (data, maybe_seq, frag)  -> fm.boxout fm acc attr data maybe_seq frag
-            | Theorem (data, maybe_seq, frag) -> fm.theorem fm acc attr data maybe_seq frag
-            | Equation (wrapper, blk)         -> fm.equation fm acc attr wrapper blk
-            | Printout (wrapper, blk)         -> fm.printout fm acc attr wrapper blk
-            | Table (wrapper, blk)            -> fm.table fm acc attr wrapper blk
-            | Figure (wrapper, blk)           -> fm.figure fm acc attr wrapper blk
-            | Heading data                    -> fm.heading fm acc attr data
-            | Title (level, seq)              -> fm.title fm acc attr level seq
-            | Abstract frag                   -> fm.abstract fm acc attr frag
-            | Rule                            -> fm.rule fm acc attr);
+            | Paragraph seq                     -> fm.paragraph fm acc attr seq
+            | Itemize frags                     -> fm.itemize fm acc attr frags
+            | Enumerate frags                   -> fm.enumerate fm acc attr frags
+            | Description dfrags                -> fm.description fm acc attr dfrags
+            | Qanda qafrags                     -> fm.qanda fm acc attr qafrags
+            | Verse frag                        -> fm.verse fm acc attr frag
+            | Quote frag                        -> fm.quote fm acc attr frag
+            | Math_blk data                     -> fm.math_blk fm acc attr data
+            | Source data                       -> fm.source fm acc attr data
+            | Tabular data                      -> fm.tabular fm acc attr data
+            | Subpage frag                      -> fm.subpage fm acc attr frag
+            | Verbatim txt                      -> fm.verbatim fm acc attr txt
+            | Picture (href, alt, title, width) -> fm.picture fm acc attr href alt title width
+            | Pullquote (maybe_seq, frag)       -> fm.pullquote fm acc attr maybe_seq frag
+            | Boxout (data, maybe_seq, frag)    -> fm.boxout fm acc attr data maybe_seq frag
+            | Theorem (data, maybe_seq, frag)   -> fm.theorem fm acc attr data maybe_seq frag
+            | Equation (wrapper, blk)           -> fm.equation fm acc attr wrapper blk
+            | Printout (wrapper, blk)           -> fm.printout fm acc attr wrapper blk
+            | Table (wrapper, blk)              -> fm.table fm acc attr wrapper blk
+            | Figure (wrapper, blk)             -> fm.figure fm acc attr wrapper blk
+            | Heading data                      -> fm.heading fm acc attr data
+            | Title (level, seq)                -> fm.title fm acc attr level seq
+            | Abstract frag                     -> fm.abstract fm acc attr frag
+            | Rule                              -> fm.rule fm acc attr);
 
         seq = (fun fm acc seq ->
             aux_list fm.inline fm acc seq);
@@ -301,9 +301,9 @@ struct
         code = (fun fm acc attr data ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Inline.code ~attr data));
-        glyph = (fun fm acc attr href alt ->
+        glyph = (fun fm acc attr href alt title ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
-            Monad.return (acc, Inline.glyph ~attr href alt));
+            Monad.return (acc, Inline.glyph ~attr href alt title));
         bold = (fun fm acc attr seq ->
             aux_seq Inline.bold fm acc attr seq);
         emph = (fun fm acc attr seq ->
@@ -412,9 +412,9 @@ struct
         verbatim = (fun fm acc attr txt ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Block.verbatim ~attr txt));
-        picture = (fun fm acc attr href alt width ->
+        picture = (fun fm acc attr href alt title width ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
-            Monad.return (acc, Block.picture ~attr href alt width));
+            Monad.return (acc, Block.picture ~attr href alt title width));
         pullquote = (fun fm acc attr maybe_seq frag ->
             aux_maybe fm.seq fm acc maybe_seq >>= fun (acc, maybe_seq) ->
             fm.frag fm acc frag >>= fun (acc, frag) ->

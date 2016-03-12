@@ -41,7 +41,7 @@ type block =
     | Tabular of Tabular.t
     | Subpage of frag
     | Verbatim of string
-    | Picture of href * string * int option
+    | Picture of href * string * string option * int option
     | Pullquote of Inline.seq option * frag
     | Boxout of Custom.Boxout.t * Inline.seq option * frag
     | Theorem of Custom.Theorem.t * Inline.seq option * frag
@@ -79,7 +79,7 @@ val source:      ?attr:Attr.t -> Hilite.t -> t
 val tabular:     ?attr:Attr.t -> Tabular.t -> t
 val subpage:     ?attr:Attr.t -> frag -> t
 val verbatim:    ?attr:Attr.t -> string -> t
-val picture:     ?attr:Attr.t -> href -> string -> int option -> t
+val picture:     ?attr:Attr.t -> href -> string -> string option -> int option -> t
 val pullquote:   ?attr:Attr.t -> Inline.seq option -> frag -> t
 val boxout:      ?attr:Attr.t -> Custom.Boxout.t -> Inline.seq option -> frag -> t
 val theorem:     ?attr:Attr.t -> Custom.Theorem.t -> Inline.seq option -> frag -> t

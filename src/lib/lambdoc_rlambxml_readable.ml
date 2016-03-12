@@ -166,6 +166,15 @@ let make2: type p1 p2. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> 
         (comm, f a1 a2)
 
 
+let make3: type p1 p2 p3. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> p1 Prop.param -> p2 Prop.param -> p3 Prop.param -> (p1 -> p2 -> p3 -> 'r) -> Ast.command * 'r =
+    fun ?empty comm prop errors param1 param2 param3 f ->
+        let a1 = guarded_get comm prop errors param1 in
+        let a2 = guarded_get comm prop errors param2 in
+        let a3 = guarded_get comm prop errors param3 in
+        cleanup ?empty comm prop errors;
+        (comm, f a1 a2 a3)
+
+
 let anonymous_comm (lnum, _) =
     {
     comm_tag = None;
@@ -288,7 +297,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         | E ("mathtexinl", xs)              -> make0 comm prop errors (fun () -> Ast.Mathtex_inl (literal_of_trees comm xs))
         | E ("mathmlinl", xs)               -> make0 comm prop errors (fun () -> Ast.Mathml_inl (deep_copy xs))
         | E ("code", xs)                    -> make0 comm prop errors (fun () -> Ast.Code (literal_of_trees comm xs))
-        | E ("glyph", xs)                   -> make2 ~empty:xs comm prop errors (Req "src") (Req "alt") (fun src alt -> Ast.Glyph (src, alt))
+        | E ("glyph", xs)                   -> make3 ~empty:xs comm prop errors (Req "src") (Req "alt") (Opt "title") (fun src alt title -> Ast.Glyph (src, alt, title))
         | E (("bold" | "strong" | "b"), xs) -> make0 comm prop errors (fun () -> Ast.Bold (seq_of_trees xs))
         | E (("emph" | "em" | "i"), xs)     -> make0 comm prop errors (fun () -> Ast.Emph (seq_of_trees xs))
         | E (("mono" | "tt"), xs)           -> make0 comm prop errors (fun () -> Ast.Mono (seq_of_trees xs))
@@ -339,7 +348,7 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         | E ("tabular", xs)                -> make0 comm prop errors (fun () -> Tabular (tabular_of_trees xs))
         | E ("subpage", xs)                -> make0 comm prop errors (fun () -> Subpage (frag_of_trees xs))
         | E (("verbatim" | "pre"), xs)     -> make0 comm prop errors (fun () -> Verbatim (literal_of_trees comm xs))
-        | E ("picture", xs)                -> make2 ~empty:xs comm prop errors (Req "src") (Req "alt") (fun src alt -> Picture (src, alt))
+        | E ("picture", xs)                -> make3 ~empty:xs comm prop errors (Req "src") (Req "alt") (Opt "title") (fun src alt title -> Picture (src, alt, title))
         | E ("pull", xs)                   -> make0 comm prop errors (fun () -> let (s, f) = seq_and_frag_of_trees comm xs in Pullquote (s, f))
         | E ("equation", xs)               -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees comm xs in Equation (s, b))
         | E ("printout", xs)               -> make0 comm prop errors (fun () -> let (s, b) = wrapper_of_trees comm xs in Printout (s, b))
