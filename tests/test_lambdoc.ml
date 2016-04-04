@@ -13,7 +13,7 @@ open Lambdoc_core
 (** {1 Inner modules}                                                           *)
 (********************************************************************************)
 
-module Tyxml_backend = struct include Html5.M module Svg = Svg.M end
+module Tyxml_backend = struct include Html5 module Svg = Svg end
 
 module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend)
 
@@ -104,7 +104,7 @@ let read_file =
             contents
 
 let string_of_xhtml xhtml =
-    let open Html5.M in
+    let open Html5 in
     let page = (html
             (head
                 (title (pcdata "Lambdoc document"))
@@ -113,9 +113,7 @@ let string_of_xhtml xhtml =
                 link ~a:[a_media [`All]; a_title "Default"] ~rel:[`Stylesheet] ~href:(uri_of_string "css/lambdoc.css") ()
                 ])
             (body [xhtml])) in
-    let buf = Buffer.create 1024 in
-    Html5.P.print ~output:(Buffer.add_string buf) page;
-    Buffer.contents buf
+    Format.asprintf "%a" (Html5.pp ()) page
 
 let execute fname source target () =
     let source_contents = read_file fname (Source source) in
