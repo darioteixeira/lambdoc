@@ -620,4 +620,22 @@ let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 
 # 622 "myocamlbuild.ml"
 (* OASIS_STOP *)
-Ocamlbuild_plugin.dispatch dispatch_default;;
+
+let menhir_opts = S
+    [
+    A"--dump";
+    A"--explain";
+    (*A"--log-automaton"; A"0";*)
+    (*A"--log-code"; A"0";*)
+    (*A"--log-grammar"; A"0";*)
+    (*A"--strict";*)
+    (*A"--trace";*)
+    ]
+
+let dispatch_custom = function
+    | After_rules -> flag ["menhir"] menhir_opts
+    | _           -> ()
+
+let () =
+    Ocamlbuild_plugin.dispatch (MyOCamlbuildBase.dispatch_combine [dispatch_custom; dispatch_default])
+
