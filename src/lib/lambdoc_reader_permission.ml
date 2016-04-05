@@ -172,7 +172,8 @@ let check_parameters ?(maybe_minipaged = None) ?(maybe_wrapped = None) comm feat
         | `Feature_title2        -> forbidden_class
         | `Feature_abstract      -> forbidden_class
         | `Feature_rule          -> forbidden_class
-        | `Feature_bib           -> ghost_class
+        | `Feature_shortbib      -> ghost_class
+        | `Feature_longbib       -> ghost_class
         | `Feature_note          -> ghost_class
         | `Feature_macrodef      -> forbidden_class
         | `Feature_boxoutdef     -> forbidden_class

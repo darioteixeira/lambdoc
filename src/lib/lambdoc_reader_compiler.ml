@@ -974,7 +974,17 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             let elem attr _ = Monad.return [Block.rule ~attr ()] in
             check_block_comm `Feature_rule comm elem
 
-        | Ast.Bib bib ->
+        | Ast.Shortbib astseq ->
+            let elem attr _ =
+                let order = Order_input.auto_ordinal bib_counter in
+                let label = make_label comm (Target.bib order) in
+                convert_seq ~comm astseq >>= fun seq ->
+                let bib = Bib.make label order (Short seq) in
+                bibs := bib :: !bibs;
+                Monad.return [] in
+            check_block_comm `Feature_shortbib comm elem
+
+        | Ast.Longbib bib ->
             let elem attr _ =
                 let (author_comm, author_astseq) = bib.author
                 and (title_comm, title_astseq) = bib.title
@@ -986,12 +996,12 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 check_comm `Feature_bib_resource resource_comm (fun _ _ -> convert_seq ~comm resource_astseq) >>= fun resource ->
                 match (author, title, resource) with
                     | (Some author, Some title, Some resource) ->
-                        let bib = Bib.make label order author title resource in
+                        let bib = Bib.make label order (Long (author, title, resource)) in
                         bibs := bib :: !bibs;
                         Monad.return []
                     | _ ->
                         Monad.return [] in
-            check_block_comm `Feature_bib comm elem
+            check_block_comm `Feature_longbib comm elem
 
         | Ast.Note astfrag ->
             let elem attr _ =

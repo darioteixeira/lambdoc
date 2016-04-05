@@ -52,7 +52,7 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> BEGIN_PRINTOUT
 %token <Lambdoc_reader_ast.command> BEGIN_TABLE
 %token <Lambdoc_reader_ast.command> BEGIN_FIGURE
-%token <Lambdoc_reader_ast.command> BEGIN_BIB
+%token <Lambdoc_reader_ast.command> BEGIN_LONGBIB
 %token <Lambdoc_reader_ast.command> BEGIN_NOTE
 %token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_BLK
 %token <Lambdoc_reader_ast.command> BEGIN_MATHML_BLK
@@ -81,7 +81,7 @@ open Lambdoc_reader
 %token END_PRINTOUT
 %token END_TABLE
 %token END_FIGURE
-%token END_BIB
+%token END_LONGBIB
 %token END_NOTE
 %token END_MATHTEX_BLK
 %token END_MATHML_BLK
@@ -126,6 +126,7 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> TOC
 %token <Lambdoc_reader_ast.command * int> TITLE
 %token <Lambdoc_reader_ast.command> RULE
+%token <Lambdoc_reader_ast.command> SHORTBIB
 %token <Lambdoc_reader_ast.command> MACRODEF
 %token <Lambdoc_reader_ast.command> BOXOUTDEF
 %token <Lambdoc_reader_ast.command> THEOREMDEF
@@ -210,6 +211,7 @@ simple_block:
     | TOC                                                               {($1, Ast.Toc)}
     | TITLE inline_bundle                                               {(fst $1, Ast.Title (snd $1, $2))}
     | RULE                                                              {($1, Ast.Rule)}
+    | SHORTBIB inline_bundle                                            {($1, Ast.Shortbib $2)}
     | MACRODEF raw_bundle raw_bundle inline_bundle                      {($1, Ast.Macrodef ($2, $3, $4))}
     | BOXOUTDEF raw_bundle boxoutdef                                    {($1, Ast.Boxoutdef ($2, fst $3, snd $3))}
     | THEOREMDEF raw_bundle theoremdef                                  {let (caption, counter) = $3 in ($1, Ast.Theoremdef ($2, caption, counter))}
@@ -236,7 +238,7 @@ env_block:
     | BEGIN_TABLE inline_bundle? block END_TABLE                        {($1, Ast.Table ($2, $3))}
     | BEGIN_FIGURE inline_bundle? block END_FIGURE                      {($1, Ast.Figure ($2, $3))}
     | BEGIN_ABSTRACT frag END_ABSTRACT                                  {($1, Ast.Abstract $2)}
-    | BEGIN_BIB bib_author bib_title bib_resource END_BIB               {($1, Ast.Bib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
+    | BEGIN_LONGBIB bib_author bib_title bib_resource END_LONGBIB       {($1, Ast.Longbib {Ast.author = $2; Ast.title = $3; Ast.resource = $4})}
     | BEGIN_NOTE frag END_NOTE                                          {($1, Ast.Note $2)}
     | push_literal BEGIN_MATHTEX_BLK TEXT pop END_MATHTEX_BLK           {($2, Ast.Mathtex_blk (snd $3))}
     | push_literal BEGIN_MATHML_BLK TEXT pop END_MATHML_BLK             {($2, Ast.Mathml_blk (snd $3))}

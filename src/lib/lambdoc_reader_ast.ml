@@ -89,7 +89,7 @@ type tabular =
     tbodies: tabular_group list;
     }
 
-type bib =
+type longbib =
     {
     author: command * seq;
     title: command * seq;
@@ -128,7 +128,8 @@ type frag = block list
     | Title of int * seq                                            (* Blkpat_int_seq *)
     | Abstract of frag                                              (* Blkpat_frag *)
     | Rule                                                          (* Blkpat_empty *)
-    | Bib of bib                                                    (* Blkpat_bib *)
+    | Shortbib of seq                                               (* Blkpat_seq *)
+    | Longbib of longbib                                            (* Blkpat_bib *)
     | Note of frag                                                  (* Blkpat_frag *)
     | Macrodef of string * string * seq
     | Boxoutdef of string * seq option * string option

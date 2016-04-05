@@ -718,11 +718,16 @@ let from_valid ?(valid_options = default_valid_options) doc =
             [
             Html5.span ~a:[a_class [!!"bib_head"]] (pcdata "[" :: (bib_conv bib.order) @ [pcdata "]"]);
             Html5.p ~a:[a_class [!!"bib_body"]]
-                [
-                Html5.span ~a:[a_class [!!"bib_author"]] (write_seq bib.author);
-                Html5.span ~a:[a_class [!!"bib_title"]] (write_seq bib.title);
-                Html5.span ~a:[a_class [!!"bib_resource"]] (write_seq bib.resource);
-                ]
+                begin match bib.entry with
+                    | Short seq -> 
+                        [Html5.span ~a:[a_class [!!"bib_short"]] (write_seq seq)]
+                    | Long (author, title, resource) ->
+                        [
+                        Html5.span ~a:[a_class [!!"bib_author"]] (write_seq author);
+                        Html5.span ~a:[a_class [!!"bib_title"]] (write_seq title);
+                        Html5.span ~a:[a_class [!!"bib_resource"]] (write_seq resource);
+                        ]
+                end
             ]
 
 

@@ -42,23 +42,23 @@
 
 <bibliography/>
 
-<bib label="bib:one">
+<lbib label="bib:one">
     <who>Who one</who>
     <what>What one</what>
     <where>Where one</where>
-</bib>
+</lbib>
 
-<bib label="bib:two">
+<lbib label="bib:two">
     <who>Who two</who>
     <what>What two</what>
     <where>Where two</where>
-</bib>
+</lbib>
 
-<bib label="bib:three">
+<lbib label="bib:three">
     <who>Who three</who>
     <what>What three</what>
     <where>Where three</where>
-</bib>
+</lbib>
 
 </doc>
 

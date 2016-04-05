@@ -20,13 +20,16 @@ module Order = Lambdoc_core_order
 
 type order = (Order.ordinal, Order.ordinal Order.auto_given) Order.t [@@deriving sexp]
 
+type entry =
+    | Short of Inline.seq
+    | Long of Inline.seq * Inline.seq * Inline.seq  (* (author, title, resource) *)
+    [@@deriving sexp]
+
 type t =
     {
     label: Label.t;
     order: order;
-    author: Inline.seq;
-    title: Inline.seq;
-    resource: Inline.seq;
+    entry: entry;
     } [@@deriving sexp]
 
 
@@ -34,5 +37,5 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: label:Label.t -> order:order -> author:Inline.seq -> title:Inline.seq -> resource:Inline.seq -> t
+val make: label:Label.t -> order:order -> entry:entry -> t
 

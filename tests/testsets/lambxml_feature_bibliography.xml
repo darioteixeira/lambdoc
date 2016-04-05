@@ -6,29 +6,29 @@
 
 <bibliography/>
 
-<bib label="bib:bib1">
+<lbib label="bib:bib1">
     <who>Who1</who>
     <what>What1</what>
     <where>Where1</where>
-</bib>
+</lbib>
 
-<bib label="bib:bib2">
+<lbib label="bib:bib2">
     <who>Who2</who>
     <what>What2</what>
     <where>Where2</where>
-</bib>
+</lbib>
 
-<bib label="bib:bib3">
+<lbib label="bib:bib3">
     <who>Who3</who>
     <what>What3</what>
     <where>Where3</where>
-</bib>
+</lbib>
 
-<bib>
+<lbib>
     <who>Who4</who>
     <what>What4</what>
     <where>Where4</where>
-</bib>
+</lbib>
 
 </doc>
 

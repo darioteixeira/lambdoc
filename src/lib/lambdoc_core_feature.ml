@@ -35,7 +35,7 @@ type block_feature =
     | `Feature_bibliography | `Feature_notes | `Feature_toc
     | `Feature_title1 | `Feature_title2
     | `Feature_abstract | `Feature_rule
-    | `Feature_bib | `Feature_note
+    | `Feature_shortbib | `Feature_longbib | `Feature_note
     | `Feature_macrodef | `Feature_boxoutdef | `Feature_theoremdef
     | `Feature_extcomm_blk of ident ] [@@deriving sexp]
 
@@ -115,7 +115,8 @@ let describe_block_feature = function
     | `Feature_title2          -> "Level 2 title"
     | `Feature_abstract        -> "abstract"
     | `Feature_rule            -> "rule"
-    | `Feature_bib             -> "bibliography entry"
+    | `Feature_shortbib        -> "short-form bibliography entry"
+    | `Feature_longbib         -> "long-form bibliography entry"
     | `Feature_note            -> "note"
     | `Feature_macrodef        -> "definition of macro"
     | `Feature_boxoutdef       -> "definition of boxout environment"
@@ -169,7 +170,7 @@ let block_features =
     `Feature_bibliography; `Feature_notes; `Feature_toc;
     `Feature_title1; `Feature_title2;
     `Feature_abstract; `Feature_rule;
-    `Feature_bib; `Feature_note;
+    `Feature_shortbib; `Feature_longbib; `Feature_note;
     `Feature_macrodef; `Feature_boxoutdef; `Feature_theoremdef;
     `Feature_extcomm_blk "";
     ]

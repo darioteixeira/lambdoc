@@ -369,7 +369,8 @@ let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
         | E ("subtitle", xs)               -> make0 comm prop errors (fun () -> Title (2, seq_of_trees xs))
         | E ("abstract", xs)               -> make0 comm prop errors (fun () -> Abstract (frag_of_trees xs))
         | E (("rule" | "hr"), xs)          -> make0 ~empty:xs comm prop errors (fun () -> Rule)
-        | E ("bib", xs)                    -> make0 comm prop errors (fun () -> Bib (bib_of_trees comm xs))
+        | E ("sbib", xs)                   -> make0 comm prop errors (fun () -> Shortbib (seq_of_trees xs))
+        | E ("lbib", xs)                   -> make0 comm prop errors (fun () -> Longbib (bib_of_trees comm xs))
         | E ("note", xs)                   -> make0 comm prop errors (fun () -> Note (frag_of_trees xs))
         | E ("newmacro", xs) ->
             make2 comm prop errors (Req "name") (Req "nargs")
