@@ -18,11 +18,7 @@
     <where>Where2</where>
 </lbib>
 
-<lbib label="bib:bib3">
-    <who>Who3</who>
-    <what>What3</what>
-    <where>Where3</where>
-</lbib>
+<sbib label="bib:bib3">Where3</sbib>
 
 <lbib>
     <who>Who4</who>
