@@ -10,6 +10,7 @@
 *)
 
 module Attr = Lambdoc_core_attr
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Custom = Lambdoc_core_custom
 module Heading = Lambdoc_core_heading
@@ -50,6 +51,7 @@ type block =
     | Table of Wrapper.t * t
     | Figure of Wrapper.t * t
     | Heading of Heading.t
+    | Autogen of Autogen.t
     | Title of Level.title * Inline.seq
     | Abstract of frag
     | Rule
@@ -88,6 +90,7 @@ val printout:    ?attr:Attr.t -> Wrapper.t -> t -> t
 val table:       ?attr:Attr.t -> Wrapper.t -> t -> t
 val figure:      ?attr:Attr.t -> Wrapper.t -> t -> t
 val heading:     ?attr:Attr.t -> Heading.t -> t
+val autogen:     ?attr:Attr.t -> Autogen.t -> t
 val title:       ?attr:Attr.t -> Level.title -> Inline.seq -> t
 val abstract:    ?attr:Attr.t -> frag -> t
 val rule:        ?attr:Attr.t -> unit -> t

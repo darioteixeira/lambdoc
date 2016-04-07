@@ -122,8 +122,11 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> APPENDIX
 %token <Lambdoc_reader_ast.command * int> SECTION
 %token <Lambdoc_reader_ast.command> BIBLIOGRAPHY
+%token <Lambdoc_reader_ast.command> BIBLIOGRAPHY_RAW
 %token <Lambdoc_reader_ast.command> NOTES
+%token <Lambdoc_reader_ast.command> NOTES_RAW
 %token <Lambdoc_reader_ast.command> TOC
+%token <Lambdoc_reader_ast.command> TOC_RAW
 %token <Lambdoc_reader_ast.command * int> TITLE
 %token <Lambdoc_reader_ast.command> RULE
 %token <Lambdoc_reader_ast.command> SHORTBIB
@@ -207,8 +210,11 @@ simple_block:
     | APPENDIX                                                          {($1, Ast.Appendix)}
     | SECTION inline_bundle                                             {(fst $1, Ast.Section (snd $1, $2))}
     | BIBLIOGRAPHY                                                      {($1, Ast.Bibliography)}
+    | BIBLIOGRAPHY_RAW                                                  {($1, Ast.Bibliography_raw)}
     | NOTES                                                             {($1, Ast.Notes)}
+    | NOTES_RAW                                                         {($1, Ast.Notes_raw)}
     | TOC                                                               {($1, Ast.Toc)}
+    | TOC_RAW                                                           {($1, Ast.Toc_raw)}
     | TITLE inline_bundle                                               {(fst $1, Ast.Title (snd $1, $2))}
     | RULE                                                              {($1, Ast.Rule)}
     | SHORTBIB inline_bundle                                            {($1, Ast.Shortbib $2)}

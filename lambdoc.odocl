@@ -1,9 +1,10 @@
 # OASIS_START
-# DO NOT EDIT (digest: d0601bbf7a620ad902060f01293ed9ed)
+# DO NOT EDIT (digest: 86eb01e768d34c0a43056815a699aa8b)
 src/lib/Lambdoc_prelude
 src/lib/Lambdoc_core
 src/lib/Lambdoc_core_basic
 src/lib/Lambdoc_core_attr
+src/lib/Lambdoc_core_autogen
 src/lib/Lambdoc_core_level
 src/lib/Lambdoc_core_label
 src/lib/Lambdoc_core_order

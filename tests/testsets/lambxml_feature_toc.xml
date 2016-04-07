@@ -1,6 +1,12 @@
 <doc>
     
+<p>Here's an auto-generated table of contents:</p>
+
 <toc/>
+
+<p>You can also print the table of contents without heading:</p>
+
+<rawtoc/>
 
 <part>Part</part>
 

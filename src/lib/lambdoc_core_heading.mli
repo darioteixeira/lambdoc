@@ -9,6 +9,7 @@
 (** Definitions concerning heading elements.
 *)
 
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Inline = Lambdoc_core_inline
 module Label = Lambdoc_core_label
@@ -44,9 +45,7 @@ type part_content =
 *)
 type section_content =
     | Custom_section of Inline.seq
-    | Bibliography
-    | Notes
-    | Toc
+    | Autogen_section of Autogen.t
     [@@deriving sexp]
 
 

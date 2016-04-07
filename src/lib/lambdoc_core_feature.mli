@@ -35,7 +35,9 @@ type block_feature =
     | `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
     | `Feature_part | `Feature_appendix
     | `Feature_section1 | `Feature_section2 | `Feature_section3 | `Feature_section4 | `Feature_section5 | `Feature_section6
-    | `Feature_bibliography | `Feature_notes | `Feature_toc
+    | `Feature_bibliography | `Feature_bibliography_raw
+    | `Feature_notes | `Feature_notes_raw
+    | `Feature_toc | `Feature_toc_raw
     | `Feature_title1 | `Feature_title2
     | `Feature_abstract | `Feature_rule
     | `Feature_shortbib | `Feature_longbib | `Feature_note

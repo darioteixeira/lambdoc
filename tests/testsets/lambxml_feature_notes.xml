@@ -4,7 +4,13 @@
 
 <p>If you prefer you can reference multiple notes with a single command<see href="note:note1 note:note2 note:note3"/>.</p>
 
+<p>Here's an auto-generated list of notes:</p>
+
 <notes/>
+
+<p>You can also list the notes without the heading:</p>
+
+<rawnotes/>
 
 <note label="note:note1">
     <p>Lorem ipsum dolor sit amet.</p>

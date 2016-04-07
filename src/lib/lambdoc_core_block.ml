@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 module Attr = Lambdoc_core_attr
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Custom = Lambdoc_core_custom
 module Heading = Lambdoc_core_heading
@@ -48,6 +49,7 @@ type block =
     | Table of Wrapper.t * t
     | Figure of Wrapper.t * t
     | Heading of Heading.t
+    | Autogen of Autogen.t
     | Title of Level.title * Inline.seq
     | Abstract of frag
     | Rule
@@ -86,6 +88,7 @@ let printout    ?(attr = Attr.default) wrapper blk = {blk = Printout (wrapper, b
 let table       ?(attr = Attr.default) wrapper blk = {blk = Table (wrapper, blk); attr}
 let figure      ?(attr = Attr.default) wrapper blk = {blk = Figure (wrapper, blk); attr}
 let heading     ?(attr = Attr.default) data = {blk = Heading data; attr}
+let autogen     ?(attr = Attr.default) data = {blk = Autogen data; attr}
 let title       ?(attr = Attr.default) level seq = {blk = Title (level, seq); attr}
 let abstract    ?(attr = Attr.default) frag = {blk = Abstract frag; attr}
 let rule        ?(attr = Attr.default) () = {blk = Rule; attr}

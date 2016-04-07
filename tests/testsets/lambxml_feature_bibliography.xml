@@ -4,7 +4,13 @@
     
 <p>You can also place multiple citations in the same square brackets<cite href="bib:bib1 bib:bib2 bib:bib3"/>.</p>
 
+<p>Here's an auto-generated bibliography:</p>
+
 <bibliography/>
+
+<p>You can also list the bibliography without the heading:</p>
+
+<rawbibliography/>
 
 <lbib label="bib:bib1">
     <who>Who1</who>

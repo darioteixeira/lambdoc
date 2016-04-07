@@ -625,6 +625,9 @@ let from_valid ?(valid_options = default_valid_options) doc =
         | Heading heading ->
             write_heading_block classnames heading
 
+        | Autogen autogen ->
+            write_autogen_block classnames autogen
+
         | Title (level, seq) ->
             [(cons_of_level (level :> int)) ~a:[a_class (!!"title" :: classnames)] (write_seq seq)]
 
@@ -647,27 +650,26 @@ let from_valid ?(valid_options = default_valid_options) doc =
         | Section (label, order, location, level, Custom_section seq) ->
             [make_sectional level label (section_conv ~spanify:true location order) classnames (write_seq seq)]
 
-        | Section (label, order, location, level, Bibliography) ->
+        | Section (label, order, location, level, Autogen_section Bibliography) ->
             let title = make_sectional level label (section_conv ~spanify:true location order) classnames (write_name Name_bibliography) in
-            let bibs = match bibs with
-                | []   -> []
-                | _::_ -> [Html5.ol ~a:[a_class [!!"bibs"]] (List.map write_bib bibs)] in
+            let bibs = write_bibs classnames in
             title :: bibs
 
-        | Section (label, order, location, level, Notes) ->
+        | Section (label, order, location, level, Autogen_section Notes) ->
             let title = make_sectional level label (section_conv ~spanify:true location order) classnames (write_name Name_notes) in
-            let notes = match notes with
-                | []   -> []
-                | _::_ -> [Html5.ol ~a:[a_class [!!"notes"]] (List.map write_note notes)] in
+            let notes = write_notes classnames in
             title :: notes
 
-        | Section (label, order, location, level, Toc) ->
+        | Section (label, order, location, level, Autogen_section Toc) ->
             let title = make_sectional level label (section_conv ~spanify:true location order) classnames (write_name Name_toc) in
-            let entries = List.filter_map write_toc_entry toc in
-            let toc_xhtml = match entries with
-                | []   -> []
-                | _::_ -> [Html5.ul ~a:[a_class [!!"toc"]] entries] in
-            title :: toc_xhtml
+            let toc = write_toc classnames in
+            title :: toc
+
+
+    and write_autogen_block classnames = function
+        | Bibliography -> write_bibs classnames
+        | Notes        -> write_notes classnames
+        | Toc          -> write_toc classnames
 
 
     and write_custom data maybe_seq frag classname classnames formatter =
@@ -703,13 +705,9 @@ let from_valid ?(valid_options = default_valid_options) doc =
     (*  {4 Writers for ghost elements}                                          *)
     (****************************************************************************)
 
-    and write_note note =
-        let open Note in
-        Html5.li ~a:[a_id (make_label note.label); a_class [!!"note"]]
-            [
-            Html5.span ~a:[a_class [!!"note_head"]] (pcdata "(" :: (note_conv note.order) @ [pcdata ")"]);
-            Html5.div ~a:[a_class [!!"note_body"]] (write_frag note.content);
-            ]
+    and write_bibs classnames = match bibs with
+        | [] -> []
+        | xs -> [Html5.ol ~a:[a_class (!!"bibs" :: classnames)] (List.map write_bib xs)]
 
 
     and write_bib bib =
@@ -731,6 +729,25 @@ let from_valid ?(valid_options = default_valid_options) doc =
             ]
 
 
+    and write_notes classnames = match notes with
+        | [] -> []
+        | xs -> [Html5.ol ~a:[a_class (!!"notes" :: classnames)] (List.map write_note xs)]
+
+
+    and write_note note =
+        let open Note in
+        Html5.li ~a:[a_id (make_label note.label); a_class [!!"note"]]
+            [
+            Html5.span ~a:[a_class [!!"note_head"]] (pcdata "(" :: (note_conv note.order) @ [pcdata ")"]);
+            Html5.div ~a:[a_class [!!"note_body"]] (write_frag note.content);
+            ]
+
+
+    and write_toc classnames = match List.filter_map write_toc_entry toc with
+        | [] -> []
+        | xs -> [Html5.ul ~a:[a_class (!!"toc" :: classnames)] xs]
+
+
     and write_toc_entry sec =
         let make_toc_entry label classname orderlst content =
             Some (Html5.li ~a:[a_class [!!"item"; classname]] [make_internal_link label (orderlst @ content)])
@@ -741,11 +758,11 @@ let from_valid ?(valid_options = default_valid_options) doc =
                 make_toc_entry label (class_of_level 0) (part_conv ~spanify:true order) (Obj.magic (write_name Name_appendix))
             | Section (label, order, location, level, Custom_section seq) ->
                 make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_seq seq))
-            | Section (label, order, location, level, Bibliography) ->
+            | Section (label, order, location, level, Autogen_section Bibliography) ->
                 make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_bibliography))
-            | Section (label, order, location, level, Notes) ->
+            | Section (label, order, location, level, Autogen_section Notes) ->
                 make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_notes))
-            | Section (label, order, location, level, Toc) ->
+            | Section (label, order, location, level, Autogen_section Toc) ->
                 make_toc_entry label (class_of_level (level :> int)) (section_conv ~spanify:true location order) (Obj.magic (write_name Name_toc))
 
 

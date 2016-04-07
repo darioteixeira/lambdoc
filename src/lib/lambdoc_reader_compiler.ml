@@ -181,9 +181,9 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     let auto_label_counter = ref 0 in
     let appendixed = ref false in
     let has_bibliography_refs = ref false in
-    let has_bibliography_section = ref false in
+    let has_bibliography_list = ref false in
     let has_notes_refs = ref false in
-    let has_notes_section = ref false in
+    let has_notes_list = ref false in
 
 
     (****************************************************************************)
@@ -939,15 +939,26 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
         | Ast.Bibliography when allowed = `Super_blk ->
-            has_bibliography_section := true;
+            has_bibliography_list := true;
             convert_preset_sectional ~tocable:true ~minipaged Heading.bibliography `Feature_bibliography comm
 
+        | Ast.Bibliography_raw when allowed = `Super_blk ->
+            has_bibliography_list := true;
+            convert_autogen ~minipaged Autogen.Bibliography `Feature_bibliography_raw comm
+
         | Ast.Notes when allowed = `Super_blk ->
-            has_notes_section := true;
+            has_notes_list := true;
             convert_preset_sectional ~tocable:true ~minipaged Heading.notes `Feature_notes comm 
+
+        | Ast.Notes_raw when allowed = `Super_blk ->
+            has_notes_list := true;
+            convert_autogen ~minipaged Autogen.Notes `Feature_notes_raw comm
 
         | Ast.Toc when allowed = `Super_blk ->
             convert_preset_sectional ~tocable:false ~minipaged Heading.toc `Feature_toc comm
+
+        | Ast.Toc_raw when allowed = `Super_blk ->
+            convert_autogen ~minipaged Autogen.Toc `Feature_toc_raw comm
 
         | Ast.Title (level, astseq) when allowed = `Super_blk  ->
             let elem attr _ =
@@ -1075,7 +1086,13 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             let block = Block.heading ~attr heading in
             let () = if tocable && not minipaged then add_toc_entry heading in
             Monad.return [block] in
-        check_block_comm ~maybe_minipaged:(Some minipaged) `Feature_notes comm elem
+        check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
+
+
+    and convert_autogen ~minipaged autogen feature comm = 
+        let elem attr _ =
+            Monad.return [Block.autogen ~attr autogen] in
+        check_block_comm ~maybe_minipaged:(Some minipaged) feature comm elem
 
 
     and convert_wrapper comm counter kind maybe_astseq =
@@ -1309,8 +1326,8 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     convert_frag ast >>= fun content ->
     let customs = filter_customisations () in
     let () = filter_pointers () in
-    let () = verify_section Error.Missing_bibliography !has_bibliography_refs !has_bibliography_section in
-    let () = verify_section Error.Missing_notes !has_notes_refs !has_notes_section in
+    let () = verify_section Error.Missing_bibliography !has_bibliography_refs !has_bibliography_list in
+    let () = verify_section Error.Missing_notes !has_notes_refs !has_notes_list in
     let valid = Valid.make ~bibs:(List.rev !bibs) ~notes:(List.rev !notes) ~toc:(List.rev !toc) ~labels ~customs content in
     begin match postprocessor with
         | None   -> Monad.return (!errors, valid)

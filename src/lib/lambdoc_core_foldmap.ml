@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 module Attr = Lambdoc_core_attr
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Block = Lambdoc_core_block
 module Custom = Lambdoc_core_custom
@@ -94,6 +95,7 @@ sig
         table:       'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t;
         figure:      'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t;
         heading:     'a t -> 'a -> Attr.t -> Heading.t -> ('a * Block.t) Monad.t;
+        autogen:     'a t -> 'a -> Attr.t -> Autogen.t -> ('a * Block.t) Monad.t;
         title:       'a t -> 'a -> Attr.t -> Level.title -> Inline.seq -> ('a * Block.t) Monad.t;
         abstract:    'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         rule:        'a t -> 'a -> Attr.t -> ('a * Block.t) Monad.t;
@@ -174,6 +176,7 @@ struct
         table:       'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t;
         figure:      'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t;
         heading:     'a t -> 'a -> Attr.t -> Heading.t -> ('a * Block.t) Monad.t;
+        autogen:     'a t -> 'a -> Attr.t -> Autogen.t -> ('a * Block.t) Monad.t;
         title:       'a t -> 'a -> Attr.t -> Level.title -> Inline.seq -> ('a * Block.t) Monad.t;
         abstract:    'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         rule:        'a t -> 'a -> Attr.t -> ('a * Block.t) Monad.t;
@@ -277,6 +280,7 @@ struct
             | Table (wrapper, blk)              -> fm.table fm acc attr wrapper blk
             | Figure (wrapper, blk)             -> fm.figure fm acc attr wrapper blk
             | Heading data                      -> fm.heading fm acc attr data
+            | Autogen data                      -> fm.autogen fm acc attr data
             | Title (level, seq)                -> fm.title fm acc attr level seq
             | Abstract frag                     -> fm.abstract fm acc attr frag
             | Rule                              -> fm.rule fm acc attr);
@@ -461,6 +465,9 @@ struct
             end >>= fun (acc, data) ->
             fm.attr fm acc attr >>= fun (acc, attr) ->
             Monad.return (acc, Block.heading ~attr data));
+        autogen = (fun fm acc attr data ->
+            fm.attr fm acc attr >>= fun (acc, attr) ->
+            Monad.return (acc, Block.autogen ~attr data));
         title = (fun fm acc attr level seq ->
             fm.seq fm acc seq >>= fun (acc, seq) ->
             fm.attr fm acc attr >>= fun (acc, attr) ->

@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 module Attr = Lambdoc_core_attr
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Block = Lambdoc_core_block
 module Custom = Lambdoc_core_custom
@@ -104,6 +105,7 @@ sig
         table:       'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t;
         figure:      'a t -> 'a -> Attr.t -> Wrapper.t -> Block.t -> ('a * Block.t) Monad.t;
         heading:     'a t -> 'a -> Attr.t -> Heading.t -> ('a * Block.t) Monad.t;
+        autogen:     'a t -> 'a -> Attr.t -> Autogen.t -> ('a * Block.t) Monad.t;
         title:       'a t -> 'a -> Attr.t -> Level.title -> Inline.seq -> ('a * Block.t) Monad.t;
         abstract:    'a t -> 'a -> Attr.t -> Block.frag -> ('a * Block.t) Monad.t;
         rule:        'a t -> 'a -> Attr.t -> ('a * Block.t) Monad.t;

@@ -32,7 +32,9 @@ type block_feature =
     | `Feature_equation | `Feature_printout | `Feature_table | `Feature_figure 
     | `Feature_part | `Feature_appendix
     | `Feature_section1 | `Feature_section2 | `Feature_section3 | `Feature_section4 | `Feature_section5 | `Feature_section6
-    | `Feature_bibliography | `Feature_notes | `Feature_toc
+    | `Feature_bibliography | `Feature_bibliography_raw
+    | `Feature_notes | `Feature_notes_raw
+    | `Feature_toc | `Feature_toc_raw
     | `Feature_title1 | `Feature_title2
     | `Feature_abstract | `Feature_rule
     | `Feature_shortbib | `Feature_longbib | `Feature_note
@@ -81,47 +83,50 @@ let describe_inline_feature = function
     | `Feature_extcomm_inl tag -> "inline extension command (" ^ tag ^ ")"
 
 let describe_block_feature = function
-    | `Feature_paragraph       -> "paragraph block"
-    | `Feature_itemize         -> "itemize block"
-    | `Feature_enumerate       -> "enumerate block"
-    | `Feature_description     -> "description block"
-    | `Feature_qanda           -> "Q&A block"
-    | `Feature_verse           -> "verse block"
-    | `Feature_quote           -> "quote block"
-    | `Feature_mathtex_blk     -> "TeX math block"
-    | `Feature_mathml_blk      -> "MathML block"
-    | `Feature_source          -> "source-code block"
-    | `Feature_tabular         -> "tabular"
-    | `Feature_subpage         -> "subpage block"
-    | `Feature_verbatim        -> "verbatim block"
-    | `Feature_picture         -> "image block"
-    | `Feature_pullquote       -> "pull-quote block"
-    | `Feature_equation        -> "equation wrapper"
-    | `Feature_printout        -> "printout wrapper"
-    | `Feature_table           -> "table wrapper"
-    | `Feature_figure          -> "figure wrapper"
-    | `Feature_part            -> "document part"
-    | `Feature_appendix        -> "appendix"
-    | `Feature_section1        -> "Level 1 sectioning"
-    | `Feature_section2        -> "Level 2 sectioning"
-    | `Feature_section3        -> "Level 3 sectioning"
-    | `Feature_section4        -> "Level 4 sectioning"
-    | `Feature_section5        -> "Level 5 sectioning"
-    | `Feature_section6        -> "Level 6 sectioning"
-    | `Feature_bibliography    -> "bibliography"
-    | `Feature_notes           -> "notes"
-    | `Feature_toc             -> "table of contents"
-    | `Feature_title1          -> "Level 1 title"
-    | `Feature_title2          -> "Level 2 title"
-    | `Feature_abstract        -> "abstract"
-    | `Feature_rule            -> "rule"
-    | `Feature_shortbib        -> "short-form bibliography entry"
-    | `Feature_longbib         -> "long-form bibliography entry"
-    | `Feature_note            -> "note"
-    | `Feature_macrodef        -> "definition of macro"
-    | `Feature_boxoutdef       -> "definition of boxout environment"
-    | `Feature_theoremdef      -> "definition of theorem environment"
-    | `Feature_extcomm_blk tag -> "block extension command (" ^ tag ^ ")"
+    | `Feature_paragraph        -> "paragraph block"
+    | `Feature_itemize          -> "itemize block"
+    | `Feature_enumerate        -> "enumerate block"
+    | `Feature_description      -> "description block"
+    | `Feature_qanda            -> "Q&A block"
+    | `Feature_verse            -> "verse block"
+    | `Feature_quote            -> "quote block"
+    | `Feature_mathtex_blk      -> "TeX math block"
+    | `Feature_mathml_blk       -> "MathML block"
+    | `Feature_source           -> "source-code block"
+    | `Feature_tabular          -> "tabular"
+    | `Feature_subpage          -> "subpage block"
+    | `Feature_verbatim         -> "verbatim block"
+    | `Feature_picture          -> "image block"
+    | `Feature_pullquote        -> "pull-quote block"
+    | `Feature_equation         -> "equation wrapper"
+    | `Feature_printout         -> "printout wrapper"
+    | `Feature_table            -> "table wrapper"
+    | `Feature_figure           -> "figure wrapper"
+    | `Feature_part             -> "document part"
+    | `Feature_appendix         -> "appendix"
+    | `Feature_section1         -> "Level 1 sectioning"
+    | `Feature_section2         -> "Level 2 sectioning"
+    | `Feature_section3         -> "Level 3 sectioning"
+    | `Feature_section4         -> "Level 4 sectioning"
+    | `Feature_section5         -> "Level 5 sectioning"
+    | `Feature_section6         -> "Level 6 sectioning"
+    | `Feature_bibliography     -> "bibliography"
+    | `Feature_bibliography_raw -> "headless bibliography"
+    | `Feature_notes            -> "notes"
+    | `Feature_notes_raw        -> "headless notes"
+    | `Feature_toc              -> "table of contents"
+    | `Feature_toc_raw          -> "headless table of contents"
+    | `Feature_title1           -> "Level 1 title"
+    | `Feature_title2           -> "Level 2 title"
+    | `Feature_abstract         -> "abstract"
+    | `Feature_rule             -> "rule"
+    | `Feature_shortbib         -> "short-form bibliography entry"
+    | `Feature_longbib          -> "long-form bibliography entry"
+    | `Feature_note             -> "note"
+    | `Feature_macrodef         -> "definition of macro"
+    | `Feature_boxoutdef        -> "definition of boxout environment"
+    | `Feature_theoremdef       -> "definition of theorem environment"
+    | `Feature_extcomm_blk tag  -> "block extension command (" ^ tag ^ ")"
 
 let describe_internal_feature = function
     | `Feature_item         -> "item separator for lists"
@@ -167,7 +172,9 @@ let block_features =
     `Feature_equation; `Feature_printout; `Feature_table; `Feature_figure;
     `Feature_part; `Feature_appendix;
     `Feature_section1; `Feature_section2; `Feature_section3; `Feature_section4; `Feature_section5; `Feature_section6;
-    `Feature_bibliography; `Feature_notes; `Feature_toc;
+    `Feature_bibliography; `Feature_bibliography_raw;
+    `Feature_notes; `Feature_notes_raw;
+    `Feature_toc; `Feature_toc_raw;
     `Feature_title1; `Feature_title2;
     `Feature_abstract; `Feature_rule;
     `Feature_shortbib; `Feature_longbib; `Feature_note;

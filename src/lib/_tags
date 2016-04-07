@@ -1,5 +1,6 @@
 <lambdoc_core_ambivalent.*>:     pkg_ppx_sexp_conv
 <lambdoc_core_attr.*>:           pkg_ppx_sexp_conv
+<lambdoc_core_autogen.*>:        pkg_ppx_sexp_conv
 <lambdoc_core_basic.*>:          pkg_ppx_sexp_conv
 <lambdoc_core_bib.*>:            pkg_ppx_sexp_conv
 <lambdoc_core_blkcat.*>:         pkg_ppx_sexp_conv

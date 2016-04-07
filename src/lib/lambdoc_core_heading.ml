@@ -6,6 +6,7 @@
 *)
 (********************************************************************************)
 
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Inline = Lambdoc_core_inline
 module Label = Lambdoc_core_label
@@ -30,9 +31,7 @@ type part_content =
 
 type section_content =
     | Custom_section of Inline.seq
-    | Bibliography
-    | Notes
-    | Toc
+    | Autogen_section of Autogen.t
     [@@deriving sexp]
 
 type section_location =
@@ -53,7 +52,7 @@ type t =
 let part label order seq = Part (label, order, Custom_part seq)
 let appendix label = Part (label, `None_given, Appendix)
 let section label order location level seq = Section (label, order, location, level, Custom_section seq)
-let bibliography label = Section (label, `None_given, Mainbody, Level.section 1, Bibliography)
-let notes label = Section (label, `None_given, Mainbody, Level.section 1, Notes)
-let toc label = Section (label, `None_given, Mainbody, Level.section 1, Toc)
+let bibliography label = Section (label, `None_given, Mainbody, Level.section 1, Autogen_section Bibliography)
+let notes label = Section (label, `None_given, Mainbody, Level.section 1, Autogen_section Notes)
+let toc label = Section (label, `None_given, Mainbody, Level.section 1, Autogen_section Toc)
 

@@ -1,5 +1,6 @@
 module Ambivalent = Lambdoc_core_ambivalent
 module Attr = Lambdoc_core_attr
+module Autogen = Lambdoc_core_autogen
 module Basic = Lambdoc_core_basic
 module Bib = Lambdoc_core_bib
 module Blkcat = Lambdoc_core_blkcat
