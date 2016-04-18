@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 630f6bba23ae52e36be34530b546da04)
+# DO NOT EDIT (digest: 4564383d3d0309c380857994c255c950)
 Lambdoc_prelude
 Lambdoc_core
 Lambdoc_core_basic
@@ -63,7 +63,7 @@ Lambdoc_writer_explanations
 Lambdoc_writer_maker
 Lambdoc_writer_translations
 Lambdoc_writer_writeconv
-Lambdoc_whtml5
-Lambdoc_whtml5_writable
-Lambdoc_whtml5_writer
+Lambdoc_whtml
+Lambdoc_whtml_writable
+Lambdoc_whtml_writer
 # OASIS_STOP

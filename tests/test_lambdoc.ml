@@ -6,6 +6,7 @@
 *)
 (********************************************************************************)
 
+open Tyxml
 open Lambdoc_core
 
 
@@ -13,14 +14,14 @@ open Lambdoc_core
 (** {1 Inner modules}                                                           *)
 (********************************************************************************)
 
-module Tyxml_backend = struct include Html5 module Svg = Svg end
+module Tyxml_backend = struct include Html module Svg = Svg end
 
-module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend)
+module Html_writer = Lambdoc_whtml_writer.Make (Tyxml_backend)
 
 module Filetype =
 struct
     type source = Lambtex | Lambwiki | Lambxml | Markdown
-    type target = Html5 | Sexp | Asexp
+    type target = Html | Sexp | Asexp
     type t = Source of source | Target of target
 
     let of_string = function
@@ -28,7 +29,7 @@ struct
         | "wiki"  -> Source Lambwiki
         | "xml"   -> Source Lambxml
         | "md"    -> Source Markdown
-        | "html"  -> Target Html5
+        | "html"  -> Target Html
         | "sexp"  -> Target Sexp
         | "asexp" -> Target Asexp
         | x       -> invalid_arg ("Filetype.of_string: " ^ x)
@@ -40,9 +41,9 @@ struct
         | Markdown -> "md"
 
     let string_of_target = function
-        | Html5  -> "html"
-        | Sexp   -> "sexp"
-        | Asexp  -> "asexp"
+        | Html  -> "html"
+        | Sexp  -> "sexp"
+        | Asexp -> "asexp"
 
     let describe_source = function
         | Lambtex  -> "Lambtex"
@@ -51,9 +52,9 @@ struct
         | Markdown -> "Markdown"
 
     let describe_target = function
-        | Html5  -> "Html5"
-        | Sexp   -> "Sexp"
-        | Asexp  -> "Amnesiac Sexp"
+        | Html  -> "Html"
+        | Sexp  -> "Sexp"
+        | Asexp -> "Amnesiac Sexp"
 
     let to_string = function
         | Source s -> string_of_source s
@@ -104,7 +105,7 @@ let read_file =
             contents
 
 let string_of_xhtml xhtml =
-    let open Html5 in
+    let open Html in
     let page = (html
             (head
                 (title (pcdata "Lambdoc document"))
@@ -113,7 +114,7 @@ let string_of_xhtml xhtml =
                 link ~a:[a_media [`All]; a_title "Default"] ~rel:[`Stylesheet] ~href:(uri_of_string "css/lambdoc.css") ()
                 ])
             (body [xhtml])) in
-    Format.asprintf "%a" (Html5.pp ()) page
+    Format.asprintf "%a" (Html.pp ()) page
 
 let execute fname source target () =
     let source_contents = read_file fname (Source source) in
@@ -124,9 +125,9 @@ let execute fname source target () =
         | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string
         | Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string in
     let writer = match target with
-        | Html5  -> fun doc -> Html5_writer.write_ambivalent doc |> string_of_xhtml
-        | Sexp   -> Ambivalent.serialize
-        | Asexp  -> fun doc ->
+        | Html  -> fun doc -> Html_writer.write_ambivalent doc |> string_of_xhtml
+        | Sexp  -> Ambivalent.serialize
+        | Asexp -> fun doc ->
             let doc' = match doc with
                 | Valid doc ->
                     let foldmapper = Foldmap.Identity.amnesiac in

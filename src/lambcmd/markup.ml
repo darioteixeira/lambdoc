@@ -12,7 +12,7 @@
 
 type input = [ `Lambtex | `Lambwiki | `Lambxml | `Markdown | `Sexp ]
 
-type output = [ `Sexp | `Html5 ]
+type output = [ `Sexp | `Html ]
 
 
 (********************************************************************************)
@@ -28,9 +28,9 @@ let input_of_string x = match String.lowercase x with
     | _                   -> invalid_arg ("Markup.input_of_string: " ^ x)
 
 let output_of_string x = match String.lowercase x with
-    | "sexp"           -> `Sexp
-    | "html" | "html5" -> `Html5
-    | x                -> invalid_arg ("Markup.output_of_string: " ^ x)
+    | "sexp" -> `Sexp
+    | "html" -> `Html
+    | x      -> invalid_arg ("Markup.output_of_string: " ^ x)
 
 let to_string = function
     | `Lambtex  -> "Lambtex"
@@ -38,5 +38,5 @@ let to_string = function
     | `Lambxml  -> "Lambxml"
     | `Markdown -> "Markdown"
     | `Sexp     -> "Sexp"
-    | `Html5    -> "Html5"
+    | `Html     -> "Html"
 

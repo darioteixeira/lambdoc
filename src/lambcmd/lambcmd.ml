@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Options
+open Tyxml
 open Lambdoc_core
 
 module String = BatString
@@ -18,7 +19,7 @@ module String = BatString
 
 module Tyxml_backend =
 struct
-    include Html5
+    include Html
     module Svg = Svg
 end
 
@@ -28,7 +29,7 @@ end
 (********************************************************************************)
 
 let string_of_xhtml the_title xhtml =
-    let open Html5 in
+    let open Html in
     let page = (html
             (head
                 (title (pcdata the_title))
@@ -37,7 +38,7 @@ let string_of_xhtml the_title xhtml =
                 link ~a:[a_media [`All]; a_title "Default"] ~rel:[`Stylesheet] ~href:(uri_of_string "css/lambdoc.css") ()
                 ])
             (body [xhtml])) in
-    Format.asprintf "%a" (Html5.pp ()) page
+    Format.asprintf "%a" (Html.pp ()) page
 
 
 let () =
@@ -63,10 +64,10 @@ let () =
     let output_str = match options.output_markup with
         | `Sexp  ->
             Lambdoc_core.Ambivalent.serialize doc
-        | `Html5 ->
-            let module Html5_writer = Lambdoc_whtml5_writer.Make (Tyxml_backend) in
-            let valid_options = Html5_writer.({default_valid_options with translations = options.language}) in
-            let xhtml = Html5_writer.write_ambivalent ~valid_options doc in
+        | `Html ->
+            let module Html_writer = Lambdoc_whtml_writer.Make (Tyxml_backend) in
+            let valid_options = Html_writer.({default_valid_options with translations = options.language}) in
+            let xhtml = Html_writer.write_ambivalent ~valid_options doc in
             string_of_xhtml options.title xhtml in
     output_string options.output_chan output_str;
     output_char options.output_chan '\n';
