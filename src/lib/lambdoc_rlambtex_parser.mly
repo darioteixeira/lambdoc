@@ -22,9 +22,6 @@ open Lambdoc_reader
 %token END_MATHTEX_INL  (* Operator $] *)
 %token END_MATHML_INL   (* Operator $> *)
 
-%token BEGIN_MATHTEX_INL_DUMMY
-%token BEGIN_MATHML_INL_DUMMY
-
 
 (********************************************************************************)
 (* Tokens for delimiting unwrapped inline sequences.                            *)
@@ -364,10 +361,10 @@ push_raw:
     | (* empty *)                                                       {C.(push Raw)}
 
 push_mathtex_inl:
-    | BEGIN_MATHTEX_INL_DUMMY                                           {C.(push Mathtex_inl)}
+    | (* empty *)                                                       {C.(push Mathtex_inl)}
 
 push_mathml_inl:
-    | BEGIN_MATHML_INL_DUMMY                                            {C.(push Mathml_inl)}
+    | (* empty *)                                                       {C.(push Mathml_inl)}
 
 push_literal:
     | (* empty *)                                                       {C.(push Literal)}
