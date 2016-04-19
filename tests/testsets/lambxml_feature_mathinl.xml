@@ -1,0 +1,6 @@
+<doc>
+    <p>You can embed TeX mathematics in an inline context like this: <mathtexinl>y=x^2</mathtexinl></p>
+
+    <p>You can embed MathML mathematics in an inline context like this: <mathmlinl><math><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math></mathmlinl></p>
+</doc>
+

@@ -182,6 +182,7 @@ let common_feature_set4 =   (* Common to Lambtex/Lambxml *)
     ("Q&A environments", "qa");
     ("Verse environments", "verse");
     ("Math blocks", "mathblk");
+    ("Math inline", "mathinl");
     ("Tabular environments", "tabular");
     ("Subpage environments", "subpage");
     ("Pull-quotes", "pullquote");
