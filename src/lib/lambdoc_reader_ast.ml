@@ -42,7 +42,7 @@ type seq = inline list
     | Mathtex_inl of string                     (* Inlpat_raw *)
     | Mathml_inl of string                      (* Inlpat_raw *)
     | Code of string                            (* Inlpat_raw *)
-    | Glyph of string * string * string option  (* Inlpat_raw_raw *)
+    | Glyph of string * string * string option  (* Inlpat_raw_raw_rawopt *)
     | Bold of seq                               (* Inlpat_seq *)
     | Emph of seq                               (* Inlpat_seq *)
     | Mono of seq                               (* Inlpat_seq *)
@@ -112,7 +112,7 @@ type frag = block list
     | Tabular of tabular                                            (* Blkpat_tab *)
     | Subpage of frag                                               (* Blkpat_frag *)
     | Verbatim of string                                            (* Blkpat_lit *)
-    | Picture of string * string * string option                    (* Blkpat_raw_raw *)
+    | Picture of string * string * string option                    (* Blkpat_raw_raw_rawopt *)
     | Pullquote of seq option * frag                                (* Blkpat_seqopt_frag *)
     | Custom of string * seq option * frag
     | Equation of seq option * block                                (* Blkpat_seqopt_blk *)
