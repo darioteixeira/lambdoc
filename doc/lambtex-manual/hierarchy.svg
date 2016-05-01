@@ -962,7 +962,7 @@
          sodipodi:role="line"
          id="tspan3356"
          x="228"
-         y="21">- bib</tspan></text>
+         y="21">- lbib / sbib</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
@@ -1072,7 +1072,7 @@
          sodipodi:role="line"
          id="tspan2601"
          x="12"
-         y="66">- bibliography</tspan></text>
+         y="66">- bibliography / rawbibliography</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"
@@ -1083,7 +1083,7 @@
          sodipodi:role="line"
          id="tspan2603"
          x="12"
-         y="75">- notes</tspan></text>
+         y="75">- notes / rawnotes</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"

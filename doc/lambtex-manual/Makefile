@@ -2,7 +2,7 @@ LAMBCMD=../../_build/src/lambcmd/lambcmd.native
 
 all: index.html circle.png square.png hierarchy.png
 
-index.html: lambtex-manual.lambtex
+index.html: lambtex-manual.tex
 	$(LAMBCMD) --title "The Lambtex Manual" -f lambtex -t html -i $< -o $@
 
 hierarchy.png: hierarchy.svg

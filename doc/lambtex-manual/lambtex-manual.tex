@@ -12,7 +12,7 @@
 
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
-\subtitle{March 2013}
+\subtitle{April 2016}
 
 \toc[sec:toc]
 
@@ -52,13 +52,13 @@ of \emph{block-level} and \emph{inline-level} elements in a \lambtex document.
 
 Inline-level elements are declared by \emph{simple} commands, while block-level elements
 may be declared by either simple or \emph{environment} commands\see{note:commands}.
-The former take the generic shape \code{\\\emph{command}\{...\}}, where the content
+The former take the generic shape \mono{\\\emph{command}\{...\}}, where the content
 inside the curly brackets constitutes the parameters to the command.  Note that some
 simple commands may take more than one parameter (in which case more than one set of
 curly brackets is used), while others exist that take no parameters at all.  As for
 environment commands, they are composed of two parts: an initial and a final tag, which
 together delineate the contents of the environment.  The initial tag takes the form
-\code{\\begin\{\emph{command}\}}, while the final tag is \code{\\end\{\emph{command}\}}.
+\mono{\\begin\{\emph{command}\}}, while the final tag is \mono{\\end\{\emph{command}\}}.
 
 \begin[note:commands]{note}
 As stated, any given command may either be expressed by the simple notation or as
@@ -99,30 +99,30 @@ order parameter is mandatory for a number of blocks (see \sref{sec:order} for de
 Primary parameters are typically mandatory and are enclosed by curly brackets.
 Order, label, and style parameters are usually optional and are enclosed by
 round, square, and angle brackets, respectively.}
-\begin{tabular}{ccc}
+\begin<cols=ccc>{tabular}
 \head
-|           |{2c_} Markers          |
+|           |<cell=2c_> Markers     |
 | Parameter | Begin     | End       |
 \body
-| Order     | \code{(}  | \code{)}  |
-| Label     | \code{[}  | \code{]}  |
-| Style     | \code{<}  | \code{>}  |
-| Primary   | \code{\{} | \code{\}} |
+| Order     | \mono{(}  | \mono{)}  |
+| Label     | \mono{[}  | \mono{]}  |
+| Style     | \mono{<}  | \mono{>}  |
+| Primary   | \mono{\{} | \mono{\}} |
 \end{tabular}
 \end{table}
 
 Style parameters come in two varieties: key-value pairs and classnames.  The former
-variety takes the form '\code{\emph{key}=\emph{value}}', and is available only for
+variety takes the form '\mono{\emph{key}=\emph{value}}', and is available only for
 some commands.  Moreover, what constitutes a valid key-value combination is command
 dependent, and is described in more detail in the section that describes each of
 those commands.  As for classname parameters, they map to \caps{html} classnames in
 a straightforward way, and are available for every command.  If, for example, you
-were to provide '\code{important}' as the style parameter to a command, this would be
+were to provide '\mono{important}' as the style parameter to a command, this would be
 interpreted as a classname declaration, and translated into the \caps{html} classname
-'\code{doc_class_important}' (the prefix '\code{doc_class_}' is preppended to every
+'\mono{doc_class_important}' (the prefix '\mono{doc_class_}' is preppended to every
 custom classname declaration to prevent name clashes).  Note that classnames must
 begin with a lowercase Roman letter, and may contain only lowercase Roman letters,
-digits, the character '\code{-}' (dash), or the character '\code{_}' (underscore).
+digits, the character '\mono{-}' (dash), or the character '\mono{_}' (underscore).
 
 Bear in mind that \lambtex is agnostic on the validity and semantics of each
 command/classname combination.  Nevertheless, \lambdoc --- the library that provides
@@ -137,7 +137,7 @@ describes each command.
 In the case of order and label parameters, the attributed value is necessarily singular,
 as it makes no sense to give multiple orderings to the same command nor it is possible
 to assign multiple labels to one command.  In the case of style parameters, however,
-multiple attributions separated by a '\code{,}' (comma) may be given.
+multiple attributions separated by a '\mono{,}' (comma) may be given.
 
 Not all of the optional parameters are available for all commands.  There are in fact
 many commands for which only style parameters are applicable.  Moreover, for those
@@ -149,7 +149,7 @@ any order as long as they appear before any of the primary (curly bracketed) par
 
 Paragraphs are the simplest of all blocks, typically being composed of just a sequence
 of inline text terminated by a blank line.  It is however also possible to declare
-a paragraph via the simple command \code{\\paragraph} or its synonym \code{\\p}.
+a paragraph via the simple command \mono{\\paragraph} or its synonym \mono{\\p}.
 Should you choose the simple command, the paragraph contents are to be specified inside
 the mandatory curly brackets.  Consider thus the following \lambtex source fragment:
 
@@ -183,64 +183,68 @@ explicit declaration of a paragraph.}
 
 Note that the line breaks within the text are irrelevant for the composer; all that
 it cares about are that blank lines separate paragraphs.  if you wish for a line break
-within a paragraph (ie, without terminating the current paragraph), use the \code{\\br}
+within a paragraph (ie, without terminating the current paragraph), use the \mono{\\br}
 simple command, as demonstrated.
 
-Using the command \code{\\paragraph} (or its synonym \code{\\p}) to declare a
+Using the command \mono{\\paragraph} (or its synonym \mono{\\p}) to declare a
 paragraph is usually neither necessary nor recommended.  This method exists for the
 sole reason that it may be desirable to provide the composer with style parameters
 for the paragraph. 
 
 The default \caps{css} shipped with \lambdoc supports three style customisations
-for paragraphs.  The associated classnames are \code{initial}, \code{indent},
-and \code{noindent}.  The first declares that the first letter of the paragraph
+for paragraphs.  The associated classnames are \mono{initial}, \mono{indent},
+and \mono{noindent}.  The first declares that the first letter of the paragraph
 should be rendered as an \link{http://en.wikipedia.org/wiki/Initial}{initial}.
 The second and third indicate whether the default paragraph indentation rules should
 be overriden.  By default, a paragraph is only indented when immediately preceded by
-another paragraph.  By providing the \code{indent} classname as a style parameter,
+another paragraph.  By providing the \mono{indent} classname as a style parameter,
 you are declaring that the paragraph should always be indented regardless of context.
-Similarly, the \code{noindent} classname indicates that the paragraph should not be
+Similarly, the \mono{noindent} classname indicates that the paragraph should not be
 indented no matter what.
 
 
-\section{Formatting inline text}
+\section[sec:inline]{Formatting inline text}
 
 As shown by \sref{tab:inline}, \lambtex offers a broad set of text formatting commands.
 Remember that besides their application inside paragraph blocks, any of these commands
-may also be used in a context where inline text is allowed.  That means you may use them
-in section titles, figure captions, inside tables, etc.  Note that all inline formatting
+may also be used in a context where inline text is allowed.  That means you may use
+them in section titles, figure captions, inside tables, etc.  Note that with the
+exception of \mono{\\code} --- which takes raw text as parameter --- all inline formatting
 commands take as parameter a sequence of inline text.  It is thus perfectly possible to
 nest these commands without any restrictions.  Moreover, some of these commands have
-(typically shorter) synonyms.  Therefore, instead of \code{\\bold} you can also just
-type \code{\\b}.
+(typically shorter) synonyms.  Therefore, instead of \mono{\\bold} you can also just
+type \mono{\\b}.
 
 \begin[tab:inline]{table}
 {List of all text formatting commands, including synonyms where
 applicable.  All these commands take one parameter enclosed in
 curly brackets.  The parameter is a sequence of inline text.}
-\begin{tabular}{rl}
+\begin<cols=rl>{tabular}
 \head
 | Command                                   | Example                                                       |
 \body
-| \code{\\bold\{\emph{inline}\}}            | You can make some passages be \bold{bold}.\br
-                                              (Synonyms: \code{\\strong} and \code{\\b})                    |
-| \code{\\emph\{\emph{inline}\}}            | Here's another way to \emph{emphasise} text.\br
-                                              (Synonyms: \code{\\em} and \code{\\i})                        |
-| \code{\\code\{\emph{inline}\}}            | You can also imitate a \code{typewriter}.\br
-                                              (Synonym: \code{\\tt})                                        |
-| \code{\\caps\{\emph{inline}\}}            | \lambtex supports text in small-caps.                         |
-| \code{\\ins\{\emph{inline}\}}             | Sometimes it's \ins{very} handy to insert new text.           |
-| \code{\\del\{\emph{inline}\}}             | You may also fix \del{annoying} incorrect passages.           |
-| \code{\\sup\{\emph{inline}\}}             | The 1\sup{st} of January has a superscript.                   |
-| \code{\\sub\{\emph{inline}\}}             | H\sub{2}O requires a subscript.                               |
-| \code{\\mbox\{\emph{inline}\}}            | \mbox{This inline sequence should not be split across lines.} |
-| \code{\\span\{\emph{inline}\}}            | \span{You may create spans with custom semantics.}            |
+| \mono{\\bold\{\emph{inline}\}}            | You can make some passages be \bold{bold}.\br
+                                              (Synonyms: \mono{\\strong} and \mono{\\b})                    |
+| \mono{\\emph\{\emph{inline}\}}            | Here's another way to \emph{emphasise} text.\br
+                                              (Synonyms: \mono{\\em} and \mono{\\i})                        |
+| \mono{\\mono\{\emph{inline}\}}            | You can also imitate a \mono{typewriter}.\br
+                                              (Synonym: \mono{\\tt})                                        |
+| \mono{\\caps\{\emph{inline}\}}            | \lambtex supports text in small-caps.                         |
+| \mono{\\ins\{\emph{inline}\}}             | Sometimes it's \ins{very} handy to insert new text.           |
+| \mono{\\del\{\emph{inline}\}}             | You may also fix \del{annoying} incorrect passages.           |
+| \mono{\\sup\{\emph{inline}\}}             | The 1\sup{st} of January has a superscript.                   |
+| \mono{\\sub\{\emph{inline}\}}             | H\sub{2}O requires a subscript.                               |
+| \mono{\\mbox\{\emph{inline}\}}            | \mbox{This inline sequence should not be split across lines.} |
+| \mono{\\span\{\emph{inline}\}}            | \span{You may create spans with custom semantics.}            |
+| \mono{\\code\{\emph{raw}\}}               | You can use syntax-highlighted code like 
+                                              \code<lang=caml>{type t = Alpha | Beta} in an inline context.
+                                              See \sref{sec:code} for details.                              |
 \end{tabular}
 \end{table}
 
 While most commands listed in the table above should have a straightforward application,
-a few clarifying words concerning \code{\\span} are in order.  This command translates
-directly into an \caps{xhtml} \code{span} element, and exists for the sole purpose
+a few clarifying words concerning \mono{\\span} are in order.  This command translates
+directly into an \caps{xhtml} \mono{span} element, and exists for the sole purpose
 of associating a span of text with a custom semantic meaning beyond those listed in
 \sref{tab:inline}.
 
@@ -249,28 +253,28 @@ of associating a span of text with a custom semantic meaning beyond those listed
 
 \lambtex allows the direct use of \caps{html} entities via the same notation used
 in \caps{html}.  More precisely, entities are to be enclosed between the characters
-'\code{\&}' (ampersand) and '\code{;}' (semicolon), and may be specified by the so-called
+'\mono{\&}' (ampersand) and '\mono{;}' (semicolon), and may be specified by the so-called
 \emph{character entity reference} (ie, the entity's name), or by \emph{numeric character
 reference} (ie, a \caps{unicode} code point in decimal or hexadecimal notation).
-As an example, if the \caps{euro} symbol '\code{&euro;}' is not readily available in
+As an example, if the \caps{euro} symbol '\mono{&euro;}' is not readily available in
 your keyboard, you may enter it in either of the following three manners:
 
-\begin{tabular}{ccc}
+\begin<cols=ccc>{tabular}
 \head
 | Name              | Decimal           | Hexadecimal       |
 \body
-| \code{\&euro;}    | \code{\&#8364;}   | \code{\&#x20ac;}  |
+| \mono{\&euro;}    | \mono{\&#8364;}   | \mono{\&#x20ac;}  |
 \end{tabular}
 
-The reader will have noted that \lambtex must interpret the character '\code{\&}'
-(ampersand) differently, and therefore you need a workaround if you want to input an
-actual ampersand.  In fact, there are other characters besides the ampersand that are
-interpreted differently by \lambtex, and as such also require a special escaping
-sequence.  These characters are '\code{\\}' (backslash), '\code{\{}' (opening curly
-bracket), and '\code{\}}' (closing curly bracket).  The character used for escaping
-is the backslash, which means that displaying an ampersand, for example, is achieved
-with \code{\\\&}.  Another option in this particular case is of course to use the
-\code{\&amp;} \caps{html} entity\see{note:ampersand}.
+The reader will have noted that \lambtex must interpret the character '\mono{\&}'
+(ampersand) differently, and therefore you need a workaround if you want to input
+an actual ampersand.  In fact, there are other characters besides the ampersand that
+are interpreted differently by \lambtex, and as such also require a special escaping
+sequence.  These characters are '\mono{\\}' (backslash), '\mono{\{}' (opening curly
+bracket), '\mono{\}}' (closing curly bracket), and '\mono{\|}' (pipe).  The character
+used for escaping is the backslash, which means that displaying an ampersand, for
+example, is achieved with \mono{\\\&}.  Another option in this particular case is of
+course to use the \mono{\&amp;} \caps{html} entity\see{note:ampersand}.
 
 \begin[note:ampersand]{note}
 Note that in most practical situations you can get away with inputting an ampersand
@@ -288,19 +292,19 @@ use the escape character if you wish to input any of these sequences literally.
 {Special character sequences and their \lambtex interpretation.  Remember
 to use the backslash for escaping if you wish to input any of these sequences
 verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
-\begin{tabular}{cl}
+\begin<cols=cl>{tabular}
 \head
 | Sequence      | Translation |
 \body
-| \code{[\$}    | Beginning of inline \caps{TeX} mathematics |
-| \code{\$]}    | End of inline \caps{TeX} mathematics |
-| \code{<\$}    | Beginning of inline \caps{MathML} |
-| \code{\$>}    | End of inline \caps{MathML} |
+| \mono{[\$}    | Beginning of inline \caps{TeX} mathematics |
+| \mono{\$]}    | End of inline \caps{TeX} mathematics |
+| \mono{<\$}    | Beginning of inline \caps{MathML} |
+| \mono{\$>}    | End of inline \caps{MathML} |
 \body
-| \code{\-\-\-} | Typographic em-dash |
-| \code{\-\-}   | Typographic en-dash |
-| \code{\`\`}   | Opening double quotes |
-| \code{\'\'}   | Closing double quotes |
+| \mono{\-\-\-} | Typographic em-dash |
+| \mono{\-\-}   | Typographic en-dash |
+| \mono{\`\`}   | Opening double quotes |
+| \mono{\'\'}   | Closing double quotes |
 \end{tabular}
 \end{table}
 
@@ -311,10 +315,10 @@ detail in \sref{sec:glyphs}.
 
 \section{Hyperlinks to external resources}
 
-The simple command \code{\\link} (or its synonym \code{\\a}) allows
+The simple command \mono{\\link} (or its synonym \mono{\\a}) allows
 the creation of hyperlinks into any external resource.  It takes the form
-\code{\\link\{\emph{uri}\}\{\emph{inline}\}}, where \code{\emph{uri}} is the raw text
-containing the address (\caps{uri}) of the target, and \code{\emph{inline}} is the
+\mono{\\link\{\emph{uri}\}\{\emph{inline}\}}, where \mono{\emph{uri}} is the raw text
+containing the address (\caps{uri}) of the target, and \mono{\emph{inline}} is the
 sequence of inline text that will actually be displayed.  Should the two be the same,
 you may ommit the second parameter altogether.  Moreover, note that in no circumstances
 may you nest a link inside another!\see{note:links}
@@ -325,12 +329,12 @@ own famous \link{http://validator.w3.org/}{validator} is unable to detect such v
 of the specification.
 \end{note}
 
-Note that in the preceeding paragraph, the sequence \code{\emph{uri}} is described as
+Note that in the preceeding paragraph, the sequence \mono{\emph{uri}} is described as
 \emph{raw} text, not an inline sequence.  In brief, a raw sequence is one whose contents
 are parsed verbatim, without (almost) any attempt to expand special characters and where
 inline formatting commands do not apply.  In similarity to their inline counterparts,
 raw sequences are delimited by curly brackets.  Therefore, the end of sequence character
-'\code{\}}' is interpreted specially.  Escaping is also possible, and thus the backslash
+'\mono{\}}' is interpreted specially.  Escaping is also possible, and thus the backslash
 character is also special.
 
 \lambtex supports also internal targets and hyperlinks.  These are discussed in \sref{sec:intlinks}.
@@ -340,11 +344,11 @@ character is also special.
 All the commands we have seen so far are simple commands, and therefore the declaration
 of lists will provide us with the first example of environment commands.  Lists in
 \lambtex come in three varieties: ordered, unordered, and description lists.
-These are declared using the environment commands \code{enumerate}, \code{itemize},
-and \code{description}, respectively.  As shown by the following \lambtex source,
+These are declared using the environment commands \mono{enumerate}, \mono{itemize},
+and \mono{description}, respectively.  As shown by the following \lambtex source,
 items in ordered and unordered lists must be preceded by the parameterless simple
-command \code{\\item}.  As for description lists, each item must be preceded also by
-the simple command \code{\\item}.  However, in this latter case the command takes a
+command \mono{\\item}.  As for description lists, each item must be preceded also by
+the simple command \mono{\\item}.  However, in this latter case the command takes a
 mandatory inline sequence as parameter.  Finally, lists may be nested, and each item may
 itself be composed of several blocks (see \sref{sec:structure} for a detailed description
 concerning the structure of \lambtex documents).  Consider thus the following source:
@@ -390,41 +394,41 @@ Here is a list of small furry mammals:
 \end{subpage}
 
 For the sake of brevity and for compatibility with \caps{html} habits, you may also use
-the synonyms \code{ol}, \code{ul}, \code{dl}, and \code{\\li}, for \code{enumerate},
-\code{itemize}, \code{description}, and \code{\\item}, respectively.  Moreover,
-the British spelling \code{itemise} may be used for ordered lists.  However, the
-start and end tags must still match: though, for example, \code{ol} is a synonym for
-\code{enumerate}, if you start an ordered list with \code{\\begin\{ol\}} you must
-terminate it with \code{\\end\{ol\}}.
+the synonyms \mono{ol}, \mono{ul}, \mono{dl}, and \mono{\\li}, for \mono{enumerate},
+\mono{itemize}, \mono{description}, and \mono{\\item}, respectively.  Moreover,
+the British spelling \mono{itemise} may be used for ordered lists.  However, the
+start and end tags must still match: though, for example, \mono{ol} is a synonym for
+\mono{enumerate}, if you start an ordered list with \mono{\\begin\{ol\}} you must
+terminate it with \mono{\\end\{ol\}}.
 
 The default \caps{css} shipped with \lambtex allows for the customisation of
 the bullet used in unordered lists or the numbering system used in ordered lists.
-To do so you need to pass a style parameter to either the \code{\\begin\{itemize\}}
-or \code{\\begin\{enumerate\}} commands.  Below is the list of classnames available
+To do so you need to pass a style parameter to either the \mono{\\begin\{itemize\}}
+or \mono{\\begin\{enumerate\}} commands.  Below is the list of classnames available
 out-of-the-box for itemize environments:
 
-\begin{tabular}{rl}
+\begin<cols=rl>{tabular}
 \head
 | Value         | Type of bullet                |
 \body
-| \code{disc}   | A filled circle.              |
-| \code{circle} | An empty circle.              |
-| \code{square} | A square.                     |
-| \code{none}   | Ommit the bullet altogether.  |
+| \mono{disc}   | A filled circle.              |
+| \mono{circle} | An empty circle.              |
+| \mono{square} | A square.                     |
+| \mono{none}   | Ommit the bullet altogether.  |
 \end{tabular}
 
 And the corresponding list for itemize environments:
 
-\begin{tabular}{rl}
+\begin<cols=rl>{tabular}
 \head
 | Value                 | Type of numbering                         |
 \body
-| \code{decimal}        | Decimal numbers.                          |
-| \code{lower-roman}    | Lower-case Roman numerals.                |
-| \code{upper-roman}    | Upper-case Roman numerals.                |
-| \code{lower-alpha}    | Lower-case letters in the Latin alphabet. |
-| \code{upper-alpha}    | Upper-case letters in the Latin alphabet. |
-| \code{none}           | Ommit the numbering altogether.           |
+| \mono{decimal}        | Decimal numbers.                          |
+| \mono{lower-roman}    | Lower-case Roman numerals.                |
+| \mono{upper-roman}    | Upper-case Roman numerals.                |
+| \mono{lower-alpha}    | Lower-case letters in the Latin alphabet. |
+| \mono{upper-alpha}    | Upper-case letters in the Latin alphabet. |
+| \mono{none}           | Ommit the numbering altogether.           |
 \end{tabular}
 
 
@@ -432,15 +436,15 @@ And the corresponding list for itemize environments:
 
 Somewhat related to lists, Q&A environments are used to mark a sequence of questions and
 accompanying answers, as typically found in interviews.  The environment is bounded by
-the start/end tag \code{qanda}, and expects a sequence of question and answer blocks,
-delimited by the simple commands \code{\\question} and \code{\\answer}, respectively.
+the start/end tag \mono{qanda}, and expects a sequence of question and answer blocks,
+delimited by the simple commands \mono{\\question} and \mono{\\answer}, respectively.
 Both these commands accept an inline sequence delimited by curly brackets as optional
 parameter.  If present, this sequence indicates the text that should appear before
 the actual question or answer; it is used to indicate the name of the interviewer or
 the interviewee, respectively.  Should this sequence be fixed for the entire length
-of the Q&A, there is an alternative to repeating it with each \code{\\question}
-and\code{\\answer} pair: you may instead use the parameterless simple commands
-\code{\\rquestion} and \code{\\ranswer}.  These simply reuse the sequence declared in
+of the Q&A, there is an alternative to repeating it with each \mono{\\question}
+and\mono{\\answer} pair: you may instead use the parameterless simple commands
+\mono{\\rquestion} and \mono{\\ranswer}.  These simply reuse the sequence declared in
 the previous question or answer.  The following example illustrates the pattern:
 
 \begin<boxed>{source}
@@ -494,10 +498,10 @@ I don't believe that to be necessary; the reasons are self-evident.
 
 \section[sec:verse]{Verse environments}
 
-The environment \code{verse} is used to typeset poetry, music lyrics, or any other
+The environment \mono{verse} is used to typeset poetry, music lyrics, or any other
 content where conventional typographic rules for verses apply.  Inside the environment
 only paragraph blocks are accepted; each paragraph corresponds to a stanza, and each
-verse should be terminated by the line break marker \code{\\br}.  Therefore, if you
+verse should be terminated by the line break marker \mono{\\br}.  Therefore, if you
 wished to typeset the first couple of stanzas from Virgil's \emph{Aeneid}, this would
 be the \lambtex source:
 
@@ -543,7 +547,7 @@ impulerit.  Tantaene animis caelestibus irae? \br
 Quotation blocks are typically used for including an excerpt from an external source
 into your document.  You may be quoting what someone said in an interview, or providing
 context when replying to a comment, for example.  Quotation bloks are delimited by
-the \code{quote} environment, and may enclose not only plain text paragraphs, but
+the \mono{quote} environment, and may enclose not only plain text paragraphs, but
 also lists or any of the so-called \emph{quotable blocks}, as \sref{sec:structure}
 describes in greater detail.  Consider thus the following \lambtex source:
 
@@ -576,18 +580,18 @@ focus that would have been lost by simply linking to the entire interview.
 
 \section[sec:verbatim]{Verbatim environments}
 
-Like their \caps{LaTeX} counterparts or the \caps{html} \code{pre} element, verbatim
+Like their \caps{LaTeX} counterparts or the \caps{html} \mono{pre} element, verbatim
 environments allow the insertion of blocks where the text is shown \emph{as is}, ie,
 without (almost) any attempt at the interpretation of its contents.  They are to be
 displayed using a monospaced font, and as such are ideal for showing \caps{ascii}-art.
 Another application is to display text-only technical diagrams as commonly found on
 Internet \caps{rfc}s, for example.
 
-The command name for the verbatim environment is \code{verbatim}, and being an
-environment command the text must be enclosed between \code{\\begin\{verbatim\}} and
-\code{\\end\{verbatim\}} markers.  The synonym \code{pre} may also be used.  Below is
+The command name for the verbatim environment is \mono{verbatim}, and being an
+environment command the text must be enclosed between \mono{\\begin\{verbatim\}} and
+\mono{\\end\{verbatim\}} markers.  The synonym \mono{pre} may also be used.  Below is
 an example of a diagram drawn using only \caps{ascii} characters, and rendered using
-a \code{verbatim} environment:
+a \mono{verbatim} environment:
 
 \begin{verbatim}
              N
@@ -608,23 +612,23 @@ a \code{verbatim} environment:
 \end{verbatim}
 
 We say there is \emph{almost} no interpretation of the contents of the verbatim
-environment because there is one exception.  The string \code{\\end\{verbatim\}}
+environment because there is one exception.  The string \mono{\\end\{verbatim\}}
 is used as the end marker, and therefore the \lambtex scanner will exit the
 environment if it encounters this string.  This raises the obvious question of how
 one can insert that string itself within a verbatim context without triggering the
 termination of the environment.  The solution used by \lambtex is reminescent of the
 \link{http://en.wikipedia.org/wiki/Here_document}{\caps{heredoc}} approach used by
 other languages.  Basically, the markers that delimit verbatim environments need only use
-\code{verbatim} as a prefix.  The only condition for termination is that the end marker
-matches the begin marker.  Therefore, to include the string \code{\\end\{verbatim\}}
+\mono{verbatim} as a prefix.  The only condition for termination is that the end marker
+matches the begin marker.  Therefore, to include the string \mono{\\end\{verbatim\}}
 within a verbatim environment, you can simply delimitate that environment with, for
-example, \code{\\begin\{verbatim1\}} and \code{\\end\{verbatim1\}}.  Note that only
-lowercase Roman letters, digits, and the character '\code{_}' (underscore) may be used
+example, \mono{\\begin\{verbatim1\}} and \mono{\\end\{verbatim1\}}.  Note that only
+lowercase Roman letters, digits, and the character '\mono{_}' (underscore) may be used
 as suffix characters.
 
 The \caps{css} shipped with \lambtex defines a series of classnames for exclusive
-use with verbatim environments.  These are \code{mult0}, \code{mult1}, and so forth
-until \code{mult9}.  The integer indicates a multiplying factor for the contents of
+use with verbatim environments.  These are \mono{mult0}, \mono{mult1}, and so forth
+until \mono{mult9}.  The integer indicates a multiplying factor for the contents of
 the environment.  For a factor of [$x$], the actual scaling relative to normal size is
 given by [$\sqrt{2}^x$].  The default factor is 0, which corresponds to normal size.
 One common application of this feature is to display \caps{unicode} characters as
@@ -638,10 +642,10 @@ point \caps{U+2603}) looks like with a multiplier of 7, corresponding to a font 
 
 In addition, the default \caps{css} also allows floatation specifiers to be used with
 verbatim blocks.  Floating specifiers take the form of classname style parameters
-'\code{center}', '\code{left}', and '\code{right}'.  They declare that the block should
+'\mono{center}', '\mono{left}', and '\mono{right}'.  They declare that the block should
 be displayed either centered and occupying the entire width of the page (this is the
 default), floating on the left, or floating on the right, respectively.  Note that
-they map directly to \caps{css} \code{float} declarations.
+they map directly to \caps{css} \mono{float} declarations.
 
 Floatation specifiers are not exclusive to verbatim environments, and in subsequent
 sections we shall encounter other block types that also accept them.  The property
@@ -653,16 +657,22 @@ case for verbatim blocks, since they can be used for purely decorative purposes.
 
 \section[sec:code]{Presenting source-code}
 
-While it is of course possible to input source code listings using the above
-discussed verbatim environment, \lambtex features a dedicated facility that besides
-being semantically more appropriate has in addition a number of tricks up its sleave.
-This new environment is named \code{source}, and offers the possibility of adding line
-numbers to the code listing and highlighting the source according to the syntax of most
-popular languages.  You have in fact already encountered this environment multiple
-times in this document: it has been used for formatting \lambtex source code, albeit
-without line numbers or syntax highlighting.  Suppose thus you wish to pretty-print
-an \link{http://caml.inria.fr/}{OCaml} fragment.  You can declare a source-code
-environment the following way:
+\sref{sec:inline} briefly introduced the simple inline command \mono{\\code}, whose
+purpose is to format with syntax-highlighting a short sequence of source-code.
+The only configuration available for this command is the optional key-value style
+parameter '\mono{lang}', which allows the specification of the language used for
+syntax-highlighting.
+
+Suppose now that you have a long source-code listing that you wish to pretty-print.
+While it is of course possible to input source-code listings using verbatim environment
+discussed above, \lambtex features a dedicated facility that besides being semantically
+more appropriate has in addition a number of tricks up its sleave.  This new environment
+is named \mono{source}, and offers the possibility of adding line numbers to the code
+listing and highlighting the source according to the syntax of most popular languages.
+You have in fact already encountered this environment multiple times in this document: it
+has been used for formatting \lambtex source code, albeit without line numbers or syntax
+highlighting.  Suppose thus you wish to pretty-print an \link{http://ocaml.org/}{OCaml}
+fragment.  You can declare a source-code environment the following way:
 
 \begin<boxed>{source1}
 \begin<lang=caml>{source}
@@ -677,9 +687,9 @@ let rec count = function
 \end{source1}
 
 Note that the source language is specified via an optional key-value style parameter
-'\code{lang}'.  Also, the same \caps{heredoc}-like technique used for verbatim
+'\mono{lang}'.  Also, the same \caps{heredoc}-like technique used for verbatim
 environments can be used in a source environment if you wish to include the string
-\code{\\end\{source\}} itself.  The astute reader will have noticed that this trick
+\mono{\\end\{source\}} itself.  The astute reader will have noticed that this trick
 must have been used in the source for this manual to display the code above (this
 manual is itself written in \lambtex --- we do eat our own dog food).  As for the
 actual result produced by the composer, it is as follows:
@@ -694,10 +704,10 @@ let rec count = function
     | Node (left, x, right) -> 1 + count left + count right
 \end{source}
 
-Another optional key-value style parameter accepted by source environments is '\code{nums}'.
+Another optional key-value style parameter accepted by source environments is '\mono{nums}'.
 It accepts a boolean value, and dictates whether line numbers should be added to the
-source code listing.  Valid boolean values are '\code{true}', '\code{yes}' and '\code{on}'
-for truth value \emph{true} and '\code{false}', '\code{no}' and '\code{off}' for truth
+source code listing.  Valid boolean values are '\mono{true}', '\mono{yes}' and '\mono{on}'
+for truth value \emph{true} and '\mono{false}', '\mono{no}' and '\mono{off}' for truth
 value \emph{false}.  It defaults to false.
 
 The \caps{css} shipped with \lambtex offers additional customisation options for the
@@ -706,12 +716,12 @@ as follows:
 
 \begin{description}
 
-\item{'\code{plain}'}
+\item{'\mono{plain}'}
 This classname indicates that the listing should be displayed in plain style.  This is
 the default, as previously shown.  It is better suited for source-code fragments that
 one wishes to integrate tightly with the flow of the document.
 
-\item{'\code{boxed}'}
+\item{'\mono{boxed}'}
 Declares that the source code listing should be shown inside a decorative box.  Example:
 
 \begin<lang=caml,boxed>{source}
@@ -724,7 +734,7 @@ let rec count_leaves = function
     | Node (a, b) -> count_leaves a + count_leaves b
 \end{source}
 
-\item{'\code{zebra}'}
+\item{'\mono{zebra}'}
 Besides placing the source-code inside a decorative box, this style will in addition
 give a different background to even and odd numbered rows:
 
@@ -738,7 +748,7 @@ let rec count_leaves = function
     | Node (a, b) -> count_leaves a + count_leaves b
 \end{source}
 
-\item{'\code{console}'}
+\item{'\mono{console}'}
 This style is appropriate if the code block should actually mimick the output from a
 command line console:
 
@@ -753,23 +763,23 @@ index.html: HTML document text
 
 Finally, note that \lambtex offers also the possibility for code environments to be
 numbered and referenced from anywhere in the document.  This can be done by wrapping
-them inside a \code{printout} environment, and is part of the advanced features of
+them inside a \mono{printout} environment, and is part of the advanced features of
 the language discussed in \sref{sec:wrappers}.
 
 
 \section{Tabular environments}
 
 Presenting data in a tabular format is indispensable for many classes of documents.
-With this in mind, \lambtex offers a special \code{tabular} environment which
+With this in mind, \lambtex offers a special \mono{tabular} environment which
 allows you to format tables in a simple and concise way, while retaining most of the
 capabilities offered by \caps{LaTeX} and \caps{xhtml} tables.
 
 Suppose then that our tabular data had three different attributes --- a person's
 name, a phone number, and an address --- and that we had this information about four
 different people.  We wish to present the attributes as table columns, whereas each
-record will be shown in a different row.  In brief, a table just like the one below:
+record will be shown in a different row.  In brief, a table just like this one:
 
-\begin{tabular}{lll}
+\begin{tabular}
 \head
 | Name      | Phone     | Address   |
 \body
@@ -779,52 +789,29 @@ record will be shown in a different row.  In brief, a table just like the one be
 | Jane      | 456789    | Sydney    |
 \end{tabular}
 
-The tabular environment has one mandatory primary parameter: a string indicating the
-number of columns and the formatting that should be applied to each column.  The example
-above features three left-aligned columns; the corresponding string is \code{lll}.
-If, for example, you had four columns aligned respectively to the left, right, center,
-and left again, the parameter string would be \code{lrcl}. Consult \sref{tab:tabular}
-for a list of all available column specifiers.
-
-\begin[tab:tabular]{table}
-{List of available column specifiers for tabular environments.
-A specifier tells \lambtex how each column should be formatted.}
-\begin{tabular}{rl}
-\head
-| Specifier | Formatting                            |
-\body
-| \code{l}  | Column is left-aligned.               |
-| \code{L}  | Column is left-aligned and strong.    |
-| \code{r}  | Column is right-aligned.              |
-| \code{R}  | Column is right-aligned and strong.   |
-| \code{c}  | Column is centre-aligned.             |
-| \code{C}  | Column is centre-aligned and strong.  |
-| \code{j}  | Column is justified.                  |
-| \code{J}  | Column is justified and strong.       |
-\end{tabular}
-\end{table}
-
-Inside a tabular environment, a row is terminated when the character '\code{|}' is the
-last on a line of text; within each row, cells must also be prefixed by the '\code{|}'
-character.  This means that inside a tabular environment --- but here only! --- you'll
-need to escape this character if you want to display an actual pipe character.
+Inside a tabular environment, a row is terminated when the character '\mono{\|}' (pipe)
+is the last on a line of text; within each row, each cell must also be prefixed by the
+'\mono{\|}' character.  This means that you'll need to escape it if you wish to display
+an actual pipe character.
 
 There are three different classes of rows available: header, body, and footer rows.
 Besides formatting each one differently, smart enough browsers will know that table
 headers are to be repeated if the tabular environment spans more than one printed page.
-The parameterless simple commands \code{\\head}, \code{\\body}, and \code{\\foot}
+The parameterless simple commands \mono{\\head}, \mono{\\body}, and \mono{\\foot}
 are used inside a tabular environment to mark the beginning of each class.  Note that
-header and footer rows are optional (in which case the \code{\\body} marker is also
+header and footer rows are optional (in which case the \mono{\\body} marker is also
 optional, since rows are assumed by default to be body rows).  Moreover, you can
 declare more than one group of body rows, and the default \caps{css} stylesheet will
 visibly separate each group.
 
 The code below is the source for the tabular environment listed above.  Note the use
-of the \code{\\head} and \code{\\body} commands to delineate row classes, and how the
-character '\code{|}' is used to separate cells and rows.
+of the \mono{\\head} and \mono{\\body} commands to delineate row classes, and how the
+character '\mono{\|}' is used to separate cells and rows.  Note also that all rows
+have the same number of columns.  This is \bold{mandatory}, though provisions exist
+for making a cell span multiple columns (see below).
 
 \begin<boxed>{source}
-\begin{tabular}{lll}
+\begin{tabular}
 \head
 | Name      | Phone     | Address   |
 \body
@@ -835,69 +822,100 @@ character '\code{|}' is used to separate cells and rows.
 \end{tabular}
 \end{source}
 
+All the columns in the tabular environment above are left-aligned and the column text
+is shown in normal text.  You may, however, specify otherwise using the key-value
+style parameter '\mono{cols}'.  Its value consists of a string whose length equals
+the number of columns and where each character specifies the formatting that should
+be applied to each column.  The example above features three left-aligned columns;
+the corresponding style parameter is '\mono{cols=lll}'.  If, for example, you had four
+columns aligned respectively to the left, right, center, and left again, the style
+parameter would be '\mono{cols=lrcl}'. Consult \sref{tab:tabular} for a list of all
+available column specifiers.
+
+\begin[tab:tabular]{table}
+{List of available column specifiers for tabular environments.
+A specifier tells \lambtex how each column should be formatted.}
+\begin<cols=rl>{tabular}
+\head
+| Specifier | Formatting                            |
+\body
+| \mono{l}  | Column is left-aligned.               |
+| \mono{L}  | Column is left-aligned and strong.    |
+| \mono{r}  | Column is right-aligned.              |
+| \mono{R}  | Column is right-aligned and strong.   |
+| \mono{c}  | Column is centre-aligned.             |
+| \mono{C}  | Column is centre-aligned and strong.  |
+| \mono{j}  | Column is justified.                  |
+| \mono{J}  | Column is justified and strong.       |
+\end{tabular}
+\end{table}
+
 Some tables may require more sophisticated formatting.  The most common requirement is
 for multi-column cells, and \lambtex does support them.  This feature is enabled by a
 special syntax that allows the customisation of each individual cell.  More precisely,
-the pipe character '\code{|}' that precedes each cell is optionally followed by a
-curly bracketed expression containing the cell's formatting.
+the pipe character '\mono{\|}' that precedes each cell is optionally followed by an
+angle bracketed style parameter.
 
-The formatting expression is composed of three parts.  First is an integer indicating
-how many columns the cell should span; second is a single character matching one of
-the specifiers listed in \sref{tab:tabular}; last and optional are the characters
-'\code{_}' (underscore) and/or '\code{^}' (caret), which if present indicate that a
-horizontal line should be put above and/or below the cell.  Note that the formatting
-should satisfy the regular expression \mbox{\code{\emph{digit}+ \emph{spec} ( '_' |
-'^' | '_^' | '^_' )?}}.
+Recall that style parameters come in two varieties: classnames and key-value pairs.
+You may of course use the former to customise the \caps{css} of an individual cell.
+As for the latter, cells offer a single option, whose key is named '\mono{cell}', and
+whose value is a formatting expression composed of three parts.  The first part is
+an integer indicating how many columns the cell should span; the second is a single
+character matching one of the specifiers listed in \sref{tab:tabular}; last and
+optional are the characters '\mono{_}' (underscore) and/or '\mono{^}' (caret), which
+if present indicate that a horizontal line should be put above and/or below the cell.
+Note that the formatting should satisfy the regular expression \mbox{\mono{\emph{digit}+
+\emph{spec} ( '_' \| '^' \| '_^' \| '^_' )?}}.
 
 This discussion would not be complete without the presentation of a complete example
 illustrating the application of advanced cell formatting.  Consider thus the \lambtex
 fragment below, whose output is displayed in \sref{tab:species}.  Besides the use of
-header, footer, and multiple body rows, also noteworthy are the cell configuration
-expressions \code{2c_} and \code{2c^}, which configure their corresponding cells to
-span two columns, be centered, and show a horizontal line below and above, respectively.
+header, footer, and multiple body rows, also noteworthy are the cell style parameters
+\mono{cell=2c_} and \mono{cell=2c^}, which configure their corresponding cells to span
+two columns, be centered, and show a horizontal line below and above, respectively.
 
 \begin<boxed>{source}
-\begin{tabular}{rll}
+\begin<cols=rll>{tabular}
 \head
-|               |{2c_} Scientific name                  |
-| Common name   | Genus                 | Species       |
+|               |<cell=2c_> Scientific name              |
+| Common name   | Genus                 | Species        |
 \body
-| Wolf          | \emph{Canis}          | \emph{lupus}  |
-| Cat           | \emph{Felis}          | \emph{catus}  |
-| Lion          | \emph{Panthera}       | \emph{leo}    |
+| Wolf          | \emph{Canis}          | \emph{lupus}   |
+| Cat           | \emph{Felis}          | \emph{catus}   |
+| Lion          | \emph{Panthera}       | \emph{leo}     |
 \body
-| English oak   | \emph{Quercus}        | \emph{robur}  |
-| Cork oak      | \emph{Quercus}        | \emph{suber}  |
-| European yew  | \emph{Taxus}          | \emph{baccata}|
+| English oak   | \emph{Quercus}        | \emph{robur}   |
+| Cork oak      | \emph{Quercus}        | \emph{suber}   |
+| European yew  | \emph{Taxus}          | \emph{baccata} |
 \foot
-| Common name   | Genus                 | Species       |
-|               |{2c^} Scientific name                  |
+| Common name   | Genus                 | Species        |
+|               |<cell=2c^> Scientific name              |
 \end{tabular}
 \end{source}
 
 To conclude, note that if you wish for a tabular environment to be numbered and
-referenced from anywhere in the document, you need to wrap it inside a \code{table}.
+referenced from anywhere in the document, you need to wrap it inside a \mono{table}.
 This is part of the advanced features of the language, and is discussed in
 \sref{sec:wrappers}.
 
 \begin[tab:species]{table}
 {The classification of some common animals and plants.  This table illustrates the use
 of the advanced formatting facilities that enable customisation of individual cells.}
-\begin{tabular}{rll}
+\begin<cols=rll>{tabular}
 \head
-|               |{2c_} Scientific name                  |
-| Common name   | Genus                 | Species       |
+|               |<cell=2c_> Scientific name              |
+| Common name   | Genus                 | Species        |
 \body
-| Wolf          | \emph{Canis}          | \emph{lupus}  |
-| Cat           | \emph{Felis}          | \emph{catus}  |
-| Lion          | \emph{Panthera}       | \emph{leo}    |
+| Wolf          | \emph{Canis}          | \emph{lupus}   |
+| Cat           | \emph{Felis}          | \emph{catus}   |
+| Lion          | \emph{Panthera}       | \emph{leo}     |
 \body
-| English oak   | \emph{Quercus}        | \emph{robur}  |
-| Cork oak      | \emph{Quercus}        | \emph{suber}  |
-| European yew  | \emph{Taxus}          | \emph{baccata}|
+| English oak   | \emph{Quercus}        | \emph{robur}   |
+| Cork oak      | \emph{Quercus}        | \emph{suber}   |
+| European yew  | \emph{Taxus}          | \emph{baccata} |
 \foot
-| Common name   | Genus                 | Species       |
-|               |{2c^} Scientific name                  |
+| Common name   | Genus                 | Species        |
+|               |<cell=2c^> Scientific name              |
 \end{tabular}
 \end{table}
 
@@ -912,14 +930,14 @@ the \emph{de facto} standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside a
 paragraph, for example), or in a block context.  In the former case, the expression
-should be delimited between the characters '\code{\[$}' and '\code{\$]}' if it is written
-in \caps{TeX} format, and between characters '\code{\<$}' and '\code{\$>}' if written
+should be delimited between the characters '\mono{\[$}' and '\mono{\$]}' if it is written
+in \caps{TeX} format, and between characters '\mono{\<$}' and '\mono{\$>}' if written
 in \caps{MathML}.  Though \lambtex does not enforce it, common sense dictates that
 inline mathematics should restrict themselves to expressions that fit comfortably in
 a single line.  One example is the quadratic equation [$ ax^2 + bx + c = 0 $].
 
 \caps{TeX} and \caps{MathML} mathematical expressions in a block context are specified
-via the \code{mathtex} and \code{mathml} environments, respectively.  Furthermore,
+via the \mono{mathtex} and \mono{mathml} environments, respectively.  Furthermore,
 because both these environments expect their content to be raw text that should be parsed
 verbatim, they accept the \caps{heredoc} technique for delimiting the environment.
 Suppose thus you wished to enter a math block containing the quadratic formula that
@@ -935,7 +953,7 @@ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
 The equivalent Presentation \caps{MathML} markup is listed below.  Note that it is
 also acceptable to provide Content \caps{MathML} instead of Presentation \caps{MathML}.
 In either case, just make sure the markup conforms to version 2.0 of the \caps{MathML}
-standard, and that the \code{math} top-level element that wraps the \caps{MathML}
+standard, and that the \mono{math} top-level element that wraps the \caps{MathML}
 contents is provided as part of the markup.  These requirements also apply to the
 \caps{MathML} markup specified in an inline context.  On the other hand, giving
 an explicit namespace to the \caps{MathML} markup is \bold{not} necessary, since
@@ -979,8 +997,8 @@ namespacing requirements are automatically taken care of.
 The equation resulting from either of the above sources is shown below.  To conclude,
 bear in mind that in similarity with other types of blocks, \lambtex also supports
 named mathematical expressions that may be numbered and referenced from anywhere in
-a document.  For that you need to wrap a \code{mathtex} or \code{mathml} environment
-inside an \code{equation} block.  This technique is part of the advanced features of
+a document.  For that you need to wrap a \mono{mathtex} or \mono{mathml} environment
+inside an \mono{equation} block.  This technique is part of the advanced features of
 the language and is discussed with greater detail in \sref{sec:wrappers}.
 
 \begin{mathtex}
@@ -999,11 +1017,14 @@ These are known as \emph{pictures}.
 
 \subsection[sec:glyphs]{Glyphs}
 
-The simple command \code{\\glyph} is used for inserting an image into an inline
-context.  It takes the form \code{\\glyph\{\emph{identifier}\}\{\emph{alt}\}},
-where \code{\emph{identifier}} is the name of the glyph (typically the filename), and
-\code{\emph{alt}} is the alternative text to be displayed if the browser cannot or is
-not configured to display images.  Both parameters consist of raw text and are mandatory.
+The simple command \mono{\\glyph} is used for inserting an image into an inline context.
+It takes the form \mono{\\glyph\{\emph{identifier}\}\{\emph{alt}\}\{\emph{title}\}},
+where \mono{\emph{identifier}} is the name of the glyph (typically the filename), and
+\mono{\emph{alt}} is the alternative text to be displayed if the browser cannot or is not
+configured to display images.  Both parameters consist of raw text and are mandatory.
+The final parameter \mono{\emph{title}} consists also of raw text, but is optional.
+It can be used to provide a small description which pops up when the user hovers the
+mouse over the image.
 
 Because glyphs are embedded into a paragraph or other inline context, the image should
 be of comparable size to the text.  This is simply a recommendation, however, as it
@@ -1013,44 +1034,47 @@ is not enforced.
 \subsection{Pictures}
 
 The insertion of block images into a document is done via the simple
-command \code{\\picture}, which in its basic usage is identical
-to the afore described \code{\\glyph}.  Namely, it takes the form
-\code{\\picture\{\emph{identifier}\}\{\emph{alt}\}}, where \code{\emph{identifier}}
-is the name of the picture (typically the filename), and \code{\emph{alt}} is the
-alternative text to be displayed if the browser cannot or is not configured to
-display images.  Both parameters consist of raw text and are mandatory.  It differs
-from \code{\\glyph} in that it must be used in a block context and that it supports
-some additional configuration via style parameters.  The bitmap below illustrates the
-use of a image block:
+command \mono{\\picture}, which in its basic usage is identical
+to the afore described \mono{\\glyph}.  Namely, it takes the form
+\mono{\\picture\{\emph{identifier}\}\{\emph{alt}\}\{\emph{title}\}}, where
+\mono{\emph{identifier}} is the name of the picture (typically the filename), and
+\mono{\emph{alt}} is the alternative text to be displayed if the browser cannot or is
+not configured to display images.  Both parameters consist of raw text and are mandatory.
+The final parameter \mono{\emph{title}} consists also of raw text, but is optional.
 
-\picture{circle.png}{This is a circle}
+The command \mono{\\picture} differs from \mono{\\glyph} in that it must be used
+in a block context and that it supports some additional configuration via key-value
+style parameters.  The bitmap below illustrates the use of a image block.  Please do
+try hovering the mouse over the image!
+
+\picture{circle.png}{This is a circle}{Thank you for hovering!}
 
 Note that in most browsers you cannot see the alternative text unless the browser is
 configured not to display images.  As for the code that produced the picture, it is as
 simple as this:
 
 \begin<boxed>{source}
-\picture{circle.png}{This is a circle}
+\picture{circle.png}{This is a circle}{Thank you for hovering!}
 \end{source}
 
 The size of the picture can be controlled by the optional key-value style parameter
-\code{width}.  Its value is either \code{auto} or an integer between 1 and 100
+\mono{width}.  Its value is either \mono{auto} or an integer between 1 and 100
 (inclusive), indicating the percentage of the total width of the page that the picture
 should occupy (minus a small margin common to all non-text blocks).  The default is
-\code{auto}, which translates into a picture occupying its natural width in pixels
+\mono{auto}, which translates into a picture occupying its natural width in pixels
 (up to the maximum width of the page).  Note that block images are always clickable and
 that the target \caps{uri} is that of the picture itself.  This is useful, for example,
-for seeing at their full size pictures that were scaled down with the \code{width}
+for seeing at their full size pictures that were scaled down with the \mono{width}
 parameter or that did not fit into the width of the page.
 
 The default \caps{css} shipped with \lambtex offers an additional customisation options
-for pictures.  As its name suggests, the classname style parameter '\code{frame}' adds a
+for pictures.  As its name suggests, the classname style parameter '\mono{frame}' adds a
 small framed shadow to the picture.  It is off by default, and esthetically it is more
 sensible for rectangular pictures such as photographs.  In addition, the floatation
-classnames '\code{center}', '\code{left}', and '\code{right}' may also be used.
+classnames '\mono{center}', '\mono{left}', and '\mono{right}' may also be used.
 
 It is a common practice to add a numbered caption to a picture.  To achieve this in
-\lambtex you must wrap the \code{picture} block inside a \code{figure}, as described
+\lambtex you must wrap the \mono{picture} block inside a \mono{figure}, as described
 in \sref{sec:wrappers}.
 
 
@@ -1058,7 +1082,7 @@ in \sref{sec:wrappers}.
 
 Another interesting \lambtex feature is the ability to display child documents
 inside a framed block.  These nested documents, termed \emph{sub-pages}, are offered
-by the \code{subpage} environment.  While in general their usage is very limited and
+by the \mono{subpage} environment.  While in general their usage is very limited and
 it is unlikely you will ever need to use sub-pages, for some applications --- namely
 writing manuals about \lambtex --- they are indispensable.
 
@@ -1095,8 +1119,8 @@ explicit declaration of a paragraph.}
 \section[sec:headings]{Parts and sections}
 
 \lambtex supports three different levels of sectioning: sections, sub-sections, and
-sub-sub-sections.  The simple commands used for declaring each one are \code{\\section},
-\code{\\subsection}, and \code{\\subsubsection}, respectively.  These are automatically
+sub-sub-sections.  The simple commands used for declaring each one are \mono{\\section},
+\mono{\\subsection}, and \mono{\\subsubsection}, respectively.  These are automatically
 ordered by \lambtex.  If you want to declare an unordered section, you must use an empty
 ordering parameter.  Remember that ordering parameters are usually optional, and are
 declared by enclosing between parenthesis the order you want to attribute. An empty order
@@ -1108,7 +1132,7 @@ In addition to sections, \lambtex documents may also be divided into \emph{parts
 Parts are a higher-level division than sections, and are typically only used in
 fairly complex documents.  This manual, for example, uses parts for making a clear
 distinction between the language tutorial and the appendix sections.  Note that a new
-part is declared with the homonymous simple command \code{\\part}, and that it does
+part is declared with the homonymous simple command \mono{\\part}, and that it does
 not reset the section counter.  In similarity to sections, parts can also be unordered.
 
 Another common requirement associated with sectioning is the ability to refer to a given
@@ -1150,10 +1174,10 @@ The quick brown fox jumps over the lazy brown dog.
 To conclude, and since this is our first encounter with label parameters, the reader
 should note that labels have two constraints.  First, the starting character must be
 a lowercase Roman letter.  Second, the allowed character set for subsequent characters
-is limited to lowercase Roman letters, digits, and the characters '\code{:}' (colon),
-'\code{-}' (dash), and '\code{_}' (underscore).  Also note that all labels share
+is limited to lowercase Roman letters, digits, and the characters '\mono{:}' (colon),
+'\mono{-}' (dash), and '\mono{_}' (underscore).  Also note that all labels share
 the same namespace; we recommend adopting the \caps{LaTeX} custom of using a prefix
-indicating the target type.  In the example above, the prefix \code{sec:} is used for
+indicating the target type.  In the example above, the prefix \mono{sec:} is used for
 the sectioning family of commands.
 
 
@@ -1161,7 +1185,7 @@ the sectioning family of commands.
 
 \lambtex supports hyperlinks both to external resources and into targets in
 the same document.  The former is provided by the already described simple command
-\code{\\link}, whereas the latter relies on a set of different simple commands, each
+\mono{\\link}, whereas the latter relies on a set of different simple commands, each
 one tailored for a different use and/or kind of target.  \sref{tab:hyperlinks} lists
 all available hyperlinks commands, and the following source illustrates their use:
 
@@ -1200,46 +1224,46 @@ This is a meta-note, a note about notes.  It is used to demonstrate the declarat
 of notes.
 \end{note}
 
-Bear in mind that the use of the smart references offered by command \code{\\sref}
-is strongly recommended over the manual references provided by command \code{\\dref}.
+Bear in mind that the use of the smart references offered by command \mono{\\sref}
+is strongly recommended over the manual references provided by command \mono{\\dref}.
 The reason is three-fold.  First, because smart references ensure the consistent use
 of one naming scheme over an entire document and across several documents.  Second,
 because smart references automatically make sure that a non-breaking space is inserted
 between the element name and its ordering number, thus preventing their separation
 by a line break (to achieve the same effect with manual references, the user must
-explicitly place both elements inside an \code{\\mbox} command, or use the \code{\&nbsp;}
+explicitly place both elements inside an \mono{\\mbox} command, or use the \mono{\&nbsp;}
 \caps{html} entity).  Third and last, because smart references will make a hyperlink
 of both the name and the ordering, which is friendlier for mouse clicking and arguably
 esthetically more pleasant.
 
-On a related note, we recommend that \code{\\see} and \code{\\cite} commands not be
+On a related note, we recommend that \mono{\\see} and \mono{\\cite} commands not be
 separated from the preceding element by spaces.  The default \caps{css} stylesheet
 shipped with \lambtex already adds a small margin, and by not having spaces you
-avoid the split across line breaks or the need to resort to the \code{\\mbox} command
-or the \code{nbsp} \caps{html} entity.
+avoid the split across line breaks or the need to resort to the \mono{\\mbox} command
+or the \mono{nbsp} \caps{html} entity.
 
 Finally, though \lambtex offers no explicit support for subfigures, links towards them
-are accommodated via the optional inline sequence accepted by commands \code{\\dref}
-and \code{\\sref}.  This inline sequence is appended to the link text, thus allowing
+are accommodated via the optional inline sequence accepted by commands \mono{\\dref}
+and \mono{\\sref}.  This inline sequence is appended to the link text, thus allowing
 you to specify a subfigure identifier (such as '\emph{a}', '\emph{b}', etc) when making
 a link to the subfigure.
 
 \begin[tab:hyperlinks]{table}
 {The various hyperlinking commands available in \lambtex.  Note that the
-\code{\emph{uri}} and \code{\emph{label}} sequences are interpreted as raw text.}
-\begin{tabular}{rl}
+\mono{\emph{uri}} and \mono{\emph{label}} sequences are interpreted as raw text.}
+\begin<cols=rl>{tabular}
 \head
 | Command                                       | Description |
 \body
-| \mbox{\code{\\link\{\emph{uri}\}}}            | Inserts a link to an external resource. |
-| \mbox{\code{\\link\{\emph{uri}\}\{\emph{inline}\}}}   | Alternate form of \code{\\link}, which displays the inline sequence instead of the \caps{uri}. |
-| \mbox{\code{\\see\{\emph{label}\}}...}        | Refers to a document note (see \sref{sec:onnotes}). |
-| \mbox{\code{\\cite\{\emph{label}\}}...}       | Cites a bibliographic reference (see \sref{sec:onbiblio}). |
-| \mbox{\code{\\dref\{\emph{label}\}}}          | Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
-| \mbox{\code{\\dref\{\emph{label}\}\{\emph{inline}\}}} | Alternate form of \code{\\dref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
-| \mbox{\code{\\sref\{\emph{label}\}}}          | Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
-| \mbox{\code{\\sref\{\emph{label}\}\{\emph{inline}\}}} | Alternate form of \code{\\sref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
-| \mbox{\code{\\mref\{\emph{label}\}\{\emph{inline}\}}} | Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
+| \mbox{\mono{\\link\{\emph{uri}\}}}            | Inserts a link to an external resource. |
+| \mbox{\mono{\\link\{\emph{uri}\}\{\emph{inline}\}}}   | Alternate form of \mono{\\link}, which displays the inline sequence instead of the \caps{uri}. |
+| \mbox{\mono{\\see\{\emph{label}\}}...}        | Refers to a document note (see \sref{sec:onnotes}). |
+| \mbox{\mono{\\cite\{\emph{label}\}}...}       | Cites a bibliographic reference (see \sref{sec:onbiblio}). |
+| \mbox{\mono{\\dref\{\emph{label}\}}}          | Inserts a link to a numbered section, part, equation, printout, table, figure, boxout, or theorem.  The text under the hyperlink is the order of the reference. |
+| \mbox{\mono{\\dref\{\emph{label}\}\{\emph{inline}\}}} | Alternate form of \mono{\\dref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
+| \mbox{\mono{\\sref\{\emph{label}\}}}          | Inserts a \emph{smart} reference to numbered section, part, equation, printout, table, figure, boxout, or theorem.  Besides the order, smart references also include the name of the kind of reference they are linking to. |
+| \mbox{\mono{\\sref\{\emph{label}\}\{\emph{inline}\}}} | Alternate form of \mono{\\sref}, which appends the inline sequence to the link text. Useful for subfigures, for example. |
+| \mbox{\mono{\\mref\{\emph{label}\}\{\emph{inline}\}}} | Inserts a reference to a section, part, equation, printout, table, figure, boxout, or theorem, but without including the order.  Instead, the description provided as the second mandatory parameter is used for the hyperlink. |
 \end{tabular}
 \end{table}
 
@@ -1260,7 +1284,7 @@ source, pull-quotes are either used to make a brief and named quotation such as 
 one that opens this section, or to emphasize a passage from the very same document
 where they are defined.
 
-This block type is declared using the \code{pull} environment command, and accepts an
+This block type is declared using the \mono{pull} environment command, and accepts an
 optional primary parameter consisting of an inline sequence specifying the authorship
 of the quote.  Therefore, to produce a pull-quote like the one that opens this section,
 you can simply provide the following code:
@@ -1294,17 +1318,17 @@ Boxout blocks allow you emphasise a document fragment by placing it inside a box
 Boxouts are useful for warnings, notices, tips, reminders, etc.  Boxouts are custom
 environments, in the sense that the command name that appears in the begin/end pairs
 is not built-in and is instead defined in the document itself.  Therefore, before a
-boxout is used, it must first be declared via the simple command \code{\\newboxout}.
+boxout is used, it must first be declared via the simple command \mono{\\newboxout}.
 Moreover, boxouts are optionally titled and may be given an automatic ordering.
 
-The command \code{\\newboxout} accepts at least one, and up to three primary parameters.
+The command \mono{\\newboxout} accepts at least one, and up to three primary parameters.
 The first parameter is the name of the boxout environment; this is the same name that
 must subsequently be used inside the begin/end pairs.  Obviously, you may not name a
 boxout with the same designation of an existing command, or with a designation that
 begins with the name of an environment that uses the \caps{heredoc} technique (namely
-\code{verbatim}, \code{source}, \code{mathtex}, and \code{mathml}). Moreover, the
+\mono{verbatim}, \mono{source}, \mono{mathtex}, and \mono{mathml}). Moreover, the
 name must begin with a lowercase Roman letter and be composed only of lowercase Roman
-letters, digits, and the character '\code{_}' (underscore).  The second parameter,
+letters, digits, and the character '\mono{_}' (underscore).  The second parameter,
 if present, is an inline sequence indicating a fixed title that will appear in all
 boxouts of this name.  Finally, the third parameter may be used to assign a counter to
 this boxout.  If not present, the boxout is unnumbered; moreover, different boxouts
@@ -1314,17 +1338,17 @@ in mind that counter identifiers must follow the same rules laid out for labels,
 as described in \sref{sec:headings}.  Counter identifiers do nevertheless reside in
 their own separate namespace, independent of that of labels.
 
-Subsequent to its declaration, using a new boxout named \code{\emph{name}} is
-simply a matter of wrapping its contents between \code{\\begin\{\emph{name}\}} and
-\code{\\end\{\emph{name}\}}.  The begin tag accepts an optional primary parameter with an
-extra title to assign to the boxout.  If the \code{\\newboxout} boxout declaration did
+Subsequent to its declaration, using a new boxout named \mono{\emph{name}} is
+simply a matter of wrapping its contents between \mono{\\begin\{\emph{name}\}} and
+\mono{\\end\{\emph{name}\}}.  The begin tag accepts an optional primary parameter with an
+extra title to assign to the boxout.  If the \mono{\\newboxout} boxout declaration did
 not include a title, then this extra title becomes the sole title for this particular
-instance of the boxout.  If on the other hand \code{\\newboxout} already declared a
+instance of the boxout.  If on the other hand \mono{\\newboxout} already declared a
 generic title, then the extra title is appended to the generic title.  Should neither
 a generic nor an extra title be given, then the boxout will be titleless.
 
 Suppose thus you wished to display a warning boxout like the one that opens this section.
-It makes sense to name it \code{warning}, and for each instance of the boxout to include
+It makes sense to name it \mono{warning}, and for each instance of the boxout to include
 the generic title \emph{``Warning''}.  Moreover, you do not wish for warnings to be
 numbered, so you should not assign a counter to it.  As for this particular instance
 of the boxout, you wish the extra title \emph{``Boxout overload''} to be appended to
@@ -1342,19 +1366,19 @@ they are most effective when not abused!
 \end{source}
 
 At this point you may be wondering where does the customised warning sign come from.  Its
-origin is simple: for each boxout named \code{\emph{name}}, the \caps{html} output driver
-from the \lambdoc library will include the classname \code{doc_boxout_env_\emph{name}}
+origin is simple: for each boxout named \mono{\emph{name}}, the \caps{html} output driver
+from the \lambdoc library will include the classname \mono{doc_boxout_env_\emph{name}}
 in the \caps{div} element that encapsulates the boxout.  The \caps{css} supplied
 with the library takes advantage of this metadata, and contains sample customisation
-for boxouts named \code{warning} and \code{tip}.  This trick provides an easy way to
+for boxouts named \mono{warning} and \mono{tip}.  This trick provides an easy way to
 customise your own boxouts.  The default \caps{css} also allows for boxouts to use
 the floatation classname specifiers described in \sref{sec:verbatim}.
 
 To conclude note that boxouts may be labelled, and that you may request the supression
 of ordering for individual instances of numbered boxouts.  The latter is achieved in
 the same manner as with sections and parts: by providing the empty ordering declaration
-'\code{()}'.  Labelled boxouts may be referenced from anywhere in the document via the
-simple commands \code{\\dref}, \code{\\sref}, or \code{\\mref} (the two former commands
+'\mono{()}'.  Labelled boxouts may be referenced from anywhere in the document via the
+simple commands \mono{\\dref}, \mono{\\sref}, or \mono{\\mref} (the two former commands
 may only be used for numbered boxouts, obviously).
 
 
@@ -1364,17 +1388,17 @@ Theorems and their kin such as corollaries, lemmas, etc, are a staple of mathema
 and computer-science writing.  For this reason, \lambtex also supports them.
 In practice, theorem-like environments are declared and used in pretty much the same
 way as boxouts.  The major difference is that the declaration of a new theorem is
-done via the simple command \code{\\newtheorem}.  Moreover, theorems must always
+done via the simple command \mono{\\newtheorem}.  Moreover, theorems must always
 have a title, and therefore the declaration has two mandatory primary parameters.
-Similarly to boxouts, \code{\\newtheorem} may optionally include a third primary
+Similarly to boxouts, \mono{\\newtheorem} may optionally include a third primary
 parameter specifying the counter if you wish the theorem to be numbered.  Note that
 even though the same counter may be shared between multiple theorem-like environments,
 you may not share a counter between a boxout and a theorem.  Because all counters
 share the same namespace, you must make sure collisions do not occur.
 
-Suppose thus you wish to create a theorem named \code{theorem}, and whose title is,
+Suppose thus you wish to create a theorem named \mono{theorem}, and whose title is,
 unsurprisingly, \emph{``Theorem''}.  Moreover, you want the theorem to be numbered,
-and its counter to be called '\code{cnt:theorem}'.  One particular instantiation of
+and its counter to be called '\mono{cnt:theorem}'.  One particular instantiation of
 this theorem has the extra title \emph{``John McAuthor''}, reflecting its authorship.
 This is the \lambtex source you may use:
 
@@ -1392,8 +1416,8 @@ Furthermore, the egg satisfies the scalene condition, and therefore
 The resulting output is shown below.  Note that in theorems the extra title is displayed
 between parentheses, in accordance to convention.  Should you wish to customise the
 \caps{css} for particular classes of theorems, you may make use of the same technique
-described for boxouts.  Note, however, that for a theorem named \code{\emph{name}},
-the associated classname is \code{doc_theorem_env_\emph{name}}.
+described for boxouts.  Note, however, that for a theorem named \mono{\emph{name}},
+the associated classname is \mono{doc_theorem_env_\emph{name}}.
 
 \begin{subpage}
 \newtheorem{theorem}{Theorem}{cnt:theorem}
@@ -1423,32 +1447,32 @@ different classes of wrappers available:
 
 \item{Equations}
 
-    These are declared via the environment command \code{equation},
-    and may be used for wrapping \code{mathtex} and \code{mathml} blocks.
+    These are declared via the environment command \mono{equation},
+    and may be used for wrapping \mono{mathtex} and \mono{mathml} blocks.
 
 \item{Printouts}
 
-    These are used for wrapping \code{source} environments, and are
-    declared with the environment command \code{printout}.
+    These are used for wrapping \mono{source} environments, and are
+    declared with the environment command \mono{printout}.
 
 \item{Tables}
 
-    Tables may only be used for wrapping \code{tabular} environments,
-    and are declared with the environment command \code{table}.
+    Tables may only be used for wrapping \mono{tabular} environments,
+    and are declared with the environment command \mono{table}.
 
 \item{Figures}
 
     Finally, figures are declared with the environment command
-    \code{figure}, and may be used for wrapping \code{verbatim},
-    \code{picture}, and \code{subpage} blocks.
+    \mono{figure}, and may be used for wrapping \mono{verbatim},
+    \mono{picture}, and \mono{subpage} blocks.
 
 \end{description}
 
 All these classes have two features in common: they may all be captioned, and each
 class has an associated counter that is automatically incremented whenever a new
 ordered wrapper is declared.  Note also that the wrapper itself may be labelled, as
-illustrated by the code below, which shows the use of a \code{figure} wrapper around
-a \code{picture} block:
+illustrated by the code below, which shows the use of a \mono{figure} wrapper around
+a \mono{picture} block:
 
 \begin<boxed>{source}
 \begin[fig:example]{figure}{This is the figure's caption.}
@@ -1457,8 +1481,8 @@ a \code{picture} block:
 \end{source}
 
 You can refer to the above declared figure from anywhere in the document by using the
-label '\code{fig:example}' with any of the simple commands \code{\\dref}, \code{\\sref},
-and \code{\\mref}.  The resulting figure (\sref{fig:example}) is shown below:
+label '\mono{fig:example}' with any of the simple commands \mono{\\dref}, \mono{\\sref},
+and \mono{\\mref}.  The resulting figure (\sref{fig:example}) is shown below:
 
 \begin[fig:example]{figure}{This is the figure's caption.}
 \picture{circle.png}{This is a circle}
@@ -1468,14 +1492,14 @@ Remember that captioning is optional.  When present, the caption is an inline se
 declared as a primary parameter of the wrapper environment.  Should it not be given,
 the counter associated with the wrapper is displayed between parentheses below the
 wrapped block.  However, note that a caption-less wrapper must have an associated order,
-and therefore if you declare the wrapper to have an empty ordering via the '\code{()}'
+and therefore if you declare the wrapper to have an empty ordering via the '\mono{()}'
 specification, then you must provide it with a caption.  This restriction is in place
 so that every wrapper has some form of context, either in the form of an ordering or
 a caption.
 
 It is perfectly reasonable and common for wrapped blocks to be floated on the sides
 of the page.  Therefore, the default \caps{css} shipped with \lambtex allows for
-the floatation specifiers '\code{center}', '\code{left}', and '\code{right}' to be
+the floatation specifiers '\mono{center}', '\mono{left}', and '\mono{right}' to be
 provided as style parameters to any wrapper.  Note that with the exception of picture
 and verbatim environments, with the default \caps{css} one can only float wrappable
 blocks when they are actually placed inside a wrapper.  The rationale was discussed
@@ -1486,8 +1510,8 @@ Note that context-carrying blocks are not tied to a precise location of the docu
 (that is, it won't matter much if they are placed a couple of paragraphs above or below,
 as long as they can be found in the relevant section), and they have a fair degree
 of independence from the contents in the main flow.  It is for this reason that you
-may not directly float, say, a \code{source} block.  It carries no context by itself,
-and thus must be integrated into the main flow, or wrapped inside a \code{printout}
+may not directly float, say, a \mono{source} block.  It carries no context by itself,
+and thus must be integrated into the main flow, or wrapped inside a \mono{printout}
 whose caption and/or ordering provide the needed context.  Theorems --- even though
 they have some independence and provide their own context --- are excluded from the
 set of blocks allowed to float.  The rationale stems mainly from customary usage,
@@ -1501,9 +1525,9 @@ and which are placed before the main body of the document, at the so-called
 \emph{frontmatter}.  These elements are titles and sub-titles, the abstract, and the
 table of contents.
 
-Titles in \lambtex are declared via the aptly named \code{\\title} command.
+Titles in \lambtex are declared via the aptly named \mono{\\title} command.
 This is a simple command that takes an inline sequence as parameter.  Closely related
-is the also simple command \code{\\subtitle}.  It is typically used for showing the
+is the also simple command \mono{\\subtitle}.  It is typically used for showing the
 document's author, date, or actual sub-titles.
 
 \caps{LaTeX} users are familiar with a richer set of sub-titles that includes special
@@ -1512,12 +1536,12 @@ increasing language complexity and improving semantic richness.  On this continu
 \lambtex sits further along than plain \caps{TeX} on the direction towards semantic
 richness.  However, the awareness of increased language complexity is ever-present,
 and weights heavily on decisions such as this one.  It is for this reason that the
-language offers a catch-all \code{\\subtitle} command instead of multiple commands
+language offers a catch-all \mono{\\subtitle} command instead of multiple commands
 tailored to each particular application.
 
 Abstracts are commonly found on scientific papers, and \lambtex supports them as
 well.  An abstract is declared by enclosing one or more embeddable blocks within an
-\code{abstract} environment.  Please consult \sref{sec:structure} for more details on
+\mono{abstract} environment.  Please consult \sref{sec:structure} for more details on
 what constitutes a \emph{embeddable block}, and note the source fragment below for an
 example of the various frontmatter blocks.
 
@@ -1548,9 +1572,9 @@ Many insightful arguments shall be presented. (...)
 \end{subpage}
 
 Finally, you can request that a table of contents be printed by issueing the
-parameterless simple command \code{\\toc}.  This can be done at any place in the
+parameterless simple command \mono{\\toc}.  This can be done at any place in the
 document, though convention and reason suggest that it be placed at the very beginning.
-Note that even though \code{\\toc} lacks any primary parameters (which in \lambtex are
+Note that even though \mono{\\toc} lacks any primary parameters (which in \lambtex are
 always enclosed in curly brackets), it does accepts an optional label parameter.  This is
 useful for referencing the table of contents from anywhere in the document.  Also, bear
 in mind that the table of contents itself does not appear in the table of contents!
@@ -1560,7 +1584,7 @@ You may verify this fact in this manual's own \mref{sec:toc}{table of contents}.
 
 A typographic rule is commonly used in fiction pieces to clearly separate unrelated
 paragraphs.  For the sake of completeness, \lambtex supports also this feature.
-You may declare it using the \code{\\rule} simple command, or its synonym \code{\\hr}.
+You may declare it using the \mono{\\rule} simple command, or its synonym \mono{\\hr}.
 These commands are completely parameterless, as the code sample below demonstrates:
 
 \begin<boxed>{source}
@@ -1591,23 +1615,25 @@ a domain where the concept of a document being composed of individual pages is n
 meaningful.  For this reason, \lambtex's equivalent concept is that of notes
 attached to the end of the document.
 
-A note is declared via the environment command \code{note}.  Notes can of course be
+A note is declared via the environment command \mono{note}.  Notes can of course be
 labelled, and may be referenced from anywhere in the document via the simple command
-\code{\\see}.  The latter takes at least one primary parameter, and therefore you may
+\mono{\\see}.  The latter takes at least one primary parameter, and therefore you may
 reference multiple notes simply by providing additional primary parameters.
 
-One important feature to remember is that the location where the note is declared
-is \bold{not} the same as where it will be appear in the rendered document (for this
-reason, notes are termed \emph{ghost blocks}).  Instead,  all notes will be printed
-together wherever the simple command \code{\\notes} is declared.  This last command will
-also create an eponymously named unordered section, just like \mref{sec:thenotes}{the
-one present} in this manual.  This ``ghostly'' character of note blocks allows them
-to be declared anywhere in the document, a handy feature if you wish to keep a note
-declaration close to the place where it is declared.
+One important feature to remember is that the location where the note is declared is
+\bold{not} the same as where it will be appear in the rendered document (for this reason,
+notes are termed \emph{ghost blocks}).  Instead,  all notes will be printed together
+wherever the simple commands \mono{\\notes} or \mono{\\rawnotes} are declared (the sole
+difference between the two is that \mono{\\notes} will also create an eponymously named
+unordered section, just like \mref{sec:thenotes}{the one present} in this manual, whereas
+\mono{\\rawnotes} simply dumps a listing of the document's notes, without any heading).
+Note that the ``ghostly'' character of note blocks allows them to be declared anywhere
+in the document, a handy feature if you wish to keep a note declaration close to the
+place where it is declared.
 
 The sample code below illustrates a note being referenced inside a paragraph and being
-defined afterwards.  The example concludes with the simple command \code{\\notes}
-requesting the printing of the homonymous section together with the defined note.
+defined afterwards.  The example concludes with the simple command \mono{\\notes}
+requesting the printing of the eponymous section together with the defined note.
 
 \begin<boxed>{source}
 This is a normal\see{note:example} paragraph that references
@@ -1624,38 +1650,50 @@ And by 'normal' we mean 'not normal'.
 
 \section[sec:onbiblio]{Adding a bibliography}
 
-Similarly to notes, bibliographic entries are also ghost blocks.  Therefore,
-you may declare them anywhere in the document, and they will only be printed when
-you issue the simple command \code{\\bibliography}.  Each individual bibliographic
-entry is contained within an environment command \code{bib}, which itself accepts
-three sub-blocks, defined by the simple commands \code{\\who}, \code{\\what}, and
-\code{\\where}.  These blocks are used for defining the author, the title, and the
-location (journal, proceedings, web page) of the bibliographic reference, respectively.
+Similarly to notes, bibliographic entries are also ghost blocks.  Therefore, you may
+declare them anywhere in the document, and they will only be printed when you issue
+either of the simple commands \mono{\\bibliography} or \mono{\\rawbibliography}.
+The former version is preferred, as it automatically takes care of creating also a
+section heading.  The latter version simply dumps the contents of the bibliography.
 
-The code below illustrates the declaration of a bibliographic entry.  Note that the
-entry is referenced by the simple command \code{\\cite}.  Also, and in similarity to
-the command \code{\\see}, it is possible to reference multiple entries with a single
-invocation of \code{\\cite}, since this command accepts multiple primary parameters.
+Each individual bibliographic entry can take either of two forms: a long form or a
+short form.  The long form is contained within an environment command \mono{lbib},
+which itself accepts three sub-blocks, defined by the simple commands \mono{\\who},
+\mono{\\what}, and \mono{\\where}.  These blocks are used for defining the author,
+the title, and the location (journal, proceedings, web page) of the bibliographic
+reference, respectively.  The short form is defined by the simple command \mono{\\sbib},
+which takes inline text as the mandatory parameter.
+
+The code below illustrates the declaration of two bibliographic entries, one long and
+one short.  Note that the entries can be referenced by the simple command \mono{\\cite}.
+Also, and in similarity to the command \mono{\\see}, it is possible to reference multiple
+entries with a single invocation of \mono{\\cite}, since this command accepts multiple
+primary parameters.
 
 \begin<boxed>{source}
-\caps{lambtex} is largely inspired by LaTeX\cite{bib:latex}.
+Lambtex is largely inspired by LaTeX\cite{bib:latex},
+and is available in the Lambdoc library\cite{bib:lambdoc}.
 
-\begin[bib:latex]{bib}
+\begin[bib:latex]{lbib}
 \who{Leslie Lamport}
 \what{LaTeX: a Document Preparation System (2\sup{nd} edition)}
 \where{Addison-Wesley Professional, 1994, ISBN 0-201-52983-1}
-\end{bib}
+\end{lbib}
+
+\sbib[bib:lambdoc]{\link{http://lambdoc.forge.ocamlcore.org/}}
 \end{source}
 
 Whereas \caps{BibTeX}\cite{bib:bibtex} offers a very rich set of tags for bibliographic
-entries (author, title, journal volume, page numbers, conference location, etc),
-\lambtex limits this set to only three main tags.  Those familiar with \caps{BibTeX}
-may feel constrained by this paucity.  However, one must take into account that \lambtex
-was designed with the web as a foremost application area.  In this context, one can
-have satisfactory --- in the sense that they are readily accessible --- bibliographic
-entries based solely on a hyperlink.  The \code{\\where} command can therefore be used
-for linking to an external web resource, or if not available online, to provide all
-the miscelaneous information required to locate the resource in ``dead tree world''.
+entries (author, title, journal volume, page numbers, conference location, etc), \lambtex
+limits this set to only three main tags, even when using the long form \mono{lbib}.
+Those familiar with \caps{BibTeX} may feel constrained by this paucity.  However,
+one must take into account that \lambtex was designed with the web as a foremost
+application area.  In this context, one can have satisfactory --- in the sense that
+they are readily accessible --- bibliographic entries based solely on a hyperlink.
+The long form's \mono{\\where} command can therefore be used for linking to an external
+web resource, or if not available online, to provide all the miscelaneous information
+required to locate the resource in ``dead tree world''.  In fact, most bibliography
+needs in the web domain are satisfied completely by the short form \mono{\\sbib}.
 
 
 \section[sec:onappendix]{Creating an appendix}
@@ -1664,18 +1702,18 @@ Large document typically have fragments that do not fit into the main flow.
 In many cases, these fragments can satisfactorily be included as notes (remember
 \sref{sec:onnotes}).  In other situations, however, it may make more sense to
 attach them as appendices to the main document.  In \lambtex, creating an appendix
-is simply a matter of issueing the simple parameterless command \code{\\appendix}.
+is simply a matter of issueing the simple parameterless command \mono{\\appendix}.
 Besides declaring an unordered part of the same name, this command also marks all
 subsequent sections as belonging to the appendix.  This means that an appendiced
-section is declared the usual way, via the command \code{\\section} (the same applies
+section is declared the usual way, via the command \mono{\\section} (the same applies
 to sub-sections and sub-sub-sections, of course).  The only distinguishing aspect that
-makes it an appendiced section is being declared after \code{\\appendix}.
+makes it an appendiced section is being declared after \mono{\\appendix}.
 
 You can see an example of appendiced sections in this very manual.  Note how all
 sections declared after the \mref{part:theappendix}{appendix marker} are automatically
 ordered using alphabetic characters instead of numbers, as per the usual convention.
-Smart references produced by command \code{\\sref} automatically adjust as well ---
-yet another reason why you should avoid its ``dumb'' counterpart \code{\\dref}.
+Smart references produced by command \mono{\\sref} automatically adjust as well ---
+yet another reason why you should avoid its ``dumb'' counterpart \mono{\\dref}.
 
 
 \section[sec:macros]{Macros}
@@ -1685,26 +1723,26 @@ possibly parameterised.  Note that these are not full-blown programming construc
 being instead aimed at reducing boilerplate and ensuring consistent formatting of
 common text patterns.
 
-Before being used, a macro must be declared via the simple command \code{\\newmacro}.
+Before being used, a macro must be declared via the simple command \mono{\\newmacro}.
 This command takes three mandatory primary parameters: the name of the macro, the number
 of arguments, and an inline sequence containing the text of the macro.  Macro names
 must obviously be unique and not overlap with the names of built-in commands, but they
 live in their own private namespace.  Moreover, and similarly to boxouts and theorems,
 the name must begin with a lowercase Roman letter and be followed by any combination
-of lowercase Roman letters, digits, and the character '\code{_}' (underscore).
+of lowercase Roman letters, digits, and the character '\mono{_}' (underscore).
 
 Should the macro take any arguments, these can be referenced from inside the macro
-text by the alias \code{\\arg\{\emph{num}\}}, where the \code{\emph{num}} between curly
+text by the alias \mono{\\arg\{\emph{num}\}}, where the \mono{\emph{num}} between curly
 brackets is an integer indicating the argument number.  Obviously, a macro with [$n$]
 arguments may not reference an argument [$n+1$] or higher.  Moreover, arguments are
 expanded as inline sequences.
 
-Wherever an inline sequence is accepted, a macro named \code{name} can be invoked via
-the simple command \code{\\name}.  The invocation of the macro causes the macro's text
+Wherever an inline sequence is accepted, a macro named \mono{name} can be invoked via
+the simple command \mono{\\name}.  The invocation of the macro causes the macro's text
 to be inserted at invocation point.  Should the macro have any arguments, these must
 follow the macro's name immediately, being each one bracketed individually.  Therefore,
-the invocation of macro \code{name} with arguments \code{inline1} and \code{inline2}
-is done with \mbox{\code{\\name\{inline1\}\{inline2\}}}.  Note that because macros
+the invocation of macro \mono{name} with arguments \mono{inline1} and \mono{inline2}
+is done with \mbox{\mono{\\name\{inline1\}\{inline2\}}}.  Note that because macros
 can be invoked wherever an inline sequence is accepted and the text of a macro is
 an inline sequence itself, it follows that macros may invoke other macros.  However,
 because a macro must be declared before being invoked, mutual recursion is not allowed.
@@ -1713,21 +1751,21 @@ ensure that macro expansion always terminates.
 
 While token concatenation with parameterised macros is straightforward, you may
 wonder how it can be achieved with parameterless macros.  To illustrate this
-issue, suppose you have defined a macro \code{super} that expands to the text
+issue, suppose you have defined a macro \mono{super} that expands to the text
 \emph{``super''}.  Now, you wish to concatenate the invocation of this macro with the
-text \emph{``market''}.  However, entering \code{\\super market} produces an unwanted
-space, whereas \code{\\supermarket} produces an error, since the macro \code{supermarket}
+text \emph{``market''}.  However, entering \mono{\\super market} produces an unwanted
+space, whereas \mono{\\supermarket} produces an error, since the macro \mono{supermarket}
 is undefined.  Note that if the macro had any arguments this problem would be moot,
 since the brackets naturally delimitate the macro name.  Therefore one solution is
 to always declare macros with at least one parameter, even if it is a dummy that can
 be discarded.  There is however a better alternative, one which takes advantage of
 the fact that all commands accept (at least) an empty sequence as extra parameters:
-simply put \code{<}&#8202;\code{>} after the macro name.  Concatenation in this example
-can thus be achieved by entering \code{\\super<}&#8202;\code{>market}.
+simply put \mono{<}&#8202;\mono{>} after the macro name.  Concatenation in this example
+can thus be achieved by entering \mbox{\mono{\\super<}&#8202;\mono{>market}}.
 
 Let us now consider a full example of macro declaration.  We wish to define a macro
-\code{author} that when invoked expands to the full name of an author.  We also
-define a macro named \code{greet} that takes two arguments and produces a greeting.
+\mono{author} that when invoked expands to the full name of an author.  We also
+define a macro named \mono{greet} that takes two arguments and produces a greeting.
 These two macros are then used in a small sample document.  This is the \lambtex source:
 
 \begin<boxed>{source}
@@ -1798,7 +1836,7 @@ is therefore accepted in any circumstances where the target would be accepted.}
 Note the list attached to each of the block types, which indicates the actual
 document blocks that belong to that type.  An \emph{embeddable block}, for example,
 can be either a paragraph, an itemize, enumerate, or description list, a verse block,
-a block containing mathematics, etc.  Notice that many blocks have a \emph{\code{of}
+a block containing mathematics, etc.  Notice that many blocks have a \emph{\mono{of}
 ...} declaration after their name; these blocks --- termed \emph{recursive blocks}
 --- are those whose contents are other blocks.
 
@@ -1814,7 +1852,7 @@ are however fairly minor and still allow for very flexible documents.
 
 In basic terms, documents are constrained by limiting the types of blocks accepted
 as children of recursive blocks.  The exact subtype allowed for each recursive block
-is shown in the figure as an \emph{\code{of} ...} declaration after the block name.
+is shown in the figure as an \emph{\mono{of} ...} declaration after the block name.
 Let us consider, for example, a quote block.  It only allows a list of \emph{quotable
 blocks} as children.  This means that you cannot quote a figure nor an abstract, but
 you can do so with any of the quotable blocks or subtypes (\emph{embeddable blocks},
@@ -1823,36 +1861,36 @@ that if an itemize block is the child of a quote block, then the most restricted
 of the parent apply also to the child's descendants.  In this case that would mean
 that the itemize block would also only accept quotable blocks as children instead of
 its usually more permissive allowance of any \emph{listable block}.  The exception to
-this rule is the \code{subpage} block, which resets the hierarchy.
+this rule is the \mono{subpage} block, which resets the hierarchy.
 
 
 \section[sec:synonyms]{Command synonyms}
 
 For reference purposes, \sref{tab:synonyms} lists all existing synonyms for both simple
 and environment commands (the former's name is prefixed by a backslash).  Remember that
-in the case of environment commands, the same name must be used for the \code{begin}
-and \code{end} tags, even if they are synonyms.
+in the case of environment commands, the same name must be used for the \mono{begin}
+and \mono{end} tags, even if they are synonyms.
 
 \begin[tab:synonyms]{table}{List of all available command synonyms.}
-\begin{tabular}{rl}
+\begin<cols=rl>{tabular}
 \head
 | Canonical name            | Synonyms                      |
 \body
-| \code{\\bold}             | \code{\\strong}, \code{\\b}   |
-| \code{\\code}             | \code{\\tt}                   |
-| \code{\\emph}             | \code{\\em}, \code{\\i}       |
-| \code{\\item}             | \code{\\li}                   |
-| \code{\\link}             | \code{\\a}                    |
-| \code{\\paragraph}        | \code{\\p}                    |
-| \code{\\rule}             | \code{\\hr}                   |
-| \code{\\section}          | \code{\\h1}                   |
-| \code{\\subsection}       | \code{\\h2}                   |
-| \code{\\subsubsection}    | \code{\\h3}                   |
+| \mono{\\bold}             | \mono{\\strong}, \mono{\\b}   |
+| \mono{\\mono}             | \mono{\\tt}                   |
+| \mono{\\emph}             | \mono{\\em}, \mono{\\i}       |
+| \mono{\\item}             | \mono{\\li}                   |
+| \mono{\\link}             | \mono{\\a}                    |
+| \mono{\\paragraph}        | \mono{\\p}                    |
+| \mono{\\rule}             | \mono{\\hr}                   |
+| \mono{\\section}          | \mono{\\h1}                   |
+| \mono{\\subsection}       | \mono{\\h2}                   |
+| \mono{\\subsubsection}    | \mono{\\h3}                   |
 \body
-| \code{description}        | \code{dl}                     |
-| \code{enumerate}          | \code{ol}                     |
-| \code{itemize}            | \code{itemise}, \code{ul}     |
-| \code{verbatim}           | \code{pre}                    |
+| \mono{description}        | \mono{dl}                     |
+| \mono{enumerate}          | \mono{ol}                     |
+| \mono{itemize}            | \mono{itemise}, \mono{ul}     |
+| \mono{verbatim}           | \mono{pre}                    |
 \end{tabular}
 \end{table}
 
@@ -1876,7 +1914,7 @@ used is shown in \sref{tab:permdesc}.
 
 \begin[tab:permdesc]{table}
 {Definition of the various permissions.  These terms are used in \sref{tab:permlist}.}
-\begin{tabular}{cl}
+\begin<cols=cl>{tabular}
 \head
 | Permission    | Definition                                                    |
 \body
@@ -1896,80 +1934,80 @@ application of this feature is described in \sref{sec:macros}.
 {The permissions associated with the various \lambtex commands for order and label
 optional parameters.  Note that simple commands are shown prefixed with a backslash,
 whereas environment commands are enclosed inside brackets.  Within each category,
-commands are shown alphabetically.  Furthermore, the commands \code{\emph{\\macro}},
-\code{\emph{boxout}} and \code{\emph{theorem}} are shown in italics because the actual
+commands are shown alphabetically.  Furthermore, the commands \mono{\emph{\\macro}},
+\mono{\emph{boxout}} and \mono{\emph{theorem}} are shown in italics because the actual
 command name is user-defined.}
-\begin{tabular}{rll}
+\begin<cols=rll>{tabular}
 \head
 | Command                   | Order         | Label         |
 \body
-| \code{\\answer}           | \forbidden    | \forbidden    |
-| \code{\\appendix}         | \forbidden    | \optional     |
-| \code{\\arg}              | \forbidden    | \forbidden    |
-| \code{\\bibliography}     | \forbidden    | \optional     |
-| \code{\\body}             | \forbidden    | \forbidden    |
-| \code{\\bold}             | \forbidden    | \forbidden    |
-| \code{\\br}               | \forbidden    | \forbidden    |
-| \code{\\caps}             | \forbidden    | \forbidden    |
-| \code{\\cite}             | \forbidden    | \forbidden    |
-| \code{\\code}             | \forbidden    | \forbidden    |
-| \code{\\del}              | \forbidden    | \forbidden    |
-| \code{\\dref}             | \forbidden    | \forbidden    |
-| \code{\\foot}             | \forbidden    | \forbidden    |
-| \code{\\glyph}            | \forbidden    | \forbidden    |
-| \code{\\head}             | \forbidden    | \forbidden    |
-| \code{\\ins}              | \forbidden    | \forbidden    |
-| \code{\\item}             | \forbidden    | \forbidden    |
-| \code{\\link}             | \forbidden    | \forbidden    |
-| \code{\emph{\\macro}}     | \forbidden    | \forbidden    |
-| \code{\\mbox}             | \forbidden    | \forbidden    |
-| \code{\\mref}             | \forbidden    | \forbidden    |
-| \code{\\notes}            | \forbidden    | \optional     |
-| \code{\\paragraph}        | \forbidden    | \forbidden    |
-| \code{\\part}             | \depends0     | \optional     |
-| \code{\\picture}          | \forbidden    | \forbidden    |
-| \code{\\question}         | \forbidden    | \forbidden    |
-| \code{\\ranswer}          | \forbidden    | \forbidden    |
-| \code{\\rquestion}        | \forbidden    | \forbidden    |
-| \code{\\rule}             | \forbidden    | \forbidden    |
-| \code{\\section}          | \depends0     | \optional     |
-| \code{\\see}              | \forbidden    | \forbidden    |
-| \code{\\span}             | \forbidden    | \forbidden    |
-| \code{\\sref}             | \forbidden    | \forbidden    |
-| \code{\\sub}              | \forbidden    | \forbidden    |
-| \code{\\subsection}       | \depends0     | \optional     |
-| \code{\\subsubsection}    | \depends0     | \optional     |
-| \code{\\subtitle}         | \forbidden    | \forbidden    |
-| \code{\\sup}              | \forbidden    | \forbidden    |
-| \code{\\title}            | \forbidden    | \forbidden    |
-| \code{\\toc}              | \forbidden    | \optional     |
-| \code{\\what}             | \forbidden    | \forbidden    |
-| \code{\\where}            | \forbidden    | \forbidden    |
-| \code{\\who}              | \forbidden    | \forbidden    |
+| \mono{\\answer}           | \forbidden    | \forbidden    |
+| \mono{\\appendix}         | \forbidden    | \optional     |
+| \mono{\\arg}              | \forbidden    | \forbidden    |
+| \mono{\\bibliography}     | \forbidden    | \optional     |
+| \mono{\\body}             | \forbidden    | \forbidden    |
+| \mono{\\bold}             | \forbidden    | \forbidden    |
+| \mono{\\br}               | \forbidden    | \forbidden    |
+| \mono{\\caps}             | \forbidden    | \forbidden    |
+| \mono{\\cite}             | \forbidden    | \forbidden    |
+| \mono{\\mono}             | \forbidden    | \forbidden    |
+| \mono{\\del}              | \forbidden    | \forbidden    |
+| \mono{\\dref}             | \forbidden    | \forbidden    |
+| \mono{\\foot}             | \forbidden    | \forbidden    |
+| \mono{\\glyph}            | \forbidden    | \forbidden    |
+| \mono{\\head}             | \forbidden    | \forbidden    |
+| \mono{\\ins}              | \forbidden    | \forbidden    |
+| \mono{\\item}             | \forbidden    | \forbidden    |
+| \mono{\\link}             | \forbidden    | \forbidden    |
+| \mono{\emph{\\macro}}     | \forbidden    | \forbidden    |
+| \mono{\\mbox}             | \forbidden    | \forbidden    |
+| \mono{\\mref}             | \forbidden    | \forbidden    |
+| \mono{\\notes}            | \forbidden    | \optional     |
+| \mono{\\paragraph}        | \forbidden    | \forbidden    |
+| \mono{\\part}             | \depends0     | \optional     |
+| \mono{\\picture}          | \forbidden    | \forbidden    |
+| \mono{\\question}         | \forbidden    | \forbidden    |
+| \mono{\\ranswer}          | \forbidden    | \forbidden    |
+| \mono{\\rquestion}        | \forbidden    | \forbidden    |
+| \mono{\\rule}             | \forbidden    | \forbidden    |
+| \mono{\\section}          | \depends0     | \optional     |
+| \mono{\\see}              | \forbidden    | \forbidden    |
+| \mono{\\span}             | \forbidden    | \forbidden    |
+| \mono{\\sref}             | \forbidden    | \forbidden    |
+| \mono{\\sub}              | \forbidden    | \forbidden    |
+| \mono{\\subsection}       | \depends0     | \optional     |
+| \mono{\\subsubsection}    | \depends0     | \optional     |
+| \mono{\\subtitle}         | \forbidden    | \forbidden    |
+| \mono{\\sup}              | \forbidden    | \forbidden    |
+| \mono{\\title}            | \forbidden    | \forbidden    |
+| \mono{\\toc}              | \forbidden    | \optional     |
+| \mono{\\what}             | \forbidden    | \forbidden    |
+| \mono{\\where}            | \forbidden    | \forbidden    |
+| \mono{\\who}              | \forbidden    | \forbidden    |
 \body
-| \code{abstract}           | \forbidden    | \forbidden    |
-| \code{bib}                | \forbidden    | \optional     |
-| \code{\emph{boxout}}      | \depends0     | \optional     |
-| \code{decor}              | \forbidden    | \forbidden    |
-| \code{description}        | \forbidden    | \forbidden    |
-| \code{enumerate}          | \forbidden    | \forbidden    |
-| \code{equation}           | \depends0     | \optional     |
-| \code{figure}             | \depends0     | \optional     |
-| \code{itemize}            | \forbidden    | \forbidden    |
-| \code{mathml}             | \forbidden    | \forbidden    |
-| \code{mathtex}            | \forbidden    | \forbidden    |
-| \code{note}               | \forbidden    | \optional     |
-| \code{quote}              | \forbidden    | \forbidden    |
-| \code{printout}           | \depends0     | \optional     |
-| \code{pull}               | \forbidden    | \forbidden    |
-| \code{qanda}              | \forbidden    | \forbidden    |
-| \code{source}             | \forbidden    | \forbidden    |
-| \code{subpage}            | \forbidden    | \forbidden    |
-| \code{table}              | \depends0     | \optional     |
-| \code{tabular}            | \forbidden    | \forbidden    |
-| \code{\emph{theorem}}     | \depends0     | \optional     |
-| \code{verbatim}           | \forbidden    | \forbidden    |
-| \code{verse}              | \forbidden    | \forbidden    |
+| \mono{abstract}           | \forbidden    | \forbidden    |
+| \mono{bib}                | \forbidden    | \optional     |
+| \mono{\emph{boxout}}      | \depends0     | \optional     |
+| \mono{decor}              | \forbidden    | \forbidden    |
+| \mono{description}        | \forbidden    | \forbidden    |
+| \mono{enumerate}          | \forbidden    | \forbidden    |
+| \mono{equation}           | \depends0     | \optional     |
+| \mono{figure}             | \depends0     | \optional     |
+| \mono{itemize}            | \forbidden    | \forbidden    |
+| \mono{mathml}             | \forbidden    | \forbidden    |
+| \mono{mathtex}            | \forbidden    | \forbidden    |
+| \mono{note}               | \forbidden    | \optional     |
+| \mono{quote}              | \forbidden    | \forbidden    |
+| \mono{printout}           | \depends0     | \optional     |
+| \mono{pull}               | \forbidden    | \forbidden    |
+| \mono{qanda}              | \forbidden    | \forbidden    |
+| \mono{source}             | \forbidden    | \forbidden    |
+| \mono{subpage}            | \forbidden    | \forbidden    |
+| \mono{table}              | \depends0     | \optional     |
+| \mono{tabular}            | \forbidden    | \forbidden    |
+| \mono{\emph{theorem}}     | \depends0     | \optional     |
+| \mono{verbatim}           | \forbidden    | \forbidden    |
+| \mono{verse}              | \forbidden    | \forbidden    |
 \end{tabular}
 \end{table}
 
@@ -1988,7 +2026,7 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 \begin{enumerate}
 
 \item
-    Only numbered elements may be referred to using \code{\\dref} and \code{\\sref}
+    Only numbered elements may be referred to using \mono{\\dref} and \mono{\\sref}
     commands:
 
     \p<noindent>{Unless the user explicitly demanded an empty ordering, sectional
@@ -1997,15 +2035,15 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 
     It makes sense that the hyperlinking commands that are supposed to produce
     a number should only be used with numbered wrappers, numbered sectional
-    blocks, or numbered custom environments.  These commands are \code{\\dref}
-    and \code{\\sref}.  On the other hand, because \code{\\mref} does not output
+    blocks, or numbered custom environments.  These commands are \mono{\\dref}
+    and \mono{\\sref}.  On the other hand, because \mono{\\mref} does not output
     a number, it is always allowed.
 
 \item
     You must explicitly provide a manual ordering for sub-paged wrappers, sectional
     blocks, or custom blocks:
 
-    \p<noindent>{A sub-paged element is one that is declared inside a \code{subpage}
+    \p<noindent>{A sub-paged element is one that is declared inside a \mono{subpage}
     block (see \sref{sec:subpage}).  Because they lie outside the main flow of the
     document, these elements are not automatically numbered.  You must therefore
     explicitly provide them with an ordering parameter by inserting the numbering
@@ -2031,33 +2069,25 @@ ordering, particularly in the context of sub-pages.  The rules are as follows:
 
 \bibliography[sec:thebiblio]
 
-\begin[bib:latex]{bib}
+\begin[bib:latex]{lbib}
 \who{Leslie Lamport}
 \what{LaTeX: a Document Preparation System (2\sup{nd} edition)}
 \where{Addison-Wesley Professional, 1994. ISBN 0-201-52983-1.}
-\end{bib}
+\end{lbib}
 
-\begin[bib:lambdoc]{bib}
-\who{Dario Teixeira}
-\what{\caps{lambdoc} homepage}
-\where{\link{http://lambdoc.forge.ocamlcore.org/}}
-\end{bib}
+\sbib[bib:lambdoc]{\link{http://lambdoc.forge.ocamlcore.org/}}
 
-\begin[bib:mathml]{bib}
-\who{\caps{w3c}}
-\what{\caps{w3c} Math Home}
-\where{\link{bah}{http://www.w3.org/Math/}}
-\end{bib}
+\sbib[bib:mathml]{\link{bah}{http://www.w3.org/Math/}}
 
-\begin[bib:tex]{bib}
+\begin[bib:tex]{lbib}
 \who{Donald E. Knuth}
 \what{The TeXbook (Computers and Typesetting, Volume A)}
 \where{Addison-Wesley, 1984. ISBN 0-201-13448-9.}
-\end{bib}
+\end{lbib}
 
-\begin[bib:bibtex]{bib}
+\begin[bib:bibtex]{lbib}
 \who{Oren Patashnik}
 \what{BibTeXing}
 \where{\link{blah}{http://www.ctan.org/get/biblio/bibtex/contrib/doc/btxdoc.pdf}}
-\end{bib}
+\end{lbib}
 
