@@ -18,9 +18,9 @@ open Lexing
 
 let menhir_with_sedlex menhir_parser tokenizer =
     let lexer_maker () =
-        let ante_position = tokenizer#position in
-        let token = tokenizer#consume in
-        let post_position = tokenizer#position in
+        let ante_position = Tokenizer.get_position tokenizer in
+        let token = Tokenizer.next_token tokenizer in
+        let post_position = Tokenizer.get_position tokenizer in
         (token, ante_position, post_position) in
     let revised_parser = MenhirLib.Convert.Simplified.traditional2revised menhir_parser in
     revised_parser lexer_maker
@@ -31,18 +31,12 @@ let menhir_with_sedlex menhir_parser tokenizer =
 (********************************************************************************)
 
 let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
-    let tokenizer = new Tokenizer.tokenizer ~linenum_offset str in
+    let tokenizer = Tokenizer.make ~linenum_offset str in
     try
         `Okay (menhir_with_sedlex Parser.document tokenizer)
     with exc ->
         let msg = match exc with
-            | Tokenizer.Invalid_ulist_level (current, found) ->
-                Printf.sprintf "You've requested an unordered list %d levels deep, but a maximum of %d is allowed in this context" found (current+1)
-            | Tokenizer.Invalid_olist_level (current, found) ->
-                Printf.sprintf "You've requested an ordered list %d levels deep, but a maximum of %d is allowed in this context" found (current+1)
-            | Parser.Error ->
-                "Syntax error"
-            | exc ->
-                raise exc
-        in `Error [(Some tokenizer#position.pos_lnum, None, msg)]
+            | Parser.Error -> "Syntax error"
+            | exc -> raise exc
+        in `Error [(Some (Tokenizer.get_position tokenizer).pos_lnum, None, msg)]
 

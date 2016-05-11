@@ -1,8 +1,23 @@
-- Alpha.
-- Beta.
-- Gamma.
+Simple unordered list:
 
-# Alpha.
-# Beta.
-# Gamma.
+  * Alpha.
+  * Beta.
+  * Gamma.
+
+Simple ordered list:
+
+  1. Alpha.
+  2. Beta.
+  3. Gamma.
+
+Nested lists:
+
+  * Alpha:
+
+    1. One
+    2. Two
+    3. Three
+
+  * Beta.
+  * Gamma.
 

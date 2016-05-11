@@ -10,156 +10,207 @@ open Lambdoc_prelude
 
 
 (********************************************************************************)
+(*  {1 Exceptions}                                                              *)
+(********************************************************************************)
+
+exception Bad_literal_prefix of string * string
+exception Misplaced_quotation
+
+
+(********************************************************************************)
 (*  {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type listing =
-    | Ulist
-    | Olist
-
-type text =
+type inline =
     | Plain of string
     | Entity of string
+    | Cite of string list
+    | See of string list
     | Bold_mark
     | Emph_mark
     | Sup_mark
     | Sub_mark
+    | Ins_mark
+    | Del_mark
     | Begin_caps | End_caps
     | Begin_mono | End_mono
     | Begin_link | End_link | Link_sep
 
-type line =
-    | Begin_source of string | End_source
-    | Begin_verbatim of string | End_verbatim
-    | Raw of string
-    | Section of int * text list
-    | Par of int * (listing * int) option * text list
+type rule = Single | Double
+
+type literal = Source | Verbatim
+
+type ghost = Sbib | Note
+
+type tprefix =
+    | Sec of string
+    | Oli of string
+    | Uli
+
+type regular =
+    | Rule of rule
+    | Literal of literal * int * string * string
+    | Ghost of ghost * string * inline list
+    | Section of string * inline list
+    | Textual of tprefix option * inline list
+
+type lexeme =
+    | Eof
+    | Regular of string * string * regular
 
 
 (********************************************************************************)
 (*  {1 Regular expressions}                                                     *)
 (********************************************************************************)
 
+let eol = [%sedlex.regexp? '\n']
 let alpha = [%sedlex.regexp? 'a' .. 'z' | 'A' .. 'Z']
-let deci = [%sedlex.regexp? '0' .. '9']
+let digit = [%sedlex.regexp? '0' .. '9']
+let number = [%sedlex.regexp? Plus digit]
+let numbers = [%sedlex.regexp? Star (number, ','), number]
 let blank = [%sedlex.regexp? Chars " \t"]
-let non_blank = [%sedlex.regexp? Compl blank]
-let section_pat = [%sedlex.regexp? Plus '=']
-let quote_pat = [%sedlex.regexp? '>', Star ('>' | blank)]
-let list_pat = [%sedlex.regexp? Plus '-' | Plus '#']
-
+let style = [%sedlex.regexp? Plus (Compl (blank | eol))]
 let escape = [%sedlex.regexp? '\\']
-let bold_mark = [%sedlex.regexp? "**"]
-let emph_mark = [%sedlex.regexp? "//"]
-let sup_mark = [%sedlex.regexp? "^^"]
-let sub_mark = [%sedlex.regexp? "__"]
-let begin_caps = [%sedlex.regexp? "(("]
-let end_caps = [%sedlex.regexp? "))"]
-let begin_mono = [%sedlex.regexp? "{{"]
-let end_mono = [%sedlex.regexp? "}}"]
-let begin_link = [%sedlex.regexp? "[["]
-let end_link = [%sedlex.regexp? "]]"]
-let link_sep = [%sedlex.regexp? '|']
-
-let entity = [%sedlex.regexp? '&', Opt '#', Plus (alpha | deci), ';']
-let ndash = [%sedlex.regexp? "--"]
-let mdash = [%sedlex.regexp? "---"]
-let ldquo = [%sedlex.regexp? "``"]
-let rdquo = [%sedlex.regexp? "''"]
-
-let begin_source = [%sedlex.regexp? "{{{"]
-let end_source = [%sedlex.regexp? "}}}"]
-let begin_verbatim = [%sedlex.regexp? "((("]
-let end_verbatim = [%sedlex.regexp? ")))"]
 
 
 (********************************************************************************)
 (*  {1 Private functions and values}                                            *)
 (********************************************************************************)
 
-let count_char str what =
-    String.fold_left (fun accum c -> if c = what then accum+1 else accum) 0 str
+let ltrim_lexbuf ~first lexbuf =
+        Sedlexing.Utf8.sub_lexeme lexbuf first ((Sedlexing.lexeme_length lexbuf) - first - 1)
 
+let get_labeldef lexbuf =
+    Sedlexing.Utf8.lexeme lexbuf |>
+    String.rstrip |>
+    String.slice ~first:1 ~last:(-1)
 
-let rtrim_lexbuf ~first lexbuf =
-    Sedlexing.Utf8.sub_lexeme lexbuf first ((Sedlexing.lexeme_length lexbuf) - first - 1)
+let get_labelref lexbuf =
+    get_labeldef lexbuf |>
+    String.nsplit ~by:","
 
+let scan_text lexbuf =
+    let add_plain accum el = match accum with
+        | (`Plain buf) :: _ ->
+            Buffer.add_string buf el;
+            accum
+        | _ ->
+            let buf = Buffer.create 64 in
+            Buffer.add_string buf el;
+            `Plain buf :: accum in
+    let add_other accum el =
+        `Other el :: accum in
+    let rec main_loop accum = match%sedlex lexbuf with
+        | eol | eof                               -> accum
+        | escape, eol                             -> accum
+        | escape, any                             -> main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | "**"                                    -> main_loop (add_other accum Bold_mark)
+        | "//"                                    -> main_loop (add_other accum Emph_mark)
+        | "^^"                                    -> main_loop (add_other accum Sup_mark)
+        | "__"                                    -> main_loop (add_other accum Sub_mark)
+        | "++"                                    -> main_loop (add_other accum Ins_mark)
+        | "~~"                                    -> main_loop (add_other accum Del_mark)
+        | "(("                                    -> main_loop (add_other accum Begin_caps)
+        | "))"                                    -> main_loop (add_other accum End_caps)
+        | "{{"                                    -> main_loop (add_other accum Begin_mono)
+        | "}}"                                    -> main_loop (add_other accum End_mono)
+        | "[["                                    -> link_loop (add_other accum Begin_link)
+        | "]]"                                    -> main_loop (add_other accum End_link)
+        | '|'                                     -> main_loop (add_other accum Link_sep)
+        | '&', Opt '#', Plus (alpha | digit), ';' -> main_loop (add_other accum (Entity (ltrim_lexbuf ~first:1 lexbuf)))
+        | '[', numbers, ']'                       -> main_loop (add_other accum (Cite (get_labelref lexbuf)))
+        | '(', numbers, ')'                       -> main_loop (add_other accum (See (get_labelref lexbuf)))
+        | "---"                                   -> main_loop (add_other accum (Entity "mdash"))
+        | "--"                                    -> main_loop (add_other accum (Entity "ndash"))
+        | "``"                                    -> main_loop (add_other accum (Entity "ldquo"))
+        | "''"                                    -> main_loop (add_other accum (Entity "rdquo"))
+        | any                                     -> main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | _                                       -> assert false
+    and link_loop accum = match%sedlex lexbuf with
+        | eol | eof   -> accum
+        | escape, eol -> accum
+        | escape, any -> link_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | "]]"        -> main_loop (add_other accum End_link)
+        | '|'         -> main_loop (add_other accum Link_sep)
+        | any         -> link_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | _           -> assert false in
+    let postproc = function
+        | `Plain buf -> Plain (Buffer.contents buf)
+        | `Other x   -> x in
+    main_loop [] |> List.rev_map postproc
 
-let text lexbuf =
-    let coalesce accum el = match accum with
-        | (Plain x) :: tl -> (Plain (x ^ el)) :: tl
-        | _               -> (Plain el) :: accum in
-    let rec main_scanner accum = match%sedlex lexbuf with
-        | eof         -> accum
-        | escape, any -> main_scanner (coalesce accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
-        | bold_mark   -> main_scanner (Bold_mark :: accum)
-        | emph_mark   -> main_scanner (Emph_mark :: accum)
-        | sup_mark    -> main_scanner (Sup_mark :: accum)
-        | sub_mark    -> main_scanner (Sub_mark :: accum)
-        | begin_caps  -> main_scanner (Begin_caps :: accum)
-        | end_caps    -> main_scanner (End_caps :: accum)
-        | begin_mono  -> main_scanner (Begin_mono :: accum)
-        | end_mono    -> main_scanner (End_mono :: accum)
-        | begin_link  -> link_scanner (Begin_link :: accum)
-        | end_link    -> main_scanner (End_link :: accum)
-        | link_sep    -> main_scanner (Link_sep :: accum)
-        | entity      -> main_scanner (Entity (rtrim_lexbuf ~first:1 lexbuf) :: accum)
-        | ndash       -> main_scanner (Entity "ndash" :: accum)
-        | mdash       -> main_scanner (Entity "mdash" :: accum)
-        | ldquo       -> main_scanner (Entity "ldquo" :: accum)
-        | rdquo       -> main_scanner (Entity "rdquo" :: accum)
-        | any         -> main_scanner (coalesce accum (Sedlexing.Utf8.lexeme lexbuf))
-        | _           -> assert false
-    and link_scanner accum = match%sedlex lexbuf with
-        | eof         -> accum
-        | escape, any -> link_scanner (coalesce accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
-        | end_link    -> main_scanner (End_link :: accum)
-        | link_sep    -> main_scanner (Link_sep :: accum)
-        | any         -> link_scanner (coalesce accum (Sedlexing.Utf8.lexeme lexbuf))
-        | _           -> assert false
-    in List.rev (main_scanner [])
+let scan_literal terminator qprefix iprefix lexbuf =
+    let style = ltrim_lexbuf ~first:3 lexbuf |> String.rstrip in
+    let buf = Buffer.create 512 in
+    let prefix = qprefix ^ iprefix in
+    let rec loop nlines = match%sedlex lexbuf with
+        | Star (Compl eol), (eol | eof) ->
+            let str = String.rstrip (Sedlexing.Utf8.lexeme lexbuf) in
+            if String.starts_with str prefix
+            then begin
+                let unprefixed = String.slice ~first:(String.length prefix) str in
+                if unprefixed = terminator
+                then
+                    nlines
+                else begin
+                    Buffer.add_string buf unprefixed;
+                    Buffer.add_char buf '\n';
+                    loop (nlines+1)
+                end
+            end
+            else
+                raise (Bad_literal_prefix (prefix, str))
+        | _ ->
+            assert false in
+    let nlines = loop 0 in
+    (nlines, style, Buffer.contents buf)
 
 
 (********************************************************************************)
 (*  {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let source lexbuf = match%sedlex lexbuf with
-    | end_source, Star blank, eof -> End_source
-    | Star any                    -> Raw (Sedlexing.Utf8.lexeme lexbuf)
-    | _                           -> assert false
-
-
-let verbatim lexbuf = match%sedlex lexbuf with
-    | end_verbatim, Star blank, eof -> End_verbatim
-    | Star any                      -> Raw (Sedlexing.Utf8.lexeme lexbuf)
-    | _                             -> assert false
-
-
-let general lexbuf = match%sedlex lexbuf with
-    | begin_source, Star non_blank, Star blank, eof ->
-        Begin_source (Sedlexing.Utf8.sub_lexeme lexbuf 3 ((Sedlexing.lexeme_length lexbuf) - 3))
-    | end_source, Star blank, eof ->
-        End_source
-    | begin_verbatim, Star non_blank, Star blank, eof ->
-        Begin_verbatim (Sedlexing.Utf8.sub_lexeme lexbuf 3 ((Sedlexing.lexeme_length lexbuf) - 3))
-    | end_verbatim, Star blank, eof ->
-        End_verbatim
-    | section_pat, Opt blank ->
-        let lexeme = Sedlexing.Utf8.lexeme lexbuf in
-        let section_level = count_char lexeme '=' in
-        Section (section_level, text lexbuf)
-    | Opt quote_pat, Star blank, Opt (list_pat, Plus blank) ->
-        let lexeme = Sedlexing.Utf8.lexeme lexbuf in
-        let quote_level = count_char lexeme '>' in
-        let list_level =
-            let counter = count_char lexeme in
-            match (counter '-', counter '#') with
-                | (x, 0) when x > 0 -> Some (Ulist, x)
-                | (0, x) when x > 0 -> Some (Olist, x)
-                | _                 -> None in
-        let text = text lexbuf in
-        Par (quote_level, list_level, text)
-    | _ ->
-        assert false
+let next lexbuf =
+    let rec scan qprefix iprefix = match%sedlex lexbuf with
+        | eof ->
+            Eof
+        | Star ('>', Opt blank) ->
+            if qprefix = "" && iprefix = ""
+            then scan (Sedlexing.Utf8.lexeme lexbuf) ""
+            else raise Misplaced_quotation
+        | Plus blank ->
+            scan qprefix (Sedlexing.Utf8.lexeme lexbuf)
+        | "{{{", Opt style, Star blank, (eol | eof) ->
+            let (nlines, style, raw) = scan_literal "}}}" qprefix iprefix lexbuf in
+            Regular (qprefix, iprefix, Literal (Source, nlines, style, raw))
+        | "(((", Opt style, Star blank, (eol | eof) ->
+            let (nlines, style, raw) = scan_literal ")))" qprefix iprefix lexbuf in
+            Regular (qprefix, iprefix, Literal (Verbatim, nlines, style, raw))
+        | Plus '=', Star blank, (eol | eof) ->
+            Regular (qprefix, iprefix, Rule Double)
+        | Plus '-', Star blank, (eol | eof) ->
+            Regular (qprefix, iprefix, Rule Single)
+        | Plus '=', Star blank ->
+            let level = Sedlexing.Utf8.lexeme lexbuf in
+            Regular (qprefix, iprefix, Section (level, scan_text lexbuf))
+        | ('*' | '-'), Star blank ->
+            Regular (qprefix, iprefix, Textual (Some Uli, scan_text lexbuf))
+        | number, ('.' | ')'), Star blank ->
+            let oli = Sedlexing.Utf8.lexeme lexbuf |> String.rstrip in
+            Regular (qprefix, iprefix, Textual (Some (Oli oli), scan_text lexbuf))
+        | number, Star ('.', number), Opt '.', Star blank ->
+            let sec = Sedlexing.Utf8.lexeme lexbuf |> String.rstrip in
+            Regular (qprefix, iprefix, Textual (Some (Sec sec), scan_text lexbuf))
+        | '[', number, ']', Star blank ->
+            let label = get_labeldef lexbuf in
+            Regular (qprefix, iprefix, Ghost (Sbib, label, scan_text lexbuf))
+        | '(', number, ')', Star blank ->
+            let label = get_labeldef lexbuf in
+            Regular (qprefix, iprefix, Ghost (Note, label, scan_text lexbuf))
+        | any ->
+            Sedlexing.rollback lexbuf;
+            Regular (qprefix, iprefix, Textual (None, scan_text lexbuf))
+        | _ ->
+            assert false in
+    scan "" ""
 
