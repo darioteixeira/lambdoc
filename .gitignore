@@ -1,4 +1,5 @@
 _build/
+tests/testsets/_tests
 setup.data
 setup.log
 *.cm[aiox]
