@@ -20,13 +20,13 @@ module Html_writer = Lambdoc_whtml_writer.Make (Tyxml_backend)
 
 module Filetype =
 struct
-    type source = Lambtex | Lambwiki | Lambxml | Markdown
+    type source = Lambtex | Lamblite | Lambxml | Markdown
     type target = Html | Sexp | Asexp
     type t = Source of source | Target of target
 
     let of_string = function
         | "tex"   -> Source Lambtex
-        | "wiki"  -> Source Lambwiki
+        | "lite"  -> Source Lamblite
         | "xml"   -> Source Lambxml
         | "md"    -> Source Markdown
         | "html"  -> Target Html
@@ -36,7 +36,7 @@ struct
 
     let string_of_source = function
         | Lambtex  -> "tex"
-        | Lambwiki -> "wiki"
+        | Lamblite -> "lite"
         | Lambxml  -> "xml"
         | Markdown -> "md"
 
@@ -47,7 +47,7 @@ struct
 
     let describe_source = function
         | Lambtex  -> "Lambtex"
-        | Lambwiki -> "Lambwiki"
+        | Lamblite -> "Lamblite"
         | Lambxml  -> "Lambxml"
         | Markdown -> "Markdown"
 
@@ -120,10 +120,10 @@ let execute fname source target () =
     let source_contents = read_file fname (Source source) in
     let target_contents = read_file fname (Target target) in
     let reader = match source with
-        | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string
-        | Lambwiki -> Lambdoc_rlambwiki_reader.Trivial.ambivalent_from_string
-        | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string
-        | Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string in
+        | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~options:()
+        | Lamblite -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:()
+        | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~options:()
+        | Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string ~options:() in
     let writer = match target with
         | Html  -> fun doc -> Html_writer.write_ambivalent doc |> string_of_xhtml
         | Sexp  -> Ambivalent.serialize
@@ -165,7 +165,7 @@ let common_feature_set1 =   (* Common to all markups *)
     ("Sectioning", "sectioning");
     ]
 
-let common_feature_set2 =   (* Common to Lambtex/Lambwiki/Lambxml *)
+let common_feature_set2 =   (* Common to Lambtex/Lamblite/Lambxml *)
     [
     ("Entities", "entity");
     ("Verbatim environments", "verbatim");
@@ -240,7 +240,7 @@ let tests =
     [
     ("Lambtex features", build_test ~prefix:"lambtex_feature"
         (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4 @ lambtex_feature_set));
-    ("Lambwiki features", build_test ~prefix:"lambwiki_feature"
+    ("Lamblite features", build_test ~prefix:"lamblite_feature"
         (common_feature_set1 @ common_feature_set2));
     ("Lambxml features", build_test ~prefix:"lambxml_feature"
         (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4));

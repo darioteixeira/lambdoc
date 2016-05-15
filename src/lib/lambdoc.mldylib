@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 4564383d3d0309c380857994c255c950)
+# DO NOT EDIT (digest: fe957e7aceb22bbb394417628708b2aa)
 Lambdoc_prelude
 Lambdoc_core
 Lambdoc_core_basic
@@ -45,12 +45,12 @@ Lambdoc_rlambtex_parser
 Lambdoc_rlambtex_tokenizer
 Lambdoc_rlambtex_readable
 Lambdoc_rlambtex_reader
-Lambdoc_rlambwiki
-Lambdoc_rlambwiki_parser
-Lambdoc_rlambwiki_lexer
-Lambdoc_rlambwiki_tokenizer
-Lambdoc_rlambwiki_readable
-Lambdoc_rlambwiki_reader
+Lambdoc_rlamblite
+Lambdoc_rlamblite_parser
+Lambdoc_rlamblite_lexer
+Lambdoc_rlamblite_tokenizer
+Lambdoc_rlamblite_readable
+Lambdoc_rlamblite_reader
 Lambdoc_rlambxml
 Lambdoc_rlambxml_readable
 Lambdoc_rlambxml_reader

@@ -81,7 +81,7 @@ let () =
     OptParser.add options ~group:idiosyncrasies ~long_name:"max-inline-depth" ~help:"Maximum depth for inline elements" max_inline_depth_opt;
     OptParser.add options ~group:idiosyncrasies ~long_name:"max-block-depth" ~help:"Maximum depth for block elements" max_block_depth_opt;
 
-    OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lambwiki', 'markdown', or 'sexp'; we try to guess based on file extension if not specified)" input_markup_opt;
+    OptParser.add options ~group:markup ~short_name:'f' ~long_name:"from" ~help:"Input markup (either 'lambtex', 'lambxml', 'lamblite', 'markdown', or 'sexp'; we try to guess based on file extension if not specified)" input_markup_opt;
     OptParser.add options ~group:markup ~short_name:'t' ~long_name:"to" ~help:"Output markup (either 'xhtml' or 'sexp'; we try to guess based on file extension if not specified)" output_markup_opt;
 
     OptParser.add options ~group:file ~short_name:'i' ~long_name:"in" ~help:"Input file name (read from STDIN if not specified)" input_file_opt;

@@ -12,7 +12,7 @@ AlphaFeatures:  ocamlbuild_more_args
 Description:
     Lambdoc is a library providing support for semantically rich documents in web applications,
     built with Ocsigen/Eliom integration in mind.  It includes parsers for four different markup
-    languages: Lambtex, Lambxml, Lambwiki, and Markdown.  The first is inspired by LaTeX, the
+    languages: Lambtex, Lambxml, Lamblite, and Markdown.  The first is inspired by LaTeX, the
     second is an XML-based markup based on HTML, the third is a lightweight markup language in
     the spirit of Wiki Creole, and the last is the popular lightweight markup language.
     The library also includes the possibility of outputing any Lambdoc document as an Ocsigen
@@ -34,7 +34,7 @@ Library "lambdoc"
         Lambdoc_reader, Lambdoc_reader_ast, Lambdoc_reader_extension, Lambdoc_reader_compiler, Lambdoc_reader_maker,
         Lambdoc_reader_permission, Lambdoc_reader_preprocessor, Lambdoc_reader_readconv, Lambdoc_reader_style,
         Lambdoc_rlambtex, Lambdoc_rlambtex_context, Lambdoc_rlambtex_lexer, Lambdoc_rlambtex_parser, Lambdoc_rlambtex_tokenizer, Lambdoc_rlambtex_readable, Lambdoc_rlambtex_reader,
-        Lambdoc_rlambwiki, Lambdoc_rlambwiki_parser, Lambdoc_rlambwiki_lexer, Lambdoc_rlambwiki_tokenizer, Lambdoc_rlambwiki_readable, Lambdoc_rlambwiki_reader,
+        Lambdoc_rlamblite, Lambdoc_rlamblite_parser, Lambdoc_rlamblite_lexer, Lambdoc_rlamblite_tokenizer, Lambdoc_rlamblite_readable, Lambdoc_rlamblite_reader,
         Lambdoc_rlambxml, Lambdoc_rlambxml_readable, Lambdoc_rlambxml_reader,
         Lambdoc_rmarkdown, Lambdoc_rmarkdown_readable, Lambdoc_rmarkdown_reader,
         Lambdoc_writer, Lambdoc_writer_emblang, Lambdoc_writer_explanations, Lambdoc_writer_maker, Lambdoc_writer_translations, Lambdoc_writer_writeconv,

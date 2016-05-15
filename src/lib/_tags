@@ -23,7 +23,7 @@
 <lambdoc_core_target.*>:         pkg_ppx_sexp_conv
 <lambdoc_core_valid.*>:          pkg_ppx_sexp_conv
 <lambdoc_core_wrapper.*>:        pkg_ppx_sexp_conv
+<lambdoc_rlamblite_lexer.ml>:    pkg_sedlex
 <lambdoc_rlambtex_lexer.ml>:     pkg_sedlex
-<lambdoc_rlambwiki_lexer.ml>:    pkg_sedlex
 <lambdoc_writer_emblang.ml>:     pkg_sedlex
 

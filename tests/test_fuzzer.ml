@@ -59,7 +59,7 @@ let fuzz total markup src =
     let len = String.length src in
     let reader = match markup with
         | `Lambtex  -> Lambdoc_read_lambtex.Simple.ambivalent_from_string
-        | `Lambwiki -> Lambdoc_read_lambwiki.Simple.ambivalent_from_string
+        | `Lamblite -> Lambdoc_read_lamblite.Simple.ambivalent_from_string
         | `Lambxml  -> Lambdoc_read_lambxml.Simple.ambivalent_from_string
         | `Markdown -> Lambdoc_read_markdown.Simple.ambivalent_from_string in
     for i = 1 to total do
@@ -73,5 +73,5 @@ let () =
     Random.self_init ();
     Printexc.record_backtrace true;
     let src = BatPervasives.input_all stdin in
-    fuzz 100_000 `Lambwiki src
+    fuzz 100_000 `Lamblite src
 

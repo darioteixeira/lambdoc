@@ -1,13 +1,13 @@
 (********************************************************************************)
-(*  Lambdoc_rlambwiki_tokenizer.ml
+(*  Lambdoc_rlamblite_tokenizer.ml
     Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
     This software is distributed under the terms of the GNU GPL version 2.
     See LICENSE file for full license text.
 *)
 (********************************************************************************)
 
-module Parser = Lambdoc_rlambwiki_parser
-module Lexer = Lambdoc_rlambwiki_lexer
+module Parser = Lambdoc_rlamblite_parser
+module Lexer = Lambdoc_rlamblite_lexer
 
 open Lambdoc_prelude
 open Lambdoc_core
