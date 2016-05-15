@@ -23,7 +23,10 @@ open Lambdoc_core
 *)
 module type READABLE =
 sig
+    type options
+
     val ast_from_string:
+        ?options:options ->
         linenum_offset:int ->
         inline_extdefs:Extension.extdef list ->
         block_extdefs:Extension.extdef list ->
@@ -38,7 +41,10 @@ module type READER =
 sig
     module Ext: Extension.S
 
+    type options
+
     val ambivalent_from_string:
+        ?options:options ->
         ?postprocessor:Error.localized list Ext.Foldmapper.t ->
         ?extcomms:Ext.extcomm list ->
         ?linenum_offset:int ->
@@ -54,9 +60,11 @@ end
 *)
 module type FULL =
 sig
-    module Make: functor (Ext: Extension.S) -> READER with module Ext = Ext
+    type options
 
-    module Trivial: READER with module Ext = Extension.Trivial
+    module Make: functor (Ext: Extension.S) -> READER with module Ext = Ext and type options = options
+
+    module Trivial: READER with module Ext = Extension.Trivial and type options = options
 end
 
 
@@ -66,5 +74,7 @@ end
 
 module Make:
     functor (Readable: READABLE) ->
-    functor (Ext: Extension.S) -> READER with module Ext = Ext
+    functor (Ext: Extension.S) -> READER with
+    module Ext = Ext and
+    type options = Readable.options
 

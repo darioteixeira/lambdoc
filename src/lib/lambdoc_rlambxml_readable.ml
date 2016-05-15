@@ -73,6 +73,13 @@ and node =
 
 
 (********************************************************************************)
+(** {1 Public type definitions}                                                 *)
+(********************************************************************************)
+
+type options = unit
+
+
+(********************************************************************************)
 (** {1 Private modules}                                                         *)
 (********************************************************************************)
 
@@ -275,7 +282,7 @@ let dummy_block = Ast.Paragraph []
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
+let ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs str =
 
     let errors = Errors.make () in
     let newmacros = ref Stringset.empty in

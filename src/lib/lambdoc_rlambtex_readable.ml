@@ -12,10 +12,17 @@ module Tokenizer = Lambdoc_rlambtex_tokenizer
 
 
 (********************************************************************************)
-(*  {2 Public functions and values}                                             *)
+(*  {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
+type options = unit
+
+
+(********************************************************************************)
+(*  {1 Public functions and values}                                             *)
+(********************************************************************************)
+
+let ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs str =
     let module C = Context.Make (struct end) in
     let module P = Parser.Make (C) in
     let module T = Tokenizer.Make (C) (P) in

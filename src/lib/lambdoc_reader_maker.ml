@@ -20,7 +20,10 @@ open Lambdoc_core
 
 module type READABLE =
 sig
+    type options
+
     val ast_from_string:
+        ?options:options ->
         linenum_offset:int ->
         inline_extdefs:Extension.extdef list ->
         block_extdefs:Extension.extdef list ->
@@ -33,7 +36,10 @@ module type READER =
 sig
     module Ext: Extension.S
 
+    type options
+
     val ambivalent_from_string:
+        ?options:options ->
         ?postprocessor:Error.localized list Ext.Foldmapper.t ->
         ?extcomms:Ext.extcomm list ->
         ?linenum_offset:int ->
@@ -47,9 +53,11 @@ end
 
 module type FULL =
 sig
-    module Make: functor (Ext: Extension.S) -> READER with module Ext = Ext
+    type options
 
-    module Trivial: READER with module Ext = Extension.Trivial
+    module Make: functor (Ext: Extension.S) -> READER with module Ext = Ext and type options = options
+
+    module Trivial: READER with module Ext = Extension.Trivial and type options = options
 end
 
 
@@ -57,10 +65,14 @@ end
 (** {1 Public modules and functors}                                             *)
 (********************************************************************************)
 
-module Make (Readable: READABLE) (Ext: Extension.S) : READER with module Ext = Ext =
+module Make (Readable: READABLE) (Ext: Extension.S) : READER with
+    module Ext = Ext
+    and type options = Readable.options =
 struct
     module Ext = Ext
     module Comp = Compiler.Make (Ext)
+
+    type options = Readable.options
 
     open Extension
     open Ext
@@ -86,6 +98,7 @@ struct
             in (accum_inl, (tag, blksyn) :: accum_blk)
 
     let ambivalent_from_string
+        ?options
         ?postprocessor
         ?(extcomms = [])
         ?(linenum_offset = 0)
@@ -101,7 +114,7 @@ struct
                     Monad.return (Ambivalent.invalid (Invalid.make errors))
                 | `Okay ->
                     let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
-                    match Readable.ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs source with
+                    match Readable.ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs source with
                         | `Okay ast ->
                             Comp.compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source ast
                         | `Error xs ->

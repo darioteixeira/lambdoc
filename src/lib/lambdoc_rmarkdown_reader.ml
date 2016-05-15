@@ -6,6 +6,8 @@
 *)
 (********************************************************************************)
 
+type options = unit
+
 module Make = Lambdoc_reader.Maker.Make (Lambdoc_rmarkdown_readable)
 
 module Trivial = Make (Lambdoc_reader.Extension.Trivial)

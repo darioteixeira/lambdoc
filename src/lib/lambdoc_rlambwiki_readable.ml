@@ -13,7 +13,14 @@ open Lexing
 
 
 (********************************************************************************)
-(*  {2 Private functions and values}                                            *)
+(*  {1 Type definitions}                                                        *)
+(********************************************************************************)
+
+type options = unit
+
+
+(********************************************************************************)
+(*  {1 Private functions and values}                                            *)
 (********************************************************************************)
 
 let menhir_with_sedlex menhir_parser tokenizer =
@@ -27,10 +34,10 @@ let menhir_with_sedlex menhir_parser tokenizer =
 
 
 (********************************************************************************)
-(*  {2 Public functions and values}                                             *)
+(*  {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let ast_from_string ~linenum_offset ~inline_extdefs ~block_extdefs str =
+let ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs str =
     let tokenizer = Tokenizer.make ~linenum_offset str in
     try
         `Okay (menhir_with_sedlex Parser.document tokenizer)
