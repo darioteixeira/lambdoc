@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-(** Main interface to the Lambtek reader.
+(** Main interface to the Lambtex reader.
 *)
 
 type options = unit
