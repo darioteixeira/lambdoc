@@ -16,7 +16,7 @@ open Lexing
 (*  {1 Type definitions}                                                        *)
 (********************************************************************************)
 
-type options = unit
+type options = [ `Lambwiki | `Markdown ]
 
 
 (********************************************************************************)
@@ -38,7 +38,7 @@ let menhir_with_sedlex menhir_parser tokenizer =
 (********************************************************************************)
 
 let ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs str =
-    let tokenizer = Tokenizer.make ~linenum_offset str in
+    let tokenizer = Tokenizer.make ?options ~linenum_offset str in
     try
         `Okay (menhir_with_sedlex Parser.document tokenizer)
     with exc ->

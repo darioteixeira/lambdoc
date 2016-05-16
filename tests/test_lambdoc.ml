@@ -20,13 +20,13 @@ module Html_writer = Lambdoc_whtml_writer.Make (Tyxml_backend)
 
 module Filetype =
 struct
-    type source = Lambtex | Lamblite | Lambxml | Markdown
+    type source = Lambtex | Lambwiki | Lambxml | Markdown
     type target = Html | Sexp | Asexp
     type t = Source of source | Target of target
 
     let of_string = function
         | "tex"   -> Source Lambtex
-        | "lite"  -> Source Lamblite
+        | "wiki"  -> Source Lambwiki
         | "xml"   -> Source Lambxml
         | "md"    -> Source Markdown
         | "html"  -> Target Html
@@ -36,7 +36,7 @@ struct
 
     let string_of_source = function
         | Lambtex  -> "tex"
-        | Lamblite -> "lite"
+        | Lambwiki -> "wiki"
         | Lambxml  -> "xml"
         | Markdown -> "md"
 
@@ -47,7 +47,7 @@ struct
 
     let describe_source = function
         | Lambtex  -> "Lambtex"
-        | Lamblite -> "Lamblite"
+        | Lambwiki -> "Lambwiki"
         | Lambxml  -> "Lambxml"
         | Markdown -> "Markdown"
 
@@ -121,7 +121,7 @@ let execute fname source target () =
     let target_contents = read_file fname (Target target) in
     let reader = match source with
         | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~options:()
-        | Lamblite -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:()
+        | Lambwiki -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Lambwiki
         | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~options:()
         | Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string ~options:() in
     let writer = match target with
@@ -165,7 +165,7 @@ let common_feature_set1 =   (* Common to all markups *)
     ("Sectioning", "sectioning");
     ]
 
-let common_feature_set2 =   (* Common to Lambtex/Lamblite/Lambxml *)
+let common_feature_set2 =   (* Common to Lambtex/Lambwiki/Lambxml *)
     [
     ("Entities", "entity");
     ("Verbatim environments", "verbatim");
@@ -240,7 +240,7 @@ let tests =
     [
     ("Lambtex features", build_test ~prefix:"lambtex_feature"
         (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4 @ lambtex_feature_set));
-    ("Lamblite features", build_test ~prefix:"lamblite_feature"
+    ("Lambwiki features", build_test ~prefix:"lambwiki_feature"
         (common_feature_set1 @ common_feature_set2));
     ("Lambxml features", build_test ~prefix:"lambxml_feature"
         (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4));

@@ -58,6 +58,8 @@ type lexeme =
     | Eof
     | Regular of string * string * regular
 
+type syntax = [ `Lambwiki | `Markdown ]
+
 
 (********************************************************************************)
 (*  {1 Regular expressions}                                                     *)
@@ -89,7 +91,7 @@ let get_labelref lexbuf =
     get_labeldef lexbuf |>
     String.nsplit ~by:","
 
-let scan_text lexbuf =
+let scan_text ~syntax lexbuf =
     let add_plain accum el = match accum with
         | (`Plain buf) :: _ ->
             Buffer.add_string buf el;
@@ -100,43 +102,64 @@ let scan_text lexbuf =
             `Plain buf :: accum in
     let add_other accum el =
         `Other el :: accum in
-    let rec main_loop accum = match%sedlex lexbuf with
+    let rec lambwiki_main_loop accum = match%sedlex lexbuf with
         | eol | eof                               -> accum
         | escape, eol                             -> accum
-        | escape, any                             -> main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
-        | "**"                                    -> main_loop (add_other accum Bold_mark)
-        | "//"                                    -> main_loop (add_other accum Emph_mark)
-        | "^^"                                    -> main_loop (add_other accum Sup_mark)
-        | "__"                                    -> main_loop (add_other accum Sub_mark)
-        | "++"                                    -> main_loop (add_other accum Ins_mark)
-        | "~~"                                    -> main_loop (add_other accum Del_mark)
-        | "(("                                    -> main_loop (add_other accum Begin_caps)
-        | "))"                                    -> main_loop (add_other accum End_caps)
-        | "{{"                                    -> main_loop (add_other accum Begin_mono)
-        | "}}"                                    -> main_loop (add_other accum End_mono)
-        | "[["                                    -> link_loop (add_other accum Begin_link)
-        | "]]"                                    -> main_loop (add_other accum End_link)
-        | '|'                                     -> main_loop (add_other accum Link_sep)
-        | '&', Opt '#', Plus (alpha | digit), ';' -> main_loop (add_other accum (Entity (ltrim_lexbuf ~first:1 lexbuf)))
-        | '[', numbers, ']'                       -> main_loop (add_other accum (Cite (get_labelref lexbuf)))
-        | '(', numbers, ')'                       -> main_loop (add_other accum (See (get_labelref lexbuf)))
-        | "---"                                   -> main_loop (add_other accum (Entity "mdash"))
-        | "--"                                    -> main_loop (add_other accum (Entity "ndash"))
-        | "``"                                    -> main_loop (add_other accum (Entity "ldquo"))
-        | "''"                                    -> main_loop (add_other accum (Entity "rdquo"))
-        | any                                     -> main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | escape, any                             -> lambwiki_main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | "**"                                    -> lambwiki_main_loop (add_other accum Bold_mark)
+        | "//"                                    -> lambwiki_main_loop (add_other accum Emph_mark)
+        | "^^"                                    -> lambwiki_main_loop (add_other accum Sup_mark)
+        | "__"                                    -> lambwiki_main_loop (add_other accum Sub_mark)
+        | "++"                                    -> lambwiki_main_loop (add_other accum Ins_mark)
+        | "~~"                                    -> lambwiki_main_loop (add_other accum Del_mark)
+        | "(("                                    -> lambwiki_main_loop (add_other accum Begin_caps)
+        | "))"                                    -> lambwiki_main_loop (add_other accum End_caps)
+        | "{{"                                    -> lambwiki_main_loop (add_other accum Begin_mono)
+        | "}}"                                    -> lambwiki_main_loop (add_other accum End_mono)
+        | "[["                                    -> link_loop lambwiki_main_loop (add_other accum Begin_link)
+        | "]]"                                    -> lambwiki_main_loop (add_other accum End_link)
+        | '|'                                     -> lambwiki_main_loop (add_other accum Link_sep)
+        | '&', Opt '#', Plus (alpha | digit), ';' -> lambwiki_main_loop (add_other accum (Entity (ltrim_lexbuf ~first:1 lexbuf)))
+        | '[', numbers, ']'                       -> lambwiki_main_loop (add_other accum (Cite (get_labelref lexbuf)))
+        | '(', numbers, ')'                       -> lambwiki_main_loop (add_other accum (See (get_labelref lexbuf)))
+        | "---"                                   -> lambwiki_main_loop (add_other accum (Entity "mdash"))
+        | "--"                                    -> lambwiki_main_loop (add_other accum (Entity "ndash"))
+        | "``"                                    -> lambwiki_main_loop (add_other accum (Entity "ldquo"))
+        | "''"                                    -> lambwiki_main_loop (add_other accum (Entity "rdquo"))
+        | any                                     -> lambwiki_main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
         | _                                       -> assert false
-    and link_loop accum = match%sedlex lexbuf with
+    and markdown_main_loop accum = match%sedlex lexbuf with
+        | eol | eof                               -> accum
+        | escape, eol                             -> accum
+        | escape, any                             -> markdown_main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | "**"                                    -> markdown_main_loop (add_other accum Bold_mark)
+        | "*"                                     -> markdown_main_loop (add_other accum Emph_mark)
+        | "[["                                    -> link_loop markdown_main_loop (add_other accum Begin_link)
+        | "]]"                                    -> markdown_main_loop (add_other accum End_link)
+        | '|'                                     -> markdown_main_loop (add_other accum Link_sep)
+        | '&', Opt '#', Plus (alpha | digit), ';' -> markdown_main_loop (add_other accum (Entity (ltrim_lexbuf ~first:1 lexbuf)))
+        | '[', numbers, ']'                       -> markdown_main_loop (add_other accum (Cite (get_labelref lexbuf)))
+        | '(', numbers, ')'                       -> markdown_main_loop (add_other accum (See (get_labelref lexbuf)))
+        | "---"                                   -> markdown_main_loop (add_other accum (Entity "mdash"))
+        | "--"                                    -> markdown_main_loop (add_other accum (Entity "ndash"))
+        | "``"                                    -> markdown_main_loop (add_other accum (Entity "ldquo"))
+        | "''"                                    -> markdown_main_loop (add_other accum (Entity "rdquo"))
+        | any                                     -> markdown_main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | _                                       -> assert false
+    and link_loop main_loop accum = match%sedlex lexbuf with
         | eol | eof   -> accum
         | escape, eol -> accum
-        | escape, any -> link_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | escape, any -> link_loop main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
         | "]]"        -> main_loop (add_other accum End_link)
         | '|'         -> main_loop (add_other accum Link_sep)
-        | any         -> link_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | any         -> link_loop main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
         | _           -> assert false in
     let postproc = function
         | `Plain buf -> Plain (Buffer.contents buf)
         | `Other x   -> x in
+    let main_loop = match syntax with
+        | `Lambwiki -> lambwiki_main_loop
+        | `Markdown -> markdown_main_loop in
     main_loop [] |> List.rev_map postproc
 
 let scan_literal terminator qprefix iprefix lexbuf =
@@ -170,7 +193,7 @@ let scan_literal terminator qprefix iprefix lexbuf =
 (*  {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let next lexbuf =
+let next ~syntax lexbuf =
     let rec scan qprefix iprefix = match%sedlex lexbuf with
         | eof ->
             Eof
@@ -192,24 +215,24 @@ let next lexbuf =
             Regular (qprefix, iprefix, Rule Single)
         | Plus '=', Star blank ->
             let level = Sedlexing.Utf8.lexeme lexbuf in
-            Regular (qprefix, iprefix, Section (level, scan_text lexbuf))
+            Regular (qprefix, iprefix, Section (level, scan_text ~syntax lexbuf))
         | ('*' | '-'), Star blank ->
-            Regular (qprefix, iprefix, Textual (Some Uli, scan_text lexbuf))
+            Regular (qprefix, iprefix, Textual (Some Uli, scan_text ~syntax lexbuf))
         | number, ('.' | ')'), Star blank ->
             let oli = Sedlexing.Utf8.lexeme lexbuf |> String.rstrip in
-            Regular (qprefix, iprefix, Textual (Some (Oli oli), scan_text lexbuf))
+            Regular (qprefix, iprefix, Textual (Some (Oli oli), scan_text ~syntax lexbuf))
         | number, Star ('.', number), Opt '.', Star blank ->
             let sec = Sedlexing.Utf8.lexeme lexbuf |> String.rstrip in
-            Regular (qprefix, iprefix, Textual (Some (Sec sec), scan_text lexbuf))
+            Regular (qprefix, iprefix, Textual (Some (Sec sec), scan_text ~syntax lexbuf))
         | '[', number, ']', Star blank ->
             let label = get_labeldef lexbuf in
-            Regular (qprefix, iprefix, Ghost (Sbib, label, scan_text lexbuf))
+            Regular (qprefix, iprefix, Ghost (Sbib, label, scan_text ~syntax lexbuf))
         | '(', number, ')', Star blank ->
             let label = get_labeldef lexbuf in
-            Regular (qprefix, iprefix, Ghost (Note, label, scan_text lexbuf))
+            Regular (qprefix, iprefix, Ghost (Note, label, scan_text ~syntax lexbuf))
         | any ->
             Sedlexing.rollback lexbuf;
-            Regular (qprefix, iprefix, Textual (None, scan_text lexbuf))
+            Regular (qprefix, iprefix, Textual (None, scan_text ~syntax lexbuf))
         | _ ->
             assert false in
     scan "" ""

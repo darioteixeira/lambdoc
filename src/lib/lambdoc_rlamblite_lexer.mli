@@ -48,10 +48,12 @@ type lexeme =
     | Eof
     | Regular of string * string * regular
 
+type syntax = [ `Lambwiki | `Markdown ]
+
 
 (********************************************************************************)
 (*  {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val next: Sedlexing.lexbuf -> lexeme
+val next: syntax:syntax -> Sedlexing.lexbuf -> lexeme
 

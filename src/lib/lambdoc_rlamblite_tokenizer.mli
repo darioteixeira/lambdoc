@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 module Parser = Lambdoc_rlamblite_parser
+module Lexer = Lambdoc_rlamblite_lexer
 
 
 (********************************************************************************)
@@ -20,7 +21,7 @@ type tokenizer
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val make: linenum_offset:int -> string -> tokenizer
+val make: ?options:Lexer.syntax -> linenum_offset:int -> string -> tokenizer
 val next_token: tokenizer -> Parser.token
 val get_position: tokenizer -> Lexing.position
 

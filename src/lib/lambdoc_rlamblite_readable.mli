@@ -6,5 +6,5 @@
 *)
 (********************************************************************************)
 
-include (Lambdoc_reader.Maker.READABLE with type options = unit)
+include (Lambdoc_reader.Maker.READABLE with type options = [ `Lambwiki | `Markdown ])
 

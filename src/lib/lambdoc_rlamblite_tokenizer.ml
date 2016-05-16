@@ -48,6 +48,7 @@ type stack =
 
 type tokenizer =
     {
+    syntax: Lexer.syntax;
     lexbuf: Sedlexing.lexbuf;
     queue: Parser.token Queue.t;
     mutable environ: Lexer.inline list;
@@ -174,7 +175,7 @@ let issue_section comm order seq rule tokenizer =
     tokenizer.limbo <- Empty
 
 let rec produce tokenizer =
-    let lexeme = Lexer.next tokenizer.lexbuf in
+    let lexeme = Lexer.next ~syntax:tokenizer.syntax tokenizer.lexbuf in
     let comm = {base_comm with comm_linenum = tokenizer.linenum} in
     match lexeme with
         | Eof ->
@@ -308,8 +309,9 @@ let rec produce tokenizer =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let make ~linenum_offset str =
+let make ?(options = `Lambwiki) ~linenum_offset str =
     {
+    syntax = options;
     lexbuf = Sedlexing.Utf8.from_string str;
     queue = Queue.create ();
     environ = [];

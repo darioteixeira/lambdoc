@@ -6,7 +6,7 @@
 *)
 (********************************************************************************)
 
-type options = unit
+type options = [ `Lambwiki | `Markdown ]
 
 module Make = Lambdoc_reader.Maker.Make (Lambdoc_rlamblite_readable)
 
