@@ -84,8 +84,8 @@ let base_comm =
 
 let token_of_inline tokenizer comm inline =
     let check_environ mark begin_cons end_cons = match tokenizer.environ with
-        | mark :: tl -> tokenizer.environ <- tl; end_cons
-        | xs         -> tokenizer.environ <- mark :: xs; begin_cons in
+        | hd :: tl when hd = mark -> tokenizer.environ <- tl; end_cons
+        | xs                      -> tokenizer.environ <- mark :: xs; begin_cons in
     match inline with
         | Plain txt  -> PLAIN (comm, txt)
         | Entity ent -> ENTITY (comm, ent)
