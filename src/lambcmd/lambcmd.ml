@@ -59,7 +59,7 @@ let () =
         | `Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~idiosyncrasies input_str
         | `Lambwiki -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Lambwiki ~idiosyncrasies input_str
         | `Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~idiosyncrasies input_str
-        | `Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string ~idiosyncrasies input_str
+        | `Markdown -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Markdown ~idiosyncrasies input_str
         | `Sexp     -> Lambdoc_core.Ambivalent.deserialize input_str in
     let output_str = match options.output_markup with
         | `Sexp  ->

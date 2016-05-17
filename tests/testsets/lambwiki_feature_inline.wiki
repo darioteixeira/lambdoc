@@ -1,6 +1,8 @@
 Here we have examples of text in **bold** and //emphasised//.
 
-Here's {{monospaced}} and ((small-caps)) text.
+Here's {{inline code}} and ((monospaced)) text.
 
 You can use ^^superscripts^^ and __subscripts__.
+
+You may also correct ~~perfect~~++broken++ text.
 

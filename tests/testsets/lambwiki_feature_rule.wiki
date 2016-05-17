@@ -1,0 +1,13 @@
+alpha1 bravo1 //charlie1 delta1// echo1 foxtrot1 **golf1 hotel1** india1 juliet1
+******
+alpha2 bravo2 //charlie2 delta2// echo2 foxtrot2 **golf2 hotel2** india2 juliet2
+******
+******
+alpha3 bravo3 //charlie3 delta3// echo3 foxtrot3 **golf3 hotel3** india3 juliet3
+
+alpha4 bravo4 //charlie4 delta4// echo4 foxtrot4 **golf4 hotel4** india4 juliet4
+
+******
+
+alpha5 bravo5 //charlie5 delta5// echo5 foxtrot5 **golf5 hotel5** india5 juliet5
+

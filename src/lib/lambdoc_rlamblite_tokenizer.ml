@@ -97,10 +97,10 @@ let token_of_inline tokenizer comm inline =
         | Sub_mark   -> check_environ Sub_mark (BEGIN_SUB comm) END_SUB
         | Ins_mark   -> check_environ Ins_mark (BEGIN_INS comm) END_INS
         | Del_mark   -> check_environ Del_mark (BEGIN_DEL comm) END_DEL
-        | Begin_caps -> BEGIN_CAPS comm
-        | End_caps   -> END_CAPS
         | Begin_mono -> BEGIN_MONO comm
         | End_mono   -> END_MONO
+        | Begin_code -> BEGIN_CODE comm
+        | End_code   -> END_CODE
         | Begin_link -> BEGIN_LINK comm
         | End_link   -> END_LINK
         | Link_sep   -> LINK_SEP
@@ -168,7 +168,8 @@ let issue_section comm order seq rule tokenizer =
     let comm' = {comm with comm_order = order} in
     let slevel = match rule with
         | Double -> 1
-        | Single -> 2 in
+        | Single -> 2
+        | Star   -> assert false in
     Queue.push (Parser.BEGIN_SECTION (comm', slevel)) tokenizer.queue;
     dump_seq comm tokenizer seq;
     Queue.push Parser.END_SECTION tokenizer.queue;
@@ -198,6 +199,9 @@ let rec produce tokenizer =
                 for i = 1 to abs qdiff do Queue.push token tokenizer.queue done
             end;
             begin match regular with
+                | Rule Star ->
+                    dump_limbo comm tokenizer;
+                    Queue.push (Parser.RULE comm) tokenizer.queue
                 | Rule rule ->
                     begin match tokenizer.limbo with
                         | Empty ->

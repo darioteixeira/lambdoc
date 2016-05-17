@@ -22,11 +22,11 @@ type inline =
     | Sub_mark
     | Ins_mark
     | Del_mark
-    | Begin_caps | End_caps
     | Begin_mono | End_mono
+    | Begin_code | End_code
     | Begin_link | End_link | Link_sep
 
-type rule = Single | Double
+type rule = Single | Double | Star
 
 type literal = Source | Verbatim
 

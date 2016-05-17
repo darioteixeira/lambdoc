@@ -32,11 +32,11 @@ type inline =
     | Sub_mark
     | Ins_mark
     | Del_mark
-    | Begin_caps | End_caps
     | Begin_mono | End_mono
+    | Begin_code | End_code
     | Begin_link | End_link | Link_sep
 
-type rule = Single | Double
+type rule = Single | Double | Star
 
 type literal = Source | Verbatim
 
@@ -106,46 +106,57 @@ let scan_text ~syntax lexbuf =
         | eol | eof                               -> accum
         | escape, eol                             -> accum
         | escape, any                             -> lambwiki_main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | "---"                                   -> lambwiki_main_loop (add_other accum (Entity "mdash"))
+        | "--"                                    -> lambwiki_main_loop (add_other accum (Entity "ndash"))
+        | "``"                                    -> lambwiki_main_loop (add_other accum (Entity "ldquo"))
+        | "''"                                    -> lambwiki_main_loop (add_other accum (Entity "rdquo"))
         | "**"                                    -> lambwiki_main_loop (add_other accum Bold_mark)
         | "//"                                    -> lambwiki_main_loop (add_other accum Emph_mark)
         | "^^"                                    -> lambwiki_main_loop (add_other accum Sup_mark)
         | "__"                                    -> lambwiki_main_loop (add_other accum Sub_mark)
         | "++"                                    -> lambwiki_main_loop (add_other accum Ins_mark)
         | "~~"                                    -> lambwiki_main_loop (add_other accum Del_mark)
-        | "(("                                    -> lambwiki_main_loop (add_other accum Begin_caps)
-        | "))"                                    -> lambwiki_main_loop (add_other accum End_caps)
-        | "{{"                                    -> lambwiki_main_loop (add_other accum Begin_mono)
-        | "}}"                                    -> lambwiki_main_loop (add_other accum End_mono)
+        | "(("                                    -> lambwiki_main_loop (add_other accum Begin_mono)
+        | "))"                                    -> lambwiki_main_loop (add_other accum End_mono)
+        | "{{"                                    -> lambwiki_raw_loop (add_other accum Begin_code)
+        | "}}"                                    -> lambwiki_main_loop (add_other accum End_code)
         | "[["                                    -> link_loop lambwiki_main_loop (add_other accum Begin_link)
         | "]]"                                    -> lambwiki_main_loop (add_other accum End_link)
         | '|'                                     -> lambwiki_main_loop (add_other accum Link_sep)
         | '&', Opt '#', Plus (alpha | digit), ';' -> lambwiki_main_loop (add_other accum (Entity (ltrim_lexbuf ~first:1 lexbuf)))
         | '[', numbers, ']'                       -> lambwiki_main_loop (add_other accum (Cite (get_labelref lexbuf)))
         | '(', numbers, ')'                       -> lambwiki_main_loop (add_other accum (See (get_labelref lexbuf)))
-        | "---"                                   -> lambwiki_main_loop (add_other accum (Entity "mdash"))
-        | "--"                                    -> lambwiki_main_loop (add_other accum (Entity "ndash"))
-        | "``"                                    -> lambwiki_main_loop (add_other accum (Entity "ldquo"))
-        | "''"                                    -> lambwiki_main_loop (add_other accum (Entity "rdquo"))
         | any                                     -> lambwiki_main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
         | _                                       -> assert false
+    and lambwiki_raw_loop accum = match%sedlex lexbuf with
+        | eol | eof   -> accum
+        | "}}"        -> lambwiki_main_loop (add_other accum End_code)
+        | any         -> lambwiki_raw_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | _           -> assert false
     and markdown_main_loop accum = match%sedlex lexbuf with
         | eol | eof                               -> accum
         | escape, eol                             -> accum
         | escape, any                             -> markdown_main_loop (add_plain accum (Sedlexing.Utf8.sub_lexeme lexbuf 1 1))
+        | "---"                                   -> markdown_main_loop (add_other accum (Entity "mdash"))
+        | "--"                                    -> markdown_main_loop (add_other accum (Entity "ndash"))
+        | "``"                                    -> markdown_main_loop (add_other accum (Entity "ldquo"))
+        | "''"                                    -> markdown_main_loop (add_other accum (Entity "rdquo"))
         | "**"                                    -> markdown_main_loop (add_other accum Bold_mark)
         | "*"                                     -> markdown_main_loop (add_other accum Emph_mark)
+        | "`"                                     -> markdown_raw_loop (add_other accum Begin_code)
         | "[["                                    -> link_loop markdown_main_loop (add_other accum Begin_link)
         | "]]"                                    -> markdown_main_loop (add_other accum End_link)
         | '|'                                     -> markdown_main_loop (add_other accum Link_sep)
         | '&', Opt '#', Plus (alpha | digit), ';' -> markdown_main_loop (add_other accum (Entity (ltrim_lexbuf ~first:1 lexbuf)))
         | '[', numbers, ']'                       -> markdown_main_loop (add_other accum (Cite (get_labelref lexbuf)))
         | '(', numbers, ')'                       -> markdown_main_loop (add_other accum (See (get_labelref lexbuf)))
-        | "---"                                   -> markdown_main_loop (add_other accum (Entity "mdash"))
-        | "--"                                    -> markdown_main_loop (add_other accum (Entity "ndash"))
-        | "``"                                    -> markdown_main_loop (add_other accum (Entity "ldquo"))
-        | "''"                                    -> markdown_main_loop (add_other accum (Entity "rdquo"))
         | any                                     -> markdown_main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
         | _                                       -> assert false
+    and markdown_raw_loop accum = match%sedlex lexbuf with
+        | eol | eof   -> accum
+        | '`'         -> markdown_main_loop (add_other accum End_code)
+        | any         -> markdown_raw_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | _           -> assert false
     and link_loop main_loop accum = match%sedlex lexbuf with
         | eol | eof   -> accum
         | escape, eol -> accum
@@ -206,6 +217,9 @@ let next ~syntax lexbuf =
         | "{{{", Opt style, Star blank, (eol | eof) ->
             let (nlines, style, raw) = scan_literal "}}}" qprefix iprefix lexbuf in
             Regular (qprefix, iprefix, Literal (Source, nlines, style, raw))
+        | "```", Opt style, Star blank, (eol | eof) ->
+            let (nlines, style, raw) = scan_literal "```" qprefix iprefix lexbuf in
+            Regular (qprefix, iprefix, Literal (Source, nlines, style, raw))
         | "(((", Opt style, Star blank, (eol | eof) ->
             let (nlines, style, raw) = scan_literal ")))" qprefix iprefix lexbuf in
             Regular (qprefix, iprefix, Literal (Verbatim, nlines, style, raw))
@@ -213,6 +227,8 @@ let next ~syntax lexbuf =
             Regular (qprefix, iprefix, Rule Double)
         | Plus '-', Star blank, (eol | eof) ->
             Regular (qprefix, iprefix, Rule Single)
+        | Plus '*', Star blank, (eol | eof) ->
+            Regular (qprefix, iprefix, Rule Star)
         | Plus '=', Star blank ->
             let level = Sedlexing.Utf8.lexeme lexbuf in
             Regular (qprefix, iprefix, Section (level, scan_text ~syntax lexbuf))

@@ -123,7 +123,7 @@ let execute fname source target () =
         | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~options:()
         | Lambwiki -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Lambwiki
         | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~options:()
-        | Markdown -> Lambdoc_rmarkdown_reader.Trivial.ambivalent_from_string ~options:() in
+        | Markdown -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Markdown in
     let writer = match target with
         | Html  -> fun doc -> Html_writer.write_ambivalent doc |> string_of_xhtml
         | Sexp  -> Ambivalent.serialize
@@ -163,6 +163,7 @@ let common_feature_set1 =   (* Common to all markups *)
     ("Quote environments", "quote");
     ("Source environments", "source");
     ("Sectioning", "sectioning");
+    ("Rules", "rule");
     ]
 
 let common_feature_set2 =   (* Common to Lambtex/Lambwiki/Lambxml *)
@@ -173,12 +174,11 @@ let common_feature_set2 =   (* Common to Lambtex/Lambwiki/Lambxml *)
 
 let common_feature_set3 =   (* Common to Lambtex/Lambxml/Markdown *)
     [
-    ("Images", "image");
-    ("Rules", "rule");
     ]
 
 let common_feature_set4 =   (* Common to Lambtex/Lambxml *)
     [
+    ("Images", "image");
     ("Q&A environments", "qa");
     ("Verse environments", "verse");
     ("Math blocks", "mathblk");
@@ -239,13 +239,13 @@ let semantic_error_set =
 let tests =
     [
     ("Lambtex features", build_test ~prefix:"lambtex_feature"
-        (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4 @ lambtex_feature_set));
+        (common_feature_set1 @ common_feature_set2 @ common_feature_set4 @ lambtex_feature_set));
     ("Lambwiki features", build_test ~prefix:"lambwiki_feature"
         (common_feature_set1 @ common_feature_set2));
     ("Lambxml features", build_test ~prefix:"lambxml_feature"
-        (common_feature_set1 @ common_feature_set2 @ common_feature_set3 @ common_feature_set4));
+        (common_feature_set1 @ common_feature_set2 @ common_feature_set4));
     ("Markdown features", build_test ~prefix:"markdown_feature"
-        (common_feature_set1 @ common_feature_set3));
+        common_feature_set1);
     ("Lambxml errors", build_test ~prefix:"lambxml_error"
         lambxml_error_set);
     ("Semantic errors", build_test ~prefix:"semantic_error"

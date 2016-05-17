@@ -22,12 +22,12 @@ open Lambdoc_reader
 
 %token <Lambdoc_reader_ast.command> BEGIN_BOLD
 %token <Lambdoc_reader_ast.command> BEGIN_EMPH
-%token <Lambdoc_reader_ast.command> BEGIN_CAPS
 %token <Lambdoc_reader_ast.command> BEGIN_MONO
 %token <Lambdoc_reader_ast.command> BEGIN_SUP
 %token <Lambdoc_reader_ast.command> BEGIN_SUB
 %token <Lambdoc_reader_ast.command> BEGIN_INS
 %token <Lambdoc_reader_ast.command> BEGIN_DEL
+%token <Lambdoc_reader_ast.command> BEGIN_CODE
 %token <Lambdoc_reader_ast.command> BEGIN_LINK
 
 %token <Lambdoc_reader_ast.command * int> BEGIN_SECTION
@@ -40,12 +40,12 @@ open Lambdoc_reader
 
 %token END_BOLD
 %token END_EMPH
-%token END_CAPS
 %token END_MONO
 %token END_SUP
 %token END_SUB
 %token END_INS
 %token END_DEL
+%token END_CODE
 %token END_LINK LINK_SEP
 
 %token END_SECTION
@@ -101,12 +101,12 @@ inline:
     | textual                                       {$1}
     | BEGIN_BOLD inline* END_BOLD                   {($1, Ast.Bold $2)}
     | BEGIN_EMPH inline* END_EMPH                   {($1, Ast.Emph $2)}
-    | BEGIN_CAPS inline* END_CAPS                   {($1, Ast.Caps $2)}
     | BEGIN_MONO inline* END_MONO                   {($1, Ast.Mono $2)}
     | BEGIN_SUP inline* END_SUP                     {($1, Ast.Sup $2)}
     | BEGIN_SUB inline* END_SUB                     {($1, Ast.Sub $2)}
     | BEGIN_INS inline* END_INS                     {($1, Ast.Ins $2)}
     | BEGIN_DEL inline* END_DEL                     {($1, Ast.Del $2)}
+    | BEGIN_CODE raw END_CODE                       {($1, Ast.Code $2)}
     | BEGIN_LINK raw END_LINK                       {($1, Ast.Link ($2, None))}
     | BEGIN_LINK raw LINK_SEP textual+ END_LINK     {($1, Ast.Link ($2, Some $4))}
     | CITE                                          {let (comm, refs) = $1 in (comm, Ast.Cite refs)}
