@@ -26,7 +26,6 @@ depends: [
   "menhir"
   "ocamlbuild" {build}
   "ocamlfind"
-  "omd" {>= "1.0.0"}
   "ppx_blob"
   "ppx_sexp_conv"
   "re"

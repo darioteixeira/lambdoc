@@ -1,9 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: cde1f265c56e217682c2158776f12de2)
+# DO NOT EDIT (digest: 81debb54da1f92bc6a94d6b93378c3cc)
 version = "1.0-beta4"
 description = "Support for semantically rich documents in web applications"
 requires =
-"batteries blahcaml camlhighlight menhirLib omd re sedlex sexplib threads tyxml xmlm"
+"batteries blahcaml camlhighlight menhirLib re sedlex sexplib threads tyxml xmlm"
 archive(byte) = "lambdoc.cma"
 archive(byte, plugin) = "lambdoc.cma"
 archive(native) = "lambdoc.cmxa"

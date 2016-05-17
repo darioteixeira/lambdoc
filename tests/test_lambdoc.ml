@@ -106,7 +106,8 @@ let read_file =
 
 let string_of_xhtml xhtml =
     let open Html in
-    let page = (html
+    let page =
+        (html
             (head
                 (title (pcdata "Lambdoc document"))
                 [

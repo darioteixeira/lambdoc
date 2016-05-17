@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 1377122c23683ef1c1d2e19d7bccb0a4)
+# DO NOT EDIT (digest: 84468b5a18b12e4a872e086eb74b45a1)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -20,7 +20,6 @@ true: annot, bin_annot
 <src/lib/*.ml{,i,y}>: pkg_blahcaml
 <src/lib/*.ml{,i,y}>: pkg_camlhighlight
 <src/lib/*.ml{,i,y}>: pkg_menhirLib
-<src/lib/*.ml{,i,y}>: pkg_omd
 <src/lib/*.ml{,i,y}>: pkg_re
 <src/lib/*.ml{,i,y}>: pkg_sedlex
 <src/lib/*.ml{,i,y}>: pkg_sexplib
@@ -32,7 +31,6 @@ true: annot, bin_annot
 <src/lambcmd/lambcmd.{native,byte}>: pkg_blahcaml
 <src/lambcmd/lambcmd.{native,byte}>: pkg_camlhighlight
 <src/lambcmd/lambcmd.{native,byte}>: pkg_menhirLib
-<src/lambcmd/lambcmd.{native,byte}>: pkg_omd
 <src/lambcmd/lambcmd.{native,byte}>: pkg_re
 <src/lambcmd/lambcmd.{native,byte}>: pkg_sedlex
 <src/lambcmd/lambcmd.{native,byte}>: pkg_sexplib
@@ -44,7 +42,6 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_blahcaml
 <src/lambcmd/*.ml{,i,y}>: pkg_camlhighlight
 <src/lambcmd/*.ml{,i,y}>: pkg_menhirLib
-<src/lambcmd/*.ml{,i,y}>: pkg_omd
 <src/lambcmd/*.ml{,i,y}>: pkg_re
 <src/lambcmd/*.ml{,i,y}>: pkg_sedlex
 <src/lambcmd/*.ml{,i,y}>: pkg_sexplib
@@ -58,7 +55,6 @@ true: annot, bin_annot
 <tests/test_lambdoc.{native,byte}>: pkg_blahcaml
 <tests/test_lambdoc.{native,byte}>: pkg_camlhighlight
 <tests/test_lambdoc.{native,byte}>: pkg_menhirLib
-<tests/test_lambdoc.{native,byte}>: pkg_omd
 <tests/test_lambdoc.{native,byte}>: pkg_re
 <tests/test_lambdoc.{native,byte}>: pkg_sedlex
 <tests/test_lambdoc.{native,byte}>: pkg_sexplib
@@ -72,7 +68,6 @@ true: annot, bin_annot
 <tests/*.ml{,i,y}>: pkg_blahcaml
 <tests/*.ml{,i,y}>: pkg_camlhighlight
 <tests/*.ml{,i,y}>: pkg_menhirLib
-<tests/*.ml{,i,y}>: pkg_omd
 <tests/*.ml{,i,y}>: pkg_re
 <tests/*.ml{,i,y}>: pkg_sedlex
 <tests/*.ml{,i,y}>: pkg_sexplib
