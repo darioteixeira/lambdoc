@@ -14,9 +14,16 @@ module List:
 sig
     include module type of List
 
+    (** [make n x] creates a list of [n] elements, all of them [x]. *)
     val make: int -> 'a -> 'a list
+
+    (** [take n xs] returns at least the first [n] elements from list [xs]. *)
     val take: int -> 'a list -> 'a list
+
+    (** [at xs idx] returns the element at position [idx] in list [xs]. *)
     val at: 'a list -> int -> 'a
+
+    (** [filter_map f xs] performs a simultaneous mapping and filtering on list [xs]. *)
     val filter_map: ('a -> 'b option) -> 'a list -> 'b list
 end
 
