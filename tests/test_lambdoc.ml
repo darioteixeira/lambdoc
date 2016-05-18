@@ -66,20 +66,107 @@ end
 (** {1 Functions and values}                                                    *)
 (********************************************************************************)
 
+let explain major minor case = match (major, minor) with
+    | (_, "feature") ->
+        begin match case with
+            | "abstract"     -> "Abstract"
+            | "bibliography" -> "Bibliography"
+            | "boxout"       -> "Boxout environments"
+            | "code"         -> "Inline highlighted source-code"
+            | "entity"       -> "Entities"
+            | "heredoc"      -> "Heredoc"
+            | "image"        -> "Images"
+            | "inline"       -> "Inline elements"
+            | "list"         -> "Lists"
+            | "macro"        -> "Macros"
+            | "mathblk"      -> "Math blocks"
+            | "mathinl"      -> "Math inline"
+            | "notes"        -> "End notes"
+            | "paragraph"    -> "Paragraphs"
+            | "plain"        -> "Plain text"
+            | "pullquote"    -> "Pull-quotes"
+            | "qa"           -> "Q&A environments"
+            | "quote"        -> "Quote environments"
+            | "reference"    -> "Internal and external references"
+            | "rule"         -> "Rules"
+            | "sectioning"   -> "Sectioning"
+            | "source"       -> "Source environments"
+            | "subpage"      -> "Subpage environments"
+            | "tabular"      -> "Tabular environments"
+            | "theorem"      -> "Theorem environments"
+            | "title"        -> "Titles"
+            | "toc"          -> "Table of contents"
+            | "unicode"      -> "Unicode text"
+            | "verbatim"     -> "Verbatim environments"
+            | "verse"        -> "Verse environments"
+            | "wrapper"      -> "Wrapper environments"
+            | _              -> assert false
+        end
+    | ("semantic", "error") ->
+        begin match case with
+            | "block_nesting"   -> "Nesting in block context"
+            | "column"          -> "Column errors"
+            | "counter"         -> "Counter errors"
+            | "custom"          -> "Custom block errors"
+            | "depth"           -> "Invalid macro/inline/block depth"
+            | "empty"           -> "Empty elements"
+            | "inline_nesting"  -> "Nesting in inline context"
+            | "invalid_entity"  -> "Invalid entity"
+            | "invalid_label"   -> "Invalid label parameter"
+            | "invalid_order"   -> "Invalid order parameter"
+            | "invalid_style"   -> "Invalid style parameter"
+            | "level"           -> "Invalid level"
+            | "macro"           -> "Macro errors"
+            | "misplaced_label" -> "Misplaced label parameter"
+            | "misplaced_order" -> "Misplaced order parameter"
+            | "missing"         -> "Missing notes and bibliography"
+            | "target"          -> "Target errors"
+            | "wrapper"         -> "Wrapper errors"
+            | _                 -> assert false
+        end
+    | ("lambxml", "error") ->
+        begin match case with
+            | "attribute" -> "Attributes"
+            | "list"      -> "Lists"
+            | "literal"   -> "Text-only content"
+            | "malformed" -> "Malformed document"
+            | "notempty"  -> "Non-empty elements"
+            | "qa"        -> "Q&A environments"
+            | _           -> assert false
+        end
+    | _ ->
+        assert false
+
 let dict =
-    let dict = Hashtbl.create 40 in
-    let alphas = Re.(rep1 (alt [rg 'a' 'z'; rg '0' '9'; char '_'])) in
-    let rex = Re.(compile (seq [bos; group alphas; char '.'; group alphas; eos])) in
+    let dict = Hashtbl.create 10 in
+    let alphas = Re.(rep1 (alt [rg 'a' 'z'; rg '0' '9'])) in
+    let rex = Re.(compile (seq
+        [
+        bos;
+        group (seq [alphas; char '_'; alphas]);                 (* First two words are the category *)
+        char '_';
+        group (seq [alphas; rep (seq [char '_'; alphas])]);     (* All other words before extension are the case *)
+        char '.';
+        group alphas;                                           (* Final word is the extension *)
+        eos
+        ])) in
     let process fname =
         try
             let groups = Re.exec rex fname in
-            let fname = Re.get groups 1 in
-            let ext = Filetype.of_string (Re.get groups 2) in
-            let (sources, targets) = try Hashtbl.find dict fname with Not_found -> ([], []) in
-            let v = match ext with
+            let category = Re.Group.get groups 1 in
+            let case = Re.Group.get groups 2 in
+            let ext = Filetype.of_string (Re.Group.get groups 3) in
+            let subdict =
+                try Hashtbl.find dict category
+                with Not_found ->
+                    let subdict = Hashtbl.create 20 in
+                    Hashtbl.add dict category subdict;
+                    subdict in
+            let (sources, targets) = try Hashtbl.find subdict case with Not_found -> ([], []) in
+            let variants = match ext with
                 | Source source -> (source :: sources, targets)
                 | Target target -> (sources, target :: targets) in
-            Hashtbl.replace dict fname v
+            Hashtbl.replace subdict case variants
         with
             | Not_found -> () in
     let hnd = Unix.opendir "." in
@@ -141,116 +228,28 @@ let execute fname source target () =
     let str = writer doc ^ "\n" in
     Alcotest.(check string) fname str target_contents
 
-let build_test ~prefix set =
-    let foreach (base_desc, fname) accum =
-        let fname = prefix ^ "_" ^ fname in
-        let (sources, targets) = Hashtbl.find dict fname in
+let build_test major minor =
+    let category = major ^ "_" ^ minor in
+    let subdict = Hashtbl.find dict category in
+    let foreach_case case (sources, targets) accum =
         let foreach_source source accum =
             let foreach_target target accum =
-                let desc = Printf.sprintf "%s (%s -> %s)" base_desc (Filetype.describe_source source) (Filetype.describe_target target) in
+                let fname = category ^ "_" ^ case in
+                let desc = Printf.sprintf "%s (%s -> %s)" (explain major minor case) (Filetype.describe_source source) (Filetype.describe_target target) in
                 let test = (desc, `Quick, execute fname source target) in
                 test :: accum in
-            List.fold_right foreach_target (List.sort Pervasives.compare targets) accum in
-        List.fold_right foreach_source (List.sort Pervasives.compare sources) accum in
-    List.fold_right foreach set []
-
-let common_feature_set1 =   (* Common to all markups *)
-    [
-    ("Plain text", "plain");
-    ("Unicode text", "unicode");
-    ("Inline elements", "inline");
-    ("Paragraphs", "paragraph");
-    ("Lists", "list");
-    ("Quote environments", "quote");
-    ("Source environments", "source");
-    ("Sectioning", "sectioning");
-    ("Rules", "rule");
-    ]
-
-let common_feature_set2 =   (* Common to Lambtex/Lambwiki/Lambxml *)
-    [
-    ("Entities", "entity");
-    ("Verbatim environments", "verbatim");
-    ]
-
-let common_feature_set3 =   (* Common to Lambtex/Lambxml/Markdown *)
-    [
-    ]
-
-let common_feature_set4 =   (* Common to Lambtex/Lambxml *)
-    [
-    ("Images", "image");
-    ("Q&A environments", "qa");
-    ("Verse environments", "verse");
-    ("Math blocks", "mathblk");
-    ("Math inline", "mathinl");
-    ("Tabular environments", "tabular");
-    ("Subpage environments", "subpage");
-    ("Pull-quotes", "pullquote");
-    ("Boxout environments", "boxout");
-    ("Theorem environments", "theorem");
-    ("Wrapper environments", "wrapper");
-    ("Bibliography", "bibliography");
-    ("End notes", "notes");
-    ("Macros", "macro");
-    ("Titles", "title");
-    ("Abstract", "abstract");
-    ("Table of contents", "toc");
-    ("Internal and external references", "reference");
-    ("Inline highlighted source-code", "code");
-    ]
-
-let lambtex_feature_set =
-    [
-    ("Heredoc", "heredoc");
-    ]
-
-let lambxml_error_set =
-    [
-    ("Attributes", "attribute");
-    ("Lists", "list");
-    ("Text-only content", "literal");
-    ("Malformed document", "malformed");
-    ("Non-empty elements", "notempty");
-    ("Q&A environments", "qa");
-    ]
-
-let semantic_error_set =
-    [
-    ("Misplaced label parameter", "misplaced_label");
-    ("Misplaced order parameter", "misplaced_order");
-    ("Invalid label parameter", "invalid_label");
-    ("Invalid order parameter", "invalid_order");
-    ("Invalid style parameter", "invalid_style");
-    ("Invalid entity", "invalid_entity");
-    ("Macro errors", "macro");
-    ("Invalid macro/inline/block depth", "depth");
-    ("Custom block errors", "custom");
-    ("Wrapper errors", "wrapper");
-    ("Invalid level", "level");
-    ("Counter errors", "counter");
-    ("Column errors", "column");
-    ("Target errors", "target");
-    ("Empty elements", "empty");
-    ("Nesting in inline context", "inline_nesting");
-    ("Nesting in block context", "block_nesting");
-    ("Missing notes and bibliography", "missing");
-    ]
+            List.fold_right foreach_target targets accum in
+        List.fold_right foreach_source sources accum in
+    Hashtbl.fold foreach_case subdict []
 
 let tests =
     [
-    ("Lambtex features", build_test ~prefix:"lambtex_feature"
-        (common_feature_set1 @ common_feature_set2 @ common_feature_set4 @ lambtex_feature_set));
-    ("Lambwiki features", build_test ~prefix:"lambwiki_feature"
-        (common_feature_set1 @ common_feature_set2));
-    ("Lambxml features", build_test ~prefix:"lambxml_feature"
-        (common_feature_set1 @ common_feature_set2 @ common_feature_set4));
-    ("Markdown features", build_test ~prefix:"markdown_feature"
-        common_feature_set1);
-    ("Lambxml errors", build_test ~prefix:"lambxml_error"
-        lambxml_error_set);
-    ("Semantic errors", build_test ~prefix:"semantic_error"
-        semantic_error_set);
+    ("Lambtex features", build_test "lambtex" "feature");
+    ("Lambwiki features", build_test "lambwiki" "feature");
+    ("Lambxml features", build_test "lambxml" "feature");
+    ("Markdown features", build_test "markdown" "feature");
+    ("Lambxml errors", build_test "lambxml" "error");
+    ("Semantic errors", build_test "semantic" "error");
     ]
 
 let () =
