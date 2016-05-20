@@ -99,7 +99,7 @@ let colfmt_of_char = function
 
 
 let cols_of_string key str =
-    try Some (String.explode str |> List.map colfmt_of_char |> Array.of_list)
+    try Some (Array.init (String.length str) (fun i -> colfmt_of_char str.[i]))
     with _ -> raise (Value_error (Error.Invalid_style_bad_colsfmt (key, str)))
 
 
