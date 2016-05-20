@@ -38,7 +38,6 @@ sig
     val asplit: string -> string array
     val replace_chars: (char -> string) -> string -> string
     val slice: ?first:int -> ?last:int -> string -> string
-    val implode: char list -> string
     val fold_left: ('a -> char -> 'a) -> 'a -> string -> 'a
     val starts_with: string -> string -> bool
 end

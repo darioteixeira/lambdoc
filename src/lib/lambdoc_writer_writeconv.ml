@@ -69,30 +69,33 @@ struct
         List.fold_left (^) "" (List.rev_map alpha_of_int rems)
 
     (** Converts an integer into its roman numeral representation.
+        Note that we use the "standard modern form".
     *)
     let roman_of_int i =
+        let buf = Buffer.create 8 in
+        let add = Buffer.add_char buf in
         let digit x y z = function
-            | 1 -> [x]
-            | 2 -> [x; x]
-            | 3 -> [x; x; x]
-            | 4 -> [x; y]
-            | 5 -> [y]
-            | 6 -> [y; x]
-            | 7 -> [y; x; x]
-            | 8 -> [y; x; x; x]
-            | 9 -> [x; z]
+            | 0 -> ()
+            | 1 -> add x
+            | 2 -> add x; add x
+            | 3 -> add x; add x; add x
+            | 4 -> add x; add y
+            | 5 -> add y
+            | 6 -> add y; add x
+            | 7 -> add y; add x; add x
+            | 8 -> add y; add x; add x; add x
+            | 9 -> add x; add z
             | _ -> assert false in
         let rec to_roman i =
-            if i <= 0
-            then assert false
-            else if i >= 1000
-                then 'M' :: to_roman (i - 1000)
-                else if i >= 100
-                    then digit 'C' 'D' 'M' (i / 100) @ to_roman (i mod 100)
-                    else if i >= 10
-                        then digit 'X' 'L' 'C' (i / 10) @ to_roman (i mod 10)
-                        else digit 'I' 'V' 'X' i
-        in String.implode (to_roman i)
+            if i >= 1000
+            then (add 'M'; to_roman (i - 1000))
+            else if i >= 100
+                then (digit 'C' 'D' 'M' (i / 100); to_roman (i mod 100))
+                else if i >= 10
+                    then (digit 'X' 'L' 'C' (i / 10); to_roman (i mod 10))
+                    else digit 'I' 'V' 'X' i in
+        to_roman i;
+        Buffer.contents buf
 
     let format_arabic = string_of_int
 
