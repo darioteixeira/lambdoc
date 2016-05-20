@@ -10,16 +10,8 @@ module List =
 struct
     include List
 
-    let at xs n =
-        if n < 0 then invalid_arg "List.at: negative count";
-        let rec loop count = function
-            | hd :: _ when count = 0 -> hd
-            | _ :: tl                -> loop (count - 1) tl
-            | []                     -> invalid_arg "List.at: list too short" in
-        loop n xs
-
     let make n x =
-        if n < 0 then invalid_arg "List.make";
+        if n < 0 then invalid_arg "List.make: negative count";
         let rec loop count accum =
             if count = 0
             then accum
@@ -27,10 +19,18 @@ struct
         loop n []
 
     let take n xs =
-        if n < 0 then invalid_arg "List.take";
+        if n < 0 then invalid_arg "List.take: negative count";
         let rec loop count = function
             | hd :: tl when count > 0 -> hd :: loop (count - 1) tl
             | _                       -> [] in
+        loop n xs
+
+    let at xs n =
+        if n < 0 then invalid_arg "List.at: negative index";
+        let rec loop count = function
+            | hd :: _ when count = 0 -> hd
+            | _ :: tl                -> loop (count - 1) tl
+            | []                     -> invalid_arg "List.at: list too short" in
         loop n xs
 
     let filter_map f xs =
