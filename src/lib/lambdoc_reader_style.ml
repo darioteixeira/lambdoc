@@ -86,29 +86,29 @@ let numeric_of_string key ~low ~high = function
         else raise exc
 
 
-let colfmt_of_string = function
-    | "c" -> (Center, Normal)
-    | "C" -> (Center, Strong)
-    | "l" -> (Left, Normal)
-    | "L" -> (Left, Strong)
-    | "r" -> (Right, Normal)
-    | "R" -> (Right, Strong)
-    | "j" -> (Justify, Normal)
-    | "J" -> (Justify, Strong)
-    | x   -> invalid_arg ("Lambdoc_reader_style.colfmt_of_string: " ^ x)
+let colfmt_of_char = function
+    | 'c' -> (Center, Normal)
+    | 'C' -> (Center, Strong)
+    | 'l' -> (Left, Normal)
+    | 'L' -> (Left, Strong)
+    | 'r' -> (Right, Normal)
+    | 'R' -> (Right, Strong)
+    | 'j' -> (Justify, Normal)
+    | 'J' -> (Justify, Strong)
+    | x   -> invalid_arg ("Lambdoc_reader_style.colfmt_of_char: " ^ String.make 1 x)
 
 
 let cols_of_string key str =
-    try Some (String.explode str |> List.map (fun c -> String.of_char c |> colfmt_of_string) |> Array.of_list)
+    try Some (String.explode str |> List.map colfmt_of_char |> Array.of_list)
     with _ -> raise (Value_error (Error.Invalid_style_bad_colsfmt (key, str)))
 
 
 let cellfmt_of_string =
-    let rex = Re.(compile (seq [bos; group (rep1 (rg '0' '9')); group (rep1 (alt [rg 'a' 'z'; rg 'A' 'Z'])); group (rep (set "^_")); eos])) in
+    let rex = Re.(compile (seq [bos; group (rep1 (rg '0' '9')); group (alt [rg 'a' 'z'; rg 'A' 'Z']); group (rep (set "^_")); eos])) in
     fun str ->
         let groups = Re.exec rex str in
         let colspan = int_of_string (Re.get groups 1) in
-        let colfmt = colfmt_of_string (Re.get groups 2) in
+        let colfmt = colfmt_of_char (Re.get groups 2).[0] in
         let (overline, underline) = match Re.get groups 3 with
             | "^_" | "_^" -> (true, true)
             | "^"         -> (true, false)

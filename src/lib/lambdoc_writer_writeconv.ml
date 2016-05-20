@@ -64,7 +64,7 @@ struct
                 and num = num / base in
                 rem::(from_base10 num) in
         let alpha_of_int num =
-            String.of_char (char_of_int (65 + num)) in
+            String.make 1 (char_of_int (65 + num)) in
         let rems = from_base10 num in
         List.fold_left (^) "" (List.rev_map alpha_of_int rems)
 

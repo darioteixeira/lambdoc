@@ -25,7 +25,7 @@ let escape str =
     let replacer = function
         | '\\' -> "\\\\"
         | '#'  -> "\\#"
-        | x    -> String.of_char x
+        | x    -> String.make 1 x
     in String.replace_chars replacer str
 
 

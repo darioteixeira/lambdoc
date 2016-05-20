@@ -31,7 +31,6 @@ module String:
 sig
     include module type of String
 
-    val of_char: char -> string
     val strip: ?chars:string -> string -> string
     val lstrip: ?chars:string -> string -> string
     val rstrip: ?chars:string -> string -> string
