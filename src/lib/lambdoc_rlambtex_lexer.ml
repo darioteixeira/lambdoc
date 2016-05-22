@@ -251,7 +251,7 @@ let literal terminator {lexbuf; txtbuf} =
     let rec loop during = match%sedlex lexbuf with
         | end_env ->
             let content = whole_lexbuf lexbuf in
-            if (String.slice ~first:5 ~last:(-1) content) = terminator
+            if (String.chop ~left:5 ~right:1 content) = terminator
             then
                 return 0 during txtbuf (End_env content)
             else begin

@@ -48,22 +48,59 @@ end
 
 module String =
 struct
-    include BatString
+    include String
 
-    let lstrip ?(chars = " \t\r\n") s =
-        let p = ref 0 in
-        let l = length s in
-        while !p < l && contains chars (unsafe_get s !p) do
-            incr p;
+    let strip ?(chars = " \t\r\n") str =
+        let len = length str in
+        let lidx = ref 0 in
+        while !lidx < len && contains chars (unsafe_get str !lidx) do
+            incr lidx
         done;
-        sub s !p (l - !p)
+        let ridx = ref (len - 1) in
+        while !ridx >= !lidx && contains chars (unsafe_get str !ridx) do
+            decr ridx
+        done;
+        sub str !lidx (!ridx - !lidx + 1)
 
-    let rstrip ?(chars = " \t\r\n") s =
-      let l = ref (length s - 1) in
-      while !l >= 0 && contains chars (unsafe_get s !l) do
-        decr l;
-      done;
-      sub s 0 (!l + 1)
+    let lstrip ?(chars = " \t\r\n") str =
+        let len = length str in
+        let lidx = ref 0 in
+        while !lidx < len && contains chars (unsafe_get str !lidx) do
+            incr lidx;
+        done;
+        sub str !lidx (len - !lidx)
+
+    let rstrip ?(chars = " \t\r\n") str =
+        let len = length str in
+        let ridx = ref (len - 1) in
+        while !ridx >= 0 && contains chars (unsafe_get str !ridx) do
+            decr ridx;
+        done;
+        sub str 0 (!ridx + 1)
+
+    let chop ?(left = 0) ?(right = 0) str =
+        if left < 0 || right < 0 then invalid_arg "String.chop: negative count";
+        let len = length str - left - right in
+        if len > 0
+        then sub str left len
+        else ""
+
+    let nsplit_by_char str sep =
+        let len = length str in
+        let rec loop idx count accum =
+            if idx < 0
+            then
+                sub str (idx + 1) count :: accum
+            else
+                if unsafe_get str idx = sep
+                then
+                    let accum = sub str (idx + 1) count :: accum in
+                    loop (idx - 1) 0 accum
+                else
+                    loop (idx - 1) (count + 1) accum in
+        if len = 0
+        then []
+        else loop (len - 1) 0 []
 
     let asplit =
         let rex = Re.(compile (alt [char '\n'; str "\r\n"])) in
@@ -82,5 +119,30 @@ struct
             let counter = List.fold_left proc 0 xs in
             assert (counter = total);
             lines
+
+    let replace_chars f str =
+        let len = length str in
+        let buf = Buffer.create len in
+        for i = 0 to len - 1 do
+            Buffer.add_string buf (f (unsafe_get str i))
+        done;
+        Buffer.contents buf
+
+    let starts_with str prefix =
+        let slen = length str in
+        let plen = length prefix in
+        let rec loop idx =
+            if idx >= plen
+            then
+                true
+            else
+                let sx = unsafe_get str idx in
+                let px = unsafe_get prefix idx in
+                if sx = px
+                then loop (idx + 1)
+                else false in
+        if plen > slen
+        then false
+        else loop 0
 end
 

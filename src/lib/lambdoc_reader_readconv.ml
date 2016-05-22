@@ -194,7 +194,7 @@ struct
 
     let user_hierarchical level str =
         let elems =
-            try String.nsplit str "." |> List.map int_of_string
+            try String.nsplit_by_char str '.' |> List.map int_of_string
             with _ -> raise (Invalid_order_format str) in
         let nelems = List.length elems in
         if nelems = (level : Level.section :> int)

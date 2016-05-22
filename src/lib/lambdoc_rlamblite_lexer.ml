@@ -85,11 +85,10 @@ let ltrim_lexbuf ~first lexbuf =
 let get_labeldef lexbuf =
     Sedlexing.Utf8.lexeme lexbuf |>
     String.rstrip |>
-    String.slice ~first:1 ~last:(-1)
+    String.chop ~left:1 ~right:1
 
 let get_labelref lexbuf =
-    get_labeldef lexbuf |>
-    String.nsplit ~by:","
+    String.nsplit_by_char (get_labeldef lexbuf) ','
 
 let scan_text ~syntax lexbuf =
     let add_plain accum el = match accum with
@@ -182,7 +181,7 @@ let scan_literal terminator qprefix iprefix lexbuf =
             let str = String.rstrip (Sedlexing.Utf8.lexeme lexbuf) in
             if String.starts_with str prefix
             then begin
-                let unprefixed = String.slice ~first:(String.length prefix) str in
+                let unprefixed = String.chop ~left:(String.length prefix) str in
                 if unprefixed = terminator
                 then
                     nlines

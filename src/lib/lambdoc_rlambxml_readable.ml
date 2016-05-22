@@ -48,7 +48,7 @@ struct
         match param with
             | Req k  -> fetch k
             | Opt k  -> (try Some (fetch k) with Not_found -> None)
-            | List k -> (try String.nsplit (fetch k) " " with Not_found -> [])
+            | List k -> (try String.nsplit_by_char (fetch k) ' ' with Not_found -> [])
 
     let all prop =
         Hashtbl.fold (fun k _ accum -> k :: accum) prop.dict []

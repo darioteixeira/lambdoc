@@ -155,7 +155,7 @@ let raws_of_string =
                     (accum_raw, msg :: accum_msg) in
         match comm.comm_style with
             | Some str ->
-                String.nsplit str "," |>
+                String.nsplit_by_char str ',' |>
                 List.map String.strip |>
                 List.fold_left conv ([], [])
             | None ->

@@ -31,14 +31,36 @@ module String:
 sig
     include module type of String
 
+    (** [strip ?chars str] returns [str] with any of the characters in [chars] removed from
+        both the beginning and end of the string.  [chars] defaults to " \t\r\n". *)
     val strip: ?chars:string -> string -> string
+
+    (** [lstrip ?chars str] returns [str] with any of the characters in [chars] removed from
+        the beginning of the string.  [chars] defaults to " \t\r\n". *)
     val lstrip: ?chars:string -> string -> string
+
+    (** [rstrip ?chars str] returns [str] with any of the characters in [chars] removed from
+        the end of the string.  [chars] defaults to " \t\r\n". *)
     val rstrip: ?chars:string -> string -> string
-    val nsplit: string -> by:string -> string list
+
+    (** [chop ?left ?right str] returns the string [str] without the leftmost [left] characters
+        and the rightmost [right] characters.  Both [left] and [right] default to 0. *)
+    val chop: ?left:int -> ?right:int -> string -> string
+
+    (** [nsplit str sep] splits the string [str] at every separation character [sep],
+        returning a list of all segments found. *)
+    val nsplit_by_char: string -> char -> string list
+
+    (** [asplit str] splits the string [str] at every occurence of newlines, returning an array
+        of all segments found.  Note that empty lines are mapped to an empty string in the
+        corresponding array position. *)
     val asplit: string -> string array
+
+    (** [replace_chars f str] replaces each character in string [str] by the result of applying
+        function [f] on the character. *)
     val replace_chars: (char -> string) -> string -> string
-    val slice: ?first:int -> ?last:int -> string -> string
-    val fold_left: ('a -> char -> 'a) -> 'a -> string -> 'a
+
+    (** [starts_with str prefix] returns a boolean indicating whether the [str] starts with [prefix]. *)
     val starts_with: string -> string -> bool
 end
 
