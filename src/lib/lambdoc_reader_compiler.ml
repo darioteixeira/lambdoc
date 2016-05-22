@@ -126,7 +126,7 @@ let contextualize_errors ~sort source errors =
         (error_context, error_tag, error_msg) in
     let compare (anum, _, amsg) (bnum, _, bmsg) = match (anum, bnum) with
         | (Some anum, Some bnum) ->
-            let res = BatInt.compare anum bnum in
+            let res = Int.compare anum bnum in
             if res = 0
             then Pervasives.compare amsg bmsg
             else res

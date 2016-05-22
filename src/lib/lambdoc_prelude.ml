@@ -6,6 +6,18 @@
 *)
 (********************************************************************************)
 
+module Int =
+struct
+    type t = int
+
+    let compare (x: int) (y: int) =
+        if x > y
+        then 1
+        else if y > x
+        then -1
+        else 0
+end
+
 module List =
 struct
     include List

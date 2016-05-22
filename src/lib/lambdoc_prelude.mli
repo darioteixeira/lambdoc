@@ -10,6 +10,13 @@
     defined in this module have the same name and signature as functions in Batteries.
 *)
 
+module Int:
+sig
+    type t = int
+
+    val compare: int -> int -> int
+end
+
 module List:
 sig
     include module type of List
