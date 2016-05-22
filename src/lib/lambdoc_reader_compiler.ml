@@ -369,7 +369,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             let elem attr _ = match Entity_input.expand ent with
                 | `Okay (txt, ustr) ->
                     if expand_entities
-                    then Monad.return [Inline.plain ~attr (ustr :> string)]
+                    then Monad.return [Inline.plain ~attr ustr]
                     else Monad.return [Inline.entity ~attr txt]
                 | `Error msg ->
                     add_error comm msg;

@@ -22,7 +22,7 @@ open Lambdoc_core
 
 module Entity_input:
 sig
-    val expand: string -> [ `Okay of string * BatUTF8.t | `Error of Error.msg ]
+    val expand: string -> [ `Okay of string * string | `Error of Error.msg ]
 end
 
 

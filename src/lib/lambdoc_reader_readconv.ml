@@ -85,8 +85,37 @@ struct
         map
 
 
-    let utf8_of_codepoint num =
-        BatUTF8.of_char (BatUChar.chr num)
+    let string_of_codepoint num =
+		let mask = 0x3f in
+		if num <= 0x7f
+		then
+			String.make 1 (Char.unsafe_chr num)
+		else if num <= 0x7ff
+		then begin
+			let x = Bytes.make 2 '\x00' in
+			Bytes.set x 0 (Char.unsafe_chr (0xc0 lor (num lsr 6)));
+			Bytes.set x 1 (Char.unsafe_chr (0x80 lor (num land mask)));
+			Bytes.to_string x
+		end
+		else if num <= 0xffff
+		then begin
+			let x = Bytes.make 3 '\x00' in
+			Bytes.set x 0 (Char.unsafe_chr (0xe0 lor (num lsr 12)));
+			Bytes.set x 1 (Char.unsafe_chr (0x80 lor ((num lsr 6) land mask)));
+			Bytes.set x 2 (Char.unsafe_chr (0x80 lor (num land mask)));
+			Bytes.to_string x
+		end
+		else if num <= 0x1fffff
+        then begin
+			let x = Bytes.make 4 '\x00' in
+			Bytes.set x 0 (Char.unsafe_chr (0xf0 lor (num lsr 18)));
+			Bytes.set x 1 (Char.unsafe_chr (0x80 lor ((num lsr 12) land mask)));
+			Bytes.set x 2 (Char.unsafe_chr (0x80 lor ((num lsr 6) land mask)));
+			Bytes.set x 3 (Char.unsafe_chr (0x80 lor (num land mask)));
+			Bytes.to_string x
+		end
+        else
+            invalid_arg ("string_of_codepoint: " ^ string_of_int num)
 
 
     let expand =
@@ -99,11 +128,11 @@ struct
             try
                 let groups = Re.exec rex ent in
                 if Re.test groups 1
-                then (try `Okay (ent, utf8_of_codepoint (Hashtbl.find entity_map (Re.get groups 1))) with _-> `Error (Error.Invalid_entity_name ent))
+                then (try `Okay (ent, string_of_codepoint (Hashtbl.find entity_map (Re.get groups 1))) with _-> `Error (Error.Invalid_entity_name ent))
                 else if Re.test groups 2
-                then (try `Okay (ent, utf8_of_codepoint (int_of_string ("0x" ^ (Re.get groups 2)))) with _ -> `Error (Error.Invalid_entity_hexa ent))
+                then (try `Okay (ent, string_of_codepoint (int_of_string ("0x" ^ (Re.get groups 2)))) with _ -> `Error (Error.Invalid_entity_hexa ent))
                 else if Re.test groups 3
-                then (try `Okay (ent, utf8_of_codepoint (int_of_string (Re.get groups 3))) with _ -> `Error (Error.Invalid_entity_deci ent))
+                then (try `Okay (ent, string_of_codepoint (int_of_string (Re.get groups 3))) with _ -> `Error (Error.Invalid_entity_deci ent))
                 else `Error (Error.Invalid_entity_name ent)
             with Not_found ->
                 `Error (Error.Invalid_entity_name ent)
