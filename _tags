@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 84468b5a18b12e4a872e086eb74b45a1)
+# DO NOT EDIT (digest: dcbee7123bdf9ab8a104ad34dcdb6aa6)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -63,6 +63,20 @@ true: annot, bin_annot
 <tests/test_lambdoc.{native,byte}>: pkg_unix
 <tests/test_lambdoc.{native,byte}>: pkg_xmlm
 <tests/test_lambdoc.{native,byte}>: use_lambdoc
+<tests/*.ml{,i,y}>: pkg_unix
+# Executable test_prelude
+<tests/test_prelude.{native,byte}>: pkg_alcotest
+<tests/test_prelude.{native,byte}>: pkg_batteries
+<tests/test_prelude.{native,byte}>: pkg_blahcaml
+<tests/test_prelude.{native,byte}>: pkg_camlhighlight
+<tests/test_prelude.{native,byte}>: pkg_menhirLib
+<tests/test_prelude.{native,byte}>: pkg_re
+<tests/test_prelude.{native,byte}>: pkg_sedlex
+<tests/test_prelude.{native,byte}>: pkg_sexplib
+<tests/test_prelude.{native,byte}>: pkg_threads
+<tests/test_prelude.{native,byte}>: pkg_tyxml
+<tests/test_prelude.{native,byte}>: pkg_xmlm
+<tests/test_prelude.{native,byte}>: use_lambdoc
 <tests/*.ml{,i,y}>: pkg_alcotest
 <tests/*.ml{,i,y}>: pkg_batteries
 <tests/*.ml{,i,y}>: pkg_blahcaml
@@ -73,7 +87,6 @@ true: annot, bin_annot
 <tests/*.ml{,i,y}>: pkg_sexplib
 <tests/*.ml{,i,y}>: pkg_threads
 <tests/*.ml{,i,y}>: pkg_tyxml
-<tests/*.ml{,i,y}>: pkg_unix
 <tests/*.ml{,i,y}>: pkg_xmlm
 <tests/*.ml{,i,y}>: use_lambdoc
 # OASIS_STOP
