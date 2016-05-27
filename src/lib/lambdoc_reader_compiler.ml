@@ -108,7 +108,7 @@ let rec all_equal = function
 (********************************************************************************)
 
 let contextualize_errors ~sort source errors =
-    let source_lines = String.asplit source in
+    let source_lines = String.nsplit_by_line source in
     let num_lines = Array.length source_lines in
     let format_error (error_linenum, error_tag, error_msg) =
         let error_context = match error_linenum with

@@ -58,10 +58,10 @@ sig
         returning a list of all segments found. *)
     val nsplit_by_char: string -> char -> string list
 
-    (** [asplit str] splits the string [str] at every occurence of newlines, returning an array
-        of all segments found.  Note that empty lines are mapped to an empty string in the
-        corresponding array position. *)
-    val asplit: string -> string array
+    (** [nsplit_by_line str] splits the string [str] at every occurence of newlines (either '\n'
+        or '\r\n'), returning an array of all segments found.  Note that empty lines are mapped
+        to an empty string in the corresponding array position. *)
+    val nsplit_by_line: string -> string array
 
     (** [replace_chars f str] replaces each character in string [str] by the result of applying
         function [f] on the character. *)

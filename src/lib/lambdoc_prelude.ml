@@ -114,7 +114,7 @@ struct
         then []
         else loop (len - 1) 0 []
 
-    let asplit str =
+    let nsplit_by_line str =
         let len = length str in
         let rec loop first current count accum =
             if current >= len

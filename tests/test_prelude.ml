@@ -106,18 +106,18 @@ let test_nsplit_by_char () =
     Alcotest.(check (list string)) "0" ["a"; "b"] (String.nsplit_by_char "a\nb" '\n');
     Alcotest.(check (list string)) "0" [""; "a"; ""; "b"; ""] (String.nsplit_by_char "\na\n\nb\n" '\n')
 
-let test_asplit () =
-    Alcotest.(check (list string)) "0" [] (String.asplit "" |> Array.to_list);
-    Alcotest.(check (list string)) "1" [""] (String.asplit "\n" |> Array.to_list);
-    Alcotest.(check (list string)) "2" [""; ""] (String.asplit "\n\n" |> Array.to_list);
-    Alcotest.(check (list string)) "3" ["hello"] (String.asplit "hello" |> Array.to_list);
-    Alcotest.(check (list string)) "4" ["hello"; "world"] (String.asplit "hello\nworld" |> Array.to_list);
-    Alcotest.(check (list string)) "5" ["hello"; "world"] (String.asplit "hello\nworld\n" |> Array.to_list);
-    Alcotest.(check (list string)) "6" ["hello"; "world"; ""] (String.asplit "hello\nworld\n\n" |> Array.to_list);
-    Alcotest.(check (list string)) "7" [""; "hello"; "world"] (String.asplit "\nhello\nworld" |> Array.to_list);
-    Alcotest.(check (list string)) "8" [""; ""; "hello"; "world"] (String.asplit "\n\nhello\nworld" |> Array.to_list);
-    Alcotest.(check (list string)) "9" ["hello"; ""; "world"] (String.asplit "hello\n\nworld" |> Array.to_list);
-    Alcotest.(check (list string)) "10" ["hello"; ""; ""; "world"] (String.asplit "hello\n\n\nworld" |> Array.to_list)
+let test_nsplit_by_line () =
+    Alcotest.(check (list string)) "0" [] (String.nsplit_by_line "" |> Array.to_list);
+    Alcotest.(check (list string)) "1" [""] (String.nsplit_by_line "\n" |> Array.to_list);
+    Alcotest.(check (list string)) "2" [""; ""] (String.nsplit_by_line "\n\n" |> Array.to_list);
+    Alcotest.(check (list string)) "3" ["hello"] (String.nsplit_by_line "hello" |> Array.to_list);
+    Alcotest.(check (list string)) "4" ["hello"; "world"] (String.nsplit_by_line "hello\nworld" |> Array.to_list);
+    Alcotest.(check (list string)) "5" ["hello"; "world"] (String.nsplit_by_line "hello\nworld\n" |> Array.to_list);
+    Alcotest.(check (list string)) "6" ["hello"; "world"; ""] (String.nsplit_by_line "hello\nworld\n\n" |> Array.to_list);
+    Alcotest.(check (list string)) "7" [""; "hello"; "world"] (String.nsplit_by_line "\nhello\nworld" |> Array.to_list);
+    Alcotest.(check (list string)) "8" [""; ""; "hello"; "world"] (String.nsplit_by_line "\n\nhello\nworld" |> Array.to_list);
+    Alcotest.(check (list string)) "9" ["hello"; ""; "world"] (String.nsplit_by_line "hello\n\nworld" |> Array.to_list);
+    Alcotest.(check (list string)) "10" ["hello"; ""; ""; "world"] (String.nsplit_by_line "hello\n\n\nworld" |> Array.to_list)
 
 let test_replace_chars () =
     Alcotest.(check string) "0" "" (String.replace_chars (function _ -> "X") "");
@@ -142,7 +142,7 @@ let string_set =
     ("String.rstrip", `Quick, test_rstrip);
     ("String.chop", `Quick, test_chop);
     ("String.nsplit_by_char", `Quick, test_nsplit_by_char);
-    ("String.asplit", `Quick, test_asplit);
+    ("String.nsplit_by_line", `Quick, test_nsplit_by_line);
     ("String.replace_chars", `Quick, test_replace_chars);
     ("String.starts_with", `Quick, test_starts_with);
     ]
