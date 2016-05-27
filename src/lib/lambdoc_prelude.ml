@@ -114,23 +114,30 @@ struct
         then []
         else loop (len - 1) 0 []
 
-    let asplit =
-        let rex = Re.(compile (alt [char '\n'; str "\r\n"])) in
-        fun str ->
-            let (acc0, toks) = match Re.split_full rex str with
-                | `Delim _ :: tl -> ((1, [""]), tl)
-                | xs             -> ((0, []), xs) in
-            let proc ((counter, lines) as acc) = function
-                | `Text text -> (counter + 1, text :: lines)
-                | `Delim _   -> acc in
-            let (total, xs) = List.fold_left proc acc0 toks in
-            let lines = Array.make total "" in
-            let proc counter line =
-                lines.(total - counter - 1) <- line;
-                counter + 1 in
-            let counter = List.fold_left proc 0 xs in
-            assert (counter = total);
-            lines
+    let asplit str =
+        let len = length str in
+        let rec loop first current count accum =
+            if current >= len
+            then
+                if current > first
+                then (count + 1, sub str first (current - first) :: accum)
+                else (count, accum)
+            else
+                let next = current + 1 in
+                match unsafe_get str current with
+                    | '\n' ->
+                        let accum = sub str first (current - first) :: accum in
+                        loop next next (count + 1) accum
+                    | '\r' when next < len && unsafe_get str next = '\n' ->
+                        let accum = sub str first (current - first) :: accum in
+                        loop (next + 1) (next + 1) (count + 1) accum
+                    | _ ->
+                        loop first next count accum in
+        let (count, xs) = loop 0 0 0 [] in
+        let lines = Array.make count "" in
+        let f i line = lines.(count - i - 1) <- line in
+        List.iteri f xs;
+        lines
 
     let replace_chars f str =
         let len = length str in
