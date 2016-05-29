@@ -55,7 +55,7 @@ Executable "lambcmd"
     Path:                   src/lambcmd
     MainIs:                 lambcmd.ml
     BuildTools:             ocamlbuild
-    BuildDepends:           lambdoc
+    BuildDepends:           lambdoc, cmdliner
     CompiledObject:         best
 
 Executable "test_lambdoc"

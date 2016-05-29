@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: dcbee7123bdf9ab8a104ad34dcdb6aa6)
+# DO NOT EDIT (digest: 29f91205bde159e843a83855e0ec8f05)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -30,6 +30,7 @@ true: annot, bin_annot
 <src/lambcmd/lambcmd.{native,byte}>: pkg_batteries
 <src/lambcmd/lambcmd.{native,byte}>: pkg_blahcaml
 <src/lambcmd/lambcmd.{native,byte}>: pkg_camlhighlight
+<src/lambcmd/lambcmd.{native,byte}>: pkg_cmdliner
 <src/lambcmd/lambcmd.{native,byte}>: pkg_menhirLib
 <src/lambcmd/lambcmd.{native,byte}>: pkg_re
 <src/lambcmd/lambcmd.{native,byte}>: pkg_sedlex
@@ -41,6 +42,7 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_batteries
 <src/lambcmd/*.ml{,i,y}>: pkg_blahcaml
 <src/lambcmd/*.ml{,i,y}>: pkg_camlhighlight
+<src/lambcmd/*.ml{,i,y}>: pkg_cmdliner
 <src/lambcmd/*.ml{,i,y}>: pkg_menhirLib
 <src/lambcmd/*.ml{,i,y}>: pkg_re
 <src/lambcmd/*.ml{,i,y}>: pkg_sedlex
