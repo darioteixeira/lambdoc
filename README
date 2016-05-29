@@ -17,7 +17,7 @@ and Markdown.  The first is inspired by LaTeX, the second is an XML-based
 markup based on HTML, the third is a lightweight markup language in the spirit
 of Wiki Creole, and the last is the popular lightweight markup language.
 The library also includes the possibility of outputing any Lambdoc document
-as an Ocsigen (Tyxml) HTML5 value.
+as an Ocsigen (TyXML) HTML value.
 
 Additional capabilities include the runtime customisation of available
 document features (you may, for example, declare that a certain class of
@@ -32,8 +32,9 @@ between any of the input formats into one of the supported output targets.
 2. Dependencies
 ===============
 
-The library depends on Batteries [2], Pcre-ocaml [3], Sexplib [4], Ulex [5],
-Menhir [6], PXP [7], Xstrp4 [8], Tyxml [9], Blahcaml [10], and Camlhighlight [11].
+The library depends on Blahcaml [2], Camlhighlight [3], Menhir [4], OCaml-re [5],
+Sedlex [6], Sexplib [7], TyXML [8], and Xmlm [9].  The CLI application 'lambcmd'
+depends also on Cmdliner [10], and the unit tests depend on Alcotest [11].
 
 
 3. Building and installing
@@ -69,15 +70,15 @@ have the disadvantage of producing larger markup, however.
 References
 ==========
 
- [1] http://www.ocsigen.org/
- [2] http://batteries.forge.ocamlcore.org/
- [3] http://www.ocaml.info/home/ocaml_sources.html#pcre-ocaml
- [4] http://www.ocaml.info/home/ocaml_sources.html#sexplib
- [5] http://www.cduce.org/download.html
- [6] http://cristal.inria.fr/~fpottier/menhir/
- [7] http://projects.camlcity.org/projects/pxp.html
- [8] http://projects.camlcity.org/projects/xstrp4.html
- [9] http://www.ocsigen.org/tyxml
-[10] http://blahcaml.forge.ocamlcore.org/
-[11] http://camlhighlight.forge.ocamlcore.org/
+ [1] https://www.ocsigen.org/
+ [2] https://blahcaml.forge.ocamlcore.org/
+ [3] https://camlhighlight.forge.ocamlcore.org/
+ [4] https://cristal.inria.fr/~fpottier/menhir/
+ [5] https://github.com/ocaml/ocaml-re
+ [6] https://github.com/alainfrisch/sedlex
+ [7] https://github.com/janestreet/sexplib
+ [8] https://www.ocsigen.org/tyxml
+ [9] https://erratique.ch/software/xmlm
+[10] https://erratique.ch/software/cmdliner
+[11] https://github.com/mirage/alcotest
 
