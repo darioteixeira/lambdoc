@@ -39,7 +39,7 @@ Library "lambdoc"
         Lambdoc_writer, Lambdoc_writer_emblang, Lambdoc_writer_explanations, Lambdoc_writer_maker, Lambdoc_writer_translations, Lambdoc_writer_writeconv,
         Lambdoc_whtml, Lambdoc_whtml_writable, Lambdoc_whtml_writer
   BuildDepends:
-        batteries, blahcaml, camlhighlight, menhirLib, re, sedlex, sexplib, threads, tyxml, xmlm
+        blahcaml, camlhighlight, menhirLib, re, sedlex, sexplib, threads, tyxml, xmlm
 
 Document "lambdoc"
     Type:                   ocamlbuild (0.4)
@@ -63,7 +63,7 @@ Executable "test_lambdoc"
     Path:                   tests
     MainIs:                 test_lambdoc.ml
     Install:                false
-    BuildDepends:           alcotest, batteries, lambdoc, re, tyxml, unix
+    BuildDepends:           alcotest, lambdoc, re, tyxml, unix
     CompiledObject:         best
 
 Executable "test_prelude"
