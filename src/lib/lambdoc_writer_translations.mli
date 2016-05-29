@@ -18,6 +18,7 @@ open Lambdoc_core
 
 type t =
     {
+    description: string;
     equation: Inline.seq;
     printout: Inline.seq;
     table: Inline.seq;
@@ -38,18 +39,19 @@ type t =
 (********************************************************************************)
 
 val make:
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    Lambdoc_core.Inline.seq ->
-    string ->
+    description:string ->
+    equation:Lambdoc_core.Inline.seq ->
+    printout:Lambdoc_core.Inline.seq ->
+    table:Lambdoc_core.Inline.seq ->
+    figure:Lambdoc_core.Inline.seq ->
+    part:Lambdoc_core.Inline.seq ->
+    appendix:Lambdoc_core.Inline.seq ->
+    section:Lambdoc_core.Inline.seq ->
+    bibliography:Lambdoc_core.Inline.seq ->
+    notes:Lambdoc_core.Inline.seq ->
+    toc:Lambdoc_core.Inline.seq ->
+    abstract:Lambdoc_core.Inline.seq ->
+    paragraph:string ->
     t
 
 val english_names: t

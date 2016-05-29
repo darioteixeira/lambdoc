@@ -15,6 +15,7 @@ open Lambdoc_core
 
 type t =
     {
+    description: string;
     equation: Inline.seq;
     printout: Inline.seq;
     table: Inline.seq;
@@ -34,50 +35,53 @@ type t =
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-let make equation printout table figure part appendix section bibliography notes toc abstract paragraph =
-    {equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract; paragraph}
+let make ~description ~equation ~printout ~table ~figure ~part ~appendix ~section ~bibliography ~notes ~toc ~abstract ~paragraph =
+    {description; equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract; paragraph}
 
 let english_names = make
-    [Inline.plain "Eq."]
-    [Inline.plain "Print."]
-    [Inline.plain "Tab."]
-    [Inline.plain "Fig."]
-    [Inline.plain "Part"]
-    [Inline.plain "Appendix"]
-    [Inline.plain "Section"]
-    [Inline.plain "Bibliography"]
-    [Inline.plain "Notes"]
-    [Inline.plain "Table of Contents"]
-    [Inline.plain "Abstract"]
-    "Paragraph"
+    ~description:"en"
+    ~equation:[Inline.plain "Eq."]
+    ~printout:[Inline.plain "Print."]
+    ~table:[Inline.plain "Tab."]
+    ~figure:[Inline.plain "Fig."]
+    ~part:[Inline.plain "Part"]
+    ~appendix:[Inline.plain "Appendix"]
+    ~section:[Inline.plain "Section"]
+    ~bibliography:[Inline.plain "Bibliography"]
+    ~notes:[Inline.plain "Notes"]
+    ~toc:[Inline.plain "Table of Contents"]
+    ~abstract:[Inline.plain "Abstract"]
+    ~paragraph:"Paragraph"
 
 let french_names = make
-    [Inline.plain "Eq."]
-    [Inline.plain "List."]
-    [Inline.plain "Tab."]
-    [Inline.plain "Fig."]
-    [Inline.plain "Partie"]
-    [Inline.plain "Annexe"]
-    [Inline.plain "Section"]
-    [Inline.plain "Bibliographie"]
-    [Inline.plain "Notes"]
-    [Inline.plain "Index"]
-    [Inline.plain "Résumé"]
-    "Paragraphe"
+    ~description:"fr"
+    ~equation:[Inline.plain "Eq."]
+    ~printout:[Inline.plain "List."]
+    ~table:[Inline.plain "Tab."]
+    ~figure:[Inline.plain "Fig."]
+    ~part:[Inline.plain "Partie"]
+    ~appendix:[Inline.plain "Annexe"]
+    ~section:[Inline.plain "Section"]
+    ~bibliography:[Inline.plain "Bibliographie"]
+    ~notes:[Inline.plain "Notes"]
+    ~toc:[Inline.plain "Index"]
+    ~abstract:[Inline.plain "Résumé"]
+    ~paragraph:"Paragraphe"
 
 let portuguese_names = make
-    [Inline.plain "Eq."]
-    [Inline.plain "List."]
-    [Inline.plain "Tab."]
-    [Inline.plain "Fig."]
-    [Inline.plain "Parte"]
-    [Inline.plain "Apêndice"]
-    [Inline.plain "Secção"]
-    [Inline.plain "Bibliografia"]
-    [Inline.plain "Notas"]
-    [Inline.plain "Índice"]
-    [Inline.plain "Resumo"]
-    "Parágrafo"
+    ~description:"pt"
+    ~equation:[Inline.plain "Eq."]
+    ~printout:[Inline.plain "List."]
+    ~table:[Inline.plain "Tab."]
+    ~figure:[Inline.plain "Fig."]
+    ~part:[Inline.plain "Parte"]
+    ~appendix:[Inline.plain "Apêndice"]
+    ~section:[Inline.plain "Secção"]
+    ~bibliography:[Inline.plain "Bibliografia"]
+    ~notes:[Inline.plain "Notas"]
+    ~toc:[Inline.plain "Índice"]
+    ~abstract:[Inline.plain "Resumo"]
+    ~paragraph:"Parágrafo"
 
 let default = english_names
 
