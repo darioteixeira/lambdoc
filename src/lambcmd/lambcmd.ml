@@ -33,14 +33,14 @@ let read_all chan cleaner =
             Buffer.add_char buf '\n';
             loop ()
         | exception End_of_file ->
-			cleaner chan;
+            cleaner chan;
             Buffer.contents buf in
     loop ()
 
 let string_of_xhtml the_title xhtml =
     let open Html in
     let page =
-		(html
+        (html
             (head
                 (title (pcdata the_title))
                 [

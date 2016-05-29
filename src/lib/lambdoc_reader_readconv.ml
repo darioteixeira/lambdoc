@@ -86,34 +86,34 @@ struct
 
 
     let string_of_codepoint num =
-		let mask = 0x3f in
-		if num <= 0x7f
-		then
-			String.make 1 (Char.unsafe_chr num)
-		else if num <= 0x7ff
-		then begin
-			let x = Bytes.make 2 '\x00' in
-			Bytes.set x 0 (Char.unsafe_chr (0xc0 lor (num lsr 6)));
-			Bytes.set x 1 (Char.unsafe_chr (0x80 lor (num land mask)));
-			Bytes.to_string x
-		end
-		else if num <= 0xffff
-		then begin
-			let x = Bytes.make 3 '\x00' in
-			Bytes.set x 0 (Char.unsafe_chr (0xe0 lor (num lsr 12)));
-			Bytes.set x 1 (Char.unsafe_chr (0x80 lor ((num lsr 6) land mask)));
-			Bytes.set x 2 (Char.unsafe_chr (0x80 lor (num land mask)));
-			Bytes.to_string x
-		end
-		else if num <= 0x1fffff
+        let mask = 0x3f in
+        if num <= 0x7f
+        then
+            String.make 1 (Char.unsafe_chr num)
+        else if num <= 0x7ff
         then begin
-			let x = Bytes.make 4 '\x00' in
-			Bytes.set x 0 (Char.unsafe_chr (0xf0 lor (num lsr 18)));
-			Bytes.set x 1 (Char.unsafe_chr (0x80 lor ((num lsr 12) land mask)));
-			Bytes.set x 2 (Char.unsafe_chr (0x80 lor ((num lsr 6) land mask)));
-			Bytes.set x 3 (Char.unsafe_chr (0x80 lor (num land mask)));
-			Bytes.to_string x
-		end
+            let x = Bytes.make 2 '\x00' in
+            Bytes.set x 0 (Char.unsafe_chr (0xc0 lor (num lsr 6)));
+            Bytes.set x 1 (Char.unsafe_chr (0x80 lor (num land mask)));
+            Bytes.to_string x
+        end
+        else if num <= 0xffff
+        then begin
+            let x = Bytes.make 3 '\x00' in
+            Bytes.set x 0 (Char.unsafe_chr (0xe0 lor (num lsr 12)));
+            Bytes.set x 1 (Char.unsafe_chr (0x80 lor ((num lsr 6) land mask)));
+            Bytes.set x 2 (Char.unsafe_chr (0x80 lor (num land mask)));
+            Bytes.to_string x
+        end
+        else if num <= 0x1fffff
+        then begin
+            let x = Bytes.make 4 '\x00' in
+            Bytes.set x 0 (Char.unsafe_chr (0xf0 lor (num lsr 18)));
+            Bytes.set x 1 (Char.unsafe_chr (0x80 lor ((num lsr 12) land mask)));
+            Bytes.set x 2 (Char.unsafe_chr (0x80 lor ((num lsr 6) land mask)));
+            Bytes.set x 3 (Char.unsafe_chr (0x80 lor (num land mask)));
+            Bytes.to_string x
+        end
         else
             invalid_arg ("string_of_codepoint: " ^ string_of_int num)
 
