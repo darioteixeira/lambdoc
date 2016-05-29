@@ -186,8 +186,16 @@ let read_file =
             else raise Not_found
         with Not_found ->
             let chan = open_in (Printf.sprintf "%s.%s" fname (Filetype.to_string ftype)) in
-            let contents = BatPervasives.input_all chan in
-            close_in chan;
+            let buf = Buffer.create 0xffff in
+            let rec loop () = match input_line chan with
+                | line ->
+                    Buffer.add_string buf line;
+                    Buffer.add_char buf '\n';
+                    loop ()
+                | exception End_of_file ->
+                    close_in chan;
+                    Buffer.contents buf in
+            let contents = loop () in
             Hashtbl.replace cache ftype (fname, contents);
             contents
 
