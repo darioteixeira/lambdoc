@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 94f24a75b1dfcd78801c2a59b6c5a748)
+# DO NOT EDIT (digest: 592867e4128c1f364b594ef8bc4fe35a)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -48,6 +48,18 @@ true: annot, bin_annot
 <src/lambcmd/*.ml{,i,y}>: pkg_tyxml
 <src/lambcmd/*.ml{,i,y}>: pkg_xmlm
 <src/lambcmd/*.ml{,i,y}>: use_lambdoc
+# Executable test_prelude
+<tests/test_prelude.{native,byte}>: pkg_alcotest
+<tests/test_prelude.{native,byte}>: pkg_blahcaml
+<tests/test_prelude.{native,byte}>: pkg_camlhighlight
+<tests/test_prelude.{native,byte}>: pkg_menhirLib
+<tests/test_prelude.{native,byte}>: pkg_re
+<tests/test_prelude.{native,byte}>: pkg_sedlex
+<tests/test_prelude.{native,byte}>: pkg_sexplib
+<tests/test_prelude.{native,byte}>: pkg_threads
+<tests/test_prelude.{native,byte}>: pkg_tyxml
+<tests/test_prelude.{native,byte}>: pkg_xmlm
+<tests/test_prelude.{native,byte}>: use_lambdoc
 # Executable test_lambdoc
 <tests/test_lambdoc.{native,byte}>: pkg_alcotest
 <tests/test_lambdoc.{native,byte}>: pkg_blahcaml
@@ -61,19 +73,6 @@ true: annot, bin_annot
 <tests/test_lambdoc.{native,byte}>: pkg_unix
 <tests/test_lambdoc.{native,byte}>: pkg_xmlm
 <tests/test_lambdoc.{native,byte}>: use_lambdoc
-<tests/*.ml{,i,y}>: pkg_unix
-# Executable test_prelude
-<tests/test_prelude.{native,byte}>: pkg_alcotest
-<tests/test_prelude.{native,byte}>: pkg_blahcaml
-<tests/test_prelude.{native,byte}>: pkg_camlhighlight
-<tests/test_prelude.{native,byte}>: pkg_menhirLib
-<tests/test_prelude.{native,byte}>: pkg_re
-<tests/test_prelude.{native,byte}>: pkg_sedlex
-<tests/test_prelude.{native,byte}>: pkg_sexplib
-<tests/test_prelude.{native,byte}>: pkg_threads
-<tests/test_prelude.{native,byte}>: pkg_tyxml
-<tests/test_prelude.{native,byte}>: pkg_xmlm
-<tests/test_prelude.{native,byte}>: use_lambdoc
 <tests/*.ml{,i,y}>: pkg_alcotest
 <tests/*.ml{,i,y}>: pkg_blahcaml
 <tests/*.ml{,i,y}>: pkg_camlhighlight
@@ -83,6 +82,7 @@ true: annot, bin_annot
 <tests/*.ml{,i,y}>: pkg_sexplib
 <tests/*.ml{,i,y}>: pkg_threads
 <tests/*.ml{,i,y}>: pkg_tyxml
+<tests/*.ml{,i,y}>: pkg_unix
 <tests/*.ml{,i,y}>: pkg_xmlm
 <tests/*.ml{,i,y}>: use_lambdoc
 # OASIS_STOP

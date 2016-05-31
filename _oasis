@@ -58,14 +58,6 @@ Executable "lambcmd"
     BuildDepends:           lambdoc, cmdliner
     CompiledObject:         best
 
-Executable "test_lambdoc"
-    Build$:                 flag(tests)
-    Path:                   tests
-    MainIs:                 test_lambdoc.ml
-    Install:                false
-    BuildDepends:           alcotest, lambdoc, re, tyxml, unix
-    CompiledObject:         best
-
 Executable "test_prelude"
     Build$:                 flag(tests)
     Path:                   tests
@@ -74,13 +66,21 @@ Executable "test_prelude"
     BuildDepends:           alcotest, lambdoc
     CompiledObject:         best
 
-Test "test_lambdoc"
-    Run$:                   flag(tests)
-    Command:                $test_lambdoc
-    WorkingDirectory:       tests/testsets
+Executable "test_lambdoc"
+    Build$:                 flag(tests)
+    Path:                   tests
+    MainIs:                 test_lambdoc.ml
+    Install:                false
+    BuildDepends:           alcotest, lambdoc, re, tyxml, unix
+    CompiledObject:         best
 
 Test "test_prelude"
     Run$:                   flag(tests)
     Command:                $test_prelude
+    WorkingDirectory:       tests/testsets
+
+Test "test_lambdoc"
+    Run$:                   flag(tests)
+    Command:                $test_lambdoc
     WorkingDirectory:       tests/testsets
 
