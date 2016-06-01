@@ -571,23 +571,25 @@ let rec count = function
 <!-- ****************************************************************** -->
 <bibliography/>
 
-<bib label="bib:one">
+<lbib label="bib:one">
     <who>John McAuthor</who>
     <what>Title of the article</what>
     <where><a href="http://en.wikipedia.org/"/></where>
-</bib>
+</lbib>
 
-<bib label="bib:two">
+<lbib label="bib:two">
     <who>John McAuthor</who>
     <what>Title of the article</what>
     <where><a href="http://en.wikipedia.org/"/></where>
-</bib>
+</lbib>
 
-<bib label="bib:three">
+<lbib label="bib:three">
     <who>John McAuthor</who>
     <what>Title of the article</what>
     <where><a href="http://en.wikipedia.org/"/></where>
-</bib>
+</lbib>
+
+<sbib><a href="http://ocaml.org/"/></sbib>
 
 
 <!-- ****************************************************************** -->
