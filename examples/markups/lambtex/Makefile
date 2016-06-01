@@ -2,7 +2,7 @@ LAMBCMD=../../../_build/src/lambcmd/lambcmd.native
 
 all: index.html circle-tiny.png circle-small.png circle-big.png square-small.png square-big.png triangle-huge.png
 
-index.html: sample.lambtex
+index.html: sample.tex
 	$(LAMBCMD) -l en -f lambtex -t html -i $< -o $@
 
 %-tiny.png: %.svg
