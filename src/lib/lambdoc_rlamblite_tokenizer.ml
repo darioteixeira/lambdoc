@@ -231,7 +231,10 @@ let rec produce tokenizer =
                 | Section (sprefix, seq) ->
                     dump_limbo comm tokenizer;
                     dump_stack tokenizer;
-                    let slevel = count_char '=' sprefix in
+                    let slevel = match sprefix.[0] with
+                        | '=' -> count_char '=' sprefix
+                        | '#' -> count_char '#' sprefix
+                        | _   -> assert false in
                     Queue.push (Parser.BEGIN_SECTION (comm, slevel)) tokenizer.queue;
                     dump_seq comm tokenizer seq;
                     Queue.push Parser.END_SECTION tokenizer.queue

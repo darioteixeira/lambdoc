@@ -228,7 +228,7 @@ let next ~syntax lexbuf =
             Regular (qprefix, iprefix, Rule Single)
         | Plus '*', Star blank, (eol | eof) ->
             Regular (qprefix, iprefix, Rule Star)
-        | Plus '=', Star blank ->
+        | (Plus '=' | Plus '#'), Star blank ->
             let level = Sedlexing.Utf8.lexeme lexbuf in
             Regular (qprefix, iprefix, Section (level, scan_text ~syntax lexbuf))
         | ('*' | '-'), Star blank ->
