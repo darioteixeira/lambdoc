@@ -1,15 +1,15 @@
 = Paragraphs and inline formatting
 
 You can format text in **bold**, or just //emphasised// if you prefer.  It is also
-possible to enter {{monospaced}} text and ((small caps)).  Superscripts are handy
+possible to enter {{raw code}} and ((monospaced text)).  Superscripts are handy
 to typeset ordinals such as 1^^st^^, 2^^nd^^, etc.  Subscripts also have practical
 applications: how else would you typeset H__2__O?  You may also enter links: please
 check [[http://localhost:8080/]] or [[http://localhost:8080/|Localhost]] now.
 
-It is possible to enter ((HTML)) entities either by name ({{\&euro;}} produces '&euro;'),
-by decimal code point ({{\&#8364;}} produces '&#8364;'), or by hexadecimal code point
-({{\&#x20ac;}} produces '&#x20ac;').  You can also enter en-dashes ({{\-\-}} produces
-'--'), em-dashes ({{\-\-\-}} produces '---'), and proper double quotes (ex: ``hello'').
+It is possible to enter HTML entities either by name ({{&euro;}} produces '&euro;'),
+by decimal code point ({{&#8364;}} produces '&#8364;'), or by hexadecimal code point
+({{&#x20ac;}} produces '&#x20ac;').  You can also enter en-dashes ({{--}} produces
+'--'), em-dashes ({{---}} produces '---'), and proper double quotes (ex: ``hello'').
 The input charset is ((utf-8)), so you can --- for example --- enter Japanese characters
 directly: おなかがいっぱいですからなにもたべたくないです.
 
@@ -22,14 +22,14 @@ quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, ali
 nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
 justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
 
-# This is the first reason;
-# This is the second reason; it is okay
-  to break a line within each item.
-# The third reason has a number of sub-clauses:
-  -- Alpha
-  -- Beta
-  -- Gamma
-# And here is the fourth and final reason.
+  1. This is the first reason;
+  2. This is the second reason; it is okay
+     to break a line within each item.
+  3. The third reason has a number of sub-clauses:
+     * Alpha
+     * Beta
+     * Gamma
+  4. And here is the fourth and final reason.
 
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
 dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
@@ -38,18 +38,18 @@ quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, ali
 nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
 justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
 
-- Alpha
-- Beta
-## One
-## Two
-## Three
---- Aleph
---- Beth
---- Gimel
-## Four
-## Five
-- Gamma
-- Delta
+  * Alpha
+  * Beta
+    1. One
+    2. Two
+    3. Three
+       - Aleph
+       - Beth
+       - Gimel
+    4. Four
+    5. Five
+  * Gamma
+  * Delta
 
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
 dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
