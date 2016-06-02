@@ -22,6 +22,10 @@ Flag "cmd"
     Description:    Build command line utility Lambcmd
     Default:        true
 
+Flag "fuzzer"
+    Description:    Build fuzzer
+    Default:        false
+
 Library "lambdoc"
     Path: src/lib
     Modules:
@@ -74,6 +78,14 @@ Executable "test_lambdoc"
     BuildDepends:           alcotest, lambdoc, re, tyxml, unix
     CompiledObject:         best
 
+Executable "test_fuzzer"
+    Build$:                 flag(tests) && flag(fuzzer)
+    Path:                   tests
+    MainIs:                 test_fuzzer.ml
+    Install:                false
+    BuildDepends:           lambdoc, threads
+    CompiledObject:         best
+
 Test "test_prelude"
     Run$:                   flag(tests)
     Command:                $test_prelude
@@ -83,4 +95,9 @@ Test "test_lambdoc"
     Run$:                   flag(tests)
     Command:                $test_lambdoc
     WorkingDirectory:       tests/testsets
+
+Test "test_fuzzer"
+    Run$:                   flag(tests) && flag(fuzzer)
+    Command:                $test_fuzzer
+    WorkingDirectory:       tests/fuzzer
 
