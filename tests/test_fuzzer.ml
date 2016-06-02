@@ -44,16 +44,22 @@ let progress =
     let spinner_chars = "-\\|/" in
     let len = String.length spinner_chars in
     let mutex = Mutex.create () in
+    let counter = ref (-1) in
     let spinner = ref (-1) in
     fun success ->
         Mutex.lock mutex;
-        if !spinner >= 0 then Printf.printf "\b%!";
         if success
         then begin
-            spinner := (!spinner + 1) mod len;
-            Printf.printf "%c%!" spinner_chars.[!spinner]
+            counter := (!counter + 1) mod 20;   (* Don't spin on every single invocation! *)
+            if !counter = 0
+            then begin
+                if !spinner >= 0 then Printf.printf "\b%!";
+                spinner := (!spinner + 1) mod len;
+                Printf.printf "%c%!" spinner_chars.[!spinner]
+            end
         end
         else begin
+            if !spinner >= 0 then Printf.printf "\b%!";
             spinner := -1;
             Printf.printf ".%!"
         end;
@@ -180,7 +186,7 @@ let () =
     Random.self_init ();
     Printf.printf "\nRunning fuzzer...\n";
     Printf.printf "Note that this program runs forever. Press Ctrl+C to abort.\n%!";
-    Printf.printf "Every time a dot appears, the corresponding failure case is written to a file.\n%!";
+    Printf.printf "Should a dot appear, the corresponding failure case is written to a file in the current directory.\n%!";
     let threads = List.map (Thread.create fuzzer) [Lambtex; Lambwiki; Lambxml; Markdown] in
     List.iter Thread.join threads
 
