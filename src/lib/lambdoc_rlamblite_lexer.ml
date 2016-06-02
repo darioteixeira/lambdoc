@@ -13,8 +13,9 @@ open Lambdoc_prelude
 (*  {1 Exceptions}                                                              *)
 (********************************************************************************)
 
+exception Unterminated_literal of string
 exception Bad_literal_prefix of string * string
-exception Misplaced_quotation
+exception Misaligned_quotation
 
 
 (********************************************************************************)
@@ -177,6 +178,8 @@ let scan_literal terminator qprefix iprefix lexbuf =
     let buf = Buffer.create 512 in
     let prefix = qprefix ^ iprefix in
     let rec loop nlines = match%sedlex lexbuf with
+        | eof ->
+            raise (Unterminated_literal terminator)
         | Star (Compl eol), (eol | eof) ->
             let str = String.rstrip (Sedlexing.Utf8.lexeme lexbuf) in
             if String.starts_with str prefix
@@ -210,7 +213,7 @@ let next ~syntax lexbuf =
         | Star ('>', Opt blank) ->
             if qprefix = "" && iprefix = ""
             then scan (Sedlexing.Utf8.lexeme lexbuf) ""
-            else raise Misplaced_quotation
+            else raise Misaligned_quotation
         | Plus blank ->
             scan qprefix (Sedlexing.Utf8.lexeme lexbuf)
         | "{{{", Opt style, Star blank, (eol | eof) ->
