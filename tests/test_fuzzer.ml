@@ -231,7 +231,7 @@ let () =
         Arg.(value @@ opt string "sample" @@ info ~docv:"SAMPLE" ~doc ["s"; "sample"]) in
     let num_cycles =
         let doc = "Number of cycles per markup." in
-        Arg.(value @@ opt int 1000 @@ info ~docv:"CYCLES" ~doc ["c"; "cycles"]) in
+        Arg.(value @@ opt int 10 @@ info ~docv:"CYCLES" ~doc ["c"; "cycles"]) in
     let num_iterations =
         let doc = "Number of mutation iterations per cycle." in
         Arg.(value @@ opt int 100 @@ info ~docv:"ITERATIONS" ~doc ["i"; "iterations"]) in
