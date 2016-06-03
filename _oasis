@@ -83,7 +83,7 @@ Executable "test_fuzzer"
     Path:                   tests
     MainIs:                 test_fuzzer.ml
     Install:                false
-    BuildDepends:           lambdoc, threads
+    BuildDepends:           cmdliner, lambdoc, threads
     CompiledObject:         best
 
 Test "test_prelude"

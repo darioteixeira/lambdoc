@@ -6,6 +6,7 @@
 *)
 (********************************************************************************)
 
+open Cmdliner
 open Lambdoc_core
 
 
@@ -15,7 +16,7 @@ open Lambdoc_core
 
 module List =
 struct
-    include Lambdoc_prelude.List
+    include List
 
     let init n f =
         let rec loop accum = function
@@ -28,12 +29,42 @@ struct
         loop [] n
 end
 
+module Markup =
+struct
+    type t = Lambtex | Lambwiki | Lambxml | Markdown
 
-(********************************************************************************)
-(** {1 Type definitions}                                                    	*)
-(********************************************************************************)
+	let all = [Lambtex; Lambwiki; Lambxml; Markdown]
 
-type markup = Lambtex | Lambwiki | Lambxml | Markdown
+	let to_string = function
+		| Lambtex  -> "Lambtex"
+		| Lambwiki -> "Lambwiki"
+		| Lambxml  -> "Lambxml"
+		| Markdown -> "Markdown"
+
+    let extension = function
+        | Lambtex  -> "tex"
+        | Lambwiki -> "wiki"
+        | Lambxml  -> "xml"
+        | Markdown -> "md"
+
+    let reader = function
+        | Lambtex  -> Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~options:()
+        | Lambwiki -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Lambwiki
+        | Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~options:()
+        | Markdown -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Markdown
+
+    let parser x = match String.lowercase x with
+		| "lambtex" | "tex"   -> `Ok Lambtex
+		| "lambwiki" | "wiki" -> `Ok Lambwiki
+		| "lambxml" | "xml"   -> `Ok Lambxml
+		| "markdown" | "md"   -> `Ok Markdown
+		| _                   -> `Error (Printf.sprintf "Unknown input markup '%s'" x)
+
+	let printer fmt x =
+		Format.pp_print_string fmt (to_string x)
+
+    let converter = (parser, printer)
+end
 
 
 (********************************************************************************)
@@ -46,30 +77,27 @@ let progress =
     let mutex = Mutex.create () in
     let counter = ref (-1) in
     let spinner = ref (-1) in
-    fun success ->
+    fun status ->
         Mutex.lock mutex;
-        if success
-        then begin
-            counter := (!counter + 1) mod 20;   (* Don't spin on every single invocation! *)
-            if !counter = 0
-            then begin
+        begin match status with
+            | `Success ->
+                counter := (!counter + 1) mod 20;   (* Don't spin on every single invocation! *)
+                if !counter = 0
+                then begin
+                    if !spinner >= 0 then Printf.printf "\b%!";
+                    spinner := (!spinner + 1) mod len;
+                    Printf.printf "%c%!" spinner_chars.[!spinner]
+                end
+            | `Failure ->
                 if !spinner >= 0 then Printf.printf "\b%!";
-                spinner := (!spinner + 1) mod len;
-                Printf.printf "%c%!" spinner_chars.[!spinner]
-            end
-        end
-        else begin
-            if !spinner >= 0 then Printf.printf "\b%!";
-            spinner := -1;
-            Printf.printf ".%!"
+                spinner := -1;
+                Printf.printf "x%!"
+            | `Cycle ->
+                if !spinner >= 0 then Printf.printf "\b%!";
+                spinner := -1;
+                Printf.printf ".%!"
         end;
         Mutex.unlock mutex
-
-let get_markup_info = function
-    | Lambtex  -> ("Lambtex", "tex", Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~options:())
-    | Lambwiki -> ("Lambwiki", "wiki", Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Lambwiki)
-    | Lambxml  -> ("Lambxml", "xml", Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~options:())
-    | Markdown -> ("Markdown", "md", Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Markdown)
 
 let random_char () =
     Char.chr (Random.int 128)
@@ -149,13 +177,13 @@ let benchmark =
         let result =
 			if execute_with_timeout reader str
 			then begin
-                progress true;
+                progress `Success;
 				let t1 = Unix.gettimeofday () in
 				let len = String.length str in
 				Some ((1_000_000.0 /. float_of_int len) *. ((1000.0 *. (t1 -. t0)) ** 2.0))
 			end
 			else begin
-                progress false;
+                progress `Failure;
                 let basename = Printf.sprintf "error-%s" Digest.(string str |> to_hex) in
 				write_file basename ext str;
                 None
@@ -163,30 +191,68 @@ let benchmark =
         Mutex.unlock mutex;
         result
 
-let rec iterate counter reader ext src =
-    let mutants = List.init 10 (fun _ -> mutate src) in
-    let results = List.map (benchmark reader ext) mutants in
-    let f (best_mutant, best_result) mutant result = match (best_result, result) with
-        | (Some b, Some r) when r > b -> (Some mutant, result)
-        | (None, Some r)              -> (Some mutant, result)
-        | _                           -> (best_mutant, best_result) in
-    let (best_mutant, best_result) = List.fold_left2 f (None, None) mutants results in
-    match best_mutant with
-        | Some mutant when counter < 100 -> iterate (counter + 1) reader ext mutant
-        | _                              -> ()
+let rec iterate num_iterations num_mutants reader ext src =
+    let rec loop counter src =
+        let mutants = List.init num_mutants (fun _ -> mutate src) in
+        let results = List.map (benchmark reader ext) mutants in
+        let f (best_mutant, best_result) mutant result = match (best_result, result) with
+            | (Some b, Some r) when r > b -> (Some mutant, result)
+            | (None, Some r)              -> (Some mutant, result)
+            | _                           -> (best_mutant, best_result) in
+        let (best_mutant, best_result) = List.fold_left2 f (None, None) mutants results in
+        match best_mutant with
+            | Some mutant when counter < num_iterations -> loop (counter + 1) mutant
+            | _                                         -> () in
+    loop 1 src
 
-let fuzzer markup =
-    let (desc, ext, reader) = get_markup_info markup in
-    let src = read_file "sample" ext in
-    while true do
-        iterate 0 reader ext src
+let fuzz sample num_cycles num_iterations num_mutants markup =
+    let ext = Markup.extension markup in
+    let reader = Markup.reader markup in
+    let src = read_file sample ext in
+    for i = 1 to num_cycles do
+        iterate num_iterations num_mutants reader ext src;
+        progress `Cycle;
+        Gc.compact ()
     done
 
-let () =
+let main sample num_cycles num_iterations num_mutants markups =
     Random.self_init ();
-    Printf.printf "\nRunning fuzzer...\n";
-    Printf.printf "Note that this program runs forever. Press Ctrl+C to abort.\n%!";
-    Printf.printf "Should a dot appear, the corresponding failure case is written to a file in the current directory.\n%!";
-    let threads = List.map (Thread.create fuzzer) [Lambtex; Lambwiki; Lambxml; Markdown] in
+    Printf.printf "Running fuzzer with cycles=%d, iterations=%d, and mutants=%d.\n" num_cycles num_iterations num_mutants;
+    Printf.printf "Markups to be tested are [%s].\n" (List.map Markup.to_string markups |> String.concat "; ");
+    Printf.printf "Sample files have basename '%s'.\n" sample;
+    Printf.printf "Each dot marks the end of a cycle.\n";
+    Printf.printf "Failure cases are marked with a 'x' and written to a file in the current directory.\n%!";
+    let threads = List.map (Thread.create (fuzz sample num_cycles num_iterations num_mutants)) markups in
     List.iter Thread.join threads
+
+let () =
+    let sample =
+        let doc = "Basename (ie, without extension) of the source file." in
+        Arg.(value @@ opt string "sample" @@ info ~docv:"SAMPLE" ~doc ["s"; "sample"]) in
+    let num_cycles =
+        let doc = "Number of cycles per markup." in
+        Arg.(value @@ opt int 1000 @@ info ~docv:"CYCLES" ~doc ["c"; "cycles"]) in
+    let num_iterations =
+        let doc = "Number of mutation iterations per cycle." in
+        Arg.(value @@ opt int 100 @@ info ~docv:"ITERATIONS" ~doc ["i"; "iterations"]) in
+    let num_mutants =
+        let doc = "Number of mutants per iteration." in
+        Arg.(value @@ opt int 10 @@ info ~docv:"MUTANTS" ~doc ["m"; "mutants"]) in
+    let markups =
+        let doc = "Markups to be tested." in
+        Arg.(value @@ opt (list Markup.converter) Markup.all @@ info ~docv:"MARKUPS" ~doc ["markups"]) in
+	let term = Term.(const main $ sample $ num_cycles $ num_iterations $ num_mutants $ markups) in
+	let info =
+		let doc = "Fuzzing-based test of the Lambdoc library." in
+		let man =
+            [
+            `S "BUGS";
+            `P "Please report any issues at $(b,https://github.com/darioteixeira/lambdoc/issues)";
+            `S "AUTHOR";
+            `P "Dario Teixeira <dario.teixeira@nleyten.com>";
+            ] in
+		Term.info "test_fuzzer" ~version:"1.0beta4+dev" ~doc ~man in
+	match Term.eval (term, info) with
+		| `Error _ -> exit 1
+		|  _       -> exit 0
 
