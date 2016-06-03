@@ -258,20 +258,29 @@ let rec produce tokenizer =
                     align_stack ilevel tokenizer;
                     tokenizer.limbo <-
                         begin match tokenizer.limbo with
-                            | Empty         -> Unnumbered [seq]
-                            | Unnumbered xs -> Unnumbered (seq :: xs)
-                            | Numbered _    -> assert false
+                            | Empty            -> Unnumbered [seq]
+                            | Numbered (n, xs) -> Unnumbered [seq; (Plain (n ^ " ") :: xs)]
+                            | Unnumbered xs    -> Unnumbered (seq :: xs)
                         end
                 | Textual (Some tprefix, []) ->
                     raise (Empty_tprefix tprefix)
                 | Textual (Some Sec number, seq) when ilevel <> 0 ->
                     raise Misaligned_section
                 | Textual (Some Sec number, seq) ->
-                    dump_limbo comm tokenizer;
-                    tokenizer.limbo <- Numbered (number, seq)
+                    align_stack ilevel tokenizer;
+                    tokenizer.limbo <-
+                        begin match tokenizer.limbo with
+                            | Empty            -> Numbered (number, seq)
+                            | Numbered (n, xs) -> Unnumbered [(Plain (number ^ " "):: seq); (Plain (n ^ " ") :: xs)]
+                            | Unnumbered xs    -> Unnumbered ((Plain (number ^ " "):: seq) :: xs)
+                        end
                 | Textual (Some Oli number, seq) when ilevel = 0 ->
-                    dump_limbo comm tokenizer;
-                    tokenizer.limbo <- Numbered (number, seq)
+                    tokenizer.limbo <-
+                        begin match tokenizer.limbo with
+                            | Empty            -> Numbered (number, seq)
+                            | Numbered (n, xs) -> Unnumbered [(Plain (number ^ " ") :: seq); (Plain (n ^ " ") :: xs)]
+                            | Unnumbered xs    -> Unnumbered ((Plain (number ^ " ") :: seq) :: xs)
+                        end
                 | Textual (Some Oli _, seq) ->
                     dump_limbo comm tokenizer;
                     tokenizer.limbo <- Unnumbered [seq];
