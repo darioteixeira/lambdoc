@@ -1,0 +1,1 @@
+(Invalid(((((error_line_number 6)(error_line_before(""))(error_line_actual"    > Lorem ipsum dolor sit amet.")(error_line_after("    > Lorem ipsum dolor sit amet."))))()(Reading_error"Quotation block is misaligned"))))

@@ -134,6 +134,13 @@ let explain major minor case = match (major, minor) with
             | "qa"        -> "Q&A environments"
             | _           -> assert false
         end
+    | ("lambwiki", "error") ->
+        begin match case with
+            | "unterminated_literal" -> "Unterminated literal blocks"
+            | "bad_literal_prefix"   -> "Mismatched prefix in literal blocks"
+            | "misaligned_quotation" -> "Misaligned quotation blocks"
+            | _                      -> assert false
+        end
     | _ ->
         assert false
 
@@ -256,6 +263,7 @@ let tests =
     ("Lambwiki features", build_test "lambwiki" "feature");
     ("Lambxml features", build_test "lambxml" "feature");
     ("Markdown features", build_test "markdown" "feature");
+    ("Lambwiki errors", build_test "lambwiki" "error");
     ("Lambxml errors", build_test "lambxml" "error");
     ("Semantic errors", build_test "semantic" "error");
     ]

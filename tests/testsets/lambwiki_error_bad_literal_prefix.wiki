@@ -1,0 +1,16 @@
+Lorem ipsum dolor sit amet.
+
+  * Alpha:
+
+    {{{lang=caml
+    type 'a tree = Leaf | Node of 'a tree * 'a * 'a tree
+    }}}
+
+  * Beta.
+
+    {{{lang=caml
+   type 'a tree = Leaf | Node of 'a tree * 'a * 'a tree
+    }}}
+
+  * Gamma.
+    
