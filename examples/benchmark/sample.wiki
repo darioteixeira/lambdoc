@@ -1,0 +1,1 @@
+../markups/lambwiki/sample.wiki
