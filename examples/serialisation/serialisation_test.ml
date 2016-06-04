@@ -15,7 +15,7 @@ open Lambdoc_reader
 (********************************************************************************)
 
 let doc =
-    let src = BatIO.read_all (BatIO.input_channel (open_in "sample.lambtex")) in
+    let src = BatIO.read_all (BatIO.input_channel (open_in "sample.tex")) in
     Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string src
 
 
