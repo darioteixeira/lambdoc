@@ -50,6 +50,15 @@ sig
     module Identity: S with type 'a t = 'a
 end
 
+module Pervasives:
+sig
+    include module type of Pervasives
+
+    (** [input_all chan] reads the entire contents of the input channel [chan],
+        returning them as a string. *)
+    val input_all: in_channel -> string
+end
+
 module String:
 sig
     include module type of String

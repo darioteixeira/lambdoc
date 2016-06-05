@@ -82,6 +82,34 @@ struct
     end
 end
 
+module Pervasives =
+struct
+    include Pervasives
+
+    let input_all chan =
+        let bufsize = 65536 in
+        let buf = Bytes.create bufsize in
+        let rec read_loop pos accum =
+            let len = input chan buf 0 bufsize in
+            if len > 0
+            then
+                let hd = Bytes.sub buf 0 len in
+                read_loop (pos + len) (hd :: accum)
+            else
+                (pos, accum) in
+        let (size, accum) = read_loop 0 [] in
+        let dst = Bytes.create size in
+        let rec write_loop pos = function
+            | hd :: tl ->
+                let len = Bytes.length hd in
+                let dstoff = pos - len in
+                Bytes.blit hd 0 dst dstoff len;
+                write_loop dstoff tl
+            | [] ->
+                Bytes.unsafe_to_string dst in
+        write_loop size accum
+end
+
 module String =
 struct
     include String

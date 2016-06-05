@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Cmdliner
+open Lambdoc_prelude
 open Lambdoc_core
 
 
@@ -137,23 +138,16 @@ let mutate orig =
 
 let read_file basename ext =
     let fname = Printf.sprintf "%s.%s" basename ext in
-    let chan = open_in fname in
-	let buf = Buffer.create 0xffff in
-	let rec loop () = match input_line chan with
-		| line ->
-			Buffer.add_string buf line;
-			Buffer.add_char buf '\n';
-			loop ()
-		| exception End_of_file ->
-			close_in chan;
-			Buffer.contents buf in
-	loop ()
+    let chan = Pervasives.open_in fname in
+    let str = Pervasives.input_all chan in
+    Pervasives.close_in chan;
+    str
 
 let write_file basename ext str =
     let fname = Printf.sprintf "%s.%s" basename ext in
-	let chan = open_out fname in
-	output_string chan str;
-	close_out chan
+	let chan = Pervasives.open_out fname in
+	Pervasives.output_string chan str;
+	Pervasives.close_out chan
 
 let execute_with_timeout reader str =
 	let success = ref true in

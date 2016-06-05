@@ -7,6 +7,7 @@
 (********************************************************************************)
 
 open Tyxml
+open Lambdoc_prelude
 open Lambdoc_core
 
 
@@ -25,18 +26,6 @@ end
 (** {1 Functions and values}                                                    *)
 (********************************************************************************)
 
-let read_all chan cleaner =
-    let buf = Buffer.create 0xffff in
-    let rec loop () = match input_line chan with
-        | line ->
-            Buffer.add_string buf line;
-            Buffer.add_char buf '\n';
-            loop ()
-        | exception End_of_file ->
-            cleaner chan;
-            Buffer.contents buf in
-    loop ()
-
 let string_of_xhtml the_title xhtml =
     let open Html in
     let page =
@@ -52,7 +41,8 @@ let string_of_xhtml the_title xhtml =
 
 let () =
     let arguments = Arguments.parse () in
-    let input_str = read_all arguments.input_chan arguments.input_cleaner in
+    let input_str = Pervasives.input_all arguments.input_chan in
+    arguments.input_cleaner arguments.input_chan;
     let idiosyncrasies =
         let base =
             if arguments.unrestricted
@@ -78,8 +68,8 @@ let () =
             let valid_options = Html_writer.({default_valid_options with translations = arguments.language}) in
             let xhtml = Html_writer.write_ambivalent ~valid_options doc in
             string_of_xhtml arguments.title xhtml in
-    output_string arguments.output_chan output_str;
-    output_char arguments.output_chan '\n';
+    Pervasives.output_string arguments.output_chan output_str;
+    Pervasives.output_char arguments.output_chan '\n';
     arguments.output_cleaner arguments.output_chan;
     exit (match doc with Ambivalent.Valid _ -> 0 | Ambivalent.Invalid _ -> 3)
 
