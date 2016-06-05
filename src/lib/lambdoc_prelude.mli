@@ -34,6 +34,22 @@ sig
     val filter_map: ('a -> 'b option) -> 'a list -> 'b list
 end
 
+module Monad:
+sig
+    module type S =
+    sig
+        type 'a t
+
+        val return: 'a -> 'a t
+        val fail: exn -> 'a t
+        val bind: 'a t -> ('a -> 'b t) -> 'b t
+        val catch: (unit -> 'a t) -> (exn -> 'a t) -> 'a t
+        val fold_right: ('a -> 'b -> 'b t) -> 'a list -> 'b -> 'b t
+    end
+
+    module Identity: S with type 'a t = 'a
+end
+
 module String:
 sig
     include module type of String

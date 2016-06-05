@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 13c4997863f696897d9cd38dbc98dbc4)
+# DO NOT EDIT (digest: fb4031acab9e903839ad81b13aea28c0)
 Lambdoc_prelude
 Lambdoc_core
 Lambdoc_core_basic
@@ -27,7 +27,6 @@ Lambdoc_core_invalid
 Lambdoc_core_ambivalent
 Lambdoc_core_feature
 Lambdoc_core_idiosyncrasies
-Lambdoc_core_monadic
 Lambdoc_core_foldmap
 Lambdoc_reader
 Lambdoc_reader_ast

@@ -52,7 +52,7 @@ sig
         ?expand_entities:bool ->
         ?idiosyncrasies:Idiosyncrasies.t ->
         string ->
-        Ambivalent.t Ext.Monad.t
+        Ambivalent.t Ext.IO.t
 end
 
 

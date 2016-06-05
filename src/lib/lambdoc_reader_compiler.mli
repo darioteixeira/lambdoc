@@ -43,6 +43,6 @@ sig
         idiosyncrasies:Idiosyncrasies.t ->
         source:string ->
         Ast.t ->
-        Ambivalent.t Ext.Monad.t
+        Ambivalent.t Ext.IO.t
 end
 

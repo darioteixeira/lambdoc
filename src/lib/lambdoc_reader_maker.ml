@@ -47,7 +47,7 @@ sig
         ?expand_entities:bool ->
         ?idiosyncrasies:Idiosyncrasies.t ->
         string ->
-        Ambivalent.t Ext.Monad.t
+        Ambivalent.t Ext.IO.t
 end
 
 
@@ -111,7 +111,7 @@ struct
                 | `Error (sane_str, error_lines) ->
                     let localized = List.map (fun line -> (Some line, None, Error.Malformed_code_point)) error_lines in
                     let errors = Comp.contextualize_errors ~sort:false sane_str localized in
-                    Monad.return (Ambivalent.invalid (Invalid.make errors))
+                    IO.return (Ambivalent.invalid (Invalid.make errors))
                 | `Okay ->
                     let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
                     match Readable.ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs source with
@@ -120,8 +120,8 @@ struct
                         | `Error xs ->
                             let localized = List.map (fun (line, ident, msg) -> (line, ident, Error.Reading_error msg)) xs in
                             let errors = Comp.contextualize_errors ~sort:false source localized in
-                            Monad.return (Ambivalent.invalid (Invalid.make errors))
+                            IO.return (Ambivalent.invalid (Invalid.make errors))
                         | exception exc ->
-                            Monad.fail exc
+                            IO.fail exc
 end
 

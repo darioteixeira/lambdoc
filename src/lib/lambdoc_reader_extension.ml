@@ -8,6 +8,7 @@
 
 module Ast = Lambdoc_reader_ast
 
+open Lambdoc_prelude
 open Lambdoc_core
 open Basic
 
@@ -35,13 +36,13 @@ type extdef = ident * syntax
 
 module type S =
 sig
-    module Monad: Monadic.S
-    module Foldmapper: Foldmap.S with module Monad = Monad
+    module IO: Monad.S
+    module Foldmapper: Foldmap.S with module IO = IO
 
     type ('a, 'b) result = [ `Okay of 'a | `Error of 'b ]
     type 'a function_result = ('a, Error.localized list) result
-    type inline_function_result = (Ast.seq * Ast.frag) function_result Monad.t
-    type block_function_result = (Ast.frag * Ast.frag) function_result Monad.t
+    type inline_function_result = (Ast.seq * Ast.frag) function_result IO.t
+    type block_function_result = (Ast.frag * Ast.frag) function_result IO.t
 
     type inline_function =
         | Inlfun_empty of (Ast.command -> inline_function_result)
@@ -71,18 +72,18 @@ end
 (** {1 Public modules}                                                          *)
 (********************************************************************************)
 
-module Make (M: Monadic.S): S with module Monad = M =
+module Make (M: Monad.S): S with module IO = M =
 struct
-    module Monad = M
+    module IO = M
     module Foldmapper = Foldmap.Make (M)
 
     type ('a, 'b) result = [ `Okay of 'a | `Error of 'b ]
     type reader_result = (string, Error.msg list) result
     type 'a function_result = ('a, Error.localized list) result
-    type link_reader = href -> reader_result option Monad.t
-    type image_reader = href -> reader_result option Monad.t
-    type inline_function_result = (Ast.seq * Ast.frag) function_result Monad.t
-    type block_function_result = (Ast.frag * Ast.frag) function_result Monad.t
+    type link_reader = href -> reader_result option IO.t
+    type image_reader = href -> reader_result option IO.t
+    type inline_function_result = (Ast.seq * Ast.frag) function_result IO.t
+    type block_function_result = (Ast.frag * Ast.frag) function_result IO.t
 
     type inline_function =
         | Inlfun_empty of (Ast.command -> inline_function_result)
@@ -108,5 +109,5 @@ struct
 end
 
 
-module Trivial = Make (Monadic.Identity)
+module Trivial = Make (Monad.Identity)
 

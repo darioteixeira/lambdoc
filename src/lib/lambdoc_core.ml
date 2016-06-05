@@ -16,7 +16,6 @@ module Invalid = Lambdoc_core_invalid
 module Label = Lambdoc_core_label
 module Level = Lambdoc_core_level
 module Math = Lambdoc_core_math
-module Monadic = Lambdoc_core_monadic
 module Note = Lambdoc_core_note
 module Order = Lambdoc_core_order
 module Qanda = Lambdoc_core_qanda
