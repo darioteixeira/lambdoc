@@ -20,17 +20,17 @@ install: [[make "install"]]
 remove: [["ocamlfind" "remove" "lambdoc"]]
 depends: [
   "alcotest" {test}
-  "batteries" {>= "2"}
   "blahcaml"
   "camlhighlight" {>= "5"}
   "menhir"
   "ocamlbuild" {build}
   "ocamlfind"
   "ppx_blob"
+  "ppx_deriving"
   "ppx_sexp_conv"
   "re"
   "sedlex"
   "sexplib"
-  "tyxml" {>= "3.6"}
+  "tyxml" {>= "4"}
   "xmlm"
 ]
