@@ -2,10 +2,10 @@
 <lambdoc_document_blkcat.*>:         pkg_ppx_sexp_conv
 <lambdoc_document_feature.*>:        pkg_ppx_sexp_conv
 <lambdoc_document_error.*>:          pkg_ppx_sexp_conv
-<lambdoc_document_idiosyncrasies.*>: pkg_ppx_sexp_conv
+<lambdoc_document_idiosyncrasies.*>: pkg_ppx_sexp_conv, pkg_ppx_deriving.make
 <lambdoc_document_invalid.*>:        pkg_ppx_sexp_conv
-<lambdoc_document_valid.*>:          pkg_ppx_sexp_conv
+<lambdoc_document_valid.*>:          pkg_ppx_sexp_conv, pkg_ppx_deriving.make
 <lambdoc_rlamblite_lexer.ml>:        pkg_sedlex
 <lambdoc_rlambtex_lexer.ml>:         pkg_sedlex
 <lambdoc_writer_emblang.ml>:         pkg_sedlex
-
+<lambdoc_writer_translations.ml*>:   pkg_ppx_deriving.make

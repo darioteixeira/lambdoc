@@ -37,17 +37,13 @@ sig
         tag: ident option;
         linenum: int;
         origin: origin;
-        } [@@deriving sexp]
+        } [@@deriving sexp, make]
 
     type t =
         {
         classnames: classname list;
         parsinfo: parsinfo option;
-        } [@@deriving sexp]
-
-    val make_parsinfo: ?tag:ident -> linenum:int -> origin:origin -> unit -> parsinfo
-
-    val make: ?classnames:classname list -> ?parsinfo:parsinfo -> unit -> t
+        } [@@deriving sexp, make]
 
     val default: t
 end
@@ -77,10 +73,8 @@ sig
         {
         lang: Camlhighlight_core.lang option;
         linenums: bool;
-        data: Camlhighlight_core.t;
-        } [@@deriving sexp]
-
-    val make: ?lang:Camlhighlight_core.lang -> linenums:bool -> Camlhighlight_core.t -> t
+        data: Camlhighlight_core.t [@main];
+        } [@@deriving sexp, make]
 end
 
 
@@ -247,9 +241,7 @@ sig
         label: Label.t;
         order: order;
         entry: entry;
-        } [@@deriving sexp]
-
-    val make: label:Label.t -> order:order -> entry:entry -> t
+        } [@@deriving sexp, make]
 end
 
 
@@ -365,7 +357,7 @@ sig
         {
         alignment: alignment;
         weight: weight;
-        } [@@deriving sexp]
+        } [@@deriving sexp, make]
 
     type cellfmt =
         {
@@ -373,14 +365,14 @@ sig
         colspan: int;
         overline: bool;
         underline: bool;
-        } [@@deriving sexp]
+        } [@@deriving sexp, make]
 
     type cell =
         {
-        attr: Attr.t;
+        attr: Attr.t [@default Attr.default];
         cellfmt: cellfmt option;
-        seq: Inline.seq option;
-        } [@@deriving sexp]
+        seq: Inline.seq option [@main];
+        } [@@deriving sexp, make]
 
     type row = cell list [@@deriving sexp]
 
@@ -391,13 +383,8 @@ sig
         tcols: colfmt array option;
         thead: group option;
         tfoot: group option;
-        tbodies: group list;
-        } [@@deriving sexp]
-
-    val make_colfmt: alignment:alignment -> weight:weight -> colfmt
-    val make_cellfmt: colfmt:colfmt -> colspan:int -> overline:bool -> underline:bool -> cellfmt
-    val make_cell: ?attr:Attr.t -> ?cellfmt:cellfmt -> Inline.seq option -> cell
-    val make: ?tcols:colfmt array -> ?thead:group -> ?tfoot:group -> group list -> t
+        tbodies: group list [@main];
+        } [@@deriving sexp, make]
 end
 
 
@@ -505,9 +492,7 @@ sig
         label: Label.t;
         order: order;
         content: Block.frag;
-        } [@@deriving sexp]
-
-    val make: label:Label.t -> order:order -> content:Block.frag -> t
+        } [@@deriving sexp, make]
 end
 
 
@@ -551,19 +536,10 @@ type t =
 	bibs: Bib.t list;
 	notes: Note.t list;
 	toc: Heading.t list;
-	labels: labels;
-	customs: customs;
-	content: Block.frag;
-	} [@@deriving sexp]
-
-val make:
-	?bibs:Bib.t list ->
-	?notes:Note.t list ->
-	?toc:Heading.t list ->
-	?labels:labels ->
-	?customs:customs ->
-	Block.frag ->
-	t
+    labels: labels [@default Hashtbl.create 0];
+    customs: customs [@default Hashtbl.create 0];
+    content: Block.frag [@main];
+	} [@@deriving sexp, make]
 
 val serialize: t -> string
 val deserialize: string -> t

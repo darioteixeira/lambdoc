@@ -28,15 +28,12 @@ type t =
     toc: Inline.seq;
     abstract: Inline.seq;
     paragraph: string;
-    }
+    } [@@deriving make]
 
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
-
-let make ~description ~equation ~printout ~table ~figure ~part ~appendix ~section ~bibliography ~notes ~toc ~abstract ~paragraph =
-    {description; equation; printout; table; figure; part; appendix; section; bibliography; notes; toc; abstract; paragraph}
 
 let english_names = make
     ~description:"en"

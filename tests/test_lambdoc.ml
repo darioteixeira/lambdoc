@@ -231,7 +231,7 @@ let execute fname source target () =
                 | Invalid _ ->
                     doc in
             Ambivalent.serialize doc' in
-    let idiosyncrasies = Idiosyncrasies.make ~max_macro_depth:(Some 4) ~max_inline_depth:(Some 4) ~max_block_depth:(Some 4) () in
+    let idiosyncrasies = Idiosyncrasies.make ~max_macro_depth:4 ~max_inline_depth:4 ~max_block_depth:4 () in
     let doc = reader ~idiosyncrasies source_contents in
     let str = writer doc ^ "\n" in
     Alcotest.(check string) fname str target_contents

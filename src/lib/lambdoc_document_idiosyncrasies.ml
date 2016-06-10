@@ -20,50 +20,31 @@ type action = [ `Accept | `Deny ] [@@deriving sexp]
 
 type 'a classifier = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier ] [@@deriving sexp]
 
-type feature_ruleset = (Feature.t classifier * action) list [@@deriving sexp]
+type feature_rule = Feature.t classifier * action [@@deriving sexp]
 
-type classname_ruleset = ((Feature.t classifier * Valid.classname classifier) * action) list [@@deriving sexp]
+type classname_rule = (Feature.t classifier * Valid.classname classifier) * action [@@deriving sexp]
 
 type t =
     {
-    feature_ruleset: feature_ruleset;
-    feature_default: action;
-    classname_ruleset: classname_ruleset;
-    classname_default: action;
+    feature_ruleset: feature_rule list;
+    feature_default: action [@default `Accept];
+    classname_ruleset: classname_rule list;
+    classname_default: action [@default `Accept];
     max_macro_depth: int option;
     max_inline_depth: int option;
     max_block_depth: int option;
-    } [@@deriving sexp]
+    } [@@deriving sexp, make]
 
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-(********************************************************************************)
-(** {2 Constructors}                                                            *)
-(********************************************************************************)
-
-let make
-    ?(feature_ruleset = [])
-    ?(feature_default = `Accept)
-    ?(classname_ruleset = [])
-    ?(classname_default = `Accept)
-    ?(max_macro_depth = None)
-    ?(max_inline_depth = None)
-    ?(max_block_depth = None) () =
-    {feature_ruleset; feature_default; classname_ruleset; classname_default; max_macro_depth; max_inline_depth; max_block_depth}
-
-
-(********************************************************************************)
-(** {2 Built-in idiosyncrasies}                                                 *)
-(********************************************************************************)
-
 let unrestricted =
     make ()
 
 let restricted =
-    make ~classname_default:`Deny ~max_macro_depth:(Some 1) ~max_inline_depth:(Some 1) ~max_block_depth:(Some 1) ()
+    make ~classname_default:`Deny ~max_macro_depth:1 ~max_inline_depth:1 ~max_block_depth:1 ()
 
 let default =
     let classname_ruleset =
@@ -77,5 +58,5 @@ let default =
         ((`Only `Feature_picture, `Only "frame"), `Accept);
         ((`Member [`Feature_verbatim; `Feature_picture; `Feature_pullquote; `Feature_custom; `Feature_equation; `Feature_printout; `Feature_table; `Feature_figure], `Member ["center"; "right"; "left"]), `Accept);
         ] in
-    make ~classname_ruleset ~classname_default:`Deny ~max_macro_depth:(Some 2) ~max_inline_depth:(Some 4) ~max_block_depth:(Some 4) ()
+    make ~classname_ruleset ~classname_default:`Deny ~max_macro_depth:2 ~max_inline_depth:4 ~max_block_depth:4 ()
 

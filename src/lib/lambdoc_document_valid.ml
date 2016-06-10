@@ -36,19 +36,13 @@ struct
         tag: ident option;
         linenum: int;
         origin: origin;
-        } [@@deriving sexp]
+        } [@@deriving sexp, make]
 
     type t =
         {
         classnames: classname list;
         parsinfo: parsinfo option;
-        } [@@deriving sexp]
-
-    let make_parsinfo ?tag ~linenum ~origin () =
-        {tag; linenum; origin}
-
-    let make ?(classnames = []) ?parsinfo () =
-        {classnames; parsinfo}
+        } [@@deriving sexp, make]
 
     let default = make ()
 end
@@ -78,11 +72,8 @@ struct
         {
         lang: Camlhighlight_core.lang option;
         linenums: bool;
-        data: Camlhighlight_core.t;
-        } [@@deriving sexp]
-
-    let make ?lang ~linenums data =
-        {lang; linenums; data}
+        data: Camlhighlight_core.t [@main];
+        } [@@deriving sexp, make]
 end
 
 
@@ -250,10 +241,7 @@ struct
         label: Label.t;
         order: order;
         entry: entry;
-        } [@@deriving sexp]
-
-	let make ~label ~order ~entry =
-		{label; order; entry}
+        } [@@deriving sexp, make]
 end
 
 (********************************************************************************)
@@ -357,7 +345,7 @@ struct
 		{
 		alignment: alignment; 
 		weight: weight; 
-		} [@@deriving sexp]
+		} [@@deriving sexp, make]
 
 	type cellfmt =
 		{
@@ -365,14 +353,14 @@ struct
 		colspan: int;
 		overline: bool;
 		underline: bool;
-		} [@@deriving sexp]
+		} [@@deriving sexp, make]
 
 	type cell =
 		{
-		attr: Attr.t;
+        attr: Attr.t [@default Attr.default];
 		cellfmt: cellfmt option;
-		seq: Inline.seq option;
-		} [@@deriving sexp]
+        seq: Inline.seq option [@main];
+		} [@@deriving sexp, make]
 
 	type row = cell list [@@deriving sexp]
 
@@ -383,13 +371,8 @@ struct
 		tcols: colfmt array option;
 		thead: group option;
 		tfoot: group option;
-		tbodies: group list;
-		} [@@deriving sexp]
-
-    let make_colfmt ~alignment ~weight = {alignment; weight}
-	let make_cellfmt ~colfmt ~colspan ~overline ~underline = {colfmt; colspan; overline; underline}
-	let make_cell ?(attr = Attr.default) ?cellfmt seq = {attr; cellfmt; seq}
-	let make ?tcols ?thead ?tfoot tbodies = {tcols; thead; tfoot; tbodies}
+        tbodies: group list [@main];
+		} [@@deriving sexp, make]
 end
 
 
@@ -496,10 +479,7 @@ struct
         label: Label.t;
         order: order;
         content: Block.frag;
-        } [@@deriving sexp]
-
-	let make ~label ~order ~content =
-		{label; order; content}
+        } [@@deriving sexp, make]
 end
 
 
@@ -543,13 +523,10 @@ type t =
     bibs: Bib.t list;
     notes: Note.t list;
     toc: Heading.t list;
-    labels: labels;
-    customs: customs;
-    content: Block.frag;
-    } [@@deriving sexp]
-
-let make ?(bibs = []) ?(notes = []) ?(toc = []) ?(labels = Hashtbl.create 0) ?(customs = Hashtbl.create 0) content =
-    {bibs; notes; toc; labels; customs; content}
+    labels: labels [@default Hashtbl.create 0];
+    customs: customs [@default Hashtbl.create 0];
+    content: Block.frag [@main];
+    } [@@deriving sexp, make]
 
 let serialize doc =
     Sexplib.Sexp.to_string_mach (sexp_of_t doc)

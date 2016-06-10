@@ -22,44 +22,24 @@ type action = [ `Accept | `Deny ] [@@deriving sexp]
 
 type 'a classifier = [ `Any | `Only of 'a | `Member of 'a list | `Not of 'a classifier ] [@@deriving sexp]
 
-type feature_ruleset = (Feature.t classifier * action) list [@@deriving sexp]
+type feature_rule = Feature.t classifier * action [@@deriving sexp]
 
-type classname_ruleset = ((Feature.t classifier * Valid.classname classifier) * action) list [@@deriving sexp]
+type classname_rule = (Feature.t classifier * Valid.classname classifier) * action [@@deriving sexp]
 
 type t =
     {
-    feature_ruleset: feature_ruleset;
-    feature_default: action;
-    classname_ruleset: classname_ruleset;
-    classname_default: action;
+    feature_ruleset: feature_rule list;
+    feature_default: action [@default `Accept];
+    classname_ruleset: classname_rule list;
+    classname_default: action [@default `Accept];
     max_macro_depth: int option;
     max_inline_depth: int option;
     max_block_depth: int option;
-    } [@@deriving sexp]
+    } [@@deriving sexp, make]
 
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
-(********************************************************************************)
-
-(********************************************************************************)
-(** {2 Constructors}                                                            *)
-(********************************************************************************)
-
-val make:
-    ?feature_ruleset:feature_ruleset ->
-    ?feature_default:action ->
-    ?classname_ruleset:classname_ruleset ->
-    ?classname_default:action ->
-    ?max_macro_depth:int option ->
-    ?max_inline_depth:int option ->
-    ?max_block_depth:int option ->
-    unit ->
-    t
-
-
-(********************************************************************************)
-(** {2 Built-in idiosyncrasies}                                                 *)
 (********************************************************************************)
 
 val unrestricted: t (** Maximally unrestrictive: all features and classnames allowed, and there are no depth limits *)
