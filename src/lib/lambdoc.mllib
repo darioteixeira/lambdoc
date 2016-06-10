@@ -1,33 +1,14 @@
 # OASIS_START
-# DO NOT EDIT (digest: fb4031acab9e903839ad81b13aea28c0)
+# DO NOT EDIT (digest: b236595a6dd2348e0fc348dad01c0ead)
 Lambdoc_prelude
-Lambdoc_core
-Lambdoc_core_basic
-Lambdoc_core_attr
-Lambdoc_core_autogen
-Lambdoc_core_level
-Lambdoc_core_label
-Lambdoc_core_order
-Lambdoc_core_custom
-Lambdoc_core_math
-Lambdoc_core_hilite
-Lambdoc_core_inline
-Lambdoc_core_wrapper
-Lambdoc_core_heading
-Lambdoc_core_bib
-Lambdoc_core_qanda
-Lambdoc_core_tabular
-Lambdoc_core_block
-Lambdoc_core_note
-Lambdoc_core_target
-Lambdoc_core_valid
-Lambdoc_core_blkcat
-Lambdoc_core_error
-Lambdoc_core_invalid
-Lambdoc_core_ambivalent
-Lambdoc_core_feature
-Lambdoc_core_idiosyncrasies
-Lambdoc_core_foldmap
+Lambdoc_document
+Lambdoc_document_ambivalent
+Lambdoc_document_blkcat
+Lambdoc_document_feature
+Lambdoc_document_foldmap
+Lambdoc_document_idiosyncrasies
+Lambdoc_document_invalid
+Lambdoc_document_valid
 Lambdoc_reader
 Lambdoc_reader_ast
 Lambdoc_reader_extension

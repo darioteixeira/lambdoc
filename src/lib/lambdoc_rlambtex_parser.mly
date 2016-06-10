@@ -55,9 +55,9 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> BEGIN_MATHML_BLK
 %token <Lambdoc_reader_ast.command> BEGIN_SOURCE
 %token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_BLKPAT_LIT
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_BLKPAT_FRAG
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BEGIN_CUSTOM
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_BLKPAT_LIT
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_BLKPAT_FRAG
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_CUSTOM
 
 
 (********************************************************************************)
@@ -143,17 +143,17 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command> BIB_RESOURCE
 %token <Lambdoc_reader_ast.command> MACROARG
 
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_EMPTY
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_SEQ
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW_RAW
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW_SEQ
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> INLPAT_RAW_SEQOPT
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_EMPTY
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_SEQ
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_RAW
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> BLKPAT_RAW_RAW
-%token <Lambdoc_reader_ast.command * Lambdoc_core_basic.ident> MACROCALL
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> INLPAT_EMPTY
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> INLPAT_SEQ
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> INLPAT_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> INLPAT_RAW_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> INLPAT_RAW_SEQ
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> INLPAT_RAW_SEQOPT
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BLKPAT_EMPTY
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BLKPAT_SEQ
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BLKPAT_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BLKPAT_RAW_RAW
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> MACROCALL
 
 
 (********************************************************************************)

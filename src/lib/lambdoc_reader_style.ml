@@ -10,9 +10,9 @@ module Ast = Lambdoc_reader_ast
 module Readconv = Lambdoc_reader_readconv
 
 open Lambdoc_prelude
-open Lambdoc_core
-open Tabular
-open Basic
+open Lambdoc_document
+open Valid
+open Invalid
 open Ast
 
 
@@ -86,16 +86,19 @@ let numeric_of_string key ~low ~high = function
         else raise exc
 
 
-let colfmt_of_char = function
-    | 'c' -> (Center, Normal)
-    | 'C' -> (Center, Strong)
-    | 'l' -> (Left, Normal)
-    | 'L' -> (Left, Strong)
-    | 'r' -> (Right, Normal)
-    | 'R' -> (Right, Strong)
-    | 'j' -> (Justify, Normal)
-    | 'J' -> (Justify, Strong)
-    | x   -> invalid_arg ("Lambdoc_reader_style.colfmt_of_char: " ^ String.make 1 x)
+let colfmt_of_char chr =
+    let open Tabular in
+    let (alignment, weight) = match chr with
+        | 'c' -> (Center, Normal)
+        | 'C' -> (Center, Strong)
+        | 'l' -> (Left, Normal)
+        | 'L' -> (Left, Strong)
+        | 'r' -> (Right, Normal)
+        | 'R' -> (Right, Strong)
+        | 'j' -> (Justify, Normal)
+        | 'J' -> (Justify, Strong)
+        | x   -> invalid_arg ("Lambdoc_reader_style.colfmt_of_char: " ^ String.make 1 x) in
+    Tabular.make_colfmt ~alignment ~weight
 
 
 let cols_of_string key str =

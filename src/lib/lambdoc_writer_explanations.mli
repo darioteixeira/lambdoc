@@ -9,10 +9,14 @@
 (** Explains errors.
 *)
 
+open Lambdoc_document
+open Valid
+open Invalid
+
 
 (********************************************************************************)
 (** {1 Public functions and values}                                             *)
 (********************************************************************************)
 
-val explain: Lambdoc_core.Error.contextualized -> Lambdoc_core.Inline.seq
+val explain: Error.contextualized -> Inline.seq
 

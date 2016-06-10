@@ -13,8 +13,9 @@ module Emblang = Lambdoc_writer_emblang
 
 open Printf
 open Lambdoc_prelude
-open Lambdoc_core
-open Basic
+open Lambdoc_document
+open Valid
+open Invalid
 
 
 (********************************************************************************)

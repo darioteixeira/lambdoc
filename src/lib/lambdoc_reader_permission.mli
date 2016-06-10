@@ -11,8 +11,8 @@
 
 module Ast = Lambdoc_reader_ast
 
-open Lambdoc_core
-open Basic
+open Lambdoc_document
+open Invalid
 
 
 (********************************************************************************)
@@ -33,7 +33,7 @@ val check_feature:
 
 val check_classname:
     Feature.t ->
-    classname ->
+    Valid.classname ->
     Idiosyncrasies.t ->
     bool
 

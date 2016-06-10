@@ -8,7 +8,7 @@
 
 open Tyxml
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document
 
 
 (********************************************************************************)
@@ -59,10 +59,10 @@ let () =
         | `Lambwiki -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Lambwiki ~idiosyncrasies input_str
         | `Lambxml  -> Lambdoc_rlambxml_reader.Trivial.ambivalent_from_string ~idiosyncrasies input_str
         | `Markdown -> Lambdoc_rlamblite_reader.Trivial.ambivalent_from_string ~options:`Markdown ~idiosyncrasies input_str
-        | `Sexp     -> Lambdoc_core.Ambivalent.deserialize input_str in
+        | `Sexp     -> Ambivalent.deserialize input_str in
     let output_str = match arguments.output_markup with
         | `Sexp  ->
-            Lambdoc_core.Ambivalent.serialize doc
+            Ambivalent.serialize doc
         | `Html ->
             let module Html_writer = Lambdoc_whtml_writer.Make (Tyxml_backend) in
             let valid_options = Html_writer.({default_valid_options with translations = arguments.language}) in

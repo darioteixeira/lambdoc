@@ -6,11 +6,9 @@
 *)
 (********************************************************************************)
 
-(** Utility functions for converting {!Lambdoc_core} values to strings.
-*)
-
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document
+open Valid
 
 
 (********************************************************************************)

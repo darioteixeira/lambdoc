@@ -9,7 +9,7 @@
 (** Definition of language-specific names for document elements.
 *)
 
-open Lambdoc_core
+open Lambdoc_document.Valid
 
 
 (********************************************************************************)
@@ -40,17 +40,17 @@ type t =
 
 val make:
     description:string ->
-    equation:Lambdoc_core.Inline.seq ->
-    printout:Lambdoc_core.Inline.seq ->
-    table:Lambdoc_core.Inline.seq ->
-    figure:Lambdoc_core.Inline.seq ->
-    part:Lambdoc_core.Inline.seq ->
-    appendix:Lambdoc_core.Inline.seq ->
-    section:Lambdoc_core.Inline.seq ->
-    bibliography:Lambdoc_core.Inline.seq ->
-    notes:Lambdoc_core.Inline.seq ->
-    toc:Lambdoc_core.Inline.seq ->
-    abstract:Lambdoc_core.Inline.seq ->
+    equation:Inline.seq ->
+    printout:Inline.seq ->
+    table:Inline.seq ->
+    figure:Inline.seq ->
+    part:Inline.seq ->
+    appendix:Inline.seq ->
+    section:Inline.seq ->
+    bibliography:Inline.seq ->
+    notes:Inline.seq ->
+    toc:Inline.seq ->
+    abstract:Inline.seq ->
     paragraph:string ->
     t
 

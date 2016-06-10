@@ -9,8 +9,7 @@
 (** Definition of the document AST that all parsers are supposed to generate.
 *)
 
-open Lambdoc_core
-open Basic
+open Lambdoc_document.Valid
 
 
 (********************************************************************************)
@@ -23,12 +22,12 @@ open Basic
 
 type command =
     {
-    comm_tag: ident option;             (** Tag associated with command (some markups have anonymous, tagless commands) *)
-    comm_label: pointer option;         (** Label parameter attached to command *)
-    comm_order: string option;          (** Order parameter attached to command *)
-    comm_style: string option;          (** Style parameter attached to command *)
-    comm_linenum: int;                  (** Source line number where command was declared *)
-    comm_originator: Attr.originator;   (** Where the command comes from *)
+    comm_tag: ident option;         (** Tag associated with command (some markups have anonymous, tagless commands) *)
+    comm_label: pointer option;     (** Label parameter attached to command *)
+    comm_order: string option;      (** Order parameter attached to command *)
+    comm_style: string option;      (** Style parameter attached to command *)
+    comm_linenum: int;              (** Source line number where command was declared *)
+    comm_origin: Attr.origin;       (** Where the command comes from *)
     }
 
 

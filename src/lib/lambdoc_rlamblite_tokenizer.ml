@@ -10,7 +10,7 @@ module Parser = Lambdoc_rlamblite_parser
 module Lexer = Lambdoc_rlamblite_lexer
 
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document.Valid
 open Lambdoc_reader
 open Ast
 open Lexing
@@ -79,7 +79,7 @@ let base_comm =
     comm_order = None;
     comm_style = None;
     comm_linenum = 0;
-    comm_originator = Attr.Source;
+    comm_origin = Attr.Source;
     }
 
 let token_of_inline tokenizer comm inline =

@@ -11,7 +11,7 @@ module Parser = Lambdoc_rlambtex_parser
 module Lexer = Lambdoc_rlambtex_lexer
 
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document.Valid
 open Lambdoc_reader
 open Ast
 open Extension
@@ -80,7 +80,7 @@ struct
             comm_order = get_group 1;
             comm_style = get_group 2;
             comm_linenum = tokenizer.position.pos_lnum;
-            comm_originator = Attr.Source;
+            comm_origin = Attr.Source;
             }
 
     let build_op tokenizer =
@@ -90,7 +90,7 @@ struct
         comm_order = None;
         comm_style = None;
         comm_linenum = tokenizer.position.pos_lnum;
-        comm_originator = Attr.Source;
+        comm_origin = Attr.Source;
         }
 
     let is_env (_, syntax) = match syntax with
@@ -235,7 +235,7 @@ struct
             comm_order = get_group 2;
             comm_style = get_group 3;
             comm_linenum = tokenizer.position.pos_lnum;
-            comm_originator = Attr.Source;
+            comm_origin = Attr.Source;
             }
         in CELL_MARK comm
 

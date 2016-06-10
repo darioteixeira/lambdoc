@@ -6,11 +6,10 @@
 *)
 (********************************************************************************)
 
-(** Utility functions for converting {!Ast} values to {!Lambdoc_core} values.
-*)
-
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document
+open Valid
+open Invalid
 
 
 (********************************************************************************)
@@ -192,8 +191,6 @@ end
 
 module Order_input =
 struct
-    open Basic
-
     exception Invalid_order_format of string
     exception Invalid_order_levels of string * Level.section * int
 
@@ -240,14 +237,12 @@ end
 
 module Math_input =
 struct
-    open Math
-
     let from_mathtex mathtex =
         let mathml = Blahcaml.safe_mathml_from_tex mathtex in
-        Both (mathtex, mathml)
+        Math.Both (mathtex, mathml)
 
     let from_mathml mathml =
         let sane = Blahcaml.sanitize_mathml mathml in
-        Mathml sane
+        Math.Mathml sane
 end
 

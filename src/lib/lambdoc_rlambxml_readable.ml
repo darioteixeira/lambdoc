@@ -189,7 +189,7 @@ let anonymous_comm (lnum, _) =
     comm_order = None;
     comm_style = None;
     comm_linenum = lnum;
-    comm_originator = Source;
+    comm_origin = Source;
     }
 
 
@@ -200,7 +200,7 @@ let tagged_comm tag (lnum, _) prop =
     comm_order = Prop.get prop (Opt "order");
     comm_style = Prop.get prop (Opt "style");
     comm_linenum = lnum;
-    comm_originator = Source;
+    comm_origin = Source;
     }
 
 

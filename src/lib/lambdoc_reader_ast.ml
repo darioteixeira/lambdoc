@@ -6,8 +6,7 @@
 *)
 (********************************************************************************)
 
-open Lambdoc_core
-open Basic
+open Lambdoc_document.Valid
 
 
 (********************************************************************************)
@@ -25,7 +24,7 @@ type command =
     comm_order: string option;
     comm_style: string option;
     comm_linenum: int;
-    comm_originator: Attr.originator;
+    comm_origin: Attr.origin;
     }
 
 

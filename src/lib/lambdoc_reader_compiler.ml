@@ -17,11 +17,13 @@ module Readconv = Lambdoc_reader_readconv
 module Style = Lambdoc_reader_style
 
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document
 open Ast
 open Readconv
 open Style
 open Idiosyncrasies
+open Valid
+open Invalid
 
 
 (********************************************************************************)
@@ -223,7 +225,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     *)
     let make_label comm target = match comm.comm_label with
         | Some thing ->
-            let new_label = Label.User thing in
+            let new_label = Label.Manual thing in
             begin
                 if Identifier_input.matches_label thing
                 then
@@ -300,15 +302,15 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             then 
                 let msg = Error.Invalid_style_misplaced_classname classname in
                 add_error comm msg in
-        if comm.comm_originator = Extension || Permission.check_feature feature idiosyncrasies
+        if comm.comm_origin = Extension || Permission.check_feature feature idiosyncrasies
         then begin
             let permission_error_msgs = Permission.check_parameters ?maybe_minipaged ?maybe_wrapped comm feature in
             List.iter (add_error comm) permission_error_msgs;
             let (classnames, style_parsing, style_error_msgs) = Style.parse comm in
             List.iter (add_error comm) style_error_msgs;
             List.iter check_classname classnames;
-            let parsinfo = Attr.{tag = comm.comm_tag; linenum = comm.comm_linenum; originator = comm.comm_originator} in
-            let attr = Attr.make ~parsinfo classnames in
+            let parsinfo = Attr.make_parsinfo ?tag:comm.comm_tag ~linenum:comm.comm_linenum ~origin:comm.comm_origin () in
+            let attr = Attr.make ~classnames ~parsinfo () in
             elem attr style_parsing >>= fun element ->
             let dispose_error_msgs = Style.dispose comm style_parsing in
             List.iter (add_error comm) dispose_error_msgs;
@@ -392,7 +394,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
             let elem attr dict =
                 let lang = Style.consume1 dict (Lang_hnd, None) in
                 let data = Camlhighlight_parser.from_string ?lang txt in
-                let hilite = Hilite.make lang data false in
+                let hilite = Hilite.make ?lang ~linenums:false data in
                 IO.return [Inline.code ~attr hilite] in
             check_inline_comm `Feature_code comm elem
 
@@ -470,8 +472,8 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | Ast.See refs when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Note_target _ -> `Valid_target
-                    | _                    -> `Wrong_target Error.Target_note in
+                    | Target.Note _ -> `Valid_target
+                    | _             -> `Wrong_target Error.Target_note in
                 List.iter (add_pointer target_checker comm) refs;
                 match refs with
                     | _::_ ->
@@ -485,8 +487,8 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | Ast.Cite refs when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Bib_target _ -> `Valid_target
-                    | _                   -> `Wrong_target Error.Target_bib in
+                    | Target.Bib _ -> `Valid_target
+                    | _            -> `Wrong_target Error.Target_bib in
                 List.iter (add_pointer target_checker comm) refs;
                 match refs with
                     | _::_ ->
@@ -500,12 +502,12 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | Ast.Dref (pointer, maybe_astseq) when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Visible_target (Target.Custom_target (_, _, `None_given))
-                    | Target.Visible_target (Target.Wrapper_target (_, `None_given))
-                    | Target.Visible_target (Target.Part_target `None_given)
-                    | Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
-                    | Target.Visible_target _                                        -> `Valid_target
-                    | _                                                              -> `Wrong_target Error.Target_label in
+                    | Target.Visible (Target.Custom (_, _, `None_given))
+                    | Target.Visible (Target.Wrapper (_, `None_given))
+                    | Target.Visible (Target.Part `None_given)
+                    | Target.Visible (Target.Section (_, `None_given)) -> `Empty_target
+                    | Target.Visible _                                 -> `Valid_target
+                    | _                                                -> `Wrong_target Error.Target_label in
                 add_pointer target_checker comm pointer;
                 monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq >>= fun maybe_seq ->
                 IO.return [Inline.dref ~attr pointer maybe_seq] in
@@ -514,12 +516,12 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | Ast.Sref (pointer, maybe_astseq) when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Visible_target (Target.Custom_target (_, _, `None_given))
-                    | Target.Visible_target (Target.Wrapper_target (_, `None_given))
-                    | Target.Visible_target (Target.Part_target `None_given)
-                    | Target.Visible_target (Target.Section_target (_, `None_given)) -> `Empty_target
-                    | Target.Visible_target _                                        -> `Valid_target
-                    | _                                                              -> `Wrong_target Error.Target_label in
+                    | Target.Visible (Target.Custom (_, _, `None_given))
+                    | Target.Visible (Target.Wrapper (_, `None_given))
+                    | Target.Visible (Target.Part `None_given)
+                    | Target.Visible (Target.Section (_, `None_given)) -> `Empty_target
+                    | Target.Visible _                                 -> `Valid_target
+                    | _                                                -> `Wrong_target Error.Target_label in
                 add_pointer target_checker comm pointer;
                 monadic_maybe (convert_seq_aux ~comm ~context ~depth ~args true) maybe_astseq >>= fun maybe_seq ->
                 IO.return [Inline.sref ~attr pointer maybe_seq] in
@@ -528,8 +530,8 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | Ast.Mref (pointer, astseq) when not is_ref ->
             let elem attr _ =
                 let target_checker = function
-                    | Target.Visible_target _ -> `Valid_target
-                    | _                       -> `Wrong_target Error.Target_label in
+                    | Target.Visible _ -> `Valid_target
+                    | _                -> `Wrong_target Error.Target_label in
                 add_pointer target_checker comm pointer;
                 convert_seq_aux ~comm ~context ~depth ~args true astseq >>= fun seq ->
                 IO.return [Inline.mref ~attr pointer seq] in
@@ -685,7 +687,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                     | None ->
                         IO.return dummy_cell in
             let tab_row = match row with
-                | _::_ -> monadic_map converter row >|= Tabular.make_row
+                | _::_ -> monadic_map converter row
                 | []   -> assert false in
             match ncols with
                 | Some n when n <> !rowspan ->
@@ -701,7 +703,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         let convert_group feature (comm, rows) =
             check_inline_comm feature comm (fun _ _ -> IO.return []) >>= fun _ ->
             match rows with
-                | _::_ -> monadic_map convert_row rows >|= Tabular.make_group
+                | _::_ -> monadic_map convert_row rows
                 | []   -> assert false in
 
         monadic_maybe (convert_group `Feature_thead) asttab.thead >>= fun thead ->
@@ -775,7 +777,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                 let (lang, linenums) = Style.consume2 dict (Lang_hnd, None) (Linenums_hnd, false) in
                 let trimmed = Literal_input.trim txt in
                 let data = Camlhighlight_parser.from_string ?lang trimmed in
-                let hilite = Hilite.make lang data linenums in
+                let hilite = Hilite.make ?lang ~linenums data in
                 let () = if trimmed = "" then add_error comm Error.Empty_source in
                 IO.return [Block.source ~attr hilite] in
             check_block_comm `Feature_source comm elem
@@ -838,8 +840,8 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                         | Numbered _   -> Custom.numbered in
                     let data = custom_maker env label order in
                     let (block_maker, allowed) = match kind with
-                        | Custom.Boxout  -> (Block.boxout ~attr (Custom.Boxout.make data), Blkcat.min allowed `Quotable_blk)
-                        | Custom.Theorem -> (Block.theorem ~attr (Custom.Theorem.make data), `Embeddable_blk) in
+                        | Custom.Boxout  -> (Block.boxout ~attr (Custom.boxout data), Blkcat.min allowed `Quotable_blk)
+                        | Custom.Theorem -> (Block.theorem ~attr (Custom.theorem data), `Embeddable_blk) in
                     monadic_maybe (convert_seq ~comm) maybe_astseq >>= fun maybe_seq ->
                     convert_frag_aux ~comm ~minipaged ~depth allowed astfrag >>= fun frag ->
                     IO.return [block_maker maybe_seq frag]
@@ -1275,7 +1277,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
     let filter_pointers () =
         let filter_pointer (target_checker, comm, label) =
             try
-                let target = Hashtbl.find labels (Label.User label) in
+                let target = Hashtbl.find labels (Label.Manual label) in
                 match target_checker target with
                 | `Valid_target ->
                     ()
@@ -1284,9 +1286,9 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
                     add_error comm msg
                 | `Wrong_target expected ->
                     let suggestion = match target with
-                        | Target.Visible_target _ -> Error.Target_label
-                        | Target.Bib_target _     -> Error.Target_bib
-                        | Target.Note_target _    -> Error.Target_note in
+                        | Target.Visible _ -> Error.Target_label
+                        | Target.Bib _     -> Error.Target_bib
+                        | Target.Note _    -> Error.Target_note in
                     let msg = Error.Wrong_target (label, expected, suggestion) in
                     add_error comm msg
             with
@@ -1333,7 +1335,7 @@ let compile ?postprocessor ~extcomms ~expand_entities ~idiosyncrasies ~source as
         | None   -> IO.return (!errors, valid)
         | Some p -> Foldmapper.(p.valid p !errors valid)
     end >>= function
-        | ([], valid) -> IO.return (Ambivalent.valid valid)
-        | (errors, _) -> IO.return (Ambivalent.invalid (Invalid.make (contextualize_errors ~sort:true source errors)))
+        | ([], valid) -> IO.return (Ambivalent.Valid valid)
+        | (errors, _) -> IO.return (Ambivalent.Invalid (Invalid.make (contextualize_errors ~sort:true source errors)))
 end
 

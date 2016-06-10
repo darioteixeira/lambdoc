@@ -11,7 +11,8 @@ module Compiler = Lambdoc_reader_compiler
 module Extension = Lambdoc_reader_extension
 module Preprocessor = Lambdoc_reader_preprocessor
 
-open Lambdoc_core
+open Lambdoc_document
+open Invalid
 
 
 (********************************************************************************)
@@ -111,7 +112,7 @@ struct
                 | `Error (sane_str, error_lines) ->
                     let localized = List.map (fun line -> (Some line, None, Error.Malformed_code_point)) error_lines in
                     let errors = Comp.contextualize_errors ~sort:false sane_str localized in
-                    IO.return (Ambivalent.invalid (Invalid.make errors))
+                    IO.return (Ambivalent.Invalid (Invalid.make errors))
                 | `Okay ->
                     let (inline_extdefs, block_extdefs) = List.fold_left extdef_of_extcomm ([], []) extcomms in
                     match Readable.ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs source with
@@ -120,7 +121,7 @@ struct
                         | `Error xs ->
                             let localized = List.map (fun (line, ident, msg) -> (line, ident, Error.Reading_error msg)) xs in
                             let errors = Comp.contextualize_errors ~sort:false source localized in
-                            IO.return (Ambivalent.invalid (Invalid.make errors))
+                            IO.return (Ambivalent.Invalid (Invalid.make errors))
                         | exception exc ->
                             IO.fail exc
 end

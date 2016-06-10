@@ -6,10 +6,10 @@
 *)
 (********************************************************************************)
 
-(** Utility functions for converting {!Lambdoc_core} values to strings.
+(** Utility functions for converting {!Lambdoc_document_valid} values to strings.
 *)
 
-open Lambdoc_core
+open Lambdoc_document.Valid
 
 
 (********************************************************************************)
@@ -51,12 +51,10 @@ end
 
 module Math_output:
 sig
-    open Math
-
     exception Mathtex_undefined
     exception Mathml_undefined
 
-    val get_mathtex: t -> mathtex
-    val get_mathml: t -> mathml
+    val get_mathtex: Math.t -> string
+    val get_mathml: Math.t -> string
 end
 

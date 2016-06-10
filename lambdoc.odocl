@@ -1,33 +1,14 @@
 # OASIS_START
-# DO NOT EDIT (digest: 0299a6e8db5ed0f7286e09c1ede73142)
+# DO NOT EDIT (digest: 5b07aa26e486c9aff8f2968078091a07)
 src/lib/Lambdoc_prelude
-src/lib/Lambdoc_core
-src/lib/Lambdoc_core_basic
-src/lib/Lambdoc_core_attr
-src/lib/Lambdoc_core_autogen
-src/lib/Lambdoc_core_level
-src/lib/Lambdoc_core_label
-src/lib/Lambdoc_core_order
-src/lib/Lambdoc_core_custom
-src/lib/Lambdoc_core_math
-src/lib/Lambdoc_core_hilite
-src/lib/Lambdoc_core_inline
-src/lib/Lambdoc_core_wrapper
-src/lib/Lambdoc_core_heading
-src/lib/Lambdoc_core_bib
-src/lib/Lambdoc_core_qanda
-src/lib/Lambdoc_core_tabular
-src/lib/Lambdoc_core_block
-src/lib/Lambdoc_core_note
-src/lib/Lambdoc_core_target
-src/lib/Lambdoc_core_valid
-src/lib/Lambdoc_core_blkcat
-src/lib/Lambdoc_core_error
-src/lib/Lambdoc_core_invalid
-src/lib/Lambdoc_core_ambivalent
-src/lib/Lambdoc_core_feature
-src/lib/Lambdoc_core_idiosyncrasies
-src/lib/Lambdoc_core_foldmap
+src/lib/Lambdoc_document
+src/lib/Lambdoc_document_ambivalent
+src/lib/Lambdoc_document_blkcat
+src/lib/Lambdoc_document_feature
+src/lib/Lambdoc_document_foldmap
+src/lib/Lambdoc_document_idiosyncrasies
+src/lib/Lambdoc_document_invalid
+src/lib/Lambdoc_document_valid
 src/lib/Lambdoc_reader
 src/lib/Lambdoc_reader_ast
 src/lib/Lambdoc_reader_extension

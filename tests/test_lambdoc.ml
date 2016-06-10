@@ -8,7 +8,7 @@
 
 open Tyxml
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document
 
 
 (********************************************************************************)
@@ -227,11 +227,11 @@ let execute fname source target () =
             let doc' = match doc with
                 | Valid doc ->
                     let foldmapper = Foldmap.Identity.amnesiac in
-                    foldmapper.valid foldmapper () doc |> snd |> Ambivalent.valid
+                    Ambivalent.Valid (foldmapper.valid foldmapper () doc |> snd)
                 | Invalid _ ->
                     doc in
             Ambivalent.serialize doc' in
-    let idiosyncrasies = Lambdoc_core_idiosyncrasies.make ~max_macro_depth:(Some 4) ~max_inline_depth:(Some 4) ~max_block_depth:(Some 4) () in
+    let idiosyncrasies = Idiosyncrasies.make ~max_macro_depth:(Some 4) ~max_inline_depth:(Some 4) ~max_block_depth:(Some 4) () in
     let doc = reader ~idiosyncrasies source_contents in
     let str = writer doc ^ "\n" in
     Alcotest.(check string) fname str target_contents

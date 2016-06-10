@@ -8,8 +8,9 @@
 
 module Ast = Lambdoc_reader_ast
 
-open Lambdoc_core
+open Lambdoc_document
 open Idiosyncrasies
+open Invalid
 open Ast
 
 

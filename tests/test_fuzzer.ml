@@ -8,7 +8,6 @@
 
 open Cmdliner
 open Lambdoc_prelude
-open Lambdoc_core
 
 
 (********************************************************************************)

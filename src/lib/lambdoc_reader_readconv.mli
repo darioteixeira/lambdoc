@@ -6,10 +6,12 @@
 *)
 (********************************************************************************)
 
-(** Utility functions for converting {!Ast} values *to* {!Lambdoc_core} values.
+(** Utility functions for converting {!Ast} values to {!Lambdoc_document_valid} values.
 *)
 
-open Lambdoc_core
+open Lambdoc_document
+open Valid
+open Invalid
 
 
 (********************************************************************************)
@@ -56,8 +58,6 @@ end
 
 module Order_input:
 sig
-    open Basic
-
     exception Invalid_order_format of string
     exception Invalid_order_levels of string * Level.section * int
 
@@ -81,9 +81,7 @@ end
 
 module Math_input:
 sig
-    open Math
-
-    val from_mathtex: string -> t
-    val from_mathml: string -> t
+    val from_mathtex: string -> Math.t
+    val from_mathml: string -> Math.t
 end
 

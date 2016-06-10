@@ -9,7 +9,7 @@
 (** Document writer.
 *)
 
-open Lambdoc_core
+open Lambdoc_document
 
 
 (********************************************************************************)

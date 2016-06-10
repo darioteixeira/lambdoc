@@ -11,8 +11,9 @@
 
 module Ast = Lambdoc_reader_ast
 
-open Lambdoc_core
-open Basic
+open Lambdoc_document
+open Valid
+open Invalid
 
 
 (********************************************************************************)

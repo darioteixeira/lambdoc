@@ -8,9 +8,10 @@
 
 open Printf
 open Lambdoc_prelude
-open Lambdoc_core
+open Lambdoc_document
 open Lambdoc_writer
-open Basic
+open Valid
+open Invalid
 open Attr
 open Inline
 open Block
@@ -175,7 +176,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
 
     let make_label = function
         | Label.Auto pointer -> opts.namespace ^ ":a:" ^ pointer
-        | Label.User pointer -> opts.namespace ^ ":u:" ^ pointer in
+        | Label.Manual pointer -> opts.namespace ^ ":m:" ^ pointer in
 
     let make_link ?(classnames = []) lnk content =
         Html.a ~a:[a_class (!!"lnk" :: classnames); a_href (Html.uri_of_string lnk)] content in
@@ -339,63 +340,63 @@ let from_valid ?(valid_options = default_valid_options) doc =
 
         | See pointers ->
             let link_maker pointer =
-                let label = Label.User pointer in
+                let label = Label.Manual pointer in
                 let target = Hashtbl.find labels label in
                 match target with
-                    | Target.Note_target order -> make_internal_link label (note_conv order)
-                    | _                        -> raise (Command_see_with_non_note target) in
+                    | Target.Note order -> make_internal_link label (note_conv order)
+                    | _                 -> raise (Command_see_with_non_note target) in
             Html.span ~a:[a_class (!!"see" :: classnames)] (commafy ~prefix:"(" ~suffix:")" (List.map link_maker pointers))
 
         | Cite pointers ->
             let link_maker pointer =
-                let label = Label.User pointer in
+                let label = Label.Manual pointer in
                 let target = Hashtbl.find labels label in
                 match target with
-                    | Target.Bib_target order -> make_internal_link label (bib_conv order)
-                    | _                       -> raise (Command_cite_with_non_bib target) in
+                    | Target.Bib order -> make_internal_link label (bib_conv order)
+                    | _                -> raise (Command_cite_with_non_bib target) in
             Html.span ~a:[a_class (!!"cite" :: classnames)] (commafy ~prefix:"[" ~suffix:"]" (List.map link_maker pointers))
 
         | Dref (pointer, maybe_seq) ->
-            let label = Label.User pointer in
+            let label = Label.Manual pointer in
             let target = Hashtbl.find labels label in
             let suffix = match maybe_seq with Some seq -> write_seq seq | None -> [] in
             let make_dref order = make_internal_link ~classnames label (Obj.magic (order @ suffix)) in
             begin match target with
-                | Target.Visible_target (Target.Custom_target (_, Custom.Boxout, order)) ->
+                | Target.Visible (Target.Custom (_, Custom.Boxout, order)) ->
                     make_dref (boxout_conv order)
-                | Target.Visible_target (Target.Custom_target (_, Custom.Theorem, order)) ->
+                | Target.Visible (Target.Custom (_, Custom.Theorem, order)) ->
                     make_dref (theorem_conv order)
-                | Target.Visible_target (Target.Wrapper_target (_, order)) ->
+                | Target.Visible (Target.Wrapper (_, order)) ->
                     make_dref (wrapper_conv order)
-                | Target.Visible_target (Target.Part_target order) ->
+                | Target.Visible (Target.Part order) ->
                     make_dref (part_conv order)
-                | Target.Visible_target (Target.Section_target (location, order)) ->
+                | Target.Visible (Target.Section (location, order)) ->
                     make_dref (section_conv location order)
                 | _ ->
                     raise (Command_ref_with_non_visible_block target)
             end
 
         | Sref (pointer, maybe_seq) ->
-            let label = Label.User pointer in
+            let label = Label.Manual pointer in
             let target = Hashtbl.find labels label in
             let suffix = match maybe_seq with Some seq -> write_seq seq | None -> [] in
             let make_sref wseq order = make_internal_link ~classnames label (Obj.magic (wseq @ order @ suffix)) in
             begin match target with
-                | Target.Visible_target (Target.Custom_target (env, Custom.Boxout, order)) ->
+                | Target.Visible (Target.Custom (env, Custom.Boxout, order)) ->
                     make_sref (write_name (Name_custom env)) (boxout_conv ~prespace:true order)
-                | Target.Visible_target (Target.Custom_target (env, Custom.Theorem, order)) ->
+                | Target.Visible (Target.Custom (env, Custom.Theorem, order)) ->
                     make_sref (write_name (Name_custom env)) (theorem_conv ~prespace:true order)
-                | Target.Visible_target (Target.Wrapper_target (Wrapper.Equation, order)) ->
+                | Target.Visible (Target.Wrapper (Wrapper.Equation, order)) ->
                     make_sref (write_name Name_equation) (wrapper_conv ~prespace:true order)
-                | Target.Visible_target (Target.Wrapper_target (Wrapper.Printout, order)) ->
+                | Target.Visible (Target.Wrapper (Wrapper.Printout, order)) ->
                     make_sref (write_name Name_printout) (wrapper_conv ~prespace:true order)
-                | Target.Visible_target (Target.Wrapper_target (Wrapper.Table, order)) ->
+                | Target.Visible (Target.Wrapper (Wrapper.Table, order)) ->
                     make_sref (write_name Name_table) (wrapper_conv ~prespace:true order)
-                | Target.Visible_target (Target.Wrapper_target (Wrapper.Figure, order)) ->
+                | Target.Visible (Target.Wrapper (Wrapper.Figure, order)) ->
                     make_sref (write_name Name_figure) (wrapper_conv ~prespace:true order)
-                | Target.Visible_target (Target.Part_target order) ->
+                | Target.Visible (Target.Part order) ->
                     make_sref (write_name Name_part) (part_conv ~prespace:true order)
-                | Target.Visible_target (Target.Section_target (location, order)) ->
+                | Target.Visible (Target.Section (location, order)) ->
                     let name = match location with
                         | Mainbody   -> Name_section
                         | Appendixed -> Name_appendix in
@@ -405,7 +406,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
             end
 
         | Mref (pointer, seq) ->
-            make_internal_link (Label.User pointer) (Obj.magic (write_seq seq))
+            make_internal_link (Label.Manual pointer) (Obj.magic (write_seq seq))
 
 
     (****************************************************************************)
@@ -445,20 +446,20 @@ let from_valid ?(valid_options = default_valid_options) doc =
         let open Tabular in
 
         let write_cell ord {attr; cellfmt; seq} =
-            let ((alignment, weight), maybe_colspan, overline, underline) = match (cellfmt, tab.tcols) with
+            let (colfmt, maybe_colspan, overline, underline) = match (cellfmt, tab.tcols) with
                 | (Some {colfmt; colspan; overline; underline}, _) -> (colfmt, Some colspan, overline, underline)
                 | (None, Some tcols)                               -> (Array.get tcols ord, None, false, false)
-                | (None, None)                                     -> ((Tabular.Left, Tabular.Normal), None, false, false) in
+                | (None, None)                                     -> ({alignment = Left; weight = Normal}, None, false, false) in
             let classnames = List.map (!!!) attr.classnames in
-            let classnames = ("cell_" ^^ Tabular_output.string_of_alignment alignment) :: classnames in
+            let classnames = ("cell_" ^^ Tabular_output.string_of_alignment colfmt.alignment) :: classnames in
             let classnames = if overline then !!"oline" :: classnames else classnames in
             let classnames = if underline then !!"uline" :: classnames else classnames in
             let a_hd = a_class classnames in
             let a_tl = match maybe_colspan with Some n -> [a_colspan n] | None -> [] in
             let out_seq = match seq with Some seq -> write_seq seq | None -> [] in
-            match weight with
-                | Tabular.Normal -> Html.td ~a:(a_hd :: a_tl) (out_seq: Html_types.phrasing Html.elt list :> Html_types.td_content_fun Html.elt list)
-                | Tabular.Strong -> Html.th ~a:(a_hd :: a_tl) (out_seq: Html_types.phrasing Html.elt list :> Html_types.th_content_fun Html.elt list) in
+            match colfmt.weight with
+                | Normal -> Html.td ~a:(a_hd :: a_tl) (out_seq: Html_types.phrasing Html.elt list :> Html_types.td_content_fun Html.elt list)
+                | Strong -> Html.th ~a:(a_hd :: a_tl) (out_seq: Html_types.phrasing Html.elt list :> Html_types.th_content_fun Html.elt list) in
 
         let write_row cells =
             Html.tr (List.mapi write_cell cells) in
@@ -608,7 +609,7 @@ let from_valid ?(valid_options = default_valid_options) doc =
                     | [] -> []
                     | x  -> [Html.span ~a:[a_class [!!"thmextra"]] x]
                 in caphead @ capbody in
-            [write_custom (data :> Custom.t) maybe_seq frag !!"theorem" classnames formatter]
+            [write_custom (data :> Custom.custom) maybe_seq frag !!"theorem" classnames formatter]
 
         | Equation (wrapper, blk) ->
             [write_wrapper wrapper blk !!"equation" classnames Name_equation]
