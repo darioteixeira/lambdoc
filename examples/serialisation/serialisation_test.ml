@@ -7,6 +7,8 @@
 (********************************************************************************)
 
 open Sexplib.Std
+open Lambdoc_prelude
+open Lambdoc_document
 open Lambdoc_reader
 
 
@@ -15,19 +17,19 @@ open Lambdoc_reader
 (********************************************************************************)
 
 let doc =
-    let src = BatIO.read_all (BatIO.input_channel (open_in "sample.tex")) in
+    let chan = Pervasives.open_in "sample.tex" in
+    let src = Pervasives.input_all chan in
+    Pervasives.close_in chan;
     Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string src
 
-
-let sexp_pickle = Lambdoc_core.Ambivalent.serialize doc
+let sexp_pickle = Ambivalent.serialize doc
 let marshal_pickle = Marshal.to_string doc []
 
-let conv_to_sexp () = let _ = Lambdoc_core.Ambivalent.serialize doc in ()
-let conv_from_sexp () = let _ = Lambdoc_core.Ambivalent.deserialize sexp_pickle in ()
+let conv_to_sexp () = let _ = Ambivalent.serialize doc in ()
+let conv_from_sexp () = let _ = Ambivalent.deserialize sexp_pickle in ()
 
 let conv_to_marshal () = let _ = Marshal.to_string doc [] in ()
 let conv_from_marshal () = let _ = Marshal.from_string marshal_pickle 0 in ()
-
 
 let tests =
     let funcs =
