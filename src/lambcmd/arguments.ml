@@ -72,19 +72,19 @@ let language =
 
 let unrestricted =
     let doc = "Unrestricted idiosyncrasies." in
-    Arg.(value @@ flag @@ Arg.info ~docs:idiosyncrasies ~doc ["u"; "unrestricted"])
+    Arg.(value @@ flag @@ info ~docs:idiosyncrasies ~doc ["u"; "unrestricted"])
 
 let max_macro_depth =
     let doc = "Maximum depth for macro calls." in
-    Arg.(value @@ opt (some int) None @@ Arg.info ~docs:idiosyncrasies ~doc ["max-macro-depth"])
+    Arg.(value @@ opt (some int) None @@ info ~docs:idiosyncrasies ~doc ["max-macro-depth"])
 
 let max_inline_depth =
     let doc = "Maximum nesting depth for inline elements." in
-    Arg.(value @@ opt (some int) None @@ Arg.info ~docs:idiosyncrasies ~doc ["max-inline-depth"])
+    Arg.(value @@ opt (some int) None @@ info ~docs:idiosyncrasies ~doc ["max-inline-depth"])
 
 let max_block_depth =
     let doc = "Maximum nesting depth for block elements." in
-    Arg.(value @@ opt (some int) None @@ Arg.info ~docs:idiosyncrasies ~doc ["max-block-depth"])
+    Arg.(value @@ opt (some int) None @@ info ~docs:idiosyncrasies ~doc ["max-block-depth"])
 
 let input_markup =
     let doc = "Input markup (either 'lambtex', 'lambxml', 'lambwiki', 'markdown', or 'sexp'). If not specified and argument $(i,IN_FILE) is provided, the input markup is guessed based on file extension." in
