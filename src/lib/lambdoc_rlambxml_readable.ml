@@ -145,18 +145,15 @@ let cleanup ?empty comm prop errors =
     end;
     List.iter (fun k -> Errors.(add errors comm (Unknown_attribute k))) (Prop.all prop)
 
-
 let guarded_get: type p. Ast.command -> Prop.t -> Errors.t -> p Prop.param -> p = fun comm prop errors param ->
     match param with
-        | Prop.Req a  -> (try Prop.get prop param with Not_found -> (Errors.(add errors comm (Missing_attribute a)); ""))
-        | _           -> Prop.get prop param
-
+        | Prop.Req a -> (try Prop.get prop param with Not_found -> (Errors.(add errors comm (Missing_attribute a)); ""))
+        | _          -> Prop.get prop param
 
 let make0: ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> (unit -> 'r) -> Ast.command * 'r =
     fun ?empty comm prop errors f ->
         cleanup ?empty comm prop errors;
         (comm, f ())
-
 
 let make1: type p1. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> p1 Prop.param -> (p1 -> 'r) -> Ast.command * 'r =
     fun ?empty comm prop errors param1 f ->
@@ -164,14 +161,12 @@ let make1: type p1. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> p1 
         cleanup ?empty comm prop errors;
         (comm, f a1)
 
-
 let make2: type p1 p2. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> p1 Prop.param -> p2 Prop.param -> (p1 -> p2 -> 'r) -> Ast.command * 'r =
     fun ?empty comm prop errors param1 param2 f ->
         let a1 = guarded_get comm prop errors param1 in
         let a2 = guarded_get comm prop errors param2 in
         cleanup ?empty comm prop errors;
         (comm, f a1 a2)
-
 
 let make3: type p1 p2 p3. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t -> p1 Prop.param -> p2 Prop.param -> p3 Prop.param -> (p1 -> p2 -> p3 -> 'r) -> Ast.command * 'r =
     fun ?empty comm prop errors param1 param2 param3 f ->
@@ -181,39 +176,35 @@ let make3: type p1 p2 p3. ?empty:tree list -> Ast.command -> Prop.t -> Errors.t 
         cleanup ?empty comm prop errors;
         (comm, f a1 a2 a3)
 
-
-let anonymous_comm (lnum, _) =
+let anonymous_comm ~linenum_offset (lnum, _) =
     {
     comm_tag = None;
     comm_label = None;
     comm_order = None;
     comm_style = None;
-    comm_linenum = lnum;
+    comm_linenum = linenum_offset + lnum;
     comm_origin = Source;
     }
 
-
-let tagged_comm tag (lnum, _) prop =
+let tagged_comm ~linenum_offset tag (lnum, _) prop =
     {
     comm_tag = Some tag;
     comm_label = Prop.get prop (Opt "label");
     comm_order = Prop.get prop (Opt "order");
     comm_style = Prop.get prop (Opt "style");
-    comm_linenum = lnum;
+    comm_linenum = linenum_offset + lnum;
     comm_origin = Source;
     }
-
 
 let is_whitespace =
     let rex = Re.(compile (seq [bos; rep1 Re.space; eos])) in
     fun str -> Re.execp rex str
 
-
-let rec tree_of_input i =
+let rec tree_of_input ~linenum_offset i =
     let pos = Xmlm.pos i in
     match Xmlm.input i with
         | `Dtd _ ->
-            tree_of_input i
+            tree_of_input ~linenum_offset i
         | `El_start tag ->
             let rec aux i headers context =
                 let pos = Xmlm.pos i in
@@ -224,7 +215,7 @@ let rec tree_of_input i =
                             | (header :: headers', children :: context') ->
                                 let (pos, ((_, local), attrs)) = header in
                                 let prop = Prop.make attrs in
-                                let comm = tagged_comm local pos prop in
+                                let comm = tagged_comm ~linenum_offset local pos prop in
                                 let e = (comm, prop, E (local, List.rev children)) in
                                 begin match context' with
                                     | parent :: context'' -> aux i headers' ((e :: parent) :: context'')
@@ -238,7 +229,7 @@ let rec tree_of_input i =
                         begin match context with
                             | children :: context' ->
                                 let prop = Prop.make [] in
-                                let comm = anonymous_comm pos in
+                                let comm = anonymous_comm ~linenum_offset pos in
                                 let d = (comm, prop, D txt) in
                                 aux i headers ((d :: children) :: context')
                             | [] -> assert false
@@ -246,7 +237,6 @@ let rec tree_of_input i =
                     | `Dtd _ -> assert false
             in aux i ((pos, tag) :: []) ([] :: [])
         | _ -> assert false
-
 
 let deep_copy trees =
     let buf = Buffer.create 256 in
@@ -271,9 +261,7 @@ let deep_copy trees =
     copy_list trees;
     Buffer.contents buf
 
-
 let dummy_inline = Ast.Linebreak
-
 
 let dummy_block = Ast.Paragraph []
 
@@ -555,7 +543,7 @@ let ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs str 
 
     try
         let input = Xmlm.make_input ~entity (`String (0, str)) in
-        let tree = tree_of_input input in
+        let tree = tree_of_input ~linenum_offset input in
         let ast = ast_of_tree tree in
         match Errors.to_reading errors with
             | [] -> `Okay ast
