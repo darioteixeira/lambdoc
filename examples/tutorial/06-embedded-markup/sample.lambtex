@@ -7,7 +7,7 @@ Embedded **Lambwiki** is easy.
 \end{wiki}
 
 \begin{xml}
-<p>Embedded <b>Lambxml</b> is easy.</p>
+<doc><p>Embedded <b>Lambxml</b> is easy.</p></doc>
 \end{xml}
 
 \begin{md}
