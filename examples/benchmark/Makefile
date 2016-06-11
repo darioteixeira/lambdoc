@@ -1,5 +1,5 @@
 NAME=test
-PKGS=batteries,lambdoc,benchmark
+PKGS=lambdoc,benchmark
 
 all: $(NAME).native $(NAME).byte
 
