@@ -15,8 +15,9 @@
 *)
 
 open Eliom_content
-open Html5.F
-open Lambdoc_core
+open Html.F
+open Lambdoc_prelude
+open Lambdoc_document
 open Lambdoc_reader
 
 
@@ -26,11 +27,11 @@ open Lambdoc_reader
 
 module Eliom_backend =
 struct
-    include Eliom_content.Html5.F.Raw
+    include Eliom_content.Html.F.Raw
     module Svg = Eliom_content.Svg.F.Raw
 end
 
-module Lambdoc_writer = Lambdoc_whtml5_writer.Make (Eliom_backend)
+module Lambdoc_writer = Lambdoc_whtml_writer.Make (Eliom_backend)
 
 
 (********************************************************************************)
@@ -38,7 +39,7 @@ module Lambdoc_writer = Lambdoc_whtml5_writer.Make (Eliom_backend)
 (********************************************************************************)
 
 let inline_note_extcomm =
-    let open Lambdoc_core.Error in
+    let open Invalid.Error in
     let open Extension.Trivial in
     let open Ast in
     let f comm astseq = match comm.comm_label with
@@ -53,13 +54,11 @@ let inline_note_extcomm =
             `Okay (astseq', ghosts) in
     ("inlnote", Inlextcomm (Inlfun_seq f))
 
-
 let sample =
     let ch = Pervasives.open_in "sample.lambtex" in
-    let sample = BatPervasives.input_all ch in
+    let sample = Pervasives.input_all ch in
     Pervasives.close_in ch;
     sample
-
 
 let make_page content =
     let css_uri = make_uri (Eliom_service.static_dir ()) ["css"; "lambdoc.css"] in
@@ -69,18 +68,16 @@ let make_page content =
             [css_link ~a:[(a_media [`All]); (a_title "Default")] ~uri:css_uri ()])
         (body content))
 
-
-let main_service = Eliom_service.Http.service 
-    ~path:[""]
-    ~get_params:Eliom_parameter.unit
+let main_service = Eliom_service.create
+    ~meth:(Get Eliom_parameter.unit)
+    ~id:(Path [])
     ()
 
-
 let rec step1_handler () () =
-    let step2_service = Eliom_registration.Html5.register_post_coservice
+    let step2_service = Eliom_registration.Html.create
         ~scope:Eliom_common.default_session_scope
-        ~fallback:main_service
-        ~post_params:(Eliom_parameter.string "source")
+        ~meth:(Post (Eliom_parameter.unit, Eliom_parameter.string "source"))
+        ~id:(Fallback main_service)
         step2_handler in
     let step2_form e_source =
         [
@@ -91,18 +88,16 @@ let rec step1_handler () () =
         ] in
     Lwt.return (make_page [Form.post_form step2_service step2_form ()])
 
-
 and step2_handler () source =
     let doc = Lambdoc_rlambtex_reader.Trivial.ambivalent_from_string ~extcomms:[inline_note_extcomm] source in
     let xdoc = Lambdoc_writer.write_ambivalent doc in
     let contents =
         [
-        (xdoc : [ Html5_types.div ] Html5.F.elt :> [> Html5_types.div ] Html5.F.elt);
+        (xdoc : [ Html_types.div ] Html.F.elt :> [> Html_types.div ] Html.F.elt);
         p [a main_service [pcdata "Start again"] ()];
         ] in
     Lwt.return (make_page contents)
 
-
 let () =
-    Eliom_registration.Html5.register main_service step1_handler
+    Eliom_registration.Html.register main_service step1_handler
 
