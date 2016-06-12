@@ -26,6 +26,10 @@ Flag "fuzzer"
     Description:    Build fuzzer
     Default:        false
 
+Flag "benchmarks"
+    Description:    Build benchmarks
+    Default:        false
+
 Library "lambdoc"
     Path: src/lib
     Modules:
@@ -80,6 +84,22 @@ Executable "test_fuzzer"
     MainIs:                 test_fuzzer.ml
     Install:                false
     BuildDepends:           cmdliner, lambdoc, threads
+    CompiledObject:         best
+
+Executable "benchmark_parsing"
+    Build$:                 flag(benchmarks)
+    Path:                   benchmarks
+    MainIs:                 benchmark_parsing.ml
+    Install:                false
+    BuildDepends:           benchmark, lambdoc, threads
+    CompiledObject:         best
+
+Executable "benchmark_serialization"
+    Build$:                 flag(benchmarks)
+    Path:                   benchmarks
+    MainIs:                 benchmark_serialization.ml
+    Install:                false
+    BuildDepends:           benchmark, lambdoc, threads
     CompiledObject:         best
 
 Test "test_prelude"

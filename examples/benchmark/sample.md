@@ -1,1 +1,0 @@
-../markups/markdown/sample.md

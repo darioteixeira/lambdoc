@@ -1,5 +1,5 @@
 (* OASIS_START *)
-(* DO NOT EDIT (digest: 23eaa248e7e9a8d04119f60bf517be1d) *)
+(* DO NOT EDIT (digest: aa3d38e45fe2f584cd4adbe1f7ac0d05) *)
 module OASISGettext = struct
 (* # 22 "src/oasis/OASISGettext.ml" *)
 
@@ -770,7 +770,12 @@ let package_default =
      MyOCamlbuildBase.lib_ocaml = [("lambdoc", ["src/lib"], [])];
      lib_c = [];
      flags = [];
-     includes = [("tests", ["src/lib"]); ("src/lambcmd", ["src/lib"])]
+     includes =
+       [
+          ("tests", ["src/lib"]);
+          ("src/lambcmd", ["src/lib"]);
+          ("benchmarks", ["src/lib"])
+       ]
   }
   ;;
 
@@ -778,7 +783,7 @@ let conf = {MyOCamlbuildFindlib.no_automatic_syntax = false}
 
 let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 
-# 782 "myocamlbuild.ml"
+# 787 "myocamlbuild.ml"
 (* OASIS_STOP *)
 
 let menhir_opts = S
