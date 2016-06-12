@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 08d9d3ce6ee38e15620d1aa3dd25b625)
+# DO NOT EDIT (digest: c52e82fa3f462098e306b76f8daf8ff8)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -60,19 +60,19 @@ true: annot, bin_annot
 <tests/test_prelude.{native,byte}>: pkg_tyxml
 <tests/test_prelude.{native,byte}>: pkg_xmlm
 <tests/test_prelude.{native,byte}>: use_lambdoc
-# Executable test_lambdoc
-<tests/test_lambdoc.{native,byte}>: pkg_alcotest
-<tests/test_lambdoc.{native,byte}>: pkg_blahcaml
-<tests/test_lambdoc.{native,byte}>: pkg_camlhighlight
-<tests/test_lambdoc.{native,byte}>: pkg_menhirLib
-<tests/test_lambdoc.{native,byte}>: pkg_re
-<tests/test_lambdoc.{native,byte}>: pkg_sedlex
-<tests/test_lambdoc.{native,byte}>: pkg_sexplib
-<tests/test_lambdoc.{native,byte}>: pkg_threads
-<tests/test_lambdoc.{native,byte}>: pkg_tyxml
-<tests/test_lambdoc.{native,byte}>: pkg_unix
-<tests/test_lambdoc.{native,byte}>: pkg_xmlm
-<tests/test_lambdoc.{native,byte}>: use_lambdoc
+# Executable test_parsing
+<tests/test_parsing.{native,byte}>: pkg_alcotest
+<tests/test_parsing.{native,byte}>: pkg_blahcaml
+<tests/test_parsing.{native,byte}>: pkg_camlhighlight
+<tests/test_parsing.{native,byte}>: pkg_menhirLib
+<tests/test_parsing.{native,byte}>: pkg_re
+<tests/test_parsing.{native,byte}>: pkg_sedlex
+<tests/test_parsing.{native,byte}>: pkg_sexplib
+<tests/test_parsing.{native,byte}>: pkg_threads
+<tests/test_parsing.{native,byte}>: pkg_tyxml
+<tests/test_parsing.{native,byte}>: pkg_unix
+<tests/test_parsing.{native,byte}>: pkg_xmlm
+<tests/test_parsing.{native,byte}>: use_lambdoc
 <tests/*.ml{,i,y}>: pkg_alcotest
 <tests/*.ml{,i,y}>: pkg_unix
 # Executable test_fuzzer

@@ -70,10 +70,10 @@ Executable "test_prelude"
     BuildDepends:           alcotest, lambdoc
     CompiledObject:         best
 
-Executable "test_lambdoc"
+Executable "test_parsing"
     Build$:                 flag(tests)
     Path:                   tests
-    MainIs:                 test_lambdoc.ml
+    MainIs:                 test_parsing.ml
     Install:                false
     BuildDepends:           alcotest, lambdoc, re, tyxml, unix
     CompiledObject:         best
@@ -105,15 +105,15 @@ Executable "benchmark_serialization"
 Test "test_prelude"
     Run$:                   flag(tests)
     Command:                $test_prelude
-    WorkingDirectory:       tests/testsets
+    WorkingDirectory:       tests/test_prelude
 
-Test "test_lambdoc"
+Test "test_parsing"
     Run$:                   flag(tests)
-    Command:                $test_lambdoc
-    WorkingDirectory:       tests/testsets
+    Command:                $test_parsing
+    WorkingDirectory:       tests/test_parsing
 
 Test "test_fuzzer"
     Run$:                   flag(tests) && flag(fuzzer)
     Command:                $test_fuzzer
-    WorkingDirectory:       tests/fuzzer
+    WorkingDirectory:       tests/test_fuzzer
 
