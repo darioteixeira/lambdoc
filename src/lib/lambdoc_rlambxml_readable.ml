@@ -316,9 +316,9 @@ let ast_from_string ?options ~linenum_offset ~inline_extdefs ~block_extdefs str 
                     | Syn_empty            -> make0 ~empty:xs comm prop errors (fun () -> Inlpat_empty)
                     | Syn_seq              -> make0 comm prop errors (fun () -> Inlpat_seq (seq_of_trees xs))
                     | Syn_raw a            -> make1 ~empty:xs comm prop errors (Req a) (fun a -> Inlpat_raw a)
-                    | Syn_raw_raw (a1, a2) -> make2 comm prop errors (Req a1) (Req a2) (fun a1 a2 -> Inlpat_raw_raw (a1, a2))
-                    | Syn_raw_seq a        -> make1 ~empty:xs comm prop errors (Req a) (fun a -> Inlpat_raw_seq (a, seq_of_trees xs))
-                    | Syn_raw_seqopt a     -> make1 ~empty:xs comm prop errors (Req a) (fun a -> Inlpat_raw_seqopt (a, maybe_seq_of_trees xs))
+                    | Syn_raw_raw (a1, a2) -> make2 ~empty:xs comm prop errors (Req a1) (Req a2) (fun a1 a2 -> Inlpat_raw_raw (a1, a2))
+                    | Syn_raw_seq a        -> make1 comm prop errors (Req a) (fun a -> Inlpat_raw_seq (a, seq_of_trees xs))
+                    | Syn_raw_seqopt a     -> make1 comm prop errors (Req a) (fun a -> Inlpat_raw_seqopt (a, maybe_seq_of_trees xs))
                     | _                    -> assert false
                 in (comm, Extcomm_inl (tag, inlpat))
             with Not_found ->
