@@ -9,6 +9,7 @@ LicenseFile:    LICENSE
 Plugins:        META (0.4), DevFiles (0.4)
 BuildTools:     ocamlbuild, make
 AlphaFeatures:  ocamlbuild_more_args
+FilesAB:        src/lambcmd/meta.ml.ab, tests/meta.ml.ab
 Description:
     Lambdoc is a library providing support for semantically rich documents in web applications,
     built with Ocsigen/Eliom integration in mind.  It includes parsers for four different markup
