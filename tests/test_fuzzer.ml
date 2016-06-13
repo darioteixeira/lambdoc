@@ -244,7 +244,7 @@ let () =
             `S "AUTHOR";
             `P "Dario Teixeira <dario.teixeira@nleyten.com>";
             ] in
-		Term.info "test_fuzzer" ~version:"1.0beta4+dev" ~doc ~man in
+		Term.info "test_fuzzer" ~version:"dev" ~doc ~man in
 	match Term.eval (term, info) with
 		| `Error _ -> exit 1
 		|  _       -> exit 0

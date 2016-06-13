@@ -1,6 +1,6 @@
 # OASIS_START
-# DO NOT EDIT (digest: 107a8adb0c219016d946b5abb2c504f5)
-version = "1.0-beta4"
+# DO NOT EDIT (digest: 8405d4b06ab005d0c8677f952a62c90b)
+version = "dev"
 description = "Support for semantically rich documents in web applications"
 requires =
 "blahcaml camlhighlight menhirLib re sedlex sexplib threads tyxml xmlm"

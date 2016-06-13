@@ -1,6 +1,6 @@
 OASISFormat:    0.4
 Name:           Lambdoc
-Version:        1.0-beta4
+Version:        dev
 Synopsis:       Support for semantically rich documents in web applications
 Authors:        Dario Teixeira <dario.teixeira@nleyten.com>
 Homepage:       http://lambdoc.forge.ocamlcore.org/

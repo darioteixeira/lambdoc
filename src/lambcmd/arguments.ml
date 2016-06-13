@@ -165,7 +165,7 @@ let info =
         `S "AUTHOR";
         `P "Dario Teixeira <dario.teixeira@nleyten.com>";
         ] in
-    Term.info "lambcmd" ~version:"1.0beta4+dev" ~doc ~man
+    Term.info "lambcmd" ~version:"dev" ~doc ~man
 
 
 (********************************************************************************)
