@@ -32,60 +32,76 @@ open Lambdoc_reader
 
 
 (********************************************************************************)
-(* Opening tokens for environment commands.                                     *)
+(* Opening/closing tokens for environment commands.                             *)
 (********************************************************************************)
+
+%token <Lambdoc_reader_ast.command> BEGIN_ITEMIZE
+%token END_ITEMIZE
+
+%token <Lambdoc_reader_ast.command> BEGIN_ENUMERATE
+%token END_ENUMERATE
+
+%token <Lambdoc_reader_ast.command> BEGIN_DESCRIPTION
+%token END_DESCRIPTION
+
+%token <Lambdoc_reader_ast.command> BEGIN_QANDA
+%token END_QANDA
+
+%token <Lambdoc_reader_ast.command> BEGIN_VERSE
+%token END_VERSE
+
+%token <Lambdoc_reader_ast.command> BEGIN_QUOTE
+%token END_QUOTE
+
+%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_BLK
+%token END_MATHTEX_BLK
+
+%token <Lambdoc_reader_ast.command> BEGIN_MATHML_BLK
+%token END_MATHML_BLK
+
+%token <Lambdoc_reader_ast.command> BEGIN_SOURCE
+%token END_SOURCE
+
+%token <Lambdoc_reader_ast.command> BEGIN_TABULAR
+%token END_TABULAR
+
+%token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
+%token END_VERBATIM
+
+%token <Lambdoc_reader_ast.command> BEGIN_SUBPAGE
+%token END_SUBPAGE
+
+%token <Lambdoc_reader_ast.command> BEGIN_PULLQUOTE
+%token END_PULLQUOTE
+
+%token <Lambdoc_reader_ast.command> BEGIN_EQUATION
+%token END_EQUATION
+
+%token <Lambdoc_reader_ast.command> BEGIN_PRINTOUT
+%token END_PRINTOUT
+
+%token <Lambdoc_reader_ast.command> BEGIN_TABLE
+%token END_TABLE
+
+%token <Lambdoc_reader_ast.command> BEGIN_FIGURE
+%token END_FIGURE
 
 %token <Lambdoc_reader_ast.command> BEGIN_ABSTRACT
-%token <Lambdoc_reader_ast.command> BEGIN_ITEMIZE
-%token <Lambdoc_reader_ast.command> BEGIN_ENUMERATE
-%token <Lambdoc_reader_ast.command> BEGIN_DESCRIPTION
-%token <Lambdoc_reader_ast.command> BEGIN_QANDA
-%token <Lambdoc_reader_ast.command> BEGIN_VERSE
-%token <Lambdoc_reader_ast.command> BEGIN_QUOTE
-%token <Lambdoc_reader_ast.command> BEGIN_TABULAR
-%token <Lambdoc_reader_ast.command> BEGIN_SUBPAGE
-%token <Lambdoc_reader_ast.command> BEGIN_PULLQUOTE
-%token <Lambdoc_reader_ast.command> BEGIN_EQUATION
-%token <Lambdoc_reader_ast.command> BEGIN_PRINTOUT
-%token <Lambdoc_reader_ast.command> BEGIN_TABLE
-%token <Lambdoc_reader_ast.command> BEGIN_FIGURE
-%token <Lambdoc_reader_ast.command> BEGIN_LONGBIB
-%token <Lambdoc_reader_ast.command> BEGIN_NOTE
-%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_BLK
-%token <Lambdoc_reader_ast.command> BEGIN_MATHML_BLK
-%token <Lambdoc_reader_ast.command> BEGIN_SOURCE
-%token <Lambdoc_reader_ast.command> BEGIN_VERBATIM
-%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_BLKPAT_LIT
-%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_BLKPAT_FRAG
-%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_CUSTOM
-
-
-(********************************************************************************)
-(* Closing tokens for environment commands.                                     *)
-(********************************************************************************)
-
 %token END_ABSTRACT
-%token END_ITEMIZE
-%token END_ENUMERATE
-%token END_DESCRIPTION
-%token END_QANDA
-%token END_VERSE
-%token END_QUOTE
-%token END_TABULAR
-%token END_SUBPAGE
-%token END_PULLQUOTE
-%token END_EQUATION
-%token END_PRINTOUT
-%token END_TABLE
-%token END_FIGURE
+
+%token <Lambdoc_reader_ast.command> BEGIN_LONGBIB
 %token END_LONGBIB
+
+%token <Lambdoc_reader_ast.command> BEGIN_NOTE
 %token END_NOTE
-%token END_MATHTEX_BLK
-%token END_MATHML_BLK
-%token END_SOURCE
-%token END_VERBATIM
+
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_BLKPAT_LIT
 %token END_BLKPAT_LIT
+
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_BLKPAT_FRAG
 %token END_BLKPAT_FRAG
+
+%token <Lambdoc_reader_ast.command * Lambdoc_document_valid.ident> BEGIN_CUSTOM
 %token END_CUSTOM
 
 
