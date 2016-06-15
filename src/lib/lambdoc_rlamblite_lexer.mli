@@ -25,6 +25,7 @@ type inline =
     | Entity of string
     | Cite of string list
     | See of string list
+    | Mathtex_mark
     | Bold_mark
     | Emph_mark
     | Sup_mark
@@ -37,7 +38,7 @@ type inline =
 
 type rule = Single | Double | Star
 
-type literal = Source | Verbatim
+type literal = Mathtex | Source | Verbatim
 
 type ghost = Sbib | Note
 

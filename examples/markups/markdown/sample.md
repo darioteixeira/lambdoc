@@ -1,9 +1,11 @@
 Paragraphs and inline formatting
 ================================
 
-You can format text in **bold**, or just *emphasised* if you prefer.  It is also
-possible to enter `monospaced` text.  And of course, you may also enter links
-such as [this one](http://en.wikipedia.org/wiki/Markdown).
+You can format text in **bold**, or just *emphasised* if you prefer.
+It is also possible to enter `monospaced` text.  And of course, you may
+also enter links such as [this one](http://en.wikipedia.org/wiki/Markdown).
+You can also embed TeX mathematics in an inline context: $$y=x^2$$.
+
 
 Lists
 =====
@@ -108,6 +110,27 @@ justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
 
 
 ###### Level 6 section
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet
+nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
+justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+
+Math environments
+=================
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet
+nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
+justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+
+$$$
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+$$$
 
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
 dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,

@@ -27,6 +27,7 @@ type inline =
     | Entity of string
     | Cite of string list
     | See of string list
+    | Mathtex_mark
     | Bold_mark
     | Emph_mark
     | Sup_mark
@@ -39,7 +40,7 @@ type inline =
 
 type rule = Single | Double | Star
 
-type literal = Source | Verbatim
+type literal = Mathtex | Source | Verbatim
 
 type ghost = Sbib | Note
 
@@ -110,6 +111,7 @@ let scan_text ~syntax lexbuf =
         | "--"                                    -> lambwiki_main_loop (add_other accum (Entity "ndash"))
         | "``"                                    -> lambwiki_main_loop (add_other accum (Entity "ldquo"))
         | "''"                                    -> lambwiki_main_loop (add_other accum (Entity "rdquo"))
+        | "$$"                                    -> mathtex_loop lambwiki_main_loop (add_other accum Mathtex_mark)
         | "**"                                    -> lambwiki_main_loop (add_other accum Bold_mark)
         | "//"                                    -> lambwiki_main_loop (add_other accum Emph_mark)
         | "^^"                                    -> lambwiki_main_loop (add_other accum Sup_mark)
@@ -141,6 +143,7 @@ let scan_text ~syntax lexbuf =
         | "--"                                    -> markdown_main_loop (add_other accum (Entity "ndash"))
         | "``"                                    -> markdown_main_loop (add_other accum (Entity "ldquo"))
         | "''"                                    -> markdown_main_loop (add_other accum (Entity "rdquo"))
+        | "$$"                                    -> mathtex_loop markdown_main_loop (add_other accum Mathtex_mark)
         | "**"                                    -> markdown_main_loop (add_other accum Bold_mark)
         | "*"                                     -> markdown_main_loop (add_other accum Emph_mark)
         | "`"                                     -> markdown_raw_loop (add_other accum Begin_code)
@@ -156,6 +159,11 @@ let scan_text ~syntax lexbuf =
         | eol | eof   -> accum
         | '`'         -> markdown_main_loop (add_other accum End_code)
         | any         -> markdown_raw_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
+        | _           -> assert false
+    and mathtex_loop main_loop accum = match%sedlex lexbuf with
+        | eol | eof   -> accum
+        | "$$"        -> main_loop (add_other accum Mathtex_mark)
+        | any         -> mathtex_loop main_loop (add_plain accum (Sedlexing.Utf8.lexeme lexbuf))
         | _           -> assert false
     and link_loop main_loop accum = match%sedlex lexbuf with
         | eol | eof   -> accum
@@ -216,6 +224,9 @@ let next ~syntax lexbuf =
             else raise Misaligned_quotation
         | Plus blank ->
             scan qprefix (Sedlexing.Utf8.lexeme lexbuf)
+        | "$$$", Opt style, Star blank, (eol | eof) ->
+            let (nlines, style, raw) = scan_literal "$$$" qprefix iprefix lexbuf in
+            Regular (qprefix, iprefix, Literal (Mathtex, nlines, style, raw))
         | "{{{", Opt style, Star blank, (eol | eof) ->
             let (nlines, style, raw) = scan_literal "}}}" qprefix iprefix lexbuf in
             Regular (qprefix, iprefix, Literal (Source, nlines, style, raw))

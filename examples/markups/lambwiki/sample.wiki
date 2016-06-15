@@ -5,6 +5,7 @@ possible to enter {{raw code}} and ((monospaced text)).  Superscripts are handy
 to typeset ordinals such as 1^^st^^, 2^^nd^^, etc.  Subscripts also have practical
 applications: how else would you typeset H__2__O?  You may also enter links: please
 check [[http://localhost:8080/]] or [[http://localhost:8080/|Localhost]] now.
+You can also embed TeX mathematics in an inline context: $$y=x^2$$.
 
 It is possible to enter HTML entities either by name ({{&euro;}} produces '&euro;'),
 by decimal code point ({{&#8364;}} produces '&#8364;'), or by hexadecimal code point
@@ -135,6 +136,27 @@ justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
 
 
 ====== This is a level 6 section
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet
+nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
+justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+
+
+= Math environments
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
+dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet
+nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae,
+justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.
+
+$$$
+x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
+$$$
 
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
 dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,

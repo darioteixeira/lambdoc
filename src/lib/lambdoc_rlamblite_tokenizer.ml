@@ -87,23 +87,24 @@ let token_of_inline tokenizer comm inline =
         | hd :: tl when hd = mark -> tokenizer.environ <- tl; end_cons
         | xs                      -> tokenizer.environ <- mark :: xs; begin_cons in
     match inline with
-        | Plain txt  -> PLAIN (comm, txt)
-        | Entity ent -> ENTITY (comm, ent)
-        | Cite refs  -> CITE (comm, refs)
-        | See refs   -> SEE (comm, refs)
-        | Bold_mark  -> check_environ Bold_mark (BEGIN_BOLD comm) END_BOLD
-        | Emph_mark  -> check_environ Emph_mark (BEGIN_EMPH comm) END_EMPH
-        | Sup_mark   -> check_environ Sup_mark (BEGIN_SUP comm) END_SUP
-        | Sub_mark   -> check_environ Sub_mark (BEGIN_SUB comm) END_SUB
-        | Ins_mark   -> check_environ Ins_mark (BEGIN_INS comm) END_INS
-        | Del_mark   -> check_environ Del_mark (BEGIN_DEL comm) END_DEL
-        | Begin_mono -> BEGIN_MONO comm
-        | End_mono   -> END_MONO
-        | Begin_code -> BEGIN_CODE comm
-        | End_code   -> END_CODE
-        | Begin_link -> BEGIN_LINK comm
-        | End_link   -> END_LINK
-        | Link_sep   -> LINK_SEP
+        | Plain txt    -> PLAIN (comm, txt)
+        | Entity ent   -> ENTITY (comm, ent)
+        | Cite refs    -> CITE (comm, refs)
+        | See refs     -> SEE (comm, refs)
+        | Mathtex_mark -> check_environ Mathtex_mark (BEGIN_MATHTEX_INL comm) END_MATHTEX_INL
+        | Bold_mark    -> check_environ Bold_mark (BEGIN_BOLD comm) END_BOLD
+        | Emph_mark    -> check_environ Emph_mark (BEGIN_EMPH comm) END_EMPH
+        | Sup_mark     -> check_environ Sup_mark (BEGIN_SUP comm) END_SUP
+        | Sub_mark     -> check_environ Sub_mark (BEGIN_SUB comm) END_SUB
+        | Ins_mark     -> check_environ Ins_mark (BEGIN_INS comm) END_INS
+        | Del_mark     -> check_environ Del_mark (BEGIN_DEL comm) END_DEL
+        | Begin_mono   -> BEGIN_MONO comm
+        | End_mono     -> END_MONO
+        | Begin_code   -> BEGIN_CODE comm
+        | End_code     -> END_CODE
+        | Begin_link   -> BEGIN_LINK comm
+        | End_link     -> END_LINK
+        | Link_sep     -> LINK_SEP
 
 let get_nlevels str =
     1 + count_char '.' (String.rstrip ~chars:"." str)
@@ -224,6 +225,7 @@ let rec produce tokenizer =
                     align_stack ilevel tokenizer;
                     let comm = match style with "" -> comm | _ -> {comm with comm_style = Some style} in
                     let token = match literal with
+                        | Mathtex  -> Parser.MATHTEX_BLK (comm, raw)
                         | Source   -> Parser.SOURCE (comm, raw)
                         | Verbatim -> Parser.VERBATIM (comm, raw) in
                     Queue.push token tokenizer.queue;

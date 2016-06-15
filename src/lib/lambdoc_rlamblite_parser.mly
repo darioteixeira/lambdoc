@@ -20,42 +20,58 @@ open Lambdoc_reader
 %token <Lambdoc_reader_ast.command * string list> CITE
 %token <Lambdoc_reader_ast.command * string list > SEE
 
+%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_INL
+%token END_MATHTEX_INL
+
 %token <Lambdoc_reader_ast.command> BEGIN_BOLD
-%token <Lambdoc_reader_ast.command> BEGIN_EMPH
-%token <Lambdoc_reader_ast.command> BEGIN_MONO
-%token <Lambdoc_reader_ast.command> BEGIN_SUP
-%token <Lambdoc_reader_ast.command> BEGIN_SUB
-%token <Lambdoc_reader_ast.command> BEGIN_INS
-%token <Lambdoc_reader_ast.command> BEGIN_DEL
-%token <Lambdoc_reader_ast.command> BEGIN_CODE
-%token <Lambdoc_reader_ast.command> BEGIN_LINK
-
-%token <Lambdoc_reader_ast.command * int> BEGIN_SECTION
-%token <Lambdoc_reader_ast.command> BEGIN_PAR
-%token <Lambdoc_reader_ast.command> BEGIN_ITEMIZE
-%token <Lambdoc_reader_ast.command> BEGIN_ENUMERATE
-%token <Lambdoc_reader_ast.command> BEGIN_QUOTE
-%token <Lambdoc_reader_ast.command> BEGIN_SBIB
-%token <Lambdoc_reader_ast.command> BEGIN_NOTE
-
 %token END_BOLD
+
+%token <Lambdoc_reader_ast.command> BEGIN_EMPH
 %token END_EMPH
+
+%token <Lambdoc_reader_ast.command> BEGIN_MONO
 %token END_MONO
+
+%token <Lambdoc_reader_ast.command> BEGIN_SUP
 %token END_SUP
+
+%token <Lambdoc_reader_ast.command> BEGIN_SUB
 %token END_SUB
+
+%token <Lambdoc_reader_ast.command> BEGIN_INS
 %token END_INS
+
+%token <Lambdoc_reader_ast.command> BEGIN_DEL
 %token END_DEL
+
+%token <Lambdoc_reader_ast.command> BEGIN_CODE
 %token END_CODE
+
+%token <Lambdoc_reader_ast.command> BEGIN_LINK
 %token END_LINK LINK_SEP
 
+%token <Lambdoc_reader_ast.command * int> BEGIN_SECTION
 %token END_SECTION
+
+%token <Lambdoc_reader_ast.command> BEGIN_PAR
 %token END_PAR
+
+%token <Lambdoc_reader_ast.command> BEGIN_ITEMIZE
 %token END_ITEMIZE
+
+%token <Lambdoc_reader_ast.command> BEGIN_ENUMERATE
 %token END_ENUMERATE
+
+%token <Lambdoc_reader_ast.command> BEGIN_QUOTE
 %token END_QUOTE
+
+%token <Lambdoc_reader_ast.command> BEGIN_SBIB
 %token END_SBIB
+
+%token <Lambdoc_reader_ast.command> BEGIN_NOTE
 %token END_NOTE
 
+%token <Lambdoc_reader_ast.command * string> MATHTEX_BLK
 %token <Lambdoc_reader_ast.command * string> SOURCE
 %token <Lambdoc_reader_ast.command * string> VERBATIM
 %token <Lambdoc_reader_ast.command> RULE
@@ -90,6 +106,7 @@ block:
     | BEGIN_QUOTE block+ END_QUOTE                  {($1, Ast.Quote $2)}
     | BEGIN_SBIB BEGIN_PAR inline+ END_PAR END_SBIB {($1, Ast.Shortbib $3)}
     | BEGIN_NOTE block+ END_NOTE                    {($1, Ast.Note $2)}
+    | MATHTEX_BLK                                   {let (comm, raw) = $1 in (comm, Ast.Mathtex_blk raw)}
     | SOURCE                                        {let (comm, raw) = $1 in (comm, Ast.Source raw)}
     | VERBATIM                                      {let (comm, raw) = $1 in (comm, Ast.Verbatim raw)}
     | RULE                                          {($1, Ast.Rule)}
@@ -99,6 +116,7 @@ item:
 
 inline:
     | textual                                       {$1}
+    | BEGIN_MATHTEX_INL raw END_MATHTEX_INL         {($1, Ast.Mathtex_inl $2)}
     | BEGIN_BOLD inline* END_BOLD                   {($1, Ast.Bold $2)}
     | BEGIN_EMPH inline* END_EMPH                   {($1, Ast.Emph $2)}
     | BEGIN_MONO inline* END_MONO                   {($1, Ast.Mono $2)}
