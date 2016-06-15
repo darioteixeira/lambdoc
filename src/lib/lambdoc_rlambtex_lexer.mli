@@ -23,15 +23,12 @@ type buffer
 type lexeme =
     | Begin_env of string
     | End_env of string
-    | Begin_mathtex_inl
-    | End_mathtex_inl
-    | Begin_mathml_inl
-    | End_mathml_inl
     | Simple of string
     | Text of string
     | Entity of string
     | Cell_mark of string
     | Row_end
+    | Mathtex_op
     | Open
     | Close
     | Eop
@@ -77,15 +74,9 @@ val raw: buffer -> outcome
 
 (** Special lexer for mathtex environments in an inline context.
     No attempt is made to interpret the characters in the stream,
-    except for the EOF character and the environment terminator $].
+    except for the EOF character and the environment terminator $$.
 *)
 val mathtex_inl: buffer -> outcome
-
-(** Special lexer for mathml environments in an inline context.
-    No attempt is made to interpret the characters in the stream,
-    except for the EOF character and the environment terminator $>.
-*)
-val mathml_inl: buffer -> outcome
 
 (** Special parameterised lexer for verbatim-like environments.
     The string parameter indicates the termination string.

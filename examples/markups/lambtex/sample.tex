@@ -35,14 +35,11 @@ produces '---'), and proper double quotes (ex: ``hello'').  The input charset is
 \caps{utf-8}, so you can --- for example --- enter Japanese characters directly:
 おなかがいっぱいですからなにもたべたくないです.
 
-\short
-You can also embed highlighted source-code like \code<lang=caml>{type t = Alpha | Beta}
-into an inline context.
-\short
-
-\short
+You can embed TeX mathematics in an inline context like this: \mathtexinl{y=x^2}.
+You can also use a shortcut for embedding TeX mathematics in an inline context: $$y=x^2$$.
+You can embed MathML mathematics in an inline context like this: \mathmlinl{<math><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>}.
+You can also embed highlighted source-code like \code<lang=caml>{type t = Alpha | Beta} into an inline context.
 It is possible to embed images like \glyph{circle-tiny.png}{o} into an inline context.
-\short
 
 Here is a link to part number \dref{part:inline}, or smartly, \sref{part:inline}.
 Similarly, here is a link to section number \dref{sec:foobar}, or smartly,
@@ -147,16 +144,16 @@ you can reference them with a single command\see{note:note1}{note:note2}{note:no
 \section{MathTeX blocks}
 
 \p{\lorem}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \p{\lorem}
 
 
 \section{Presentation MathML blocks}
 
 \p{\lorem}
-\begin{mathml}
+\begin{mathmlblk}
 <math>
     <mrow>
         <mi>x</mi>
@@ -187,14 +184,14 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
         </mfrac>
     </mrow>
 </math>
-\end{mathml}
+\end{mathmlblk}
 \p{\lorem}
 
 
 \section{Content MathML blocks}
 
 \p{\lorem}
-\begin{mathml}
+\begin{mathmlblk}
 <math>
 <apply><in/>
 <ci>x</ci>
@@ -250,7 +247,7 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 </set>
 </apply>
 </math>
-\end{mathml}
+\end{mathmlblk}
 \p{\lorem}
 
 
@@ -679,9 +676,9 @@ index.html: HTML document text
 
 \p{\lorem}
 \begin{equation}{\fox}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 
@@ -689,9 +686,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin<left>{equation}{\fox}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -700,9 +697,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin<right>{equation}{\fox}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -714,9 +711,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin(){equation}{\fox}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 
@@ -724,9 +721,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin()<left>{equation}{\fox}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -735,9 +732,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin()<right>{equation}{\fox}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -749,9 +746,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin{equation}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 
@@ -759,9 +756,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin<left>{equation}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 \p{\lorem}
@@ -770,9 +767,9 @@ x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
 
 \p{\lorem}
 \begin<right>{equation}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{a^2 + \sqrt{a^2 + b^2}}{1+y^2}
-\end{mathtex}
+\end{mathtexblk}
 \end{equation}
 \p{\lorem}
 \p{\lorem}

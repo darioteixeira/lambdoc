@@ -12,18 +12,6 @@ open Lambdoc_reader
 
 
 (********************************************************************************)
-(* Environment operators.  These are used in an inline context.                 *)
-(* Presently the only existing environment operators are [$ $] and <$ $>.       *)
-(********************************************************************************)
-
-%token <Lambdoc_reader_ast.command> BEGIN_MATHTEX_INL   (* Operator [$ *)
-%token <Lambdoc_reader_ast.command> BEGIN_MATHML_INL    (* Operator <$ *)
-
-%token END_MATHTEX_INL  (* Operator $] *)
-%token END_MATHML_INL   (* Operator $> *)
-
-
-(********************************************************************************)
 (* Tokens for delimiting unwrapped inline sequences.                            *)
 (********************************************************************************)
 
@@ -110,8 +98,10 @@ open Lambdoc_reader
 (********************************************************************************)
 
 %token <Lambdoc_reader_ast.command> LINEBREAK
-%token <Lambdoc_reader_ast.command> GLYPH
+%token <Lambdoc_reader_ast.command> MATHTEX_INL
+%token <Lambdoc_reader_ast.command> MATHML_INL
 %token <Lambdoc_reader_ast.command> CODE
+%token <Lambdoc_reader_ast.command> GLYPH
 %token <Lambdoc_reader_ast.command> BOLD
 %token <Lambdoc_reader_ast.command> EMPH
 %token <Lambdoc_reader_ast.command> MONO
@@ -176,6 +166,7 @@ open Lambdoc_reader
 (* Miscelaneous tokens.                                                         *)
 (********************************************************************************)
 
+%token <Lambdoc_reader_ast.command> MATHTEX_OP   (* Operator $$ *)
 %token <Lambdoc_reader_ast.command> ROW_END
 %token <Lambdoc_reader_ast.command> CELL_MARK
 %token <Lambdoc_reader_ast.command * string> TEXT
@@ -324,8 +315,9 @@ inline:
     | TEXT                                                              {(fst $1, Ast.Plain (snd $1))}
     | ENTITY                                                            {(fst $1, Ast.Entity (snd $1))}
     | LINEBREAK                                                         {($1, Ast.Linebreak)}
-    | push_mathtex_inl BEGIN_MATHTEX_INL TEXT pop END_MATHTEX_INL       {($2, Ast.Mathtex_inl (snd $3))}
-    | push_mathml_inl BEGIN_MATHML_INL TEXT pop END_MATHML_INL          {($2, Ast.Mathml_inl (snd $3))}
+    | push_mathtex_inl MATHTEX_OP TEXT pop MATHTEX_OP                   {($2, Ast.Mathtex_inl (snd $3))}
+    | MATHTEX_INL raw_bundle                                            {($1, Ast.Mathtex_inl $2)}
+    | MATHML_INL raw_bundle                                             {($1, Ast.Mathml_inl $2)}
     | CODE raw_bundle                                                   {($1, Ast.Code $2)}
     | GLYPH raw_bundle raw_bundle raw_bundle?                           {($1, Ast.Glyph ($2, $3, $4))}
     | BOLD inline_bundle                                                {($1, Ast.Bold $2)}
@@ -378,9 +370,6 @@ push_raw:
 
 push_mathtex_inl:
     | (* empty *)                                                       {C.(push Mathtex_inl)}
-
-push_mathml_inl:
-    | (* empty *)                                                       {C.(push Mathml_inl)}
 
 push_literal:
     | (* empty *)                                                       {C.(push Literal)}

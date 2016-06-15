@@ -109,8 +109,10 @@ struct
         let command = build_command tokenizer ("\\" ^ simple) groups 2 in
         match simple with
             | "br"                    -> (Some Inl, LINEBREAK command)
-            | "glyph"                 -> (Some Inl, GLYPH command)
+            | "mathtexinl"            -> (Some Inl, MATHTEX_INL command)
+            | "mathmlinl"             -> (Some Inl, MATHML_INL command)
             | "code"                  -> (Some Inl, CODE command)
+            | "glyph"                 -> (Some Inl, GLYPH command)
             | "bold" | "strong" | "b" -> (Some Inl, BOLD command)
             | "emph" | "em" | "i"     -> (Some Inl, EMPH command)
             | "mono" | "tt"           -> (Some Inl, MONO command)
@@ -185,27 +187,27 @@ struct
         let primary = Re.get groups 4 in
         let command = build_command tokenizer primary groups 1 in
         match primary with
-            | "abstract"                             -> (BEGIN_ABSTRACT command, END_ABSTRACT)
-            | "itemize" | "itemise" | "ul"           -> (BEGIN_ITEMIZE command, END_ITEMIZE)
-            | "enumerate" | "ol"                     -> (BEGIN_ENUMERATE command, END_ENUMERATE)
-            | "description" | "dl"                   -> (BEGIN_DESCRIPTION command, END_DESCRIPTION)
-            | "qanda"                                -> (BEGIN_QANDA command, END_QANDA)
-            | "verse"                                -> (BEGIN_VERSE command, END_VERSE)
-            | "quote"                                -> (BEGIN_QUOTE command, END_QUOTE)
-            | "tabular"                              -> (BEGIN_TABULAR command, END_TABULAR)
-            | "subpage"                              -> (BEGIN_SUBPAGE command, END_SUBPAGE)
-            | "pull"                                 -> (BEGIN_PULLQUOTE command, END_PULLQUOTE)
-            | "equation"                             -> (BEGIN_EQUATION command, END_EQUATION)
-            | "printout"                             -> (BEGIN_PRINTOUT command, END_PRINTOUT)
-            | "table"                                -> (BEGIN_TABLE command, END_TABLE)
-            | "figure"                               -> (BEGIN_FIGURE command, END_FIGURE)
-            | "lbib"                                 -> (BEGIN_LONGBIB command, END_LONGBIB)
-            | "note"                                 -> (BEGIN_NOTE command, END_NOTE)
-            | x when String.starts_with x "mathtex"  -> tokenizer.literal <- Some x; (BEGIN_MATHTEX_BLK command, END_MATHTEX_BLK)
-            | x when String.starts_with x "mathml"   -> tokenizer.literal <- Some x; (BEGIN_MATHML_BLK command, END_MATHML_BLK)
-            | x when String.starts_with x "verbatim" -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
-            | x when String.starts_with x "pre"      -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
-            | x when String.starts_with x "source"   -> tokenizer.literal <- Some x; (BEGIN_SOURCE command, END_SOURCE)
+            | "abstract"                               -> (BEGIN_ABSTRACT command, END_ABSTRACT)
+            | "itemize" | "itemise" | "ul"             -> (BEGIN_ITEMIZE command, END_ITEMIZE)
+            | "enumerate" | "ol"                       -> (BEGIN_ENUMERATE command, END_ENUMERATE)
+            | "description" | "dl"                     -> (BEGIN_DESCRIPTION command, END_DESCRIPTION)
+            | "qanda"                                  -> (BEGIN_QANDA command, END_QANDA)
+            | "verse"                                  -> (BEGIN_VERSE command, END_VERSE)
+            | "quote"                                  -> (BEGIN_QUOTE command, END_QUOTE)
+            | "tabular"                                -> (BEGIN_TABULAR command, END_TABULAR)
+            | "subpage"                                -> (BEGIN_SUBPAGE command, END_SUBPAGE)
+            | "pull"                                   -> (BEGIN_PULLQUOTE command, END_PULLQUOTE)
+            | "equation"                               -> (BEGIN_EQUATION command, END_EQUATION)
+            | "printout"                               -> (BEGIN_PRINTOUT command, END_PRINTOUT)
+            | "table"                                  -> (BEGIN_TABLE command, END_TABLE)
+            | "figure"                                 -> (BEGIN_FIGURE command, END_FIGURE)
+            | "lbib"                                   -> (BEGIN_LONGBIB command, END_LONGBIB)
+            | "note"                                   -> (BEGIN_NOTE command, END_NOTE)
+            | x when String.starts_with x "mathtexblk" -> tokenizer.literal <- Some x; (BEGIN_MATHTEX_BLK command, END_MATHTEX_BLK)
+            | x when String.starts_with x "mathmlblk"  -> tokenizer.literal <- Some x; (BEGIN_MATHML_BLK command, END_MATHML_BLK)
+            | x when String.starts_with x "verbatim"   -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
+            | x when String.starts_with x "pre"        -> tokenizer.literal <- Some x; (BEGIN_VERBATIM command, END_VERBATIM)
+            | x when String.starts_with x "source"     -> tokenizer.literal <- Some x; (BEGIN_SOURCE command, END_SOURCE)
             | x ->
                 try
                     let (tag, syntax) = List.find (fun (tag, _) -> String.starts_with x tag) tokenizer.env_block_extdefs in
@@ -242,10 +244,7 @@ struct
     let token_of_lexeme tokenizer = function
         | Begin_env raw_comm -> (Some Blk, begin_command tokenizer raw_comm)
         | End_env raw_comm   -> (Some Blk, end_command tokenizer raw_comm)
-        | Begin_mathtex_inl  -> (Some Inl, BEGIN_MATHTEX_INL (build_op tokenizer))
-        | End_mathtex_inl    -> (None, END_MATHTEX_INL)
-        | Begin_mathml_inl   -> (Some Inl, BEGIN_MATHML_INL (build_op tokenizer))
-        | End_mathml_inl     -> (None, END_MATHML_INL)
+        | Mathtex_op         -> (Some Inl, MATHTEX_OP (build_op tokenizer))
         | Simple raw_comm    -> simple_command tokenizer raw_comm
         | Text txt           -> (Some Inl, TEXT (build_op tokenizer, txt))
         | Entity ent         -> (Some Inl, ENTITY (build_op tokenizer, ent))
@@ -266,7 +265,6 @@ struct
                 | C.Inline      -> Lexer.inline
                 | C.Raw         -> Lexer.raw
                 | C.Mathtex_inl -> Lexer.mathtex_inl
-                | C.Mathml_inl  -> Lexer.mathml_inl
                 | C.Literal     -> match tokenizer.literal with
                     | Some l -> Lexer.literal l
                     | None   -> assert false in

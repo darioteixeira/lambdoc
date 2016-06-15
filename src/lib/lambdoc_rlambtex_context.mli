@@ -13,7 +13,7 @@
 
 module type S =
 sig
-    type t = Block | Inline | Raw | Mathtex_inl | Mathml_inl | Literal
+    type t = Block | Inline | Raw | Mathtex_inl | Literal
 
     val push: t -> unit
     val pop: unit -> unit
