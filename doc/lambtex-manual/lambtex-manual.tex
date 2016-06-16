@@ -12,7 +12,7 @@
 
 \title{The \lambtex Manual}
 \subtitle{Dario Teixeira}
-\subtitle{April 2016}
+\subtitle{June 2016}
 
 \toc[sec:toc]
 
@@ -296,11 +296,7 @@ verbatim.  Also, see \sref{sec:math} for details about entering mathematics.}
 \head
 | Sequence      | Translation |
 \body
-| \mono{[\$}    | Beginning of inline \caps{TeX} mathematics |
-| \mono{\$]}    | End of inline \caps{TeX} mathematics |
-| \mono{<\$}    | Beginning of inline \caps{MathML} |
-| \mono{\$>}    | End of inline \caps{MathML} |
-\body
+| \mono{\$\$}   | Delimiter for inline \caps{TeX} mathematics |
 | \mono{\-\-\-} | Typographic em-dash |
 | \mono{\-\-}   | Typographic en-dash |
 | \mono{\`\`}   | Opening double quotes |
@@ -629,8 +625,8 @@ as suffix characters.
 The \caps{css} shipped with \lambtex defines a series of classnames for exclusive
 use with verbatim environments.  These are \mono{mult0}, \mono{mult1}, and so forth
 until \mono{mult9}.  The integer indicates a multiplying factor for the contents of
-the environment.  For a factor of [$x$], the actual scaling relative to normal size is
-given by [$\sqrt{2}^x$].  The default factor is 0, which corresponds to normal size.
+the environment.  For a factor of $$x$$, the actual scaling relative to normal size is
+given by $$\sqrt{2}^x$$.  The default factor is 0, which corresponds to normal size.
 One common application of this feature is to display \caps{unicode} characters as
 full-sized pictures.  As an example, this is what the \caps{unicode} snowman (code
 point \caps{U+2603}) looks like with a multiplier of 7, corresponding to a font size
@@ -929,15 +925,16 @@ number of tools has the ability to export \caps{MathML}.  As for the latter, it 
 the \emph{de facto} standard for manually typing mathematical expressions.
 
 Mathematical expressions may be entered in an inline context (embedded inside a
-paragraph, for example), or in a block context.  In the former case, the expression
-should be delimited between the characters '\mono{\[$}' and '\mono{\$]}' if it is written
-in \caps{TeX} format, and between characters '\mono{\<$}' and '\mono{\$>}' if written
-in \caps{MathML}.  Though \lambtex does not enforce it, common sense dictates that
+paragraph, for example), or in a block context.  In the former case, the simple commands
+\mono{\\mathtexinl} and \mono{\\mathmlinl} may be used for inputting mathematics in
+the \caps{TeX} or \caps{MathML} formats, respectively.  For the sake of convenience,
+\caps{TeX} mathematics may also be entered by delimiting them between the characters
+'\mono{\$\$}'.  Though \lambtex does not enforce it, common sense dictates that
 inline mathematics should restrict themselves to expressions that fit comfortably in
-a single line.  One example is the quadratic equation [$ ax^2 + bx + c = 0 $].
+a single line.  One example is the quadratic equation $$ax^2 + bx + c = 0$$.
 
 \caps{TeX} and \caps{MathML} mathematical expressions in a block context are specified
-via the \mono{mathtex} and \mono{mathml} environments, respectively.  Furthermore,
+via the \mono{mathtexblk} and \mono{mathmlblk} environments, respectively.  Furthermore,
 because both these environments expect their content to be raw text that should be parsed
 verbatim, they accept the \caps{heredoc} technique for delimiting the environment.
 Suppose thus you wished to enter a math block containing the quadratic formula that
@@ -945,9 +942,9 @@ solves the equation listed above.  Specified in the \caps{TeX} format, the code 
 be the following:
 
 \begin<boxed>{source}
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-\end{mathtex}
+\end{mathtexblk}
 \end{source}
 
 The equivalent Presentation \caps{MathML} markup is listed below.  Note that it is
@@ -960,7 +957,7 @@ an explicit namespace to the \caps{MathML} markup is \bold{not} necessary, since
 namespacing requirements are automatically taken care of.
 
 \begin<boxed>{source}
-\begin{mathml}
+\begin{mathmlblk}
 <math>
     <mrow>
         <mi>x</mi>
@@ -991,19 +988,19 @@ namespacing requirements are automatically taken care of.
         </mfrac>
     </mrow>
 </math>
-\end{mathml}
+\end{mathmlblk}
 \end{source}
 
 The equation resulting from either of the above sources is shown below.  To conclude,
 bear in mind that in similarity with other types of blocks, \lambtex also supports
-named mathematical expressions that may be numbered and referenced from anywhere in
-a document.  For that you need to wrap a \mono{mathtex} or \mono{mathml} environment
-inside an \mono{equation} block.  This technique is part of the advanced features of
-the language and is discussed with greater detail in \sref{sec:wrappers}.
+named mathematical expressions that may be numbered and referenced from anywhere
+in a document.  For that you need to wrap a \mono{mathtexblk} or \mono{mathmlblk}
+environment inside an \mono{equation} block.  This technique is part of the advanced
+features of the language and is discussed with greater detail in \sref{sec:wrappers}.
 
-\begin{mathtex}
+\begin{mathtexblk}
 x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-\end{mathtex}
+\end{mathtexblk}
 
 
 \section{Images}
@@ -1326,7 +1323,7 @@ The first parameter is the name of the boxout environment; this is the same name
 must subsequently be used inside the begin/end pairs.  Obviously, you may not name a
 boxout with the same designation of an existing command, or with a designation that
 begins with the name of an environment that uses the \caps{heredoc} technique (namely
-\mono{verbatim}, \mono{source}, \mono{mathtex}, and \mono{mathml}). Moreover, the
+\mono{verbatim}, \mono{source}, \mono{mathtexblk}, and \mono{mathmlblk}). Moreover, the
 name must begin with a lowercase Roman letter and be composed only of lowercase Roman
 letters, digits, and the character '\mono{_}' (underscore).  The second parameter,
 if present, is an inline sequence indicating a fixed title that will appear in all
@@ -1406,10 +1403,10 @@ This is the \lambtex source you may use:
 \newtheorem{theorem}{Theorem}{cnt:theorem}
 
 \begin{theorem}{John McAuthor}
-Let an egg be defined as an ellipsoid whose radii across the [$x$],
-[$y$], and [$z$] axes are respectively [$a$], [$b$], and [$c$].
+Let an egg be defined as an ellipsoid whose radii across the $$x$$,
+$$y$$, and $$z$$ axes are respectively $$a$$, $$b$$, and $$c$$.
 Furthermore, the egg satisfies the scalene condition, and therefore
-[$a > b > c$].  All such eggs are optimally opened by their small-end.
+$$a > b > c$$.  All such eggs are optimally opened by their small-end.
 \end{theorem}
 \end{source}
 
@@ -1423,10 +1420,10 @@ the associated classname is \mono{doc_theorem_env_\emph{name}}.
 \newtheorem{theorem}{Theorem}{cnt:theorem}
 
 \begin(1){theorem}{John McAuthor}
-Let an egg be defined as an ellipsoid whose radii across the [$x$],
-[$y$], and [$z$] axes are respectively [$a$], [$b$], and [$c$].
+Let an egg be defined as an ellipsoid whose radii across the $$x$$,
+$$y$$, and $$z$$ axes are respectively $$a$$, $$b$$, and $$c$$.
 Furthermore, the egg satisfies the scalene condition, and therefore
-[$a > b > c$].  All such eggs are optimally opened by their small-end.
+$$a > b > c$$.  All such eggs are optimally opened by their small-end.
 \end{theorem}
 \end{subpage}
 
@@ -1447,8 +1444,8 @@ different classes of wrappers available:
 
 \item{Equations}
 
-    These are declared via the environment command \mono{equation},
-    and may be used for wrapping \mono{mathtex} and \mono{mathml} blocks.
+    These are declared via the environment command \mono{equation}, and
+    may be used for wrapping \mono{mathtexblk} and \mono{mathmlblk} blocks.
 
 \item{Printouts}
 
@@ -1733,8 +1730,8 @@ of lowercase Roman letters, digits, and the character '\mono{_}' (underscore).
 
 Should the macro take any arguments, these can be referenced from inside the macro
 text by the alias \mono{\\arg\{\emph{num}\}}, where the \mono{\emph{num}} between curly
-brackets is an integer indicating the argument number.  Obviously, a macro with [$n$]
-arguments may not reference an argument [$n+1$] or higher.  Moreover, arguments are
+brackets is an integer indicating the argument number.  Obviously, a macro with $$n$$
+arguments may not reference an argument $$n+1$$ or higher.  Moreover, arguments are
 expanded as inline sequences.
 
 Wherever an inline sequence is accepted, a macro named \mono{name} can be invoked via
@@ -1994,8 +1991,8 @@ command name is user-defined.}
 | \mono{equation}           | \depends0     | \optional     |
 | \mono{figure}             | \depends0     | \optional     |
 | \mono{itemize}            | \forbidden    | \forbidden    |
-| \mono{mathml}             | \forbidden    | \forbidden    |
-| \mono{mathtex}            | \forbidden    | \forbidden    |
+| \mono{mathmlblk}          | \forbidden    | \forbidden    |
+| \mono{mathtexblk}         | \forbidden    | \forbidden    |
 | \mono{note}               | \forbidden    | \optional     |
 | \mono{quote}              | \forbidden    | \forbidden    |
 | \mono{printout}           | \depends0     | \optional     |
