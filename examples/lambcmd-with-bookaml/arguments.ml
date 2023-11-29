@@ -1,11 +1,3 @@
-(********************************************************************************)
-(*  Arguments.ml
-    Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
-    This software is distributed under the terms of the GNU GPL version 2.
-    See LICENSE file for full license text.
-*)
-(********************************************************************************)
-
 open Cmdliner
 open Lambdoc_prelude
 
@@ -198,7 +190,7 @@ let info =
         `S "BUGS";
         `P "Please report any issues at $(b,https://github.com/darioteixeira/lambdoc/issues)";
         `S "AUTHOR";
-        `P "Dario Teixeira <dario.teixeira@nleyten.com>";
+        `P "Dario Teixeira <dario.teixeira@yahoo.com>";
         ] in
     Term.info "lambcmd" ~version:"1.0beta4+dev" ~doc ~man
 

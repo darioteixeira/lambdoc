@@ -1,11 +1,3 @@
-(********************************************************************************)
-(*  Ocsigen_test.ml
-    Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
-    This software is distributed under the terms of the GNU GPL version 2.
-    See LICENSE file for full license text.
-*)
-(********************************************************************************)
-
 (** Part 9 of the Lambdoc+Ocsigen tutorial.
 
     This instalment illustrates how the {!Lambdoc_document_foldmap} module can be used

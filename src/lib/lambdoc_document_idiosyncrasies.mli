@@ -1,11 +1,3 @@
-(********************************************************************************)
-(*  Lambdoc_document_idiosyncrasies.mli
-    Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
-    This software is distributed under the terms of the GNU GPL version 2.
-    See LICENSE file for full license text.
-*)
-(********************************************************************************)
-
 (** Definition of document idiosyncrasies.  These represent additional
     restrictions over the set of allowed document elements and classnames.
 *)

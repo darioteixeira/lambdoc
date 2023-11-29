@@ -6956,7 +6956,7 @@ let setup_t =
           license_file = Some "LICENSE";
           copyrights = [];
           maintainers = [];
-          authors = ["Dario Teixeira <dario.teixeira@nleyten.com>"];
+          authors = ["Dario Teixeira <dario.teixeira@yahoo.com>"];
           homepage = Some "http://lambdoc.forge.ocamlcore.org/";
           synopsis =
             "Support for semantically rich documents in web applications";

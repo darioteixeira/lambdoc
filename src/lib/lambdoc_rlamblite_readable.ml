@@ -1,11 +1,3 @@
-(********************************************************************************)
-(*  Lambdoc_rlamblite_readable.ml
-    Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
-    This software is distributed under the terms of the GNU GPL version 2.
-    See LICENSE file for full license text.
-*)
-(********************************************************************************)
-
 module Lexer = Lambdoc_rlamblite_lexer
 module Parser = Lambdoc_rlamblite_parser
 module Tokenizer = Lambdoc_rlamblite_tokenizer

@@ -1,11 +1,3 @@
-(********************************************************************************)
-(*  Lambdoc_prelude.mli
-    Copyright (c) 2009-2016 Dario Teixeira <dario.teixeira@nleyten.com>
-    This software is distributed under the terms of the GNU GPL version 2.
-    See LICENSE file for full license text.
-*)
-(********************************************************************************)
-
 (** Extensions to OCaml's standard library.  Note that for the most part the functions
     defined in this module have the same name and signature as functions in Batteries.
 *)
